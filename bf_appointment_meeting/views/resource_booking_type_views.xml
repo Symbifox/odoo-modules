@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="resource_booking_type_form_agenda" model="ir.ui.view">
+        <field name="name">resource.booking.type.form.agenda</field>
+        <field name="model">resource.booking.type</field>
+        <field name="inherit_id" ref="bf_appointment.resource_booking_type_form_inherit"/>
+        <field name="arch" type="xml">
+            <!-- Juste après le projet : les deux se lisent ensemble, puisque
+                 c'est lui qui décide où l'ordre du jour atterrit. -->
+            <xpath expr="//field[@name='project_id']" position="after">
+                <field name="bf_create_agenda"/>
+                <div class="text-muted small"
+                     colspan="2"
+                     invisible="not bf_create_agenda or project_id">
+                    Aucun projet sur ce type : l'ordre du jour ira dans le projet
+                    de repli de la société (Configuration → Rendez-vous). Sans
+                    l'un ni l'autre, aucun ordre du jour ne sera créé.
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

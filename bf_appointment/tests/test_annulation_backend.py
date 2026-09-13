@@ -226,9 +226,19 @@ class TestAnnulationBackend(TransactionCase):
 
         Le sondage « une réservation pointe-t-elle encore dessus ? » cherchait
         en `active_test` par défaut : il répondait « personne » précisément pour
-        les événements qui SONT pointés. Éprouvé ici sans la clause de statut,
-        pour que ce garde-là tienne tout seul.
+        les événements qui SONT pointés.
+
+        ⚠️ Écrit pour tenir « sans la clause de statut », et c'est justement
+        ce qui le rendait rouge sur toute base sans `bf_calendar_invite` :
+        là, `action_cancel` EFFACE l'événement, et un événement effacé n'a
+        plus de réservation à retrouver — il n'y a rien à sonder. Le garde
+        que ce cas éprouve n'existe que dans le monde où la trace est gardée,
+        donc le saut rejoint celui de ses voisins.
         """
+        if not self._statut_dispo:
+            self.skipTest(
+                "bf_calendar_invite absent : l'événement est effacé, "
+                "il n'y a aucune trace gardée à sonder")
         _booking, meeting = self._evenement_annule_dans_le_passe()
         trouve = self.env["resource.booking"].sudo().with_context(
             active_test=False,

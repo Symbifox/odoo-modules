@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**115 modules are BUSL-1.1.** The source is published and auditable, and **you
+**116 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -73,7 +73,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Link existing calendar events to activities |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.1.0 | LGPL-3 | The single transport to the AI bridge service |
-| `bf_appointment` | Symbifox Appointment | 18.0.2.59.0 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_appointment` | Symbifox Appointment | 18.0.2.60.0 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
+| `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.0.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.15.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.0.1 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
@@ -169,7 +170,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.3.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.0 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
-| `bf_meeting` | Rencontres | 18.0.3.57.1 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
+| `bf_meeting` | Rencontres | 18.0.3.58.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.0.2 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.2.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
@@ -256,7 +257,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **115 modules: BUSL-1.1.** Production use for your own internal business
+- **116 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

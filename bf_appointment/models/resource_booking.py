@@ -1239,6 +1239,127 @@ class ResourceBooking(models.Model):
 
     # ---- Description de l'événement d'agenda ----
 
+    # ------------------------------------------------------------------
+    # Surface d'ouverture : des liens en plus, posés par un satellite
+    # ------------------------------------------------------------------
+
+    def bf_extra_links(self):
+        """Liens supplémentaires à montrer au demandeur, rendus par ce module.
+
+        Rend une liste de dictionnaires ``{'label', 'url', 'help'}`` — vide
+        ici. Un satellite la surcharge pour ajouter le sien (premier client :
+        l'ordre du jour de la rencontre). Les quatre
+        surfaces que voit le demandeur la consomment : le courriel de
+        confirmation et les rappels, la page publique du rendez-vous, la
+        description de l'``.ics``, et celle de l'événement d'agenda.
+
+        ⚠️ Cette méthode vit ICI et pas dans le satellite. Les gabarits de
+        courriel l'appellent depuis leur ``body_html``, qui est du QWeb rendu
+        sur le record : sur un locataire sans satellite, une méthode absente
+        ferait lever le rendu et le demandeur ne recevrait AUCUNE
+        confirmation. Un repli vide est la seule forme sûre.
+
+        ⚠️ Ce qui sort d'ici part à TOUS les participants — la description de
+        l'événement n'en porte qu'une, et l'``.ics`` non plus. Un satellite ne
+        doit donc y mettre que ce qui les regarde tous.
+
+        ``help`` est facultatif : une ligne d'explication sous le bouton, que
+        seules les surfaces HTML rendent.
+        """
+        self.ensure_one()
+        return []
+
+    def bf_extra_cta_html(self):
+        """Les liens supplémentaires en boutons, pour un corps de courriel.
+
+        🔴 PUBLIQUE, sans underscore, et ce n'est pas un choix de style. Le
+        QWeb d'un `mail.template` est un bac à sable qui refuse d'appeler une
+        méthode dont le nom commence par `_` : le rendu ne lève pas une erreur
+        lisible, il rend « 'NoneType' object is not callable » — c'est-à-dire
+        un courriel de confirmation qui ne part pas, pour tout le monde, sans
+        qu'aucun test Python ne bronche. Même règle pour `bf_extra_links()`,
+        appelée depuis la page publique. Les deux aides qui ne servent qu'au
+        Python (`_bf_extra_links_text`, `_bf_extra_links_html`) restent, elles,
+        privées.
+
+        Appelée depuis le ``body_html`` des gabarits de rendez-vous. Rend un
+        Markup vide quand il n'y a rien — un ``t-out`` sur une chaîne vide
+        n'écrit rien, donc le gabarit reste identique à lui-même sur un
+        locataire sans satellite.
+
+        Le bouton reprend la couleur de marque du type, comme le bouton
+        « Voir mon rendez-vous » juste au-dessus, pour que les deux se lisent
+        comme une même famille.
+        """
+        self.ensure_one()
+        links = self.bf_extra_links()
+        if not links:
+            return Markup("")
+        company = self.type_id.company_id
+        couleur = (company and company.appointment_brand_primary) or "#714B67"
+        parts = []
+        for link in links:
+            url = (link.get("url") or "").strip()
+            label = (link.get("label") or "").strip()
+            if not url or not label:
+                continue
+            aide = (link.get("help") or "").strip()
+            parts.append(
+                Markup(
+                    '<p style="text-align:center; margin:0 0 8px 0;">'
+                    '<a href="%s" style="background-color:%s; color:#ffffff; '
+                    'padding:12px 32px; text-decoration:none; border-radius:6px; '
+                    'font-weight:600; font-size:14px; display:inline-block; '
+                    "font-family:'Lexend','Segoe UI',Arial,sans-serif;\">%s</a></p>"
+                ) % (url, couleur, label)
+            )
+            if aide:
+                parts.append(
+                    Markup(
+                        '<p style="text-align:center; margin:0 0 16px 0; '
+                        "font-size:13px; line-height:20px; color:#6B7280; "
+                        "font-family:'Lexend','Segoe UI',Arial,sans-serif;\">"
+                        "%s</p>"
+                    ) % aide
+                )
+        if not parts:
+            return Markup("")
+        return Markup('<div style="margin:8px 0 16px 0;">') + Markup("").join(
+            parts) + Markup("</div>")
+
+    def _bf_extra_links_text(self):
+        """Les mêmes liens en lignes de texte, pour la description d'un .ics."""
+        self.ensure_one()
+        lignes = []
+        for link in self.bf_extra_links():
+            url = (link.get("url") or "").strip()
+            label = (link.get("label") or "").strip()
+            if url and label:
+                lignes.append("%s : %s" % (label, url))
+        return lignes
+
+    def _bf_extra_links_html(self):
+        """Les mêmes liens en HTML sobre, pour la description d'un événement.
+
+        ⚠️ Cette description repasse par Nextcloud, qui la rend en texte brut
+        puis la renvoie : on reste donc sur des balises que `html2plaintext`
+        sait aplatir sans rien perdre, et on écrit l'URL EN CLAIR à côté du
+        libellé. Un `<a href>` seul rendrait « Ordre du jour » sans son lien
+        dans la moitié des clients d'agenda.
+        """
+        self.ensure_one()
+        parts = []
+        for link in self.bf_extra_links():
+            url = (link.get("url") or "").strip()
+            label = (link.get("label") or "").strip()
+            if not url or not label:
+                continue
+            parts.append(
+                Markup('<p><strong>%s</strong> : <a href="%s">%s</a></p>')
+                % (label, url, url)
+            )
+        return Markup("").join(parts)
+
     def _bf_meeting_description(self):
         """Corps de l'événement d'agenda : ce que le demandeur a écrit.
 
@@ -1280,8 +1401,13 @@ class ResourceBooking(models.Model):
         # demandeur a écrit ne regarde pas forcément les gens qu'il convie.
         partage = record.type_id.guests_see_intake
         invites = record.guest_ids.filtered(lambda g: g.state == "confirmed")
+        # ⚠️ Les liens d'un satellite ne sont PAS des réponses de formulaire :
+        # ils s'adressent à tous les participants, invités compris, et
+        # survivent donc au retrait ci-dessus. C'est aussi pour ça qu'ils sont
+        # ajoutés à la fin et pas mêlés aux réponses.
+        liens = record._bf_extra_links_html()
         if invites and not partage:
-            return ""
+            return liens
 
         parts = []
         for answer in record.intake_answer_ids:
@@ -1295,9 +1421,9 @@ class ResourceBooking(models.Model):
                     Markup("<br/>").join(value.splitlines()),
                 )
             )
-        if not parts:
+        if not parts and not liens:
             return ""
-        if booker:
+        if booker and parts:
             who = (booker.name or "").strip()
             if booker.email:
                 # Parenthèses et non chevrons : la description repasse par
@@ -1309,7 +1435,7 @@ class ResourceBooking(models.Model):
                     Markup("<p><strong>%s</strong> : %s</p>")
                     % (record.env._("Demandeur"), who)
                 )
-        return Markup("").join(parts)
+        return Markup("").join(parts) + liens
 
     def _bf_sync_meeting_description(self):
         """Ré-aligne la description de l'événement sur les réponses courantes.
@@ -1399,6 +1525,12 @@ class ResourceBooking(models.Model):
         desc_parts.append(_("Voir mon rendez-vous : %s") % booking_url)
         desc_parts.append(_("Modifier l'horaire : %s") % schedule_url)
         desc_parts.append(_("Annuler : %s") % cancel_url)
+        # Les liens posés par un satellite (l'ordre du jour, par exemple).
+        # ⚠️ Un .ics ne part qu'une fois : ce qui n'existe pas à cette
+        # seconde-là n'apparaîtra jamais dans l'agenda du destinataire, et le
+        # renvoyer exige une SEQUENCE incrémentée (RFC 5545 §3.8.7.4). Le
+        # satellite doit donc avoir fini son travail AVANT l'envoi.
+        desc_parts.extend(self._bf_extra_links_text())
         description = "\n".join(desc_parts)
         # Location
         location = self.videocall_location or self.location or ""

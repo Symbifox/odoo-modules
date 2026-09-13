@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_agenda" model="ir.ui.view">
+        <field name="name">res.config.settings.form.appointment.agenda</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bf_appointment.res_config_settings_view_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='bf_appointment_quick_link']" position="inside">
+                <setting string="Projet de repli des ordres du jour"
+                         help="Où atterrit l'ordre du jour d'un rendez-vous dont le type ne désigne aucun projet. Sans ce repli, un type non configuré ne produit simplement pas d'ordre du jour.">
+                    <field name="bf_appointment_agenda_project_id"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

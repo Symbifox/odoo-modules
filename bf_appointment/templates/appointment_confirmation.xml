@@ -146,6 +146,26 @@
                     </div>
                     <t t-if="booking_sudo.state in ('confirmed', 'scheduled')">
                         <div class="card-footer bg-transparent border-top py-3">
+                            <!-- Liens posés par un satellite (ordre du jour…). Vivants :
+                                 ils reflètent l'état au moment du CLIC, là où le courriel
+                                 et l'.ics figent le leur au moment de l'envoi. -->
+                            <t t-set="extra_links" t-value="booking_sudo.bf_extra_links()"/>
+                            <t t-if="extra_links">
+                                <div class="text-center mb-3">
+                                    <t t-foreach="extra_links" t-as="extra_link">
+                                        <a t-att-href="extra_link['url']"
+                                           class="btn bf-btn-accent text-white btn-sm mb-1"
+                                           t-attf-style="background-color: #{(booking_sudo.type_id.company_id and booking_sudo.type_id.company_id.appointment_brand_primary) or brand_primary};">
+                                            <i class="fa fa-list-ul me-1"/>
+                                            <t t-out="extra_link['label']"/>
+                                        </a>
+                                        <t t-if="extra_link.get('help')">
+                                            <div class="small text-muted mb-2"
+                                                 t-out="extra_link['help']"/>
+                                        </t>
+                                    </t>
+                                </div>
+                            </t>
                             <div class="text-center mb-3">
                                 <a t-attf-href="/appointment/b/#{booking_sudo.id}/#{access_token}/schedule"
                                    class="btn bf-btn-accent text-white btn-sm me-2"

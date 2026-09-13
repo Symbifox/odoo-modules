@@ -131,6 +131,12 @@ class MeetingContributionController(Controller):
         return {
             'token': token,
             'company': company,
+            # ⚠️ La page suit la langue de l'ORDRE DU JOUR, et pas celle du
+            # navigateur : le lien peut arriver dans la confirmation d'un
+            # rendez-vous rendue en anglais pour un demandeur anglophone,
+            # auquel cas une page française contredirait le courriel qui vient
+            # de l'amener ici. L'OdJ hérite sa langue du demandeur.
+            '_en': (agenda.lang or '').startswith('en'),
             'meeting_name': agenda.name or '',
             'meeting_date': _safe_date_display(agenda),
             'objectives': agenda.objectives or '',
@@ -147,8 +153,10 @@ class MeetingContributionController(Controller):
         if not agenda:
             return request.not_found()
         if not agenda.contributions_open:
-            return request.render('bf_meeting.agenda_contrib_closed',
-                                  {'company': agenda.company_id or request.env.company})
+            return request.render('bf_meeting.agenda_contrib_closed', {
+                'company': agenda.company_id or request.env.company,
+                '_en': (agenda.lang or '').startswith('en'),
+            })
         ok = kw.get('ok') if kw.get('ok') in ('topic', 'comment') else None
         return request.render('bf_meeting.agenda_contrib_page',
                               self._page_ctx(agenda, token, ok=ok))
@@ -161,8 +169,10 @@ class MeetingContributionController(Controller):
         if not agenda:
             return request.not_found()
         if not agenda.contributions_open:
-            return request.render('bf_meeting.agenda_contrib_closed',
-                                  {'company': agenda.company_id or request.env.company})
+            return request.render('bf_meeting.agenda_contrib_closed', {
+                'company': agenda.company_id or request.env.company,
+                '_en': (agenda.lang or '').startswith('en'),
+            })
         if not _check_post_rate_limit():
             return request.render('bf_meeting.agenda_contrib_page',
                                   self._page_ctx(agenda, token, error='rate'))
@@ -203,8 +213,10 @@ class MeetingContributionController(Controller):
         if not agenda:
             return request.not_found()
         if not agenda.contributions_open:
-            return request.render('bf_meeting.agenda_contrib_closed',
-                                  {'company': agenda.company_id or request.env.company})
+            return request.render('bf_meeting.agenda_contrib_closed', {
+                'company': agenda.company_id or request.env.company,
+                '_en': (agenda.lang or '').startswith('en'),
+            })
         if not _check_post_rate_limit():
             return request.render('bf_meeting.agenda_contrib_page',
                                   self._page_ctx(agenda, token, error='rate'))

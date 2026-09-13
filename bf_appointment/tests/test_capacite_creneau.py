@@ -5,10 +5,11 @@ premier test de ce fichier ne vérifie donc pas la nouveauté, il vérifie que r
 n'a bougé pour les locataires qui n'en demandaient pas.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 
+from odoo import fields
 from odoo.tests.common import TransactionCase, tagged
 
 
@@ -48,8 +49,20 @@ class TestCapaciteCreneau(TransactionCase):
         cls.combinaison = cls.env["resource.booking.combination"].create({
             "resource_ids": [(6, 0, cls.ressource.ids)],
         })
-        cls.debut = cls.tz.localize(datetime(2026, 9, 12, 0, 0))
-        cls.fin = cls.tz.localize(datetime(2026, 9, 13, 0, 0))
+        # 🔴 Le samedi visé se CALCULE, il ne s'écrit pas.
+        # Ces essais portaient des dates en dur au 2026-09-12 — un samedi, ce
+        # qu'exige `cal_samedi`. Ils sont passés au rouge le LENDEMAIN de leur
+        # écriture : `_bf_candidate_slots` ne rend que des créneaux à venir, et
+        # une date révolue rend une liste vide. Cinq essais sur sept, morts en
+        # vingt-quatre heures, sans que rien n'ait bougé dans le produit.
+        # Le prochain samedi strictement futur tient le même rôle, pour
+        # toujours.
+        aujourd_hui = fields.Date.context_today(cls.env["resource.booking"])
+        jours = (5 - aujourd_hui.weekday()) % 7 or 7
+        cls.samedi = aujourd_hui + timedelta(days=jours)
+        cls.debut = cls.tz.localize(
+            datetime(cls.samedi.year, cls.samedi.month, cls.samedi.day, 0, 0))
+        cls.fin = cls.debut + timedelta(days=1)
 
     def _type(self, capacite=1):
         return self.env["resource.booking.type"].create({
@@ -70,6 +83,16 @@ class TestCapaciteCreneau(TransactionCase):
             )
         ]
 
+    def _samedi_a(self, heure, minute):
+        """L'instant UTC naïf du samedi visé, à cette heure-là.
+
+        17:00 UTC = 13:00 à Toronto en heure avancée, ce que ces essais
+        attendent. Calculé plutôt qu'écrit en dur pour que la suite ne se
+        périme plus : voir le commentaire de `setUpClass`.
+        """
+        return datetime(self.samedi.year, self.samedi.month, self.samedi.day,
+                        heure, minute)
+
     def _reserver(self, type_rdv, heure_utc):
         partenaire = self.env["res.partner"].create({
             "name": "Essai visiteur %s" % heure_utc,
@@ -81,7 +104,7 @@ class TestCapaciteCreneau(TransactionCase):
         """Sans capacité déclarée, une réservation ferme le créneau. Inchangé."""
         type_rdv = self._type(capacite=1)
         self.assertIn("13:00", self._creneaux(type_rdv))
-        self._reserver(type_rdv, datetime(2026, 9, 12, 17, 0))
+        self._reserver(type_rdv, self._samedi_a(17, 0))
         self.assertNotIn(
             "13:00", self._creneaux(type_rdv),
             "Le comportement historique doit tenir : une réservation ferme "
@@ -90,14 +113,14 @@ class TestCapaciteCreneau(TransactionCase):
 
     def test_plafond_trois_garde_le_creneau_ouvert(self):
         type_rdv = self._type(capacite=3)
-        self._reserver(type_rdv, datetime(2026, 9, 12, 17, 0))
+        self._reserver(type_rdv, self._samedi_a(17, 0))
         self.assertIn(
             "13:00", self._creneaux(type_rdv),
             "Une place prise sur trois laisse le créneau offert.",
         )
-        self._reserver(type_rdv, datetime(2026, 9, 12, 17, 0))
+        self._reserver(type_rdv, self._samedi_a(17, 0))
         self.assertIn("13:00", self._creneaux(type_rdv))
-        self._reserver(type_rdv, datetime(2026, 9, 12, 17, 0))
+        self._reserver(type_rdv, self._samedi_a(17, 0))
         self.assertNotIn(
             "13:00", self._creneaux(type_rdv),
             "Le plafond atteint ferme le créneau.",
@@ -114,15 +137,15 @@ class TestCapaciteCreneau(TransactionCase):
         from odoo.exceptions import UserError
 
         type_rdv = self._type(capacite=2)
-        self._reserver(type_rdv, datetime(2026, 9, 12, 17, 0))
-        self._reserver(type_rdv, datetime(2026, 9, 12, 17, 0))
+        self._reserver(type_rdv, self._samedi_a(17, 0))
+        self._reserver(type_rdv, self._samedi_a(17, 0))
         with self.assertRaises(UserError):
-            self._reserver(type_rdv, datetime(2026, 9, 12, 17, 0))
+            self._reserver(type_rdv, self._samedi_a(17, 0))
 
     def test_annulation_rend_la_place(self):
         type_rdv = self._type(capacite=2)
-        premiere = self._reserver(type_rdv, datetime(2026, 9, 12, 17, 0))
-        self._reserver(type_rdv, datetime(2026, 9, 12, 17, 0))
+        premiere = self._reserver(type_rdv, self._samedi_a(17, 0))
+        self._reserver(type_rdv, self._samedi_a(17, 0))
         self.assertNotIn("13:00", self._creneaux(type_rdv))
         premiere.action_cancel()
         self.assertIn(

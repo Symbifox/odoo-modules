@@ -402,6 +402,15 @@ class MeetingAgenda(models.Model):
         help="Jeton secret donnant accès à la page publique de contributions. "
              "Frappé à l'envoi, jamais exposé en lecture portail/publique.",
     )
+    contributions_preopened = fields.Boolean(
+        string='Contributions ouvertes avant l\'envoi',
+        copy=False,
+        help="Ouvre la fenêtre de contribution SANS attendre l'envoi de "
+             "l'ordre du jour. Posé par les modules qui distribuent le lien "
+             "eux-mêmes — la confirmation d'un rendez-vous, par exemple : "
+             "l'OdJ vient de naître, il est vide, et c'est précisément à ce "
+             "moment-là qu'on veut demander « de quoi parle-t-on ? ».",
+    )
     contributions_open = fields.Boolean(
         string='Contributions ouvertes',
         compute='_compute_contributions_open',
@@ -420,11 +429,21 @@ class MeetingAgenda(models.Model):
         compute='_compute_contribution_pending_count',
     )
 
-    @api.depends('sent_date', 'state', 'allow_contributions')
+    @api.depends('sent_date', 'state', 'allow_contributions',
+                 'contributions_preopened')
     def _compute_contributions_open(self):
+        """La fenêtre s'ouvre à l'envoi — ou avant, si quelqu'un l'a demandée.
+
+        ⚠️ `contributions_preopened` n'élargit PAS la fenêtre par le haut :
+        elle se referme toujours à la confirmation, et `allow_contributions`
+        la ferme toujours d'un coup. Ce drapeau ne dit qu'une chose : « le
+        lien est déjà parti par un autre chemin que mon courriel d'OdJ ».
+        """
         for rec in self:
             rec.contributions_open = bool(
-                rec.allow_contributions and rec.sent_date and rec.state == 'draft'
+                rec.allow_contributions
+                and (rec.sent_date or rec.contributions_preopened)
+                and rec.state == 'draft'
             )
 
     @api.depends('topic_ids.moderation_state')

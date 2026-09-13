@@ -8,11 +8,11 @@
         <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
         <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
         &lt;!DOCTYPE html&gt;
-        <html lang="fr">
+        <html t-att-lang="'en' if _en else 'fr'">
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-                <title>Contribuer — <t t-esc="meeting_name"/></title>
+                <title><t t-out="'Contribute' if _en else 'Contribuer'"/> — <t t-esc="meeting_name"/></title>
                 <style>
                     :root { --bf-primary: <t t-esc="primary"/>; --bf-dark: <t t-esc="dark"/>; }
                     body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
@@ -57,41 +57,40 @@
                 <div class="bf-wrap">
 
                     <t t-if="ok == 'topic'">
-                        <div class="bf-banner bf-ok">Merci ! Votre sujet a été transmis à l'organisateur, qui l'examinera avant la rencontre.</div>
+                        <div class="bf-banner bf-ok"><t t-out="'Thank you. Your topic has gone to the organiser, who will review it before the meeting.' if _en else 'Merci ! Votre sujet a été transmis à l\'organisateur, qui l\'examinera avant la rencontre.'"/></div>
                     </t>
                     <t t-if="ok == 'comment'">
-                        <div class="bf-banner bf-ok">Merci ! Votre commentaire a été transmis à l'organisateur.</div>
+                        <div class="bf-banner bf-ok"><t t-out="'Thank you. Your comment has gone to the organiser.' if _en else 'Merci ! Votre commentaire a été transmis à l\'organisateur.'"/></div>
                     </t>
                     <t t-if="error == 'rate'">
-                        <div class="bf-banner bf-err">Trop d'envois en peu de temps. Patientez une minute avant de réessayer.</div>
+                        <div class="bf-banner bf-err"><t t-out="'Too many submissions in a short time. Wait a minute before trying again.' if _en else 'Trop d\'envois en peu de temps. Patientez une minute avant de réessayer.'"/></div>
                     </t>
                     <t t-if="error == 'topic_name'">
-                        <div class="bf-banner bf-err">Veuillez indiquer un titre de sujet.</div>
+                        <div class="bf-banner bf-err"><t t-out="'Please give the topic a title.' if _en else 'Veuillez indiquer un titre de sujet.'"/></div>
                     </t>
                     <t t-if="error == 'comment'">
-                        <div class="bf-banner bf-err">Veuillez saisir un commentaire.</div>
+                        <div class="bf-banner bf-err"><t t-out="'Please enter a comment.' if _en else 'Veuillez saisir un commentaire.'"/></div>
                     </t>
                     <t t-if="error == 'server'">
-                        <div class="bf-banner bf-err">Une erreur est survenue. Veuillez réessayer.</div>
+                        <div class="bf-banner bf-err"><t t-out="'Something went wrong. Please try again.' if _en else 'Une erreur est survenue. Veuillez réessayer.'"/></div>
                     </t>
 
                     <div class="bf-card">
                         <h1><t t-esc="meeting_name"/></h1>
                         <p class="bf-meta" t-if="meeting_date">
-                            <strong style="color:#374151;">Date :</strong> <t t-esc="meeting_date"/>
+                            <strong style="color:#374151;"><t t-out="'Date:' if _en else 'Date :'"/></strong> <t t-esc="meeting_date"/>
                         </p>
                         <p style="color:#374151; font-size:15px; line-height:23px; margin:0;">
-                            Vous êtes invité à proposer un sujet ou à laisser une note avant la rencontre.
-                            Vos contributions sont transmises à l'organisateur, qui les examinera.
+                            <t t-out="'You are invited to suggest a topic or leave a note before the meeting. What you send goes to the organiser, who reviews it.' if _en else 'Vous êtes invité à proposer un sujet ou à laisser une note avant la rencontre. Vos contributions sont transmises à l\'organisateur, qui les examinera.'"/>
                         </p>
 
                         <t t-if="objectives">
-                            <h2>Objectifs de la rencontre</h2>
+                            <h2><t t-out="'Meeting objectives' if _en else 'Objectifs de la rencontre'"/></h2>
                             <p class="bf-obj"><t t-esc="objectives"/></p>
                         </t>
 
                         <t t-if="topic_names">
-                            <h2>Sujets déjà à l'ordre du jour</h2>
+                            <h2><t t-out="'Topics already on the agenda' if _en else 'Sujets déjà à l\'ordre du jour'"/></h2>
                             <ul class="bf-topics">
                                 <li t-foreach="topic_names" t-as="tn"><t t-esc="tn"/></li>
                             </ul>
@@ -100,35 +99,35 @@
 
                     <!-- Proposer un sujet -->
                     <div class="bf-card">
-                        <h2 style="margin-top:0;">Proposer un sujet</h2>
+                        <h2 style="margin-top:0;"><t t-out="'Suggest a topic' if _en else 'Proposer un sujet'"/></h2>
                         <form method="post" t-attf-action="/meeting/agenda/#{token}/topic">
-                            <label>Votre nom <span class="bf-req">*</span></label>
+                            <label><t t-out="'Your name' if _en else 'Votre nom'"/> <span class="bf-req">*</span></label>
                             <input type="text" name="contributor_name" required="required" maxlength="120"/>
-                            <label>Votre courriel <span style="font-weight:400; color:#9CA3AF;">(facultatif)</span></label>
+                            <label><t t-out="'Your email' if _en else 'Votre courriel'"/> <span style="font-weight:400; color:#9CA3AF;"><t t-out="'(optional)' if _en else '(facultatif)'"/></span></label>
                             <input type="email" name="contributor_email" maxlength="254"/>
-                            <label>Titre du sujet <span class="bf-req">*</span></label>
+                            <label><t t-out="'Topic title' if _en else 'Titre du sujet'"/> <span class="bf-req">*</span></label>
                             <input type="text" name="topic_name" required="required" maxlength="200"/>
-                            <label>Précisions <span style="font-weight:400; color:#9CA3AF;">(facultatif)</span></label>
+                            <label><t t-out="'Details' if _en else 'Précisions'"/> <span style="font-weight:400; color:#9CA3AF;"><t t-out="'(optional)' if _en else '(facultatif)'"/></span></label>
                             <textarea name="topic_desc" rows="3" maxlength="4000"></textarea>
-                            <button type="submit">Proposer ce sujet</button>
+                            <button type="submit"><t t-out="'Suggest this topic' if _en else 'Proposer ce sujet'"/></button>
                         </form>
                     </div>
 
                     <!-- Laisser un commentaire -->
                     <div class="bf-card">
-                        <h2 style="margin-top:0;">Laisser un commentaire ou une note</h2>
+                        <h2 style="margin-top:0;"><t t-out="'Leave a comment or a note' if _en else 'Laisser un commentaire ou une note'"/></h2>
                         <form method="post" t-attf-action="/meeting/agenda/#{token}/comment">
-                            <label>Votre nom <span class="bf-req">*</span></label>
+                            <label><t t-out="'Your name' if _en else 'Votre nom'"/> <span class="bf-req">*</span></label>
                             <input type="text" name="contributor_name" required="required" maxlength="120"/>
-                            <label>Votre courriel <span style="font-weight:400; color:#9CA3AF;">(facultatif)</span></label>
+                            <label><t t-out="'Your email' if _en else 'Votre courriel'"/> <span style="font-weight:400; color:#9CA3AF;"><t t-out="'(optional)' if _en else '(facultatif)'"/></span></label>
                             <input type="email" name="contributor_email" maxlength="254"/>
-                            <label>Commentaire <span class="bf-req">*</span></label>
+                            <label><t t-out="'Comment' if _en else 'Commentaire'"/> <span class="bf-req">*</span></label>
                             <textarea name="comment" rows="4" required="required" maxlength="4000"></textarea>
-                            <button type="submit">Envoyer le commentaire</button>
+                            <button type="submit"><t t-out="'Send the comment' if _en else 'Envoyer le commentaire'"/></button>
                         </form>
                     </div>
 
-                    <p class="bf-foot">Ce lien restera actif jusqu'à la confirmation de l'ordre du jour.</p>
+                    <p class="bf-foot"><t t-out="'This link stays live until the agenda is confirmed.' if _en else 'Ce lien restera actif jusqu\'à la confirmation de l\'ordre du jour.'"/></p>
                 </div>
             </body>
         </html>
@@ -141,11 +140,11 @@
         <t t-set="primary" t-value="company.report_brand_primary or '#29ABE1'"/>
         <t t-set="dark" t-value="company.report_brand_dark or '#2D3031'"/>
         &lt;!DOCTYPE html&gt;
-        <html lang="fr">
+        <html t-att-lang="'en' if _en else 'fr'">
             <head>
                 <meta charset="utf-8"/>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-                <title>Contributions fermées</title>
+                <title><t t-out="'Contributions closed' if _en else 'Contributions fermées'"/></title>
                 <style>
                     body { margin:0; font-family: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
                            background:#f4f6f8; color:#2D3031; }
@@ -163,11 +162,9 @@
                 <div class="bf-wrap">
                     <div class="bf-card">
                         <div class="bf-lock">🔒</div>
-                        <h1 style="font-size:20px; margin:0 0 8px;">La fenêtre de contribution est fermée</h1>
+                        <h1 style="font-size:20px; margin:0 0 8px;"><t t-out="'The contribution window is closed' if _en else 'La fenêtre de contribution est fermée'"/></h1>
                         <p style="color:#555; line-height:23px;">
-                            L'ordre du jour a été confirmé (ou n'accepte plus de contributions).
-                            Merci de communiquer directement avec l'organisateur si vous souhaitez
-                            ajouter un sujet ou un commentaire.
+                            <t t-out="'The agenda has been confirmed (or no longer takes contributions). Please contact the organiser directly to add a topic or a comment.' if _en else 'L\'ordre du jour a été confirmé (ou n\'accepte plus de contributions). Merci de communiquer directement avec l\'organisateur si vous souhaitez ajouter un sujet ou un commentaire.'"/>
                         </p>
                     </div>
                 </div>

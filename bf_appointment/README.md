@@ -113,6 +113,18 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
   argument (v18.0.2.59.0), so a companion module that publishes one page per
   bookable object answers with that object's availability rather than the union
   of every combination on the type.
+- **Extra links, placed by a satellite.** `bf_extra_links()` returns a list of
+  `{label, url, help}` and is empty here (v18.0.2.60.0); a companion module
+  overrides it, and all four surfaces the booker sees render the result — the
+  confirmation email and the four reminders, the public booking page, the
+  description of the `.ics`, and the calendar event's own description. The
+  method lives in this module rather than in the satellite on purpose: the mail
+  templates call it from their `body_html`, so on a tenant without a satellite
+  a missing method would raise while rendering and the booker would receive no
+  confirmation at all. An empty fallback is the only safe shape. Both entry
+  points are public (no leading underscore) because the QWeb of a `mail.template`
+  is sandboxed and refuses to call a private method — it renders
+  `'NoneType' object is not callable` rather than an error you can read.
 
 ## Notes on the confirmation links
 

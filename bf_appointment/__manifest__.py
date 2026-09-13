@@ -389,7 +389,18 @@
     #       voient la même place : `write()` pose un verrou sur la ligne du type
     #       quand l'heure est écrite sur un type à plusieurs places. La page
     #       publique, qui ne fait que regarder, n'attend jamais.
-    "version": "18.0.2.59.0",
+    # 18.0.2.60.0: une troisième ouverture pour les satellites — des liens en plus,
+    #   posés par le satellite et rendus par les QUATRE surfaces que voit le
+    #   demandeur. Première cliente : l'ordre du jour du rendez-vous.
+    #   `bf_extra_links()` rend une liste de {label, url, help} et
+    #   vaut [] ici; `bf_extra_cta_html()` en fait un bouton de courriel.
+    #   ⚠️ La méthode vit DANS ce module, et pas dans le satellite : les gabarits
+    #   de courriel l'appellent par leur `body_html`, et un locataire sans
+    #   satellite rendrait sinon une erreur au lieu d'une confirmation.
+    #   Les quatre surfaces : le courriel de confirmation et les quatre rappels,
+    #   la page publique du rendez-vous, la description de l'.ics, et celle de
+    #   l'événement d'agenda (donc le CalDAV).
+    "version": "18.0.2.60.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
