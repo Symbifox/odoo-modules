@@ -17,29 +17,24 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/wizard/federation_share_wizard.py:0
 #: code:addons/bf_federation/wizard/federation_share_wizard.py:0
 msgid " %s laissée(s) de côté : leur projet ne fédère pas avec ce pair."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid " : la tâche revient ici"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "%s (fédéré)"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_outbox.py:0
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_outbox.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "%s : %s"
@@ -47,42 +42,36 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/wizard/federation_share_wizard.py:0
 #: code:addons/bf_federation/wizard/federation_share_wizard.py:0
 msgid "%s tâche(s) fédérée(s) avec %s."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "%s vous invite à fédérer vos Symbifox"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid "(aucune)"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_link.py:0
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid "(objet disparu)"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid "(sans titre)"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid ""
 "<p>%(nous)s vous invite à fédérer votre Symbifox avec le sien : les objets "
@@ -95,7 +84,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid ""
 "<p><i>Tâche partagée par %s. L'état, le jour d'échéance, les messages et les"
@@ -105,7 +93,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_link.py:0
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid ""
 "<p>Chez %s, %s ne fait plus partie du partage (%s) ; le miroir est "
@@ -114,28 +101,24 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_link.py:0
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid "<p>Chez %s, %s revient dans le partage ; le miroir est réactivé.</p>"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid "<p>Chez %s, l'échéance a été déplacée au %s.</p>"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid "<p>Chez %s, la tâche est passée à « %s »%s.</p>"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_link.py:0
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid ""
 "<p>Chez %s, le miroir de %s a disparu (%s) : plus rien ne lui parviendra "
@@ -144,7 +127,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid ""
 "<p>Tâches que %s partage avec nous par la fédération. L'état, le jour "
@@ -253,7 +235,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/wizard/federation_share_wizard.py:0
 #: code:addons/bf_federation/wizard/federation_share_wizard.py:0
 msgid "Aucune des tâches choisies n'est dans un projet qui fédère avec %s."
 msgstr ""
@@ -289,21 +270,18 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Ce pair est déjà actif ; suspendez-le d'abord pour le rejumeler."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Ce pair n'a jamais été jumelé ; émettez ou acceptez une invitation."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "Ce porteur ne fédère pas avec %s : ajoutez ce pair d'abord."
 msgstr ""
@@ -372,7 +350,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Contact établi : %s répond."
 msgstr ""
@@ -453,7 +430,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "En attente de %s"
 msgstr ""
@@ -511,7 +487,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/wizard/federation_share_wizard.py:0
 #: code:addons/bf_federation/wizard/federation_share_wizard.py:0
 #: model:ir.ui.menu,name:bf_federation.menu_federation_root
 msgid "Fédération"
@@ -552,14 +527,12 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "Fédérer un objet demande le rôle de gestionnaire de projet."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/wizard/federation_share_wizard.py:0
 #: code:addons/bf_federation/wizard/federation_share_wizard.py:0
 msgid "Fédérer une tâche demande le rôle de gestionnaire de projet."
 msgstr ""
@@ -572,7 +545,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "Fédéré avec %s : le miroir apparaîtra chez lui au prochain envoi."
 msgstr ""
@@ -650,14 +622,12 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Indiquez d'abord l'adresse du pair."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Indiquez l'adresse à qui envoyer l'invitation."
 msgstr ""
@@ -669,7 +639,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Invitation envoyée à %s."
 msgstr ""
@@ -686,7 +655,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Invitation émise, valide %s heures."
 msgstr ""
@@ -703,21 +671,18 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Jumelage accepté par %s."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Jumelage établi avec %s."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "L'adresse du pair doit commencer par https://."
 msgstr ""
@@ -765,8 +730,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
-#: code:addons/_t25651/bf_federation/wizard/federation_accept_wizard.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/wizard/federation_accept_wizard.py:0
 msgid "Le jumelage est réservé aux administrateurs."
@@ -786,7 +749,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Le pair a refusé l'invitation (%s) : %s"
 msgstr ""
@@ -805,14 +767,12 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Le pair ne répond pas correctement (%s)."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid ""
 "Le projet « %s » ne fédère pas avec %s : ajoutez ce pair au projet d'abord."
@@ -1213,7 +1173,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "Terminé"
 msgstr ""
@@ -1230,7 +1189,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid ""
 "Tâche fédérée avec %s : le miroir apparaîtra chez lui au prochain envoi. Ce "
@@ -1265,14 +1223,12 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "Un objet reçu d'un pair ne peut pas être fédéré avec un autre pair."
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "Un objet reçu d'un pair ne peut pas être fédéré de nouveau."
 msgstr ""
@@ -1289,29 +1245,24 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_link.py:0
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid "[pièce jointe : %s (%.1f Mio, restée chez %s)]"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "archivage"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "aucun détail"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_outbox.py:0
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_outbox.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "aucune réponse"
@@ -1319,21 +1270,18 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "cet objet"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid "cette tâche"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "détachement"
 msgstr ""
@@ -1351,7 +1299,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_link.py:0
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid "inconnu"
 msgstr ""
@@ -1363,29 +1310,24 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "l'objet"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid "la tâche"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_link.py:0
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid "retrait"
 msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
-#: code:addons/_t25651/bf_federation/models/federation_link.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid "retrait du partage"
@@ -1393,7 +1335,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "suppression"
 msgstr ""
@@ -1408,7 +1349,6 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "À faire"
 msgstr ""

@@ -100,7 +100,7 @@ class FederationController(http.Controller):
         return _json({"ok": True, "name": env["federation.peer"].with_company(peer.company_id)._our_name(),
                       "kinds": env["federation.federable"]._federation_kinds()})
 
-    def _dispatch(self, env, peer, kind, sender_ref, data):
+    def _dispatch(self, env, peer, kind, sender_ref, data, notre_ref=None):
         """Un genre, une méthode. Rend (charge de réponse, code HTTP).
 
         Deux familles : les verbes génériques, portés par le lien, et les verbes
@@ -133,10 +133,26 @@ class FederationController(http.Controller):
             record = link._record().exists()
             url = record._federation_card().get("url") if record else False
             return {"ok": True, "ref": str(link.res_id), "url": url}, 200
-        link = Link.with_context(active_test=False).search(
-            [("peer_id", "=", peer.id), ("remote_ref", "=", str(sender_ref or "")[:64])], limit=1)
-        if not link:
+        # 🔴 `remote_ref` n'est unique que PAR MODÈLE, jamais par pair : l'identifiant 2
+        # chez le pair peut être son livrable comme sa cartographie. Chercher sur le seul
+        # couple (pair, référence) rendait le lien le plus RÉCENT — le modèle s'ordonne en
+        # « id desc » — et l'accusé d'un livrable repartait en 422 « genre inconnu » parce
+        # qu'il était tombé sur le lien d'une carte, à un lien près du bon. La garde de
+        # famille plus bas empêchait d'appliquer le verbe au mauvais objet ; elle ne
+        # pouvait pas deviner que le bon lien existait. Deux filtres lèvent l'ambiguïté,
+        # et seulement quand il y en a une : le modèle, quand le genre en désigne un, et
+        # notre propre référence, que l'enveloppe porte depuis le lien de l'émetteur.
+        liens = Link.with_context(active_test=False).search(
+            [("peer_id", "=", peer.id), ("remote_ref", "=", str(sender_ref or "")[:64])])
+        if not liens:
             return {"ok": False, "error": "lien inconnu"}, 404
+        if len(liens) > 1:
+            modele = Federable._federation_model_for(family)
+            if modele is not None:
+                liens = liens.filtered(lambda l: l.res_model == modele._name) or liens
+            if len(liens) > 1 and str(notre_ref or "").isdigit():
+                liens = liens.filtered(lambda l: l.res_id == int(notre_ref)) or liens
+        link = liens[:1]
         # Les verbes génériques portent sur un lien : ils héritent du consentement de
         # la famille de l'objet visé, pas de la leur.
         if family in ("link", "mirror", "message") and not peer._inbound_allows(f"{link.kind}.share"):
@@ -189,7 +205,8 @@ class FederationController(http.Controller):
         try:
             # Un échec ne laisse rien à moitié fait chez le receveur.
             with env.cr.savepoint():
-                payload, status = self._dispatch(env, peer, kind, sender_ref, data)
+                payload, status = self._dispatch(env, peer, kind, sender_ref, data,
+                                                 envelope.get("remote_ref"))
         except Exception:  # noqa: BLE001
             _logger.exception("federation: inbound %s from peer %s failed", kind, peer.id)
             return _json({"ok": False, "error": "refusé par le receveur"}, 422)
