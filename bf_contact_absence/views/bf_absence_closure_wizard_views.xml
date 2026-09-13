@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_absence_closure_wizard_form" model="ir.ui.view">
+        <field name="name">bf.absence.closure.wizard.form</field>
+        <field name="model">bf.absence.closure.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Semer une fermeture connue">
+                <div class="alert alert-info" role="status">
+                    Les vacances de la construction sont publiées un an d'avance par la CCQ.
+                    Un client du secteur ferme donc à une date connue, qu'aucun répondeur n'a
+                    besoin de nous apprendre.
+                </div>
+                <group>
+                    <group string="Quelle fermeture">
+                        <field name="closure"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group string="Chez qui">
+                        <field name="partner_ids" widget="many2many_tags"
+                               options="{'no_create': True}"/>
+                        <field name="industry_id" options="{'no_create': True}"/>
+                        <field name="only_with_contacts"/>
+                        <field name="reminder"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_seed" type="object" string="Semer"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_absence_closure_wizard" model="ir.actions.act_window">
+        <field name="name">Semer une fermeture connue</field>
+        <field name="res_model">bf.absence.closure.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

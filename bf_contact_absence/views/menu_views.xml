@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_partner_absence"
+              name="Absences"
+              parent="contacts.menu_contacts"
+              action="action_bf_partner_absence"
+              sequence="25"/>
+
+    <menuitem id="menu_bf_absence_closure_wizard"
+              name="Semer une fermeture connue"
+              parent="contacts.menu_contacts"
+              action="action_bf_absence_closure_wizard"
+              sequence="27"/>
+</odoo>

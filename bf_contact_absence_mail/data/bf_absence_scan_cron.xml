@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="cron_bf_absence_scan" model="ir.cron">
+            <field name="name">Absences des contacts : lire les répondeurs reçus</field>
+            <field name="model_id" ref="model_bf_email"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_bf_absence_scan()</field>
+            <field name="interval_number">2</field>
+            <field name="interval_type">hours</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

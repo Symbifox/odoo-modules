@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form_absence" model="ir.ui.view">
+        <field name="name">res.partner.form.absence</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button type="object" name="action_bf_open_absences"
+                        class="oe_stat_button" icon="fa-plane"
+                        invisible="not bf_absence_count">
+                    <field name="bf_absence_count" widget="statinfo" string="Absences"/>
+                </button>
+            </xpath>
+
+            <!-- ⚠️ Le bandeau est posé AVANT la feuille, pas dans l'onglet :
+                 personne n'ouvre un onglet avant d'écrire. -->
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-warning mb-0 rounded-0 bf-absence-banner"
+                     role="status" invisible="not bf_is_away">
+                    <i class="fa fa-plane me-2" role="img" aria-label="Absent"/>
+                    <field name="bf_absence_phrase" readonly="1" nolabel="1" class="d-inline"/>
+                </div>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Absences" name="bf_absences">
+                    <field name="bf_is_away" invisible="1"/>
+                    <field name="bf_away_until" invisible="1"/>
+                    <field name="bf_absence_ids" context="{'default_partner_id': id}">
+                        <list editable="bottom"
+                              decoration-warning="state == 'running'"
+                              decoration-muted="state == 'over'">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="date_return"/>
+                            <field name="nature"/>
+                            <field name="backup_partner_id" options="{'no_create': True}"/>
+                            <field name="backup_info"/>
+                            <field name="reminder"/>
+                            <field name="source"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_partner_tree_absence" model="ir.ui.view">
+        <field name="name">res.partner.list.absence</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <!-- La ligne se teinte, sans voler une colonne à qui n'en a pas
+                 besoin : le détail est une colonne facultative.
+
+                 🔴 Ancré sur la RACINE, pas sur un champ. La liste des
+                 contacts d'Odoo ne porte pas les mêmes champs d'une version à
+                 l'autre : `display_name` sur certaines images, `complete_name`
+                 seul sur d'autres. Ancrer sur un champ fait tomber
+                 l'installation chez le locataire dont l'image diffère, et pas
+                 chez celui où on a éprouvé. Vécu le 2026-09-13 : posé sur deux
+                 locataires, refusé sur le troisième. -->
+            <list position="attributes">
+                <attribute name="decoration-warning">bf_is_away</attribute>
+            </list>
+            <list position="inside">
+                <field name="bf_is_away" column_invisible="True"/>
+                <field name="bf_away_until" string="Absent jusqu'au" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_partner_kanban_absence" model="ir.ui.view">
+        <field name="name">res.partner.kanban.absence</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+            <!-- ⚠️ Le kanban des contacts d'Odoo 18 est bâti en `aside` et
+                 `main`, sans `o_kanban_record_top` : un xpath sur cette classe
+                 ne trouve rien et fait tomber la montée du module. -->
+            <field name="is_company" position="after">
+                <field name="bf_is_away"/>
+                <field name="bf_absence_phrase"/>
+            </field>
+            <xpath expr="//main//field[@name='email']" position="after">
+                <div t-if="record.bf_is_away.raw_value" class="text-warning text-truncate">
+                    <i class="fa fa-plane me-1" role="img" aria-label="Absent"/>
+                    <t t-esc="record.bf_absence_phrase.value"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_res_partner_filter_absence" model="ir.ui.view">
+        <field name="name">res.partner.search.absence</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <filter name="type_company" position="after">
+                <separator/>
+                <filter name="bf_is_away" string="Absents aujourd'hui"
+                        domain="[('bf_is_away', '=', True)]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

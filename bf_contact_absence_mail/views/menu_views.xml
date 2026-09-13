@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_absence_suggestion"
+              name="Absences proposées"
+              parent="contacts.menu_contacts"
+              action="action_bf_absence_suggestion"
+              sequence="26"/>
+
+    <menuitem id="menu_bf_absence_backfill"
+              name="Lire le courrier déjà reçu"
+              parent="contacts.menu_contacts"
+              action="action_bf_absence_backfill_wizard"
+              sequence="28"/>
+</odoo>

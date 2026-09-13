@@ -1,0 +1,11 @@
+// Mise en page seulement. Aucune couleur n'est posée ici : `alert-warning` est
+// déjà traité par le thème d'Odoo en clair comme en sombre, et une couleur
+// écrite en dur ici deviendrait illisible dans l'un des deux.
+.bf-absence-banner {
+    .bf-absence-line + .bf-absence-line {
+        &::before {
+            content: " ";
+        }
+        display: block;
+    }
+}

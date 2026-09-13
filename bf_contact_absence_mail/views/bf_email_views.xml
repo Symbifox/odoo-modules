@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_email_form_absence" model="ir.ui.view">
+        <field name="name">bf.email.form.absence</field>
+        <field name="model">bf.email</field>
+        <field name="inherit_id" ref="bf_email_management.bf_email_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info mb-0 rounded-0" role="status"
+                     invisible="not bf_absence_suggestion_id">
+                    <i class="fa fa-plane me-2" role="img" aria-label="Absence"/>
+                    Ce courriel a produit une proposition d'absence.
+                    <field name="bf_absence_suggestion_id" readonly="1" nolabel="1" class="d-inline"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

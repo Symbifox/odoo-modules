@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_mail_compose_message_absence" model="ir.ui.view">
+        <field name="name">mail.compose.message.absence</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='body']" position="before">
+                <field name="bf_absence_return_date" invisible="1"/>
+                <div class="alert alert-warning py-2 mb-2 bf-absence-banner" role="status"
+                     invisible="not bf_absence_hint_html">
+                    <i class="fa fa-plane me-2" role="img" aria-label="Absent"/>
+                    <field name="bf_absence_hint_html" widget="html" readonly="1"
+                           nolabel="1" options="{'safe': True}" class="d-inline"/>
+                    <button name="action_bf_send_on_return" type="object"
+                            string="Programmer à son retour"
+                            class="btn btn-sm btn-secondary ms-2"
+                            invisible="not bf_absence_return_date"
+                            help="Range le message dans les envois différés, au matin du lendemain du retour."/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

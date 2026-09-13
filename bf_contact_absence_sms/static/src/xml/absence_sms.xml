@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_contact_absence_sms.Messenger" t-inherit="bf_sms_archive.Messenger" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_sms_conv_head')]" position="after">
+            <div t-if="bfAbsenceVisible"
+                 class="alert alert-warning py-1 px-2 mb-1 small bf-absence-banner"
+                 role="status">
+                <i class="fa fa-plane me-1" role="img" aria-label="Absent"/>
+                <t t-foreach="bfAbsence.lines" t-as="ligne" t-key="ligne_index">
+                    <span class="bf-absence-line" t-esc="ligne"/>
+                </t>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

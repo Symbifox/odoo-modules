@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_absence_suggestion_list" model="ir.ui.view">
+        <field name="name">bf.partner.absence.suggestion.list</field>
+        <field name="model">bf.partner.absence.suggestion</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" decoration-muted="state != 'pending'"
+                  decoration-danger="state == 'pending' and not complete">
+                <field name="email_date" readonly="1"/>
+                <field name="partner_id" readonly="1"/>
+                <field name="email_subject" readonly="1" optional="show"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="nature"/>
+                <field name="backup_partner_id" options="{'no_create': True}"/>
+                <field name="backup_hint" optional="show" readonly="1"/>
+                <field name="detected_by" readonly="1" optional="hide"/>
+                <field name="read_by" readonly="1" optional="show"/>
+                <field name="complete" column_invisible="1"/>
+                <field name="kind" optional="hide" readonly="1"/>
+                <field name="state" widget="badge" readonly="1"
+                       decoration-success="state == 'accepted'"
+                       decoration-warning="state == 'pending'"/>
+                <button name="action_accept" type="object" icon="fa-check"
+                        title="Accepter et poser l'absence"
+                        invisible="state != 'pending' or not complete"/>
+                <button name="action_reject" type="object" icon="fa-times"
+                        title="Refuser" invisible="state != 'pending'"/>
+                <button name="action_open_email" type="object" icon="fa-envelope-o"
+                        title="Voir le courriel d'origine"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_absence_suggestion_form" model="ir.ui.view">
+        <field name="name">bf.partner.absence.suggestion.form</field>
+        <field name="model">bf.partner.absence.suggestion</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_accept" type="object" string="Accepter"
+                            class="btn-primary"
+                            invisible="state != 'pending' or not complete"/>
+                    <button name="action_reject" type="object" string="Refuser"
+                            invisible="state != 'pending'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="status"
+                         invisible="complete or state != 'pending'">
+                        Le répondeur ne donnait pas de période lisible. Saisir les dates
+                        avant d'accepter, ou refuser.
+                    </div>
+                    <group>
+                        <group string="Ce que le répondeur disait">
+                            <field name="partner_id" readonly="1"/>
+                            <field name="email_date" readonly="1"/>
+                            <field name="email_subject" readonly="1"/>
+                            <field name="kind" readonly="1"/>
+                            <field name="detected_by" readonly="1"/>
+                            <field name="read_by" readonly="1"/>
+                            <field name="backup_hint" readonly="1"/>
+                        </group>
+                        <group string="Ce qu'on en retient">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="nature"/>
+                            <field name="backup_partner_id" options="{'no_create': True}"/>
+                            <field name="complete" invisible="1"/>
+                            <field name="absence_id" readonly="1"
+                                   invisible="state != 'accepted'"/>
+                            <field name="bf_email_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_absence_suggestion_search" model="ir.ui.view">
+        <field name="name">bf.partner.absence.suggestion.search</field>
+        <field name="model">bf.partner.absence.suggestion</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <filter name="pending" string="À décider" domain="[('state', '=', 'pending')]"/>
+                <filter name="acknowledgements" string="Accusés de réception"
+                        domain="[('kind', '=', 'acknowledgement')]"
+                        help="Reconnus comme répondeurs par leur objet, mais ce sont des accusés de réception de candidature ou de demande."/>
+                <filter name="incomplete" string="Sans période lisible"
+                        domain="[('complete', '=', False)]"/>
+                <separator/>
+                <filter name="accepted" string="Acceptées" domain="[('state', '=', 'accepted')]"/>
+                <filter name="rejected" string="Refusées" domain="[('state', '=', 'rejected')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_partner" string="Contact" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_absence_suggestion" model="ir.actions.act_window">
+        <field name="name">Absences proposées</field>
+        <field name="res_model">bf.partner.absence.suggestion</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien à décider</p>
+            <p>Les répondeurs d'absence reçus apparaissent ici. Un clic les accepte, un clic les refuse.</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_partner_absence_user,bf.partner.absence.user,model_bf_partner_absence,base.group_user,1,1,1,0
+access_bf_partner_absence_manager,bf.partner.absence.manager,model_bf_partner_absence,base.group_partner_manager,1,1,1,1
+access_bf_absence_closure_wizard,bf.absence.closure.wizard,model_bf_absence_closure_wizard,base.group_user,1,1,1,1
