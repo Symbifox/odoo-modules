@@ -40,14 +40,14 @@
     }
 
     // --- Textes du dessin ---------------------------------------------------
-    .o_bf_gantt_titre     { font-size: 15px; font-weight: 600; fill: #2E3132; }
+    .o_bf_gantt_titre     { font-size: 15px; font-weight: 600; fill: var(--brand-dark, #2E3132); }
     .o_bf_gantt_sous_titre { font-size: 8.5px; fill: #6B7379; }
     .o_bf_gantt_repere    { font-size: 8px; fill: #6B7379; }
     .o_bf_gantt_grad_haut { font-size: 7.5px; font-weight: 600; fill: #6B7379; }
     .o_bf_gantt_grad      { font-size: 6.8px; fill: #6B7379; }
-    .o_bf_gantt_couloir   { font-size: 8.5px; font-weight: 600; fill: #2E3132; }
+    .o_bf_gantt_couloir   { font-size: 8.5px; font-weight: 600; fill: var(--brand-dark, #2E3132); }
     .o_bf_gantt_couloir_pct { font-size: 7.5px; fill: #6B7379; }
-    .o_bf_gantt_libelle   { font-size: 8px; fill: #2E3132; }
+    .o_bf_gantt_libelle   { font-size: 8px; fill: var(--brand-dark, #2E3132); }
     .o_bf_gantt_responsable { font-size: 7px; fill: #6B7379; }
     .o_bf_gantt_aujourdhui { font-size: 6.5px; fill: #C0392B; }
 
@@ -60,7 +60,7 @@
         }
 
         &:hover .o_bf_gantt_zone {
-            fill: rgba(41, 171, 225, 0.08);
+            fill: color-mix(in srgb, var(--brand-primary, #29ABE2) 8%, transparent);
         }
 
         &:hover .o_bf_gantt_libelle {
