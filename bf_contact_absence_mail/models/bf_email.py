@@ -1,7 +1,7 @@
 """Reconnaître un répondeur d'absence, et en lire la période.
 
-**Tout ce qui suit est mesuré sur un corpus de courrier réel** de plus de
-douze mille messages reçus, et non deviné :
+**Tout ce qui suit est mesuré sur un corpus de courrier réel**, 12 396
+courriels reçus, et non deviné :
 
 - `Auto-Submitted: auto-replied`, que la RFC 3834 rend obligatoire, est présent
   sur **7 courriels sur 12 396**. Vingt des vingt-neuf répondeurs repérés ne
@@ -260,11 +260,16 @@ class BfEmail(models.Model):
         for motif in SUJETS_FORTS:
             if motif in sujet:
                 return True, "objet"
-        corps = _normaliser(self._bf_absence_text())[:2500]
+        # ⚠️ Le corps n'est déplié QUE si un objet faible le demande. Le lire
+        # d'abord coûtait un `html2plaintext` par courriel : sur une passe de
+        # rattrapage de douze mille messages, c'est douze mille conversions
+        # pour une vingtaine de cas. Mesuré en préparant le rattrapage.
         for motif in SUJETS_FAIBLES:
             if sujet.startswith(motif) or (" %s" % motif) in sujet:
+                corps = _normaliser(self._bf_absence_text())[:2500]
                 if any(indice in corps for indice in INDICES_CORPS):
                     return True, "objet et corps"
+                break
         return False, None
 
     def _bf_absence_is_acknowledgement(self):
