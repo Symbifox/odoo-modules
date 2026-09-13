@@ -40,6 +40,14 @@ patch(Chatter.prototype, {
         if (!threadModel || typeof threadId !== "number") {
             return;
         }
+        // 🔴 Sur la fiche du contact lui-même, la feuille porte DÉJÀ son
+        // bandeau, juste au-dessus : le chatter en mettait un second, la même
+        // phrase deux fois sur le même écran. Vu sur une capture, pas dans un
+        // essai. Les ponts texto et téléphone, eux, appellent la même porte
+        // avec un partenaire sans feuille sous les yeux : eux la gardent.
+        if (threadModel === "res.partner") {
+            return;
+        }
         try {
             const res = await this.bfAbsenceOrm.call(
                 "bf.partner.absence",
