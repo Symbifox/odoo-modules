@@ -203,3 +203,9 @@ on, the operator has to configure each bank manually.
 ```bash
 docker exec <container> odoo -d <db> -i bf_hour_bank --stop-after-init --no-http
 ```
+
+## Changelog
+
+### 18.0.1.15.2
+
+- Report brand colours read the document's company (`doc.company_id`), not `env.company`.

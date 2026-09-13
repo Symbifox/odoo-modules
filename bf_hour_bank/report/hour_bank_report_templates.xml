@@ -4,6 +4,7 @@
     <template id="report_hour_bank">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
+                <t t-set="brand_company" t-value="doc.company_id or env.company"/><!-- 🔴 env.company est le PREMIER d'allowed_company_ids, pas la société du document : un rapport d'une seconde société sortait aux couleurs de la première dès que les deux sociétés étaient cochées, et un envoi par cron n'a aucun contexte. Patron repris de bf_meeting 18.0.3.56.0. -->
                 <t t-set="data" t-value="doc._get_report_data()"/>
                 <t t-set="entries" t-value="data['entries']"/>
                 <t t-set="balance" t-value="data['balance']"/>
@@ -25,12 +26,12 @@
                             font-family: "Lexend", system-ui, -apple-system, sans-serif;
                             font-size: 9pt;
                             line-height: 1.4;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="(brand_company and brand_company.report_brand_dark) or '#212529'"/>;
                         }
 
                         /* ── Top Banner ── */
                         .hb-banner {
-                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            background: <t t-esc="(brand_company and brand_company.report_brand_dark) or '#212529'"/>;
                             padding: 18pt 24pt 16pt 24pt;
                             display: table;
                             width: 100%;
@@ -54,7 +55,7 @@
                             font-weight: 600;
                             text-transform: uppercase;
                             letter-spacing: 2pt;
-                            color: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            color: <t t-esc="(brand_company and brand_company.report_brand_primary) or '#714B67'"/>;
                             margin: 0 0 3pt 0;
                         }
                         .hb-banner h1 {
@@ -71,7 +72,7 @@
                         }
                         .hb-accent-bar {
                             height: 3px;
-                            background: <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            background: <t t-esc="(brand_company and brand_company.report_brand_primary) or '#714B67'"/>;
                             margin: 0;
                             width: 100%;
                         }
@@ -100,7 +101,7 @@
                         .hb-meta-value {
                             font-size: 11pt;
                             font-weight: 600;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="(brand_company and brand_company.report_brand_dark) or '#212529'"/>;
                         }
                         .hb-meta-value.balance-positive {
                             color: #27ae60;
@@ -119,7 +120,7 @@
                             font-size: 8.5pt;
                         }
                         .hb-table th {
-                            background: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            background: <t t-esc="(brand_company and brand_company.report_brand_dark) or '#212529'"/>;
                             color: #fff;
                             padding: 6pt 8pt;
                             text-align: left;
@@ -148,10 +149,10 @@
                         .hb-section-title {
                             font-size: 12pt;
                             font-weight: 600;
-                            color: <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            color: <t t-esc="(brand_company and brand_company.report_brand_dark) or '#212529'"/>;
                             margin: 20pt 0 10pt 0;
                             padding-bottom: 4pt;
-                            border-bottom: 2px solid <t t-esc="(env.company and env.company.report_brand_primary) or '#714B67'"/>;
+                            border-bottom: 2px solid <t t-esc="(brand_company and brand_company.report_brand_primary) or '#714B67'"/>;
                             display: inline-block;
                         }
                         .hb-summary-table {
@@ -179,7 +180,7 @@
                         }
                         .hb-summary-table tr.total td {
                             font-weight: 700;
-                            border-top: 2px solid <t t-esc="(env.company and env.company.report_brand_dark) or '#212529'"/>;
+                            border-top: 2px solid <t t-esc="(brand_company and brand_company.report_brand_dark) or '#212529'"/>;
                         }
 
                         /* ── Footer ── */
