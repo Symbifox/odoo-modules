@@ -4,9 +4,10 @@
     <template id="report_subscription">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
+                <t t-set="brand_company" t-value="doc.company_id or env.company"/><!-- 🔴 env.company est le PREMIER d'allowed_company_ids, pas la société du document : un rapport d'une seconde société sortait aux couleurs de la première dès que les deux sociétés étaient cochées, et un envoi par cron n'a aucun contexte. Patron repris de bf_meeting 18.0.3.56.0. -->
                 <t t-set="p" t-value="doc._get_report_payload()"/>
-                <t t-set="brand_dark" t-value="(env.company and env.company.report_brand_dark) or '#2E3132'"/>
-                <t t-set="brand_accent" t-value="(env.company and env.company.report_brand_primary) or '#29ABE2'"/>
+                <t t-set="brand_dark" t-value="(brand_company and brand_company.report_brand_dark) or '#2E3132'"/>
+                <t t-set="brand_accent" t-value="(brand_company and brand_company.report_brand_primary) or '#29ABE2'"/>
                 <div class="article" style="padding:0 !important; margin:0 !important;">
                     <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
                     <style>
@@ -40,12 +41,12 @@
                     <div class="sub-page">
                         <div class="sub-banner">
                             <div class="banner-logo">
-                                <img t-if="env.company.logo" t-att-src="image_data_uri(env.company.logo)"/>
+                                <img t-if="brand_company.logo" t-att-src="image_data_uri(brand_company.logo)"/>
                             </div>
                             <div class="banner-content">
                                 <p class="doc-type">Rapport</p>
                                 <h1>Portefeuille d'abonnements</h1>
-                                <p class="doc-subtitle"><t t-esc="env.company.name"/> — généré le <t t-esc="p['generated_on']"/></p>
+                                <p class="doc-subtitle"><t t-esc="brand_company.name"/> — généré le <t t-esc="p['generated_on']"/></p>
                             </div>
                         </div>
                         <div class="sub-accent-bar"/>

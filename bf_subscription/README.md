@@ -45,6 +45,10 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 
 ## Changelog
 
+### 18.0.1.5.2
+
+- Report logo, name and colours read the document's company (`doc.company_id`), not `env.company`.
+
 ### 18.0.1.5.0
 
 - Added: a renewal decision. "Renewal confirmed" records the date the *keep it*
