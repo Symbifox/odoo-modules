@@ -339,8 +339,13 @@ class FederationFederable(models.AbstractModel):
                 link.peer_id._enqueue("link.archive", {"reason": _("retrait du partage")}, link)
                 link.active = False
                 return
-        if not link or not link.active:
+        if not link:
             return
+        # ⚠️ L'archivage se traite AVANT la garde du lien éteint. Depuis que le lien de
+        # l'émetteur suit son objet à l'archive, le laisser derrière cette garde rendait
+        # la remise en service inatteignable : le lien était éteint, donc on sortait, donc
+        # il ne se rallumait jamais et le miroir restait archivé pour toujours. Un essai
+        # sur l'aller-retour l'a montré ; la lecture ne le montrait pas.
         if "active" in vals and "active" in self._fields and before.get("active") != self.active:
             peer = link.peer_id
             if link.origin == "remote":
@@ -353,5 +358,7 @@ class FederationFederable(models.AbstractModel):
             # le sien à la réception et celui d'ici restait allumé, donc le compte des
             # objets fédérés sur la fiche du pair sur-comptait les archivés.
             link.active = bool(self.active)
+            return
+        if not link.active:
             return
         self._federation_after_write(vals, before, link)

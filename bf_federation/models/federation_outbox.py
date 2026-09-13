@@ -3,6 +3,7 @@ import logging
 from datetime import timedelta
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 from . import transport
 
@@ -11,6 +12,8 @@ _logger = logging.getLogger(__name__)
 BACKOFF_MINUTES = (1, 5, 15, 60, 240)
 MAX_AGE_DAYS = 14          # on insiste deux semaines, puis on abandonne
 KEEP_SENT_DAYS = 7         # les envois réussis, charge comprise, sont purgés après
+#: Ce qui remplace la charge d'un envoi abandonné : la ligne reste, les octets partent.
+PAYLOAD_RETIREE = '{"_retiree": true}'
 # Les genres génériques, valables pour tout objet fédéré. Les genres propres à un
 # modèle (`task.share`, `document.share`, …) s'ajoutent par `selection_add` depuis
 # le module qui apporte le modèle : le socle n'a pas à les connaître.
@@ -118,6 +121,10 @@ class FederationOutbox(models.Model):
         return False, status
 
     def action_retry(self):
+        vides = self.filtered(lambda e: e.payload == PAYLOAD_RETIREE)
+        if vides:
+            raise UserError(_("La charge de %s envoi(s) a été retirée après abandon : "
+                              "il n'y a plus rien à rejouer. Repartagez l'objet.") % len(vides))
         self.filtered(lambda e: e.state != "sent").write({"state": "pending", "attempts": 0, "next_attempt": fields.Datetime.now()})
 
 
@@ -133,7 +140,21 @@ class FederationNonce(models.Model):
 
     @api.model
     def _cron_prune(self):
-        """Ménage : nonces d'une semaine, et envois réussis d'une semaine (leur charge porte
-        des messages et des pièces jointes qui n'ont plus à vivre ici)."""
+        """Ménage : nonces d'une semaine, envois réussis d'une semaine, et charges des abandons.
+
+        🔴 Un envoi abandonné n'était JAMAIS purgé. Sa charge porte un message et,
+        pour les genres qui en transportent, des fichiers en base64 : ils restaient
+        indéfiniment dans une table que personne ne regarde, longtemps après que
+        l'objet lui-même ait pu être retiré. La ligne reste, parce qu'elle est la
+        trace que quelque chose n'est pas parti ; c'est la charge qui s'en va.
+        """
+        Outbox = self.env["federation.outbox"]
         self.search([("received_at", "<", fields.Datetime.now() - timedelta(days=7))]).unlink()
-        self.env["federation.outbox"].search([("state", "=", "sent"), ("sent_at", "<", fields.Datetime.now() - timedelta(days=KEEP_SENT_DAYS))]).unlink()
+        Outbox.search([("state", "=", "sent"),
+                       ("sent_at", "<", fields.Datetime.now() - timedelta(days=KEEP_SENT_DAYS))]).unlink()
+        perimees = Outbox.search([
+            ("state", "=", "failed"),
+            ("create_date", "<", fields.Datetime.now() - timedelta(days=KEEP_SENT_DAYS)),
+            ("payload", "!=", PAYLOAD_RETIREE)])
+        if perimees:
+            perimees.write({"payload": PAYLOAD_RETIREE})

@@ -87,6 +87,7 @@ def html_to_text(fragment):
 def text_to_html(text):
     if not text:
         return ""
+    text = strip_control(text)
     return "<p>" + "<br/>".join(html.escape(line) for line in text.split("\n")) + "</p>"
 
 
@@ -95,11 +96,35 @@ def is_private(body_html):
     return text.startswith(tuple(m.lower() for m in PRIVATE_MARKERS))
 
 
+# Caractères de contrôle et de formatage : ils n'ont rien à faire dans un libellé
+# venu du réseau, et deux d'entre eux font plus que salir. Un NUL fait refuser
+# l'écriture par PostgreSQL, donc une pièce jointe nommée « a\x00b.txt » suffit à
+# faire échouer tout le message qui la porte, définitivement et sans que
+# l'émetteur sache pourquoi. Les marques de sens d'écriture (RLO, LRO) retournent
+# l'affichage d'un nom de fichier : « facture\u202Egpj.exe » se lit « factureexe.jpg ».
+_CONTROLE = {c for c in range(0x20)} | {0x7F} | set(range(0x80, 0xA0))
+_FORMATAGE = {0x200B, 0x200C, 0x200D, 0x200E, 0x200F, 0x2028, 0x2029,
+              0x202A, 0x202B, 0x202C, 0x202D, 0x202E, 0x2066, 0x2067, 0x2068, 0x2069,
+              0xFEFF}
+_A_RETIRER = {c: None for c in (_CONTROLE | _FORMATAGE) - {0x09, 0x0A, 0x0D}}
+
+
+def strip_control(value):
+    """Retire les caractères de contrôle et de formatage invisible d'une chaîne.
+
+    Tabulation, saut de ligne et retour chariot sont gardés : ils sont du texte,
+    et les appelants qui n'en veulent pas les écrasent eux-mêmes.
+    """
+    if not isinstance(value, str):
+        return ""
+    return value.translate(_A_RETIRER)
+
+
 def clean_text(value, limit=200):
     """Une chaîne venue du réseau, réduite à du texte court (jamais rendue telle quelle)."""
     if not isinstance(value, str):
         return ""
-    return " ".join(value.split())[:limit]
+    return " ".join(strip_control(value).split())[:limit]
 
 
 def as_int(value, default=0):
@@ -121,13 +146,31 @@ def valid_day(value):
     return value
 
 
-def valid_datetime(value):
+#: Jusqu'où dans le passé on accepte qu'un pair date ce qu'il nous envoie.
+MESSAGE_BACKDATE_DAYS = 30
+
+
+def valid_datetime(value, bounded=False):
+    """Un horodatage venu du réseau. `bounded` le borne à une fenêtre raisonnable.
+
+    🔴 Sans borne, le pair choisit la date du message qu'il pose dans notre
+    chatter : il peut l'antidater sous des messages existants, ou le poster dans
+    le futur pour qu'il reste en tête. Le chatter est un registre chronologique ;
+    laisser l'autre bout en écrire l'ordre est une faiblesse d'intégrité, même
+    entre gens qui se font confiance.
+    """
     if not isinstance(value, str):
         return False
     try:
-        datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+        quand = datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
     except ValueError:
         return False
+    if bounded:
+        maintenant = datetime.utcnow()
+        if quand > maintenant + timedelta(seconds=SIGNATURE_WINDOW):
+            return False
+        if quand < maintenant - timedelta(days=MESSAGE_BACKDATE_DAYS):
+            return False
     return value
 
 

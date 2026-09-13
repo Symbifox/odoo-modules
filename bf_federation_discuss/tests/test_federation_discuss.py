@@ -159,3 +159,40 @@ class TestFederationDiscuss(TestFederation):
             self.env["discuss.channel"].search_count([("federation_link_id", "!=", False)]), 0,
             "aucun canal ne naît tout seul, quelle que soit la porte d'écriture")
         self._flush()
+
+    def test_c11_un_canal_federe_ne_se_peuple_pas_librement(self):
+        """🔴 add_members est publique : un membre peut en inviter un autre. Sur un
+        canal fédéré, entrer dans le canal donne le droit de parler chez le pair,
+        puisque tout ce qui s'y écrit part au chatter puis sur le réseau. On n'y
+        admet donc que les gens qui pourraient déjà LIRE l'objet lié."""
+        ferme = self.env["project.project"].create(
+            {"name": "Projet fermé", "privacy_visibility": "followers"})
+        ferme.federation_peer_ids = [(4, self.peer_b.id)]
+        task = self.env["project.task"].create(
+            {"name": "Tâche du projet fermé", "project_id": ferme.id,
+             "federation_peer_id": self.peer_b.id})
+        self._flush()
+        link = self._lien(task)
+        canal = self.env["discuss.channel"].browse(link.action_open_channel()["res_id"])
+
+        etranger = self.env["res.users"].create({
+            "name": "Curieux sans accès", "login": "curieux.canal",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+        canal.sudo().add_members(partner_ids=etranger.partner_id.ids)
+        self.assertNotIn(etranger.partner_id, canal.channel_member_ids.mapped("partner_id"),
+                         "🔴 quelqu'un sans accès à la tâche est entré dans son canal")
+
+        # Et par l'autre porte : on entre aussi par `users`, pas seulement par `partners`.
+        canal.sudo()._add_members(users=etranger)
+        canal.invalidate_recordset()
+        self.assertNotIn(etranger.partner_id, canal.channel_member_ids.mapped("partner_id"),
+                         "🔴 la porte `users` n'était pas gardée")
+
+        # Quelqu'un qui peut lire la tâche, lui, entre.
+        lecteur = self.env["res.users"].create({
+            "name": "Personne du projet", "login": "lecteur.canal",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("project.group_project_manager").id])]})
+        canal.sudo().add_members(partner_ids=lecteur.partner_id.ids)
+        canal.invalidate_recordset()
+        self.assertIn(lecteur.partner_id, canal.channel_member_ids.mapped("partner_id"))

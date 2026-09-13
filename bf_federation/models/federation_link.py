@@ -251,7 +251,8 @@ class FederationLink(models.Model):
         subtype = self.env.ref("mail.mt_note" if data.get("subtype") == "note" else "mail.mt_comment")
         vals = {"model": self.res_model, "res_id": self.res_id, "body": body, "message_type": "comment",
                 "subtype_id": subtype.id, "author_id": partner.id}
-        date = transport.valid_datetime(data.get("date"))
+        # Borné : le pair ne choisit pas où son message s'insère dans notre registre.
+        date = transport.valid_datetime(data.get("date"), bounded=True)
         if date:
             vals["date"] = date
         if att_ids:

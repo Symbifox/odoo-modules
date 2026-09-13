@@ -5,7 +5,11 @@ tenir le lien entre les deux et poser les membres ; le va-et-vient des messages
 est dans `mail_message.py`, où il tient en deux gardes.
 """
 
+import logging
+
 from odoo import _, api, fields, models
+
+_logger = logging.getLogger(__name__)
 
 
 class DiscussChannel(models.Model):
@@ -35,6 +39,41 @@ class DiscussChannel(models.Model):
         })
         canal._federation_sync_members(link)
         return canal
+
+    def _add_members(self, *, guests=None, partners=None, users=None, **kwargs):
+        """🔴 Un canal fédéré ne se peuple pas librement.
+
+        `add_members` est publique et un membre peut en inviter un autre. Sur un
+        canal ordinaire c'est le bon comportement ; sur un canal fédéré, entrer
+        dans le canal donne le droit de parler chez le pair, parce que tout ce qui
+        s'y écrit part au chatter de l'objet puis sur le réseau. On n'y admet donc
+        que les gens qui pourraient déjà LIRE cet objet.
+
+        Le contrôle est ici et pas à la création du message : au moment du message,
+        il n'y a pas d'acteur à juger. Odoo pose les messages de chatter et de canal
+        en superutilisateur, `create_uid` vaut alors `__system__` et `author_id` est
+        souvent le partenaire de la société, qui ne porte aucun utilisateur.
+        """
+        fedérés = self.filtered("federation_link_id")
+        if fedérés and (partners or users):
+            # ⚠️ On peut entrer dans un canal par `partners` OU par `users` : filtrer
+            # l'un sans l'autre laisserait la porte grande ouverte à côté.
+            candidats = (partners or self.env["res.partner"]) | (
+                users.partner_id if users else self.env["res.partner"])
+            for canal in fedérés:
+                permis = canal.federation_link_id._federation_may_read(candidats)
+                refuses = candidats - permis
+                if refuses:
+                    _logger.info(
+                        "bf_federation_discuss: %s écarté(s) du canal %s, sans accès à %s,%s",
+                        len(refuses), canal.id, canal.federation_link_id.res_model,
+                        canal.federation_link_id.res_id)
+                candidats = permis
+            partners = candidats
+            users = None
+            if not partners and not guests:
+                return self.env["discuss.channel.member"]
+        return super()._add_members(guests=guests, partners=partners, users=users, **kwargs)
 
     def _federation_sync_members(self, link=None):
         """Les membres du canal sont les gens d'ici que l'objet concerne. Jamais le pair :

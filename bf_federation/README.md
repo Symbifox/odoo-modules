@@ -131,6 +131,21 @@ Chaque envoi est journalisé (*Fédération › Boîte de sortie*), rejoué avec
 croissant si le pair ne répond pas, abandonné après vingt essais ou sur refus définitif.
 Cron toutes les deux minutes.
 
+La charge d'un envoi **abandonné** est retirée une semaine plus tard : elle porte
+un message et, pour les genres qui en transportent, des fichiers. La ligne reste,
+parce qu'elle est la trace que quelque chose n'est pas parti ; ce sont les octets
+qui s'en vont, et rejouer un envoi vidé est refusé avec le motif.
+
+## Ce qui arrive du réseau
+
+Rien n'entre balisé : les corps HTML sont réduits en texte à l'export et
+ré-échappés à l'import. Les caractères de contrôle et de formatage invisible sont
+retirés des libellés reçus : un NUL fait refuser l'écriture par PostgreSQL, donc
+une pièce jointe nommée `a\x00b.txt` suffirait à faire tomber tout le message qui
+la porte ; et les marques de sens d'écriture retournent l'affichage d'un nom de
+fichier. L'horodatage d'un message reçu est borné, pour que le pair ne choisisse
+pas où son message s'insère dans le registre.
+
 ## Langue
 
 Les chaînes sont écrites en français à la source, et le module ne livre **pas** de

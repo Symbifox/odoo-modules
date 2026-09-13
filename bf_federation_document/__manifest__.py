@@ -1,6 +1,6 @@
 {
     "name": "Fédération : livrables remis",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.2.0",
     "category": "Project",
     "summary": "Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu",
     "description": """
@@ -28,6 +28,7 @@ et une seule chose qui revient, **l'accusé de réception**.
     "depends": ["bf_federation"],
     "data": [
         "security/ir.model.access.csv",
+        "security/federation_document_security.xml",
         "views/federation_document_views.xml",
         "views/federation_document_menu.xml",
     ],

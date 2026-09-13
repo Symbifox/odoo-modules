@@ -29,7 +29,7 @@ import logging
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 from odoo.addons.bf_federation.models import transport
 
@@ -271,6 +271,11 @@ class BfProcess(models.Model):
         """Renvoyer le tracé au pair : les niveaux ne sont pas dans les champs surveillés,
         et une carte se retouche par ses nœuds bien plus souvent que par son titre."""
         self.ensure_one()
+        # ⚠️ Ouvrir un partage demande le rôle de gestionnaire de projet ; renvoyer le
+        # tracé ne le demandait pas. La deuxième porte doit valoir la première, sinon
+        # le rôle ne protège que le premier envoi.
+        if not self.env.su and not self.env.user.has_group("project.group_project_manager"):
+            raise AccessError(_("Renvoyer un tracé à un pair demande le rôle de gestionnaire de projet."))
         link = self._federation_link()
         if not link or link.origin != "local" or not link.active:
             raise UserError(_("Cette cartographie n'est pas partagée avec un pair."))

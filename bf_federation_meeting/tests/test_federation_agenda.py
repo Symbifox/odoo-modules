@@ -64,12 +64,31 @@ class TestFederationAgenda(TestFederation):
         self.assertIn("troisième", miroir.context_html or "")
 
     def test_a04_le_miroir_se_lit_il_ne_se_reecrit_pas(self):
+        # 🔴 `AccessError` HÉRITE de `UserError` : un assertRaises(UserError) est
+        # satisfait par un simple refus de droits, et cet essai passait donc sans
+        # jamais exercer la garde. On écrit avec quelqu'un qui A le droit, et on
+        # exige le motif de la garde plutôt qu'une exception quelconque.
+        from odoo.exceptions import AccessError
         agenda = self._agenda()
         miroir = self._miroir(agenda)
-        with self.assertRaises(UserError):
-            miroir.with_user(self.receveur).write({"name": "Je réécris chez moi"})
-        with self.assertRaises(UserError):
-            miroir.with_user(self.receveur).write({"objectives": "Autre chose"})
+        redacteur = self.env["res.users"].create({
+            "name": "Quelqu'un qui peut écrire", "login": "redacteur.odj",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("project.group_project_manager").id,
+                                  self.env.ref("bf_meeting.group_meeting_manager").id])]})
+        # Il écrit sans peine sur un ordre du jour né chez lui : la garde n'est pas un droit.
+        sien = self.env["meeting.agenda"].with_user(redacteur).create(
+            {"name": "Le sien", "project_id": self.project.id, "date": "2026-09-25 14:00:00"})
+        sien.with_user(redacteur).write({"name": "Le sien, corrigé"})
+        for champ, valeur in (("name", "Je réécris chez moi"),
+                              ("objectives", "Autre chose"),
+                              ("topic_ids", [(0, 0, {"name": "Un sujet de force"})])):
+            with self.assertRaises(UserError) as pris:
+                miroir.with_user(redacteur).write({champ: valeur})
+            self.assertNotIsInstance(pris.exception, AccessError,
+                                     f"🔴 « {champ} » refusé par les droits, pas par la garde")
+            self.assertIn("Proposer un sujet", str(pris.exception),
+                          f"🔴 « {champ} » refusé, mais pas par la garde de lecture")
         miroir.invalidate_recordset()
         self.assertEqual(miroir.name, "Rencontre statutaire de septembre")
 

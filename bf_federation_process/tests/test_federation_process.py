@@ -79,12 +79,25 @@ class TestFederationProcess(TestFederation):
                          ["debut", "traiter", "fin"])
 
     def test_p04_le_miroir_se_lit(self):
+        # 🔴 Même piège que sur l'ordre du jour : `AccessError` HÉRITE de `UserError`,
+        # donc l'essai passait sur un refus de droits sans toucher à la garde.
+        from odoo.exceptions import AccessError
         carte = self._carte()
         miroir = self._miroir(carte)
-        with self.assertRaises(UserError):
-            miroir.with_user(self.receveur).write({"name": "Je retouche"})
-        with self.assertRaises(UserError):
-            miroir.with_user(self.receveur).write({"version": "9.9"})
+        groupe = self.env.ref("bf_process.group_bf_process_manager", raise_if_not_found=False)
+        droits = [self.env.ref("base.group_user").id,
+                  self.env.ref("project.group_project_manager").id] + (groupe.ids if groupe else [])
+        redacteur = self.env["res.users"].create({
+            "name": "Quelqu'un qui peut dessiner", "login": "redacteur.carte",
+            "groups_id": [(6, 0, droits)]})
+        for champ, valeur in (("name", "Je retouche"), ("version", "9.9"),
+                              ("pool_name", "Ma maison")):
+            with self.assertRaises(UserError) as pris:
+                miroir.with_user(redacteur).write({champ: valeur})
+            self.assertNotIsInstance(pris.exception, AccessError,
+                                     f"🔴 « {champ} » refusé par les droits, pas par la garde")
+            self.assertIn("se lit ici", str(pris.exception),
+                          f"🔴 « {champ} » refusé, mais pas par la garde de lecture")
         self.assertTrue(miroir.federation_is_mirror)
 
     def test_p05_une_nouvelle_version_remplace_le_trace(self):

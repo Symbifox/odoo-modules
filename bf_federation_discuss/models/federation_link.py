@@ -21,6 +21,31 @@ class FederationLink(models.Model):
         canaux = self.env["discuss.channel"].sudo().search([("id", operator, value)])
         return [("id", "in", canaux.mapped("federation_link_id").ids)]
 
+    def _federation_may_read(self, partners):
+        """Parmi ces contacts, ceux dont l'utilisateur interne peut LIRE l'objet lié.
+
+        C'est le seul contrôle qui ait un acteur à juger. Au moment où un message
+        est créé, il n'y en a pas : Odoo pose les messages de chatter et de canal
+        en superutilisateur, donc `create_uid` vaut `__system__` et `author_id` est
+        souvent le partenaire de la société, qui ne porte aucun utilisateur. Une
+        sonde au banc l'a montré avant qu'on écrive la mauvaise garde.
+        """
+        self.ensure_one()
+        record = self._record().exists()
+        if not record:
+            return self.env["res.partner"]
+        gardes = self.env["res.partner"]
+        for partenaire in partners:
+            utilisateur = partenaire.sudo().user_ids.filtered(
+                lambda u: u.active and not u.share)[:1]
+            if not utilisateur:
+                continue
+            lecteur = record.with_user(utilisateur)
+            permis = lecteur.has_access("read") if hasattr(lecteur, "has_access") else True
+            if permis:
+                gardes |= partenaire
+        return gardes
+
     def action_open_channel(self):
         """Ouvrir (et créer au besoin) le canal de cet objet, puis y aller."""
         self.ensure_one()

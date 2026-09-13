@@ -171,9 +171,14 @@ class FederationPeer(models.Model):
         """
         self.ensure_one()
         self._require_admin()
-        destinataire = (self.invitation_email or "").strip()
-        if not destinataire:
-            raise UserError(_("Indiquez l'adresse à qui envoyer l'invitation."))
+        # ⚠️ Une adresse venue d'un champ libre ne se met pas telle quelle dans un
+        # en-tête. Un saut de ligne y ouvre un « Bcc: » ; la bibliothèque de courriel
+        # de Python le refuse aujourd'hui, mais une garantie qui dépend d'une couche
+        # plus basse n'en est pas une. Une seule adresse, sans contrôle, ou rien.
+        destinataire = transport.strip_control(self.invitation_email or "").strip()
+        destinataire = destinataire.split(",")[0].split(";")[0].strip()
+        if not destinataire or "@" not in destinataire or " " in destinataire:
+            raise UserError(_("Indiquez une seule adresse de courriel valide."))
         if self.state != "invited" or not self.sudo().invitation_code:
             self.action_generate_invitation()
         me = self._our_name()

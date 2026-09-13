@@ -238,3 +238,49 @@ class TestFederationDocument(TestFederation):
         doc = self._remettre()
         with self.assertRaises(ValidationError):
             doc.write({"peer_partner_id": autre.id})
+
+    def test_d17_un_livrable_ne_se_lit_pas_depuis_une_autre_societe(self):
+        """🔴 Le modèle portait un company_id mais AUCUNE règle d'enregistrement.
+        Un champ de société ne cloisonne rien tant qu'une règle ne s'en sert pas, et
+        ça ne se voit pas tant qu'on n'a qu'une société. Un livrable porte un titre,
+        un résumé et des fichiers."""
+        autre_societe = self.env["res.company"].create({"name": "Une autre maison"})
+        etranger = self.env["res.users"].create({
+            "name": "Employé d'ailleurs", "login": "ailleurs.doc",
+            "company_id": autre_societe.id, "company_ids": [(6, 0, autre_societe.ids)],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+        doc = self._remettre(nom="Politique confidentielle")
+        self.assertEqual(doc.company_id, self.env.company)
+        vus = self.env["federation.document"].with_user(etranger).search(
+            [("name", "=", "Politique confidentielle")])
+        self.assertFalse(vus, "🔴 un employé d'une autre société lit le livrable")
+
+    def test_d18_archiver_l_objet_eteint_aussi_le_lien_de_l_emetteur(self):
+        """🔴 Le pair éteint son lien à la réception de l'archivage ; celui d'ici
+        restait allumé. Le compte « objets fédérés » sur la fiche du pair disait
+        alors 47 pour 45 miroirs vivants. Le retrait du pair passait par une autre
+        branche, déjà couverte : archiver l'OBJET ne l'était pas."""
+        doc = self._remettre(nom="Livrable qu'on archive")
+        miroir = self._miroir(doc)
+        lien = self.env["federation.link"].with_context(active_test=False).search(
+            [("res_model", "=", "federation.document"), ("res_id", "=", doc.id)], limit=1)
+        self.assertTrue(lien.active)
+
+        doc.write({"active": False})
+        self._flush()
+        lien.invalidate_recordset()
+        miroir.invalidate_recordset()
+        self.assertFalse(lien.active, "🔴 le lien de l'émetteur est resté allumé")
+        self.assertFalse(miroir.active, "et le miroir est archivé chez le pair")
+        self.assertEqual(
+            self.env["federation.link"].search_count([("peer_id", "=", self.peer_b.id)]),
+            self.peer_b.link_count,
+            "le compte affiché sur la fiche du pair suit les liens vivants")
+
+        # Et le retour : désarchiver remet le lien et le miroir en service.
+        doc.write({"active": True})
+        self._flush()
+        lien.invalidate_recordset()
+        miroir.invalidate_recordset()
+        self.assertTrue(lien.active)
+        self.assertTrue(miroir.active)
