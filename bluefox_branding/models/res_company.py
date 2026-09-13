@@ -5,7 +5,7 @@ from odoo import api, fields, models
 from odoo.http import request
 from odoo.tools.mimetypes import guess_mimetype
 
-from .brand_color_mixin import assombrir_pour_texte_blanc
+from .brand_color_mixin import _SEUIL_AA_GRAND, assombrir_pour_texte_blanc
 
 # Formats a PWA manifest may list in `icons`. An .ico is a perfectly good tab
 # favicon but Chrome drops manifest entries it cannot decode, so the manifest
@@ -122,6 +122,18 @@ class ResCompany(models.Model):
         """
         self.ensure_one()
         return assombrir_pour_texte_blanc(self.report_brand_primary or '')
+
+    def _brand_primary_on_white_large(self):
+        """L'accent assombri au seuil « gros texte » (3:1) plutôt qu'à 4,5:1.
+
+        Réservé aux surfaces dont la règle CSS impose une étiquette ≥ 18,7 px
+        en gras. Sur Blue Fox, #29ABE2 rend #1d9fd6 — ΔE 4,4 de la marque, là
+        où la variante 4,5:1 s'en éloigne de 18,2 et ne se lit plus comme le
+        bleu du logo.
+        """
+        self.ensure_one()
+        return assombrir_pour_texte_blanc(self.report_brand_primary or '',
+                                          seuil=_SEUIL_AA_GRAND)
 
     # -- Brand icon ---------------------------------------------------------
     # One field feeds three surfaces (tab, apple-touch, PWA manifest); the URL

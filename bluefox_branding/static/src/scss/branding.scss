@@ -77,14 +77,44 @@
     }
 }
 
-// Primary buttons (texte blanc : variante lisible)
+// Primary buttons — bleu de marque BRUT, texte anthracite.
+//
+// ⚠️ Ne pas remettre `-on-white` ici. Ça a été le cas jusqu'au 2026-09-13 et le
+// bleu de la marque n'apparaissait NULLE PART dans l'interface : mesuré au
+// navigateur, chaque bouton sortait à #1E7FA7, soit ΔE 18,2 du #29ABE2 du logo.
+// La variante assombrie existe pour porter du texte BLANC ; la sortie est de ne
+// pas y mettre de texte blanc. Le site public de Blue Fox le dit depuis
+// toujours : `button_background_color: #29abe2`, `button_text_color: #2e3132`.
+//
+// Contraste anthracite sur bleu de marque : 5,01:1 → AA. Les trois options
+// mesurées : #1E7FA7 + blanc = 4,52 (AA mais hors marque), #29ABE2 + blanc =
+// 2,62 (échoue), #29ABE2 + anthracite = 5,01 (AA ET à la marque).
+// ⚠️ ARBITRAGE EXPLICITE DU PROPRIÉTAIRE DE LA MARQUE, 2026-09-13 — NE PAS « CORRIGER ».
+//
+// Blanc sur l'accent de marque brut rend **2,62:1** sur Blue Fox : sous le
+// seuil AA de 4,5:1, et même sous le seuil de 3:1 réservé au gros texte. Ce
+// n'est pas un oubli, c'est un choix fait en connaissance de cause, les trois
+// options ayant été mesurées et présentées :
+//
+//   #1E7FA7 + blanc          4,52:1  AA, mais ΔE 18,2 — ne se lit plus comme la marque
+//   #29ABE2 + anthracite     5,01:1  AA et à la marque, jugé « bizarre » à l'usage
+//   #269FD2 + blanc 18,7 px  3,01:1  AA gros texte, boutons jugés trop gros
+//   #29ABE2 + blanc          2,62:1  ← retenu : la marque, au prix du contraste
+//
+// La marque prime ici. Si quelqu'un veut revenir à un bouton conforme, c'est
+// une décision du propriétaire de la marque, pas un correctif à appliquer au passage. Les deux
+// variantes calculées (`--brand-primary-on-white`, 4,5:1 et
+// `--brand-primary-on-white-lg`, 3:1) restent disponibles et servent ailleurs,
+// là où du texte blanc se pose sur l'accent sans qu'on maîtrise sa taille.
 .btn-primary {
-    background-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
-    border-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
+    background-color: var(--brand-primary, #29ABE2) !important;
+    border-color: var(--brand-primary, #29ABE2) !important;
+    color: #ffffff !important;
 
     &:hover, &:focus, &:active {
-        background-color: color-mix(in srgb, var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) 80%, black) !important;
-        border-color: color-mix(in srgb, var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) 80%, black) !important;
+        background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 88%, black) !important;
+        border-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 88%, black) !important;
+        color: #ffffff !important;
     }
 }
 
@@ -96,7 +126,7 @@ a.text-primary,
 
 // Selection/highlight color
 ::selection {
-    background-color: rgba(41, 171, 226, 0.3);
+    background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 30%, transparent);
 }
 
 // App switcher / home menu button
@@ -106,10 +136,21 @@ a.text-primary,
     }
 }
 
-// Badge colors (un compteur blanc s'écrit dessus)
+// Badge colors — bleu de marque BRUT, même arbitrage que les boutons.
+//
+// ⚠️ Ne pas remettre `-on-white` ici. Depuis le mode sombre (livraison du mode sombre, 09-11)
+// `.bg-primary` portait la variante assombrie « parce qu'un compteur blanc
+// s'écrit dessus ». Or bf_email pose `bg-primary text-white` sur le DOSSIER
+// SÉLECTIONNÉ du menu de gauche : mesuré au pixel le 2026-09-13, il sortait à
+// #4492B3 (la variante #1E7FA7 sur fond clair) juste sous un bouton Composer
+// au vrai #29ABE2 — deux bleus côte à côte. le propriétaire de la marque a tranché le même
+// compromis pour `.btn-primary` : la marque prime sur le 4,5:1 quand du blanc
+// se pose sur l'accent. Même règle, même surface, même décision.
+// `.progress-bar` et `.o_switch` gardent la variante : ils ne voisinent pas
+// un bouton de marque et le blanc y est du texte utile (pourcentage).
 .badge-primary,
 .bg-primary {
-    background-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
+    background-color: var(--brand-primary, #29ABE2) !important;
 }
 
 // Border colors
@@ -126,7 +167,7 @@ a.text-primary,
 .form-control:focus,
 .form-select:focus {
     border-color: var(--brand-primary, #29ABE2);
-    box-shadow: 0 0 0 0.2rem rgba(41, 171, 226, 0.25);
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--brand-primary, #29ABE2) 25%, transparent);
 }
 
 // Kanban progress bar
@@ -158,7 +199,7 @@ a.text-primary,
             &:hover,
             &:focus,
             &.focus {
-                background-color: rgba(41, 171, 226, 0.3) !important;
+                background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 30%, transparent) !important;
                 color: var(--brand-primary, #29ABE2) !important;
             }
         }
@@ -181,8 +222,9 @@ a.text-primary,
         }
 
         .btn-primary {
-            background-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
-            border-color: var(--brand-primary-on-white, var(--brand-primary, #29ABE2)) !important;
+            background-color: var(--brand-primary, #29ABE2) !important;
+            border-color: var(--brand-primary, #29ABE2) !important;
+            color: #ffffff !important;
         }
     }
 
@@ -195,13 +237,13 @@ a.text-primary,
             color: #ffffff !important;
 
             &:hover {
-                background-color: rgba(41, 171, 226, 0.3) !important;
+                background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 30%, transparent) !important;
                 color: var(--brand-primary, #29ABE2) !important;
             }
 
             // Currently selected app
             &.bg-primary-subtle {
-                background-color: rgba(41, 171, 226, 0.2) !important;
+                background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 20%, transparent) !important;
             }
         }
 
@@ -276,5 +318,605 @@ a.text-primary,
 .main-menu .widgets,
 .widgets {
     background-color: rgba(255, 255, 255, 0.95) !important;
-    border-color: rgba(41, 171, 226, 0.3) !important;
+    border-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 30%, transparent) !important;
+}
+
+// ---------------------------------------------------------------------------
+// Accents résiduels d'Odoo — ajoutés le 2026-09-13.
+//
+// `primary_variables.scss` ne porte plus de couleur de marque : elle y était
+// compilée UNE fois pour tous les locataires, ce qui peignait l'interface de
+// chaque client au bleu de Blue Fox. Les valeurs y sont donc redevenues celles
+// d'Odoo, et la marque du locataire est réappliquée ici, à l'exécution.
+//
+// Les sélecteurs ci-dessous sont ceux qu'Odoo peint en dur depuis
+// `$o-brand-primary` au lieu de lire `var(--o-brand-primary)` : sans ces
+// règles, ils resteraient violets chez tout le monde. Relevé dans le paquet
+// compilé, pas deviné.
+// ---------------------------------------------------------------------------
+
+$brand-accent: var(--brand-primary-on-white, var(--brand-primary, #29ABE2));
+
+.o_colorlist .o_colorlist_selected {
+    box-shadow: 0 0 0 2px $brand-accent !important;
+}
+
+.o_datetime_picker {
+    .o_current:before,
+    .o_highlighted_date:before,
+    .o_selected:before {
+        box-shadow: inset 0 0 0 1px $brand-accent !important;
+    }
+}
+
+.o_switch > input:checked + span {
+    background: $brand-accent !important;
+}
+
+.o_file_upload_progress_bar_value,
+.o_file_upload_progress_bar_abort {
+    background-color: $brand-accent !important;
+}
+
+.modal .o_select_media_dialog {
+    .o_we_attachment_selected {
+        box-shadow: 0 0 0 3px $brand-accent !important;
+
+        &:not(.fa) {
+            border-color: $brand-accent !important;
+        }
+    }
+}
+
+.o_tour_pointer {
+    --TourPointer__color: #{$brand-accent} !important;
+}
+
+.o-discuss-inCallIconColor,
+.o-discuss-NotificationSettings-defaultValue,
+.o-discuss-CallMenu-buttonContent.o-isOdooCommunity {
+    color: $brand-accent !important;
+}
+
+.o_auth_oauth_providers .o_custom_icon {
+    border-color: $brand-accent !important;
+}
+
+.o_frontend_to_backend_nav {
+    &::before {
+        border-top-color: var(--brand-dark, #2E3132) !important;
+    }
+
+    .o_frontend_to_backend_apps_btn {
+        background-color: var(--brand-dark, #2E3132) !important;
+    }
+}
+
+
+// ---------------------------------------------------------------------------
+// Fonds sombres — 2026-09-13.
+//
+// Mesuré au navigateur : `body` et `.navbar` sortaient à #212529, le « dark »
+// de Bootstrap, et non au #2E3132 de la marque (ΔE 6,1). La note de marque
+// décrit pourtant ce gris comme le « fond principal site Web + bandeau ».
+//
+// On remappe le jeton Bootstrap plutôt que de forcer `body` : un locataire dont
+// le site est en thème CLAIR ne doit pas se retrouver avec un fond sombre. Ce
+// remappage ne touche que ce qui était DÉJÀ peint en sombre.
+// ---------------------------------------------------------------------------
+
+:root {
+    --bs-dark: var(--brand-dark, #2E3132) !important;
+    --bs-dark-rgb: 46, 49, 50 !important;
+}
+
+body.bg-dark,
+.bg-dark,
+.navbar.bg-dark,
+#wrapwrap > header .navbar {
+    background-color: var(--brand-dark, #2E3132) !important;
+}
+
+// ---------------------------------------------------------------------------
+// Indicateur de chargement (coin inférieur droit) — 2026-09-13.
+//
+// Odoo le peint depuis la variable SCSS `$o-brand-odoo`
+// (`web/static/src/webclient/loading_indicator/loading_indicator.scss`). En
+// rendant `primary_variables.scss` neutre pour que les locataires cessent
+// d'hériter du bleu de Blue Fox, cette pastille est passée au violet d'Odoo.
+//
+// ⚠️ Elle vit dans `web.assets_web`, PAS dans `web.assets_frontend`. L'audit du
+// violet résiduel n'avait porté que sur le paquet frontal, où elle n'apparaît
+// pas : c'est pour ça qu'elle a été manquée. Tout contrôle du violet résiduel
+// doit lire `web.assets_web.min.css`, qui en contient 204 occurrences.
+// ---------------------------------------------------------------------------
+
+.o_loading_indicator {
+    background-color: var(--brand-dark, #2E3132) !important;
+    color: #ffffff !important;
+}
+
+// ---------------------------------------------------------------------------
+// Violet résiduel du client web — 2026-09-13, second passage.
+//
+// 🔴 Le premier audit n'avait lu que `web.assets_frontend` et concluait à 26
+// sélecteurs. Le paquet du CLIENT WEB, `web.assets_web.min.css`, en porte
+// **204**. Tout contrôle du violet résiduel doit lire celui-là.
+//
+// La plupart des règles d'Odoo passent par un jeton CSS : on remappe le jeton
+// plutôt que de poursuivre chaque sélecteur. Les quelques-unes qui écrivent
+// l'hexadécimal directement dans la règle sont reprises ensuite, une par une.
+// ---------------------------------------------------------------------------
+
+:root {
+    --primary: var(--brand-primary, #29ABE2) !important;
+    --o-input-border-color: var(--brand-primary, #29ABE2) !important;
+    --o-statusbar-border-active: var(--brand-primary, #29ABE2) !important;
+    --progress-bar-bg: var(--brand-primary, #29ABE2) !important;
+    --nav-pills-link-active-bg: var(--brand-primary, #29ABE2) !important;
+    --o-stat-text-color: var(--brand-primary, #29ABE2) !important;
+    --o-stat-button-color: var(--brand-primary, #29ABE2) !important;
+    --KanbanColumn__highlight-border: var(--brand-primary, #29ABE2) !important;
+    --PercentPieField-color-active: var(--brand-primary, #29ABE2) !important;
+    --SearchableSetting__highlight-border: var(--brand-primary, #29ABE2) !important;
+    --NavBar-entry-backgroundColor: var(--brand-dark, #2E3132) !important;
+    --mobileSearch__header-bg: var(--brand-dark, #2E3132) !important;
+}
+
+// Contrôles de formulaire — Odoo y écrit l'hexadécimal en dur.
+.form-check-input {
+    &:checked {
+        background-color: var(--brand-primary, #29ABE2) !important;
+        border-color: var(--brand-primary, #29ABE2) !important;
+    }
+
+    &:focus { border-color: var(--brand-primary, #29ABE2) !important; }
+}
+
+.form-control:focus,
+.form-select:focus,
+.o_searchview:focus-within {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-range {
+    &::-webkit-slider-thumb { background-color: var(--brand-primary, #29ABE2) !important; }
+    &::-moz-range-thumb     { background-color: var(--brand-primary, #29ABE2) !important; }
+}
+
+.form-switch.o_switch_toggle .form-check-input {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+// Barre d'état (Brouillon / Révisé / Envoyé) — l'étape active.
+.o_statusbar_status .o_arrow_button.o_arrow_button_current,
+.o_statusbar_status .btn.o_arrow_button:not(.disabled):focus {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+// -------------------------------------------------------------------------
+// Couleurs de marque à l'exécution, par locataire — 2026-09-13.
+//
+// `primary_variables.scss` donne à la COMPILATION les couleurs de Blue Fox, une
+// fois pour tous les locataires. Ce bloc les reprend à l'EXÉCUTION en
+// `var(--brand-*)`, qui vaut la couleur du locataire : Blue Fox retrouve
+// exactement ce qu'il avait, et un autre locataire obtient la
+// leur au lieu de la nôtre.
+//
+// 🔴 GÉNÉRÉ depuis le paquet servi, et le rôle de chaque déclaration est LU, pas
+// deviné : l'anthracite (#2E3132) va vers `--brand-dark`, l'accent (#29ABE2)
+// vers `--brand-primary`. Une première version de ce bloc avait été générée
+// pendant que les deux valeurs étaient identiques (toutes deux au violet
+// d'Odoo) : impossible de les distinguer, tout était parti vers l'accent, et la
+// barre de navigation s'était retrouvée BLEUE. Ne jamais régénérer ce bloc
+// depuis un paquet où les deux couleurs se confondent.
+// -------------------------------------------------------------------------
+
+.account_drag_drop_btn {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.badge.text-bg-default, .badge.bg-light, .badge.text-bg-light, .badge.bg-default, .badge.text-primary {
+    outline-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-fill-light {
+    --btn-active-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-fill-primary {
+    --btn-bg: var(--brand-primary, #29ABE2) !important;
+    --btn-border-color: var(--brand-primary, #29ABE2) !important;
+    --btn-disabled-bg: var(--brand-primary, #29ABE2) !important;
+    --btn-disabled-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-fill-secondary {
+    --btn-active-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-light {
+    --btn-active-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-link.btn-action.text-muted:hover, .btn-link.btn-action.text-muted:focus, .btn-link.btn-action.text-muted.focus, .btn-link.btn-action .text-muted:hover, .btn-link.btn-action .text-muted:focus, .btn-link.btn-action .text-muted.focus, .btn-link.text-action.text-muted:hover, .btn-link.text-action.text-muted:focus, .btn-link.text-action.text-muted.focus, .btn-link.text-action .text-muted:hover, .btn-link.text-action .text-muted:focus, .btn-link.text-action .text-muted.focus {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-link.btn-action:hover, .btn-link.btn-action:focus, .btn-link.btn-action.focus, .btn-link.text-action:hover, .btn-link.text-action:focus, .btn-link.text-action.focus {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-link.btn-primary.text-muted:hover, .btn-link.btn-primary.text-muted:focus, .btn-link.btn-primary.text-muted.focus, .btn-link.btn-primary .text-muted:hover, .btn-link.btn-primary .text-muted:focus, .btn-link.btn-primary .text-muted.focus, .btn-link.text-primary.text-muted:hover, .btn-link.text-primary.text-muted:focus, .btn-link.text-primary.text-muted.focus, .btn-link.text-primary .text-muted:hover, .btn-link.text-primary .text-muted:focus, .btn-link.text-primary .text-muted.focus {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-link.btn-primary:hover, .btn-link.btn-primary:focus, .btn-link.btn-primary.focus, .btn-link.text-primary:hover, .btn-link.text-primary:focus, .btn-link.text-primary.focus {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-outline-primary {
+    --btn-active-bg: var(--brand-primary, #29ABE2) !important;
+    --btn-active-border-color: var(--brand-primary, #29ABE2) !important;
+    --btn-border-color: var(--brand-primary, #29ABE2) !important;
+    --btn-color: var(--brand-primary, #29ABE2) !important;
+    --btn-disabled-border-color: var(--brand-primary, #29ABE2) !important;
+    --btn-disabled-color: var(--brand-primary, #29ABE2) !important;
+    --btn-hover-bg: var(--brand-primary, #29ABE2) !important;
+    --btn-hover-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-outline-secondary {
+    --btn-active-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-primary {
+    --btn-bg: var(--brand-primary, #29ABE2) !important;
+    --btn-border-color: var(--brand-primary, #29ABE2) !important;
+    --btn-disabled-bg: var(--brand-primary, #29ABE2) !important;
+    --btn-disabled-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.btn-secondary {
+    --btn-active-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--brand-primary, #29ABE2) !important;
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-check-input:focus {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-check:hover, .form-check:hover .form-check-input:not(:disabled) {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-control:focus {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-range::-moz-range-thumb {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-range::-webkit-slider-thumb {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-select:focus {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-select:where(:not(:disabled)):hover {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-switch.o_switch_toggle .form-check-input, .form-switch.o_switch_toggle .form-check-input:checked {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.form-switch.o_switch_toggle:hover .form-check-input:not(:disabled) {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.hr_expense .o_view_pink_overlay:hover {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.modal .o_select_media_dialog .o_we_attachment_selected:not(.fa) {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.modal .o_select_media_dialog .o_we_attachment_selected:not(.fa):before {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.nav-pills {
+    --nav-pills-link-active-bg: var(--brand-primary, #29ABE2) !important;
+}
+
+.o-discuss-CallMenu-buttonContent.o-isOdooCommunity {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o-discuss-NotificationSettings-defaultValue {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o-discuss-inCallIconColor {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o-dropdown.btn-secondary.show, .o-dropdown.btn-outline-secondary.show {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o-file-upload-progress-bar-value {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o-mail-ChatHub-hiddenBtnIcon {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o-mail-DiscussSidebarQuickSearchInput.o-active {
+    outline-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o-mail-MessageReaction:not(.o-selfReacted):hover {
+    --border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o-we-table-menu {
+    border-color: var(--brand-dark, #2E3132) !important;
+}
+
+.o_account_dashboard_kanban_view .o_drop_area.drag_to_card {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_account_reconcile_oca .o_kanban_renderer.o_kanban_ungrouped .o_kanban_record.o_kanban_record_reconcile_oca_selected > div {
+    border-right: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_attachment .o_attachment_delete:hover {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_barcode {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_base_settings_view .o_form_renderer .o_setting_container .settings_tab .tab:after {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_burger_menu .o_burger_menu_content.o_burger_menu_app, .o_app_menu_sidebar .o_burger_menu_content.o_burger_menu_app {
+    background-color: var(--brand-dark, #2E3132) !important;
+}
+
+.o_burger_menu .o_sidebar_topbar, .o_app_menu_sidebar .o_sidebar_topbar {
+    background-color: var(--brand-dark, #2E3132) !important;
+}
+
+.o_configurator_container .o_configurator_screen.o_description_screen .o_configurator_industry_wrapper input {
+    border-bottom: var(--brand-primary, #29ABE2) !important;
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_configurator_container .o_configurator_screen.o_theme_selection_screen .theme_preview:hover {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_many2many_avatar_user img:hover, .o_clickable_m2x_avatar img:hover {
+    outline-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_many2one_avatar img:hover {
+    outline-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_percent_pie .o_pie {
+    --PercentPieField-color-active: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_properties .o_input:focus *, .o_field_properties .dropdown:focus ~ .o_dropdown_button *, .o_field_properties .dropdown:focus-within ~ .o_dropdown_button *, .o_field_properties .o_input:focus ~ .o_datepicker_button *, .o_field_properties .o_dropdown_button:focus *, .o_field_properties.o_field_invalid .o_input:focus *, .o_field_properties.o_field_invalid .dropdown:focus ~ .o_dropdown_button *, .o_field_properties.o_field_invalid .dropdown:focus-within ~ .o_dropdown_button *, .o_field_properties.o_field_invalid .o_input:focus ~ .o_datepicker_button *, .o_field_properties.o_field_invalid .o_dropdown_button:focus *, .o_property_field_popover .o_input:focus *, .o_property_field_popover .dropdown:focus ~ .o_dropdown_button *, .o_property_field_popover .dropdown:focus-within ~ .o_dropdown_button *, .o_property_field_popover .o_input:focus ~ .o_datepicker_button *, .o_property_field_popover .o_dropdown_button:focus * {
+    --o-input-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_properties .o_input:focus, .o_field_properties .dropdown:focus ~ .o_dropdown_button, .o_field_properties .dropdown:focus-within ~ .o_dropdown_button, .o_field_properties .o_input:focus ~ .o_datepicker_button, .o_field_properties .o_dropdown_button:focus, .o_field_properties.o_field_invalid .o_input:focus, .o_field_properties.o_field_invalid .dropdown:focus ~ .o_dropdown_button, .o_field_properties.o_field_invalid .dropdown:focus-within ~ .o_dropdown_button, .o_field_properties.o_field_invalid .o_input:focus ~ .o_datepicker_button, .o_field_properties.o_field_invalid .o_dropdown_button:focus, .o_property_field_popover .o_input:focus, .o_property_field_popover .dropdown:focus ~ .o_dropdown_button, .o_property_field_popover .dropdown:focus-within ~ .o_dropdown_button, .o_property_field_popover .o_input:focus ~ .o_datepicker_button, .o_property_field_popover .o_dropdown_button:focus {
+    --o-input-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_properties div:not([columns="1"]) .o_property_drag_group {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_property_label .o_field_property_open_popover:hover, .o_field_property_label .oi-draggable:hover {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_property_tag .o_field_property_dropdown_add * {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_statusbar > .o_statusbar_status, .o_field_statusbar_duration > .o_statusbar_status {
+    --o-statusbar-border-active: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_widget.o_field_copy {
+    border-color: var(--brand-primary, #29ABE2) !important;
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_widget.o_field_image .o_form_image_controls > .fa.o_select_file_button, .o_field_widget.o_field_image_url .o_form_image_controls > .fa.o_select_file_button {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_widget.o_field_image .o_form_image_controls, .o_field_widget.o_field_image_url .o_form_image_controls {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_field_widget:focus-within {
+    --o-caret-color: var(--brand-primary, #29ABE2) !important;
+    --o-input-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_image_radio_option.active {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_kanban_examples_dialog .o_notebook {
+    --notebook-link-border-color-active-accent: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_kanban_examples_dialog .o_notebook .nav-link.active {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_kanban_renderer {
+    --KanbanColumn__highlight-border: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_kanban_renderer .o_legacy_kanban_record .o_kanban_record_bottom .o_link_muted:hover {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_kanban_view .o_kanban_renderer .o_kanban_record.o_product_added {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_list_renderer .o_data_row.o_selected_row > .o_data_cell.o_required_modifier:not(.o_readonly_modifier) {
+    border-bottom: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_loading_indicator {
+    background-color: var(--brand-dark, #2E3132) !important;
+}
+
+.o_main_navbar {
+    background-color: var(--brand-dark, #2E3132) !important;
+}
+
+.o_project_update_kanban_view .o_kanban_renderer .o_kanban_record:not(.o_legacy_kanban_record).o_kanban_color_0::after {
+    border-left: var(--brand-primary, #29ABE2) !important;
+    border-right: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_property_field_highlight .o_field_property_empty_label, .o_property_field_highlight {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_property_field_value .o_field_property_many2one_value img[comodel="res.users"]:hover, .o_property_field_value .o_m2m_avatar[comodel="res.users"]:hover {
+    outline-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_report_reception .btn.btn-primary {
+    background-color: var(--brand-primary, #29ABE2) !important;
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_required_modifier {
+    --o-caret-color: var(--brand-primary, #29ABE2) !important;
+    --o-input-border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_sale_product_configurator_ptav_color.active {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_sale_product_configurator_ptav_color:hover, .o_sale_product_configurator_ptav_color:hover .form-check-input:not(:disabled) {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_sale_product_configurator_ptav_pills.active label {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_searchable_setting {
+    --SearchableSetting__highlight-border: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_searchview:focus-within {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_searchview:focus-within + .o_searchview_dropdown_toggler {
+    border-bottom-color: var(--brand-primary, #29ABE2) !important;
+    border-right-color: var(--brand-primary, #29ABE2) !important;
+    border-top-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_status_bubble.o_color_bubble_24 {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_switch > input:checked + span {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_theme_preview_kanban_view .o_kanban_renderer .o_kanban_record .o_theme_preview.o_theme_installed .o_theme_preview_top:not(.fa) {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_theme_preview_kanban_view .o_kanban_renderer .o_kanban_record .o_theme_preview.o_theme_installed .o_theme_preview_top:not(.fa):before {
+    background-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.o_tour_pointer {
+    --TourPointer__color: var(--brand-primary, #29ABE2) !important;
+}
+
+.oe_seo_configuration .o_seo_og_image .o_meta_img.o_active_image {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.oe_seo_configuration .o_seo_og_image .o_meta_img:hover {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.oe_seo_configuration .o_seo_og_image .o_meta_img_upload:hover {
+    border-color: var(--brand-primary, #29ABE2) !important;
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.product-card.selected {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.product-card:hover {
+    border-color: var(--brand-primary, #29ABE2) !important;
+}
+
+.progress, .progress-stacked {
+    --progress-bar-bg: var(--brand-primary, #29ABE2) !important;
+}
+
+.ui-autocomplete .ui-menu-item.o_m2o_dropdown_option > a {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+.ui-autocomplete .ui-menu-item.o_m2o_dropdown_option > a.ui-state-active {
+    color: var(--brand-primary, #29ABE2) !important;
+}
+
+:root {
+    --o-cc1-btn-primary: var(--brand-primary, #29ABE2) !important;
+    --o-cc1-btn-primary-border: var(--brand-primary, #29ABE2) !important;
+    --o-cc2-btn-primary: var(--brand-primary, #29ABE2) !important;
+    --o-cc2-btn-primary-border: var(--brand-primary, #29ABE2) !important;
+    --o-cc3-btn-primary: var(--brand-primary, #29ABE2) !important;
+    --o-cc3-btn-primary-border: var(--brand-primary, #29ABE2) !important;
+    --o-cc5-btn-primary: var(--brand-primary, #29ABE2) !important;
+    --o-cc5-btn-primary-border: var(--brand-primary, #29ABE2) !important;
+    --o-palette-base-1-o-color-1: var(--brand-primary, #29ABE2) !important;
+}
+
+:root, [data-bs-theme="light"] {
+    --o-cc4-bg: var(--brand-primary, #29ABE2) !important;
+    --o-color-1: var(--brand-primary, #29ABE2) !important;
+    --primary: var(--brand-primary, #29ABE2) !important;
 }

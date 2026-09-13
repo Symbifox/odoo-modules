@@ -1,5 +1,22 @@
 // Blue Fox Inc. - Primary Variables Override
 // This file MUST be loaded in web._assets_primary_variables to override Odoo defaults
+//
+// 🔴 2026-09-13 — NE PAS NEUTRALISER CE FICHIER. Je l'ai fait ce soir, en
+// croyant corriger un défaut de marque blanche : ces variables sont compilées
+// UNE fois pour tous les locataires, donc y écrire la couleur de Blue Fox la
+// peint aussi chez les clients. Le raisonnement était juste, le geste non.
+//
+// Ce que ça a réellement produit : Odoo peint 213 déclarations depuis
+// `$o-brand-primary` et `$o-brand-odoo`. Les vider ne les rend pas neutres, ça
+// les rend VIOLETTES — barre d'état, cases à cocher, boutons, indicateur de
+// chargement, vue de recherche, colonnes kanban. Le module marchait depuis
+// `70deb92` ; il a cessé de marcher en une passe.
+//
+// La marque blanche est réglée AUTREMENT, et mieux : `branding.scss` surcharge
+// ces mêmes sélecteurs à l'exécution avec `var(--brand-primary)` et
+// `var(--brand-dark)`, qui valent la couleur DU LOCATAIRE. Les valeurs
+// ci-dessous ne sont donc qu'un repli de compilation, et chaque locataire
+// reçoit la sienne par-dessus.
 
 $o-enterprise-color: #29ABE2 !default;
 $o-community-color: #29ABE2 !default;

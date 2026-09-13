@@ -82,6 +82,15 @@ def replace_button_colors(env, html_content):
 
 _SEUIL_AA = 4.5
 
+# WCAG accorde un seuil de 3:1 au « gros texte » — ≥ 18,66 px en gras, ou
+# ≥ 24 px en romain. Une étiquette de bouton qui respecte cette taille peut
+# donc porter du blanc sur un accent nettement plus proche de la marque :
+# #29ABE2 descend à #1d9fd6 (ΔE 4,4) au lieu de #1e7fa7 (ΔE 18,2).
+# ⚠️ Ce seuil n'est valide QUE si la règle CSS impose aussi la taille et la
+# graisse. Utiliser cette variante sur du texte normal est une régression
+# d'accessibilité silencieuse — voir `.btn-primary` dans branding.scss.
+_SEUIL_AA_GRAND = 3.0
+
 
 def _canal_lineaire(valeur):
     v = valeur / 255.0
@@ -137,3 +146,9 @@ def assombrir_pour_texte_blanc(hexa, seuil=_SEUIL_AA):
 def get_brand_button_color_strong(env):
     """Variante de l'accent utilisable comme FOND sous du texte blanc."""
     return assombrir_pour_texte_blanc(get_brand_button_color(env))
+
+
+def get_brand_button_color_large(env):
+    """Accent utilisable sous du texte blanc GROS ET GRAS (seuil 3:1)."""
+    return assombrir_pour_texte_blanc(get_brand_button_color(env),
+                                      seuil=_SEUIL_AA_GRAND)
