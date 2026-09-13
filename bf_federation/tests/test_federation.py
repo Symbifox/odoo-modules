@@ -398,3 +398,88 @@ class TestFederation(HttpCase):
         self.assertTrue(note)
         self.assertNotIn("<a ", note.body)
         self.assertIn("&lt;a", note.body)
+
+
+@tagged("post_install", "-at_install", "federation")
+class TestFederationConsentement(TestFederation):
+    """Ce qu'un pair a le DROIT de nous envoyer, qui n'est pas ce qu'on sait recevoir.
+
+    ⚠️ `accepted_kinds` est une capacité : ce que l'instance sait lire. Le
+    consentement, lui, se règle par pair. Entre deux maisons qui se font
+    entièrement confiance, la distinction ne se voit pas. Chez un client qui
+    fédère avec cinq partenaires, elle est la différence entre un canal et une
+    boîte aux lettres ouverte.
+    """
+
+    def _modele(self, nom):
+        return self.env["ir.model"].search([("model", "=", nom)], limit=1)
+
+    def test_18_par_defaut_un_pair_peut_tout_envoyer(self):
+        self.assertEqual(self.peer_a.inbound_policy, "all")
+        self.assertTrue(self.peer_a._inbound_allows("task.share"))
+        self.assertTrue(self.peer_a._inbound_allows("ping"))
+
+    def test_19_une_liste_ferme_ce_qui_n_y_est_pas(self):
+        self.peer_a.write({"inbound_policy": "listed",
+                           "inbound_model_ids": [(6, 0, self._modele("project.task").ids)]})
+        self.assertTrue(self.peer_a._inbound_allows("task.share"))
+        self.assertTrue(self.peer_a._inbound_allows("ping"), "le contact passe toujours")
+        self.assertFalse(self.peer_a._inbound_allows("document.share"))
+        self.assertFalse(self.peer_a._inbound_allows("licorne.share"))
+
+    def test_20_un_partage_refuse_ne_depose_rien_et_ne_dit_pas_pourquoi(self):
+        """Le pair A n'accepte plus rien de B : le partage se fait refuser en 403,
+        et le refus ne révèle pas ce qui existe ici."""
+        self.peer_a.write({"inbound_policy": "listed", "inbound_model_ids": [(5, 0, 0)]})
+        avant = self.env["project.task"].search_count([])
+        task = self.env["project.task"].create({"name": "Refusée à l'entrée",
+                                                "project_id": self.project.id})
+        task.write({"federation_peer_id": self.peer_b.id})
+        self.Outbox._cron_send()
+        self.env.invalidate_all()
+        entree = self.Outbox.search([("kind", "=", "task.share"), ("state", "!=", "sent")], order="id desc", limit=1)
+        self.assertTrue(entree, "l'envoi n'est pas passé")
+        self.assertIn("403", entree.last_error or "")
+        self.assertNotIn("lien", (entree.last_error or "").lower(),
+                         "le refus ne dit pas si une référence existe ici")
+        self.assertEqual(self.env["project.task"].search_count([]), avant + 1,
+                         "aucun miroir n'a été créé chez le receveur")
+
+    def test_21_un_message_herite_du_consentement_de_son_objet(self):
+        """Une fois la tâche partagée, retirer le consentement ferme aussi le
+        chemin des messages : ils portent sur cet objet, pas sur eux-mêmes."""
+        task = self._share()
+        mirror = self._mirror_of(task)
+        self.peer_a.write({"inbound_policy": "listed", "inbound_model_ids": [(5, 0, 0)]})
+        task.message_post(body=Markup("<p>Un mot qui ne devrait pas passer.</p>"),
+                          message_type="comment", subtype_xmlid="mail.mt_comment")
+        self.Outbox._cron_send()
+        self.env.invalidate_all()
+        arrive = self.env["mail.message"].search_count(
+            [("model", "=", "project.task"), ("res_id", "=", mirror.id),
+             ("body", "ilike", "ne devrait pas passer")])
+        self.assertEqual(arrive, 0, "le message est refusé comme son objet")
+
+    def test_22_l_invitation_part_par_courriel_avec_l_adresse_et_le_code(self):
+        peer = self.env["federation.peer"].create({
+            "name": "Partenaire à inviter", "mirror_user_id": self.admin.id,
+            "invitation_email": "partenaire@exemple.test"})
+        avant = self.env["mail.mail"].search_count([])
+        peer.action_send_invitation()
+        courriels = self.env["mail.mail"].search([], order="id desc", limit=1)
+        self.assertEqual(self.env["mail.mail"].search_count([]), avant + 1)
+        self.assertEqual(courriels.email_to, "partenaire@exemple.test")
+        self.assertIn(peer.sudo().invitation_code, courriels.body_html)
+        self.assertIn(self.base_url().rstrip("/"), courriels.body_html)
+        self.assertEqual(peer.state, "invited")
+        notes = self.env["mail.message"].search(
+            [("model", "=", "federation.peer"), ("res_id", "=", peer.id),
+             ("body", "ilike", "Invitation envoyée")])
+        self.assertTrue(notes, "la fiche garde la trace de l'envoi et du destinataire")
+
+    def test_23_sans_adresse_l_invitation_ne_part_pas(self):
+        from odoo.exceptions import UserError
+        peer = self.env["federation.peer"].create({
+            "name": "Sans adresse", "mirror_user_id": self.admin.id})
+        with self.assertRaises(UserError):
+            peer.action_send_invitation()

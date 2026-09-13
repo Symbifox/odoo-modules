@@ -28,6 +28,12 @@ Les niveaux d'une carte ne sont pas des champs surveillés, et une carte se
 retouche par ses nœuds bien plus souvent que par son titre. Le bouton **Renvoyer
 le tracé au pair** envoie la carte telle qu'elle est.
 
+## Qui peut la recevoir
+
+Le **client** de la carte cadre les pairs proposés ; à défaut, les pairs nommés
+sur son projet. Jamais « tous les pairs actifs » : chez quelqu'un qui en a
+plusieurs, ce serait la carte d'un partenaire proposée à un autre.
+
 ## Les noms
 
 Une carte reçue porte le nom de son pair (« Cycle client (Untel) ») : `bf.process`

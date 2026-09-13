@@ -1,6 +1,6 @@
 {
     "name": "Fédération : livrables remis",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Project",
     "summary": "Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu",
     "description": """

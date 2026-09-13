@@ -40,16 +40,30 @@
                             <field name="mirror_project_id" readonly="1"/>
                             <field name="send_notes"/>
                             <field name="attachment_limit_mb"/>
+                            <field name="federation_model_ids" invisible="1"/>
+                            <field name="inbound_policy" widget="radio"/>
+                            <field name="inbound_model_ids" widget="many2many_tags"
+                                   invisible="inbound_policy != 'listed'"
+                                   required="inbound_policy == 'listed'"
+                                   options="{'no_create': True}"/>
                         </group>
                     </group>
                     <group string="Invitation" invisible="state != 'invited'" groups="base.group_system">
                         <div class="alert alert-info" role="alert" colspan="2">
-                            Transmettez au pair, par un canal sûr, votre adresse
+                            Le pair a besoin de deux choses : votre adresse
                             (<field name="base_url" invisible="1"/><span class="fw-bold">celle de cette instance</span>)
                             et le code ci-dessous. Chez lui : Fédération › Accepter une invitation.
+                            Transmettez-les comme vous voulez, ou faites-les envoyer par courriel.
                         </div>
                         <field name="invitation_code" widget="CopyClipboardChar"/>
                         <field name="invitation_expiry"/>
+                        <div colspan="2">
+                            <field name="invitation_email" widget="email" class="oe_inline"
+                                   placeholder="à qui envoyer le code"/>
+                            <button name="action_send_invitation" type="object"
+                                    string="Envoyer l'invitation" class="btn-link"
+                                    invisible="not invitation_email"/>
+                        </div>
                     </group>
                     <notebook>
                         <page string="Personnes appariées" name="identities">

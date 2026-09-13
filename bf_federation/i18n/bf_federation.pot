@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 14:07+0000\n"
-"PO-Revision-Date: 2026-09-13 14:07+0000\n"
+"POT-Creation-Date: 2026-09-13 14:24+0000\n"
+"PO-Revision-Date: 2026-09-13 14:24+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -54,6 +54,13 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
+#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "%s vous invite à fédérer vos Symbifox"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
 #: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid "(aucune)"
@@ -71,6 +78,19 @@ msgstr ""
 #: code:addons/_t25651/bf_federation/models/project_task.py:0
 #: code:addons/bf_federation/models/project_task.py:0
 msgid "(sans titre)"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid ""
+"<p>%(nous)s vous invite à fédérer votre Symbifox avec le sien : les objets "
+"partagés d'un côté paraissent chez l'autre, sans que personne ait besoin "
+"d'un compte chez l'autre.</p><p>Dans votre Symbifox, <i>Fédération › "
+"Accepter une invitation</i> :</p><ul><li>Adresse : "
+"<code>%(url)s</code></li><li>Code : <code>%(code)s</code></li></ul><p>Le "
+"code ne sert qu'une fois et expire le %(fin)s.</p>"
 msgstr ""
 
 #. module: bf_federation
@@ -136,7 +156,8 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
 msgid ""
 "<span class=\"fw-bold\">celle de cette instance</span>)\n"
-"                            et le code ci-dessous. Chez lui : Fédération › Accepter une invitation."
+"                            et le code ci-dessous. Chez lui : Fédération › Accepter une invitation.\n"
+"                            Transmettez-les comme vous voulez, ou faites-les envoyer par courriel."
 msgstr ""
 
 #. module: bf_federation
@@ -180,6 +201,11 @@ msgstr ""
 #. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_link__remote_url
 msgid "Adresse chez le pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__invitation_email
+msgid "Adresse d'invitation"
 msgstr ""
 
 #. module: bf_federation
@@ -280,6 +306,18 @@ msgstr ""
 #: code:addons/_t25651/bf_federation/models/federation_federable.py:0
 #: code:addons/bf_federation/models/federation_federable.py:0
 msgid "Ce porteur ne fédère pas avec %s : ajoutez ce pair d'abord."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__inbound_model_ids
+msgid ""
+"Ce que ce pair a le droit de déposer ici. Les messages, l'archivage et la "
+"remise suivent l'objet auquel ils se rapportent."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__inbound_policy
+msgid "Ce que ce pair peut m'envoyer"
 msgstr ""
 
 #. module: bf_federation
@@ -433,6 +471,11 @@ msgstr ""
 #. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__send_notes
 msgid "Envoyer aussi mes notes internes à ce pair"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Envoyer l'invitation"
 msgstr ""
 
 #. module: bf_federation
@@ -613,8 +656,22 @@ msgid "Indiquez d'abord l'adresse du pair."
 msgstr ""
 
 #. module: bf_federation
+#. odoo-python
+#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Indiquez l'adresse à qui envoyer l'invitation."
+msgstr ""
+
+#. module: bf_federation
 #: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
 msgid "Invitation"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/_t25651/bf_federation/models/federation_peer.py:0
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Invitation envoyée à %s."
 msgstr ""
 
 #. module: bf_federation
@@ -718,6 +775,13 @@ msgstr ""
 #. module: bf_federation
 #: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
 msgid "Le pair"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid ""
+"Le pair a besoin de deux choses : votre adresse\n"
+"                            ("
 msgstr ""
 
 #. module: bf_federation
@@ -884,6 +948,16 @@ msgstr ""
 #. module: bf_federation
 #: model:ir.model,name:bf_federation.model_federation_federable
 msgid "Objet fédérable"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__inbound_model_ids
+msgid "Objets acceptés de ce pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__federation_model_ids
+msgid "Objets fédérables ici"
 msgstr ""
 
 #. module: bf_federation
@@ -1088,6 +1162,11 @@ msgid "Sens"
 msgstr ""
 
 #. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_peer__inbound_policy__listed
+msgid "Seulement ce qui est coché"
+msgstr ""
+
+#. module: bf_federation
 #: model:ir.model.fields,help:bf_federation.field_project_project__federation_peer_ids
 msgid ""
 "Seules les tâches de ce projet peuvent être fédérées, et seulement avec ces "
@@ -1145,10 +1224,8 @@ msgid "Tester la connexion"
 msgstr ""
 
 #. module: bf_federation
-#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
-msgid ""
-"Transmettez au pair, par un canal sûr, votre adresse\n"
-"                            ("
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_peer__inbound_policy__all
+msgid "Tout ce que je sais recevoir"
 msgstr ""
 
 #. module: bf_federation
@@ -1337,8 +1414,20 @@ msgid "À faire"
 msgstr ""
 
 #. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__invitation_email
+msgid ""
+"À qui envoyer le code. Un code dans une boîte de courriel est un code dans "
+"une boîte de courriel : il reste à usage unique et limité dans le temps."
+msgstr ""
+
+#. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__state
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer__state
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__task_state
 msgid "État"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "à qui envoyer le code"
 msgstr ""

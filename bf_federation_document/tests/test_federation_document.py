@@ -21,6 +21,7 @@ class TestFederationDocument(TestFederation):
             "name": nom, "reference": "POL-004", "version": version,
             "summary": "Ce que la maison fait des renseignements personnels.",
             "attachment_ids": [(6, 0, att.ids)],
+            "peer_partner_id": self.peer_b.partner_id.id,
             "federation_peer_id": self.peer_b.id,
         })
         self._flush()
@@ -156,6 +157,7 @@ class TestFederationDocument(TestFederation):
             "name": "<script>alert(1)</script>Rapport",
             "summary": "<b>gras</b> et <script>vol()</script>",
             "attachment_ids": [(6, 0, att.ids)],
+            "peer_partner_id": self.peer_b.partner_id.id,
             "federation_peer_id": self.peer_b.id})
         self._flush()
         miroir = self._miroir(doc)
@@ -198,3 +200,41 @@ class TestFederationDocument(TestFederation):
         miroir_b.invalidate_recordset()
         self.assertFalse(miroir_a.active, "le premier miroir est archivé")
         self.assertFalse(miroir_b.active, "le second aussi")
+
+    # --- Ce qui ne se voit qu'avec plus d'un partenaire -------------------------------
+    def test_d14_le_destinataire_choisit_le_pair_et_lui_seul(self):
+        """🔴 Sans destinataire, un livrable proposait TOUS les pairs actifs. Chez un
+        client qui fédère avec cinq partenaires, c'est un incident de confidentialité
+        en attente, pas une coquille."""
+        autre = self.env["federation.peer"].create({
+            "name": "Un autre partenaire", "mirror_user_id": self.admin.id, "state": "active"})
+        autre._ensure_partner()
+        doc = self.env["federation.document"].create({"name": "Sans destinataire"})
+        self.assertFalse(doc.federation_allowed_peer_ids,
+                         "sans destinataire, aucun pair n'est proposé")
+        self.assertFalse(doc.federation_possible)
+
+        doc.write({"peer_partner_id": self.peer_b.partner_id.id})
+        doc.invalidate_recordset()
+        self.assertEqual(doc.federation_allowed_peer_ids, self.peer_b,
+                         "le destinataire désigne un seul pair")
+        self.assertNotIn(autre, doc.federation_allowed_peer_ids)
+
+    def test_d15_une_personne_de_la_maison_du_pair_suffit(self):
+        """On adresse un livrable à quelqu'un, pas à une raison sociale."""
+        personne = self.env["res.partner"].create({
+            "name": "Quelqu'un chez le pair", "parent_id": self.peer_b.partner_id.id,
+            "email": "quelquun@pair.example"})
+        doc = self.env["federation.document"].create(
+            {"name": "Adressé à une personne", "peer_partner_id": personne.id})
+        self.assertEqual(doc.federation_allowed_peer_ids, self.peer_b)
+
+    def test_d16_changer_le_destinataire_apres_le_partage_est_refuse(self):
+        """🔴 @api.constrains ne surveille que les champs nommés. La garde du socle ne
+        regarde que federation_peer_id : sans nommer le destinataire, le changer
+        laissait un livrable fédéré avec un pair qui n'est plus le sien."""
+        from odoo.exceptions import ValidationError
+        autre = self.env["res.partner"].create({"name": "Une autre maison"})
+        doc = self._remettre()
+        with self.assertRaises(ValidationError):
+            doc.write({"peer_partner_id": autre.id})

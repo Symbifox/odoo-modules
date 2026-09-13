@@ -117,6 +117,11 @@ class FederationController(http.Controller):
         family, _sep, verb = kind.partition(".") if isinstance(kind, str) else ("", "", "")
         if not verb:
             return {"ok": False, "error": "genre inconnu"}, 422
+        # Le consentement du pair passe AVANT la résolution du lien : un pair qui n'a
+        # pas le droit de déposer ce genre ne doit pas non plus apprendre, par la
+        # différence entre 403 et 404, si une référence existe ici.
+        if not peer._inbound_allows(kind):
+            return {"ok": False, "error": "refusé"}, 403
         if verb == "share" and family not in ("link", "mirror", "message"):
             if not sender_ref:
                 return {"ok": False, "error": "référence absente"}, 422
@@ -132,6 +137,10 @@ class FederationController(http.Controller):
             [("peer_id", "=", peer.id), ("remote_ref", "=", str(sender_ref or "")[:64])], limit=1)
         if not link:
             return {"ok": False, "error": "lien inconnu"}, 404
+        # Les verbes génériques portent sur un lien : ils héritent du consentement de
+        # la famille de l'objet visé, pas de la leur.
+        if family in ("link", "mirror", "message") and not peer._inbound_allows(f"{link.kind}.share"):
+            return {"ok": False, "error": "refusé"}, 403
         if kind == "message.new":
             message = link._apply_message(data)
             if message is None:

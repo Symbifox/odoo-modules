@@ -62,12 +62,26 @@ class BfProcess(models.Model):
 
     # --- Le contrat ------------------------------------------------------------------
     def _federation_allowed_peers(self):
+        """Le client de la carte, puis les pairs de son projet. Jamais tous les pairs.
+
+        Une carte n'a pas toujours de projet, mais elle a presque toujours un client.
+        Retomber sur « tous les pairs actifs » ne se voyait pas avec un seul pair ;
+        chez un client qui en a cinq, ce serait la carte d'un partenaire proposée à
+        un autre.
+        """
         self.ensure_one()
-        if self.project_id and self.project_id.federation_peer_ids:
-            return self.project_id.federation_peer_ids
-        # Une carte n'a pas toujours de projet. Quand elle n'en a pas, tout pair actif
-        # peut la recevoir : la retenue est dans le geste, qui est explicite.
-        return self.env["federation.peer"].search([("state", "=", "active")])
+        if self.partner_id:
+            return self.env["federation.peer"]._for_partner(self.partner_id)
+        return self.project_id.federation_peer_ids if self.project_id else self.env["federation.peer"]
+
+
+    # ⚠️ `@api.constrains` ne surveille que les champs nommés. La contrainte du socle
+    # ne regarde que `federation_peer_id` : changer le client APRÈS le partage ne la
+    # rejouait pas, et le livrable restait fédéré avec un pair qui n'est plus celui de
+    # son destinataire. La garde doit nommer le champ qui définit la portée.
+    @api.constrains("federation_peer_id", "partner_id", "project_id")
+    def _check_federation_peer_allowed(self):
+        return super()._check_federation_peer_allowed()
 
     def _federation_label_the(self):
         return _("la cartographie")

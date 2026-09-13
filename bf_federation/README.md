@@ -17,7 +17,12 @@ satellites qui remplissent le contrat de fédérabilité :
 ## Jumelage (administrateurs)
 
 1. Chez A : *Fédération › Pairs*, créer le pair, **Générer une invitation**.
-   Transmettre à B, par un canal sûr, l'adresse de A et le code (48 h, usage unique).
+   B a besoin de deux choses : l'adresse de A et le code (48 h, usage unique).
+   À transmettre comme on veut, ou à faire envoyer par courriel depuis la fiche
+   (*Adresse d'invitation* puis **Envoyer l'invitation**) ; la fiche garde alors
+   la trace de l'envoi et de son destinataire. Un code dans une boîte de courriel
+   est un code dans une boîte de courriel : c'est le consentement par pair, plus
+   haut, qui borne ce qu'un jumelage de trop permettrait.
 2. Chez B : *Fédération › Accepter une invitation* : adresse de A, code, à qui assigner
    les tâches reçues, et si les notes internes de B doivent partir vers A.
 3. B présente le code et sa part du secret ; A répond avec la sienne. Le secret
@@ -90,6 +95,23 @@ leur écriture. Le mixin fournit quatre crochets (`_federation_hook_create`,
 Le genre s'ajoute à `federation.outbox.kind` par `selection_add`, et le registre
 des modèles fédérables se construit depuis le registre Odoo : un satellite qui
 s'installe ajoute son genre sans que le socle le sache.
+
+## Ce que ce pair a le droit de m'envoyer
+
+⚠️ À ne pas confondre avec la section suivante. **Ce que l'instance sait
+recevoir** est une capacité ; **ce que ce pair-là a le droit d'envoyer** est un
+consentement, et il se règle par pair, sur sa fiche.
+
+Deux réglages : *Tout ce que je sais recevoir* (défaut) ou *Seulement ce qui est
+coché*, avec la liste des objets acceptés. Un genre refusé se fait renvoyer 403
+**avant** que le receveur ne cherche s'il connaît la référence visée : le refus
+ne révèle donc pas ce qui existe ici. Les messages, l'archivage et la remise
+portent sur un objet déjà lié : ils héritent du consentement de la famille de
+cet objet, jamais de la leur.
+
+Entre deux maisons qui se font entièrement confiance, la distinction ne se voit
+pas. Chez quelqu'un qui fédère avec cinq partenaires, elle est la différence
+entre un canal et une boîte aux lettres ouverte.
 
 ## Ce que le pair sait recevoir
 

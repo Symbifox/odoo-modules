@@ -1,4 +1,5 @@
 import hashlib
+import html
 import json
 import logging
 import time
@@ -51,6 +52,27 @@ class FederationPeer(models.Model):
     link_ids = fields.One2many("federation.link", "peer_id", string="Liens")
     link_count = fields.Integer(string="Tâches fédérées", compute="_compute_counts")
     outbox_pending = fields.Integer(string="À envoyer", compute="_compute_counts")
+    # --- Ce que CE pair a le droit de m'envoyer -------------------------------------
+    # ⚠️ À ne pas confondre avec `accepted_kinds`, qui est ce que l'instance SAIT
+    # recevoir : une capacité. Ici c'est un consentement, et il se règle par pair.
+    # Entre nous et un client, la distinction ne se voit pas. Chez un client qui
+    # fédère avec cinq partenaires, elle est la différence entre un canal et une
+    # boîte aux lettres ouverte.
+    inbound_policy = fields.Selection(
+        [("all", "Tout ce que je sais recevoir"), ("listed", "Seulement ce qui est coché")],
+        string="Ce que ce pair peut m'envoyer", default="all", required=True, tracking=True)
+    inbound_model_ids = fields.Many2many(
+        "ir.model", "federation_peer_inbound_model_rel", "peer_id", "model_id",
+        string="Objets acceptés de ce pair", domain="[('id', 'in', federation_model_ids)]",
+        help="Ce que ce pair a le droit de déposer ici. Les messages, l'archivage et la "
+             "remise suivent l'objet auquel ils se rapportent.")
+    federation_model_ids = fields.Many2many(
+        "ir.model", compute="_compute_federation_models", string="Objets fédérables ici")
+    invitation_email = fields.Char(
+        string="Adresse d'invitation", copy=False,
+        help="À qui envoyer le code. Un code dans une boîte de courriel est un code "
+             "dans une boîte de courriel : il reste à usage unique et limité dans le temps.")
+
     accepted_kinds = fields.Char(
         string="Genres acceptés par le pair", readonly=True, copy=False,
         help="Ce que le pair a annoncé savoir recevoir, au dernier contact. Vide : "
@@ -61,6 +83,29 @@ class FederationPeer(models.Model):
     company_id = fields.Many2one("res.company", string="Société", default=lambda self: self.env.company)
 
     _sql_constraints = [("uuid_unique", "unique(uuid)", "Cet identifiant existe déjà.")]
+
+    def _compute_federation_models(self):
+        noms = list(self.env["federation.federable"]._federation_models().values())
+        modeles = self.env["ir.model"].sudo().search([("model", "in", noms)])
+        for peer in self:
+            peer.federation_model_ids = modeles
+
+    def _inbound_allows(self, kind):
+        """Ce pair a-t-il le droit de nous envoyer ce genre ?
+
+        `ping` passe toujours : c'est le contact, il ne dépose rien. Les verbes
+        génériques qui portent sur un lien existant (message, archivage, remise)
+        héritent du consentement de la famille de cet objet, et c'est le contrôleur
+        qui le résout, parce que lui seul connaît le lien visé.
+        """
+        self.ensure_one()
+        if kind == "ping" or self.inbound_policy == "all":
+            return True
+        famille = (kind or "").partition(".")[0]
+        nom = self.env["federation.federable"]._federation_models().get(famille)
+        if not nom:
+            return False
+        return nom in self.inbound_model_ids.mapped("model")
 
     @api.depends("link_ids", "link_ids.active")
     def _compute_counts(self):
@@ -115,6 +160,41 @@ class FederationPeer(models.Model):
             "state": "invited",
         })
         self.message_post(body=_("Invitation émise, valide %s heures.") % INVITATION_HOURS)
+        return True
+
+    def action_send_invitation(self):
+        """Envoyer l'adresse et le code à qui doit accepter.
+
+        Le code reste à usage unique et borné dans le temps ; ce qui change, c'est
+        qu'il n'a plus à transiter par un canal que personne n'a. La fiche garde la
+        trace de l'envoi et de son destinataire.
+        """
+        self.ensure_one()
+        self._require_admin()
+        destinataire = (self.invitation_email or "").strip()
+        if not destinataire:
+            raise UserError(_("Indiquez l'adresse à qui envoyer l'invitation."))
+        if self.state != "invited" or not self.sudo().invitation_code:
+            self.action_generate_invitation()
+        me = self._our_name()
+        corps = _(
+            "<p>%(nous)s vous invite à fédérer votre Symbifox avec le sien : les objets "
+            "partagés d'un côté paraissent chez l'autre, sans que personne ait besoin d'un "
+            "compte chez l'autre.</p>"
+            "<p>Dans votre Symbifox, <i>Fédération › Accepter une invitation</i> :</p>"
+            "<ul><li>Adresse : <code>%(url)s</code></li>"
+            "<li>Code : <code>%(code)s</code></li></ul>"
+            "<p>Le code ne sert qu'une fois et expire le %(fin)s.</p>"
+        ) % {"nous": html.escape(me), "url": html.escape(self._our_base_url() or ""),
+             "code": html.escape(self.sudo().invitation_code or ""),
+             "fin": self.invitation_expiry and fields.Datetime.to_string(self.invitation_expiry) or ""}
+        self.env["mail.mail"].sudo().create({
+            "subject": _("%s vous invite à fédérer vos Symbifox") % me,
+            "body_html": corps,
+            "email_to": destinataire,
+            "auto_delete": False,
+        }).send()
+        self.message_post(body=_("Invitation envoyée à %s.") % destinataire)
         return True
 
     @api.model
@@ -212,6 +292,21 @@ class FederationPeer(models.Model):
             if not peer.sudo().secret or not peer.sudo().remote_uuid:
                 raise UserError(_("Ce pair n'a jamais été jumelé ; émettez ou acceptez une invitation."))
         self.write({"state": "active"})
+
+    @api.model
+    def _for_partner(self, partner):
+        """Les pairs actifs qui SONT ce contact, sa société, ou l'une de ses personnes.
+
+        C'est ce qui fait qu'un livrable adressé à quelqu'un ne propose que le pair
+        de sa maison, et aucun autre. Chez nous, avec un pair, la question ne se
+        pose pas ; chez un client qui en a cinq, se tromper de destinataire n'est
+        pas une coquille, c'est un incident de confidentialité.
+        """
+        if not partner:
+            return self.browse()
+        maison = partner.commercial_partner_id or partner
+        famille = maison | maison.child_ids | partner
+        return self.search([("state", "=", "active"), ("partner_id", "in", famille.ids)])
 
     def _ensure_partner(self):
         for peer in self:

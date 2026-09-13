@@ -21,6 +21,17 @@ env["federation.document"].remettre(source, peer, titre="Politique v2",
 jamais : les identifiants des deux bases se recouvrent, et le pair n'a que faire
 de nos clés.
 
+## Le destinataire choisit le pair
+
+Un livrable n'a pas de projet qui l'encadre, alors c'est son **destinataire** qui
+le fait : seuls les pairs rattachés à ce contact, à sa maison ou à l'une de ses
+personnes sont proposés. Sans destinataire, aucun pair ne l'est.
+
+Ça ne se voit pas quand on n'a qu'un partenaire. Quand on en a cinq, remettre un
+livrable au mauvais n'est pas une coquille, c'est un incident de
+confidentialité : le geste rend le mauvais partenaire impossible plutôt
+qu'improbable.
+
 ## Ce qui voyage
 
 Titre, référence, version, date de remise, résumé **réduit en texte** (aucun

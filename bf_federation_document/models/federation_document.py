@@ -54,8 +54,10 @@ class FederationDocument(models.Model):
     # bases se recouvrent, et le pair n'a que faire de nos clés.
     source_ref = fields.Reference(selection="_selection_source", string="Produit à partir de", copy=False)
 
-    peer_partner_id = fields.Many2one("res.partner", string="Destinataire", tracking=True,
-                                      help="À qui ce livrable est remis, de notre côté du registre.")
+    peer_partner_id = fields.Many2one(
+        "res.partner", string="Destinataire", tracking=True,
+        help="À qui ce livrable est remis. C'est lui qui décide quel pair peut le "
+             "recevoir : sans destinataire, aucun pair n'est proposé.")
     acknowledged = fields.Boolean(string="Accusé reçu", readonly=True, copy=False, tracking=True)
     acknowledged_on = fields.Datetime(string="Accusé le", readonly=True, copy=False)
     acknowledged_by = fields.Char(string="Accusé par", readonly=True, copy=False)
@@ -73,23 +75,37 @@ class FederationDocument(models.Model):
 
     # --- Le contrat ------------------------------------------------------------------
     def _federation_allowed_peers(self):
-        self.ensure_one()
-        # Un livrable n'a pas de projet qui l'encadre : tout pair actif peut le recevoir.
-        # La retenue est ailleurs, dans le geste de remise, qui est explicite.
-        return self.env["federation.peer"].search([("state", "=", "active")])
+        """Le destinataire choisit le pair, et lui seul.
 
+        Un livrable n'a pas de projet qui l'encadre. Proposer tous les pairs actifs
+        ne se voyait pas tant qu'il n'y en avait qu'un ; chez un client qui fédère
+        avec cinq partenaires, la liste déroulante les montrerait tous les cinq, et
+        remettre un livrable au mauvais partenaire n'est pas une coquille, c'est un
+        incident de confidentialité. Le champ « Destinataire » existe déjà : il
+        devient le cadre, et le mauvais partenaire devient impossible plutôt
+        qu'improbable.
+        """
+        self.ensure_one()
+        return self.env["federation.peer"]._for_partner(self.peer_partner_id)
+
+    @api.depends("peer_partner_id")
     def _compute_federation_allowed(self):
-        """Une seule recherche pour toute la liste : un livrable n'a pas de porteur
-        qui restreindrait les pairs, donc la réponse est la même pour tous."""
-        peers = self.env["federation.peer"].search([("state", "=", "active")])
-        for doc in self:
-            doc.federation_allowed_peer_ids = peers
-            doc.federation_possible = bool(peers)
+        return super()._compute_federation_allowed()
+
+    # ⚠️ `@api.constrains` ne surveille que les champs nommés. La contrainte du socle
+    # ne regarde que `federation_peer_id` : changer le destinataire APRÈS le partage ne la
+    # rejouait pas, et le livrable restait fédéré avec un pair qui n'est plus celui de
+    # son destinataire. La garde doit nommer le champ qui définit la portée.
+    @api.constrains("federation_peer_id", "peer_partner_id")
+    def _check_federation_peer_allowed(self):
+        return super()._check_federation_peer_allowed()
+
 
     def _search_federation_possible(self, operator, value):
         wanted = bool(value) if operator in ("=", "==") else not bool(value)
-        existe = bool(self.env["federation.peer"].search_count([("state", "=", "active")]))
-        return [(1, "=", 1)] if wanted == existe else [(0, "=", 1)]
+        peers = self.env["federation.peer"].search([("state", "=", "active")])
+        return [("peer_partner_id", "in" if wanted else "not in",
+                 peers.mapped("partner_id").ids)]
 
     def _federation_label_the(self):
         return _("le livrable")
@@ -341,8 +357,9 @@ class FederationDocument(models.Model):
             "source_ref": f"{source._name},{source.id}",
             "federation_peer_id": peer.id,
         }
-        if partner:
-            vals["peer_partner_id"] = partner.id
+        # L'appelant a déjà nommé le pair : le destinataire s'en déduit, sinon le
+        # livrable naîtrait sans cadre et la contrainte le refuserait.
+        vals["peer_partner_id"] = (partner or peer.partner_id).id if (partner or peer.partner_id) else False
         if attachments:
             vals["attachment_ids"] = [(6, 0, attachments.ids)]
         return self.create(vals)
