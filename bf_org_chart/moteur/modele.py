@@ -19,6 +19,32 @@ from dataclasses import dataclass, field
 TEINTES = ("neutre", "bleu", "ambre", "vert", "rouge")
 
 
+class CarteTropGrande(ValueError):
+    """Le dessin dépasserait ce qu'un écran et un ouvrier peuvent porter.
+
+    Le moteur ne connaît pas Odoo : il lève cette erreur-ci, et c'est au socle
+    de la traduire en message d'interface.
+    """
+
+
+def lien_sur(lien):
+    """Ne rend un lien que s'il mène quelque part d'inoffensif.
+
+    🔴 `quoteattr` empêche de sortir de l'attribut, pas d'y mettre un schéma
+    actif : `javascript:` dans un `xlink:href` s'exécute avec la session de
+    celui qui clique, puisque le SVG est injecté en HTML brut. Les satellites
+    de la maison n'y mettent qu'un chemin construit sur un entier, mais le
+    contrat est PUBLIC : la garde appartient au rendu, pas à l'appelant.
+    """
+    lien = (lien or "").strip()
+    if lien.startswith("/") and not lien.startswith("//"):
+        return lien
+    bas = lien.lower()
+    if bas.startswith("http://") or bas.startswith("https://"):
+        return lien
+    return ""
+
+
 @dataclass
 class Boite:
     """Un nœud de l'organigramme.
@@ -69,6 +95,10 @@ class Carte:
     legende: list = field(default_factory=list)
     #: Mention de bas de page (source, date d'extraction, avertissement).
     pied: str = ""
+    #: Ce que la SOURCE a dû taire : une structure tronquée, une portée
+    #: réduite. Le plan les reprend, et la page les affiche. Une carte
+    #: incomplète qui ne le dit pas est pire qu'une carte absente.
+    avertissements: list = field(default_factory=list)
 
     def cles(self):
         return [b.cle for b in self.boites]
@@ -88,8 +118,17 @@ class Carte:
             vues.add(b.cle)
             boites.append(b)
         self.boites = boites
-        self.aretes = [
-            a for a in self.aretes
-            if a.de in vues and a.vers in vues and a.de != a.vers
-        ]
+        # ⚠️ Les arêtes se dédoublonnent aussi : deux liens identiques font
+        # croire à la disposition qu'une boîte a deux parents, et la carte
+        # bascule en couches avec deux traits superposés.
+        vues_aretes, aretes = set(), []
+        for a in self.aretes:
+            if a.de not in vues or a.vers not in vues or a.de == a.vers:
+                continue
+            signature = (a.de, a.vers, a.etiquette, a.pointille)
+            if signature in vues_aretes:
+                continue
+            vues_aretes.add(signature)
+            aretes.append(a)
+        self.aretes = aretes
         return self

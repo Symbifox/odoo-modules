@@ -13,6 +13,7 @@ from xml.sax.saxutils import escape, quoteattr
 
 from . import disposition as dsp
 from . import mesure
+from . import modele
 
 # Palette de la maison. Le bleu BF ne sert JAMAIS de couleur de texte : il
 # habille les contours et les bandeaux, l'encre reste l'anthracite.
@@ -113,8 +114,9 @@ def rendre(plan, police_url="/bf_org_chart/static/fonts/"):
             corps.append(_texte(b.cx, y + 1, ligne, dsp.T_NOTE, GRIS))
             y += dsp.T_NOTE * dsp.INTERLIGNE
         bloc = "".join(corps)
-        if b.lien:
-            bloc = '<a xlink:href=%s target="_top">%s</a>' % (quoteattr(b.lien), bloc)
+        cible = modele.lien_sur(b.lien)
+        if cible:
+            bloc = '<a xlink:href=%s target="_top">%s</a>' % (quoteattr(cible), bloc)
         p.append(bloc)
 
     p.extend(etiquettes)
@@ -128,7 +130,9 @@ def rendre(plan, police_url="/bf_org_chart/static/fonts/"):
                  'fill="%s" stroke="%s" stroke-width="0.9"/>'
                  % (x, y - 8, fond, contour))
         p.append(_texte(x + 14, y, libelle, 8, GRIS, False, "start"))
-        x += 22 + len(libelle) * 4.4
+        # À la MESURE, comme le PDF : une avance à l'estime
+        # rouvrait exactement la divergence que `mesure` existe pour fermer.
+        x += 22 + mesure.largeur(libelle, 8)
     if plan.pied:
         p.append(_texte(plan.largeur - dsp.MARGE_PAGE, y, plan.pied, 7.5,
                         GRIS, False, "end"))

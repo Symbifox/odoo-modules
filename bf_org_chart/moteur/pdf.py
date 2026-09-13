@@ -14,6 +14,7 @@ from reportlab.pdfgen import canvas as rl_canvas
 
 from . import disposition as dsp
 from . import mesure
+from . import modele
 
 PDF_MAX = 14400.0
 
@@ -32,8 +33,13 @@ TEINTES = {
 }
 
 
-def rendre(plan, titre_document=None):
-    """Rend le plan en octets PDF."""
+def rendre(plan, titre_document=None, base_url=""):
+    """Rend le plan en octets PDF.
+
+    `base_url` préfixe les liens des boîtes. Un PDF n'a pas de page d'origine :
+    un lien relatif comme `/odoo/contacts/42` n'y mène nulle part. Sans base,
+    on n'écrit PAS de lien plutôt que d'en écrire un mort.
+    """
     mesure.enregistrer_polices()
     echelle = 1.0
     if max(plan.largeur, plan.hauteur) > PDF_MAX:
@@ -117,8 +123,11 @@ def rendre(plan, titre_document=None):
         for ligne in b.lignes_note:
             c.drawCentredString(b.cx, y(ligne_y + 1), ligne)
             ligne_y += dsp.T_NOTE * dsp.INTERLIGNE
-        if b.lien:
-            c.linkURL(b.lien, (b.x, y(b.y + b.h), b.x + b.w, y(b.y)), relative=0)
+        cible = modele.lien_sur(b.lien)
+        if cible.startswith("/"):
+            cible = (base_url.rstrip("/") + cible) if base_url else ""
+        if cible:
+            c.linkURL(cible, (b.x, y(b.y + b.h), b.x + b.w, y(b.y)), relative=0)
 
     for texte, (ex, ey) in etiquettes:
         larg = mesure.largeur(texte, 7.5, gras=True) + 9

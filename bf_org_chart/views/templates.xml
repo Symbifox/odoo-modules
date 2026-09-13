@@ -18,7 +18,8 @@
                 <header class="o_bfoc_barre">
                     <span class="o_bfoc_titre" t-esc="titre"/>
                     <span class="o_bfoc_actions">
-                        <a t-att-href="url_pdf" class="o_bfoc_bouton o_bfoc_bouton_bleu">PDF</a>
+                        <a t-if="url_pdf" t-att-href="url_pdf"
+                           class="o_bfoc_bouton o_bfoc_bouton_bleu">PDF</a>
                         <a t-att-href="url_retour" class="o_bfoc_bouton">Retour à la fiche</a>
                     </span>
                 </header>

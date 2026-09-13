@@ -19,7 +19,12 @@ class BfOwnership(models.Model):
     _name = "bf.ownership"
     _description = "Lien de détention"
     _order = "owned_id, percent desc, id"
-    _rec_name = "display_name"
+    #: 🔴 NE JAMAIS écrire `_rec_name = "display_name"` : `name_search` bâtit
+    #: alors le domaine `[("display_name", "ilike", …)]`, que le champ calculé
+    #: renvoie à `name_search`, qui rebâtit le même domaine. La boucle ne rend
+    #: jamais la main et tient un processus Odoo à 100 % de CPU. Mesuré le
+    #: 2026-09-13. Un lien se cherche par l'un de ses deux partenaires.
+    _rec_names_search = ["owner_id", "owned_id"]
 
     owner_id = fields.Many2one(
         "res.partner", string="Détenteur", required=True, index=True,
@@ -58,10 +63,12 @@ class BfOwnership(models.Model):
     _sql_constraints = [
         ("percent_borne", "CHECK (percent >= 0 AND percent <= 100)",
          "Un pourcentage de détention se tient entre 0 et 100."),
-        ("lien_unique",
-         "UNIQUE (owner_id, owned_id, share_class, date_effet)",
-         "Ce lien de détention est déjà inscrit pour cette catégorie et cette date."),
     ]
+    # 🔴 `UNIQUE (owner_id, owned_id, share_class, date_effet)` ne contraignait
+    # RIEN dans le cas courant : `share_class` et `date_effet` sont facultatifs,
+    # Odoo écrit un Char vide en NULL, et PostgreSQL tient deux NULL pour
+    # distincts dans un index unique. Trois lignes rigoureusement identiques
+    # passaient. La garde est donc en Python, où NULL et vide se valent.
 
     @api.depends("owner_id", "owned_id", "percent")
     def _compute_display_name(self):
@@ -76,6 +83,28 @@ class BfOwnership(models.Model):
         valeur = self.percent or 0.0
         texte = ("%.3f" % valeur).rstrip("0").rstrip(".")
         return "%s %%" % (texte or "0")
+
+    @api.constrains("owner_id", "owned_id", "share_class", "date_effet", "active")
+    def _check_pas_de_doublon(self):
+        """Deux fois le même lien, c'est une saisie rejouée, pas une structure."""
+        for lien in self:
+            if not lien.active:
+                continue
+            jumeaux = self.search([
+                ("id", "!=", lien.id),
+                ("owner_id", "=", lien.owner_id.id),
+                ("owned_id", "=", lien.owned_id.id),
+                ("active", "=", True),
+            ])
+            for jumeau in jumeaux:
+                meme_categorie = (jumeau.share_class or "") == (lien.share_class or "")
+                meme_date = (jumeau.date_effet or False) == (lien.date_effet or False)
+                if meme_categorie and meme_date:
+                    raise ValidationError(_(
+                        "Ce lien est déjà inscrit : %(a)s détient %(b)s, même "
+                        "catégorie d'actions et même date d'entrée en vigueur. "
+                        "Modifiez la ligne existante plutôt que d'en ajouter une.",
+                        a=lien.owner_id.display_name, b=lien.owned_id.display_name))
 
     @api.constrains("owner_id", "owned_id")
     def _check_pas_soi_meme(self):
@@ -112,8 +141,21 @@ class BfOwnership(models.Model):
                 ]).mapped("owned_id").ids
 
     def _est_en_vigueur(self, a_la_date=None):
+        """Le lien porte-t-il à cette date ?
+
+        🔴 La première version ne lisait que `date_fin` : une convention signée
+        aujourd'hui pour le 1er janvier prochain était dessinée et comptée
+        aujourd'hui, et une succession historique (100 % depuis 2020, puis 60 %
+        depuis 2024) totalisait 160 % et teintait la fiche en rouge sur une
+        structure parfaitement correcte. Mesuré le 2026-09-13.
+
+        ⚠️ Un lien sans `date_fin` porte toujours : pour remplacer une part, on
+        ferme l'ancienne ligne, on n'en empile pas une seconde.
+        """
         self.ensure_one()
         jour = a_la_date or fields.Date.context_today(self)
+        if self.date_effet and self.date_effet > jour:
+            return False
         if self.date_fin and self.date_fin < jour:
             return False
         return True

@@ -176,9 +176,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.3.7.1 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks: folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
 | `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.0.1 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
-| `bf_org_chart` | Organigrammes : le moteur de dessin | 18.0.1.0.0 | BUSL-1.1 | Une géométrie, deux rendus : l'organigramme à l'écran et le même en PDF |
-| `bf_org_chart_ownership` | Organigramme de détention | 18.0.1.0.0 | BUSL-1.1 | Qui détient quoi, pour quelle part, et le dessin qui va avec |
-| `bf_org_chart_people` | Organigramme des personnes | 18.0.1.0.0 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |
+| `bf_org_chart` | Organigrammes : le moteur de dessin | 18.0.1.1.0 | BUSL-1.1 | Une géométrie, deux rendus : l'organigramme à l'écran et le même en PDF |
+| `bf_org_chart_ownership` | Organigramme de détention | 18.0.1.1.0 | BUSL-1.1 | Qui détient quoi, pour quelle part, et le dessin qui va avec |
+| `bf_org_chart_people` | Organigramme des personnes | 18.0.1.1.0 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |
 | `bf_otp` | Symbifox OTP | 18.0.10.0.0 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
 | `bf_outreach` | Campagnes de démarchage | 18.0.1.2.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.0.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |

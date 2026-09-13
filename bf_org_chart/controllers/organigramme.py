@@ -13,7 +13,7 @@ import logging
 from markupsafe import Markup
 
 from odoo import http
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError, MissingError, UserError
 from odoo.http import request
 from ..moteur import svg as moteur_svg
 
@@ -30,7 +30,9 @@ class Organigramme(http.Controller):
             raise request.not_found()
         try:
             enr.check_access("read")
-        except AccessError:
+        except (AccessError, MissingError):
+            # Refus de droits et fiche disparue rendent la MÊME réponse : dire
+            # laquelle des deux, c'est déjà dire si l'enregistrement existe.
             raise request.not_found()
         if not enr.exists():
             raise request.not_found()
@@ -53,6 +55,12 @@ class Organigramme(http.Controller):
             # le code SVG en clair au lieu du dessin.
             dessin = Markup(moteur_svg.rendre(plan))
             erreur = None
+        except (AccessError, MissingError):
+            # 🔴 En 18.0, AccessError et MissingError HÉRITENT de UserError :
+            # un `except UserError` seul affichait un refus de droits comme un
+            # avertissement de dessin, et le message étendu d'ir.rule nomme les
+            # enregistrements refusés en mode développeur.
+            raise request.not_found()
         except UserError as exc:
             plan, dessin = None, Markup("")
             erreur = exc.args[0] if exc.args else str(exc)
@@ -62,7 +70,9 @@ class Organigramme(http.Controller):
             "dessin": dessin,
             "erreur": erreur,
             "avertissements": plan.avertissements if plan else [],
-            "url_pdf": enr._org_chart_url(code, "pdf"),
+            # Pas de bouton PDF sur une page qui vient d'échouer : il mènerait
+            # à la même erreur, en 500 cette fois.
+            "url_pdf": enr._org_chart_url(code, "pdf") if not erreur else "",
             "url_retour": "/odoo/%s/%s" % (modele.replace(".", "-"), enr.id),
         })
         return request.make_response(html, [("Content-Type", "text/html; charset=utf-8")])
@@ -72,7 +82,14 @@ class Organigramme(http.Controller):
     def fichier_pdf(self, modele, res_id, code, **kw):
         enr = self._source(modele, res_id)
         genre = self._genre_connu(enr, code)
-        contenu = enr._org_chart_pdf(code)
+        try:
+            contenu = enr._org_chart_pdf(code)
+        except (AccessError, MissingError):
+            raise request.not_found()
+        except UserError as exc:
+            # La page rend l'erreur dans un encart; le fichier, lui, n'a pas
+            # d'encart : il vaut mieux une 404 lisible qu'une 500 muette.
+            raise request.not_found(exc.args[0] if exc.args else str(exc))
         nom = "%s - %s.pdf" % (
             (enr.display_name or "organigramme")[:60].replace("/", "-"),
             genre["libelle"])

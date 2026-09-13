@@ -85,3 +85,72 @@ class TestOrganigrammePersonnes(TransactionCase):
         self.assertEqual(action["type"], "ir.actions.act_url")
         self.assertIn("/bf/organigramme/res.partner/%s/personnes" % self.societe.id,
                       action["url"])
+
+    def test_le_compte_qui_decide_du_bouton(self):
+        """🔴 Ce compte décide si le bouton s'affiche sur une fiche de SOCIÉTÉ.
+        La mutation qui le forçait à zéro ne cassait aucun essai : le bouton
+        pouvait disparaître sans un mot."""
+        self.assertEqual(self.societe.org_chart_people_count, 3,
+                         "la société compte ses trois personnes liées")
+        muette = self.env["res.partner"].create({"name": "Sans chaîne", "is_company": True})
+        self.env["res.partner"].create({"name": "Isolé", "parent_id": muette.id})
+        self.assertEqual(muette.org_chart_people_count, 0,
+                         "sans supérieur inscrit, le bouton n'a rien à montrer")
+        self.assertEqual(self.dti.org_chart_people_count, 1,
+                         "une personne dans une chaîne porte le bouton")
+
+    def test_le_compte_et_le_dessin_voient_la_meme_chose(self):
+        """Le compte et la carte doivent avoir la MÊME portée, sinon le bouton
+        se cache devant un dessin qui, lui, aurait du contenu."""
+        carte = self.societe._org_chart_carte("personnes")
+        internes = [b for b in carte.boites if b.teinte != "ambre"]
+        self.assertEqual(len(internes), self.societe.org_chart_people_count)
+
+    def test_une_societe_sous_une_autre_ne_fausse_pas_le_compte(self):
+        """Le cas holding : une société fille pend sous la société mère."""
+        P = self.env["res.partner"]
+        mere = P.create({"name": "Groupe mère", "is_company": True})
+        self.societe.parent_id = mere
+        self.societe.invalidate_recordset()
+        mere.invalidate_recordset()
+        carte = mere._org_chart_carte("personnes")
+        internes = [b for b in carte.boites if b.teinte != "ambre"]
+        self.assertEqual(
+            len(internes), mere.org_chart_people_count,
+            "le compte de la mère et son dessin divergent : le bouton ment")
+
+    def test_une_societe_ne_peut_pas_etre_un_superieur(self):
+        """🔴 Sans cette garde, une société posée en supérieur par RPC entrait
+        dans l'organigramme des personnes comme un supérieur externe."""
+        with self.assertRaises(ValidationError):
+            self.analyste.manager_id = self.societe
+
+    def test_une_societe_n_a_pas_de_superieur(self):
+        with self.assertRaises(ValidationError):
+            self.societe.manager_id = self.pdg
+
+    def test_un_superieur_hors_perimetre_ne_fait_pas_tomber_la_page(self):
+        """🔴 `gens` est filtré par les règles, `manager_id` ne l'est par rien :
+        lire le nom d'un supérieur d'une autre société levait AccessError, et
+        c'est justement le cas que le module revendique de savoir traiter."""
+        voisine = self.env["res.company"].create({"name": "Voisine organigramme"})
+        voisin = self.env["res.users"].create({
+            "name": "Voisin", "login": "voisin_orgchart_people",
+            "company_id": voisine.id, "company_ids": [(6, 0, [voisine.id])],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+        dehors_soc = self.env["res.partner"].create({
+            "name": "Société d'ailleurs", "is_company": True,
+            "company_id": self.env.company.id})
+        dehors = self.env["res.partner"].create({
+            "name": "Patron d'ailleurs", "parent_id": dehors_soc.id,
+            "company_id": self.env.company.id})
+        self.dti.manager_id = dehors
+        societe_voisine = self.societe.with_user(voisin)
+        carte = societe_voisine._org_chart_carte("personnes")
+        self.assertTrue(carte.boites, "la carte doit se rendre malgré tout")
+        self.assertNotIn("Patron d'ailleurs", [b.titre for b in carte.boites])
+
+    def test_le_pied_ne_porte_pas_la_marque_de_la_maison(self):
+        """Le module est distribué : ce pied s'imprime chez un tiers."""
+        carte = self.societe._org_chart_carte("personnes")
+        self.assertNotIn("Blue Fox", carte.pied)

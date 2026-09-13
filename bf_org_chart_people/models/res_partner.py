@@ -21,6 +21,7 @@ class ResPartner(models.Model):
         string="Supérieur immédiat",
         index=True,
         ondelete="set null",
+        domain="[('is_company', '=', False)]",
         help="La personne dont ce contact relève. Distinct de « Société », "
              "qui dit où il travaille.",
     )
@@ -69,6 +70,26 @@ class ResPartner(models.Model):
         compte = {sup.id: n for sup, n in groupes}
         for fiche in self:
             fiche.subordinate_count = compte.get(fiche.id, 0)
+
+    @api.constrains("manager_id", "is_company")
+    def _check_manager_est_une_personne(self):
+        """Une société ne relève de personne, et personne ne relève d'une société.
+
+        🔴 Mesuré le 2026-09-13 : sans cette garde, une société posée en
+        « supérieur immédiat » par RPC entrait dans l'organigramme des
+        personnes comme un supérieur externe. Le domaine du champ ne garde que
+        l'écran; l'import, lui, passe à côté.
+        """
+        for fiche in self:
+            if fiche.manager_id and fiche.manager_id.is_company:
+                raise ValidationError(_(
+                    "« %(nom)s » est une société : une personne relève de "
+                    "quelqu'un, pas d'une entreprise. Le rattachement à une "
+                    "entreprise, c'est le champ « Société ».",
+                    nom=fiche.manager_id.display_name))
+            if fiche.is_company and fiche.manager_id:
+                raise ValidationError(_(
+                    "Une société n'a pas de supérieur immédiat."))
 
     @api.constrains("manager_id")
     def _check_manager_recursion(self):
@@ -125,15 +146,27 @@ class ResPartner(models.Model):
         externes qu'il faut bien montrer pour que la chaîne tienne debout."""
         self.ensure_one()
         racine = self._org_chart_racine()
-        gens = self.search([
-            ("id", "child_of", racine.id), ("is_company", "=", False),
-        ])
-        externes = self.browse()
-        for fiche in gens:
-            sup = fiche.manager_id
-            if sup and sup not in gens:
-                externes |= sup
-        return gens, externes
+        # ⚠️ MÊME portée que `org_chart_people_count`, qui décide de
+        # l'affichage du bouton : `child_of` ramassait aussi les contacts des
+        # sociétés filles, que le compte, lui, ne voyait pas. Le bouton se
+        # cachait alors devant un dessin qui avait du contenu.
+        gens = self.search(
+            [("commercial_partner_id", "=", racine.id), ("is_company", "=", False)],
+            # ⚠️ Borner ICI, pas après : le plafond du socle compte des boîtes
+            # déjà construites, donc tout le travail est déjà payé quand il se
+            # déclenche. Une société à 20 000 contacts coûtait une seconde de
+            # processeur pour finir sur un refus.
+            limit=self.PLAFOND_BOITES + 1)
+        # `sup not in gens` est un `in` sur un tuple d'identifiants : quadratique.
+        dedans = set(gens.ids)
+        externes_ids = {f.manager_id.id for f in gens
+                        if f.manager_id and f.manager_id.id not in dedans}
+        externes = self.browse(sorted(externes_ids))
+        # 🔴 `gens` est filtré par les règles d'enregistrement, `manager_id` ne
+        # l'est par rien : un supérieur d'une autre société faisait tomber la
+        # page sur un AccessError au moment de lire son nom. C'est justement le
+        # cas que le module revendique de savoir traiter.
+        return gens, externes._filtered_access("read")
 
     def _org_chart_carte(self, code):
         if code != "personnes":
@@ -145,7 +178,14 @@ class ResPartner(models.Model):
             titre=racine.display_name or _("Organigramme"),
             sous_titre=_("Organigramme des personnes, relevé du %s",
                          fields.Date.to_string(fields.Date.context_today(self))),
-            pied=_("Blue Fox"),
+            avertissements=(
+                [_("Seules les %s premières personnes sont dessinées.",
+                   self.PLAFOND_BOITES)]
+                if len(gens) > self.PLAFOND_BOITES else []),
+            # ⛔ Pas de marque de la maison ici : le module est distribué, et
+            # ce pied-là s'imprimerait au bas de l'organigramme d'un tiers.
+            pied=_("Relevé dans Odoo le %s",
+                   fields.Date.to_string(fields.Date.context_today(self))),
         )
         for fiche in gens + externes:
             teinte = "neutre"

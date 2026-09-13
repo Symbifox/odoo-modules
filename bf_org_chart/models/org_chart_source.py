@@ -39,6 +39,13 @@ class OrgChartSource(models.AbstractModel):
 
     # --- ce que le socle fait, et que les satellites n'ont pas à refaire ----
     def _org_chart_plan(self, code):
+        """Rend le plan, ou un message clair. Jamais une page 500.
+
+        ⚠️ Le plafond ci-dessous est un FILET : il compte des boîtes déjà
+        construites, donc tout le travail est déjà payé quand il se déclenche.
+        C'est au satellite de borner sa recherche en amont, avec
+        `PLAFOND_BOITES` comme limite; voir `_org_chart_carte`.
+        """
         self.ensure_one()
         carte = self._org_chart_carte(code)
         if not isinstance(carte, modele.Carte):
@@ -48,14 +55,21 @@ class OrgChartSource(models.AbstractModel):
                 "L'organigramme compte %(n)s boîtes, au-delà des %(max)s que "
                 "le dessin sait tenir. Réduire la portée avant de recommencer.",
                 n=len(carte.boites), max=self.PLAFOND_BOITES))
-        return disposition.disposer(carte)
+        try:
+            return disposition.disposer(carte)
+        except modele.CarteTropGrande as trop:
+            raise UserError(_(
+                "Cet organigramme ne peut pas être dessiné : %s", str(trop)))
 
     def _org_chart_svg(self, code):
         return svg.rendre(self._org_chart_plan(code))
 
     def _org_chart_pdf(self, code):
         plan = self._org_chart_plan(code)
-        return pdf.rendre(plan, titre_document=plan.titre)
+        # Les boîtes portent un lien RELATIF, qui va bien à l'écran et ne mène
+        # nulle part dans un PDF : on lui donne ici la base de l'instance.
+        return pdf.rendre(plan, titre_document=plan.titre,
+                          base_url=self.get_base_url())
 
     def _org_chart_url(self, code, format_=""):
         self.ensure_one()

@@ -17,6 +17,7 @@ dire. Un organigramme saisi à la main finit toujours par en contenir une.
 from dataclasses import dataclass, field
 
 from . import mesure
+from . import modele
 
 # --- métrique du dessin, en points PDF ---------------------------------------
 BOITE_L = 190.0
@@ -32,6 +33,17 @@ H_PIED = 34.0
 #: passer une arête qui saute ce niveau. Sans lui, le trait traverse une boîte.
 RELAIS_L = 14.0
 RELAIS_H = 6.0
+#: 🔴 Le plafond de boîtes du socle ne voit PAS les relais, et ce sont eux qui
+#: coûtent : 400 boîtes en chaîne plus une arête directe depuis le sommet vers
+#: chaque niveau donnent 79 000 relais, un SVG de 3,1 Mo et une toile de neuf
+#: mètres sur douze. Mesuré le 2026-09-13. Le moteur borne donc ce qu'il
+#: fabrique lui-même, et la surface qu'il rend.
+PLAFOND_RELAIS = 3000
+PLAFOND_SURFACE = 30_000_000.0
+#: ⚠️ L'aire seule ne suffit pas : un éventail de 390 enfants fait 83 000 pt de
+#: large sur 250 de haut, soit 21 millions, sous le plafond d'aire, et pourtant
+#: illisible et lourd pour un navigateur. On borne aussi chaque côté.
+PLAFOND_COTE = 20_000.0
 
 
 @dataclass
@@ -117,26 +129,36 @@ def _graphe(carte):
 def _couper_les_boucles(carte, enfants, parents):
     """Écarte les arêtes de retour, et rend la liste de ce qui a été coupé.
 
-    Parcours en profondeur avec trois couleurs. Une arête vers un nœud encore
-    gris referme un cycle : on la retire du graphe ET de la carte, pour que les
-    deux rendus ne la voient jamais.
+    Parcours en profondeur à trois couleurs, avec une pile EXPLICITE. 🔴 La
+    version récursive tombait en `RecursionError` vers 498 boîtes, c'est-à-dire
+    une trentaine au-dessus du plafond de 400, et la pile d'un ouvrier HTTP
+    porte déjà des dizaines de cadres : la marge réelle était nulle, et la
+    rupture n'était pas un message mais une page 500.
     """
     couleur, coupees = {c: 0 for c in enfants}, []
-
-    def descendre(n):
-        couleur[n] = 1
-        for f in list(enfants[n]):
-            if couleur[f] == 1:
-                coupees.append((n, f))
-                enfants[n].remove(f)
-                parents[f].remove(n)
-            elif couleur[f] == 0:
-                descendre(f)
-        couleur[n] = 2
-
-    for n in list(enfants):
-        if couleur[n] == 0:
-            descendre(n)
+    for depart in list(enfants):
+        if couleur[depart] != 0:
+            continue
+        couleur[depart] = 1
+        pile = [(depart, iter(list(enfants[depart])))]
+        while pile:
+            n, suite = pile[-1]
+            descendu = False
+            for f in suite:
+                if couleur.get(f) == 1:
+                    coupees.append((n, f))
+                    if f in enfants[n]:
+                        enfants[n].remove(f)
+                    if n in parents[f]:
+                        parents[f].remove(n)
+                elif couleur.get(f) == 0:
+                    couleur[f] = 1
+                    pile.append((f, iter(list(enfants[f]))))
+                    descendu = True
+                    break
+            if not descendu:
+                couleur[n] = 2
+                pile.pop()
     if coupees:
         perdues = {(de, vers) for de, vers in coupees}
         carte.aretes = [a for a in carte.aretes if (a.de, a.vers) not in perdues]
@@ -177,47 +199,57 @@ def _y_des_niveaux(plans, niveau):
     return ys, bas
 
 
+def _ordre_descendant(racines, enfants):
+    """Les nœuds, parents avant enfants. Sans récursion, et sans repasser."""
+    ordre, vus = [], set()
+    file = list(racines)
+    while file:
+        n = file.pop(0)
+        if n in vus:
+            continue
+        vus.add(n)
+        ordre.append(n)
+        file.extend(f for f in enfants[n] if f not in vus)
+    return ordre
+
+
 def _disposer_arbre(carte, plans, enfants, parents, niveau):
-    """Parent centré sur ses enfants, sous-arbres posés côte à côte."""
+    """Parent centré sur ses enfants, sous-arbres posés côte à côte.
+
+    Trois passes, toutes itératives : la largeur de chaque sous-arbre en
+    remontant, la marge gauche en descendant, puis les abscisses en remontant.
+    """
     ys, _bas = _y_des_niveaux(plans, niveau)
     racines = [c for c in carte.cles() if not parents[c]]
+    ordre = _ordre_descendant(racines, enfants)
+    place = set(ordre)
 
     largeurs = {}
-
-    def largeur_sous_arbre(n, vus):
-        if n in largeurs:
-            return largeurs[n]
-        vus = vus | {n}
-        fils = [f for f in enfants[n] if f not in vus]
+    for n in reversed(ordre):
+        fils = [f for f in enfants[n] if f in place]
         if not fils:
             largeurs[n] = plans[n].w
         else:
-            total = sum(largeur_sous_arbre(f, vus) for f in fils)
-            total += ESPACE_H * (len(fils) - 1)
+            total = sum(largeurs[f] for f in fils) + ESPACE_H * (len(fils) - 1)
             largeurs[n] = max(plans[n].w, total)
-        return largeurs[n]
 
+    gauche, curseur = {}, MARGE_PAGE
     for r in racines:
-        largeur_sous_arbre(r, set())
-
-    def poser(n, gauche, vus):
-        vus = vus | {n}
-        fils = [f for f in enfants[n] if f not in vus]
-        plans[n].y = ys[niveau[n]]
-        if not fils:
-            plans[n].x = gauche + (largeurs[n] - plans[n].w) / 2.0
-            return
-        curseur = gauche
-        for f in fils:
-            poser(f, curseur, vus)
-            curseur += largeurs[f] + ESPACE_H
-        premier, dernier = plans[fils[0]], plans[fils[-1]]
-        plans[n].x = (premier.cx + dernier.cx) / 2.0 - plans[n].w / 2.0
-
-    curseur = MARGE_PAGE
-    for r in racines:
-        poser(r, curseur, set())
+        gauche[r] = curseur
         curseur += largeurs[r] + ESPACE_H * 2
+    for n in ordre:
+        depart = gauche.get(n, MARGE_PAGE)
+        for f in [f for f in enfants[n] if f in place]:
+            gauche[f] = depart
+            depart += largeurs[f] + ESPACE_H
+
+    for n in reversed(ordre):
+        plans[n].y = ys[niveau[n]]
+        fils = [f for f in enfants[n] if f in place]
+        if not fils:
+            plans[n].x = gauche[n] + (largeurs[n] - plans[n].w) / 2.0
+        else:
+            plans[n].x = (plans[fils[0]].cx + plans[fils[-1]].cx) / 2.0 - plans[n].w / 2.0
 
 
 def _relayer(carte, plans, niveau):
@@ -252,6 +284,11 @@ def _relayer(carte, plans, niveau):
         enfants[precedent].append(v)
         parents[v].append(precedent)
         chaines[(u, v)] = chaine
+        if compteur > PLAFOND_RELAIS:
+            raise modele.CarteTropGrande(
+                "Le dessin demanderait plus de %s couloirs de passage : la "
+                "structure saute trop de niveaux pour tenir sur une page."
+                % PLAFOND_RELAIS)
     return enfants, parents, chaines
 
 
@@ -349,13 +386,17 @@ def _decoller_les_etiquettes(aretes):
         couloirs.setdefault(round(a.etiquette_xy[1], 1), []).append(a)
     for _y, lot in couloirs.items():
         lot.sort(key=lambda a: a.etiquette_xy[0])
+        # ⚠️ Deux crans seulement retombaient sur la même hauteur dès la
+        # quatrième étiquette d'un couloir : une détention à cinq actionnaires
+        # directs superposait deux pourcentages. Le cran monte tant qu'il le
+        # faut, et retombe dès qu'une étiquette respire.
         droite_precedente, cran = None, 0
         for a in lot:
             demi = mesure.largeur(a.etiquette, 7.5, gras=True) / 2.0 + 6
             gauche = a.etiquette_xy[0] - demi
             if droite_precedente is not None and gauche < droite_precedente:
-                cran = 1 if cran == 0 else 0
-                a.etiquette_xy = (a.etiquette_xy[0], a.etiquette_xy[1] - 15 * (cran + 1))
+                cran += 1
+                a.etiquette_xy = (a.etiquette_xy[0], a.etiquette_xy[1] - 15 * cran)
             else:
                 cran = 0
             droite_precedente = a.etiquette_xy[0] + demi
@@ -366,7 +407,8 @@ def disposer(carte):
     carte.valider()
     plans = _mesurer(carte)
     plan = Plan(titre=carte.titre, sous_titre=carte.sous_titre,
-                legende=list(carte.legende), pied=carte.pied)
+                legende=list(carte.legende), pied=carte.pied,
+                avertissements=list(carte.avertissements))
     if not carte.boites:
         plan.largeur = 420.0
         plan.hauteur = MARGE_PAGE * 2 + H_ENTETE + H_PIED
@@ -392,4 +434,9 @@ def disposer(carte):
     bas = max(b.bas for b in plan.boites)
     plan.largeur = round(droite + MARGE_PAGE, 2)
     plan.hauteur = round(bas + MARGE_PAGE + H_PIED, 2)
+    if (plan.largeur * plan.hauteur > PLAFOND_SURFACE
+            or plan.largeur > PLAFOND_COTE or plan.hauteur > PLAFOND_COTE):
+        raise modele.CarteTropGrande(
+            "Le dessin ferait %.0f sur %.0f points, soit bien au-delà de ce "
+            "qu'un écran peut porter." % (plan.largeur, plan.hauteur))
     return plan

@@ -85,9 +85,10 @@ class TestDetention(TransactionCase):
     def test_le_groupe_remonte_et_redescend(self):
         self._lien(self.holding, self.filiale, 100)
         self._lien(self.filiale, self.petite, 75)
-        groupe = self.filiale._org_chart_groupe()
+        groupe, tronque = self.filiale._org_chart_groupe()
         self.assertEqual(set(groupe.ids),
                          {self.holding.id, self.filiale.id, self.petite.id})
+        self.assertFalse(tronque, "trois étages ne tronquent rien")
 
     def test_plafond_de_boites(self):
         """Au-delà du plafond, on refuse de dessiner plutôt que de figer Odoo."""
@@ -99,3 +100,66 @@ class TestDetention(TransactionCase):
         with patch.object(type(self.filiale), "PLAFOND_BOITES", 2):
             with self.assertRaises(UserError):
                 self.filiale._org_chart_plan("detention")
+
+    def test_chercher_un_lien_par_son_nom_rend_la_main(self):
+        """🔴 Avec `_rec_name = "display_name"`, cet appel ne rendait JAMAIS la
+        main : le champ calculé renvoyait à name_search, qui rebâtissait le même
+        domaine, à 100 % de CPU. L'essai qui l'aurait vu est celui-ci."""
+        lien = self._lien(self.holding, self.filiale, 60)
+        trouves = self.Lien.name_search("9012-3456")
+        self.assertIn(lien.id, [i for i, _nom in trouves],
+                      "un lien se cherche par le nom de son détenteur")
+        trouves = self.Lien.name_search("Souci Plastique")
+        self.assertIn(lien.id, [i for i, _nom in trouves],
+                      "un lien se cherche aussi par le nom de la société détenue")
+        self.assertEqual(self.Lien.name_search("nom-qui-n-existe-pas"), [])
+
+    def test_une_detention_a_venir_ne_compte_pas_aujourd_hui(self):
+        """🔴 `date_effet` n'était lu nulle part : une convention signée pour
+        le 1er janvier prochain était dessinée et comptée aujourd'hui."""
+        from datetime import date, timedelta
+        demain = date.today() + timedelta(days=1)
+        self._lien(self.holding, self.filiale, 100, date_effet=demain)
+        self.filiale.invalidate_recordset()
+        self.assertEqual(self.filiale.ownership_state, "aucune")
+        carte = self.filiale._org_chart_carte("detention")
+        self.assertEqual(carte.aretes, [], "un lien à venir ne se dessine pas")
+
+    def test_une_succession_historique_ne_totalise_pas_160(self):
+        """Le cas qui teintait une structure correcte en rouge : deux lignes
+        pour le même couple, l'ancienne fermée, la nouvelle en vigueur."""
+        from datetime import date, timedelta
+        hier = date.today() - timedelta(days=1)
+        self._lien(self.holding, self.filiale, 100,
+                   date_effet="2020-01-01", date_fin=hier)
+        self._lien(self.holding, self.filiale, 60, date_effet="2024-01-01")
+        self._lien(self.fiducie, self.filiale, 40, date_effet="2024-01-01")
+        self.filiale.invalidate_recordset()
+        self.assertAlmostEqual(self.filiale.ownership_total, 100)
+        self.assertEqual(self.filiale.ownership_state, "complete")
+
+    def test_un_doublon_exact_est_refuse(self):
+        """🔴 `UNIQUE (owner, owned, share_class, date_effet)` ne contraignait
+        rien : les deux dernières colonnes sont facultatives, et PostgreSQL
+        tient deux NULL pour distincts. Trois lignes identiques passaient."""
+        self._lien(self.holding, self.filiale, 100)
+        with self.assertRaises(ValidationError):
+            self._lien(self.holding, self.filiale, 100)
+
+    def test_un_doublon_qui_differe_par_la_categorie_est_accepte(self):
+        self._lien(self.holding, self.filiale, 60, share_class="A")
+        lien = self._lien(self.holding, self.filiale, 40, share_class="B")
+        self.assertTrue(lien.id)
+
+    def test_la_troncature_en_profondeur_est_annoncee(self):
+        """🔴 Neuf sociétés sur quatorze étaient dessinées, sans un mot."""
+        P = self.env["res.partner"]
+        chaine = [P.create({"name": "Étage %02d" % i, "is_company": True})
+                  for i in range(14)]
+        for i in range(13):
+            self._lien(chaine[i], chaine[i + 1], 100)
+        groupe, tronque = chaine[0]._org_chart_groupe()
+        self.assertTrue(tronque, "la structure dépasse le garde-fou")
+        plan = chaine[0]._org_chart_plan("detention")
+        self.assertTrue(plan.avertissements,
+                        "une carte tronquée doit le dire sur la page")

@@ -56,7 +56,11 @@
                 <field name="owned_id"/>
                 <field name="share_class"/>
                 <filter name="filtre_en_vigueur" string="En vigueur"
-                        domain="['|', ('date_fin', '=', False), ('date_fin', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                        domain="['&amp;',
+                                 '|', ('date_effet', '=', False), ('date_effet', '&lt;=', context_today().strftime('%Y-%m-%d')),
+                                 '|', ('date_fin', '=', False), ('date_fin', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filtre_a_venir" string="À venir"
+                        domain="[('date_effet', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter name="filtre_estimation" string="À valider"
                         domain="[('origine', '=', 'estimation')]"/>
                 <filter name="filtre_sans_vote" string="Sans droit de vote"

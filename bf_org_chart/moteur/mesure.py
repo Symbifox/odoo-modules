@@ -55,28 +55,43 @@ def replier(texte, taille, largeur_max, lignes_max=2, gras=False):
     if not texte:
         return []
     mots, lignes, courante = texte.split(), [], ""
+
+    def couper(mot, debut):
+        """Coupe un mot plus large que la boîte, au caractère.
+
+        🔴 Cette coupe ne valait QUE pour un mot en première position : un mot
+        long précédé d'un mot court (« A investissementstranscontinentaux… »)
+        était posé tel quel et débordait de 41 pt de chaque côté, donc mordait
+        sur la boîte voisine. Mesuré le 2026-09-13.
+        """
+        morceau = debut
+        for car in mot:
+            if largeur(morceau + car, taille, gras) > largeur_max and morceau:
+                lignes.append(morceau)
+                morceau = car
+                if len(lignes) == lignes_max:
+                    return None
+            else:
+                morceau += car
+        return morceau
+
     for mot in mots:
         essai = (courante + " " + mot).strip()
-        if largeur(essai, taille, gras) <= largeur_max or not courante:
-            if largeur(essai, taille, gras) > largeur_max and not courante:
-                # Mot seul trop large : on le coupe au caractère.
-                morceau = ""
-                for car in mot:
-                    if largeur(morceau + car, taille, gras) > largeur_max and morceau:
-                        lignes.append(morceau)
-                        morceau = car
-                        if len(lignes) == lignes_max:
-                            return _ellipser(lignes, morceau, taille, largeur_max, gras)
-                    else:
-                        morceau += car
-                courante = morceau
-                continue
+        if largeur(essai, taille, gras) <= largeur_max:
             courante = essai
-        else:
+            continue
+        if courante:
             lignes.append(courante)
-            courante = mot
+            courante = ""
             if len(lignes) == lignes_max:
-                return _ellipser(lignes, courante, taille, largeur_max, gras)
+                return _ellipser(lignes, mot, taille, largeur_max, gras)
+        if largeur(mot, taille, gras) <= largeur_max:
+            courante = mot
+            continue
+        reste = couper(mot, "")
+        if reste is None:
+            return _ellipser(lignes, mot, taille, largeur_max, gras)
+        courante = reste
     if courante:
         lignes.append(courante)
     return lignes[:lignes_max]

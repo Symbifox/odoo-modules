@@ -62,6 +62,9 @@ class ResPartner(models.Model):
         On remonte les détenteurs ET on redescend les détenues, en largeur, en
         s'arrêtant à `PROFONDEUR_MAX`. Une structure se lit dans les deux sens :
         partir d'une filiale sans montrer son holding ne dit rien.
+
+        Rend `(groupe, tronqué)` : le second dit que la structure continuait
+        au-delà du garde-fou, et la carte doit l'annoncer.
         """
         self.ensure_one()
         Lien = self.env["bf.ownership"]
@@ -81,13 +84,19 @@ class ResPartner(models.Model):
                         suivant.add(fiche.id)
             bord = list(suivant)
             profondeur += 1
-        return self.browse(sorted(vus))
+        # 🔴 Une structure plus profonde que le garde-fou était dessinée
+        # TRONQUÉE, sans un mot : neuf sociétés sur quatorze, et rien ne le
+        # disait. Une carte incomplète qui se tait est pire qu'une carte
+        # absente.
+        # ⚠️ `BaseModel` porte des `__slots__` : on ne colle pas un drapeau sur
+        # un recordset, on le RETOURNE.
+        return self.browse(sorted(vus)), bool(bord)
 
     def _org_chart_carte(self, code):
         if code != "detention":
             return super()._org_chart_carte(code)
         self.ensure_one()
-        groupe = self._org_chart_groupe()
+        groupe, tronque = self._org_chart_groupe()
         liens = self.env["bf.ownership"].search([
             ("owner_id", "in", groupe.ids), ("owned_id", "in", groupe.ids),
             ("active", "=", True),
@@ -97,6 +106,11 @@ class ResPartner(models.Model):
             sous_titre=_("Structure de détention au %s",
                          fields.Date.to_string(fields.Date.context_today(self))),
             pied=_("Saisi dans Odoo, non vérifié au registre"),
+            avertissements=(
+                [_("La structure se poursuit au-delà de %s niveaux : le dessin "
+                   "s'arrête là, et ce n'est pas le groupe entier.",
+                   PROFONDEUR_MAX)]
+                if tronque else []),
         )
         detenues = set(liens.mapped("owned_id").ids)
         for fiche in groupe:
