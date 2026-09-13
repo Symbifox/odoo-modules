@@ -18,7 +18,7 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="%(bf_federation.action_federation_link)d" type="action" class="oe_stat_button" icon="fa-exchange"
                                 context="{'search_default_peer_id': id}">
-                            <field name="link_count" widget="statinfo" string="Tâches fédérées"/>
+                            <field name="link_count" widget="statinfo" string="Objets fédérés"/>
                         </button>
                         <button name="%(bf_federation.action_federation_outbox)d" type="action" class="oe_stat_button" icon="fa-paper-plane" groups="base.group_system"
                                 context="{'search_default_peer_id': id, 'search_default_pending': 1}">
@@ -31,6 +31,8 @@
                             <field name="base_url" placeholder="https://…" widget="url"/>
                             <field name="partner_id" readonly="1"/>
                             <field name="last_ping"/>
+                            <field name="accepted_kinds" string="Genres acceptés par le pair"
+                                   placeholder="jamais annoncé" readonly="1"/>
                             <field name="last_error" invisible="not last_error"/>
                         </group>
                         <group string="Ce que je reçois de lui">

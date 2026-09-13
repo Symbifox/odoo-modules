@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_federation_agenda_topic_wizard_form" model="ir.ui.view">
+        <field name="name">federation.agenda.topic.wizard.form</field>
+        <field name="model">federation.agenda.topic.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Proposer un sujet">
+                <field name="agenda_id" invisible="1"/>
+                <div class="alert alert-info" role="status">
+                    Le sujet part chez <field name="peer_name" readonly="1" class="oe_inline"/>,
+                    à examiner. Il n'entrera ni au PDF ni au courriel tant que personne ne l'a accepté.
+                </div>
+                <group>
+                    <field name="name" placeholder="Ce dont il faut parler"/>
+                </group>
+                <group string="Ce qu'il faut en dire">
+                    <field name="description" nolabel="1"/>
+                </group>
+                <footer>
+                    <button name="action_send" type="object" string="Proposer" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_meeting_agenda_form_federation" model="ir.ui.view">
+        <field name="name">meeting.agenda.form.federation</field>
+        <field name="model">meeting.agenda</field>
+        <field name="inherit_id" ref="bf_meeting.meeting_agenda_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info" role="status" invisible="not federation_is_mirror">
+                    Ordre du jour reçu de <field name="federation_peer_id" readonly="1" class="oe_inline"/>.
+                    Il se lit ici. Pour y ajouter quelque chose, proposez un sujet : il partira chez lui à examiner.
+                </div>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_propose_topic" type="object" string="Proposer un sujet"
+                        class="btn-primary" invisible="not federation_is_mirror"/>
+            </xpath>
+            <xpath expr="//field[@name='project_id']" position="after">
+                <field name="federation_is_mirror" invisible="1"/>
+                <field name="federation_possible" invisible="1"/>
+                <field name="federation_allowed_peer_ids" invisible="1"/>
+                <field name="federation_peer_id" invisible="federation_is_mirror or not federation_possible"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

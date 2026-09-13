@@ -11,10 +11,14 @@ _logger = logging.getLogger(__name__)
 BACKOFF_MINUTES = (1, 5, 15, 60, 240)
 MAX_AGE_DAYS = 14          # on insiste deux semaines, puis on abandonne
 KEEP_SENT_DAYS = 7         # les envois réussis, charge comprise, sont purgés après
+# Les genres génériques, valables pour tout objet fédéré. Les genres propres à un
+# modèle (`task.share`, `document.share`, …) s'ajoutent par `selection_add` depuis
+# le module qui apporte le modèle : le socle n'a pas à les connaître.
 KINDS = [
-    ("ping", "Contact"), ("task.share", "Partage d'une tâche"), ("task.card", "Carte de la tâche"),
-    ("task.state", "État"), ("task.day", "Jour d'échéance"), ("message.new", "Message"),
+    ("ping", "Contact"), ("message.new", "Message"),
     ("link.archive", "Retrait"), ("link.restore", "Remise"), ("mirror.dropped", "Miroir retiré"),
+    ("task.share", "Partage d'une tâche"), ("task.card", "Carte de la tâche"),
+    ("task.state", "État"), ("task.day", "Jour d'échéance"),
 ]
 
 
@@ -34,7 +38,7 @@ class FederationOutbox(models.Model):
     sent_at = fields.Datetime(string="Envoyé le")
     last_error = fields.Text(string="Dernière erreur")
     response = fields.Text(string="Réponse du pair")
-    sender_ref = fields.Char(string="Référence de la tâche ici", compute="_compute_sender_ref")
+    sender_ref = fields.Char(string="Référence de l'objet ici", compute="_compute_sender_ref")
 
     def _compute_sender_ref(self):
         for entry in self:
@@ -78,7 +82,7 @@ class FederationOutbox(models.Model):
         link = self.link_id
         return {
             "protocol": transport.PROTOCOL, "kind": self.kind,
-            "sender_ref": sender_ref or (str(link.task_id.id) if link else None),
+            "sender_ref": sender_ref or (str(link.res_id) if link else None),
             "remote_ref": link.remote_ref if link else None,
             "data": data, "sent_at": fields.Datetime.now().isoformat(),
         }
@@ -90,7 +94,7 @@ class FederationOutbox(models.Model):
             self.write({"state": "sent", "sent_at": fields.Datetime.now(), "response": json.dumps(data, ensure_ascii=False)[:2000],
                         "last_error": False})
             link = self.link_id
-            if link and self.kind == "task.share" and data.get("ref"):
+            if link and self.kind.endswith(".share") and data.get("ref"):
                 link.sudo().write({"remote_ref": str(data["ref"])[:64], "remote_url": self.env["federation.link"]._safe_url(data.get("url"))})
             if link and self.kind == "message.new" and data.get("ref"):
                 ref = str(json.loads(self.payload).get("sender_message_ref"))

@@ -1,88 +1,125 @@
-# Federation (`bf_federation`)
+# Fédération (`bf_federation`)
 
-Two Odoo/Symbifox instances that trust each other exchange tasks, without anyone
-needing an account on the other side. Every instance both sends and receives.
+Deux instances Odoo/Symbifox qui se font confiance échangent des objets sans qu'une
+personne ait besoin d'un compte chez l'autre. Chaque instance émet et reçoit.
 
-## Pairing (administrators only)
+Le socle porte le transport (jumelage, signature, boîte de sortie, messages,
+archivage) et **un genre : la tâche**. Les autres genres arrivent par des modules
+satellites qui remplissent le contrat de fédérabilité :
 
-1. On instance A: *Federation › Peers*, create the peer, **Generate an invitation**.
-   Hand instance B, over a safe channel, A's address and the code (valid 48 hours,
-   single use).
-2. On instance B: *Federation › Accept an invitation*: A's address, the code, the
-   user who receives tasks, and whether B's internal notes should travel to A.
-3. B presents the code and its half of the secret; A answers with its own half. The
-   shared secret is derived from both halves, so neither instance chooses it alone.
-   Both peers become active; **Test the connection** sends a signed empty message
-   and waits for the answer.
-
-Every message is signed (HMAC-SHA256 over timestamp, nonce and body), the
-timestamp is bounded to five minutes, a nonce is accepted once, and the body is
-capped at 8 MiB. Only `https://` addresses are accepted (a system parameter,
-`bf_federation.allow_http`, tolerates plain HTTP on a test bench). Errors returned
-to the peer are generic. A received message is written under a local person's
-name **only** when the peer's identity table names them; otherwise under the
-peer organisation's name, with the announced name as a prefix.
-
-## Sharing a task
-
-Set **Federated with** on the task, or use the bulk action **Federate with…**.
-Federating, withdrawing or changing the peer requires the project manager role,
-whichever door is used. Only projects that list a peer under *Settings › Federation
-peers* offer the field; a constraint refuses the rest. The mirror appears on the peer inside a
-closed project "*Peer* (federated)" (followers-only visibility, no partner, three
-stages), assigned to the user the peer chose.
-
-| Travels | Never travels |
+| Module | Ce qu'il fédère |
 |---|---|
-| name, description reduced to text (bullets and links kept) | hours, timesheets |
-| deadline day (in the sender's time zone) | partner, tags |
-| priority, state (flipped) | internal notes, unless the peer opted in for its own side |
-| "Send message" messages, attachments under the cap | attachments above the cap (named only) |
+| `bf_federation_document` | Un livrable remis, versionné, avec accusé de réception |
+| `bf_federation_meeting` | Un ordre du jour en lecture, plus « proposer un sujet » |
+| `bf_federation_process` | Une cartographie et ses versions successives |
+| `bf_federation_discuss` | Un canal Discuss par objet fédéré |
 
-**The state flips**: "Waiting - Client" on the sender becomes "In progress" on the
-receiver; "Done" on the receiver sends the task back "In progress" to the sender.
+## Jumelage (administrateurs)
 
-**A message or note that starts with 🔒 or [private] stays with its author.**
+1. Chez A : *Fédération › Pairs*, créer le pair, **Générer une invitation**.
+   Transmettre à B, par un canal sûr, l'adresse de A et le code (48 h, usage unique).
+2. Chez B : *Fédération › Accepter une invitation* : adresse de A, code, à qui assigner
+   les tâches reçues, et si les notes internes de B doivent partir vers A.
+3. B présente le code et sa part du secret ; A répond avec la sienne. Le secret
+   partagé naît des deux parts, aucune instance ne le choisit seule. Les deux côtés
+   sont actifs ; **Tester la connexion** signe un message vide et attend la réponse.
 
-Removing the peer, archiving or deleting the original task **archives** the mirror;
-nothing is ever deleted on the other side. The other way round, a receiver who
-archives, deletes or detaches its mirror never touches the original: it gets a note
-and stops being federated. A mirror cannot be federated to a third peer. Dragging the
-mirror into "Done" finishes the receiver's part and sends the original back "In
-progress"; a column change that recomputes the state travels too.
+Chaque message est signé (HMAC-SHA256 sur horodatage, nonce et corps), l'horodatage
+est borné à 5 minutes, un nonce ne passe qu'une fois, le corps est plafonné à 8 Mio.
+Seules les adresses `https://` sont acceptées (un paramètre système,
+`bf_federation.allow_http`, tolère le clair sur un banc). Les erreurs rendues au pair
+sont génériques. Un message reçu s'écrit au nom d'une personne d'ici **seulement** si
+la table des personnes appariées du pair la nomme ; sinon au nom de l'organisation du
+pair, avec le nom annoncé en préfixe.
 
-## Outbox
+## Partager une tâche
 
-Every send is journaled (*Federation › Outbox*, administrators), retried with a
-growing delay when the peer does not answer, and abandoned after fourteen days or on
-a definitive refusal. One queue per task: a message never leaves before the share
-that precedes it; a peer that does not answer is skipped for the rest of the pass.
-A send replayed after a lost reply is recognised by the receiver, with no duplicate.
-Cron every two minutes; successful sends are purged after seven days.
+Champ **Fédérée avec** sur la tâche, ou action de masse **Fédérer avec…**. Fédérer,
+retirer ou changer le pair demande le rôle de gestionnaire de projet, par quelque porte
+que ce soit. Seuls les projets qui nomment un pair (*Paramètres › Pairs de fédération*)
+proposent le champ. Le miroir naît chez le pair dans un projet fermé « *Pair* (fédéré) »
+(visibilité abonnés, sans partenaire, trois étapes), assigné à la personne choisie.
 
-## Requirements
+| Voyage | Ne voyage jamais |
+|---|---|
+| nom, description réduite en texte (puces et liens conservés) | heures, feuilles de temps |
+| jour d'échéance (dans le fuseau de l'émetteur) | partenaire, étiquettes |
+| priorité, état (retourné) | notes internes, sauf si le pair l'a choisi pour son côté |
+| messages « Envoyer un message », pièces jointes sous le plafond | pièces jointes au-dessus du plafond (nommées) |
 
-Odoo 18, `project`, `mail`. The optional `bf_task_waiting_states` module adds the
-"Waiting - Client" and "Waiting - External" states the flip table uses; without it
-a task waiting on the other side simply stays "In progress". Source strings are
-French, with a `fr_CA` catalogue; menus read *Fédération › Pairs*, *Accepter une
-invitation*, *Tâches fédérées*, *Liens*, *Boîte de sortie*.
+**L'état se retourne** : « Attente - Client » chez l'émetteur devient « En cours » chez le
+receveur ; « Terminée » chez le receveur ramène la tâche « En cours » chez l'émetteur.
 
-## Language
+**Un message ou une note qui commence par 🔒 ou [privé] reste chez son auteur.**
 
-Source strings are written in French, and the module ships **no** `fr_CA`
-catalogue: it would have nothing to translate, and an identity catalogue freezes
-one release's labels onto the next. The `i18n/bf_federation.pot` template is
-provided for translating into another language.
+Retirer le partage, archiver ou supprimer la tâche d'origine **archive** le miroir ; rien
+ne se supprime de l'autre côté. Dans l'autre sens, le receveur qui archive, supprime ou
+détache son miroir ne touche jamais la tâche d'origine : elle est avertie par une note et
+cesse d'être fédérée. Un miroir ne peut pas être fédéré vers un troisième pair. Glisser
+le miroir dans « Terminé » termine la part du receveur et ramène la tâche d'origine
+« En cours » ; un changement de colonne qui recalcule l'état part aussi.
+
+## Rendre un modèle fédérable
+
+Un modèle devient fédérable en héritant de `federation.federable` et en déclarant
+sa clé de genre, ses verbes propres, et le contrat :
+
+```python
+class MonModele(models.Model):
+    _name = "mon.modele"
+    _inherit = ["mon.modele", "federation.federable"]
+
+    _federation_kind = "chose"          # préfixe des genres, il voyage : il ne change jamais
+    _federation_verbs = ("card",)       # en plus de `share`
+
+    def _federation_allowed_peers(self): ...   # quels pairs le porteur autorise
+    def _federation_card(self): ...            # ce qui part, en types JSON seulement
+    def _federation_receive(self, peer, card): ...       # créer le miroir
+    def _federation_apply_card(self, link, card): ...    # appliquer une carte reçue
+    def _federation_label_the(self): ...       # « la chose », pour les notes
+    def _federation_label_this(self): ...      # « cette chose »
+```
+
+⚠️ Les surcharges de `create`, `write` et `unlink` restent **dans le modèle
+concret**, pas dans le mixin : un mixin qui surcharge `write` se retrouve au fond
+de la MRO, et le socle dispatcherait avant que les modules extérieurs aient fini
+leur écriture. Le mixin fournit quatre crochets (`_federation_hook_create`,
+`_federation_hook_before_write`, `_federation_hook_after_write`,
+`_federation_hook_unlink`) que chaque modèle câble en six lignes.
+
+Le genre s'ajoute à `federation.outbox.kind` par `selection_add`, et le registre
+des modèles fédérables se construit depuis le registre Odoo : un satellite qui
+s'installe ajoute son genre sans que le socle le sache.
+
+## Ce que le pair sait recevoir
+
+`ping` et le jumelage rendent la liste des genres que l'instance accepte, et elle
+est gardée sur la fiche du pair (*Genres acceptés par le pair*). Un pair qui
+n'annonce rien, parce qu'il tourne une version antérieure, reste traité comme
+permissif : on n'empêche pas ce qu'on ne sait pas.
+
+Un genre dont le modèle n'est pas installé chez le receveur, ou un verbe qui ne
+figure pas dans le contrat déclaré du modèle, est refusé en 422. C'est voulu :
+aucun repli n'est inventé pour un objet que l'autre côté ne connaît pas, et le
+réseau ne choisit jamais la méthode appelée.
+
+## Boîte de sortie
+
+Chaque envoi est journalisé (*Fédération › Boîte de sortie*), rejoué avec un délai
+croissant si le pair ne répond pas, abandonné après vingt essais ou sur refus définitif.
+Cron toutes les deux minutes.
+
+## Langue
+
+Les chaînes sont écrites en français à la source, et le module ne livre **pas** de
+catalogue `fr_CA` : il n'aurait rien à traduire, et un catalogue d'identité fige
+les libellés d'une version sur la suivante. Le catalogue `i18n/en_CA.po`
+porte l'anglais : un locataire qui active English (CA) lit l'interface en anglais, pendant que `en_US` reste la source française. Les entrées déjà anglaises y sont laissées vides à dessein, pour que rien ne soit réécrit pour elles. Le gabarit `i18n/bf_federation.pot` est fourni pour traduire vers une langue de plus.
 
 ## Tests
 
-`--test-tags federation`: pairing and unexpected types, signature and replay,
-sharing, state both ways, column changes, messages, notes, the 🔒 marker,
-attachments, deadline, card, removal and re-share, deletion, receiver cleanup, queue
-order and lost replies, escaped notes, access rights, project scope. The tests pair
-the instance with itself.
-
-## Licence
-
-LGPL-3. © Les services de consultation Blue Fox, Inc.
+`--test-tags federation` : jumelage et types inattendus, signature et rejeu, partage,
+état dans les deux sens, changement de colonne, messages, notes, marqueur 🔒, pièces
+jointes, échéance, carte, retrait et remise, suppression, ménage du receveur, ordre de
+la file et réponse perdue, notes échappées, droits. Les tests pairent l'instance avec
+elle-même. Sans `bf_task_waiting_states`, une tâche qui attend l'autre reste « En cours ».

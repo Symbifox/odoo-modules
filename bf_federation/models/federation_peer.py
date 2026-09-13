@@ -51,6 +51,11 @@ class FederationPeer(models.Model):
     link_ids = fields.One2many("federation.link", "peer_id", string="Liens")
     link_count = fields.Integer(string="Tâches fédérées", compute="_compute_counts")
     outbox_pending = fields.Integer(string="À envoyer", compute="_compute_counts")
+    accepted_kinds = fields.Char(
+        string="Genres acceptés par le pair", readonly=True, copy=False,
+        help="Ce que le pair a annoncé savoir recevoir, au dernier contact. Vide : "
+             "jamais annoncé (pair d'une version antérieure), et on n'empêche alors rien.")
+    accepted_kinds_date = fields.Datetime(string="Genres annoncés le", readonly=True, copy=False)
     last_ping = fields.Datetime(string="Dernier contact", readonly=True)
     last_error = fields.Char(string="Dernière erreur", readonly=True)
     company_id = fields.Many2one("res.company", string="Société", default=lambda self: self.env.company)
@@ -117,7 +122,7 @@ class FederationPeer(models.Model):
         return hashlib.sha256(f"{part_a}:{part_b}".encode("utf-8")).hexdigest()
 
     @api.model
-    def _accept_handshake(self, code, remote_part, remote_uuid, remote_base_url, remote_name):
+    def _accept_handshake(self, code, remote_part, remote_uuid, remote_base_url, remote_name, remote_kinds=None):
         """Côté invitant : le pair invité se présente avec le code et sa part du secret.
 
         Rend (pair, part locale) ou (None, None). Le secret naît des deux parts :
@@ -139,6 +144,7 @@ class FederationPeer(models.Model):
         if remote_base_url:
             vals["base_url"] = remote_base_url.rstrip("/")
         peer.write(vals)
+        peer._remember_kinds({"kinds": remote_kinds})
         peer._ensure_partner()
         peer.message_post(body=_("Jumelage accepté par %s.") % transport.clean_text(remote_name or peer.name))
         return peer, local_part
@@ -153,11 +159,13 @@ class FederationPeer(models.Model):
             raise UserError(_("Indiquez d'abord l'adresse du pair."))
         my_part = transport.new_secret()
         payload = {"protocol": transport.PROTOCOL, "code": code, "part": my_part, "uuid": self.sudo().uuid,
-                   "base_url": self._our_base_url(), "name": self._our_name()}
+                   "base_url": self._our_base_url(), "name": self._our_name(),
+                   "kinds": self.env["federation.federable"]._federation_kinds()}
         status, data = self._post("/federation/v1/handshake", payload, signed=False)
         if status != 200 or not data.get("ok") or not isinstance(data.get("part"), str) or not isinstance(data.get("uuid"), str):
             raise UserError(_("Le pair a refusé l'invitation (%s) : %s") % (status, data.get("error") or _("aucun détail")))
         typed = self.name and self.name != self.base_url
+        self._remember_kinds(data)
         self.sudo().write({"secret": self._derive_secret(data["part"], my_part), "remote_uuid": data["uuid"], "state": "active",
                            "name": self.name if typed else (transport.clean_text(data.get("name")) or self.name),
                            "last_ping": fields.Datetime.now(), "invitation_code": False, "invitation_expiry": False})
@@ -165,11 +173,29 @@ class FederationPeer(models.Model):
         self.message_post(body=_("Jumelage établi avec %s.") % self.name)
         return True
 
+    def _remember_kinds(self, data):
+        """Noter ce que le pair dit savoir recevoir. Un pair muet reste permissif."""
+        self.ensure_one()
+        kinds = data.get("kinds")
+        if not isinstance(kinds, list):
+            return
+        clean = sorted({transport.clean_text(k, 40) for k in kinds if isinstance(k, str)} - {""})
+        self.sudo().write({"accepted_kinds": ",".join(clean)[:2000],
+                           "accepted_kinds_date": fields.Datetime.now()})
+
+    def accepts(self, kind):
+        """Le pair sait-il recevoir ce genre ? Un pair qui n'a rien annoncé dit oui."""
+        self.ensure_one()
+        if not self.accepted_kinds:
+            return True
+        return kind in self.accepted_kinds.split(",")
+
     def action_ping(self):
         self.ensure_one()
         self._require_admin()
         status, data = self._post("/federation/v1/ping", {"protocol": transport.PROTOCOL})
         if status == 200 and data.get("ok"):
+            self._remember_kinds(data)
             self.write({"last_ping": fields.Datetime.now(), "last_error": False})
             self.message_post(body=_("Contact établi : %s répond.") % transport.clean_text(data.get("name") or self.name))
             return True
@@ -223,12 +249,16 @@ class FederationPeer(models.Model):
             data = {"error": "réponse inattendue"}
         return resp.status_code, data
 
-    def _enqueue(self, kind, payload, link=None, task=None):
-        """Met une enveloppe en boîte de sortie. La référence de la tâche est figée dans la
-        charge : le lien peut disparaître (tâche supprimée) avant l'envoi."""
+    def _enqueue(self, kind, payload, link=None, record=None):
+        """Met une enveloppe en boîte de sortie. La référence de l'objet est figée dans la
+        charge : le lien peut disparaître (objet supprimé) avant l'envoi."""
         self.ensure_one()
-        task = task or (link and link.task_id)
-        payload = dict(payload or {}, _sender_ref=str(task.id) if task else None)
+        ref = None
+        if record is not None and record:
+            ref = str(record.id)
+        elif link:
+            ref = str(link.res_id)
+        payload = dict(payload or {}, _sender_ref=ref)
         return self.env["federation.outbox"].sudo().create({
             "peer_id": self.id, "link_id": link.id if link else False, "kind": kind,
             "payload": json.dumps(payload, ensure_ascii=False, default=str),

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_federation_document_form" model="ir.ui.view">
+        <field name="name">federation.document.form</field>
+        <field name="model">federation.document</field>
+        <field name="arch" type="xml">
+            <form string="Livrable fédéré">
+                <header>
+                    <button name="action_acknowledge" type="object" string="J'ai lu ce livrable"
+                            class="btn-primary"
+                            invisible="acknowledged or federation_origin != 'remote'"/>
+                    <field name="acknowledged" widget="boolean_toggle" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Titre du livrable"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="reference"/>
+                            <field name="version"/>
+                            <field name="issued_on"/>
+                            <field name="peer_partner_id"/>
+                        </group>
+                        <group>
+                            <field name="federation_possible" invisible="1"/>
+                            <field name="federation_allowed_peer_ids" invisible="1"/>
+                            <field name="federation_peer_id"/>
+                            <field name="federation_origin" readonly="1"/>
+                            <field name="acknowledged_by" readonly="1" invisible="not acknowledged"/>
+                            <field name="acknowledged_on" readonly="1" invisible="not acknowledged"/>
+                            <field name="source_ref" invisible="federation_origin == 'remote'"/>
+                        </group>
+                    </group>
+                    <group string="Ce que c'est">
+                        <field name="summary" nolabel="1" placeholder="Quelques lignes. Aucun balisage ne traverse."/>
+                    </group>
+                    <group string="Fichiers">
+                        <field name="attachment_ids" widget="many2many_binary" nolabel="1"/>
+                        <field name="file_note" readonly="1" invisible="not file_note"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_federation_document_list" model="ir.ui.view">
+        <field name="name">federation.document.list</field>
+        <field name="model">federation.document</field>
+        <field name="arch" type="xml">
+            <list string="Livrables fédérés">
+                <field name="issued_on"/>
+                <field name="name"/>
+                <field name="version"/>
+                <field name="reference" optional="hide"/>
+                <field name="federation_peer_id"/>
+                <field name="federation_origin"/>
+                <field name="acknowledged" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_federation_document_search" model="ir.ui.view">
+        <field name="name">federation.document.search</field>
+        <field name="model">federation.document</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="federation_peer_id"/>
+                <filter name="remis" string="Remis d'ici" domain="[('federation_origin', '=', 'local')]"/>
+                <filter name="recus" string="Reçus d'un pair" domain="[('federation_origin', '=', 'remote')]"/>
+                <separator/>
+                <filter name="a_lire" string="Sans accusé" domain="[('acknowledged', '=', False)]"/>
+                <filter name="inactive" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_peer" string="Pair" context="{'group_by': 'federation_peer_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_federation_document" model="ir.actions.act_window">
+        <field name="name">Livrables fédérés</field>
+        <field name="res_model">federation.document</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_federation_document_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Remettre un livrable à un pair</p>
+            <p>Un titre, une version, une date, un fichier. L'accusé de réception revient,
+               et rien d'autre.</p>
+        </field>
+    </record>
+</odoo>

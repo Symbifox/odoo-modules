@@ -60,7 +60,7 @@ class TestFederation(HttpCase):
         link = self.env["federation.link"].with_context(active_test=False).search(
             [("peer_id", "=", self.peer_a.id), ("remote_ref", "=", str(task.id))], limit=1)
         self.assertTrue(link, "aucun miroir pour %s" % task.name)
-        return link.task_id.with_context(active_test=False)
+        return link._record().with_context(active_test=False)
 
     # --- Jumelage ----------------------------------------------------------------
     def test_01_pairing(self):
@@ -245,7 +245,7 @@ class TestFederation(HttpCase):
         self.peer_b.base_url = "http://localhost:1/"
         task = self.env["project.task"].create({"name": "Sans pair joignable", "project_id": self.project.id,
                                                 "federation_peer_id": self.peer_b.id})
-        entry = self.Outbox.search([("link_id.task_id", "=", task.id)])
+        entry = self.Outbox.search([("link_id.res_id", "=", task.id), ("link_id.res_model", "=", "project.task")])
         self.assertEqual(len(entry), 1)
         self.Outbox._cron_send()
         self.assertEqual(entry.state, "pending")
@@ -318,7 +318,7 @@ class TestFederation(HttpCase):
         task.unlink()
         self._flush()
         self.assertFalse(mirror.active, "supprimer la tâche d'origine archive le miroir")
-        self.assertFalse(self.env["federation.link"].with_context(active_test=False).search([("task_id", "=", mirror.id), ("active", "=", True)]))
+        self.assertFalse(self.env["federation.link"].with_context(active_test=False).search([("res_model", "=", "project.task"), ("res_id", "=", mirror.id), ("active", "=", True)]))
 
     def test_14_receiver_cleanup_never_touches_origin(self):
         from odoo.exceptions import UserError
@@ -336,7 +336,7 @@ class TestFederation(HttpCase):
         self.assertFalse(task.federation_peer_id, "l'original n'est plus marqué fédéré")
         notes = self.env["mail.message"].search([("model", "=", "project.task"), ("res_id", "=", task.id), ("body", "ilike", "miroir de cette tâche")])
         self.assertEqual(len(notes), 1)
-        self.assertFalse(self.env["federation.link"].search([("task_id", "=", task.id)]), "le lien d'origine est fermé")
+        self.assertFalse(self.env["federation.link"].search([("res_model", "=", "project.task"), ("res_id", "=", task.id)]), "le lien d'origine est fermé")
 
     def test_15_stage_change_propagates(self):
         task = self._share()
@@ -366,7 +366,7 @@ class TestFederation(HttpCase):
         task = self.env["project.task"].create({"name": "En panne", "project_id": self.project.id, "federation_peer_id": self.peer_b.id})
         task.with_user(self.admin).message_post(body=Markup("<p>Pendant la panne</p>"), message_type="comment", subtype_xmlid="mail.mt_comment")
         self.Outbox._cron_send()
-        entries = self.Outbox.search([("link_id.task_id", "=", task.id)], order="id")
+        entries = self.Outbox.search([("link_id.res_id", "=", task.id), ("link_id.res_model", "=", "project.task")], order="id")
         self.assertEqual([e.kind for e in entries], ["task.share", "message.new"])
         self.assertEqual(entries[0].attempts, 1)
         self.assertEqual(entries[1].attempts, 0, "le message attend que le partage passe")

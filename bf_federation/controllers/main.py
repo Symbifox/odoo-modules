@@ -56,7 +56,7 @@ class FederationController(http.Controller):
         try:
             peer, part = env["federation.peer"]._accept_handshake(
                 payload.get("code"), payload.get("part"), payload.get("uuid"),
-                payload.get("base_url"), payload.get("name"))
+                payload.get("base_url"), payload.get("name"), payload.get("kinds"))
         except Exception:  # noqa: BLE001
             _logger.exception("federation: handshake failed")
             peer, part = None, None
@@ -65,7 +65,8 @@ class FederationController(http.Controller):
             return _json({"ok": False, "error": "invitation refusée"}, 403)
         me = env["federation.peer"].with_company(peer.company_id)
         return _json({"ok": True, "uuid": peer.sudo().uuid, "part": part,
-                      "name": me._our_name(), "base_url": me._our_base_url()})
+                      "name": me._our_name(), "base_url": me._our_base_url(),
+                      "kinds": env["federation.federable"]._federation_kinds()})
 
     def _authenticate(self, raw):
         headers = request.httprequest.headers
@@ -95,41 +96,68 @@ class FederationController(http.Controller):
         if err:
             return err
         peer.write({"last_ping": fields.Datetime.now()})
-        return _json({"ok": True, "name": _env(peer)["federation.peer"].with_company(peer.company_id)._our_name()})
+        env = _env(peer)
+        return _json({"ok": True, "name": env["federation.peer"].with_company(peer.company_id)._our_name(),
+                      "kinds": env["federation.federable"]._federation_kinds()})
 
     def _dispatch(self, env, peer, kind, sender_ref, data):
-        """Un genre, une méthode. Rend (charge de réponse, code HTTP)."""
+        """Un genre, une méthode. Rend (charge de réponse, code HTTP).
+
+        Deux familles : les verbes génériques, portés par le lien, et les verbes
+        d'un genre, que le lien délègue au modèle. Un genre dont le modèle n'est
+        pas installé ici, ou un verbe qu'il ne connaît pas, est refusé : c'est ce
+        qui permet à deux instances de versions différentes de se parler sans
+        qu'aucune n'invente un repli.
+        """
         Link = env["federation.link"]
+        Federable = env["federation.federable"]
         if kind == "ping":
-            return {"ok": True, "name": env["federation.peer"].with_company(peer.company_id)._our_name()}, 200
-        if kind == "task.share":
+            return {"ok": True, "name": env["federation.peer"].with_company(peer.company_id)._our_name(),
+                    "kinds": Federable._federation_kinds()}, 200
+        family, _sep, verb = kind.partition(".") if isinstance(kind, str) else ("", "", "")
+        if not verb:
+            return {"ok": False, "error": "genre inconnu"}, 422
+        if verb == "share" and family not in ("link", "mirror", "message"):
             if not sender_ref:
                 return {"ok": False, "error": "référence absente"}, 422
-            link = Link._receive_share(peer, str(sender_ref)[:64], data)
-            return {"ok": True, "ref": str(link.task_id.id), "url": link.task_id._federation_card()["url"]}, 200
+            if Federable._federation_model_for(family) is None:
+                return {"ok": False, "error": "genre inconnu"}, 422
+            link = Link._receive_share(peer, family, str(sender_ref)[:64], data)
+            if not link:
+                return {"ok": False, "error": "refusé par le receveur"}, 422
+            record = link._record().exists()
+            url = record._federation_card().get("url") if record else False
+            return {"ok": True, "ref": str(link.res_id), "url": url}, 200
         link = Link.with_context(active_test=False).search(
             [("peer_id", "=", peer.id), ("remote_ref", "=", str(sender_ref or "")[:64])], limit=1)
         if not link:
             return {"ok": False, "error": "lien inconnu"}, 404
-        if kind == "task.card":
-            link._apply_card(data)
-        elif kind == "task.state":
-            link._apply_state(data.get("state"))
-        elif kind == "task.day":
-            if link._apply_day(data.get("day")) is False and transport.valid_day(data.get("day")) is None:
-                return {"ok": False, "error": "charge invalide"}, 422
-        elif kind == "message.new":
+        if kind == "message.new":
             message = link._apply_message(data)
+            if message is None:
+                return {"ok": False, "error": "refusé par le receveur"}, 422
             return {"ok": True, "ref": str(message.id)}, 200
-        elif kind == "link.archive":
+        if kind == "link.archive":
             link._apply_archive(data.get("reason"))
         elif kind == "link.restore":
             link._apply_restore()
         elif kind == "mirror.dropped":
             link._apply_mirror_dropped(data.get("reason"))
         else:
-            return {"ok": False, "error": "genre inconnu"}, 422
-        return {"ok": True, "ref": str(link.task_id.id)}, 200
+            # Un verbe de genre : il doit viser le genre du lien, sinon deux objets
+            # de familles différentes se répondraient par la même référence.
+            if link.kind != family:
+                return {"ok": False, "error": "genre inconnu"}, 422
+            if verb == "card":
+                if link._apply_card(data) is False and not link._record().exists():
+                    return {"ok": False, "error": "lien inconnu"}, 404
+            else:
+                result = link._apply_verb(verb, data)
+                if result is None:
+                    return {"ok": False, "error": "genre inconnu"}, 422
+                if result is False and verb == "day" and transport.valid_day(data.get("day")) is None:
+                    return {"ok": False, "error": "charge invalide"}, 422
+        return {"ok": True, "ref": str(link.res_id)}, 200
 
     @http.route("/federation/v1/inbox", type="http", auth="public", methods=["POST"], csrf=False,
                 save_session=False, max_content_length=MAX_BODY)

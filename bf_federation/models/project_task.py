@@ -1,78 +1,76 @@
+"""La tâche, premier genre fédérable, et le seul qui retourne un état.
+
+Tout ce qui est ici est le contrat de `federation.federable` rempli pour
+`project.task` : la carte, le miroir, les trois verbes propres au genre
+(`card`, `state`, `day`) et les deux tables de retournement d'état.
+
+Le retournement est la seule idée qui ne se devine pas : « Attente - Client »
+chez l'émetteur veut dire « à toi de jouer », donc le miroir naît « En cours » ;
+et « Terminé » chez le receveur veut dire « ma part est finie », donc la tâche
+revient « En cours » chez l'émetteur plutôt que de se fermer.
+"""
+
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 from . import transport
 
-WATCHED = ("name", "description", "priority", "state", "stage_id", "date_deadline", "active", "federation_peer_id")
+# Chez le RECEVEUR d'une tâche (origine distante) : l'état de l'émetteur, retourné.
+STATE_OWNER_TO_MIRROR = {
+    "05_waiting_client": "01_in_progress",      # « à toi de jouer »
+    "01_in_progress": "06_waiting_external",    # l'émetteur y travaille
+    "04_waiting_normal": "04_waiting_normal",
+    "06_waiting_external": "06_waiting_external",
+    "02_changes_requested": "02_changes_requested",
+    "03_approved": "03_approved",
+    "1_done": "1_done",
+    "1_canceled": "1_canceled",
+}
+# Chez l'ÉMETTEUR (origine locale) : ce que le receveur a fait de son miroir.
+STATE_MIRROR_TO_OWNER = {
+    "01_in_progress": "05_waiting_client",
+    "05_waiting_client": "01_in_progress",
+    "06_waiting_external": "01_in_progress",
+    "04_waiting_normal": "04_waiting_normal",
+    "02_changes_requested": "02_changes_requested",
+    "03_approved": "03_approved",
+    "1_done": "01_in_progress",                 # sa part est finie : la tâche revient
+    "1_canceled": "01_in_progress",
+}
+WATCHED = ("name", "description", "priority", "state", "stage_id", "date_deadline", "active",
+           "federation_peer_id")
+
+
+def _state_label(env, state):
+    selection = dict(env["project.task"]._fields["state"]._description_selection(env))
+    return selection.get(state, state or "")
 
 
 class ProjectTask(models.Model):
-    _inherit = "project.task"
+    _name = "project.task"
+    _inherit = ["project.task", "federation.federable"]
 
-    federation_peer_id = fields.Many2one("federation.peer", string="Fédérée avec", copy=False, tracking=True,
-                                         domain="[('state', '=', 'active'), ('id', 'in', federation_allowed_peer_ids)]",
-                                         help="Le pair chez qui cette tâche a un miroir. Vider le champ archive le miroir.")
-    federation_allowed_peer_ids = fields.Many2many("federation.peer", compute="_compute_federation_allowed",
-                                                   string="Pairs permis par le projet")
-    federation_possible = fields.Boolean(compute="_compute_federation_allowed", string="Fédération possible",
-                                         search="_search_federation_possible")
-    federation_link_id = fields.Many2one("federation.link", compute="_compute_federation", string="Lien fédéré",
-                                         search="_search_federation_link_id")
-    federation_remote_url = fields.Char(compute="_compute_federation", string="Chez le pair")
-    federation_origin = fields.Selection([("local", "Partagée d'ici"), ("remote", "Reçue du pair")],
-                                         compute="_compute_federation", string="Origine", search="_search_federation_origin")
+    _federation_kind = "task"
+    _federation_verbs = ("card", "state", "day")
 
-    # Un champ calculé non stocké sans méthode de recherche est écarté EN SILENCE d'un domaine :
-    # « origine = reçue » rendrait toutes les tâches. Chaque champ filtrable a donc sa recherche.
-    def _search_federation_origin(self, operator, value):
-        links = self.env["federation.link"].sudo().search([("origin", operator, value)])
-        return [("id", "in", links.mapped("task_id").ids)]
+    federation_peer_id = fields.Many2one(
+        help="Le pair chez qui cette tâche a un miroir. Vider le champ archive le miroir.")
 
-    def _search_federation_link_id(self, operator, value):
-        links = self.env["federation.link"].sudo().search([("id", operator, value)])
-        return [("id", "in", links.mapped("task_id").ids)]
-
-    def _search_federation_possible(self, operator, value):
-        projects = self.env["project.project"].search([("federation_peer_ids", "!=", False)])
-        wanted = bool(value) if operator in ("=", "==") else not bool(value)
-        return [("project_id", "in" if wanted else "not in", projects.ids)]
-
-    def _federation_link(self, include_inactive=False):
+    # --- Le contrat ----------------------------------------------------------------
+    def _federation_allowed_peers(self):
         self.ensure_one()
-        Link = self.env["federation.link"].sudo()
-        if include_inactive:
-            Link = Link.with_context(active_test=False)
-        return Link.search([("task_id", "=", self.id)], limit=1)
+        return self.project_id.federation_peer_ids
 
-    @api.model
-    def _federation_links_for(self, tasks, include_inactive=False):
-        Link = self.env["federation.link"].sudo()
-        if include_inactive:
-            Link = Link.with_context(active_test=False)
-        return {l.task_id.id: l for l in Link.search([("task_id", "in", tasks.ids)])}
+    def _federation_label_the(self):
+        return _("la tâche")
 
-    @api.depends("project_id.federation_peer_ids")
-    def _compute_federation_allowed(self):
-        for task in self:
-            task.federation_allowed_peer_ids = task.project_id.federation_peer_ids
-            task.federation_possible = bool(task.project_id.federation_peer_ids)
+    def _federation_label_this(self):
+        return _("cette tâche")
 
-    @api.constrains("federation_peer_id", "project_id")
-    def _check_federation_peer_allowed(self):
-        for task in self:
-            peer = task.federation_peer_id
-            if peer and peer not in task.project_id.federation_peer_ids:
-                raise ValidationError(_("Le projet « %s » ne fédère pas avec %s : ajoutez ce pair au projet d'abord.")
-                                      % (task.project_id.display_name, peer.name))
-
-    @api.depends("federation_peer_id")
-    def _compute_federation(self):
-        links = self._federation_links_for(self.filtered("id")) if self.ids else {}
-        for task in self:
-            link = links.get(task.id) or self.env["federation.link"]
-            task.federation_link_id = link
-            task.federation_remote_url = link.remote_url if link else False
-            task.federation_origin = link.origin if link else False
+    def _federation_watched(self):
+        return WATCHED
 
     def _federation_card(self):
         self.ensure_one()
@@ -85,115 +83,162 @@ class ProjectTask(models.Model):
             "url": f"{base}/odoo/project/{self.project_id.id}/tasks/{self.id}" if base else False,
         }
 
-    def _federation_check_writer(self, vals):
-        """Fédérer, retirer ou changer le pair d'une tâche demande le rôle de gestionnaire de projet,
-        quelle que soit la porte (formulaire, liste, RPC)."""
-        if "federation_peer_id" not in vals or self.env.su or self.env.context.get("federation_inbound"):
-            return
-        if not self.env.user.has_group("project.group_project_manager"):
-            raise AccessError(_("Fédérer une tâche demande le rôle de gestionnaire de projet."))
+    @api.model
+    def _federation_receive(self, peer, card):
+        """Le miroir naît dans le projet fermé du pair, assigné à la personne qu'il a choisie."""
+        project = peer._ensure_mirror_project()
+        state = self._federation_available_state(
+            STATE_OWNER_TO_MIRROR.get(card.get("state"), "01_in_progress"))
+        vals = {
+            "name": transport.clean_text(card.get("name"), 500) or _("(sans titre)"),
+            "description": self._federation_mirror_description(peer, card),
+            "priority": card.get("priority") if card.get("priority") in ("0", "1") else "0",
+            "project_id": project.id, "user_ids": [(6, 0, [peer.mirror_user_id.id])], "partner_id": False,
+            "company_id": peer.company_id.id, "federation_peer_id": peer.id,
+        }
+        if "time_of_day_id" in self._fields:
+            vals["time_of_day_id"] = False
+        stage = peer._stage_for(state)
+        if stage:
+            vals["stage_id"] = stage.id
+        task = self.create(vals)
+        task.write({"state": state})
+        day = transport.valid_day(card.get("day"))
+        if day:
+            transport.write_deadline_day(task, day, peer._our_tz())
+        return task
 
-    # --- Émission : ce qui change ici part chez le pair -------------------------------
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            self._federation_check_writer(vals)
-        tasks = super().create(vals_list)
-        if not self.env.context.get("federation_inbound"):
-            for task in tasks.filtered("federation_peer_id"):
-                task._federation_share()
-        return tasks
-
-    def write(self, vals):
-        if self.env.context.get("federation_inbound") or not any(f in vals for f in WATCHED):
-            return super().write(vals)
-        self._federation_check_writer(vals)
-        links = self._federation_links_for(self, include_inactive=True)
-        if not links and "federation_peer_id" not in vals:
-            return super().write(vals)
-        if "federation_peer_id" in vals and vals["federation_peer_id"]:
-            for task in self:
-                link = links.get(task.id)
-                if link and link.origin == "remote" and link.peer_id.id != vals["federation_peer_id"]:
-                    raise UserError(_("Une tâche reçue d'un pair ne peut pas être fédérée avec un autre pair."))
-        tz = self.env["federation.peer"]._our_tz()
-        before = {t.id: {"state": t.state, "day": transport.day_in_zone(t.date_deadline, tz),
-                         "peer": t.federation_peer_id.id, "active": t.active, "stage": t.stage_id.id} for t in self}
-        res = super().write(vals)
-        for task in self:
-            task._federation_after_write(vals, before.get(task.id, {}), links.get(task.id))
-        return res
-
-    def unlink(self):
-        links = self._federation_links_for(self)
-        for task in self:
-            link = links.get(task.id)
-            if not link:
-                continue
-            if link.origin == "local":
-                link.peer_id._enqueue("link.archive", {"reason": _("supprimée")}, link, task=task)
-            else:
-                link.peer_id._enqueue("mirror.dropped", {"reason": _("supprimé")}, link, task=task)
-        return super().unlink()
-
-    def _federation_share(self):
-        """Créer le lien d'origine locale et envoyer la carte complète ; re-partager renvoie
-        la carte complète aussi, pour que le miroir réactivé soit à jour."""
+    def _federation_apply_card(self, link, card):
         self.ensure_one()
-        peer = self.federation_peer_id
-        Link = self.env["federation.link"].sudo().with_context(active_test=False)
-        link = Link.search([("task_id", "=", self.id), ("peer_id", "=", peer.id)], limit=1)
-        card = self._federation_card()
-        if link and link.origin == "remote":
-            raise UserError(_("Une tâche reçue d'un pair ne peut pas être fédérée de nouveau."))
-        if link:
-            link.write({"active": True, "fingerprint": self.env["federation.link"]._card_fingerprint(card),
-                        "last_state_sent": self.state, "last_day_sent": card["day"] or ""})
-            peer._enqueue("task.share", card, link)
-            return link
-        link = Link.create({"peer_id": peer.id, "task_id": self.id, "origin": "local",
-                            "fingerprint": self.env["federation.link"]._card_fingerprint(card),
-                            "last_state_sent": self.state, "last_day_sent": card["day"] or ""})
-        peer._enqueue("task.share", card, link)
+        vals = {"name": transport.clean_text(card.get("name"), 500) or self.name,
+                "priority": card.get("priority") if card.get("priority") in ("0", "1") else "0"}
+        if link.origin == "remote":
+            vals["description"] = self._federation_mirror_description(link.peer_id, card)
+        self._federation_silent().write(vals)
+        # Le partage complet réapplique aussi l'état et le jour : le miroir réactivé
+        # doit être à jour d'un coup, sans attendre le prochain changement.
+        if link.origin == "remote":
+            state = self._federation_available_state(
+                STATE_OWNER_TO_MIRROR.get(card.get("state"), "01_in_progress"))
+            stage = link.peer_id._stage_for(state)
+            task = self._federation_silent()
+            task.write({"state": state, **({"stage_id": stage.id} if stage else {})})
+            day = transport.valid_day(card.get("day"))
+            if day is not None:
+                transport.write_deadline_day(task, day or False, link.peer_id._our_tz())
+        return True
+
+    def _federation_mirror_name(self):
+        self.ensure_one()
+        return self.display_name
+
+    def _federation_notify_partners(self):
+        self.ensure_one()
+        return self.user_ids.mapped("partner_id") | self.project_id.user_id.partner_id
+
+    @api.model
+    def _federation_mirror_description(self, peer, card):
+        header = _("<p><i>Tâche partagée par %s. L'état, le jour d'échéance, les messages et les pièces "
+                   "jointes reviennent chez lui ; un message ou une note qui commence par 🔒 reste ici.</i></p>") \
+            % transport.html.escape(peer.name)
+        text = card.get("description_text") if isinstance(card.get("description_text"), str) else ""
+        return header + transport.text_to_html(text)
+
+    def _federation_share_note(self, peer):
+        self.ensure_one()
         self.sudo().with_context(federation_inbound=True).message_post(
             body=_("Tâche fédérée avec %s : le miroir apparaîtra chez lui au prochain envoi. Ce qui part : nom, "
                    "description en texte, jour d'échéance, priorité, état, messages et pièces jointes sous le plafond. "
                    "Ce qui reste ici : les notes internes, les heures, les feuilles de temps.") % peer.name,
             message_type="comment", subtype_xmlid="mail.mt_note")
-        return link
+
+    # --- Les états ------------------------------------------------------------------
+    @api.model
+    def _federation_available_state(self, state):
+        selection = dict(self._fields["state"].selection)
+        if state in selection:
+            return state
+        # Sans les états d'attente client/externe, une tâche qui attend l'autre reste
+        # « en cours » : l'état « Attente » d'Odoo est réservé aux dépendances et se
+        # réinitialise tout seul.
+        return "01_in_progress"
+
+    def _federation_apply_state(self, link, data):
+        self.ensure_one()
+        remote_state = data.get("state") if isinstance(data.get("state"), str) else ""
+        table = STATE_MIRROR_TO_OWNER if link.origin == "local" else STATE_OWNER_TO_MIRROR
+        new_state = self._federation_available_state(table.get(remote_state, "01_in_progress"))
+        task = self._federation_silent()
+        if link.origin == "remote":
+            stage = link.peer_id._stage_for(new_state)
+            if stage and task.stage_id != stage:
+                task.write({"stage_id": stage.id})
+        if task.state != new_state:
+            task.write({"state": new_state})
+        known = remote_state in dict(self._fields["state"].selection)
+        label = _state_label(self.env, remote_state) if known else transport.clean_text(remote_state, 40)
+        back = _(" : la tâche revient ici") if (link.origin == "local" and new_state == "01_in_progress") else ""
+        note = link._note(Markup(_("<p>Chez %s, la tâche est passée à « %s »%s.</p>")) % (link.peer_id.name, label, back))
+        link._inbox_notify(note)
+        return True
+
+    def _federation_apply_day(self, link, data):
+        self.ensure_one()
+        day = transport.valid_day(data.get("day"))
+        if day is None:
+            return False
+        task = self._federation_silent()
+        # Le jour civil est le même des deux côtés ; l'heure est celle de midi ICI.
+        transport.write_deadline_day(task, day or False, link.peer_id._our_tz())
+        note = link._note(Markup(_("<p>Chez %s, l'échéance a été déplacée au %s.</p>"))
+                          % (link.peer_id.name, day or _("(aucune)")))
+        link._inbox_notify(note)
+        return True
+
+    # --- Émission : les surcharges ORM, ici et pas dans le mixin ----------------------
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            self._federation_check_writer(vals)
+        tasks = super().create(vals_list)
+        tasks._federation_hook_create()
+        return tasks
+
+    def write(self, vals):
+        links, before = self._federation_hook_before_write(vals)
+        res = super().write(vals)
+        self._federation_hook_after_write(vals, links, before)
+        return res
+
+    def unlink(self):
+        self._federation_hook_unlink()
+        return super().unlink()
+
+    @api.constrains("federation_peer_id", "project_id")
+    def _check_federation_peer_allowed(self):
+        for task in self:
+            peer = task.federation_peer_id
+            if peer and peer not in task.project_id.federation_peer_ids:
+                raise ValidationError(_("Le projet « %s » ne fédère pas avec %s : ajoutez ce pair au projet d'abord.")
+                                      % (task.project_id.display_name, peer.name))
+
+    # --- Émission -------------------------------------------------------------------
+    def _federation_before_write(self):
+        self.ensure_one()
+        tz = self.env["federation.peer"]._our_tz()
+        return {"state": self.state, "day": transport.day_in_zone(self.date_deadline, tz),
+                "stage": self.stage_id.id}
+
+    def _federation_remember_sent(self, link):
+        self.ensure_one()
+        tz = self.env["federation.peer"]._our_tz()
+        link.write({"last_state_sent": self.state,
+                    "last_day_sent": transport.day_in_zone(self.date_deadline, tz) or ""})
 
     def _federation_after_write(self, vals, before, link):
         self.ensure_one()
-        tz = self.env["federation.peer"]._our_tz()
-        if "federation_peer_id" in vals:
-            new_peer = self.federation_peer_id
-            if link and link.origin == "remote":
-                if not new_peer and link.active:
-                    # Le receveur détache son miroir : l'original n'est pas touché, il en est averti.
-                    link.peer_id._enqueue("mirror.dropped", {"reason": _("détaché")}, link)
-                    link.active = False
-                return
-            if new_peer:
-                if link and link.peer_id != new_peer and link.active:
-                    link.peer_id._enqueue("link.archive", {"reason": _("retirée du partage")}, link)
-                    link.active = False
-                self._federation_share()
-                return
-            if link and link.active:
-                link.peer_id._enqueue("link.archive", {"reason": _("retirée du partage")}, link)
-                link.active = False
-                return
-        if not link or not link.active:
-            return
         peer = link.peer_id
-        if "active" in vals and before.get("active") != self.active:
-            if link.origin == "remote":
-                if not self.active:
-                    peer._enqueue("mirror.dropped", {"reason": _("archivé")}, link)
-                    link.active = False
-                return
-            peer._enqueue("link.restore" if self.active else "link.archive", {"reason": _("archivée")}, link)
-            return
+        tz = self.env["federation.peer"]._our_tz()
         # Chez le receveur, glisser le miroir dans « Terminé » termine sa part.
         if link.origin == "remote" and "stage_id" in vals and before.get("stage") != self.stage_id.id:
             done_stage = peer._done_stage()
@@ -206,7 +251,8 @@ class ProjectTask(models.Model):
             if fp != link.fingerprint:
                 link.fingerprint = fp
                 peer._enqueue("task.card", card, link)
-        # Un changement d'étape recalcule l'état sans qu'il soit dans vals : on compare, on n'exige pas.
+        # Un changement d'étape recalcule l'état sans qu'il soit dans vals : on compare,
+        # on n'exige pas.
         if before.get("state") != self.state and self.state != link.last_state_sent:
             link.last_state_sent = self.state
             peer._enqueue("task.state", {"state": self.state}, link)
@@ -215,3 +261,13 @@ class ProjectTask(models.Model):
             if day != before.get("day"):
                 link.last_day_sent = day or ""
                 peer._enqueue("task.day", {"day": day, "tz": tz}, link)
+
+    # --- Les recherches, redites ici parce que la tâche est nombreuse ------------------
+    def _search_federation_possible(self, operator, value):
+        projects = self.env["project.project"].search([("federation_peer_ids", "!=", False)])
+        wanted = bool(value) if operator in ("=", "==") else not bool(value)
+        return [("project_id", "in" if wanted else "not in", projects.ids)]
+
+    @api.depends("project_id.federation_peer_ids")
+    def _compute_federation_allowed(self):
+        return super()._compute_federation_allowed()

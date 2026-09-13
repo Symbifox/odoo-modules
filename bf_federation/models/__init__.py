@@ -1,4 +1,5 @@
 from . import transport
+from . import federation_federable
 from . import federation_peer
 from . import federation_link
 from . import federation_outbox

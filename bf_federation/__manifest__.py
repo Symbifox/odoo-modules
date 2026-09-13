@@ -1,15 +1,20 @@
 {
     "name": "Fédération",
-    "version": "18.0.1.1.2",
+    "version": "18.0.1.2.0",
     "category": "Project",
-    "summary": "Fédérer deux instances : partager des tâches d'un Symbifox à l'autre, "
-               "avec l'état, l'échéance, les messages et les pièces jointes qui suivent",
+    "summary": "Fédérer deux instances : partager un objet d'un Symbifox à l'autre, avec "
+               "les messages et les pièces jointes qui suivent. Le socle porte la tâche ; "
+               "les satellites ajoutent les livrables, les ordres du jour, les cartographies",
     "description": """
 Fédération
 ==========
 
-Deux instances qui se font confiance échangent des tâches sans qu'une personne
+Deux instances qui se font confiance échangent des objets sans qu'une personne
 ait besoin d'un compte chez l'autre. Chaque instance émet et reçoit.
+
+Le socle porte le transport et **un genre, la tâche**. Les autres arrivent par
+des satellites (`bf_federation_document`, `_meeting`, `_process`, `_discuss`)
+qui remplissent le contrat de `federation.federable`.
 
 * **Jumelage par invitation**, réservé aux administrateurs : l'une génère un
   code, l'autre l'accepte ; un secret partagé naît de l'échange et signe ensuite
@@ -17,6 +22,9 @@ ait besoin d'un compte chez l'autre. Chaque instance émet et reçoit.
 * **Partage d'une tâche** : une action de masse ou un champ sur la tâche. Le
   miroir apparaît chez le pair, dans un projet fermé, assigné à la personne
   choisie par le pair.
+* **Le pair annonce ce qu'il sait recevoir** : le jumelage et le contact rendent
+  la liste des genres acceptés, et un genre que l'autre côté ne connaît pas est
+  refusé plutôt que traduit de travers.
 * **Ce qui voyage** : nom, description réduite en texte, jour d'échéance,
   priorité, état, messages Discussions, pièces jointes sous un plafond ;
   les notes internes seulement si le pair le décide pour son propre côté.

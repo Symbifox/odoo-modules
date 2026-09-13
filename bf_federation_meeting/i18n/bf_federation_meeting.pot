@@ -1,0 +1,285 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_federation_meeting
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-13 14:08+0000\n"
+"PO-Revision-Date: 2026-09-13 14:08+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+msgid "(sans titre)"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_federation_agenda_topic_wizard_form
+msgid ""
+",\n"
+"                    à examiner. Il n'entrera ni au PDF ni au courriel tant que personne ne l'a accepté."
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_meeting_agenda_form_federation
+msgid ""
+".\n"
+"                    Il se lit ici. Pour y ajouter quelque chose, proposez un sujet : il partira chez lui à examiner."
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+msgid ""
+"<p>Chez %s, <b>%s</b> propose le sujet « %s ». Il est à examiner : il "
+"n'entrera ni au PDF ni au courriel tant qu'il n'est pas accepté.</p>"
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+msgid ""
+"<p>Ordre du jour reçu de %s. Il se lit ici ; pour y ajouter quelque chose, "
+"utilisez <b>Proposer un sujet</b> : il partira chez lui à examiner.</p>"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_federation_agenda_topic_wizard_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model,name:bf_federation_meeting.model_federation_outbox
+msgid "Boîte de sortie de la fédération"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_federation_agenda_topic_wizard_form
+msgid "Ce dont il faut parler"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__description
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_federation_agenda_topic_wizard_form
+msgid "Ce qu'il faut en dire"
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+msgid ""
+"Cet ordre du jour est reçu de %s : il se lit ici. Pour y ajouter quelque "
+"chose, utilisez « Proposer un sujet »."
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__peer_name
+msgid "Chez"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_meeting_agenda__federation_remote_url
+msgid "Chez le pair"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_meeting_agenda__federation_possible
+msgid "Fédération possible"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_meeting_agenda__federation_peer_id
+msgid "Fédéré avec"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_outbox__kind
+msgid "Genre"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,help:bf_federation_meeting.field_meeting_agenda__federation_peer_id
+msgid ""
+"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_federation_agenda_topic_wizard_form
+msgid "Le sujet part chez"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_meeting_agenda__federation_link_id
+msgid "Lien fédéré"
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+msgid "On ne propose un sujet que sur un ordre du jour reçu d'un pair."
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model,name:bf_federation_meeting.model_meeting_agenda
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__agenda_id
+msgid "Ordre du jour"
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+msgid ""
+"Ordre du jour fédéré avec %s : titre, date, objectifs, contexte et sujets "
+"publiés. Ce qui reste ici : les notes en direct, le verbatim, l'état du "
+"raffinage et la banque d'heures. Ce qui peut revenir : un sujet proposé, à "
+"examiner."
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields.selection,name:bf_federation_meeting.selection__federation_outbox__kind__agenda_card
+msgid "Ordre du jour mis à jour"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_meeting_agenda__federation_is_mirror
+msgid "Ordre du jour reçu d'un pair"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_meeting_agenda_form_federation
+msgid "Ordre du jour reçu de"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_meeting_agenda__federation_origin
+msgid "Origine"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_meeting_agenda__federation_allowed_peer_ids
+msgid "Pairs permis"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields.selection,name:bf_federation_meeting.selection__federation_outbox__kind__agenda_share
+msgid "Partage d'un ordre du jour"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_federation_agenda_topic_wizard_form
+msgid "Proposer"
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_federation_agenda_topic_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_federation_meeting.view_meeting_agenda_form_federation
+msgid "Proposer un sujet"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model,name:bf_federation_meeting.model_federation_agenda_topic_wizard
+msgid "Proposer un sujet à l'ordre du jour d'un pair"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,help:bf_federation_meeting.field_federation_agenda_topic_wizard__description
+msgid "Réduit en texte au départ : aucun balisage ne traverse."
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,field_description:bf_federation_meeting.field_federation_agenda_topic_wizard__name
+msgid "Sujet"
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model,name:bf_federation_meeting.model_meeting_agenda_topic
+msgid "Sujet d'ordre du jour"
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/wizard/federation_agenda_topic_wizard.py:0
+#: code:addons/bf_federation_meeting/wizard/federation_agenda_topic_wizard.py:0
+#: model:ir.model.fields.selection,name:bf_federation_meeting.selection__federation_outbox__kind__agenda_topic
+msgid "Sujet proposé"
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+msgid "Sujet proposé à %s : « %s ». Il l'examinera avant de l'inscrire."
+msgstr ""
+
+#. module: bf_federation_meeting
+#: model:ir.model.fields,help:bf_federation_meeting.field_meeting_agenda__federation_is_mirror
+msgid "Un miroir se lit, il ne se raffine pas et il ne s'envoie pas."
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+msgid "cet ordre du jour"
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/models/meeting_agenda.py:0
+#: code:addons/bf_federation_meeting/models/meeting_agenda.py:0
+msgid "l'ordre du jour"
+msgstr ""
+
+#. module: bf_federation_meeting
+#. odoo-python
+#: code:addons/_t25651/bf_federation_meeting/wizard/federation_agenda_topic_wizard.py:0
+#: code:addons/bf_federation_meeting/wizard/federation_agenda_topic_wizard.py:0
+msgid "« %s » part chez %s, à examiner."
+msgstr ""

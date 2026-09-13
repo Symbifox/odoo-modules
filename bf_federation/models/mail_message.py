@@ -10,7 +10,9 @@ class MailMessage(models.Model):
     def create(self, vals_list):
         messages = super().create(vals_list)
         if not self.env.context.get("federation_inbound"):
-            candidates = messages.filtered(lambda m: m.model == "project.task" and m.res_id and m.message_type in ("comment", "email"))
+            federable = set(self.env["federation.federable"]._federation_models().values())
+            candidates = messages.filtered(
+                lambda m: m.model in federable and m.res_id and m.message_type in ("comment", "email"))
             if candidates:
                 candidates.sudo()._federation_forward()
         return messages
@@ -18,10 +20,15 @@ class MailMessage(models.Model):
     def _federation_forward(self):
         note_id = self.env.ref("mail.mt_note").id
         comment_id = self.env.ref("mail.mt_comment").id
-        links = self.env["federation.link"].sudo().search([("task_id", "in", list({m.res_id for m in self}))])
-        by_task = {l.task_id.id: l for l in links}
+        pairs = {(m.model, m.res_id) for m in self}
+        # Un sur-ensemble par domaine puis l'appariement exact en Python : un domaine
+        # en « ou » sur chaque couple exploserait pour un lot de messages.
+        links = self.env["federation.link"].sudo().search(
+            [("res_model", "in", sorted({m for m, _i in pairs})),
+             ("res_id", "in", sorted({i for _m, i in pairs}))])
+        by_record = {(l.res_model, l.res_id): l for l in links}
         for msg in self:
-            link = by_task.get(msg.res_id)
+            link = by_record.get((msg.model, msg.res_id))
             if not link or msg.subtype_id.id not in (note_id, comment_id):
                 continue
             peer = link.peer_id

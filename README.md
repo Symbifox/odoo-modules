@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**104 modules are BUSL-1.1.** The source is published and auditable, and **you
+**112 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -96,6 +96,10 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_claude_chat` | Gen | 18.0.1.18.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
+| `bf_contact_absence` | Symbifox Absences des contacts | 18.0.1.0.0 | BUSL-1.1 | Savoir qu'un contact est absent avant de lui écrire, de lui texter ou de l'appeler |
+| `bf_contact_absence_calendar` | Symbifox Absences des contacts : calendrier Nextcloud | 18.0.1.0.0 | BUSL-1.1 | Proposer les absences notées à la main dans un calendrier Nextcloud |
+| `bf_contact_absence_mail` | Symbifox Absences des contacts : lecture des répondeurs | 18.0.1.0.0 | BUSL-1.1 | Reconnaître les répondeurs d'absence reçus et proposer la période au lieu de l'écrire |
+| `bf_contact_absence_sms` | Symbifox Absences des contacts : Messagerie SMS | 18.0.1.0.0 | BUSL-1.1 | Voir qu'un contact est absent avant de lui texter |
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.2.1.0 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.0.0 | LGPL-3 | The minute book of a share corporation kept in Odoo: resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.2.0.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
@@ -139,7 +143,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
 | `bf_expense_ocr` | Lecture des reçus | 18.0.2.0.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
 | `bf_expense_tip` | Pourboire | 18.0.1.0.1 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
-| `bf_federation` | Fédération | 18.0.1.1.2 | LGPL-3 | Federate two Odoo/Symbifox instances: share tasks with the other side, with state, deadline day, messages and attachments following both ways |
+| `bf_federation` | Fédération | 18.0.1.2.0 | LGPL-3 | Federate two Odoo/Symbifox instances: share an object with the other side, messages and attachments following. The core carries tasks; satellites add deliverables, agendas, process maps and a Discuss channel |
+| `bf_federation_discuss` | Fédération : canal de discussion | 18.0.1.0.0 | BUSL-1.1 | Un canal Discuss par objet fédéré, adossé au chatter qui fait foi |
+| `bf_federation_document` | Fédération : livrables remis | 18.0.1.0.0 | BUSL-1.1 | Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu |
+| `bf_federation_meeting` | Fédération : ordres du jour | 18.0.1.0.0 | BUSL-1.1 | L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet |
+| `bf_federation_process` | Fédération : cartographies | 18.0.1.0.0 | BUSL-1.1 | La cartographie du client vit chez lui, et la version qui suit y arrive toute seule |
 | `bf_floorplan` | Plans d'étage | 18.0.1.1.0 | BUSL-1.1 | Floor plans drawn from records: rooms, desks, devices and cables, each shape backed by a form, with a built-in SVG editor, PDF and diagrams.net export |
 | `bf_floorplan_hosting` | Plans d'étage : hébergement | 18.0.1.1.0 | LGPL-3 | Hosting endpoints and servers placed on the floor plan, with attention colours and a jump from the device form to its spot |
 | `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.1.0 | LGPL-3 | Crons that remove non-employee followers and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
@@ -245,7 +253,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **104 modules: BUSL-1.1.** Production use for your own internal business
+- **112 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

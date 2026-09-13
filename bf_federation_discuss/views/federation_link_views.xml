@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_federation_link_list_discuss" model="ir.ui.view">
+        <field name="name">federation.link.list.discuss</field>
+        <field name="model">federation.link</field>
+        <field name="inherit_id" ref="bf_federation.view_federation_link_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="has_channel" widget="boolean_toggle" optional="show" string="Canal"/>
+                <button name="action_open_channel" type="object" icon="fa-comments"
+                        string="Ouvrir le canal" invisible="not active"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_process_form_federation" model="ir.ui.view">
+        <field name="name">bf.process.form.federation</field>
+        <field name="model">bf.process</field>
+        <field name="inherit_id" ref="bf_process.view_bf_process_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info" role="status" invisible="not federation_is_mirror">
+                    Cartographie reçue de <field name="federation_peer_id" readonly="1" class="oe_inline"/>.
+                    Elle se lit ici : la version suivante remplacera le tracé.
+                </div>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="federation_is_mirror" invisible="1"/>
+                <field name="federation_origin" invisible="1"/>
+                <field name="federation_possible" invisible="1"/>
+                <field name="federation_allowed_peer_ids" invisible="1"/>
+                <button name="action_federation_push" type="object" string="Renvoyer le tracé au pair"
+                        invisible="federation_origin != 'local' or not federation_peer_id"
+                        help="Les niveaux ne sont pas des champs surveillés : après avoir retouché
+                              le tracé, ce bouton envoie la carte telle qu'elle est."/>
+            </xpath>
+            <xpath expr="//field[@name='version']" position="after">
+                <field name="federation_peer_id" invisible="federation_is_mirror or not federation_possible"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

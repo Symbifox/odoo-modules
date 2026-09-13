@@ -5,7 +5,8 @@
         <field name="model">federation.link</field>
         <field name="arch" type="xml">
             <list string="Liens fédérés" create="false">
-                <field name="task_id"/>
+                <field name="record_name" string="Objet"/>
+                <field name="kind" string="Genre" optional="show"/>
                 <field name="peer_id"/>
                 <field name="origin"/>
                 <field name="remote_url" widget="url"/>
@@ -19,13 +20,14 @@
         <field name="model">federation.link</field>
         <field name="arch" type="xml">
             <search>
-                <field name="task_id"/>
+                <field name="res_model" string="Modèle"/>
                 <field name="peer_id"/>
                 <filter name="local" string="Partagées d'ici" domain="[('origin', '=', 'local')]"/>
                 <filter name="remote" string="Reçues du pair" domain="[('origin', '=', 'remote')]"/>
                 <filter name="inactive" string="Archivées" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Regrouper par">
                     <filter name="group_peer" string="Pair" context="{'group_by': 'peer_id'}"/>
+                    <filter name="group_model" string="Modèle" context="{'group_by': 'res_model'}"/>
                 </group>
             </search>
         </field>
