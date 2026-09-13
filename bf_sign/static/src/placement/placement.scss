@@ -60,7 +60,7 @@
         padding: 8px 10px;
         margin-bottom: 8px;
         border: 1px solid #d7dee4;
-        border-left: 3px solid #29ABE2;
+        border-left: 3px solid var(--brand-primary, #29ABE2);
         border-radius: 6px;
         background: #f7fafc;
 
@@ -159,13 +159,13 @@
     }
 
     .bf-page-armed {
-        outline: 2px dashed rgba(41, 171, 225, 0.55);
+        outline: 2px dashed color-mix(in srgb, var(--brand-primary, #29ABE2) 55%, transparent);
         outline-offset: 2px;
     }
 
     .bf-box {
         position: absolute;
-        border: 2px solid #29ABE2;
+        border: 2px solid var(--brand-primary, #29ABE2);
         border-radius: 3px;
         cursor: move;
         display: flex;
@@ -188,7 +188,7 @@
             line-height: 15px;
             padding: 0 3px;
             text-align: center;
-            background: #2E3132;
+            background: var(--brand-dark, #2E3132);
             color: #fff;
             border-radius: 9px;
             font-size: 11px;
@@ -233,7 +233,7 @@
     }
 
     .bf-box-selected {
-        box-shadow: 0 0 0 2px rgba(41, 171, 225, 0.45);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand-primary, #29ABE2) 45%, transparent);
         z-index: 4;
     }
 

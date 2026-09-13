@@ -2,6 +2,10 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.24.7 — Colours follow the document's company
+
+Certificate colours, logo and name read the document's company (`doc.company_id`), not `env.company` — the first allowed company of whoever prints, which painted a second company's certificate in the first one's colours. Placement marker and grid gradient follow the brand variables instead of a fixed blue.
+
 ## 18.0.3.24.0 — Two pad types the imported forms actually need
 
 `cells` and `select` join the eight existing pad types.

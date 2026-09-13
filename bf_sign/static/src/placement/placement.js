@@ -554,8 +554,8 @@ export class BfSignPlacement extends Component {
         const s = this.state.gridStep;
         return (
             `background-image:` +
-            `repeating-linear-gradient(to right, rgba(41,171,225,.28) 0 1px, transparent 1px ${s}px),` +
-            `repeating-linear-gradient(to bottom, rgba(41,171,225,.28) 0 1px, transparent 1px ${s}px);`
+            `repeating-linear-gradient(to right, color-mix(in srgb, var(--brand-primary, #29ABE2) 28%, transparent) 0 1px, transparent 1px ${s}px),` +
+            `repeating-linear-gradient(to bottom, color-mix(in srgb, var(--brand-primary, #29ABE2) 28%, transparent) 0 1px, transparent 1px ${s}px);`
         );
     }
     guidesForPage(num) {

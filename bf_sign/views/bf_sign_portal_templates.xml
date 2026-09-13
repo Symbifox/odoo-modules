@@ -43,7 +43,7 @@
                     .bf-page-img { display:block; width:100%; height:auto; }
                     .bf-marker { position:absolute; box-sizing:border-box; cursor:pointer;
                                  border:2px dashed var(--bf-primary); border-radius:4px;
-                                 background:rgba(41,171,225,.10); background-size:contain;
+                                 background:color-mix(in srgb, var(--bf-primary) 10%, transparent); background-size:contain;
                                  background-repeat:no-repeat; background-position:center;
                                  overflow:visible; }
                     .bf-marker-badge { position:absolute; top:-11px; left:-11px; width:22px; height:22px;
