@@ -5,7 +5,7 @@
 
 // --- Blue Fox dark palette ---
 $dk-bg:          #1a1d1e;   // deepest: body / webclient
-$dk-surface:     #2E3132;   // main surface (BF brand dark gray)
+$dk-surface:     var(--brand-dark, #2E3132);   // main surface (BF brand dark gray)
 $dk-surface-alt: #363b3c;   // slightly lighter: hover, alt rows
 $dk-raised:      #3d4344;   // raised: kanban cards, modals, quick-create
 $dk-border:      #4a5153;   // borders & separators
@@ -14,9 +14,9 @@ $dk-text:        #d1d5d8;   // main text
 $dk-text-bright: #e8eaec;   // headings, emphasis
 $dk-text-muted:  #b6bcbf;   // muted / secondary : >= 4,5:1 sur TOUS les fonds du thème,
                             // survol compris (6,83 sur la surface, 5,25 sur le surélevé, 4,86 au survol)
-$dk-accent:      #29ABE2;   // Blue Fox blue
-$dk-accent-dim:  rgba(41, 171, 226, 0.12);
-$dk-input-bg:    #2E3132;   // input backgrounds
+$dk-accent:      var(--brand-primary, #29ABE2);   // Blue Fox blue
+$dk-accent-dim:  color-mix(in srgb, var(--brand-primary, #29ABE2) 12%, transparent);
+$dk-input-bg:    var(--brand-dark, #2E3132);   // input backgrounds
 $dk-hover:       #414849;   // hover highlights
 // L'accent ÉCLAIRCI pour servir de TEXTE sur les fonds du thème. Le canon de
 // marque interdit l'accent brut en texte sur l'anthracite ; brut, il mesure
@@ -230,7 +230,7 @@ body.bf_dark_mode {
   }
   ::-webkit-scrollbar-track { background: $dk-bg; }
 
-  ::selection { background-color: rgba(41, 171, 226, 0.3); color: $dk-text-bright; }
+  ::selection { background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 30%, transparent); color: $dk-text-bright; }
   ::placeholder { color: $dk-text-muted; }
 
   // Links

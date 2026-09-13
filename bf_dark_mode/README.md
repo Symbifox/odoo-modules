@@ -142,6 +142,10 @@ bf_dark_mode/
 
 ## Changelog
 
+### 18.0.1.4.2
+
+- Surfaces and accent read `--brand-dark`/`--brand-primary` (the active company's brand) instead of fixed hex values.
+
 ### 18.0.1.1.0
 - **Per-user persistence**: added `res.users.bf_dark_mode_enabled`, exposed in
   user Preferences (and the admin user form). The preference is shipped to the
