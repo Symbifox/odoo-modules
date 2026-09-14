@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_federation_outreach_report_user,federation.outreach.report lecture,model_federation_outreach_report,base.group_user,1,0,0,0
+access_federation_outreach_report_manager,federation.outreach.report gestion,model_federation_outreach_report,project.group_project_manager,1,1,1,1
+access_federation_outreach_line_user,federation.outreach.report.line lecture,model_federation_outreach_report_line,base.group_user,1,0,0,0
+access_federation_outreach_line_manager,federation.outreach.report.line gestion,model_federation_outreach_report_line,project.group_project_manager,1,1,1,1
+access_federation_outreach_touch_user,federation.outreach.report.touch lecture,model_federation_outreach_report_touch,base.group_user,1,0,0,0
+access_federation_outreach_touch_manager,federation.outreach.report.touch gestion,model_federation_outreach_report_touch,project.group_project_manager,1,1,1,1
+access_federation_outreach_exclude_wizard_manager,federation.outreach.exclude.wizard,model_federation_outreach_exclude_wizard,project.group_project_manager,1,1,1,1

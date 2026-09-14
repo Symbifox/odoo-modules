@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_timesheet_statement" model="ir.actions.report">
+        <field name="name">Relevé des heures</field>
+        <field name="model">federation.timesheet.statement</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_federation_timesheet.report_timesheet_statement</field>
+        <field name="report_file">bf_federation_timesheet.report_timesheet_statement</field>
+        <field name="print_report_name">'Releve-heures'</field>
+    </record>
+
+    <template id="report_timesheet_statement">
+        <t t-call="web.html_container">
+            <!-- ⚠️ Les clés de `data` deviennent des variables du rendu : `statement` est lu
+                 directement, il n'existe pas de variable `data` dans le gabarit. -->
+            <t t-set="s" t-value="statement or {}"/>
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Relevé des heures</h2>
+                    <p>
+                        <strong t-out="s.get('project')"/><br/>
+                        Pour <span t-out="s.get('partner')"/>, du <span t-out="s.get('date_from')"/>
+                        au <span t-out="s.get('date_to')"/>, regroupé <span t-out="(s.get('group_by') or '').lower()"/>.
+                    </p>
+                    <table class="table table-sm o_main_table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Personne</th>
+                                <th>Tâche</th>
+                                <th t-if="s.get('include_descriptions')">Description</th>
+                                <th class="text-end">Heures</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="s.get('groups') or []" t-as="g">
+                                <tr class="table-light">
+                                    <td t-att-colspan="4 if s.get('include_descriptions') else 3">
+                                        <strong t-out="g['label']"/>
+                                    </td>
+                                    <td class="text-end"><strong t-out="'%.2f' % g['hours']"/></td>
+                                </tr>
+                                <tr t-foreach="g['lines']" t-as="l">
+                                    <td t-out="l['date']"/>
+                                    <td t-out="l['employee']"/>
+                                    <td t-out="l['task']"/>
+                                    <td t-if="s.get('include_descriptions')" t-out="l['description']"/>
+                                    <td class="text-end" t-out="'%.2f' % l['hours']"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td t-att-colspan="4 if s.get('include_descriptions') else 3">
+                                    <strong>Total : <span t-out="s.get('line_count')"/> ligne(s)</strong>
+                                </td>
+                                <td class="text-end"><strong t-out="'%.2f' % (s.get('total_hours') or 0)"/></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <p class="text-muted small">
+                        Ce relevé dit le temps fait sur la période. Il ne porte ni montant, ni taux, ni solde.
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

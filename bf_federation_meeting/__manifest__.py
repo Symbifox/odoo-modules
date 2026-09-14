@@ -1,6 +1,6 @@
 {
     "name": "Fédération : ordres du jour",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Project",
     "summary": "L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet",
     "description": """

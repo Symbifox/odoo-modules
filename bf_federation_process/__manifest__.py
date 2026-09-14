@@ -1,6 +1,6 @@
 {
     "name": "Fédération : cartographies",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.2.1",
     "category": "Project",
     "summary": "La cartographie du client vit chez lui, et la version qui suit y arrive toute seule",
     "description": """

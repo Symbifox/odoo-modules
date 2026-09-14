@@ -1,6 +1,6 @@
 {
     "name": "Fédération : canal de discussion",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "category": "Productivity/Discuss",
     "summary": "Un canal Discuss par objet fédéré, adossé au chatter qui fait foi",
     "description": """

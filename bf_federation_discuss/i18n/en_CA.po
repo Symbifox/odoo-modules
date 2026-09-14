@@ -1,0 +1,76 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_federation_discuss
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 00:00+0000\n"
+"PO-Revision-Date: 2026-09-14 00:00+0000\n"
+"Last-Translator: Les services de consultation Blue Fox, Inc.\n"
+"Language-Team: English (CA)\n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_federation_discuss
+#. odoo-python
+#: code:addons/bf_federation_discuss/models/discuss_channel.py:0
+msgid "%s ⇄ %s"
+msgstr "%s ⇄ %s"
+
+#. module: bf_federation_discuss
+#: model:ir.model.fields,field_description:bf_federation_discuss.field_federation_link__channel_id
+#: model_terms:ir.ui.view,arch_db:bf_federation_discuss.view_federation_link_list_discuss
+msgid "Canal"
+msgstr "Channel"
+
+#. module: bf_federation_discuss
+#: model:ir.model.fields,field_description:bf_federation_discuss.field_federation_link__has_channel
+msgid "Canal ouvert"
+msgstr "Channel open"
+
+#. module: bf_federation_discuss
+#. odoo-python
+#: code:addons/bf_federation_discuss/models/federation_link.py:0
+msgid "Ce lien n'est plus actif : rien ne partirait du canal."
+msgstr "This link is no longer active: nothing would leave the channel."
+
+#. module: bf_federation_discuss
+#. odoo-python
+#: code:addons/bf_federation_discuss/models/discuss_channel.py:0
+msgid "Conversation avec %s au sujet de « %s ». Ce qui s'écrit ici est posté au chatter de l'objet, d'où il part chez le pair. Comptez deux à quatre minutes par aller-retour."
+msgstr "Conversation with %s about \"%s\". What is written here is posted to the object's message thread, from where it travels to the peer. Allow two to four minutes per round trip."
+
+#. module: bf_federation_discuss
+#: model:ir.model,name:bf_federation_discuss.model_discuss_channel
+msgid "Discussion Channel"
+msgstr ""
+
+#. module: bf_federation_discuss
+#: model:ir.model.fields,help:bf_federation_discuss.field_discuss_channel__federation_link_id
+msgid "Le canal d'un objet partagé avec un pair. Ce qui s'y dit passe par le chatter de l'objet, qui reste le registre."
+msgstr "The channel of an object shared with a peer. What is said here goes through the object's message thread, which remains the record."
+
+#. module: bf_federation_discuss
+#: model:ir.model,name:bf_federation_discuss.model_federation_link
+msgid "Lien fédéré"
+msgstr "Federated link"
+
+#. module: bf_federation_discuss
+#: model:ir.model,name:bf_federation_discuss.model_mail_message
+msgid "Message"
+msgstr ""
+
+#. module: bf_federation_discuss
+#: model:ir.model.fields,field_description:bf_federation_discuss.field_discuss_channel__federation_link_id
+msgid "Objet fédéré"
+msgstr "Federated object"
+
+#. module: bf_federation_discuss
+#: model_terms:ir.ui.view,arch_db:bf_federation_discuss.view_federation_link_list_discuss
+msgid "Ouvrir le canal"
+msgstr "Open the channel"

@@ -1,0 +1,221 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_federation_gantt
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 10:09+0000\n"
+"PO-Revision-Date: 2026-09-14 10:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid "%s (%s)"
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid "(sans titre)"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model_terms:ir.ui.view,arch_db:bf_federation_gantt.view_bf_gantt_plan_form_federation
+msgid ""
+".\n"
+"                    Il se lit ici : le prochain changement de l'émetteur le remplacera, et il ne se\n"
+"                    publie pas au portail."
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid "<p>Chez %s, l'échéancier a changé : du %s au %s, statut %s.</p>"
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid ""
+"<p>Échéancier reçu de %s : <b>%s</b>, %s ligne(s). Il se lit ici ; chaque "
+"changement de l'émetteur le remplacera.</p>"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model,name:bf_federation_gantt.model_federation_outbox
+msgid "Boîte de sortie de la fédération"
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid ""
+"Cet échéancier est reçu de %s : il a été partagé avec votre entreprise, pas "
+"avec vos clients. Il ne se publie pas au portail."
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid ""
+"Cet échéancier est reçu de %s : il se lit ici. Le prochain changement de "
+"l'émetteur le remplacerait, et le travail fait dessus serait perdu."
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid "Cet échéancier n'est pas partagé avec un pair."
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,field_description:bf_federation_gantt.field_bf_gantt_plan__federation_remote_url
+msgid "Chez le pair"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,field_description:bf_federation_gantt.field_bf_gantt_plan__federation_possible
+msgid "Fédération possible"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,field_description:bf_federation_gantt.field_bf_gantt_plan__federation_peer_id
+msgid "Fédéré avec"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,field_description:bf_federation_gantt.field_federation_outbox__kind
+msgid "Genre"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model_terms:ir.ui.view,arch_db:bf_federation_gantt.view_bf_gantt_plan_form_federation
+msgid ""
+"L'échéancier repart de lui-même quand une ligne bouge. Ce bouton"
+"                               le renvoie tel qu'il est, même s'il n'a pas "
+"changé."
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,help:bf_federation_gantt.field_bf_gantt_plan__federation_peer_id
+msgid ""
+"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid "Les lignes de cet échéancier sont reçues de %s : elles se lisent ici."
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,field_description:bf_federation_gantt.field_bf_gantt_plan__federation_link_id
+msgid "Lien fédéré"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model,name:bf_federation_gantt.model_bf_gantt_item
+msgid "Ligne d'un échéancier autonome"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,field_description:bf_federation_gantt.field_bf_gantt_plan__federation_origin
+msgid "Origine"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,field_description:bf_federation_gantt.field_bf_gantt_plan__federation_allowed_peer_ids
+msgid "Pairs permis"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields.selection,name:bf_federation_gantt.selection__federation_outbox__kind__gantt_share
+msgid "Partage d'un échéancier"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model_terms:ir.ui.view,arch_db:bf_federation_gantt.view_bf_gantt_plan_form_federation
+msgid "Renvoyer au pair"
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid ""
+"Renvoyer un échéancier à un pair demande le rôle de gestionnaire de projet."
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,help:bf_federation_gantt.field_bf_gantt_plan__federation_is_mirror
+msgid ""
+"Un échéancier reçu se lit : la prochaine version de l'émetteur le "
+"remplacera."
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid "cet échéancier"
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid "l'échéancier"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model,name:bf_federation_gantt.model_bf_gantt_plan
+msgid "Échéancier autonome"
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid ""
+"Échéancier fédéré avec %s : ses lignes, ses couloirs, ses jalons, ses "
+"dépendances et leur avancement. Ce qui reste ici : les heures prévues de "
+"chaque ligne."
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields.selection,name:bf_federation_gantt.selection__federation_outbox__kind__gantt_card
+msgid "Échéancier mis à jour"
+msgstr ""
+
+#. module: bf_federation_gantt
+#. odoo-python
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+#: code:addons/bf_federation_gantt/models/bf_gantt_plan.py:0
+msgid "Échéancier renvoyé à %s : %s ligne(s)."
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model:ir.model.fields,field_description:bf_federation_gantt.field_bf_gantt_plan__federation_is_mirror
+msgid "Échéancier reçu d'un pair"
+msgstr ""
+
+#. module: bf_federation_gantt
+#: model_terms:ir.ui.view,arch_db:bf_federation_gantt.view_bf_gantt_plan_form_federation
+msgid "Échéancier reçu de"
+msgstr ""

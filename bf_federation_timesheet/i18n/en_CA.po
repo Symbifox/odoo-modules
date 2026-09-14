@@ -1,0 +1,314 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_federation_timesheet
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 00:00+0000\n"
+"PO-Revision-Date: 2026-09-14 00:00+0000\n"
+"Last-Translator: Les services de consultation Blue Fox, Inc.\n"
+"Language-Team: English (CA)\n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+msgid "%(n)s ligne(s), %(h)s h, du %(du)s au %(au)s, regroupées %(par)s. Le relevé dit combien de temps, jamais combien d'argent."
+msgstr "%(n)s line(s), %(h)s h, from %(du)s to %(au)s, grouped %(par)s. The statement says how much time, never how much money."
+
+#. module: bf_federation_timesheet
+#: model:ir.actions.report,print_report_name:bf_federation_timesheet.action_report_timesheet_statement
+msgid "'Releve-heures'"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+msgid "(sans personne)"
+msgstr "(no person)"
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+msgid "(sans tâche)"
+msgstr "(no task)"
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid ", du"
+msgstr ", from"
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid ", regroupé"
+msgstr ", grouped"
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "<br/>\n                        Pour"
+msgstr "<br/>\n                        For"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__allowed_peer_ids
+msgid "Allowed Peer"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.view_federation_timesheet_statement_form
+msgid "Annuler"
+msgstr "Cancel"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__date_to
+msgid "Au"
+msgstr "To"
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+msgid "Aucune heure sur ce projet pour cette période."
+msgstr "No hours on this project for this period."
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "Ce relevé dit le temps fait sur la période. Il ne porte ni montant, ni taux, ni solde."
+msgstr "This statement shows the time worked over the period. It carries no amount, no rate and no balance."
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "Date"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "Description"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__partner_id
+msgid "Destinataire"
+msgstr "Recipient"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__date_from
+msgid "Du"
+msgstr "From"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_document__federation_statement_fingerprint
+msgid "Empreinte du relevé"
+msgstr "Statement fingerprint"
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__total_hours
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "Heures"
+msgstr "Hours"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__include_descriptions
+msgid "Inclure les descriptions"
+msgstr "Include descriptions"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,help:bf_federation_timesheet.field_federation_document__federation_statement_fingerprint
+msgid "L'empreinte du contenu du relevé des heures. Refaire le relevé d'une même période ne publie une nouvelle version que si le contenu a changé."
+msgstr "The fingerprint of the timesheet statement's content. Producing the statement again for the same period publishes a new version only if the content changed."
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+msgid "La période finit avant de commencer."
+msgstr "The period ends before it begins."
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,help:bf_federation_timesheet.field_federation_timesheet_statement__federation_peer_id
+msgid "Le pair qui reçoit le relevé. Vide : le livrable est préparé ici, sans être remis."
+msgstr "The peer that receives the statement. Empty: the deliverable is prepared here, without being delivered."
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+msgid "Le projet n'a pas de client : un relevé est remis à quelqu'un."
+msgstr "The project has no customer: a statement is delivered to someone."
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.view_federation_timesheet_statement_form
+msgid "Le relevé est déposé comme un livrable : il porte une version, et le partenaire en\n                    accuse réception. Refaire le relevé d'une période déjà remise en publie une nouvelle\n                    version, et l'accusé de la précédente tombe. Aucun montant ne sort."
+msgstr "The statement is filed as a deliverable: it carries a version, and the partner acknowledges receipt. Producing the statement again for a period already delivered publishes a new version, and the previous receipt drops. No amount leaves."
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,help:bf_federation_timesheet.field_federation_timesheet_statement__include_descriptions
+msgid "Les descriptions des lignes de temps disent ce qui a été fait. Décochez si elles portent des mentions internes qui n'ont pas à sortir."
+msgstr "Timesheet descriptions say what was done. Untick if they carry internal remarks that should not leave."
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__line_count
+msgid "Lignes"
+msgstr "Lines"
+
+#. module: bf_federation_timesheet
+#: model:ir.model,name:bf_federation_timesheet.model_federation_document
+msgid "Livrable fédéré"
+msgstr "Federated deliverable"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields.selection,name:bf_federation_timesheet.selection__federation_timesheet_statement__group_by__day
+msgid "Par jour"
+msgstr "By day"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields.selection,name:bf_federation_timesheet.selection__federation_timesheet_statement__group_by__employee
+msgid "Par personne"
+msgstr "By person"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields.selection,name:bf_federation_timesheet.selection__federation_timesheet_statement__group_by__task
+msgid "Par tâche"
+msgstr "By task"
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "Personne"
+msgstr "Person"
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.view_federation_timesheet_statement_form
+msgid "Produire le relevé"
+msgstr "Produce the statement"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__project_id
+msgid "Projet"
+msgstr "Project"
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__group_by
+msgid "Regrouper"
+msgstr "Group"
+
+#. module: bf_federation_timesheet
+#: model:ir.actions.report,name:bf_federation_timesheet.action_report_timesheet_statement
+#: model:ir.ui.menu,name:bf_federation_timesheet.menu_federation_timesheet_statement
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "Relevé des heures"
+msgstr "Timesheet statement"
+
+#. module: bf_federation_timesheet
+#: model:ir.model,name:bf_federation_timesheet.model_federation_timesheet_statement
+msgid "Relevé des heures à remettre"
+msgstr "Timesheet statement to deliver"
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+msgid "Relevé des heures, %s, du %s au %s"
+msgstr "Timesheet statement, %s, from %s to %s"
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.view_project_form_federation_timesheet
+msgid "Remettre le relevé des heures"
+msgstr "Deliver the timesheet statement"
+
+#. module: bf_federation_timesheet
+#: model:ir.actions.act_window,name:bf_federation_timesheet.action_federation_timesheet_statement
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.view_federation_timesheet_statement_form
+msgid "Remettre un relevé des heures"
+msgstr "Deliver a timesheet statement"
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+msgid "Remettre un relevé des heures demande le rôle de gestionnaire de projet."
+msgstr "Delivering a timesheet statement requires the project manager role."
+
+#. module: bf_federation_timesheet
+#: model:ir.model.fields,field_description:bf_federation_timesheet.field_federation_timesheet_statement__federation_peer_id
+msgid "Remettre à"
+msgstr "Deliver to"
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "Total :"
+msgstr "Total:"
+
+#. module: bf_federation_timesheet
+#. odoo-python
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: code:addons/bf_federation_timesheet/wizard/timesheet_statement.py:0
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "Tâche"
+msgstr "Task"
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "au"
+msgstr "to"
+
+#. module: bf_federation_timesheet
+#: model_terms:ir.ui.view,arch_db:bf_federation_timesheet.report_timesheet_statement
+msgid "ligne(s)"
+msgstr "line(s)"

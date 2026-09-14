@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_form_federation_timesheet" model="ir.ui.view">
+        <field name="name">project.project.form.federation.timesheet</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="%(action_federation_timesheet_statement)d" type="action"
+                        string="Remettre le relevé des heures"
+                        context="{'default_project_id': id}"
+                        invisible="not partner_id"
+                        groups="project.group_project_manager"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

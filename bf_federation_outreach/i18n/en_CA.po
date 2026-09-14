@@ -1,0 +1,678 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_federation_outreach
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 00:00+0000\n"
+"PO-Revision-Date: 2026-09-14 00:00+0000\n"
+"Last-Translator: Les services de consultation Blue Fox, Inc.\n"
+"Language-Team: English (CA)\n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid " : %s"
+msgstr ": %s"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "(sans titre)"
+msgstr "(untitled)"
+
+#. module: bf_federation_outreach
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
+msgid ".\n                    Il se lit ici et se rafraîchit chaque jour. Pour qu'une cible ne soit pas contactée,\n                    ouvrez-la et utilisez <strong>Écarter</strong> : l'agence le recevra."
+msgstr ". It is read-only here and refreshes daily. To keep a target from being contacted, open it and use <strong>Set aside</strong>: the agency will receive it."
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "<p>Chez %s, la cible <b>%s</b> a été écartée : %s. Elle est passée à « ne pas contacter ».</p>"
+msgstr "<p>At %s, the target <b>%s</b> was set aside: %s. It is now \"do not contact\".</p>"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "<p>Suivi de démarchage reçu de %s : <b>%s</b>, %s cible(s). Il se lit ici ; pour écarter une cible, ouvrez-la et utilisez <b>Écarter</b>.</p>"
+msgstr "<p>Prospecting report received from %s: <b>%s</b>, %s target(s). It is read-only here; to set a target aside, open it and use <b>Set aside</b>.</p>"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__has_reply
+msgid "A répondu"
+msgstr "Replied"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_exclude_wizard_form
+msgid "Annuler"
+msgstr "Cancel"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__description
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
+msgid "Argumentaire"
+msgstr "Pitch"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model,name:bf_federation_outreach.model_federation_outbox
+msgid "Boîte de sortie de la fédération"
+msgstr "Federation outbox"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__campaign_ref
+msgid "Campagne"
+msgstr "Campaign"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_exclude_wizard__reason
+msgid "Ce qui partira chez l'agence. Par exemple : déjà notre client."
+msgstr "What will go to the agency. For example: already our customer."
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "Ce suivi est reçu de %s : c'est l'agence qui le rafraîchit."
+msgstr "This report is received from %s: the agency refreshes it."
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "Ce suivi est reçu de %s : il se lit ici. Pour écarter une cible, ouvrez-la et utilisez Écarter."
+msgstr "This report is received from %s: it is read-only here. To set a target aside, open it and use Set aside."
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "Ce suivi n'est rattaché à aucune campagne de démarchage."
+msgstr "This report is not linked to any prospecting campaign."
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_remote_url
+msgid "Chez le pair"
+msgstr "On the peer"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__line_id
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__name
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__line_id
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_line_form
+msgid "Cible"
+msgstr "Target"
+
+#. module: bf_federation_outreach
+#: model:ir.model,name:bf_federation_outreach.model_federation_outreach_report_line
+msgid "Cible d'un suivi de démarchage fédéré"
+msgstr "Target of a federated prospecting report"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "Cible « %s » écartée et signalée à %s%s."
+msgstr "Target \"%s\" set aside and reported to %s%s."
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields.selection,name:bf_federation_outreach.selection__federation_outbox__kind__outreach_exclude
+msgid "Cible écartée par le client"
+msgstr "Target set aside by the client"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__line_ids
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__target_count
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
+msgid "Cibles"
+msgstr "Targets"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__client_partner_id
+msgid "Client mandant"
+msgstr "Commissioning client"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__campaign_status
+msgid "Code de l'état"
+msgstr "Status code"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__email
+msgid "Courriel"
+msgstr "Email"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__create_uid
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__create_uid
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__create_date
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__create_date
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__create_date
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__date
+msgid "Date"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__last_touch_date
+msgid "Dernière touche"
+msgstr "Last touch"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__display_name
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__display_name
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__display_name
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__date_start
+msgid "Début"
+msgstr "Start"
+
+#. module: bf_federation_outreach
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_exclude_wizard_form
+msgid "Déjà notre client"
+msgstr "Already our customer"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "Démarchage, %s"
+msgstr "Prospecting, %s"
+
+#. module: bf_federation_outreach
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
+msgid "Démarchage, campagne d'automne"
+msgstr "Prospecting, autumn campaign"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__date_end
+msgid "Fin prévue"
+msgstr "Planned end"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__function
+msgid "Fonction"
+msgstr "Job title"
+
+#. module: bf_federation_outreach
+#: model:ir.actions.server,name:bf_federation_outreach.ir_cron_federation_outreach_refresh_ir_actions_server
+msgid "Fédération : rafraîchir les suivis de démarchage partagés"
+msgstr "Federation: refresh shared prospecting reports"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_possible
+msgid "Fédération possible"
+msgstr "Federation possible"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_peer_id
+msgid "Fédéré avec"
+msgstr "Federated with"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outbox__kind
+msgid "Genre"
+msgstr "Kind"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__id
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__id
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__id
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__message_has_error
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__include_contacts
+msgid "Inclure les personnes-ressources"
+msgstr "Include contact people"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__outcome
+msgid "Issue"
+msgstr "Outcome"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__contacted_count
+msgid "Jointes"
+msgstr "Reached"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__campaign_ref
+msgid "La campagne d'où ce suivi est tiré. Vide sur un suivi reçu d'un pair."
+msgstr "The campaign this report is drawn from. Empty on a report received from a peer."
+
+#. module: bf_federation_outreach
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_exclude_wizard_form
+msgid "La cible deviendra « ne pas contacter » chez l'agence, avec ce motif."
+msgstr "The target will become \"do not contact\" at the agency, with this reason."
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__write_uid
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__write_uid
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__write_date
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__write_date
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__write_date
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__client_partner_id
+msgid "Le client pour qui la campagne est menée. C'est lui qui détermine le pair qui peut recevoir le suivi : sans client mandant, aucun pair n'est proposé."
+msgstr "The client the campaign is run for. That client determines the peer that can receive the report: with no commissioning client, no peer is offered."
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__federation_peer_id
+msgid "Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+msgstr "The peer where this object has a mirror. Clearing the field archives the mirror."
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "Les cibles de ce suivi sont reçues de l'agence : elles se lisent ici."
+msgstr "The targets of this report are received from the agency: they are read-only here."
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_link_id
+msgid "Lien fédéré"
+msgstr "Federated link"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__reason
+msgid "Motif"
+msgstr "Reason"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__closed_reason
+msgid "Motif de clôture"
+msgstr "Closing reason"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__excluded_reason
+msgid "Motif de l'écart"
+msgstr "Reason for setting aside"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__do_not_contact
+msgid "Ne pas contacter"
+msgstr "Do not contact"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "On n'écarte une cible que dans un suivi reçu d'une agence."
+msgstr "A target can only be set aside in a report received from an agency."
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__replied_count
+msgid "Ont répondu"
+msgstr "Replied"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_origin
+msgid "Origine"
+msgstr "Origin"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_allowed_peer_ids
+msgid "Pairs permis"
+msgstr "Allowed peers"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__include_contacts
+msgid "Par défaut, seule l'entreprise ciblée traverse, avec son étape et ses touches datées. Cochez pour faire traverser aussi le nom de la personne-ressource, sa fonction, ses coordonnées et le résumé des touches : à réserver à un mandat où le client est responsable de ces renseignements."
+msgstr "By default, only the targeted company crosses over, with its stage and dated touches. Tick to also send the contact person's name, job title, contact details and touch summaries: reserve this for a mandate where the client is responsible for that information."
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields.selection,name:bf_federation_outreach.selection__federation_outbox__kind__outreach_share
+msgid "Partage d'un suivi de démarchage"
+msgstr "Prospecting report shared"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__contact_name
+msgid "Personne-ressource"
+msgstr "Contact person"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__next_action_date
+msgid "Prochaine action"
+msgstr "Next action"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__last_refresh
+msgid "Rafraîchi le"
+msgstr "Refreshed on"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "Rafraîchir ou écarter dans un suivi de démarchage demande le rôle de gestionnaire de projet."
+msgstr "Refreshing or setting aside in a prospecting report requires the project manager role."
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
+msgid "Relire la campagne et renvoyer"
+msgstr "Reread the campaign and send"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__key
+msgid "Référence chez l'agence"
+msgstr "Reference at the agency"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__summary
+msgid "Résumé"
+msgstr "Summary"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__direction
+msgid "Sens"
+msgstr "Direction"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__company_id
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__company_id
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__company_id
+msgid "Société"
+msgstr "Company"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__name
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__report_id
+msgid "Suivi"
+msgstr "Report"
+
+#. module: bf_federation_outreach
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
+msgid "Suivi de démarchage"
+msgstr "Prospecting report"
+
+#. module: bf_federation_outreach
+#: model:ir.model,name:bf_federation_outreach.model_federation_outreach_report
+msgid "Suivi de démarchage fédéré"
+msgstr "Federated prospecting report"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "Suivi de démarchage fédéré avec %s : les cibles, leur étape et leurs touches datées, %s. Il se rafraîchit chaque jour."
+msgstr "Prospecting report federated with %s: the targets, their stage and dated touches, %s. It refreshes daily."
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields.selection,name:bf_federation_outreach.selection__federation_outbox__kind__outreach_card
+msgid "Suivi de démarchage mis à jour"
+msgstr "Prospecting report updated"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_is_mirror
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__federation_is_mirror
+msgid "Suivi reçu d'un pair"
+msgstr "Report received from a peer"
+
+#. module: bf_federation_outreach
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
+msgid "Suivi reçu de"
+msgstr "Report received from"
+
+#. module: bf_federation_outreach
+#: model:ir.actions.act_window,name:bf_federation_outreach.action_federation_outreach_report
+#: model:ir.ui.menu,name:bf_federation_outreach.menu_federation_outreach_report
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_list
+msgid "Suivis de démarchage"
+msgstr "Prospecting reports"
+
+#. module: bf_federation_outreach
+#: model:ir.model,name:bf_federation_outreach.model_federation_outreach_report_touch
+msgid "Touche d'un suivi de démarchage fédéré"
+msgstr "Touch of a federated prospecting report"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__touch_count
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__touch_ids
+msgid "Touches"
+msgstr "Touches"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_touch__kind
+msgid "Type"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__stage_type
+msgid "Type d'étape"
+msgstr "Stage type"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__next_action_kind
+msgid "Type de prochaine action"
+msgstr "Next action type"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__phone
+msgid "Téléphone"
+msgstr "Phone"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,help:bf_federation_outreach.field_federation_outreach_report__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "aucun motif donné"
+msgstr "no reason given"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "ce suivi de démarchage"
+msgstr "this prospecting report"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "le suivi de démarchage"
+msgstr "the prospecting report"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "les personnes-ressources, leurs coordonnées et le résumé des touches compris"
+msgstr "including contact people, their contact details and touch summaries"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "sans aucune personne-ressource ni coordonnée"
+msgstr "with no contact person or contact details"
+
+#. module: bf_federation_outreach
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_exclude_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_line_form
+msgid "Écarter"
+msgstr "Set aside"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_exclude_wizard_form
+msgid "Écarter une cible"
+msgstr "Set a target aside"
+
+#. module: bf_federation_outreach
+#: model:ir.model,name:bf_federation_outreach.model_federation_outreach_exclude_wizard
+msgid "Écarter une cible d'un suivi de démarchage"
+msgstr "Set aside a target of a prospecting report"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__excluded_on
+msgid "Écartée le"
+msgstr "Set aside on"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__excluded_by_client
+msgid "Écartée par le client"
+msgstr "Set aside by the client"
+
+#. module: bf_federation_outreach
+#. odoo-python
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+#: code:addons/bf_federation_outreach/models/outreach_report.py:0
+msgid "Écartée par le client mandant : %s"
+msgstr "Set aside by the commissioning client: %s"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__excluded_count
+msgid "Écartées"
+msgstr "Set aside"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__stage
+msgid "Étape"
+msgstr "Stage"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__campaign_status_label
+msgid "État de la campagne"
+msgstr "Campaign status"

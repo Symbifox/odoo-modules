@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_gantt_plan_form_federation" model="ir.ui.view">
+        <field name="name">bf.gantt.plan.form.federation</field>
+        <field name="model">bf.gantt.plan</field>
+        <field name="inherit_id" ref="bf_gantt.view_bf_gantt_plan_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info" role="status" invisible="not federation_is_mirror">
+                    Échéancier reçu de <field name="federation_peer_id" readonly="1" class="oe_inline"/>.
+                    Il se lit ici : le prochain changement de l'émetteur le remplacera, et il ne se
+                    publie pas au portail.
+                </div>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <field name="federation_is_mirror" invisible="1"/>
+                <field name="federation_origin" invisible="1"/>
+                <field name="federation_possible" invisible="1"/>
+                <field name="federation_allowed_peer_ids" invisible="1"/>
+                <button name="action_federation_push" type="object" string="Renvoyer au pair"
+                        invisible="federation_origin != 'local' or not federation_peer_id"
+                        groups="project.group_project_manager"
+                        help="L'échéancier repart de lui-même quand une ligne bouge. Ce bouton
+                              le renvoie tel qu'il est, même s'il n'a pas changé."/>
+            </xpath>
+            <!-- Un échéancier reçu ne se publie pas : le bouton qui échouerait toujours n'a pas à s'afficher. -->
+            <xpath expr="//button[@name='action_bf_gantt_publier']" position="attributes">
+                <attribute name="invisible">portal_published or federation_is_mirror</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_bf_gantt_importer']" position="attributes">
+                <attribute name="invisible">federation_is_mirror</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="federation_peer_id" invisible="federation_is_mirror or not federation_possible"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

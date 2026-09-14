@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_federation_timesheet_statement_form" model="ir.ui.view">
+        <field name="name">federation.timesheet.statement.form</field>
+        <field name="model">federation.timesheet.statement</field>
+        <field name="arch" type="xml">
+            <form string="Remettre un relevé des heures">
+                <p class="text-muted">
+                    Le relevé est déposé comme un livrable : il porte une version, et le partenaire en
+                    accuse réception. Refaire le relevé d'une période déjà remise en publie une nouvelle
+                    version, et l'accusé de la précédente tombe. Aucun montant ne sort.
+                </p>
+                <group>
+                    <group>
+                        <field name="project_id"/>
+                        <field name="partner_id"/>
+                        <field name="allowed_peer_ids" invisible="1"/>
+                        <field name="federation_peer_id" options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="group_by" widget="radio"/>
+                        <field name="include_descriptions"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="line_count"/>
+                    <field name="total_hours" widget="float_time"/>
+                </group>
+                <footer>
+                    <button name="action_produce" type="object" string="Produire le relevé" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_federation_timesheet_statement" model="ir.actions.act_window">
+        <field name="name">Remettre un relevé des heures</field>
+        <field name="res_model">federation.timesheet.statement</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_federation_timesheet_statement"
+              name="Relevé des heures"
+              parent="bf_federation.menu_federation_root"
+              action="action_federation_timesheet_statement"
+              groups="project.group_project_manager"
+              sequence="45"/>
+</odoo>

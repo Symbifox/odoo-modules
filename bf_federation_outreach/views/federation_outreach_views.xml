@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_federation_outreach_report_form" model="ir.ui.view">
+        <field name="name">federation.outreach.report.form</field>
+        <field name="model">federation.outreach.report</field>
+        <field name="arch" type="xml">
+            <form string="Suivi de démarchage">
+                <header>
+                    <field name="federation_is_mirror" invisible="1"/>
+                    <field name="federation_origin" invisible="1"/>
+                    <field name="federation_possible" invisible="1"/>
+                    <field name="federation_allowed_peer_ids" invisible="1"/>
+                    <button name="action_refresh" type="object" string="Relire la campagne et renvoyer"
+                            class="btn-primary" invisible="federation_is_mirror"
+                            groups="project.group_project_manager"/>
+                </header>
+                <div class="alert alert-info" role="status" invisible="not federation_is_mirror">
+                    Suivi reçu de <field name="federation_peer_id" readonly="1" class="oe_inline"/>.
+                    Il se lit ici et se rafraîchit chaque jour. Pour qu'une cible ne soit pas contactée,
+                    ouvrez-la et utilisez <strong>Écarter</strong> : l'agence le recevra.
+                </div>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Démarchage, campagne d'automne"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="campaign_ref" invisible="federation_is_mirror"/>
+                            <field name="client_partner_id"/>
+                            <field name="federation_peer_id" invisible="federation_is_mirror or not federation_possible"/>
+                            <field name="include_contacts" invisible="federation_is_mirror"/>
+                        </group>
+                        <group>
+                            <field name="campaign_status_label"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="last_refresh"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="target_count"/>
+                            <field name="contacted_count"/>
+                        </group>
+                        <group>
+                            <field name="replied_count"/>
+                            <field name="excluded_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Cibles" name="cibles">
+                            <field name="line_ids" readonly="1">
+                                <list decoration-muted="do_not_contact or excluded_by_client"
+                                      decoration-success="has_reply">
+                                    <field name="name"/>
+                                    <field name="contact_name" optional="show"/>
+                                    <field name="stage"/>
+                                    <field name="touch_count"/>
+                                    <field name="last_touch_date" optional="show"/>
+                                    <field name="next_action_date" optional="show"/>
+                                    <field name="has_reply" widget="boolean"/>
+                                    <field name="closed_reason" optional="hide"/>
+                                    <field name="do_not_contact" optional="hide"/>
+                                    <field name="excluded_by_client" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Argumentaire" name="argumentaire">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_federation_outreach_report_line_form" model="ir.ui.view">
+        <field name="name">federation.outreach.report.line.form</field>
+        <field name="model">federation.outreach.report.line</field>
+        <field name="arch" type="xml">
+            <form string="Cible">
+                <header>
+                    <field name="federation_is_mirror" invisible="1"/>
+                    <button name="action_open_exclude_wizard" type="object" string="Écarter"
+                            class="btn-primary"
+                            invisible="not federation_is_mirror or excluded_by_client or do_not_contact"
+                            groups="project.group_project_manager"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="contact_name" readonly="1"/>
+                            <field name="function" readonly="1"/>
+                            <field name="email" readonly="1" widget="email"/>
+                            <field name="phone" readonly="1" widget="phone"/>
+                        </group>
+                        <group>
+                            <field name="stage" readonly="1"/>
+                            <field name="has_reply" readonly="1"/>
+                            <field name="next_action_date" readonly="1"/>
+                            <field name="next_action_kind" readonly="1"/>
+                            <field name="closed_reason" readonly="1"/>
+                            <field name="do_not_contact" readonly="1"/>
+                        </group>
+                    </group>
+                    <group invisible="not excluded_by_client">
+                        <field name="excluded_by_client" readonly="1"/>
+                        <field name="excluded_on" readonly="1"/>
+                        <field name="excluded_reason" readonly="1"/>
+                    </group>
+                    <field name="touch_ids" readonly="1">
+                        <list>
+                            <field name="date"/>
+                            <field name="kind"/>
+                            <field name="direction"/>
+                            <field name="outcome"/>
+                            <field name="summary" optional="show"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_federation_outreach_exclude_wizard_form" model="ir.ui.view">
+        <field name="name">federation.outreach.exclude.wizard.form</field>
+        <field name="model">federation.outreach.exclude.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Écarter une cible">
+                <p>La cible deviendra « ne pas contacter » chez l'agence, avec ce motif.</p>
+                <group>
+                    <field name="line_id" readonly="1"/>
+                    <field name="reason" placeholder="Déjà notre client"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Écarter" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_federation_outreach_report_list" model="ir.ui.view">
+        <field name="name">federation.outreach.report.list</field>
+        <field name="model">federation.outreach.report</field>
+        <field name="arch" type="xml">
+            <list string="Suivis de démarchage">
+                <field name="name"/>
+                <field name="client_partner_id"/>
+                <field name="federation_peer_id"/>
+                <field name="federation_origin"/>
+                <field name="campaign_status_label"/>
+                <field name="target_count"/>
+                <field name="replied_count"/>
+                <field name="excluded_count"/>
+                <field name="last_refresh"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_federation_outreach_report" model="ir.actions.act_window">
+        <field name="name">Suivis de démarchage</field>
+        <field name="res_model">federation.outreach.report</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_federation_outreach_report" name="Suivis de démarchage"
+              parent="bf_federation.menu_federation_root"
+              action="action_federation_outreach_report" sequence="48"/>
+</odoo>
