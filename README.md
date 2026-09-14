@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**121 modules are BUSL-1.1.** The source is published and auditable, and **you
+**125 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -224,8 +224,12 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.11.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
 | `bf_training` | Registre de formation | 18.0.1.0.1 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |
+| `bf_training_budget` | Registre de formation : ce qu'elle coûte vraiment | 18.0.1.0.0 | BUSL-1.1 | Le coût des formations suivies porté au budget, et les heures dont le coût manque comptées comme manquantes plutôt que comme zéro |
+| `bf_training_mobile` | Registre de formation : mes formations au téléphone | 18.0.1.0.0 | BUSL-1.1 | L'écran « mes formations » de Symbifox Mobile : ce que je dois, pour quand, et ce que j'ai déjà prouvé |
 | `bf_training_process` | Registre de formation : entraînement à la tâche | 18.0.1.0.0 | BUSL-1.1 | La formation accrochée à l'étape de processus qu'elle enseigne, et le couloir qui dit enfin qui joue le rôle |
 | `bf_training_qc` | Registre de formation : Québec | 18.0.1.0.0 | BUSL-1.1 | L'attestation que l'employeur doit pouvoir délivrer, la conservation de six ans, et le relevé de la participation au développement des compétences |
+| `bf_training_scorm` | Registre de formation : contenus SCORM | 18.0.1.0.0 | BUSL-1.1 | Jouer un paquet SCORM 1.2 ou 2004 dans l'eLearning d'Odoo, et porter sa complétion au registre |
+| `bf_training_session` | Registre de formation : la séance et sa feuille signée | 18.0.1.0.0 | BUSL-1.1 | La séance en salle tenue par Événements, et la feuille de présence signée qui en fait une preuve |
 | `bf_training_sign` | Registre de formation : accusé signé par module | 18.0.1.0.0 | BUSL-1.1 | Lire une politique et le confirmer par écrit devient une ligne du registre, datée et rattachée à la version lue |
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.0 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.3.0 | LGPL-3 | Cross-module search through the command palette |
@@ -262,7 +266,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **121 modules: BUSL-1.1.** Production use for your own internal business
+- **125 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
