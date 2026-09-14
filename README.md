@@ -230,7 +230,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.12.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timesheet_timer_mobile` | Chronomètre : application Android | 18.0.1.0.0 | BUSL-1.1 | API for the Symbifox Chronomètre Android app: PKCE device pairing and timer gestures, stop and log in one request |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
-| `bf_training` | Registre de formation | 18.0.1.1.0 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |
+| `bf_training` | Registre de formation | 18.0.1.2.0 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |
 | `bf_training_budget` | Registre de formation : ce qu'elle coûte vraiment | 18.0.1.0.0 | BUSL-1.1 | Le coût des formations suivies porté au budget, et les heures dont le coût manque comptées comme manquantes plutôt que comme zéro |
 | `bf_training_mobile` | Registre de formation : mes formations au téléphone | 18.0.1.0.0 | BUSL-1.1 | L'écran « mes formations » de Symbifox Mobile : ce que je dois, pour quand, et ce que j'ai déjà prouvé |
 | `bf_training_process` | Registre de formation : entraînement à la tâche | 18.0.1.0.0 | BUSL-1.1 | La formation accrochée à l'étape de processus qu'elle enseigne, et le couloir qui dit enfin qui joue le rôle |

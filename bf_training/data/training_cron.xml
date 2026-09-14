@@ -27,17 +27,18 @@
                     <!-- 🔴 La relance n'avait AUCUN lien : la personne savait qu'elle
                          devait une formation et n'avait aucun moyen d'y aller. -->
                     <p t-if="object.training_url" style="margin: 24px 0;">
-                        <!-- ⚠️ La couleur du bouton vient de la SOCIÉTÉ (« couleur des
-                             boutons » de ses réglages de courriel), jamais d'un code écrit
-                             ici : ce module part chez d'autres organisations, et un bleu
-                             en dur donnait 2,6:1 de contraste avec le texte blanc, sous le
-                             seuil AA. C'est le patron des gabarits d'Odoo lui-même. -->
+                        <!-- ⚠️ La couleur du bouton vient de la SOCIÉTÉ, jamais d'un code
+                             écrit ici : ce module part chez d'autres organisations. Elle
+                             suit la mise en page retenue (accent de marque sous la mise en
+                             page maison, couleur des boutons de courriel sous celle
+                             d'Odoo) : voir `_compute_reminder_presentation`. -->
                         <a t-att-href="object.training_url"
-                           t-attf-style="background-color: {{ object.company_id.email_secondary_color or '#875A7B' }}; padding: 10px 18px; text-decoration: none; color: #fff; border-radius: 5px; font-weight: bold;">
+                           t-attf-style="background-color: {{ object.reminder_button_color }}; padding: 10px 18px; text-decoration: none; color: #fff; border-radius: 5px; font-weight: bold;">
                             Ouvrir la formation
                         </a>
                     </p>
-                    <p>Merci,<br/><t t-out="object.company_id.name or ''">La société</t></p>
+                    <!-- Pas de nom quand la mise en page pose déjà la signature de la société. -->
+                    <p>Merci,<t t-if="object.reminder_signature_name"><br/><t t-out="object.reminder_signature_name">La société</t></t></p>
                 </div>
             </field>
             <field name="lang">{{ object.partner_id.lang }}</field>

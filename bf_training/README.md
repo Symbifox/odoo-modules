@@ -103,17 +103,26 @@ l'exploitant de l'armer quand il a vérifié à qui elle parlerait. Le préavis 
 règle par `bf_training.reminder_days` (7 jours par défaut) et l'échéance par
 défaut d'une assignation par `bf_training.default_due_days` (30 jours).
 
-La relance part avec la mise en page des courriels de la société, sous son nom,
-et porte un bouton **Ouvrir la formation**. Par défaut il mène à la fiche de
-l'assignation ; un module qui adosse l'activité à un cours peut le faire mener au
-cours. L'échéance s'écrit en toutes lettres dans la langue de la personne, et le
-bouton prend la couleur de bouton des courriels de la société, jamais une couleur
-écrite en dur.
+La relance part sous le nom de la société et porte un bouton **Ouvrir la
+formation**. Par défaut il mène à la fiche de l'assignation ; un module qui adosse
+l'activité à un cours peut le faire mener au cours. L'échéance s'écrit en toutes
+lettres dans la langue de la personne.
 
-⚠️ **La montée vers 18.0.1.1.0 remplace le gabarit de relance**, même protégé par
-`noupdate` : celui des versions antérieures partait sans lien ni mise en page, et
-Odoo ne réécrit jamais un enregistrement protégé. Un gabarit retouché à la main
-est donc remplacé par cette montée ; reportez vos retouches après.
+Elle se range avec les autres courriels de la société :
+
+| La base porte | Mise en page | Couleur du bouton | Signature |
+|---|---|---|---|
+| `bluefox_branding` | celle de la marque (`bf_mail_layout`) : bandeau, accent, police et pied de la société | l'accent de marque de la société | le nom de la société, sauf si elle a une signature par défaut, que la mise en page pose déjà |
+| rien de plus | la mise en page légère d'Odoo | la couleur des boutons de courriel de la société | le nom de la société |
+
+`bluefox_branding` n'est pas une dépendance : la relance le détecte à l'envoi. Aucune
+couleur n'est écrite dans le gabarit, et aucune n'est assombrie : le bouton emploie
+la couleur que sa mise en page emploie elle-même.
+
+⚠️ **Les montées vers 18.0.1.1.0 et 18.0.1.2.0 remplacent le gabarit de relance**,
+même protégé par `noupdate` : son corps a changé, et Odoo ne réécrit jamais un
+enregistrement protégé. Un gabarit retouché à la main est donc remplacé par ces
+montées ; reportez vos retouches après.
 
 ## Droits
 

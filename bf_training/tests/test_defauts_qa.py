@@ -172,11 +172,12 @@ class TestDefautsQa(TransactionCase):
         self.assertIn("Bonjour Apprenante QA", courriel.body_html)
 
     def test_la_relance_ne_code_aucune_couleur_en_dur(self):
-        """⚠️ Le bouton suit la couleur de bouton de la société.
+        """⚠️ Le bouton suit la société, jamais un code écrit dans le gabarit.
 
-        Un bleu écrit en dur donnait 2,6:1 de contraste avec le texte blanc, sous
-        le seuil AA, et imposait la marque d'une organisation à toutes les autres.
+        Un bleu en dur imposait la marque d'une organisation à toutes les autres.
+        La couleur se choisit en Python selon la mise en page retenue : voir
+        `test_relance_mise_en_page`.
         """
         gabarit = self.env.ref("bf_training.mail_template_training_reminder")
         self.assertNotIn("#29ABE2", gabarit.body_html or "")
-        self.assertIn("email_secondary_color", gabarit.body_html or "")
+        self.assertIn("reminder_button_color", gabarit.body_html or "")

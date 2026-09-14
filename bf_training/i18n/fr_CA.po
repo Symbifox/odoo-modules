@@ -59,16 +59,17 @@ msgid ""
 "                    <!-- &#128308; La relance n'avait AUCUN lien : la personne savait qu'elle\n"
 "                         devait une formation et n'avait aucun moyen d'y aller. -->\n"
 "                    <p t-if=\"object.training_url\" style=\"margin: 24px 0;\">\n"
-"                        <!-- &#9888;&#65039; La couleur du bouton vient de la SOCI&#201;T&#201; (&#171; couleur des\n"
-"                             boutons &#187; de ses r&#233;glages de courriel), jamais d'un code &#233;crit\n"
-"                             ici : ce module part chez d'autres organisations, et un bleu\n"
-"                             en dur donnait 2,6:1 de contraste avec le texte blanc, sous le\n"
-"                             seuil AA. C'est le patron des gabarits d'Odoo lui-m&#234;me. -->\n"
-"                        <a t-att-href=\"object.training_url\" t-attf-style=\"background-color: {{ object.company_id.email_secondary_color or '#875A7B' }}; padding: 10px 18px; text-decoration: none; color: #fff; border-radius: 5px; font-weight: bold;\">\n"
+"                        <!-- &#9888;&#65039; La couleur du bouton vient de la SOCI&#201;T&#201;, jamais d'un code\n"
+"                             &#233;crit ici : ce module part chez d'autres organisations. Elle\n"
+"                             suit la mise en page retenue (accent de marque sous la mise en\n"
+"                             page maison, couleur des boutons de courriel sous celle\n"
+"                             d'Odoo) : voir `_compute_reminder_presentation`. -->\n"
+"                        <a t-att-href=\"object.training_url\" t-attf-style=\"background-color: {{ object.reminder_button_color }}; padding: 10px 18px; text-decoration: none; color: #fff; border-radius: 5px; font-weight: bold;\">\n"
 "                            Ouvrir la formation\n"
 "                        </a>\n"
 "                    </p>\n"
-"                    <p>Merci,<br/><t t-out=\"object.company_id.name or ''\">La société</t></p>\n"
+"                    <!-- Pas de nom quand la mise en page pose d&#233;j&#224; la signature de la soci&#233;t&#233;. -->\n"
+"                    <p>Merci,<t t-if=\"object.reminder_signature_name\"><br/><t t-out=\"object.reminder_signature_name\">La société</t></t></p>\n"
 "                </div>\n"
 "            "
 msgstr ""
@@ -89,16 +90,17 @@ msgstr ""
 "                    <!-- &#128308; La relance n'avait AUCUN lien : la personne savait qu'elle\n"
 "                         devait une formation et n'avait aucun moyen d'y aller. -->\n"
 "                    <p t-if=\"object.training_url\" style=\"margin: 24px 0;\">\n"
-"                        <!-- &#9888;&#65039; La couleur du bouton vient de la SOCI&#201;T&#201; (&#171; couleur des\n"
-"                             boutons &#187; de ses r&#233;glages de courriel), jamais d'un code &#233;crit\n"
-"                             ici : ce module part chez d'autres organisations, et un bleu\n"
-"                             en dur donnait 2,6:1 de contraste avec le texte blanc, sous le\n"
-"                             seuil AA. C'est le patron des gabarits d'Odoo lui-m&#234;me. -->\n"
-"                        <a t-att-href=\"object.training_url\" t-attf-style=\"background-color: {{ object.company_id.email_secondary_color or '#875A7B' }}; padding: 10px 18px; text-decoration: none; color: #fff; border-radius: 5px; font-weight: bold;\">\n"
+"                        <!-- &#9888;&#65039; La couleur du bouton vient de la SOCI&#201;T&#201;, jamais d'un code\n"
+"                             &#233;crit ici : ce module part chez d'autres organisations. Elle\n"
+"                             suit la mise en page retenue (accent de marque sous la mise en\n"
+"                             page maison, couleur des boutons de courriel sous celle\n"
+"                             d'Odoo) : voir `_compute_reminder_presentation`. -->\n"
+"                        <a t-att-href=\"object.training_url\" t-attf-style=\"background-color: {{ object.reminder_button_color }}; padding: 10px 18px; text-decoration: none; color: #fff; border-radius: 5px; font-weight: bold;\">\n"
 "                            Ouvrir la formation\n"
 "                        </a>\n"
 "                    </p>\n"
-"                    <p>Merci,<br/><t t-out=\"object.company_id.name or ''\">La société</t></p>\n"
+"                    <!-- Pas de nom quand la mise en page pose d&#233;j&#224; la signature de la soci&#233;t&#233;. -->\n"
+"                    <p>Merci,<t t-if=\"object.reminder_signature_name\"><br/><t t-out=\"object.reminder_signature_name\">La société</t></t></p>\n"
 "                </div>\n"
 "            "
 
@@ -469,6 +471,11 @@ msgstr "Consulté"
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_category__color
 msgid "Couleur"
 msgstr "Couleur"
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__reminder_button_color
+msgid "Couleur du bouton de relance"
+msgstr "Couleur du bouton de relance"
 
 #. module: bf_training
 #: model:ir.model.fields,help:bf_training.field_bf_training_category__code
@@ -987,6 +994,17 @@ msgid "L'intitulé et l'article, au long."
 msgstr "L'intitulé et l'article, au long."
 
 #. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__reminder_button_color
+msgid ""
+"La couleur du bouton que la mise en page retenue emploie elle-même : "
+"l'accent de marque de la société sous la mise en page maison, la couleur des"
+" boutons de ses courriels sous celle d'Odoo."
+msgstr ""
+"La couleur du bouton que la mise en page retenue emploie elle-même : "
+"l'accent de marque de la société sous la mise en page maison, la couleur des"
+" boutons de ses courriels sous celle d'Odoo."
+
+#. module: bf_training
 #: model:ir.model.constraint,message:bf_training.constraint_bf_training_plan_dates_coherentes
 msgid "La fin d'un plan ne peut pas précéder son début."
 msgstr "La fin d'un plan ne peut pas précéder son début."
@@ -1048,6 +1066,15 @@ msgid ""
 "Le jour où la formation a réellement été suivie, pas celui de la saisie."
 msgstr ""
 "Le jour où la formation a réellement été suivie, pas celui de la saisie."
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__reminder_signature_name
+msgid ""
+"Le nom qui signe la relance. Vide quand la mise en page de la société pose "
+"déjà sa propre signature, pour ne pas signer deux fois."
+msgstr ""
+"Le nom qui signe la relance. Vide quand la mise en page de la société pose "
+"déjà sa propre signature, pour ne pas signer deux fois."
 
 #. module: bf_training
 #. odoo-python
@@ -1666,6 +1693,11 @@ msgstr "Secourisme adapté à la petite enfance"
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
 msgid "Secourisme valide pour tout le personnel de garde"
 msgstr "Secourisme valide pour tout le personnel de garde"
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__reminder_signature_name
+msgid "Signature de la relance"
+msgstr "Signature de la relance"
 
 #. module: bf_training
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__company_id

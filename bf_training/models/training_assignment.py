@@ -3,6 +3,7 @@ import logging
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
+from odoo.tools import is_html_empty
 
 _logger = logging.getLogger(__name__)
 
@@ -66,8 +67,29 @@ class BfTrainingAssignment(models.Model):
         string="Lien vers la formation", compute="_compute_training_url",
         help="Où la relance envoie la personne. Par défaut, la fiche de "
              "l'assignation ; un pont peut l'envoyer directement au contenu.")
+    reminder_button_color = fields.Char(
+        string="Couleur du bouton de relance",
+        compute="_compute_reminder_presentation",
+        help="La couleur du bouton que la mise en page retenue emploie elle-même : "
+             "l'accent de marque de la société sous la mise en page maison, la "
+             "couleur des boutons de ses courriels sous celle d'Odoo.")
+    reminder_signature_name = fields.Char(
+        string="Signature de la relance",
+        compute="_compute_reminder_presentation",
+        help="Le nom qui signe la relance. Vide quand la mise en page de la "
+             "société pose déjà sa propre signature, pour ne pas signer deux fois.")
     last_reminder_date = fields.Datetime(string="Dernière relance", readonly=True)
     note = fields.Html(string="Note", sanitize_attributes=False)
+
+    # Mises en page de la relance, par ordre de préférence : la première présente
+    # sur la base sert. `bluefox_branding` n'est pas une dépendance et ne le
+    # deviendra pas ; quand il est installé, la relance se range avec les autres
+    # courriels de la société (bandeau, accent, police et pied de marque) au lieu
+    # de partir dans l'habillage d'Odoo. Sans lui, la mise en page légère d'Odoo.
+    _MISES_EN_PAGE_RELANCE = (
+        "bluefox_branding.bf_mail_layout",
+        "mail.mail_notification_light",
+    )
 
     _sql_constraints = [
         ("completion_bornee", "check (completion >= 0 and completion <= 100)",
@@ -89,6 +111,43 @@ class BfTrainingAssignment(models.Model):
             rec.training_url = (
                 "%s/mail/view?model=%s&res_id=%s" % (base, rec._name, rec.id)
                 if rec.id else False)
+
+    def _mise_en_page_relance(self):
+        """La première mise en page de `_MISES_EN_PAGE_RELANCE` qui existe."""
+        for xmlid in self._MISES_EN_PAGE_RELANCE:
+            if self.env.ref(xmlid, raise_if_not_found=False):
+                return xmlid
+        return False
+
+    @api.depends("company_id")
+    def _compute_reminder_presentation(self):
+        """Le bouton et la signature suivent la mise en page retenue.
+
+        🔴 Première version : la couleur native des boutons de courriel, quelle
+        que soit la mise en page. Chez Blue Fox elle vaut #729daf, hors palette,
+        pendant que tous les autres courriels maison portent l'accent de marque :
+        la relance était le seul courriel gris-bleu de la maison. Chaque mise en
+        page a sa source de couleur, et le bouton prend celle de la sienne.
+
+        ⚠️ Aucune couleur n'est assombrie ici. L'accent brut sous du texte blanc
+        est un arbitrage du propriétaire de la marque (voir `branding.scss` de
+        `bluefox_branding`), pas un défaut à corriger dans un module voisin.
+        """
+        maison = self._mise_en_page_relance() == "bluefox_branding.bf_mail_layout"
+        for rec in self:
+            societe = rec.company_id or self.env.company
+            if maison and "report_brand_primary" in societe._fields:
+                couleur = societe.report_brand_primary
+            else:
+                couleur = societe.email_secondary_color
+            rec.reminder_button_color = couleur or "#875A7B"
+            # La mise en page maison ajoute la signature par défaut de la société
+            # quand elle en a une : « Merci, Société Exemple » suivi du bloc
+            # « Société Exemple » signait deux fois.
+            signe_deja = (
+                maison and "brand_email_signature_default" in societe._fields
+                and not is_html_empty(societe.brand_email_signature_default))
+            rec.reminder_signature_name = False if signe_deja else societe.name
 
     @api.depends("employee_id.name", "partner_id.name", "activity_id.name")
     def _compute_display_name(self):
@@ -135,15 +194,14 @@ class BfTrainingAssignment(models.Model):
         gabarit = self.env.ref(
             "bf_training.mail_template_training_reminder", raise_if_not_found=False)
         envoyees = 0
+        # 🔴 Sans `email_layout_xmlid`, `send_mail` part SANS mise en page : le
+        # courriel reçu faisait 550 caractères de HTML nu, sans logo, sans pied,
+        # sans nom de société.
+        mise_en_page = self._mise_en_page_relance()
         for rec in self:
             if gabarit:
-                # 🔴 Sans `email_layout_xmlid`, `send_mail` part SANS mise en
-                # page : le courriel reçu faisait 550 caractères de HTML nu, sans
-                # logo, sans pied, sans nom de société. La mise en page légère est
-                # celle des notifications d'Odoo, aux couleurs de la société.
                 gabarit.send_mail(
-                    rec.id, force_send=False,
-                    email_layout_xmlid="mail.mail_notification_light")
+                    rec.id, force_send=False, email_layout_xmlid=mise_en_page)
             else:
                 rec.message_post(body=_(
                     "Rappel : l'activité « %(activite)s » est attendue pour le "
