@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_absence_me_wizard_form" model="ir.ui.view">
+        <field name="name">bf.absence.me.wizard.form</field>
+        <field name="model">bf.absence.me.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Je m'absente">
+                <group>
+                    <group string="Quand">
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="date_return"/>
+                        <field name="nature"/>
+                    </group>
+                    <group string="Pendant ce temps-là">
+                        <field name="backup_partner_id" options="{'no_create': True}"/>
+                        <field name="backup_info" placeholder="reception@exemple.test, 450 555-1212"/>
+                        <field name="autoreply"/>
+                        <field name="autoreply_tone" invisible="not autoreply"/>
+                        <field name="decline_meetings" invisible="not autoreply"/>
+                    </group>
+                </group>
+                <group string="Ce qui partira" invisible="not autoreply">
+                    <div class="text-muted" colspan="2">
+                        La date de retour et votre nom se remplissent à
+                        l'envoi, dans la langue du correspondant.
+                    </div>
+                    <field name="preview_html" nolabel="1" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Je m'absente"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_absence_me_wizard" model="ir.actions.act_window">
+        <field name="name">Je m'absente</field>
+        <field name="res_model">bf.absence.me.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

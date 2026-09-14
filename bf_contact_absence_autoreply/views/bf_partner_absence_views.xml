@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_partner_absence_form_autoreply" model="ir.ui.view">
+        <field name="name">bf.partner.absence.form.autoreply</field>
+        <field name="model">bf.partner.absence</field>
+        <field name="inherit_id" ref="bf_contact_absence.view_bf_partner_absence_form"/>
+        <field name="arch" type="xml">
+            <!-- Ancré sur la RACINE (la feuille, l'en-tête) et jamais sur un
+                 champ ni sur un libellé : un héritage ancré sur un champ tombe
+                 sur une installation dont la vue diffère, après avoir
+                 réussi ailleurs. Et Odoo refuse carrément `string` comme sélecteur. -->
+            <xpath expr="//sheet" position="inside">
+                <field name="absent_user_id" invisible="1"/>
+                <field name="email_absence_id" invisible="1"/>
+                <group string="Répondeur d'absence" invisible="not absent_user_id">
+                    <field name="autoreply"/>
+                    <field name="autoreply_tone" invisible="not autoreply"/>
+                    <field name="autoreply_decline_meetings" invisible="not autoreply"/>
+                    <field name="autoreply_state" invisible="not email_absence_id"/>
+                </group>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_open_email_absence" type="object"
+                        string="Voir le répondeur" class="btn-secondary"
+                        invisible="not email_absence_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_bf_partner_absence_list_autoreply" model="ir.ui.view">
+        <field name="name">bf.partner.absence.list.autoreply</field>
+        <field name="model">bf.partner.absence</field>
+        <field name="inherit_id" ref="bf_contact_absence.view_bf_partner_absence_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="autoreply" optional="show" string="Répondeur"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

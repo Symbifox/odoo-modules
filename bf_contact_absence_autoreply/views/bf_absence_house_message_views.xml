@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_absence_house_message_list" model="ir.ui.view">
+        <field name="name">bf.absence.house.message.list</field>
+        <field name="model">bf.absence.house.message</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="tone"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_absence_house_message_form" model="ir.ui.view">
+        <field name="name">bf.absence.house.message.form</field>
+        <field name="model">bf.absence.house.message</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="tone"/>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="active" invisible="1"/>
+                    </group>
+                    <group string="Message">
+                        <field name="body_html" nolabel="1"/>
+                    </group>
+                    <group string="Phrase de relève">
+                        <div class="text-muted" colspan="2">
+                            Ajoutée seulement quand une relève est nommée.
+                            Le marqueur du nom et celui de l'adresse sont
+                            décrits dans l'infobulle du champ.
+                        </div>
+                        <field name="backup_html" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_absence_house_message" model="ir.actions.act_window">
+        <field name="name">Messages d'absence de la maison</field>
+        <field name="res_model">bf.absence.house.message</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun message de maison</p>
+            <p>Sans texte, aucun répondeur ne s'arme. C'est voulu : un gabarit
+               vide envoyé à un client coûte plus cher qu'un silence.</p>
+        </field>
+    </record>
+
+</odoo>

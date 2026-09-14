@@ -41,10 +41,6 @@ Five modules self-host fonts rather than calling a font CDN, so no visitor IP ev
 
 | Module | Typefaces |
 |---|---|
-| `bf_contact_absence` | Symbifox Absences des contacts | 18.0.1.0.0 | BUSL-1.1 | Savoir qu'un contact est absent avant de lui écrire, de lui texter ou de l'appeler |
-| `bf_contact_absence_calendar` | Symbifox Absences des contacts : calendrier Nextcloud | 18.0.1.0.0 | BUSL-1.1 | Proposer les absences notées à la main dans un calendrier Nextcloud |
-| `bf_contact_absence_mail` | Symbifox Absences des contacts : lecture des répondeurs | 18.0.1.0.0 | BUSL-1.1 | Reconnaître les répondeurs d'absence reçus et proposer la période au lieu de l'écrire |
-| `bf_contact_absence_sms` | Symbifox Absences des contacts : Messagerie SMS | 18.0.1.0.0 | BUSL-1.1 | Voir qu'un contact est absent avant de lui texter |
 | `bf_sign` | Caveat, Dancing Script, Great Vibes |
 | `bf_lexend` | Lexend |
 | `bf_process` | Lexend |
@@ -98,6 +94,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
 | `bf_contact_absence` | Symbifox Absences des contacts | 18.0.1.0.0 | BUSL-1.1 | Savoir qu'un contact est absent avant de lui écrire, de lui texter ou de l'appeler |
+| `bf_contact_absence_autoreply` | Symbifox Répondeur d'absence sur statut | 18.0.1.0.0 | BUSL-1.1 | Declare yourself away once, and the responder, the calendar and the return all follow |
 | `bf_contact_absence_calendar` | Symbifox Absences des contacts : calendrier Nextcloud | 18.0.1.0.0 | BUSL-1.1 | Proposer les absences notées à la main dans un calendrier Nextcloud |
 | `bf_contact_absence_mail` | Symbifox Absences des contacts : lecture des répondeurs | 18.0.1.0.0 | BUSL-1.1 | Reconnaître les répondeurs d'absence reçus et proposer la période au lieu de l'écrire |
 | `bf_contact_absence_sms` | Symbifox Absences des contacts : Messagerie SMS | 18.0.1.0.0 | BUSL-1.1 | Voir qu'un contact est absent avant de lui texter |
@@ -133,7 +130,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.1 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
-| `bf_email_management` | Gestion des courriels | 18.0.11.34.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.11.35.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.1.1 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |

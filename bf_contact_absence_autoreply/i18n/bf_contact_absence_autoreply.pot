@@ -1,0 +1,453 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_contact_absence_autoreply
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-13 23:55+0000\n"
+"PO-Revision-Date: 2026-09-13 23:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_contact_absence_autoreply
+#. odoo-python
+#: code:addons/bf_contact_absence_autoreply/models/bf_partner_absence.py:0
+msgid ""
+"%(nom)s a déjà une réponse d'absence active sur ces dates : « %(autre)s ». "
+"Terminez-la avant d'en armer une autre, sinon deux messages se disputeraient"
+" la réponse."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model,name:bf_contact_absence_autoreply.model_bf_partner_absence
+msgid "Absence d'un contact"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__active
+msgid "Actif"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_absence_house_message__backup_html
+msgid ""
+"Ajoutée au message SEULEMENT quand une relève est nommée. [[releve]] y est remplacé par le nom, [[courriel]] par l'adresse ou le texte libre.\n"
+"\n"
+"⚠️ Deux crochets et non %(...)s : dans un fichier de données Odoo, %(quelquechose)s est une RÉFÉRENCE à un identifiant XML, et le module refuse de s'installer."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_house_message_form
+msgid ""
+"Ajoutée seulement quand une relève est nommée.\n"
+"                            Le marqueur du nom et celui de l'adresse sont\n"
+"                            décrits dans l'infobulle du champ."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_me_wizard_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_partner_absence__autoreply
+msgid ""
+"Arme le répondeur de cette personne pour la période, et l'éteint à la fin. "
+"Le message est le sien s'il en a rédigé un, celui de la maison sinon."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__date_to
+msgid "Au"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#. odoo-python
+#: code:addons/bf_contact_absence_autoreply/models/bf_partner_absence.py:0
+msgid ""
+"Aucun message d'absence n'est disponible : ni le vôtre, ni celui de la "
+"maison. Sans texte, on ne répond pas."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.actions.act_window,help:bf_contact_absence_autoreply.action_bf_absence_house_message
+msgid "Aucun message de maison"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#. odoo-python
+#: code:addons/bf_contact_absence_autoreply/models/bf_partner_absence.py:0
+msgid "Aucun répondeur n'est armé pour cette absence."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__name
+msgid "Audience"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:bf.absence.house.message,body_html:bf_contact_absence_autoreply.house_message_away
+#: model_terms:bf.absence.house.message,body_html:bf_contact_absence_autoreply.house_message_delay
+msgid "Bonjour,"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:bf.absence.house.message,body_html:bf_contact_absence_autoreply.house_message_away
+#: model_terms:bf.absence.house.message,body_html:bf_contact_absence_autoreply.house_message_delay
+msgid "Bonne journée!"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__preview_html
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_me_wizard_form
+msgid "Ce qui partira"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__create_uid
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__create_date
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_absence_me_wizard__date_to
+msgid ""
+"DERNIER jour d'absence, inclus. La fin est obligatoire : sans elle, un "
+"répondeur reste allumé et personne ne s'en aperçoit."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__date_return
+msgid "De retour le"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__display_name
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__date_from
+msgid "Du"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__id
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.actions.act_window,name:bf_contact_absence_autoreply.action_bf_absence_me_wizard
+#: model:ir.model,name:bf_contact_absence_autoreply.model_bf_absence_me_wizard
+#: model:ir.ui.menu,name:bf_contact_absence_autoreply.menu_bf_absence_me_contacts
+#: model:ir.ui.menu,name:bf_contact_absence_autoreply.menu_bf_absence_me_email
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_me_wizard_form
+msgid "Je m'absente"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields.selection,name:bf_contact_absence_autoreply.selection__bf_absence_house_message__tone__delay
+#: model:ir.model.fields.selection,name:bf_contact_absence_autoreply.selection__bf_absence_me_wizard__autoreply_tone__delay
+#: model:ir.model.fields.selection,name:bf_contact_absence_autoreply.selection__bf_partner_absence__autoreply_tone__delay
+msgid "Je réponds moins vite"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields.selection,name:bf_contact_absence_autoreply.selection__bf_absence_house_message__tone__away
+#: model:ir.model.fields.selection,name:bf_contact_absence_autoreply.selection__bf_absence_me_wizard__autoreply_tone__away
+#: model:ir.model.fields.selection,name:bf_contact_absence_autoreply.selection__bf_partner_absence__autoreply_tone__away
+msgid "Je suis à l'extérieur"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_partner_absence__absent_user_id
+msgid ""
+"L'utilisateur interne rattaché à la fiche. C'est lui qui décide si un "
+"répondeur est possible : une absence de contact n'écrit jamais à personne."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_me_wizard_form
+msgid ""
+"La date de retour et votre nom se remplissent à\n"
+"                        l'envoi, dans la langue du correspondant."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#. odoo-python
+#: code:addons/bf_contact_absence_autoreply/wizard/bf_absence_me_wizard.py:0
+msgid "La fin de l'absence précède son début."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_partner_absence__email_absence_id
+msgid ""
+"La période créée dans les réponses d'absence. Elle porte le journal des "
+"envois."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__write_uid
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__write_date
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_absence_house_message__name
+msgid ""
+"Le libellé de la ligne de message créée dans le répondeur. Pour vous, pas "
+"pour l'expéditeur."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_partner_absence__autoreply_decline_meetings
+msgid ""
+"Marque la participation comme refusée pour les invitations dont la date "
+"tombe dans la période. L'événement n'est jamais modifié ni supprimé, seule "
+"la réponse l'est."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_absence_house_message__body_html
+msgid ""
+"Marqueurs disponibles : {nom}, {retour}, {motif}. La relève se pose par la "
+"phrase ci-dessous, pas par un marqueur."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:bf.absence.house.message,body_html:bf_contact_absence_autoreply.house_message_delay
+msgid ""
+"Merci pour votre message. Je suis en déplacement jusqu'au {retour} : je lis "
+"mes courriels, mais mes réponses seront plus lentes que d'habitude."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:bf.absence.house.message,body_html:bf_contact_absence_autoreply.house_message_away
+msgid ""
+"Merci pour votre message. Je suis à l'extérieur du bureau jusqu'au {retour} "
+"et je ne consulte pas mes courriels d'ici là. Je traiterai votre demande à "
+"mon retour."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__body_html
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_house_message_form
+msgid "Message"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model,name:bf_contact_absence_autoreply.model_bf_absence_house_message
+msgid "Message d'absence de la maison"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.actions.act_window,name:bf_contact_absence_autoreply.action_bf_absence_house_message
+#: model:ir.ui.menu,name:bf_contact_absence_autoreply.menu_bf_absence_house_message
+msgid "Messages d'absence de la maison"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#. odoo-python
+#: code:addons/bf_contact_absence_autoreply/wizard/bf_absence_me_wizard.py:0
+msgid "Mon absence"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__nature
+msgid "Nature"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_me_wizard_form
+msgid "Pendant ce temps-là"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_partner_absence__absent_user_id
+msgid "Personne de la maison"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__backup_html
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_house_message_form
+msgid "Phrase de relève"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_absence_me_wizard__date_from
+msgid "Premier jour d'absence, inclus."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_absence_me_wizard__date_return
+msgid "Premier jour de présence, déduit de la date de fin."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_me_wizard_form
+msgid "Quand"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_absence_me_wizard__backup_info
+msgid ""
+"Quand la relève n'a pas de fiche : une adresse, un numéro, « la réception »."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_partner_absence__autoreply_decline_meetings
+msgid "Refuser les invitations reçues pendant l'absence"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__decline_meetings
+msgid "Refuser les invitations reçues pour cette période"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__backup_partner_id
+msgid "Relève"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__backup_info
+msgid "Relève (texte)"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_partner_absence__email_absence_id
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_partner_absence_list_autoreply
+msgid "Répondeur"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_partner_absence_form_autoreply
+msgid "Répondeur d'absence"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_partner_absence__autoreply
+msgid "Répondre automatiquement pendant l'absence"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__autoreply
+msgid "Répondre automatiquement à mon courrier"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#. odoo-python
+#: code:addons/bf_contact_absence_autoreply/models/bf_partner_absence.py:0
+#: model:ir.model,name:bf_contact_absence_autoreply.model_bf_email_absence
+msgid "Réponse d'absence"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.actions.act_window,help:bf_contact_absence_autoreply.action_bf_absence_house_message
+msgid ""
+"Sans texte, aucun répondeur ne s'arme. C'est voulu : un gabarit\n"
+"               vide envoyé à un client coûte plus cher qu'un silence."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_partner_absence__autoreply_tone
+msgid ""
+"Sert seulement quand le message vient de la maison. Un « message type » "
+"personnel, s'il existe, l'emporte."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:bf.absence.house.message,backup_html:bf_contact_absence_autoreply.house_message_away
+#: model_terms:bf.absence.house.message,backup_html:bf_contact_absence_autoreply.house_message_delay
+msgid ""
+"Si c'est urgent, écrivez à [[releve]] ([[courriel]]), qui prend le relais."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__sequence
+msgid "Séquence"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_house_message__tone
+msgid "Ton"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_absence_me_wizard__autoreply_tone
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_partner_absence__autoreply_tone
+msgid "Ton du message"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_partner_absence_form_autoreply
+msgid "Voir le répondeur"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#. odoo-python
+#: code:addons/bf_contact_absence_autoreply/wizard/bf_absence_me_wizard.py:0
+msgid ""
+"Votre compte n'a pas de fiche contact : il n'y a nulle part où poser "
+"l'absence."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#. odoo-python
+#: code:addons/bf_contact_absence_autoreply/models/bf_partner_absence.py:0
+msgid ""
+"Vous pouvez noter l'absence de %(nom)s, mais pas armer son répondeur : un "
+"message automatique part sous son nom, depuis sa boîte. Cette case lui "
+"revient, ou à un administrateur courriel."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_autoreply.view_bf_absence_me_wizard_form
+msgid "reception@exemple.test, 450 555-1212"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model_terms:bf.absence.house.message,body_html:bf_contact_absence_autoreply.house_message_away
+#: model_terms:bf.absence.house.message,body_html:bf_contact_absence_autoreply.house_message_delay
+msgid "{nom}"
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_absence_house_message__tone
+msgid ""
+"« Je réponds moins vite » annonce un délai, « Je suis à l'extérieur » annonce une absence. Le premier tient même quand on finit par répondre, et c'est le cas le plus fréquent.\n"
+"\n"
+"⚠️ Aucun des deux textes ne s'accorde en genre : Odoo ne porte pas le genre d'une personne, et un message de maison part sous le nom de n'importe qui."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,help:bf_contact_absence_autoreply.field_bf_absence_me_wizard__backup_partner_id
+msgid ""
+"À qui écrire pendant l'absence. Son nom est écrit en clair dans le message, "
+"pas laissé à un marqueur."
+msgstr ""
+
+#. module: bf_contact_absence_autoreply
+#: model:ir.model.fields,field_description:bf_contact_absence_autoreply.field_bf_partner_absence__autoreply_state
+msgid "État du répondeur"
+msgstr ""

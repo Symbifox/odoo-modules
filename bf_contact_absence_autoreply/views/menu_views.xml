@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Le geste se prend là où on lit son courrier, et là où on tient les
+         absences. Deux chemins vers le même assistant : celui qui part en
+         voyage n'ouvre pas l'écran de configuration d'un module. -->
+    <menuitem id="menu_bf_absence_me_contacts"
+              name="Je m'absente"
+              parent="contacts.menu_contacts"
+              action="action_bf_absence_me_wizard"
+              sequence="26"/>
+
+    <menuitem id="menu_bf_absence_me_email"
+              name="Je m'absente"
+              parent="bf_email_management.menu_bf_email_config"
+              action="action_bf_absence_me_wizard"
+              sequence="5"/>
+
+    <menuitem id="menu_bf_absence_house_message"
+              name="Messages d'absence de la maison"
+              parent="bf_email_management.menu_bf_email_config"
+              action="action_bf_absence_house_message"
+              groups="base.group_system"
+              sequence="7"/>
+
+</odoo>

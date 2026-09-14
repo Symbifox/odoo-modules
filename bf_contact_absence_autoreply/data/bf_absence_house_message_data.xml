@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate="1" : ces deux textes sont faits pour être RÉÉCRITS. Une
+         mise à jour du module qui écraserait la phrase que quelqu'un a
+         corrigée ferait repartir l'ancienne chez un client, sans un mot. -->
+    <data noupdate="1">
+
+        <record id="house_message_delay" model="bf.absence.house.message">
+            <field name="tone">delay</field>
+            <field name="sequence">10</field>
+            <field name="name">Tout le monde</field>
+            <field name="body_html"><![CDATA[<p>Bonjour,</p>
+<p>Merci pour votre message. Je suis en déplacement jusqu'au {retour} : je lis mes courriels, mais mes réponses seront plus lentes que d'habitude.</p>
+<p>Bonne journée!</p>
+<p>{nom}</p>]]></field>
+            <field name="backup_html"><![CDATA[<p>Si c'est urgent, écrivez à [[releve]] ([[courriel]]), qui prend le relais.</p>]]></field>
+        </record>
+
+        <record id="house_message_away" model="bf.absence.house.message">
+            <field name="tone">away</field>
+            <field name="sequence">20</field>
+            <field name="name">Tout le monde</field>
+            <field name="body_html"><![CDATA[<p>Bonjour,</p>
+<p>Merci pour votre message. Je suis à l'extérieur du bureau jusqu'au {retour} et je ne consulte pas mes courriels d'ici là. Je traiterai votre demande à mon retour.</p>
+<p>Bonne journée!</p>
+<p>{nom}</p>]]></field>
+            <field name="backup_html"><![CDATA[<p>Si c'est urgent, écrivez à [[releve]] ([[courriel]]), qui prend le relais.</p>]]></field>
+        </record>
+
+    </data>
+</odoo>
