@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- L'étiquette d'une pastille : son code QR jumeau, pour un téléphone sans
+         puce NFC ou dont le NFC est coupé. Le QR porte la MÊME adresse que la
+         puce : il ouvre la porte « navigateur », donc une session, et les gestes
+         qui écrivent passent par la confirmation, exactement comme la puce.
+
+         ⚠️ Pas de QR pour une pastille signée : son adresse change à chaque
+         lecture, et un QR figé serait refusé dès le deuxième scan. -->
+    <record id="action_report_tag_label" model="ir.actions.report">
+        <field name="name">Étiquette avec code QR</field>
+        <field name="model">bf.nfc.tag</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_nfc.report_tag_label</field>
+        <field name="report_file">bf_nfc.report_tag_label</field>
+        <field name="print_report_name">'Etiquette - %s' % object.code</field>
+        <field name="binding_model_id" ref="model_bf_nfc_tag"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_tag_label">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="page">
+                    <div class="row">
+                        <t t-foreach="docs" t-as="o">
+                            <div class="col-4 text-center mb-4" style="page-break-inside: avoid;">
+                                <div style="border: 1px solid #ccc; border-radius: 8px; padding: 12px;">
+                                    <t t-set="qr" t-value="o._qr_base64()"/>
+                                    <img t-if="qr" t-att-src="'data:image/png;base64,%s' % qr"
+                                         style="width: 42mm; height: 42mm;" alt="QR"/>
+                                    <p t-if="not qr" class="text-muted small" style="height: 42mm; padding-top: 16mm;">
+                                        Pastille signée : pas de code QR
+                                    </p>
+                                    <div style="font-weight: bold; font-size: 13px;"><t t-esc="o.name"/></div>
+                                    <div t-if="o.place" class="text-muted" style="font-size: 11px;"><t t-esc="o.place"/></div>
+                                    <div style="font-family: monospace; font-size: 11px; letter-spacing: 1px;"><t t-esc="o.code"/></div>
+                                    <div class="text-muted" style="font-size: 9px;">Approchez le téléphone ou scannez le code</div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gesture_room" model="bf.nfc.gesture">
+        <field name="name">Salle de réunion</field>
+        <field name="code">room</field>
+        <field name="kind">room</field>
+        <field name="sequence">42</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="accepte_differe" eval="False"/>
+        <field name="target_model_id" ref="bf_nfc_room.model_bf_nfc_room"/>
+        <field name="description">Sur la porte : dit si la salle est libre ou occupée, propose de la prendre, de confirmer sa réservation ou de la libérer. N'agit jamais sans un bouton.</field>
+    </record>
+
+    <record id="cron_room_release" model="ir.cron">
+        <field name="name">Pastilles : libérer les salles non confirmées</field>
+        <field name="model_id" ref="bf_nfc_room.model_bf_nfc_room"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_liberer()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

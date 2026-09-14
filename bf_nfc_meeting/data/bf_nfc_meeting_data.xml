@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gesture_meeting_presence" model="bf.nfc.gesture">
+        <field name="name">Noter ma présence à la rencontre</field>
+        <field name="code">meeting_presence</field>
+        <field name="kind">meeting_presence</field>
+        <field name="sequence">41</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="False"/>
+        <field name="accepte_differe" eval="True"/>
+        <field name="description">Sans fiche, sur la table de la salle : approcher le téléphone note la présence à la rencontre en cours à laquelle la personne est invitée. Sur une rencontre : celle-là, invité ou non.</field>
+    </record>
+</odoo>

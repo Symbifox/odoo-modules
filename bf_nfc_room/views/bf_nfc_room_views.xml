@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_room_list" model="ir.ui.view">
+        <field name="name">bf.nfc.room.list</field>
+        <field name="model">bf.nfc.room</field>
+        <field name="arch" type="xml">
+            <list string="Salles">
+                <field name="name"/>
+                <field name="place"/>
+                <field name="capacity"/>
+                <field name="require_checkin" optional="show"/>
+                <field name="checkin_delay" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_room_form" model="ir.ui.view">
+        <field name="name">bf.nfc.room.form</field>
+        <field name="model">bf.nfc.room</field>
+        <field name="arch" type="xml">
+            <form string="Salle">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Salle A, bureau d'appoint…"/></h1>
+                    </div>
+                    <group>
+                        <group string="La salle">
+                            <field name="place"/>
+                            <field name="capacity"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="À la porte">
+                            <field name="durations"/>
+                            <field name="require_checkin"/>
+                            <field name="checkin_delay" invisible="not require_checkin"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        Créez ensuite une pastille « Salle de réunion » qui vise cette salle, et
+                        gravez-la depuis l'application. Dans l'agenda, un événement réserve la
+                        salle par son champ « Salle ».
+                    </div>
+                    <notebook>
+                        <page string="Réservations" name="reservations">
+                            <field name="event_ids" readonly="1">
+                                <list>
+                                    <field name="start"/>
+                                    <field name="stop"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="bf_nfc_checkin"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_room" model="ir.actions.act_window">
+        <field name="name">Salles</field>
+        <field name="res_model">bf.nfc.room</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_nfc_room" name="Salles" parent="bf_nfc.menu_nfc_root"
+              action="action_bf_nfc_room" sequence="35"/>
+
+    <record id="view_calendar_event_form_salle" model="ir.ui.view">
+        <field name="name">calendar.event.form.bf_nfc_room</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <field name="location" position="after">
+                <field name="bf_nfc_room_id" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_calendar_event_search_salle" model="ir.ui.view">
+        <field name="name">calendar.event.search.bf_nfc_room</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="bf_nfc_room_id"/>
+                <filter name="avec_salle" string="Avec une salle" domain="[('bf_nfc_room_id', '!=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

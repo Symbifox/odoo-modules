@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_nfc_root" name="Pastilles" sequence="57"
+              web_icon="bf_nfc,static/description/icon.png"
+              groups="bf_nfc.group_nfc_user"/>
+    <menuitem id="menu_nfc_tags" name="Pastilles" parent="menu_nfc_root"
+              action="action_bf_nfc_tag" sequence="10"/>
+    <menuitem id="menu_nfc_taps" name="Journal" parent="menu_nfc_root"
+              action="action_bf_nfc_tap" sequence="20"/>
+    <menuitem id="menu_nfc_config" name="Configuration" parent="menu_nfc_root"
+              sequence="90" groups="bf_nfc.group_nfc_manager"/>
+    <menuitem id="menu_nfc_gestures" name="Gestes" parent="menu_nfc_config"
+              action="action_bf_nfc_gesture" sequence="10"/>
+</odoo>

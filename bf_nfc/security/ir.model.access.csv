@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_nfc_tag_user,Pastille (lecture),model_bf_nfc_tag,group_nfc_user,1,0,0,0
+access_bf_nfc_tag_manager,Pastille (gestion),model_bf_nfc_tag,group_nfc_manager,1,1,1,1
+access_bf_nfc_gesture_user,Geste (lecture),model_bf_nfc_gesture,group_nfc_user,1,0,0,0
+access_bf_nfc_gesture_manager,Geste (gestion),model_bf_nfc_gesture,group_nfc_manager,1,1,1,1
+access_bf_nfc_tap_user,Journal (lecture),model_bf_nfc_tap,group_nfc_user,1,0,0,0
+access_bf_nfc_tap_manager,Journal (gestion),model_bf_nfc_tap,group_nfc_manager,1,0,0,1
+access_bf_nfc_device_user,Appareil (le mien),model_bf_nfc_device,group_nfc_user,1,0,0,1
+access_bf_nfc_device_manager,Appareil (gestion),model_bf_nfc_device,group_nfc_manager,1,0,0,1
+access_bf_nfc_tag_choice_user,Choix de menu (lecture),model_bf_nfc_tag_choice,group_nfc_user,1,0,0,0
+access_bf_nfc_tag_choice_manager,Choix de menu (gestion),model_bf_nfc_tag_choice,group_nfc_manager,1,1,1,1

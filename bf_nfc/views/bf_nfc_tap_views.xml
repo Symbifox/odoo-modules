@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_tap_list" model="ir.ui.view">
+        <field name="name">bf.nfc.tap.list</field>
+        <field name="model">bf.nfc.tap</field>
+        <field name="arch" type="xml">
+            <list string="Tapotements" create="false">
+                <field name="tapped_at" string="Quand"/>
+                <field name="offline" string="Différé" optional="show" widget="boolean_toggle" readonly="1"/>
+                <field name="tag_id"/>
+                <field name="tag_code" optional="hide"/>
+                <field name="user_id"/>
+                <field name="door"/>
+                <field name="gesture_code" optional="hide"/>
+                <field name="status" decoration-success="status == 'ok'"
+                       decoration-warning="status == 'duplicate'"
+                       decoration-danger="status in ('refused', 'error')"
+                       widget="badge"/>
+                <field name="message"/>
+                <field name="device_label" optional="hide"/>
+                <field name="counter" optional="hide"/>
+                <field name="choice_key" optional="hide"/>
+                <field name="create_date" string="Reçu le" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_tap_search" model="ir.ui.view">
+        <field name="name">bf.nfc.tap.search</field>
+        <field name="model">bf.nfc.tap</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="tag_id"/>
+                <field name="user_id"/>
+                <field name="tag_code"/>
+                <filter name="faits" string="Faits" domain="[('status', '=', 'ok')]"/>
+                <filter name="rates" string="Refusés ou en erreur"
+                        domain="[('status', 'in', ('refused', 'error'))]"/>
+                <filter name="differes" string="Envoyés en différé" domain="[('offline', '=', True)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_pastille" string="Pastille" context="{'group_by': 'tag_id'}"/>
+                    <filter name="par_personne" string="Personne" context="{'group_by': 'user_id'}"/>
+                    <filter name="par_porte" string="Porte" context="{'group_by': 'door'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_tap" model="ir.actions.act_window">
+        <field name="name">Journal</field>
+        <field name="res_model">bf.nfc.tap</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

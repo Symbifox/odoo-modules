@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_nfc_equipment_user,Équipement (lecture),model_bf_nfc_equipment,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_equipment_manager,Équipement (gestion),model_bf_nfc_equipment,bf_nfc.group_nfc_manager,1,1,1,1
+access_bf_nfc_equipment_loan_user,Prêt (lecture),model_bf_nfc_equipment_loan,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_equipment_loan_manager,Prêt (gestion),model_bf_nfc_equipment_loan,bf_nfc.group_nfc_manager,1,1,1,1

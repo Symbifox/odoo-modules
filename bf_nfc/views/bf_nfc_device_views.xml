@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_device_list" model="ir.ui.view">
+        <field name="name">bf.nfc.device.list</field>
+        <field name="model">bf.nfc.device</field>
+        <field name="arch" type="xml">
+            <!-- Aucune création à la main : un appareil naît d'un appariement,
+                 jamais d'un formulaire. Le seul geste utile ici est de retirer
+                 un téléphone qu'on n'a plus. -->
+            <list string="Appareils" create="false" edit="false">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="platform" optional="hide"/>
+                <field name="app_version" optional="show"/>
+                <field name="last_seen"/>
+                <field name="active" widget="boolean_toggle" string="Actif" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_device" model="ir.actions.act_window">
+        <field name="name">Appareils</field>
+        <field name="res_model">bf.nfc.device</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun appareil apparié</p>
+            <p>Un téléphone s'apparie depuis l'application des pastilles, qui
+            ouvre le navigateur le temps d'un aller-retour. Rien ne se crée
+            ici.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_nfc_devices" name="Appareils" parent="menu_nfc_config"
+              action="action_bf_nfc_device" sequence="20"/>
+</odoo>

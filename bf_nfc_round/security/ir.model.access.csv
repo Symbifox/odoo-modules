@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_nfc_round_user,Tournée (lecture),model_bf_nfc_round,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_round_manager,Tournée (gestion),model_bf_nfc_round,bf_nfc.group_nfc_manager,1,1,1,1
+access_bf_nfc_round_checkpoint_user,Point (lecture),model_bf_nfc_round_checkpoint,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_round_checkpoint_manager,Point (gestion),model_bf_nfc_round_checkpoint,bf_nfc.group_nfc_manager,1,1,1,1
+access_bf_nfc_round_run_user,Passage de tournée (lecture),model_bf_nfc_round_run,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_round_run_manager,Passage de tournée (gestion),model_bf_nfc_round_run,bf_nfc.group_nfc_manager,1,1,1,1
+access_bf_nfc_round_passage_user,Point tapé (lecture),model_bf_nfc_round_passage,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_round_passage_manager,Point tapé (gestion),model_bf_nfc_round_passage,bf_nfc.group_nfc_manager,1,1,1,1

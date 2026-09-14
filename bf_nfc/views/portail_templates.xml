@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔴 La page de confirmation n'est pas de la politesse, c'est la barrière.
+         Tant que le geste n'est pas parti en POST, un aperçu de lien, un
+         antipourriel ou un scanner peuvent ouvrir cette adresse autant de fois
+         qu'ils veulent : ils ne feront rien. -->
+    <template id="page_confirmation" name="Pastille : confirmer le geste">
+        <t t-call="portal.frontend_layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container py-5" style="max-width: 32rem;">
+                    <h1 class="h3 mb-1"><t t-esc="tag.gesture_id.name"/></h1>
+                    <p class="text-muted mb-4"><t t-esc="tag.name"/></p>
+                    <div t-if="tag.gesture_id.description" class="alert alert-light" role="status">
+                        <t t-esc="tag.gesture_id.description"/>
+                    </div>
+                    <form t-att-action="action" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="picc_data" t-att-value="picc_data"/>
+                        <input type="hidden" name="cmac" t-att-value="cmac"/>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            Confirmer
+                        </button>
+                    </form>
+                    <p class="text-muted small mt-3 mb-0">
+                        Rien n'a encore été fait. Ce geste modifie des données, alors
+                        il attend que vous le disiez.
+                    </p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Une question posée par le geste. Chaque bouton est son propre POST :
+         rien n'a été fait tant qu'on n'a pas choisi. -->
+    <template id="page_choix" name="Pastille : choisir">
+        <t t-call="portal.frontend_layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container py-5" style="max-width: 32rem;">
+                    <h1 class="h3 mb-1"><t t-esc="resultat.get('titre')"/></h1>
+                    <p class="text-muted mb-4"><t t-esc="resultat.get('message')"/></p>
+                    <t t-foreach="resultat.get('choix')" t-as="option">
+                        <form t-att-action="action" method="post" class="mb-2">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="picc_data" t-att-value="picc_data"/>
+                            <input type="hidden" name="cmac" t-att-value="cmac"/>
+                            <input type="hidden" name="choix" t-att-value="option.get('cle')"/>
+                            <textarea t-if="option.get('saisie') == 'texte'" name="texte" rows="3"
+                                      class="form-control mb-2" required="required"
+                                      t-att-placeholder="option.get('libelle')"/>
+                            <button type="submit"
+                                    t-attf-class="btn btn-lg w-100 #{'btn-primary' if option.get('style') == 'principal' else ('btn-outline-danger' if option.get('style') == 'danger' else 'btn-outline-primary')}">
+                                <t t-esc="option.get('libelle')"/>
+                            </button>
+                        </form>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="page_resultat" name="Pastille : ce qui vient de se passer">
+        <t t-call="portal.frontend_layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container py-5" style="max-width: 32rem;">
+                    <t t-set="statut" t-value="resultat.get('statut')"/>
+                    <div t-attf-class="alert alert-#{'success' if statut == 'ok' else ('warning' if statut == 'duplicate' else ('info' if statut == 'info' else 'danger'))}"
+                         role="status">
+                        <h1 class="h4 mb-1"><t t-esc="resultat.get('titre')"/></h1>
+                        <p class="mb-0"><t t-esc="resultat.get('message')"/></p>
+                    </div>
+                    <p t-if="statut == 'duplicate'" class="text-muted small">
+                        La pastille a été lue deux fois de suite. Le geste n'a été
+                        fait qu'une fois.
+                    </p>
+                    <a t-if="resultat.get('url')" t-att-href="resultat.get('url')"
+                       class="btn btn-primary w-100">Ouvrir la fiche</a>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

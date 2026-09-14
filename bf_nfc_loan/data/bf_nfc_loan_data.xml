@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gesture_loan" model="bf.nfc.gesture">
+        <field name="name">Prendre ou rendre un équipement</field>
+        <field name="code">loan</field>
+        <field name="kind">loan</field>
+        <field name="sequence">30</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="accepte_differe" eval="True"/>
+        <field name="target_model_id" ref="bf_nfc_loan.model_bf_nfc_equipment"/>
+        <field name="description">Libre, vous le prenez ; à vous, vous le rendez. Si quelqu'un d'autre l'a, l'écran le nomme et propose de le reprendre. Dans un menu, le paramètre {"sens": "prendre"} ou {"sens": "rendre"} fixe le sens.</field>
+    </record>
+
+    <record id="cron_loan_reminders" model="ir.cron">
+        <field name="name">Pastilles : rappels des équipements à rendre</field>
+        <field name="model_id" ref="bf_nfc_loan.model_bf_nfc_equipment"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_rappels()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

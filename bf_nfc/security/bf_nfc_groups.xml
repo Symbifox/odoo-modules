@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_nfc" model="ir.module.category">
+        <field name="name">Pastilles NFC</field>
+        <field name="sequence">55</field>
+    </record>
+
+    <record id="group_nfc_user" model="res.groups">
+        <field name="name">Utilisation</field>
+        <field name="category_id" ref="module_category_nfc"/>
+        <field name="comment">Tape des pastilles et lit ses propres tapotements.</field>
+    </record>
+
+    <record id="group_nfc_manager" model="res.groups">
+        <field name="name">Gestion</field>
+        <field name="category_id" ref="module_category_nfc"/>
+        <field name="implied_ids" eval="[(4, ref('group_nfc_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        <field name="comment">Crée les pastilles, choisit les gestes, lit tout le journal.</field>
+    </record>
+
+    <!-- Tout interne tape des pastilles : c'est le geste, pas un privilège.
+         Ce qui se protège, c'est ce que le geste fait, et ça se protège dans le
+         geste (une action serveur tourne avec les droits de qui a tapé). -->
+    <record id="base.group_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('bf_nfc.group_nfc_user'))]"/>
+    </record>
+
+    <record id="regle_pastille_societe" model="ir.rule">
+        <field name="name">Pastilles : cloison des sociétés</field>
+        <field name="model_id" ref="model_bf_nfc_tag"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="regle_journal_les_miens" model="ir.rule">
+        <field name="name">Journal : mes tapotements</field>
+        <field name="model_id" ref="model_bf_nfc_tap"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_nfc_user'))]"/>
+    </record>
+
+    <record id="regle_journal_gestion" model="ir.rule">
+        <field name="name">Journal : tout, pour la gestion</field>
+        <field name="model_id" ref="model_bf_nfc_tap"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_nfc_manager'))]"/>
+    </record>
+
+    <record id="regle_appareil_le_mien" model="ir.rule">
+        <field name="name">Appareils : les miens</field>
+        <field name="model_id" ref="model_bf_nfc_device"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_nfc_user'))]"/>
+    </record>
+
+    <record id="regle_appareil_gestion" model="ir.rule">
+        <field name="name">Appareils : tous, pour la gestion</field>
+        <field name="model_id" ref="model_bf_nfc_device"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_nfc_manager'))]"/>
+    </record>
+</odoo>

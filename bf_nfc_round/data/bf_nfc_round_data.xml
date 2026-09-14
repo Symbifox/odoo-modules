@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gesture_round_checkpoint" model="bf.nfc.gesture">
+        <field name="name">Point de tournée</field>
+        <field name="code">round_checkpoint</field>
+        <field name="kind">round_checkpoint</field>
+        <field name="sequence">43</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="accepte_differe" eval="True"/>
+        <field name="target_model_id" ref="bf_nfc_round.model_bf_nfc_round_checkpoint"/>
+        <field name="description">Chaque point d'une tournée porte sa pastille. La taper note le passage, dit où on en est, et ferme la tournée au dernier point. Sans réseau, le passage garde l'heure du téléphone.</field>
+    </record>
+
+    <record id="cron_round_watch" model="ir.cron">
+        <field name="name">Pastilles : guetter les tournées manquées</field>
+        <field name="model_id" ref="bf_nfc_round.model_bf_nfc_round"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_guetter()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

@@ -1,0 +1,89 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_nfc_meeting
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 04:56+0000\n"
+"PO-Revision-Date: 2026-09-14 04:56+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_nfc_meeting
+#. odoo-python
+#: code:addons/bf_nfc_meeting/models/bf_nfc_gesture.py:0
+msgid "%(qui)s : présence notée par pastille à %(quand)s, envoyée en différé."
+msgstr ""
+
+#. module: bf_nfc_meeting
+#. odoo-python
+#: code:addons/bf_nfc_meeting/models/bf_nfc_gesture.py:0
+msgid "Aucune rencontre en cours à laquelle vous êtes invité."
+msgstr ""
+
+#. module: bf_nfc_meeting
+#. odoo-python
+#: code:addons/bf_nfc_meeting/models/bf_nfc_gesture.py:0
+msgid "Cette pastille doit viser une rencontre, ou aucune fiche."
+msgstr ""
+
+#. module: bf_nfc_meeting
+#: model:ir.model,name:bf_nfc_meeting.model_bf_nfc_gesture
+msgid "Geste déclenché par une pastille NFC"
+msgstr ""
+
+#. module: bf_nfc_meeting
+#: model:ir.model.fields,field_description:bf_nfc_meeting.field_bf_nfc_gesture__kind
+msgid "Nature"
+msgstr ""
+
+#. module: bf_nfc_meeting
+#: model:bf.nfc.gesture,name:bf_nfc_meeting.gesture_meeting_presence
+#: model:ir.model.fields.selection,name:bf_nfc_meeting.selection__bf_nfc_gesture__kind__meeting_presence
+msgid "Noter ma présence à la rencontre"
+msgstr ""
+
+#. module: bf_nfc_meeting
+#. odoo-python
+#: code:addons/bf_nfc_meeting/models/bf_nfc_gesture.py:0
+msgid "Présence notée. Bonne rencontre."
+msgstr ""
+
+#. module: bf_nfc_meeting
+#. odoo-python
+#: code:addons/bf_nfc_meeting/models/bf_nfc_gesture.py:0
+msgid "Quelle rencontre ?"
+msgstr ""
+
+#. module: bf_nfc_meeting
+#: model:bf.nfc.gesture,description:bf_nfc_meeting.gesture_meeting_presence
+msgid ""
+"Sans fiche, sur la table de la salle : approcher le téléphone note la "
+"présence à la rencontre en cours à laquelle la personne est invitée. Sur une"
+" rencontre : celle-là, invité ou non."
+msgstr ""
+
+#. module: bf_nfc_meeting
+#. odoo-python
+#: code:addons/bf_nfc_meeting/models/bf_nfc_gesture.py:0
+msgid "Votre présence était déjà notée."
+msgstr ""
+
+#. module: bf_nfc_meeting
+#. odoo-python
+#: code:addons/bf_nfc_meeting/models/bf_nfc_gesture.py:0
+msgid "Vous êtes invité à plusieurs rencontres en ce moment."
+msgstr ""
+
+#. module: bf_nfc_meeting
+#. odoo-python
+#: code:addons/bf_nfc_meeting/models/bf_nfc_gesture.py:0
+msgid ""
+"« %(nom)s » a lieu le %(quand)s : la présence se note pendant la rencontre."
+msgstr ""

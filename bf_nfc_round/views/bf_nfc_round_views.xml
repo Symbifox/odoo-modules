@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_round_list" model="ir.ui.view">
+        <field name="name">bf.nfc.round.list</field>
+        <field name="model">bf.nfc.round</field>
+        <field name="arch" type="xml">
+            <list string="Tournées">
+                <field name="name"/>
+                <field name="responsible_id" widget="many2one_avatar_user"/>
+                <field name="schedule"/>
+                <field name="start_hour" widget="float_time" invisible="schedule == 'none'"/>
+                <field name="checkpoint_count" string="Points"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_round_form" model="ir.ui.view">
+        <field name="name">bf.nfc.round.form</field>
+        <field name="model">bf.nfc.round</field>
+        <field name="arch" type="xml">
+            <form string="Tournée">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Ronde du soir, tournée d'entretien…"/></h1>
+                    </div>
+                    <group>
+                        <group string="Qui et comment">
+                            <field name="responsible_id" widget="many2one_avatar_user"/>
+                            <field name="strict_order"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Quand">
+                            <field name="schedule"/>
+                            <field name="start_hour" widget="float_time" invisible="schedule == 'none'"/>
+                            <field name="duration_minutes"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Points" name="points">
+                            <div class="text-muted mb-2">
+                                Chaque point reçoit une pastille « Point de tournée » qui le vise, gravée
+                                depuis « Mes pastilles » dans l'application.
+                            </div>
+                            <field name="checkpoint_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="place"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Tournées faites" name="faites">
+                            <field name="run_ids" readonly="1">
+                                <list decoration-danger="state == 'incomplete'" decoration-success="state == 'done'">
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="progress"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_round_run_form" model="ir.ui.view">
+        <field name="name">bf.nfc.round.run.form</field>
+        <field name="model">bf.nfc.round.run</field>
+        <field name="arch" type="xml">
+            <form string="Tournée faite" create="false">
+                <sheet>
+                    <group>
+                        <field name="round_id"/>
+                        <field name="user_id"/>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                        <field name="state"/>
+                        <field name="progress"/>
+                    </group>
+                    <field name="passage_ids" readonly="1">
+                        <list decoration-warning="out_of_order">
+                            <field name="tapped_at"/>
+                            <field name="checkpoint_id"/>
+                            <field name="offline"/>
+                            <field name="out_of_order"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_round" model="ir.actions.act_window">
+        <field name="name">Tournées</field>
+        <field name="res_model">bf.nfc.round</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_nfc_round" name="Tournées" parent="bf_nfc.menu_nfc_root"
+              action="action_bf_nfc_round" sequence="40"/>
+</odoo>

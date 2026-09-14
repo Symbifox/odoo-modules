@@ -1,0 +1,1421 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 04:55+0000\n"
+"PO-Revision-Date: 2026-09-14 04:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_nfc
+#: model:ir.actions.report,print_report_name:bf_nfc.action_report_tag_label
+msgid "'Etiquette - %s' % object.code"
+msgstr "'Label - %s' % object.code"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "04DE5F1EACC040"
+msgstr ""
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_device_list
+msgid "Actif"
+msgstr "Active"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Action exécutée."
+msgstr "Action run."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__server_action_id
+msgid "Action serveur"
+msgstr "Server action"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__active
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__active
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__url
+msgid "Adresse gravée"
+msgstr "Engraved address"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Adresse ouverte."
+msgstr "Address opened."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__user_id
+msgid "Agit au nom de"
+msgstr "Acts on behalf of"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__name
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__device_label
+msgid "Appareil"
+msgstr "Device"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__device_id
+msgid "Appareil apparié"
+msgstr "Paired device"
+
+#. module: bf_nfc
+#: model:ir.model,name:bf_nfc.model_bf_nfc_device
+msgid "Appareil apparié pour les pastilles NFC"
+msgstr "Device paired for NFC tags"
+
+#. module: bf_nfc
+#: model:ir.actions.act_window,name:bf_nfc.action_bf_nfc_device
+#: model:ir.ui.menu,name:bf_nfc.menu_nfc_devices
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_device_list
+msgid "Appareils"
+msgstr "Devices"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tap__door__app
+msgid "Application"
+msgstr "App"
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,description:bf_nfc.gesture_open
+msgid ""
+"Approcher le téléphone ouvre la fiche désignée par la pastille. N'écrit "
+"rien, ne demande aucune confirmation, et se lit avec les droits de la "
+"personne qui tape : une fiche qu'elle n'a pas le droit de voir reste fermée."
+msgstr ""
+"Bringing the phone close opens the record the tag points to. Writes nothing,"
+" asks for no confirmation, and reads with the rights of the person tapping: "
+"a record they may not see stays closed."
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,description:bf_nfc.gesture_url
+msgid ""
+"Approcher le téléphone ouvre une adresse web : une procédure, un formulaire,"
+" un plan, une vidéo. N'écrit rien. Seules les adresses https et http sont "
+"acceptées."
+msgstr ""
+"Bringing the phone close opens a web address: a procedure, a form, a map, a "
+"video. Writes nothing. Only https and http addresses are accepted."
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,description:bf_nfc.gesture_menu
+msgid ""
+"Approcher le téléphone propose quelques boutons au lieu d'un seul geste : « "
+"Je le prends », « Je le rapporte », « Signaler un problème ». Chaque choix "
+"joue son propre geste, avec ses propres gardes."
+msgstr ""
+"Bringing the phone close offers a few buttons instead of a single gesture: "
+"“I'm taking it”, “I'm bringing it back”, “Report a problem”. Each choice "
+"plays its own gesture, with its own safeguards."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.report_tag_label
+msgid "Approchez le téléphone ou scannez le code"
+msgstr "Hold your phone close or scan the code"
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__date_expiry
+msgid ""
+"Après cette date, la pastille refuse poliment. Elle n'est pas supprimée : on"
+" veut encore savoir ce qu'elle a fait."
+msgstr ""
+"After this date, the tag politely refuses. It is not deleted: we still want "
+"to know what it did."
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tag_choice__style__danger
+msgid "Attention"
+msgstr "Warning"
+
+#. module: bf_nfc
+#: model_terms:ir.actions.act_window,help:bf_nfc.action_bf_nfc_device
+msgid "Aucun appareil apparié"
+msgstr "No paired device"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Aucun code de pastille."
+msgstr "No tag code."
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__saisie__aucune
+msgid "Aucune"
+msgstr "None"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Aucune action serveur n'est rattachée à ce geste."
+msgstr "No server action is attached to this gesture."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Ce choix n'existe plus sur cette pastille."
+msgstr "This choice no longer exists on this tag."
+
+#. module: bf_nfc
+#: model:ir.model.constraint,message:bf_nfc.constraint_bf_nfc_gesture_code_unique
+msgid "Ce code de geste existe déjà."
+msgstr "This gesture code already exists."
+
+#. module: bf_nfc
+#: model:ir.model.constraint,message:bf_nfc.constraint_bf_nfc_tag_code_unique
+msgid "Ce code de pastille existe déjà."
+msgstr "This tag code already exists."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid ""
+"Ce geste engage la personne qui tape : il se joue avec l'application ou une "
+"session, pas avec une pastille signée."
+msgstr ""
+"This gesture commits the person tapping: it is played with the app or a "
+"session, not with a signed tag."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Ce geste est réservé à la gestion des pastilles."
+msgstr "This gesture is reserved for tag managers."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Ce geste n'existe pas ici."
+msgstr "This gesture does not exist here."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid ""
+"Ce geste ne se joue pas en différé : approchez de nouveau la pastille, sur "
+"place et avec du réseau."
+msgstr ""
+"This gesture cannot be sent later: tap the tag again, on site and with a "
+"network."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__writes
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__gesture_writes
+msgid "Ce geste écrit"
+msgstr "This gesture writes"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Ce menu ne propose aucun choix."
+msgstr "This menu offers no choice."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Ce qu'elle est"
+msgstr "What it is"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Ce qu'elle fait"
+msgstr "What it does"
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_gesture__saisie
+msgid ""
+"Ce que l'écran de gravure doit demander pour ce geste. Calculé : "
+"l'application le lit dans le catalogue au lieu de le deviner."
+msgstr ""
+"What the engraving screen must ask for this gesture. Computed: the app reads"
+" it from the catalogue instead of guessing."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__url
+msgid ""
+"Ce que la puce porte. Une pastille signée n'a pas d'adresse fixe : la puce "
+"la fabrique à chaque lecture."
+msgstr ""
+"What the chip carries. A signed tag has no fixed address: the chip builds it"
+" at every read."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__code
+msgid ""
+"Ce que porte la pastille. Public : il sert à la retrouver, pas à prouver "
+"quoi que ce soit."
+msgstr ""
+"What the tag carries. Public: it is used to find the tag, not to prove "
+"anything."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/portail.py:0
+msgid ""
+"Ce tapotement a déjà servi. Approchez de nouveau le téléphone de la "
+"pastille."
+msgstr ""
+"This tap has already been used. Bring the phone close to the tag again."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Ce tapotement date de plus de %s heures : il n'est plus accepté."
+msgstr "This tap is more than %s hours old: it is no longer accepted."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/portail.py:0
+msgid "Cette adresse ne porte pas de signature de puce."
+msgstr "This address carries no chip signature."
+
+#. module: bf_nfc
+#: model:ir.model.constraint,message:bf_nfc.constraint_bf_nfc_device_token_hash_uniq
+msgid "Cette empreinte existe déjà."
+msgstr "This fingerprint already exists."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Cette fiche n'a pas de fil de discussion où consigner un passage."
+msgstr "This record has no discussion thread to log a visit in."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Cette pastille a expiré le %s."
+msgstr "This tag expired on %s."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Cette pastille a été retirée du service."
+msgstr "This tag has been taken out of service."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Cette pastille demande un choix : approchez-la de nouveau sur place."
+msgstr "This tag asks for a choice: tap it again on site."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Cette pastille désigne un type de fiche que le geste n'accepte pas."
+msgstr "This tag points to a type of record the gesture does not accept."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Cette pastille n'est pas enregistrée ici."
+msgstr "This tag is not registered here."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/portail.py:0
+msgid "Cette pastille n'est pas reconnue."
+msgstr "This tag is not recognized."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Cette pastille n'est pas une pastille signée."
+msgstr "This tag is not a signed tag."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Cette pastille ne désigne aucune fiche."
+msgstr "This tag points to no record."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Cette pastille ne désigne pas une action."
+msgstr "This tag does not point to an action."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Cette pastille ne désigne pas une tâche planifiée."
+msgstr "This tag does not point to a scheduled action."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Cette pastille ne porte pas une adresse web valide."
+msgstr "This tag does not carry a valid web address."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/portail.py:0
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Cette pastille signée ne désigne aucun compte au nom duquel agir."
+msgstr "This signed tag names no account to act on behalf of."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Changer le code"
+msgstr "Change the code"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__choice_key
+msgid "Choix"
+msgstr "Choice"
+
+#. module: bf_nfc
+#: model:ir.model,name:bf_nfc.model_bf_nfc_tag_choice
+msgid "Choix d'une pastille à menu"
+msgstr "Menu tag choice"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__choice_ids
+msgid "Choix du menu"
+msgstr "Menu choices"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_gesture_list
+msgid "Cible"
+msgstr "Target"
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_gesture__writes
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__gesture_writes
+msgid ""
+"Coché dès que le geste modifie quoi que ce soit. Un geste qui écrit demande "
+"une confirmation quand il arrive par le navigateur."
+msgstr ""
+"Checked as soon as the gesture changes anything. A gesture that writes asks "
+"for confirmation when it comes through the browser."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__code
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__code
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__tag_code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__pending_code
+msgid "Code d'appariement"
+msgstr "Pairing code"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__counter
+msgid "Compteur de la puce"
+msgstr "Chip counter"
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tap__counter
+msgid "Compteur de lecture d'une pastille signée. Il ne remonte jamais."
+msgstr "Read counter of a signed tag. It never goes back."
+
+#. module: bf_nfc
+#: model:ir.ui.menu,name:bf_nfc.menu_nfc_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.page_confirmation
+msgid "Confirmer"
+msgstr "Confirm"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__confirm_required
+msgid "Confirmer avant d'agir"
+msgstr "Confirm before acting"
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,name:bf_nfc.gesture_note
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__kind__note
+msgid "Consigner un passage"
+msgstr "Log a visit"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__create_uid
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__create_uid
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__create_uid
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__create_uid
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__create_date
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__create_date
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__create_date
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__create_date
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_nfc
+#: model:res.groups,comment:bf_nfc.group_nfc_manager
+msgid "Crée les pastilles, choisit les gestes, lit tout le journal."
+msgstr "Creates tags, chooses gestures, reads the whole log."
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,description:bf_nfc.gesture_cron
+msgid ""
+"Demande à une tâche planifiée de tourner tout de suite, sans attendre son "
+"prochain passage. Réservé à la gestion."
+msgstr ""
+"Asks a scheduled action to run right away, without waiting for its next run."
+" Reserved for managers."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__sdm_counter
+msgid "Dernier compteur vu"
+msgstr "Last counter seen"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__last_tap_date
+msgid "Dernier tapotement"
+msgstr "Last tap"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__description
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_gesture_form
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_list
+msgid "Différé"
+msgstr "Sent later"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__display_name
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__display_name
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__display_name
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__display_name
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tap__status__duplicate
+msgid "Doublon écarté"
+msgstr "Duplicate ignored"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__pkce_challenge
+msgid "Défi PKCE"
+msgstr "PKCE challenge"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__token_hash
+msgid "Empreinte du jeton"
+msgstr "Token fingerprint"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_search
+msgid "En service"
+msgstr "In service"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__offline
+msgid "Envoyé en différé"
+msgstr "Sent later"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_search
+msgid "Envoyés en différé"
+msgstr "Sent later"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tap__status__error
+msgid "Erreur"
+msgstr "Error"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__needs_target
+msgid "Exige une cible"
+msgstr "Requires a target"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__date_expiry
+msgid "Expire le"
+msgstr "Expires on"
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,description:bf_nfc.gesture_action
+msgid ""
+"Exécute une action serveur ou une automatisation, avec les droits de la "
+"personne qui tape. Réservé à la gestion."
+msgstr ""
+"Runs a server action or an automation, with the rights of the person "
+"tapping. Reserved for managers."
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,name:bf_nfc.gesture_action
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__kind__action
+msgid "Exécuter une action"
+msgstr "Run an action"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__kind__server_action
+msgid "Exécuter une action serveur"
+msgstr "Run a server action"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tap__status__ok
+msgid "Fait"
+msgstr "Done"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_search
+msgid "Faits"
+msgstr "Done"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__res_id
+msgid "Fiche cible"
+msgstr "Target record"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Fiche ouverte."
+msgstr "Record opened."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__gesture_id
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__gesture_id
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__gesture_code
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_gesture_form
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_search
+msgid "Geste"
+msgstr "Gesture"
+
+#. module: bf_nfc
+#: model:ir.model,name:bf_nfc.model_bf_nfc_gesture
+msgid "Geste déclenché par une pastille NFC"
+msgstr "Gesture triggered by an NFC tag"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Geste exécuté : %s"
+msgstr "Gesture run: %s"
+
+#. module: bf_nfc
+#: model:ir.actions.act_window,name:bf_nfc.action_bf_nfc_gesture
+#: model:ir.ui.menu,name:bf_nfc.menu_nfc_gestures
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_gesture_list
+msgid "Gestes"
+msgstr "Gestures"
+
+#. module: bf_nfc
+#: model:res.groups,name:bf_nfc.group_nfc_manager
+msgid "Gestion"
+msgstr "Management"
+
+#. module: bf_nfc
+#: model_terms:ir.actions.act_window,help:bf_nfc.action_bf_nfc_tag
+msgid "Graver une première pastille"
+msgstr "Engrave a first tag"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__id
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__id
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__id
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__id
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_gesture__code
+msgid "Identifiant stable du geste. Les pastilles s'y rattachent."
+msgstr "Stable identifier of the gesture. Tags are attached to it."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Impossible de tirer un code de pastille libre."
+msgstr "Could not draw a free tag code."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag_choice__params
+msgid "JSON facultatif ajouté à ceux de la pastille."
+msgstr "Optional JSON added to the tag's own."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__params
+msgid "JSON facultatif passé au geste, par exemple {\"minutes\": 15}."
+msgstr "Optional JSON passed to the gesture, for example {\"minutes\": 15}."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_search
+msgid "Jamais tapée"
+msgstr "Never tapped"
+
+#. module: bf_nfc
+#: model:ir.actions.act_window,name:bf_nfc.action_bf_nfc_tap
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__tap_ids
+#: model:ir.ui.menu,name:bf_nfc.menu_nfc_taps
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Journal"
+msgstr "Log"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Journal de « %s »"
+msgstr "Log of “%s”"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "L'action de cette pastille n'existe plus."
+msgstr "This tag's action no longer exists."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid ""
+"L'heure de ce tapotement est dans le futur : l'horloge du téléphone est "
+"fausse."
+msgstr "The time of this tap is in the future: the phone's clock is wrong."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "L'heure de ce tapotement est illisible."
+msgstr "The time of this tap cannot be read."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.page_resultat
+msgid ""
+"La pastille a été lue deux fois de suite. Le geste n'a été\n"
+"                        fait qu'une fois."
+msgstr "The tag was read twice in a row. The gesture was done only once."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_gesture__needs_target
+msgid "La pastille doit désigner un enregistrement."
+msgstr "The tag must point to a record."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid ""
+"La pastille physique deviendra inerte et devra être regravée. Continuer ?"
+msgstr ""
+"The physical tag will stop working and must be engraved again. Continue?"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_device.py:0
+msgid ""
+"La personne d'un appareil apparié ne se change pas. Retirez l'appareil et "
+"appariez-le de nouveau."
+msgstr ""
+"The person of a paired device cannot be changed. Remove the device and pair "
+"it again."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/portail.py:0
+msgid "La signature de cette pastille n'est pas valide."
+msgstr "This tag's signature is not valid."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "La tâche planifiée de cette pastille n'existe plus."
+msgstr "This tag's scheduled action no longer exists."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "La tâche « %s » est désactivée : elle ne partirait pas."
+msgstr "The action “%s” is disabled: it would not run."
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,description:bf_nfc.gesture_note
+msgid ""
+"Laisse une note interne datée et signée sur la fiche : une ronde, une "
+"visite, une inspection. Une note, pas un message : personne ne reçoit de "
+"courriel."
+msgstr ""
+"Leaves a dated, signed internal note on the record: a patrol, a visit, an "
+"inspection. A note, not a message: nobody receives an email."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_gesture__target_model_id
+msgid "Laisser vide si le geste accepte n'importe quel modèle."
+msgstr "Leave empty if the gesture accepts any model."
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,name:bf_nfc.gesture_cron
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__kind__cron
+msgid "Lancer une tâche planifiée"
+msgstr "Run a scheduled action"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__write_uid
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__write_uid
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__write_uid
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__write_uid
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__write_date
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__write_date
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__write_date
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__write_date
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Le choix « %s » vise un autre type de fiche que cette pastille."
+msgstr "The choice “%s” targets another type of record than this tag."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__sdm_counter
+msgid ""
+"Le compteur de lecture de la puce ne remonte jamais. Un tapotement rejoué "
+"porte un compteur déjà vu, et se fait refuser."
+msgstr ""
+"The chip's read counter never goes back. A replayed tap carries a counter "
+"already seen and is refused."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Le geste n'a pas abouti. Rien n'a été laissé à moitié fait."
+msgstr "The gesture did not complete. Nothing was left half done."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Le geste « %s » n'est pas installé sur ce système."
+msgstr "The gesture “%s” is not installed on this system."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Le modèle « %s » n'existe pas sur ce système."
+msgstr "The model “%s” does not exist on this system."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__sdm_uid
+msgid ""
+"Les 7 octets gravés en usine, en hexadécimal. C'est par lui qu'une pastille "
+"signée se reconnaît : son adresse ne porte aucun code, seulement le bloc "
+"chiffré que la puce fabrique."
+msgstr ""
+"The 7 bytes engraved at the factory, in hexadecimal. This is how a signed "
+"tag is recognized: its address carries no code, only the encrypted block the"
+" chip builds."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid ""
+"Les boutons proposés quand on approche le téléphone. Chacun\n"
+"                                joue son geste sur la fiche de la pastille, avec ses propres\n"
+"                                gardes. Gravez ensuite la pastille depuis « Mes pastilles »\n"
+"                                dans l'application."
+msgstr ""
+"The buttons offered when the phone comes close. Each plays its gesture on "
+"the tag's record, with its own safeguards. Then engrave the tag from “My "
+"tags” in the app."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag_choice.py:0
+msgid "Les paramètres d'un choix doivent être un objet JSON."
+msgstr "A choice's parameters must be a JSON object."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Les paramètres d'une pastille doivent être un objet JSON."
+msgstr "A tag's parameters must be a JSON object."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag.py:0
+msgid "Les paramètres de cette pastille ne sont pas du JSON valide."
+msgstr "This tag's parameters are not valid JSON."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag_choice.py:0
+msgid "Les paramètres du choix « %s » ne sont pas du JSON valide."
+msgstr "The parameters of the choice “%s” are not valid JSON."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__name
+msgid "Libellé"
+msgstr "Label"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__name
+msgid "Libellé du bouton"
+msgstr "Button label"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Menu"
+msgstr "Menu"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__message
+msgid "Message"
+msgstr "Message"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__target_model_id
+msgid "Modèle attendu"
+msgstr "Expected model"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__res_model
+msgid "Modèle cible"
+msgstr "Target model"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__kind
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__gesture_kind
+msgid "Nature"
+msgstr "Kind"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tap__door__session
+msgid "Navigateur"
+msgstr "Browser"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__nonce
+msgid "Nonce"
+msgstr ""
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__user_id
+msgid ""
+"Obligatoire pour une pastille signée, ignoré ailleurs : par les deux autres "
+"portes, c'est la personne qui tape qui agit."
+msgstr ""
+"Required for a signed tag, ignored elsewhere: through the other two doors, "
+"the person tapping is the one acting."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "On ne peut pas viser ce type de fiche."
+msgstr "This type of record cannot be targeted."
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,name:bf_nfc.gesture_open
+#: model_terms:ir.ui.view,arch_db:bf_nfc.page_resultat
+msgid "Ouvrir la fiche"
+msgstr "Open the record"
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,name:bf_nfc.gesture_url
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__kind__url
+msgid "Ouvrir une adresse"
+msgstr "Open an address"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__kind__open
+msgid "Ouvrir une fiche"
+msgstr "Open a record"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Où elle est posée, pourquoi, qui l'a gravée."
+msgstr "Where it is placed, why, who engraved it."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__place
+msgid ""
+"Où la pastille est collée. C'est ce qu'on lit quand on cherche laquelle "
+"retirer."
+msgstr ""
+"Where the tag is stuck. This is what you read when looking for the one to "
+"remove."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__user_id
+msgid "Par"
+msgstr "By"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__params
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__params
+msgid "Paramètres"
+msgstr "Parameters"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Passage consigné."
+msgstr "Visit logged."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Passage enregistré par pastille."
+msgstr "Visit recorded by tag."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__tag_id
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__tag_id
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_search
+msgid "Pastille"
+msgstr "Tag"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Pastille : %(endroit)s · passage à %(heure)s, envoyé en différé"
+msgstr "Tag: %(endroit)s · visit at %(heure)s, sent later"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Pastille : %s"
+msgstr "Tag: %s"
+
+#. module: bf_nfc
+#: model:ir.model,name:bf_nfc.model_bf_nfc_tag
+msgid "Pastille NFC"
+msgstr "NFC tag"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tap__door__signed
+msgid "Pastille signée"
+msgstr "Signed tag"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Pastille signée (NTAG 424 DNA)"
+msgstr "Signed tag (NTAG 424 DNA)"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__sdm_enabled
+msgid "Pastille signée (SDM)"
+msgstr "Signed tag (SDM)"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.report_tag_label
+msgid "Pastille signée : pas de code QR"
+msgstr "Signed tag: no QR code"
+
+#. module: bf_nfc
+#: model:ir.actions.act_window,name:bf_nfc.action_bf_nfc_tag
+#: model:ir.ui.menu,name:bf_nfc.menu_nfc_root
+#: model:ir.ui.menu,name:bf_nfc.menu_nfc_tags
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_list
+msgid "Pastilles"
+msgstr "Tags"
+
+#. module: bf_nfc
+#: model:ir.actions.server,name:bf_nfc.cron_purger_appariements_ir_actions_server
+msgid "Pastilles : purger les appariements abandonnés"
+msgstr "Tags: purge abandoned pairings"
+
+#. module: bf_nfc
+#: model:ir.module.category,name:bf_nfc.module_category_nfc
+msgid "Pastilles NFC"
+msgstr "NFC tags"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__pending_code_expiry
+msgid "Pending Code Expiry"
+msgstr "Code expiry"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__user_id
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_search
+msgid "Personne"
+msgstr "Person"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__platform
+msgid "Platform"
+msgstr "Platform"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__door
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_search
+msgid "Porte"
+msgstr "Door"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Porte du bureau, dossier client, poste d'accueil…"
+msgstr "Office door, client file, reception desk…"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__place
+msgid "Posée sur"
+msgstr "Placed on"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tag_choice__style__principal
+msgid "Principal"
+msgstr "Primary"
+
+#. module: bf_nfc
+#: model:bf.nfc.gesture,name:bf_nfc.gesture_menu
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__kind__menu
+msgid "Proposer un menu"
+msgstr "Offer a menu"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.report_tag_label
+msgid "QR"
+msgstr "QR"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_list
+msgid "Quand"
+msgstr "When"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Que voulez-vous faire ?"
+msgstr "What would you like to do?"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/portail.py:0
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tap__status__refused
+msgid "Refusé"
+msgstr "Refused"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_search
+msgid "Refusés ou en erreur"
+msgstr "Refused or failed"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_search
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_search
+msgid "Regrouper par"
+msgstr "Group by"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "Retirée"
+msgstr "Retired"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_search
+msgid "Retirées"
+msgstr "Retired"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_list
+msgid "Reçu le"
+msgstr "Received on"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.page_confirmation
+msgid ""
+"Rien n'a encore été fait. Ce geste modifie des données, alors\n"
+"                        il attend que vous le disiez."
+msgstr ""
+"Nothing has been done yet. This gesture changes data, so it waits for you to"
+" say so."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__reserve_gestion
+msgid "Réservé à la gestion"
+msgstr "Reserved for managers"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__status
+msgid "Résultat"
+msgstr "Result"
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tag__confirm_required
+msgid ""
+"S'applique aux tapotements venus d'un navigateur. Un geste qui n'écrit rien "
+"passe toujours sans confirmation."
+msgstr ""
+"Applies to taps coming from a browser. A gesture that writes nothing always "
+"goes through without confirmation."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__saisie
+msgid "Saisie"
+msgstr "Input"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__accepte_differe
+msgid "Se joue en différé"
+msgstr "Can be sent later"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_tag_choice__style__secondaire
+msgid "Secondaire"
+msgstr "Secondary"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_gesture__sequence
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_gesture__reserve_gestion
+msgid ""
+"Seul un gestionnaire des pastilles peut jouer ce geste. Pour ce qui "
+"déclenche un traitement ou une action serveur."
+msgstr ""
+"Only a tag manager can play this gesture. For what triggers a job or a "
+"server action."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_list
+msgid "Signée"
+msgstr "Signed"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_search
+msgid "Signées"
+msgstr "Signed"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__company_id
+msgid "Société"
+msgstr "Company"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag_choice__style
+msgid "Style"
+msgstr "Style"
+
+#. module: bf_nfc
+#: model:res.groups,comment:bf_nfc.group_nfc_user
+msgid "Tape des pastilles et lit ses propres tapotements."
+msgstr "Taps tags and reads their own taps."
+
+#. module: bf_nfc
+#: model:ir.model,name:bf_nfc.model_bf_nfc_tap
+msgid "Tapotement de pastille NFC"
+msgstr "NFC tag tap"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__tap_count
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tap_list
+msgid "Tapotements"
+msgstr "Taps"
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_tap__offline
+msgid ""
+"Tapé sans réseau, envoyé ensuite. L'heure du tapotement est celle que le "
+"téléphone a notée, bornée par le serveur."
+msgstr ""
+"Tapped without a network, sent afterwards. The time of the tap is the one "
+"the phone recorded, bounded by the server."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__tapped_at
+msgid "Tapée le"
+msgstr "Tapped on"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__titre
+msgid "Titre"
+msgstr "Title"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_device.py:0
+msgid "Trop d'appareils appariés (%d). Retirez-en un depuis le site."
+msgstr "Too many paired devices (%d). Remove one from the website."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Tâche lancée."
+msgstr "Scheduled action started."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__sdm_uid
+msgid "UID de la puce"
+msgstr "Chip UID"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_tag_choice.py:0
+msgid "Un choix ne peut pas ouvrir un autre menu."
+msgstr "A choice cannot open another menu."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid "Un geste « action serveur » doit désigner une action."
+msgstr "A “server action” gesture must point to an action."
+
+#. module: bf_nfc
+#: model:ir.model.fields,help:bf_nfc.field_bf_nfc_gesture__accepte_differe
+msgid ""
+"Un tapotement fait sans réseau et envoyé plus tard est accepté, avec l'heure"
+" notée par le téléphone. À laisser décoché pour ce qui n'a de sens que sur "
+"place et tout de suite : ouvrir une fiche, lancer un chrono, prendre une "
+"salle."
+msgstr ""
+"A tap made without a network and sent later is accepted, with the time "
+"recorded by the phone. Leave unchecked for what only makes sense on site and"
+" right away: opening a record, starting a timer, taking a room."
+
+#. module: bf_nfc
+#: model_terms:ir.actions.act_window,help:bf_nfc.action_bf_nfc_device
+msgid ""
+"Un téléphone s'apparie depuis l'application des pastilles, qui\n"
+"            ouvre le navigateur le temps d'un aller-retour. Rien ne se crée\n"
+"            ici."
+msgstr ""
+"A phone pairs from the tags app, which opens the browser for a round trip. "
+"Nothing is created here."
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__saisie__url
+msgid "Une adresse"
+msgstr "An address"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__saisie__cible
+msgid "Une fiche"
+msgstr "A record"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_gesture__saisie__cible_texte
+msgid "Une fiche et un texte"
+msgstr "A record and a text"
+
+#. module: bf_nfc
+#: model_terms:ir.actions.act_window,help:bf_nfc.action_bf_nfc_tag
+msgid ""
+"Une pastille porte un code public et rien d'autre. Commencez par\n"
+"            une qui ouvre une fiche : elle n'écrit rien, et elle vous dira si le\n"
+"            téléphone lit bien la puce à travers ce sur quoi vous l'avez collée."
+msgstr ""
+"A tag carries a public code and nothing else. Start with one that opens a "
+"record: it writes nothing, and it tells you whether the phone reads the chip"
+" through what you stuck it on."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid ""
+"Une pastille signée agit sans compte : la puce signe chaque\n"
+"                            tapotement et son compteur ne remonte jamais. C'est ce qu'il\n"
+"                            faut pour une pastille remise à quelqu'un d'autre."
+msgstr ""
+"A signed tag acts without an account: the chip signs every tap and its "
+"counter never goes back. This is what you need for a tag handed to someone "
+"else."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tap__url
+msgid "Url"
+msgstr "URL"
+
+#. module: bf_nfc
+#: model:res.groups,name:bf_nfc.group_nfc_user
+msgid "Utilisation"
+msgstr "Use"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__app_version
+msgid "Version de l'application"
+msgstr "App version"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Votre compte ne peut pas créer de pastille."
+msgstr "Your account cannot create tags."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Votre compte ne peut pas lire ces fiches."
+msgstr "Your account cannot read these records."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid ""
+"Vous n'avez pas le droit d'écrire sur « %s » : un passage ne peut pas y être"
+" consigné."
+msgstr "You are not allowed to write on “%s”: a visit cannot be logged there."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_device__last_seen
+msgid "Vu la dernière fois"
+msgstr "Last seen"
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "project.task"
+msgstr ""
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_form
+msgid "{\"minutes\": 15}"
+msgstr ""
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
+msgid ""
+"« %s » ne se joue pas en différé : approchez de nouveau la pastille, sur "
+"place."
+msgstr "“%s” cannot be sent later: tap the tag again, on site."
+
+#. module: bf_nfc
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_gesture_list
+msgid "Écrit"
+msgstr "Writes"
+
+#. module: bf_nfc
+#: model:ir.actions.report,name:bf_nfc.action_report_tag_label
+msgid "Étiquette avec code QR"
+msgstr "Label with QR code"

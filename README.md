@@ -173,6 +173,14 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.0.2 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.2.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.3.7.2 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks: folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
+| `bf_nfc` | Gestes par pastille NFC | 18.0.2.2.0 | BUSL-1.1 | NFC tags that play a gesture in Odoo: three doors (app token, browser session, NTAG 424 signed tag), menus and questions, bounded offline taps, QR label twin |
+| `bf_nfc_event` | Pastilles NFC : la présence à une séance | 18.0.1.0.1 | BUSL-1.1 | Tap the room's tag to record attendance at the session in progress, registration created if missing |
+| `bf_nfc_helpdesk` | Pastilles NFC : signaler un problème | 18.0.1.0.1 | BUSL-1.1 | A tag on a customer's equipment opens a ticket already filled in: customer, place, reporter, time |
+| `bf_nfc_loan` | Pastilles NFC : le prêt d'équipement | 18.0.1.0.1 | BUSL-1.1 | Equipment loans by tag: free you take it, yours you return it, someone else's asks first; reminders past a delay |
+| `bf_nfc_meeting` | Pastilles NFC : la présence à une rencontre | 18.0.1.0.1 | BUSL-1.1 | Tap the meeting room's tag to be marked present at the meeting in progress you are invited to |
+| `bf_nfc_room` | Pastilles NFC : la salle de réunion | 18.0.1.0.1 | BUSL-1.1 | Meeting room door tag: free or taken, take 30 min or 1 h, confirm, release; unconfirmed bookings lose their room |
+| `bf_nfc_round` | Pastilles NFC : les tournées | 18.0.1.0.1 | BUSL-1.1 | Patrol and maintenance rounds: checkpoints tapped in order, offline time kept, one alert per missed round |
+| `bf_nfc_timer` | Pastilles NFC : le chronomètre | 18.0.1.0.1 | BUSL-1.1 | NFC tag gestures for the timesheet timer: start, stop, and stop that logs the timesheet in the same request |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
 | `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.0.1 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
 | `bf_org_chart` | Organigrammes : le moteur de dessin | 18.0.1.2.0 | BUSL-1.1 | Une géométrie, deux rendus : l'organigramme à l'écran et le même en PDF |

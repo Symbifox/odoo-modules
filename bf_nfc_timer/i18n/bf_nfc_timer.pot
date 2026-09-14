@@ -1,0 +1,112 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_nfc_timer
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 04:55+0000\n"
+"PO-Revision-Date: 2026-09-14 04:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "%(h)s h %(m)02d"
+msgstr ""
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "%s min"
+msgstr ""
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "%s saisies."
+msgstr ""
+
+#. module: bf_nfc_timer
+#: model:ir.model.fields.selection,name:bf_nfc_timer.selection__bf_nfc_gesture__kind__timer_stop
+msgid "Arrêter le chrono et saisir"
+msgstr ""
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "Aucun chrono en cours sur « %s »."
+msgstr ""
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "Cette pastille ne désigne pas une tâche."
+msgstr ""
+
+#. module: bf_nfc_timer
+#: model:bf.nfc.gesture,name:bf_nfc_timer.gesture_timer_stop
+msgid "Chrono : arrêter et saisir"
+msgstr ""
+
+#. module: bf_nfc_timer
+#: model:bf.nfc.gesture,name:bf_nfc_timer.gesture_timer_start
+msgid "Chrono : démarrer"
+msgstr ""
+
+#. module: bf_nfc_timer
+#: model:bf.nfc.gesture,name:bf_nfc_timer.gesture_timer_toggle
+msgid "Chrono : démarrer ou arrêter"
+msgstr ""
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "Chrono démarré."
+msgstr ""
+
+#. module: bf_nfc_timer
+#: model:ir.model.fields.selection,name:bf_nfc_timer.selection__bf_nfc_gesture__kind__timer_start
+msgid "Démarrer le chrono"
+msgstr ""
+
+#. module: bf_nfc_timer
+#: model:ir.model.fields.selection,name:bf_nfc_timer.selection__bf_nfc_gesture__kind__timer_toggle
+msgid "Démarrer ou arrêter le chrono"
+msgstr ""
+
+#. module: bf_nfc_timer
+#: model:ir.model,name:bf_nfc_timer.model_bf_nfc_gesture
+msgid "Geste déclenché par une pastille NFC"
+msgstr ""
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "La tâche de cette pastille n'existe plus."
+msgstr ""
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "Le chrono tourne déjà sur « %s »."
+msgstr ""
+
+#. module: bf_nfc_timer
+#: model:ir.model.fields,field_description:bf_nfc_timer.field_bf_nfc_gesture__kind
+msgid "Nature"
+msgstr ""
+
+#. module: bf_nfc_timer
+#: model:bf.nfc.gesture,description:bf_nfc_timer.gesture_timer_toggle
+msgid ""
+"Une seule pastille pour les deux moitiés du geste : le premier tapotement "
+"démarre le chrono de la tâche, le suivant l'arrête et saisit la feuille de "
+"temps avec l'arrondi configuré."
+msgstr ""

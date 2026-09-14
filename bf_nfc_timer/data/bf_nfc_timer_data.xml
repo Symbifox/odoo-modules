@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gesture_timer_toggle" model="bf.nfc.gesture">
+        <field name="name">Chrono : démarrer ou arrêter</field>
+        <field name="code">timer_toggle</field>
+        <field name="kind">timer_toggle</field>
+        <field name="sequence">10</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="target_model_id" ref="project.model_project_task"/>
+        <field name="description">Une seule pastille pour les deux moitiés du geste : le premier tapotement démarre le chrono de la tâche, le suivant l'arrête et saisit la feuille de temps avec l'arrondi configuré.</field>
+    </record>
+
+    <record id="gesture_timer_start" model="bf.nfc.gesture">
+        <field name="name">Chrono : démarrer</field>
+        <field name="code">timer_start</field>
+        <field name="kind">timer_start</field>
+        <field name="sequence">11</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="target_model_id" ref="project.model_project_task"/>
+    </record>
+
+    <record id="gesture_timer_stop" model="bf.nfc.gesture">
+        <field name="name">Chrono : arrêter et saisir</field>
+        <field name="code">timer_stop</field>
+        <field name="kind">timer_stop</field>
+        <field name="sequence">12</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="target_model_id" ref="project.model_project_task"/>
+    </record>
+</odoo>

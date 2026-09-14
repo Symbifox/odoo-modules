@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_tag_list" model="ir.ui.view">
+        <field name="name">bf.nfc.tag.list</field>
+        <field name="model">bf.nfc.tag</field>
+        <field name="arch" type="xml">
+            <list string="Pastilles">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="gesture_id"/>
+                <field name="place" optional="show"/>
+                <field name="res_model" optional="hide"/>
+                <field name="sdm_enabled" optional="hide" string="Signée"/>
+                <field name="tap_count" optional="show"/>
+                <field name="last_tap_date" optional="show"/>
+                <field name="date_expiry" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_tag_form" model="ir.ui.view">
+        <field name="name">bf.nfc.tag.form</field>
+        <field name="model">bf.nfc.tag</field>
+        <field name="arch" type="xml">
+            <form string="Pastille">
+                <header>
+                    <button name="action_regenerer_code" type="object"
+                            string="Changer le code"
+                            confirm="La pastille physique deviendra inerte et devra être regravée. Continuer ?"
+                            groups="bf_nfc.group_nfc_manager"/>
+                    <button name="action_voir_journal" type="object" string="Journal"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Retirée" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Porte du bureau, dossier client, poste d'accueil…"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ce qu'elle fait">
+                            <field name="gesture_id"/>
+                            <field name="gesture_writes" invisible="1"/>
+                            <field name="gesture_kind" invisible="1"/>
+                            <field name="res_model" placeholder="project.task"/>
+                            <field name="res_id"/>
+                            <field name="params" placeholder="{&quot;minutes&quot;: 15}"/>
+                            <field name="confirm_required" invisible="not gesture_writes"/>
+                        </group>
+                        <group string="Ce qu'elle est">
+                            <field name="code"/>
+                            <field name="url" widget="url" invisible="not url"/>
+                            <field name="place"/>
+                            <field name="date_expiry"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Pastille signée (NTAG 424 DNA)"
+                           groups="bf_nfc.group_nfc_manager">
+                        <div class="text-muted" colspan="2">
+                            Une pastille signée agit sans compte : la puce signe chaque
+                            tapotement et son compteur ne remonte jamais. C'est ce qu'il
+                            faut pour une pastille remise à quelqu'un d'autre.
+                        </div>
+                        <field name="sdm_enabled"/>
+                        <field name="sdm_uid" invisible="not sdm_enabled"
+                               placeholder="04DE5F1EACC040"/>
+                        <field name="user_id" invisible="not sdm_enabled"
+                               required="sdm_enabled"/>
+                        <field name="sdm_counter" invisible="not sdm_enabled"/>
+                    </group>
+                    <group string="Notes">
+                        <field name="note" nolabel="1" placeholder="Où elle est posée, pourquoi, qui l'a gravée."/>
+                    </group>
+                    <notebook>
+                        <page string="Menu" name="menu" invisible="gesture_kind != 'menu'">
+                            <div class="text-muted mb-2">
+                                Les boutons proposés quand on approche le téléphone. Chacun
+                                joue son geste sur la fiche de la pastille, avec ses propres
+                                gardes. Gravez ensuite la pastille depuis « Mes pastilles »
+                                dans l'application.
+                            </div>
+                            <field name="choice_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="gesture_id"/>
+                                    <field name="style"/>
+                                    <field name="params" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Journal" name="journal">
+                            <field name="tap_ids" readonly="1">
+                                <list>
+                                    <field name="tapped_at" string="Quand"/>
+                                    <field name="offline" string="Différé" optional="hide"/>
+                                    <field name="user_id"/>
+                                    <field name="door"/>
+                                    <field name="status"/>
+                                    <field name="message"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_tag_search" model="ir.ui.view">
+        <field name="name">bf.nfc.tag.search</field>
+        <field name="model">bf.nfc.tag</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="place"/>
+                <field name="gesture_id"/>
+                <filter name="en_service" string="En service" domain="[('active', '=', True)]"/>
+                <filter name="signees" string="Signées" domain="[('sdm_enabled', '=', True)]"/>
+                <filter name="jamais_tapee" string="Jamais tapée" domain="[('tap_count', '=', 0)]"/>
+                <separator/>
+                <filter name="retirees" string="Retirées" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_geste" string="Geste" context="{'group_by': 'gesture_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_tag" model="ir.actions.act_window">
+        <field name="name">Pastilles</field>
+        <field name="res_model">bf.nfc.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_en_service': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Graver une première pastille</p>
+            <p>Une pastille porte un code public et rien d'autre. Commencez par
+            une qui ouvre une fiche : elle n'écrit rien, et elle vous dira si le
+            téléphone lit bien la puce à travers ce sur quoi vous l'avez collée.</p>
+        </field>
+    </record>
+</odoo>

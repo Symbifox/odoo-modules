@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="channel_pastille" model="helpdesk.ticket.channel">
+        <field name="name">Pastille</field>
+    </record>
+
+    <record id="gesture_ticket" model="bf.nfc.gesture">
+        <field name="name">Signaler un problème</field>
+        <field name="code">ticket</field>
+        <field name="kind">ticket</field>
+        <field name="sequence">35</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="accepte_differe" eval="True"/>
+        <field name="description">Approcher le téléphone demande une phrase, et le billet naît rempli : le client de la fiche, l'endroit, qui a signalé et quand. Dans un menu, {"texte_fixe": "Plus de papier"} crée le billet sans rien demander.</field>
+    </record>
+</odoo>

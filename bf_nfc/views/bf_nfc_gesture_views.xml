@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_gesture_list" model="ir.ui.view">
+        <field name="name">bf.nfc.gesture.list</field>
+        <field name="model">bf.nfc.gesture</field>
+        <field name="arch" type="xml">
+            <list string="Gestes">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="kind"/>
+                <field name="writes" string="Écrit"/>
+                <field name="needs_target" string="Cible"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_gesture_form" model="ir.ui.view">
+        <field name="name">bf.nfc.gesture.form</field>
+        <field name="model">bf.nfc.gesture</field>
+        <field name="arch" type="xml">
+            <form string="Geste">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="kind"/>
+                            <field name="server_action_id" invisible="kind != 'server_action'"
+                                   required="kind == 'server_action'"/>
+                        </group>
+                        <group>
+                            <field name="writes"/>
+                            <field name="needs_target"/>
+                            <field name="reserve_gestion"/>
+                            <field name="accepte_differe"/>
+                            <field name="target_model_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_gesture" model="ir.actions.act_window">
+        <field name="name">Gestes</field>
+        <field name="res_model">bf.nfc.gesture</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,113 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 04:55+0000\n"
+"PO-Revision-Date: 2026-09-14 04:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "%(h)s h %(m)02d"
+msgstr "%(h)s h %(m)02d"
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "%s min"
+msgstr "%s min"
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "%s saisies."
+msgstr "%s logged."
+
+#. module: bf_nfc_timer
+#: model:ir.model.fields.selection,name:bf_nfc_timer.selection__bf_nfc_gesture__kind__timer_stop
+msgid "Arrêter le chrono et saisir"
+msgstr "Stop the timer and log"
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "Aucun chrono en cours sur « %s »."
+msgstr "No timer running on “%s”."
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "Cette pastille ne désigne pas une tâche."
+msgstr "This tag does not point to a task."
+
+#. module: bf_nfc_timer
+#: model:bf.nfc.gesture,name:bf_nfc_timer.gesture_timer_stop
+msgid "Chrono : arrêter et saisir"
+msgstr "Timer: stop and log"
+
+#. module: bf_nfc_timer
+#: model:bf.nfc.gesture,name:bf_nfc_timer.gesture_timer_start
+msgid "Chrono : démarrer"
+msgstr "Timer: start"
+
+#. module: bf_nfc_timer
+#: model:bf.nfc.gesture,name:bf_nfc_timer.gesture_timer_toggle
+msgid "Chrono : démarrer ou arrêter"
+msgstr "Timer: start or stop"
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "Chrono démarré."
+msgstr "Timer started."
+
+#. module: bf_nfc_timer
+#: model:ir.model.fields.selection,name:bf_nfc_timer.selection__bf_nfc_gesture__kind__timer_start
+msgid "Démarrer le chrono"
+msgstr "Start the timer"
+
+#. module: bf_nfc_timer
+#: model:ir.model.fields.selection,name:bf_nfc_timer.selection__bf_nfc_gesture__kind__timer_toggle
+msgid "Démarrer ou arrêter le chrono"
+msgstr "Start or stop the timer"
+
+#. module: bf_nfc_timer
+#: model:ir.model,name:bf_nfc_timer.model_bf_nfc_gesture
+msgid "Geste déclenché par une pastille NFC"
+msgstr "Gesture triggered by an NFC tag"
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "La tâche de cette pastille n'existe plus."
+msgstr "This tag's task no longer exists."
+
+#. module: bf_nfc_timer
+#. odoo-python
+#: code:addons/bf_nfc_timer/models/bf_nfc_gesture.py:0
+msgid "Le chrono tourne déjà sur « %s »."
+msgstr "The timer is already running on “%s”."
+
+#. module: bf_nfc_timer
+#: model:ir.model.fields,field_description:bf_nfc_timer.field_bf_nfc_gesture__kind
+msgid "Nature"
+msgstr "Kind"
+
+#. module: bf_nfc_timer
+#: model:bf.nfc.gesture,description:bf_nfc_timer.gesture_timer_toggle
+msgid ""
+"Une seule pastille pour les deux moitiés du geste : le premier tapotement "
+"démarre le chrono de la tâche, le suivant l'arrête et saisit la feuille de "
+"temps avec l'arrondi configuré."
+msgstr ""
+"One tag for both halves of the gesture: the first tap starts the task's "
+"timer, the next one stops it and logs the timesheet with the configured "
+"rounding."

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_equipment_list" model="ir.ui.view">
+        <field name="name">bf.nfc.equipment.list</field>
+        <field name="model">bf.nfc.equipment</field>
+        <field name="arch" type="xml">
+            <list string="Équipements">
+                <field name="name"/>
+                <field name="reference" optional="show"/>
+                <field name="holder_id" widget="many2one_avatar_user"/>
+                <field name="since"/>
+                <field name="place" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_equipment_form" model="ir.ui.view">
+        <field name="name">bf.nfc.equipment.form</field>
+        <field name="model">bf.nfc.equipment</field>
+        <field name="arch" type="xml">
+            <form string="Équipement">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Portable de prêt nº 2, projecteur de la salle A…"/></h1>
+                    </div>
+                    <group>
+                        <group string="Qui l'a">
+                            <field name="holder_id" widget="many2one_avatar_user"/>
+                            <field name="since"/>
+                        </group>
+                        <group string="Ce que c'est">
+                            <field name="reference"/>
+                            <field name="place"/>
+                            <field name="max_days"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <div class="text-muted">
+                        Créez ensuite une pastille « Prendre ou rendre un équipement » qui vise
+                        cette fiche, et gravez-la depuis l'application.
+                    </div>
+                    <notebook>
+                        <page string="Prêts" name="prets">
+                            <field name="loan_ids" readonly="1">
+                                <list>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="duration_hours" widget="float_time"/>
+                                    <field name="closed_by_id" optional="hide"/>
+                                    <field name="offline" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_equipment_search" model="ir.ui.view">
+        <field name="name">bf.nfc.equipment.search</field>
+        <field name="model">bf.nfc.equipment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="holder_id"/>
+                <filter name="pretes" string="Prêtés" domain="[('holder_id', '!=', False)]"/>
+                <filter name="libres" string="Libres" domain="[('holder_id', '=', False)]"/>
+                <filter name="les_miens" string="Les miens" domain="[('holder_id', '=', uid)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_equipment" model="ir.actions.act_window">
+        <field name="name">Équipements</field>
+        <field name="res_model">bf.nfc.equipment</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Enregistrer un premier équipement</p>
+            <p>Un portable, un projecteur, une clé : une pastille dessus, et on sait toujours qui l'a.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_nfc_equipment" name="Équipements" parent="bf_nfc.menu_nfc_root"
+              action="action_bf_nfc_equipment" sequence="30"/>
+</odoo>

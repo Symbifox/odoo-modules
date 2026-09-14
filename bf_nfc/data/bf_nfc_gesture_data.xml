@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔴 Le meilleur premier geste n'écrit rien.
+         Une pastille qui OUVRE une fiche ne porte aucun risque, se pose
+         partout, se remplace sans conséquence, et se teste sans qu'une ligne
+         de module soit écrite. C'est aussi celui qui valide le vrai inconnu :
+         où coller la puce, et si le téléphone la lit à travers ce sur quoi
+         elle est collée. -->
+    <record id="gesture_open" model="bf.nfc.gesture">
+        <field name="name">Ouvrir la fiche</field>
+        <field name="code">open</field>
+        <field name="kind">open</field>
+        <field name="sequence">1</field>
+        <field name="writes" eval="False"/>
+        <field name="needs_target" eval="True"/>
+        <field name="description">Approcher le téléphone ouvre la fiche désignée par la pastille. N'écrit rien, ne demande aucune confirmation, et se lit avec les droits de la personne qui tape : une fiche qu'elle n'a pas le droit de voir reste fermée.</field>
+    </record>
+
+    <record id="gesture_url" model="bf.nfc.gesture">
+        <field name="name">Ouvrir une adresse</field>
+        <field name="code">url</field>
+        <field name="kind">url</field>
+        <field name="sequence">2</field>
+        <field name="writes" eval="False"/>
+        <field name="needs_target" eval="False"/>
+        <field name="description">Approcher le téléphone ouvre une adresse web : une procédure, un formulaire, un plan, une vidéo. N'écrit rien. Seules les adresses https et http sont acceptées.</field>
+    </record>
+
+    <record id="gesture_note" model="bf.nfc.gesture">
+        <field name="name">Consigner un passage</field>
+        <field name="code">note</field>
+        <field name="kind">note</field>
+        <field name="sequence">3</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="accepte_differe" eval="True"/>
+        <field name="description">Laisse une note interne datée et signée sur la fiche : une ronde, une visite, une inspection. Une note, pas un message : personne ne reçoit de courriel.</field>
+    </record>
+
+    <!-- Un menu se compose dans le site (onglet « Menu » de la pastille), puis
+         se grave depuis « Mes pastilles » dans l'application. -->
+    <record id="gesture_menu" model="bf.nfc.gesture">
+        <field name="name">Proposer un menu</field>
+        <field name="code">menu</field>
+        <field name="kind">menu</field>
+        <field name="sequence">5</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="False"/>
+        <field name="description">Approcher le téléphone propose quelques boutons au lieu d'un seul geste : « Je le prends », « Je le rapporte », « Signaler un problème ». Chaque choix joue son propre geste, avec ses propres gardes.</field>
+    </record>
+
+    <record id="gesture_cron" model="bf.nfc.gesture">
+        <field name="name">Lancer une tâche planifiée</field>
+        <field name="code">cron</field>
+        <field name="kind">cron</field>
+        <field name="sequence">20</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="reserve_gestion" eval="True"/>
+        <field name="target_model_id" ref="base.model_ir_cron"/>
+        <field name="description">Demande à une tâche planifiée de tourner tout de suite, sans attendre son prochain passage. Réservé à la gestion.</field>
+    </record>
+
+    <record id="gesture_action" model="bf.nfc.gesture">
+        <field name="name">Exécuter une action</field>
+        <field name="code">action</field>
+        <field name="kind">action</field>
+        <field name="sequence">21</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="reserve_gestion" eval="True"/>
+        <field name="target_model_id" ref="base.model_ir_actions_server"/>
+        <field name="description">Exécute une action serveur ou une automatisation, avec les droits de la personne qui tape. Réservé à la gestion.</field>
+    </record>
+</odoo>

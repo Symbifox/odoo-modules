@@ -1,0 +1,102 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 04:56+0000\n"
+"PO-Revision-Date: 2026-09-14 04:56+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "%(quoi)s : %(texte)s"
+msgstr "%(quoi)s : %(texte)s"
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.gesture,description:bf_nfc_helpdesk.gesture_ticket
+msgid ""
+"Approcher le téléphone demande une phrase, et le billet naît rempli : le "
+"client de la fiche, l'endroit, qui a signalé et quand. Dans un menu, "
+"{\"texte_fixe\": \"Plus de papier\"} crée le billet sans rien demander."
+msgstr ""
+"Approcher le téléphone demande une phrase, et le billet naît rempli : le "
+"client de la fiche, l'endroit, qui a signalé et quand. Dans un menu, "
+"{\"texte_fixe\": \"Plus de papier\"} crée le billet sans rien demander."
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Billet %s créé. Merci, c'est signalé."
+msgstr "Billet %s créé. Merci, c'est signalé."
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Cette pastille ne désigne aucune fiche."
+msgstr "Cette pastille ne désigne aucune fiche."
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Décrire le problème"
+msgstr "Décrire le problème"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Décrivez le problème en une phrase avant d'envoyer."
+msgstr "Décrivez le problème en une phrase avant d'envoyer."
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Endroit : %s"
+msgstr "Endroit : %s"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Envoyé en différé : le téléphone n'avait pas de réseau."
+msgstr "Envoyé en différé : le téléphone n'avait pas de réseau."
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Fiche : %s"
+msgstr "Fiche : %s"
+
+#. module: bf_nfc_helpdesk
+#: model:ir.model,name:bf_nfc_helpdesk.model_bf_nfc_gesture
+msgid "Geste déclenché par une pastille NFC"
+msgstr "Geste déclenché par une pastille NFC"
+
+#. module: bf_nfc_helpdesk
+#: model:ir.model.fields,field_description:bf_nfc_helpdesk.field_bf_nfc_gesture__kind
+msgid "Nature"
+msgstr "Nature"
+
+#. module: bf_nfc_helpdesk
+#: model:helpdesk.ticket.channel,name:bf_nfc_helpdesk.channel_pastille
+msgid "Pastille"
+msgstr "Pastille"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+#: model:bf.nfc.gesture,name:bf_nfc_helpdesk.gesture_ticket
+#: model:ir.model.fields.selection,name:bf_nfc_helpdesk.selection__bf_nfc_gesture__kind__ticket
+msgid "Signaler un problème"
+msgstr "Signaler un problème"
+
+#. module: bf_nfc_helpdesk
+#. odoo-python
+#: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
+msgid "Signalé par %(qui)s le %(quand)s, par la pastille « %(pastille)s »."
+msgstr "Signalé par %(qui)s le %(quand)s, par la pastille « %(pastille)s »."

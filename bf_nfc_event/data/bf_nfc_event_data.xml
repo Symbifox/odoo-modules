@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gesture_event_presence" model="bf.nfc.gesture">
+        <field name="name">Noter ma présence à la séance</field>
+        <field name="code">event_presence</field>
+        <field name="kind">event_presence</field>
+        <field name="sequence">40</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="accepte_differe" eval="True"/>
+        <field name="description">Sur la porte de la salle (la fiche du lieu) ou sur une séance : approcher le téléphone note la présence de la personne à la séance en cours, et crée son inscription si elle n'en avait pas.</field>
+    </record>
+</odoo>
