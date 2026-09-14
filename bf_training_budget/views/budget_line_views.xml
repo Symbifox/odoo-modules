@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_line_form_training" model="ir.ui.view">
+        <field name="name">bf.budget.line.form.training</field>
+        <field name="model">bf.budget.line</field>
+        <field name="inherit_id" ref="bf_budget.bf_budget_line_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='analytic_account_ids']" position="after">
+                <field name="training_category_ids" widget="many2many_tags"
+                       invisible="source != 'internal_cost'"
+                       options="{'no_create': True}"/>
+                <field name="training_actual" readonly="1"
+                       invisible="not training_category_ids"/>
+                <field name="training_record_count" readonly="1"
+                       invisible="not training_category_ids"/>
+                <field name="training_incomplete_count" readonly="1"
+                       invisible="not training_incomplete_count"
+                       class="text-warning"/>
+                <field name="training_committed" readonly="1"
+                       invisible="not training_category_ids"/>
+                <!-- 🔴 Ce compteur EXISTE pour être vu. Une obligation qu'on ne
+                     sait pas chiffrer n'apparaît nulle part ailleurs : ni dans
+                     le réalisé, ni dans l'engagé, ni dans les heures non
+                     valorisées. Le laisser hors de l'écran le rendrait aussi
+                     muet que le zéro qu'il sert à éviter. -->
+                <field name="training_uncosted_count" readonly="1"
+                       invisible="not training_uncosted_count"
+                       class="text-warning"/>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <div class="alert alert-warning mt-2" role="alert"
+                     invisible="not training_uncosted_count">
+                    Des obligations de formation à venir ne peuvent pas être
+                    chiffrées — activité sans durée prévue, ou personne sans taux
+                    horaire. Elles ne sont pas dans l'engagé. Un engagement
+                    sous-évalué est pire qu'un engagement absent, parce qu'il a
+                    l'air renseigné.
+                </div>
+                <div class="alert alert-warning mt-2" role="alert"
+                     invisible="not training_incomplete_count">
+                    Des formations de ces catégories sont incomplètes et ne sont
+                    donc pas comptées dans le réalisé. Leurs heures apparaissent
+                    dans les heures non valorisées. Une formation à laquelle il
+                    manque ses heures ou son coût horaire ne vaut pas zéro.
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

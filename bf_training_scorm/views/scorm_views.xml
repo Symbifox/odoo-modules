@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="scorm_player" name="Lecteur SCORM">
+        <t t-call="web.frontend_layout">
+            <div class="container my-3" t-att-data-scorm-package="paquet.id">
+                <h4 t-field="paquet.name"/>
+                <div t-if="paquet.uses_sequencing" class="alert alert-warning">
+                    Ce paquet déclare des règles de séquencement SCORM 2004.
+                    Elles ne sont pas appliquées : le contenu jouera son premier
+                    SCO. Le module l'annonce plutôt que de faire semblant.
+                </div>
+                <iframe t-att-src="url_contenu" style="width:100%;height:80vh;border:0;"
+                        allowfullscreen="allowfullscreen"/>
+            </div>
+        </t>
+    </template>
+
+    <record id="view_scorm_package_form" model="ir.ui.view">
+        <field name="name">bf.scorm.package.form</field>
+        <field name="model">bf.scorm.package</field>
+        <field name="arch" type="xml">
+            <form string="Paquet SCORM">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du paquet"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="archive" filename="archive_filename"/>
+                            <field name="archive_filename" invisible="1"/>
+                            <field name="slide_id"/>
+                        </group>
+                        <group>
+                            <field name="version"/>
+                            <field name="launch_href"/>
+                            <field name="sco_count"/>
+                            <field name="identifier"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not uses_sequencing">
+                        <field name="uses_sequencing" invisible="1"/>
+                        Ce paquet déclare du séquencement SCORM 2004, qui n'est
+                        pas appliqué. Un lecteur qui prétend séquencer et se
+                        trompe est pire qu'un lecteur qui annonce qu'il ne
+                        séquence pas.
+                    </div>
+                    <notebook>
+                        <page string="Tentatives" name="attempts">
+                            <field name="attempt_ids" readonly="1">
+                                <list>
+                                    <field name="partner_id"/>
+                                    <field name="lesson_status"/>
+                                    <field name="score_raw"/>
+                                    <field name="score_max"/>
+                                    <field name="total_time"/>
+                                    <field name="completed"/>
+                                    <field name="date_completed"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_scorm_package_list" model="ir.ui.view">
+        <field name="name">bf.scorm.package.list</field>
+        <field name="model">bf.scorm.package</field>
+        <field name="arch" type="xml">
+            <list string="Paquets SCORM">
+                <field name="name"/>
+                <field name="version"/>
+                <field name="slide_id"/>
+                <field name="sco_count"/>
+                <field name="uses_sequencing" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_scorm_package" model="ir.actions.act_window">
+        <field name="name">Paquets SCORM</field>
+        <field name="res_model">bf.scorm.package</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_scorm_package" name="Paquets SCORM"
+              parent="bf_training.menu_training_config"
+              action="action_scorm_package" sequence="60"/>
+</odoo>

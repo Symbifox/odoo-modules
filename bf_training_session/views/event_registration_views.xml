@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_event_registration_form_training" model="ir.ui.view">
+        <field name="name">event.registration.form.training</field>
+        <field name="model">event.registration</field>
+        <field name="inherit_id" ref="event.view_event_registration_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="training_activity_id" invisible="1"/>
+                <field name="training_signature" widget="signature"
+                       invisible="not training_activity_id"/>
+                <field name="training_signature_date"
+                       invisible="not training_signature"/>
+                <field name="training_record_id" readonly="1"
+                       invisible="not training_record_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_event_registration_list_training" model="ir.ui.view">
+        <field name="name">event.registration.list.training</field>
+        <field name="model">event.registration</field>
+        <field name="inherit_id" ref="event.view_event_registration_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <field name="training_record_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

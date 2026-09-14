@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_scorm_package_user,bf.scorm.package.user,model_bf_scorm_package,base.group_user,1,0,0,0
+access_scorm_package_manager,bf.scorm.package.manager,model_bf_scorm_package,bf_training.group_training_manager,1,1,1,1
+access_scorm_attempt_user,bf.scorm.attempt.user,model_bf_scorm_attempt,base.group_user,1,0,0,0
+access_scorm_attempt_manager,bf.scorm.attempt.manager,model_bf_scorm_attempt,bf_training.group_training_manager,1,1,1,1

@@ -1,0 +1,243 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_training_session
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-13 23:33+0000\n"
+"PO-Revision-Date: 2026-09-13 23:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr_CA\n"
+"Plural-Forms: \n"
+
+#. module: bf_training_session
+#: model:ir.actions.report,print_report_name:bf_training_session.action_report_attendance_sheet
+msgid "'Feuille de presence - %s' % (object.name or '')"
+msgstr "'Feuille de presence - %s' % (object.name or '')"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "<strong>Date</strong><br/>"
+msgstr "<strong>Date</strong><br/>"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "<strong>Formation</strong><br/>"
+msgstr "<strong>Formation</strong><br/>"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "<strong>Heures créditées</strong><br/>"
+msgstr "<strong>Heures créditées</strong><br/>"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "<strong>Lieu</strong><br/>"
+msgstr "<strong>Lieu</strong><br/>"
+
+#. module: bf_training_session
+#: model:ir.model,name:bf_training_session.model_bf_training_activity
+#: model:ir.model.fields,field_description:bf_training_session.field_event_event__training_activity_id
+#: model:ir.model.fields,field_description:bf_training_session.field_event_registration__training_activity_id
+msgid "Activité de formation"
+msgstr "Activité de formation"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.view_event_form_training
+msgid "Au registre"
+msgstr "Au registre"
+
+#. module: bf_training_session
+#: model:ir.model,name:bf_training_session.model_event_event
+msgid "Event"
+msgstr "Event"
+
+#. module: bf_training_session
+#: model:ir.model,name:bf_training_session.model_event_registration
+msgid "Event Registration"
+msgstr "Event Registration"
+
+#. module: bf_training_session
+#: model:ir.actions.report,name:bf_training_session.action_report_attendance_sheet
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "Feuille de présence"
+msgstr "Feuille de présence"
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_event_event__training_requires_signature
+msgid "Feuille de présence signée"
+msgstr "Feuille de présence signée"
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_event_event__training_hours
+msgid "Heures créditées"
+msgstr "Heures créditées"
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_bf_training_record__event_registration_id
+msgid "Inscription"
+msgstr "Inscription"
+
+#. module: bf_training_session
+#: model:ir.model.fields,help:bf_training_session.field_event_event__training_activity_id
+#: model:ir.model.fields,help:bf_training_session.field_event_registration__training_activity_id
+msgid ""
+"L'activité du registre que cette séance fait suivre. Sans elle, l'événement "
+"reste un événement : rien n'est écrit au registre."
+msgstr ""
+
+#. module: bf_training_session
+#: model:ir.model.fields,help:bf_training_session.field_event_registration__training_record_id
+msgid "La ligne du registre écrite pour cette présence."
+msgstr "La ligne du registre écrite pour cette présence."
+
+#. module: bf_training_session
+#: model:ir.model.fields,help:bf_training_session.field_event_event__training_requires_signature
+msgid ""
+"La présence doit être signée par la personne. Tant qu'elle ne l'est pas, la "
+"réalisation est écrite mais marquée incomplète."
+msgstr ""
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid ""
+"La signature atteste la présence de la personne à la séance\n"
+"                    nommée ci-dessus. Une présence non signée est consignée au\n"
+"                    registre et marquée incomplète : elle n'est jamais comptée\n"
+"                    pour zéro."
+msgstr ""
+
+#. module: bf_training_session
+#: model:ir.model.fields,help:bf_training_session.field_event_registration__training_signature
+msgid "La signature de la personne sur la feuille de présence."
+msgstr "La signature de la personne sur la feuille de présence."
+
+#. module: bf_training_session
+#: model:ir.model.fields,help:bf_training_session.field_bf_training_record__event_id
+msgid "La séance en salle d'où vient cette réalisation."
+msgstr "La séance en salle d'où vient cette réalisation."
+
+#. module: bf_training_session
+#: model:ir.model.fields,help:bf_training_session.field_bf_training_record__signature_manquante
+msgid "La séance exige une feuille signée et cette personne n'a pas signé."
+msgstr "La séance exige une feuille signée et cette personne n'a pas signé."
+
+#. module: bf_training_session
+#: model:ir.model.fields,help:bf_training_session.field_event_event__training_hours
+msgid ""
+"Les heures portées au registre pour qui assiste. Proposées depuis la durée "
+"de la séance, ou à défaut depuis l'activité. Laisser à zéro consigne une "
+"réalisation incomplète, jamais zéro heure."
+msgstr ""
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.view_event_form_training
+msgid ""
+"Les heures sont proposées depuis la durée prévue de l'activité,\n"
+"                    ou à défaut depuis la durée de la séance. La durée d'une séance\n"
+"                    est du temps d'horloge : pauses et repas compris."
+msgstr ""
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_bf_training_activity__event_count
+msgid "Nombre de séances"
+msgstr "Nombre de séances"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "Personne"
+msgstr "Personne"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "Présence"
+msgstr "Présence"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "Présent"
+msgstr "Présent"
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_event_registration__training_record_id
+msgid "Réalisation"
+msgstr "Réalisation"
+
+#. module: bf_training_session
+#: model:ir.model,name:bf_training_session.model_bf_training_record
+msgid "Réalisation de formation"
+msgstr "Réalisation de formation"
+
+#. module: bf_training_session
+#. odoo-python
+#: code:addons/_t25660/bf_training_session/models/event_event.py:0
+#: code:addons/bf_training_session/models/event_event.py:0
+msgid "Réalisations de la séance"
+msgstr "Réalisations de la séance"
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_event_event__training_record_count
+msgid "Réalisations écrites"
+msgstr "Réalisations écrites"
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_event_registration__training_signature
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "Signature"
+msgstr "Signature"
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_bf_training_record__signature_manquante
+msgid "Signature manquante"
+msgstr "Signature manquante"
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_event_registration__training_signature_date
+msgid "Signée le"
+msgstr "Signée le"
+
+#. module: bf_training_session
+#: model:ir.model.fields,field_description:bf_training_session.field_bf_training_record__event_id
+msgid "Séance"
+msgstr "Séance"
+
+#. module: bf_training_session
+#. odoo-python
+#: code:addons/_t25660/bf_training_session/models/training_activity.py:0
+#: code:addons/bf_training_session/models/training_activity.py:0
+#: model:ir.model.fields,field_description:bf_training_session.field_bf_training_activity__event_ids
+#: model_terms:ir.ui.view,arch_db:bf_training_session.view_training_activity_form_session
+msgid "Séances"
+msgstr "Séances"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "h"
+msgstr "h"
+
+#. module: bf_training_session
+#. odoo-python
+#: code:addons/_t25660/bf_training_session/models/training_record.py:0
+#: code:addons/bf_training_session/models/training_record.py:0
+msgid "la signature de l'apprenant"
+msgstr "la signature de l'apprenant"
+
+#. module: bf_training_session
+#: model:ir.model.fields,help:bf_training_session.field_event_registration__training_signature_date
+msgid ""
+"Écrit au moment où la signature est apposée. Ce n'est pas la date de la "
+"séance : c'est la date de la signature."
+msgstr ""
+
+#. module: bf_training_session
+#. odoo-python
+#: code:addons/_t25660/bf_training_session/models/event_registration.py:0
+#: code:addons/bf_training_session/models/event_registration.py:0
+msgid "Écrite automatiquement à la présence en séance."
+msgstr "Écrite automatiquement à la présence en séance."

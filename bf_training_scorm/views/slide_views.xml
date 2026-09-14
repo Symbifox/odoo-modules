@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_slide_form_scorm" model="ir.ui.view">
+        <field name="name">slide.slide.form.scorm</field>
+        <field name="model">slide.slide</field>
+        <field name="inherit_id" ref="website_slides.view_slide_slide_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='slide_category']" position="after">
+                <field name="scorm_package_id"
+                       invisible="slide_category != 'scorm'"
+                       required="slide_category == 'scorm'"/>
+                <field name="scorm_version" invisible="slide_category != 'scorm'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

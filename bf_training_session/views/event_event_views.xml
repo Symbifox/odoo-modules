@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_event_form_training" model="ir.ui.view">
+        <field name="name">event.event.form.training</field>
+        <field name="model">event.event</field>
+        <field name="inherit_id" ref="event.view_event_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_open_training_records" type="object"
+                        class="oe_stat_button" icon="fa-graduation-cap"
+                        invisible="not training_record_count">
+                    <field name="training_record_count" widget="statinfo"
+                           string="Au registre"/>
+                </button>
+            </div>
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="training_activity_id"
+                       options="{'no_create': True}"/>
+                <field name="training_hours" invisible="not training_activity_id"/>
+                <field name="training_requires_signature"
+                       invisible="not training_activity_id"/>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <div class="text-muted mt-2" invisible="not training_activity_id">
+                    Les heures sont proposées depuis la durée prévue de l'activité,
+                    ou à défaut depuis la durée de la séance. La durée d'une séance
+                    est du temps d'horloge : pauses et repas compris.
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

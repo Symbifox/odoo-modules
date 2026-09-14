@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_attendance_sheet" model="ir.actions.report">
+        <field name="name">Feuille de présence</field>
+        <field name="model">event.event</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_training_session.report_attendance_sheet</field>
+        <field name="report_file">bf_training_session.report_attendance_sheet</field>
+        <field name="binding_model_id" ref="event.model_event_event"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Feuille de presence - %s' % (object.name or '')</field>
+    </record>
+
+    <template id="report_attendance_sheet_document">
+        <!-- ⚠️ La variable de boucle DOIT s'appeler `doc` : `web.external_layout`
+             fait `t-if="not o" t-set="o" t-value="doc"` et reprend `o.company_id`
+             pour l'en-tête. La renommer sortirait la feuille sous la société de
+             qui imprime plutôt que celle de la séance. -->
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2 class="mt16 mb8">Feuille de présence</h2>
+                <h4 class="text-muted mb16"><span t-field="doc.name"/></h4>
+
+                <div class="row mb16">
+                    <div class="col-6">
+                        <strong>Formation</strong><br/>
+                        <span t-field="doc.training_activity_id.name"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Heures créditées</strong><br/>
+                        <span t-field="doc.training_hours"/> h
+                    </div>
+                </div>
+                <div class="row mb16">
+                    <div class="col-6">
+                        <strong>Date</strong><br/>
+                        <span t-field="doc.date_begin"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Lieu</strong><br/>
+                        <span t-field="doc.address_id.display_name"/>
+                    </div>
+                </div>
+
+                <table class="table table-sm o_main_table">
+                    <thead>
+                        <tr>
+                            <th>Personne</th>
+                            <th class="text-center">Présence</th>
+                            <th class="text-center" style="width:35%">Signature</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="doc.registration_ids.filtered(lambda r: r.state != 'cancel')"
+                            t-as="ligne">
+                            <td><span t-field="ligne.name"/></td>
+                            <!-- 🔴 On lit l'ÉTAT, jamais `date_closed` : une
+                                 inscription annulée GARDE sa date de présence,
+                                 son calcul étant gardé par `if not date_closed`.
+                                 Une feuille qui lirait la date compterait des
+                                 présents qui ne sont pas venus. -->
+                            <td class="text-center">
+                                <span t-if="ligne.state == 'done'">Présent</span>
+                                <span t-else="" class="text-muted">—</span>
+                            </td>
+                            <td class="text-center">
+                                <img t-if="ligne.training_signature"
+                                     t-att-src="image_data_uri(ligne.training_signature)"
+                                     style="max-height:45px;"/>
+                                <div t-else="" style="border-bottom:1px solid #999;height:38px;"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p class="text-muted mt16" style="font-size:9pt;">
+                    La signature atteste la présence de la personne à la séance
+                    nommée ci-dessus. Une présence non signée est consignée au
+                    registre et marquée incomplète : elle n'est jamais comptée
+                    pour zéro.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_attendance_sheet">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="bf_training_session.report_attendance_sheet_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>
