@@ -132,7 +132,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
 | `bf_email_management` | Gestion des courriels | 18.0.11.35.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.1.1 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
-| `bf_employee_experience` | Expérience employé | 18.0.1.0.0 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
+| `bf_employee_experience` | Expérience employé | 18.0.1.0.1 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
+| `bf_employee_experience_pulse` | Expérience employé : pulse | 18.0.1.1.2 | BUSL-1.1 | Anonymous mood pulse and eNPS: separate invitation and answer registers, shuffled batch hand-off, and display thresholds that hold because the answers are readable by no one |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
 | `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.2 | BUSL-1.1 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |
 | `bf_employee_experience_expense` | Expérience employé — notes de frais | 18.0.1.0.0 | BUSL-1.1 | An approved expense becomes a benefit usage, at real cost |

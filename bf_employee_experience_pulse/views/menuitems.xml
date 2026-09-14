@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_pulse" name="Pulse"
+              parent="bf_employee_experience.menu_root" sequence="25"/>
+
+    <menuitem id="menu_pulse_campaign" name="Vagues"
+              parent="menu_pulse" action="action_pulse_campaign" sequence="10"/>
+
+    <menuitem id="menu_pulse_score" name="Scores"
+              parent="menu_pulse" action="action_pulse_score" sequence="20"/>
+
+    <menuitem id="menu_pulse_metric" name="Axes de mesure"
+              parent="menu_pulse" action="action_pulse_metric" sequence="30"
+              groups="hr.group_hr_manager"/>
+
+    <menuitem id="menu_pulse_question" name="Banque de questions"
+              parent="menu_pulse" action="action_pulse_question" sequence="40"
+              groups="hr.group_hr_manager"/>
+
+</odoo>

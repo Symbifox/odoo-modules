@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_pulse_campaign_list" model="ir.ui.view">
+        <field name="name">bf.ex.pulse.campaign.list</field>
+        <field name="model">bf.ex.pulse.campaign</field>
+        <field name="arch" type="xml">
+            <list string="Vagues de pulse">
+                <field name="name"/>
+                <field name="date_open"/>
+                <field name="date_close"/>
+                <field name="invitation_count"/>
+                <field name="response_count"/>
+                <field name="response_rate" widget="percentage" digits="[3,0]"/>
+                <field name="pending_flush_count" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'open'"
+                       decoration-muted="state == 'closed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pulse_campaign_form" model="ir.ui.view">
+        <field name="name">bf.ex.pulse.campaign.form</field>
+        <field name="model">bf.ex.pulse.campaign</field>
+        <field name="arch" type="xml">
+            <form string="Vague de pulse">
+                <header>
+                    <button name="action_open" type="object" string="Ouvrir la vague"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_send_invitations" type="object"
+                            string="Envoyer les liens" class="btn-primary"
+                            invisible="state != 'open'"/>
+                    <button name="action_close" type="object" string="Fermer la vague"
+                            invisible="state != 'open'"
+                            confirm="Fermer la vague verse au registre tout ce qui reste au sas, même si le seuil n'est pas atteint. Les scores sous le seuil resteront muets."/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,open,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Pouls de septembre"/></h1>
+                    </div>
+                    <group>
+                        <group string="Portée">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="segment_mode" readonly="state != 'draft'"/>
+                            <field name="date_open" readonly="1"/>
+                            <field name="date_close" readonly="1"/>
+                        </group>
+                        <group string="Seuils">
+                            <field name="score_threshold"/>
+                            <field name="text_threshold"/>
+                            <field name="window_days"/>
+                        </group>
+                    </group>
+                    <group string="Réception">
+                        <group>
+                            <field name="invitation_count"/>
+                            <field name="response_count"/>
+                        </group>
+                        <group>
+                            <field name="response_rate" widget="percentage" digits="[3,0]"/>
+                            <field name="pending_flush_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Questions posées" name="questions">
+                            <field name="question_ids" readonly="state != 'draft'">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="title"/>
+                                    <field name="metric_id"/>
+                                    <field name="question_kind"/>
+                                    <field name="is_enps"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Registre des invitations" name="invitations"
+                              invisible="state == 'draft'">
+                            <div class="alert alert-info" role="status">
+                                Ce registre sait qui a répondu, pour ne pas relancer
+                                pour rien. Il ne sait ni quand ni quoi : les réponses
+                                vivent dans une autre table, sans lien vers une personne.
+                            </div>
+                            <field name="invitation_ids" readonly="1">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="segment_key"/>
+                                    <field name="used" widget="boolean_toggle" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pulse_campaign" model="ir.actions.act_window">
+        <field name="name">Vagues de pulse</field>
+        <field name="res_model">bf.ex.pulse.campaign</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Lancez une première vague</p>
+            <p>
+                Trois à cinq questions, une fois par mois ou par trimestre.
+                Le score d'un segment reste muet tant qu'il n'a pas assez de
+                répondants, ce qui est la seule façon de promettre l'anonymat
+                sans mentir.
+            </p>
+        </field>
+    </record>
+
+</odoo>

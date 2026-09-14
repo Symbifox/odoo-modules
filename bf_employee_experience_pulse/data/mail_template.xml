@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+          Gabarit à la forme de la maison : tableau de 600 px, carte blanche sur
+          fond pâle, bandeau anthracite avec le logo, filet d'accent, Lexend
+          partout.
+
+          🔴 Les couleurs sont LUES sur la société, jamais écrites en dur, et le
+          bouton emploie la variante assombrie de l'accent : blanc sur le bleu
+          de marque rend 2,62:1, très en dessous d'AA. L'accent brut ne sert
+          qu'au filet, qui ne porte aucun texte.
+        -->
+
+        <record id="mail_template_pulse_invite" model="mail.template">
+            <field name="name">Pulse : invitation</field>
+            <field name="model_id" ref="model_bf_ex_pulse_invitation"/>
+            <field name="subject">Deux minutes pour dire comment ça va</field>
+            <field name="email_from">{{ object.campaign_id.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="email_to">{{ object.employee_id.work_email }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<t t-set="societe" t-value="object.campaign_id.company_id or user.company_id"/>
+<t t-set="marque" t-value="object.env['bf.ex.pulse.marque'].couleurs(societe)"/>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
+  <tbody><tr><td align="center" style="padding:24px;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; border-collapse:collapse;">
+      <tbody>
+        <tr>
+          <td t-attf-style="background-color:{{ marque['sombre'] }}; padding:16px 24px; border-radius:12px 12px 0 0;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
+              <td align="left">
+                <img t-att-src="marque['logo']" alt="" style="height:40px; width:auto; display:block; border:0;"/>
+              </td>
+              <td align="right" t-attf-style="color:{{ marque['texte_sur_sombre'] }}; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:20px; font-weight:800; letter-spacing:0.2px;">
+                Votre pouls
+              </td>
+            </tr></tbody></table>
+          </td>
+        </tr>
+        <tr><td t-attf-style="height:4px; line-height:4px; background-color:{{ marque['accent'] }};">&amp;#160;</td></tr>
+        <tr>
+          <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif; color:#2E3132;">
+            <p style="font-size:15px; margin:0 0 12px 0;">Bonjour,</p>
+            <p style="font-size:15px; margin:0 0 12px 0;">
+              Voici votre lien pour la vague
+              <b t-out="object.campaign_id.name or ''"/>. Ça prend deux minutes.
+            </p>
+            <div style="text-align:center; margin:28px 0;">
+              <a t-attf-href="{{ object.campaign_id.get_base_url() }}/pulse/{{ object.token }}"
+                 t-attf-style="background-color:{{ marque['bouton'] }}; color:#FFFFFF; text-decoration:none; padding:12px 28px; border-radius:6px; font-size:15px; font-weight:600; display:inline-block;">
+                Répondre
+              </a>
+            </div>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                   t-attf-style="border-left:3px solid {{ marque['accent'] }}; background-color:#F8FAFC; border-radius:0 6px 6px 0;">
+              <tbody><tr><td style="padding:12px 16px; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#4B5563;">
+                Vos réponses ne portent pas votre nom. Le lien sait que vous avez
+                répondu, pour ne pas vous relancer pour rien, et il ne retient ni
+                l'heure ni le contenu de votre réponse. Un résultat ne s'affiche
+                qu'au-dessus de <t t-out="object.campaign_id.score_threshold or 3"/>
+                répondants.
+              </td></tr></tbody>
+            </table>
+            <p style="font-size:13px; color:#6B7280; margin:16px 0 0 0;">
+              Ce lien est personnel&#160;: il ne sert qu'une fois, et c'est ce qui
+              empêche une même personne de peser deux fois dans le résultat. Ne le
+              transférez pas.
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:16px 24px 20px 24px; border-top:1px solid #E5E7EB;">
+            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
+              <t t-if="societe.name"><b t-out="societe.name"/><br/></t>
+              Message automatique, envoyé à l'ouverture d'une vague de pouls.
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </td></tr></tbody>
+</table>
+            </field>
+        </record>
+
+    </data>
+</odoo>

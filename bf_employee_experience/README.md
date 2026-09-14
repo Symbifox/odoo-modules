@@ -137,10 +137,11 @@ been aggregated **raises**, destroying nothing and certifying nothing.
 
 ## What it does not do
 
-* No measurement of lived experience. An eNPS belongs in a separate module: it
-  requires anonymous collection and a threshold of respondents per segment, which
-  is the opposite of the named register this module keeps. Mixing the two in one
-  model is how an "anonymous" survey ends up joinable back to a person.
+* No measurement of lived experience. That is `bf_employee_experience_pulse`,
+  which keeps the invitation register and the answer register apart, flushes
+  answers in shuffled batches, and withholds a score below three respondents and
+  a written comment below five. Mixing the two in one model is how an
+  "anonymous" survey ends up joinable back to a person.
 
 ## Tests
 

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+          Deux questions par axe, sauf l'eNPS qui n'en a qu'une par définition.
+          Elles tournent d'une vague à l'autre : poser toujours la même finit
+          par mesurer la mémoire des gens plutôt que leur semaine.
+        -->
+
+        <record id="question_manager_1" model="bf.ex.pulse.question">
+            <field name="title">Votre gestionnaire est disponible quand vous en avez besoin.</field>
+            <field name="metric_id" ref="metric_manager"/>
+            <field name="sequence">10</field>
+        </record>
+        <record id="question_manager_2" model="bf.ex.pulse.question">
+            <field name="title">Vous pouvez dire à votre gestionnaire ce qui ne va pas.</field>
+            <field name="metric_id" ref="metric_manager"/>
+            <field name="sequence">11</field>
+        </record>
+
+        <record id="question_peers_1" model="bf.ex.pulse.question">
+            <field name="title">Vos collègues vous donnent un coup de main quand ça compte.</field>
+            <field name="metric_id" ref="metric_peers"/>
+            <field name="sequence">20</field>
+        </record>
+        <record id="question_peers_2" model="bf.ex.pulse.question">
+            <field name="title">Le climat dans votre équipe vous convient.</field>
+            <field name="metric_id" ref="metric_peers"/>
+            <field name="sequence">21</field>
+        </record>
+
+        <record id="question_feedback_1" model="bf.ex.pulse.question">
+            <field name="title">Vous savez où vous en êtes dans votre travail.</field>
+            <field name="metric_id" ref="metric_feedback"/>
+            <field name="sequence">30</field>
+        </record>
+        <record id="question_feedback_2" model="bf.ex.pulse.question">
+            <field name="title">La rétroaction que vous recevez vous sert à quelque chose.</field>
+            <field name="metric_id" ref="metric_feedback"/>
+            <field name="sequence">31</field>
+        </record>
+
+        <record id="question_recognition_1" model="bf.ex.pulse.question">
+            <field name="title">Votre travail est reconnu à sa juste valeur.</field>
+            <field name="metric_id" ref="metric_recognition"/>
+            <field name="sequence">40</field>
+        </record>
+        <record id="question_recognition_2" model="bf.ex.pulse.question">
+            <field name="title">Qu'est-ce qui mériterait d'être reconnu et ne l'est pas?</field>
+            <field name="metric_id" ref="metric_recognition"/>
+            <field name="question_kind">text</field>
+            <field name="sequence">41</field>
+        </record>
+
+        <record id="question_growth_1" model="bf.ex.pulse.question">
+            <field name="title">Vous apprenez des choses utiles dans votre poste.</field>
+            <field name="metric_id" ref="metric_growth"/>
+            <field name="sequence">50</field>
+        </record>
+        <record id="question_growth_2" model="bf.ex.pulse.question">
+            <field name="title">Vous voyez un chemin possible pour la suite.</field>
+            <field name="metric_id" ref="metric_growth"/>
+            <field name="sequence">51</field>
+        </record>
+
+        <record id="question_alignment_1" model="bf.ex.pulse.question">
+            <field name="title">Vous comprenez où l'entreprise s'en va.</field>
+            <field name="metric_id" ref="metric_alignment"/>
+            <field name="sequence">60</field>
+        </record>
+        <record id="question_alignment_2" model="bf.ex.pulse.question">
+            <field name="title">Vous voyez en quoi votre travail y contribue.</field>
+            <field name="metric_id" ref="metric_alignment"/>
+            <field name="sequence">61</field>
+        </record>
+
+        <record id="question_workload_1" model="bf.ex.pulse.question">
+            <field name="title">Votre charge de travail est tenable sur la durée.</field>
+            <field name="metric_id" ref="metric_workload"/>
+            <field name="hint">Pensez aux huit dernières semaines, pas à hier.</field>
+            <field name="sequence">70</field>
+        </record>
+        <record id="question_workload_2" model="bf.ex.pulse.question">
+            <field name="title">Vous décrochez du travail en dehors des heures.</field>
+            <field name="metric_id" ref="metric_workload"/>
+            <field name="sequence">71</field>
+        </record>
+        <record id="question_workload_3" model="bf.ex.pulse.question">
+            <field name="title">Qu'est-ce qui pèse le plus, ces temps-ci?</field>
+            <field name="metric_id" ref="metric_workload"/>
+            <field name="question_kind">text</field>
+            <field name="sequence">72</field>
+        </record>
+
+        <record id="question_autonomy_1" model="bf.ex.pulse.question">
+            <field name="title">Vous décidez de la façon dont votre travail se fait.</field>
+            <field name="metric_id" ref="metric_autonomy"/>
+            <field name="sequence">80</field>
+        </record>
+        <record id="question_autonomy_2" model="bf.ex.pulse.question">
+            <field name="title">Vous avez les outils qu'il faut pour bien faire ce travail.</field>
+            <field name="metric_id" ref="metric_autonomy"/>
+            <field name="sequence">81</field>
+        </record>
+
+        <record id="question_satisfaction_1" model="bf.ex.pulse.question">
+            <field name="title">Tout compte fait, vous êtes content d'y travailler.</field>
+            <field name="metric_id" ref="metric_satisfaction"/>
+            <field name="sequence">90</field>
+        </record>
+        <record id="question_satisfaction_2" model="bf.ex.pulse.question">
+            <field name="title">Vos conditions de travail vous paraissent justes.</field>
+            <field name="metric_id" ref="metric_satisfaction"/>
+            <field name="sequence">91</field>
+        </record>
+
+        <record id="question_enps" model="bf.ex.pulse.question">
+            <field name="title">Recommanderiez-vous cet employeur à quelqu'un que vous estimez?</field>
+            <field name="metric_id" ref="metric_ambassador"/>
+            <field name="is_enps" eval="True"/>
+            <field name="hint">0 signifie jamais, 10 signifie sans hésiter.</field>
+            <field name="sequence">100</field>
+        </record>
+
+    </data>
+</odoo>

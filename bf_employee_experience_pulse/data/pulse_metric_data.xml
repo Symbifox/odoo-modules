@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+          Dix axes. Le découpage suit ce que la littérature du domaine mesure
+          depuis quinze ans, et les libellés sont les nôtres. `noupdate="1"` :
+          un client qui renomme un axe ne se le fait pas réécrire à la mise à
+          jour suivante.
+        -->
+
+        <record id="metric_manager" model="bf.ex.pulse.metric">
+            <field name="name">Relation avec le gestionnaire</field>
+            <field name="code">manager</field>
+            <field name="sequence">10</field>
+            <field name="description">La qualité du lien avec la personne à qui l'on se rapporte : disponibilité, confiance, franchise dans les deux sens.</field>
+        </record>
+
+        <record id="metric_peers" model="bf.ex.pulse.metric">
+            <field name="name">Relation avec les collègues</field>
+            <field name="code">peers</field>
+            <field name="sequence">20</field>
+            <field name="description">L'entraide au quotidien et le climat entre les personnes qui travaillent ensemble.</field>
+        </record>
+
+        <record id="metric_feedback" model="bf.ex.pulse.metric">
+            <field name="name">Rétroaction</field>
+            <field name="code">feedback</field>
+            <field name="sequence">30</field>
+            <field name="description">Est-ce qu'on vous dit où vous en êtes, assez souvent et assez clairement pour que ça serve?</field>
+        </record>
+
+        <record id="metric_recognition" model="bf.ex.pulse.metric">
+            <field name="name">Reconnaissance</field>
+            <field name="code">recognition</field>
+            <field name="sequence">40</field>
+            <field name="description">Le travail bien fait se remarque-t-il, et se remarque-t-il auprès des bonnes personnes?</field>
+        </record>
+
+        <record id="metric_growth" model="bf.ex.pulse.metric">
+            <field name="name">Progression</field>
+            <field name="code">growth</field>
+            <field name="sequence">50</field>
+            <field name="description">Apprendre, monter en compétence, voir un chemin devant soi.</field>
+        </record>
+
+        <record id="metric_alignment" model="bf.ex.pulse.metric">
+            <field name="name">Alignement</field>
+            <field name="code">alignment</field>
+            <field name="sequence">60</field>
+            <field name="description">Comprendre où va l'entreprise, et voir en quoi son propre travail y contribue.</field>
+        </record>
+
+        <record id="metric_workload" model="bf.ex.pulse.metric">
+            <field name="name">Charge et bien-être</field>
+            <field name="code">workload</field>
+            <field name="sequence">70</field>
+            <field name="description">La charge de travail, le rythme et ce qu'ils laissent d'énergie. C'est l'axe qui touche aux risques psychosociaux.</field>
+        </record>
+
+        <record id="metric_autonomy" model="bf.ex.pulse.metric">
+            <field name="name">Autonomie</field>
+            <field name="code">autonomy</field>
+            <field name="sequence">80</field>
+            <field name="description">La latitude de décider comment le travail se fait, et les moyens qui vont avec.</field>
+        </record>
+
+        <record id="metric_satisfaction" model="bf.ex.pulse.metric">
+            <field name="name">Satisfaction</field>
+            <field name="code">satisfaction</field>
+            <field name="sequence">90</field>
+            <field name="description">Le contentement général, conditions comprises.</field>
+        </record>
+
+        <record id="metric_ambassador" model="bf.ex.pulse.metric">
+            <field name="name">Fierté et recommandation</field>
+            <field name="code">ambassador</field>
+            <field name="sequence">100</field>
+            <field name="description">Recommanderiez-vous cet employeur? C'est l'axe qui porte l'eNPS.</field>
+        </record>
+
+    </data>
+</odoo>

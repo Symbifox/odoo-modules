@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+      Gabarits autoportants : le module ne dépend ni de `website` ni de
+      `portal`, parce que la page doit s'ouvrir pour une personne qui n'a
+      aucun compte, et parce qu'un habillage qui affiche le nom de
+      l'utilisateur connecté en haut à droite dirait exactement ce que la
+      page promet de ne pas savoir.
+    -->
+
+    <template id="pulse_layout" name="Pulse : habillage">
+            <html t-att-lang="'fr_CA'">
+                <head>
+                    <meta charset="utf-8"/>
+                    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                    <meta name="robots" content="noindex, nofollow"/>
+                    <title>Votre pouls</title>
+                    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"/>
+                    <link rel="stylesheet"
+                          href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800&amp;display=swap"/>
+                    <style t-attf-type="text/css">
+                        /*
+                          🔴 Les couleurs viennent de la SOCIÉTÉ, pas du code.
+                          L'accent brut ne porte jamais de texte : il tient le
+                          filet, les bordures et l'état choisi. Ce qui porte du
+                          texte prend la variante assombrie, calculée pour
+                          rester au-dessus d'AA.
+                        */
+                        :root {
+                            --bf-accent: <t t-out="marque['accent']"/>;
+                            --bf-bouton: <t t-out="marque['bouton']"/>;
+                            --bf-sombre: <t t-out="marque['sombre']"/>;
+                            --bf-sur-sombre: <t t-out="marque['texte_sur_sombre']"/>;
+                            color-scheme: light dark;
+                        }
+                        body { margin: 0; background: #f6f7f8; color: #2e3132;
+                               font-family: 'Lexend', 'Segoe UI', Arial, sans-serif; }
+                        .bf-bandeau { background: var(--bf-sombre); padding: 14px 20px;
+                                      display: flex; align-items: center; justify-content: space-between; }
+                        .bf-bandeau img { height: 34px; width: auto; display: block; }
+                        .bf-bandeau span { color: var(--bf-sur-sombre); font-weight: 800;
+                                           font-size: 1.05rem; letter-spacing: .2px; }
+                        .bf-filet { height: 4px; background: var(--bf-accent); }
+                        main { max-width: 42rem; margin: 0 auto; padding: 1.75rem 1rem 4rem; }
+                        h1 { font-size: 1.35rem; line-height: 1.3; font-weight: 800; margin: 0 0 .5rem; }
+                        .carte { background: #fff; border: 1px solid #e5e7eb; border-radius: .6rem;
+                                 padding: 1.25rem; margin-bottom: 1rem; }
+                        .note { font-size: .9rem; color: #4b5563; }
+                        .avis { border-left: 3px solid var(--bf-accent); background: #f8fafc;
+                                border-radius: 0 .4rem .4rem 0; padding: .8rem 1rem; margin: 0 0 1.25rem; }
+                        .echelle { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .75rem; }
+                        .echelle label { flex: 1 1 2.2rem; text-align: center; border: 1px solid #ccd1d3;
+                                         border-radius: .35rem; padding: .5rem .25rem; cursor: pointer; }
+                        .echelle input { position: absolute; opacity: 0; }
+                        .echelle label:has(input:checked) { border-color: var(--bf-accent);
+                                                            box-shadow: inset 0 0 0 2px var(--bf-accent); }
+                        .echelle label:focus-within { outline: 2px solid var(--bf-accent); outline-offset: 2px; }
+                        .bornes { display: flex; justify-content: space-between; font-size: .8rem;
+                                  color: #6b7280; margin-top: .35rem; }
+                        textarea { width: 100%; min-height: 6rem; border: 1px solid #ccd1d3;
+                                   border-radius: .35rem; padding: .5rem; font: inherit;
+                                   font-family: inherit; box-sizing: border-box; }
+                        button { background: var(--bf-bouton); color: #fff; border: 0;
+                                 border-radius: .35rem; padding: .7rem 1.4rem; font: inherit;
+                                 font-weight: 600; cursor: pointer; }
+                        .erreur { background: #fdecea; border-left: 4px solid #d64541;
+                                  padding: .75rem 1rem; border-radius: .35rem; margin-bottom: 1rem; }
+                        .pied { max-width: 42rem; margin: 0 auto; padding: 0 1rem 2rem;
+                                font-size: .78rem; color: #6b7280; }
+                        @media (prefers-color-scheme: dark) {
+                            body { background: #1b1d1e; color: #e8eaea; }
+                            .carte { background: #26292a; border-color: #3d4143; }
+                            .note, .bornes, .pied { color: #a8b0b2; }
+                            .avis { background: #222627; }
+                            .echelle label { border-color: #3d4143; }
+                            textarea { background: #1b1d1e; color: #e8eaea; border-color: #3d4143; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="bf-bandeau">
+                        <img t-att-src="marque['logo']" alt=""/>
+                        <span>Votre pouls</span>
+                    </div>
+                    <div class="bf-filet"/>
+                    <main>
+                        <t t-out="0"/>
+                    </main>
+                    <div class="pied">
+                        <t t-if="societe and societe.name"><t t-out="societe.name"/> · </t>
+                        Réponses anonymes, versées en lot et dans le désordre.
+                    </div>
+                </body>
+            </html>
+    </template>
+
+    <template id="pulse_formulaire" name="Pulse : questionnaire">
+        <t t-call="bf_employee_experience_pulse.pulse_layout">
+            <h1>Comment ça va, vraiment?</h1>
+            <p class="avis note">
+                Vos réponses ne portent pas votre nom. Le lien sait que vous
+                avez répondu, pour ne pas vous relancer pour rien. Il ne
+                retient ni l'heure ni le contenu de votre réponse, et les
+                réponses sont versées en lot, dans le désordre.
+                Un résultat ne s'affiche qu'au-dessus de
+                <t t-out="campaign.score_threshold"/> répondants, et vos
+                commentaires écrits au-dessus de
+                <t t-out="campaign.text_threshold"/>.
+            </p>
+            <div t-if="erreur" class="erreur"><t t-out="erreur"/></div>
+            <form t-attf-action="/pulse/#{token}/repondre" method="post">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <t t-foreach="questions" t-as="question">
+                    <div class="carte">
+                        <div><b t-out="question.title"/></div>
+                        <div t-if="question.hint" class="note" t-out="question.hint"/>
+                        <t t-if="question.question_kind == 'scale'">
+                            <div class="echelle">
+                                <t t-foreach="range(0, 11)" t-as="note">
+                                    <label>
+                                        <!--
+                                          🔴 `t-attf-` et non `t-att-` : QWeb
+                                          RETIRE l'attribut quand la valeur est
+                                          fausse, et 0 est faux. Le bouton 0
+                                          partait donc sans `value`, un
+                                          navigateur envoyait « on », et le
+                                          contrôleur jetait la réponse. La note
+                                          la plus négative de l'échelle était la
+                                          seule impossible à donner.
+                                        -->
+                                        <input type="radio"
+                                               t-attf-name="q#{question.id}"
+                                               t-attf-value="#{note}"/>
+                                        <span t-out="note"/>
+                                    </label>
+                                </t>
+                            </div>
+                            <div class="bornes">
+                                <span>0, pas du tout</span><span>10, tout à fait</span>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <textarea t-attf-name="q#{question.id}"
+                                      placeholder="Écrivez ce que vous voulez. Personne ne saura que c'est vous."/>
+                        </t>
+                    </div>
+                </t>
+                <button type="submit">Envoyer</button>
+            </form>
+        </t>
+    </template>
+
+    <template id="pulse_merci" name="Pulse : merci">
+        <t t-call="bf_employee_experience_pulse.pulse_layout">
+            <div class="carte">
+                <h1>C'est envoyé. Merci.</h1>
+                <p class="note">
+                    Votre réponse attend d'autres réponses avant d'être
+                    comptée, puis elle rejoint le lot dans le désordre. Vous
+                    pouvez fermer cette page.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <template id="pulse_deja_repondu" name="Pulse : déjà répondu">
+        <t t-call="bf_employee_experience_pulse.pulse_layout">
+            <div class="carte">
+                <h1>Vous avez déjà répondu à cette vague.</h1>
+                <p class="note">
+                    Un lien ne sert qu'une fois. C'est ce qui garantit qu'une
+                    même personne ne pèse pas deux fois dans le résultat.
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <template id="pulse_vague_fermee" name="Pulse : vague fermée">
+        <t t-call="bf_employee_experience_pulse.pulse_layout">
+            <div class="carte">
+                <h1>Cette vague est fermée.</h1>
+                <p class="note">Il n'y a plus rien à répondre ici.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="pulse_lien_invalide" name="Pulse : lien invalide">
+        <t t-call="bf_employee_experience_pulse.pulse_layout">
+            <div class="carte">
+                <h1>Ce lien n'est pas valide.</h1>
+                <p class="note">
+                    Vérifiez que vous avez copié l'adresse au complet.
+                </p>
+            </div>
+        </t>
+    </template>
+
+</odoo>

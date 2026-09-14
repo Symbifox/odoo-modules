@@ -2,7 +2,7 @@
     "name": "Expérience employé",
     "summary": "Catalogue des avantages, admissibilité par règle, registre d'usage "
                "et indicateurs de rétention",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -59,8 +59,9 @@ Ce qu'il ne fait pas
   avantages, jamais par toute l'entreprise.
 * Il ne va rien chercher dans les notes de frais tout seul. C'est le pont
   `bf_employee_experience_expense`.
-* Il ne mesure pas l'expérience vécue. C'est `bf_employee_experience_enps`,
-  qui exige une collecte anonyme et un seuil de répondants.
+* Il ne mesure pas l'expérience vécue. C'est `bf_employee_experience_pulse`,
+  qui collecte sans jamais pouvoir relier une réponse à une personne, et qui
+  retient un résultat sous son seuil de répondants.
 """,
     "depends": [
         "hr",

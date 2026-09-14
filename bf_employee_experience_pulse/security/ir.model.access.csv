@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_metric_hr,Axe de pulse (administration),model_bf_ex_pulse_metric,hr.group_hr_user,1,0,0,0
+access_metric_manager,Axe de pulse (contrôle complet),model_bf_ex_pulse_metric,hr.group_hr_manager,1,1,1,1
+access_question_hr,Question de pulse (administration),model_bf_ex_pulse_question,hr.group_hr_user,1,0,0,0
+access_question_manager,Question de pulse (contrôle complet),model_bf_ex_pulse_question,hr.group_hr_manager,1,1,1,1
+access_campaign_hr,Vague de pulse (administration),model_bf_ex_pulse_campaign,hr.group_hr_user,1,1,1,0
+access_campaign_manager,Vague de pulse (contrôle complet),model_bf_ex_pulse_campaign,hr.group_hr_manager,1,1,1,1
+access_invitation_hr,Invitation (lecture du registre),model_bf_ex_pulse_invitation,hr.group_hr_user,1,0,0,0
+access_invitation_manager,Invitation (lecture et retrait),model_bf_ex_pulse_invitation,hr.group_hr_manager,1,0,0,1
+access_score_hr,Score de pulse (administration),model_bf_ex_pulse_score,hr.group_hr_user,1,0,0,0
+access_score_manager,Score de pulse (contrôle complet),model_bf_ex_pulse_score,hr.group_hr_manager,1,0,0,0

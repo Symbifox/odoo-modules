@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_pulse_score_list" model="ir.ui.view">
+        <field name="name">bf.ex.pulse.score.list</field>
+        <field name="model">bf.ex.pulse.score</field>
+        <field name="arch" type="xml">
+            <list string="Scores" create="false" edit="false">
+                <field name="period_end"/>
+                <field name="metric_id"/>
+                <field name="segment_label"/>
+                <field name="respondent_count"/>
+                <field name="display_score"
+                       decoration-muted="not is_displayable"
+                       decoration-bf="is_displayable"/>
+                <field name="verbatim_count" optional="show"/>
+                <field name="is_displayable" column_invisible="1"/>
+                <field name="campaign_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pulse_score_form" model="ir.ui.view">
+        <field name="name">bf.ex.pulse.score.form</field>
+        <field name="model">bf.ex.pulse.score</field>
+        <field name="arch" type="xml">
+            <form string="Score" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_score" readonly="1"/></h1>
+                        <h3><field name="metric_id" readonly="1"/></h3>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="segment_label"/>
+                            <field name="respondent_count"/>
+                            <field name="is_displayable"/>
+                        </group>
+                        <group>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="campaign_id"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="status"
+                         invisible="is_displayable">
+                        Pas assez de réponses pour afficher un score. Le module
+                        n'affiche ni zéro ni approximation : sous le seuil, un
+                        chiffre se lirait comme une réponse individuelle.
+                    </div>
+                    <group string="Commentaires">
+                        <field name="verbatim_count"/>
+                        <field name="verbatims_displayable"/>
+                    </group>
+                    <field name="verbatim_html" readonly="1" nolabel="1"
+                           invisible="not verbatims_displayable"/>
+                    <div class="alert alert-info" role="status"
+                         invisible="verbatims_displayable or verbatim_count == 0">
+                        Des commentaires ont été reçus et ne s'affichent pas :
+                        il en faut davantage pour qu'aucun ne se reconnaisse à
+                        la plume.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pulse_score_graph" model="ir.ui.view">
+        <field name="name">bf.ex.pulse.score.graph</field>
+        <field name="model">bf.ex.pulse.score</field>
+        <field name="arch" type="xml">
+            <graph string="Scores" type="bar" sample="1">
+                <field name="metric_id"/>
+                <field name="score" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_pulse_score_search" model="ir.ui.view">
+        <field name="name">bf.ex.pulse.score.search</field>
+        <field name="model">bf.ex.pulse.score</field>
+        <field name="arch" type="xml">
+            <search string="Scores">
+                <field name="metric_id"/>
+                <field name="segment_label"/>
+                <filter name="filtre_affichables" string="Au-dessus du seuil"
+                        domain="[('is_displayable', '=', True)]"/>
+                <filter name="filtre_muets" string="Sous le seuil"
+                        domain="[('is_displayable', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_axe" string="Axe" context="{'group_by': 'metric_id'}"/>
+                    <filter name="par_segment" string="Équipe" context="{'group_by': 'segment_label'}"/>
+                    <filter name="par_periode" string="Période" context="{'group_by': 'period_end'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pulse_score" model="ir.actions.act_window">
+        <field name="name">Scores du pulse</field>
+        <field name="res_model">bf.ex.pulse.score</field>
+        <field name="view_mode">list,graph,form</field>
+        <field name="context">{'search_default_filtre_affichables': 1}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!--
+          🔴 Deux modèles n'apparaissent dans AUCUNE ligne de droits, et c'est
+          voulu : `bf.ex.pulse.staging` et `bf.ex.pulse.answer`. Un modèle sans
+          ligne de droits n'est accessible qu'en `sudo`, donc seulement par le
+          contrôleur public et par la passe de versement.
+
+          Ouvrir la lecture du registre des réponses à l'administration
+          rendrait les seuils décoratifs : les commentaires d'une équipe de
+          deux personnes se liraient directement en base, sans passer par
+          l'agrégat qui les retient. La seule porte est `bf.ex.pulse.score`.
+
+          Aucun groupe neuf : `hr` en pose déjà deux qui décrivent les rôles.
+          ⚠️ Le gestionnaire direct n'a rien de plus que le reste du personnel.
+        -->
+
+        <record id="rule_campaign_company" model="ir.rule">
+            <field name="name">Vague de pulse : société</field>
+            <field name="model_id" ref="model_bf_ex_pulse_campaign"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_score_company" model="ir.rule">
+            <field name="name">Score de pulse : société</field>
+            <field name="model_id" ref="model_bf_ex_pulse_score"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_invitation_company" model="ir.rule">
+            <field name="name">Invitation : société</field>
+            <field name="model_id" ref="model_bf_ex_pulse_invitation"/>
+            <field name="domain_force">[('campaign_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_answer_company" model="ir.rule">
+            <field name="name">Réponse de pulse : société</field>
+            <field name="model_id" ref="model_bf_ex_pulse_answer"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+    </data>
+</odoo>
