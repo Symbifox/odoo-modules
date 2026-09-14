@@ -240,9 +240,14 @@ class TestTrainingQc(TransactionCase):
         texte = rendu.decode() if isinstance(rendu, bytes) else rendu
         # ⚠️ Comparer à la date RENDUE, pas à sa forme ISO : le rendu suit la
         # langue de la base, et une base neuve est en anglais.
-        attendu = format_date(self.env, self.aujourdhui - relativedelta(days=40))
+        # 🔴 Cet essai épinglait le format NUMÉRIQUE par défaut (« 08/05/2026 »),
+        # c'est-à-dire la date ambiguë elle-même. L'intention reste juste —
+        # prouver la date de la formation et non celle de la saisie — mais le
+        # format suit désormais l'attestation : le mois en toutes lettres.
+        attendu = format_date(self.env, self.aujourdhui - relativedelta(days=40),
+                              date_format="d MMMM yyyy")
         self.assertIn(attendu, texte)
-        veille = format_date(self.env, self.aujourdhui)
+        veille = format_date(self.env, self.aujourdhui, date_format="d MMMM yyyy")
         self.assertNotIn(">%s<" % veille, texte.split("Délivrée le")[0],
                          "La date de la formation ne doit pas être celle du jour.")
 

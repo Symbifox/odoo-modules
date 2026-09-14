@@ -14,6 +14,8 @@ formation (`bf_training`), développé par
   la personne.
 - **Le compte portail se fabrique au besoin**, parce que le cours n'enregistre
   la complétion que pour une personne connectée.
+- **La relance mène au cours.** Le bouton du courriel de relance ouvre le cours
+  adossé à l'activité, plutôt que la fiche de l'assignation.
 
 ## Trois défauts du natif, et ce qu'on en fait
 

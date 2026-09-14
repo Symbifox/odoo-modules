@@ -1,6 +1,6 @@
 {
     "name": "Registre de formation : la séance et sa feuille signée",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Human Resources",
     "summary": "La séance en salle tenue par Événements, et la feuille de présence "
                "signée qui en fait une preuve",

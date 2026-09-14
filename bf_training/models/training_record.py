@@ -126,6 +126,19 @@ class BfTrainingRecord(models.Model):
     # ------------------------------------------------------------------
     # Calculs qui ne dépendent pas de la date du jour
     # ------------------------------------------------------------------
+
+    @api.depends("employee_id.name", "activity_id.name")
+    def _compute_display_name(self):
+        """« Personne · Activité », jamais « bf.training.…,12 ».
+
+        🔴 Sans ce calcul, le fil d'Ariane, le chatter et chaque pont qui cite
+        une réalisation affichent l'identifiant technique : c'est ce que la QA de
+        parcours a vu sur tous les écrans qui la mentionnent.
+        """
+        for rec in self:
+            rec.display_name = "%s · %s" % (
+                rec.employee_id.name or "?", rec.activity_id.name or "?")
+
     @api.depends("date_done", "activity_id.validity_months")
     def _compute_date_expiry(self):
         for rec in self:

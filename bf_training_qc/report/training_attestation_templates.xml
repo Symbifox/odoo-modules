@@ -39,13 +39,14 @@
                             <td><strong>Date de la formation</strong></td>
                             <!-- 🔴 La date de la RÉALISATION, pas celle de la
                                  saisie ni celle de l'invitation. -->
-                            <td><span t-field="doc.date_done"/></td>
+                            <td><span t-field="doc.date_done" t-options="{'widget': 'date', 'format': 'd MMMM yyyy'}"/></td>
                         </tr>
                         <tr>
                             <td><strong>Durée</strong></td>
                             <td>
                                 <t t-if="doc.hours">
-                                    <span t-field="doc.hours"/> heure(s)
+                                    <t t-out="('%g' % doc.hours).replace('.', ',')"/>
+                                    <t t-if="doc.hours &lt;= 1">heure</t><t t-else="">heures</t>
                                 </t>
                                 <t t-else="">
                                     <span class="text-muted">durée non consignée</span>
@@ -75,7 +76,7 @@
                         </tr>
                         <tr t-if="doc.date_expiry">
                             <td><strong>Valide jusqu'au</strong></td>
-                            <td><span t-field="doc.date_expiry"/></td>
+                            <td><span t-field="doc.date_expiry" t-options="{'widget': 'date', 'format': 'd MMMM yyyy'}"/></td>
                         </tr>
                         <tr t-if="doc.plan_id">
                             <td><strong>Plan de formation</strong></td>
@@ -85,15 +86,15 @@
                 </table>
 
                 <p class="mt32">
-                    Délivrée le <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>.
+                    Délivrée le <span t-out="context_timestamp(datetime.datetime.now()).date()" t-options="{'widget': 'date', 'format': 'd MMMM yyyy'}"/>.
                 </p>
                 <p class="mt32 mb0">___________________________________</p>
                 <p class="text-muted">Pour <span t-field="doc.company_id.name"/></p>
 
                 <p class="text-muted mt32" style="font-size:9px;">
-                    Attestation no <span t-esc="str(doc.id).rjust(8, '0')"/>.
+                    Attestation n° <span t-esc="str(doc.id).rjust(8, '0')"/>.
                     Pièce justificative à conserver jusqu'au
-                    <span t-field="doc.retention_until"/>.
+                    <span t-field="doc.retention_until" t-options="{'widget': 'date', 'format': 'd MMMM yyyy'}"/>.
                 </p>
             </div>
         </t>

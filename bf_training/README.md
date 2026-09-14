@@ -103,6 +103,18 @@ l'exploitant de l'armer quand il a vérifié à qui elle parlerait. Le préavis 
 règle par `bf_training.reminder_days` (7 jours par défaut) et l'échéance par
 défaut d'une assignation par `bf_training.default_due_days` (30 jours).
 
+La relance part avec la mise en page des courriels de la société, sous son nom,
+et porte un bouton **Ouvrir la formation**. Par défaut il mène à la fiche de
+l'assignation ; un module qui adosse l'activité à un cours peut le faire mener au
+cours. L'échéance s'écrit en toutes lettres dans la langue de la personne, et le
+bouton prend la couleur de bouton des courriels de la société, jamais une couleur
+écrite en dur.
+
+⚠️ **La montée vers 18.0.1.1.0 remplace le gabarit de relance**, même protégé par
+`noupdate` : celui des versions antérieures partait sans lien ni mise en page, et
+Odoo ne réécrit jamais un enregistrement protégé. Un gabarit retouché à la main
+est donc remplacé par cette montée ; reportez vos retouches après.
+
 ## Droits
 
 Deux groupes : **Agent** tient le registre (saisit, assigne, relance), et

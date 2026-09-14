@@ -14,7 +14,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-
 #. module: bf_training_slides
 #: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_activity__support_default
 msgid "Accompagnement offert d'office"
@@ -57,6 +56,7 @@ msgstr "Contenus à la dernière version"
 
 #. module: bf_training_slides
 #. odoo-python
+#: code:addons/bf_training_slides/models/training_activity.py:0
 #: code:addons/bf_training_slides/models/training_activity.py:0
 #: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_activity__slide_channel_id
 #: model:ir.model.fields,field_description:bf_training_slides.field_bf_training_assignment__slide_channel_id
@@ -147,6 +147,7 @@ msgstr "Statut au cours"
 
 #. module: bf_training_slides
 #. odoo-python
+#: code:addons/bf_training_slides/models/slide_channel_partner.py:0
 #: code:addons/bf_training_slides/models/slide_channel_partner.py:0
 msgid "Écrite automatiquement à la complétion du cours en ligne."
 msgstr "Écrite automatiquement à la complétion du cours en ligne."

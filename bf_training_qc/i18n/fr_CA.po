@@ -14,7 +14,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-
 #. module: bf_training_qc
 #: model:ir.actions.report,print_report_name:bf_training_qc.action_report_training_attestation
 msgid ""
@@ -166,8 +165,8 @@ msgstr "Attestation de formation"
 
 #. module: bf_training_qc
 #: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
-msgid "Attestation no"
-msgstr "Attestation no"
+msgid "Attestation n°"
+msgstr "Attestation n°"
 
 #. module: bf_training_qc
 #: model:ir.model.fields.selection,name:bf_training_qc.selection__bf_training_activity__qc_basis__autre
@@ -181,6 +180,7 @@ msgstr "Base d'admissibilité"
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_activity.py:0
 #: code:addons/bf_training_qc/models/training_activity.py:0
 msgid "Base d'admissibilité non établie."
 msgstr "Base d'admissibilité non établie."
@@ -202,6 +202,7 @@ msgstr "Calculer"
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
 #: code:addons/bf_training_qc/models/training_statement.py:0
 msgid "Calculer le relevé avant de le clore."
 msgstr "Calculer le relevé avant de le clore."
@@ -229,6 +230,7 @@ msgstr ""
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
 #: code:addons/bf_training_qc/models/training_record.py:0
 msgid ""
 "Ces pièces se conservent six ans après la dernière année à laquelle elles se"
@@ -327,6 +329,7 @@ msgstr "Display Name"
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_activity.py:0
 #: code:addons/bf_training_qc/models/training_activity.py:0
 msgid "Déclarée non admissible."
 msgstr "Déclarée non admissible."
@@ -735,6 +738,7 @@ msgstr "Ordre"
 #. module: bf_training_qc
 #. odoo-python
 #: code:addons/bf_training_qc/models/training_statement.py:0
+#: code:addons/bf_training_qc/models/training_statement.py:0
 msgid "Participation %(annee)s, %(societe)s"
 msgstr "Participation %(annee)s, %(societe)s"
 
@@ -765,11 +769,6 @@ msgid "Pourquoi elle ne compte pas"
 msgstr "Pourquoi elle ne compte pas"
 
 #. module: bf_training_qc
-#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__rating_ids
-msgid "Ratings"
-msgstr "Ratings"
-
-#. module: bf_training_qc
 #: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__name
 #: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__statement_id
 msgid "Relevé"
@@ -782,6 +781,7 @@ msgstr "Relevé (écartée)"
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
 #: code:addons/bf_training_qc/models/training_statement.py:0
 msgid ""
 "Relevé clos avec %(n)s réalisation(s) écartée(s), %(h).2f heure(s) qui ne "
@@ -856,7 +856,8 @@ msgstr "Règlement sur la détermination de la masse salariale"
 #. module: bf_training_qc
 #: model:bf.training.legal.reference,name:bf_training_qc.legal_depenses_calcul
 msgid "Règlement sur les dépenses de formation admissibles, calcul du salaire"
-msgstr "Règlement sur les dépenses de formation admissibles, calcul du salaire"
+msgstr ""
+"Règlement sur les dépenses de formation admissibles, calcul du salaire"
 
 #. module: bf_training_qc
 #: model:bf.training.legal.reference,name:bf_training_qc.legal_depenses_tache
@@ -906,6 +907,7 @@ msgstr "Réalisation de formation"
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
 #: code:addons/bf_training_qc/models/training_statement.py:0
 msgid "Réalisations écartées"
 msgstr "Réalisations écartées"
@@ -1079,11 +1081,13 @@ msgstr ""
 #. module: bf_training_qc
 #. odoo-python
 #: code:addons/bf_training_qc/models/training_statement.py:0
+#: code:addons/bf_training_qc/models/training_statement.py:0
 msgid "Un relevé clos ne se recalcule pas."
 msgstr "Un relevé clos ne se recalcule pas."
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
 #: code:addons/bf_training_qc/models/training_record.py:0
 msgid ""
 "Une attestation nomme une personne et une date. Il en manque sur %s "
@@ -1114,6 +1118,7 @@ msgstr ""
 #. module: bf_training_qc
 #. odoo-python
 #: code:addons/bf_training_qc/models/training_record.py:0
+#: code:addons/bf_training_qc/models/training_record.py:0
 msgid "activité non admissible"
 msgstr "activité non admissible"
 
@@ -1125,13 +1130,14 @@ msgstr "atteste que"
 #. module: bf_training_qc
 #. odoo-python
 #: code:addons/bf_training_qc/models/training_record.py:0
+#: code:addons/bf_training_qc/models/training_record.py:0
 msgid "des informations"
 msgstr "des informations"
 
 #. module: bf_training_qc
 #: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
-msgid "heure(s)"
-msgstr "heure(s)"
+msgid "heure"
+msgstr "heure"
 
 #. module: bf_training_qc
 #: model_terms:ir.ui.view,arch_db:bf_training_qc.view_training_statement_form
@@ -1143,13 +1149,20 @@ msgstr ""
 "                        ce qui manque ne vaut pas zéro."
 
 #. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "heures"
+msgstr "heures"
+
+#. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
 #: code:addons/bf_training_qc/models/training_record.py:0
 msgid "il manque %s"
 msgstr "il manque %s"
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
 #: code:addons/bf_training_qc/models/training_record.py:0
 msgid "la réalisation n'est pas confirmée"
 msgstr "la réalisation n'est pas confirmée"

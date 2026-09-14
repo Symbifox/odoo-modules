@@ -18,6 +18,19 @@ class BfTrainingAssignment(models.Model):
     member_status = fields.Selection(
         related="channel_partner_id.member_status", string="Statut au cours")
 
+
+    def _compute_training_url(self):
+        """Le lien de la relance va droit au cours, pas à la fiche.
+
+        Pour une activité adossée à un cours en ligne, la seule chose que la
+        personne ait à faire est de le suivre. L'envoyer d'abord sur la fiche de
+        l'assignation lui ferait chercher le cours un clic plus loin.
+        """
+        super()._compute_training_url()
+        for rec in self:
+            if rec.slide_channel_id and rec.slide_channel_id.website_url:
+                rec.training_url = rec.slide_channel_id.website_url
+
     @api.depends("partner_id", "slide_channel_id")
     def _compute_channel_partner_id(self):
         for rec in self:

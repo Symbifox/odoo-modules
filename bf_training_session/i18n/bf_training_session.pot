@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 23:33+0000\n"
-"PO-Revision-Date: 2026-09-13 23:33+0000\n"
+"POT-Creation-Date: 2026-09-14 02:51+0000\n"
+"PO-Revision-Date: 2026-09-14 02:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -175,7 +175,7 @@ msgstr ""
 
 #. module: bf_training_session
 #. odoo-python
-#: code:addons/_t25660/bf_training_session/models/event_event.py:0
+#: code:addons/bf_training_session/models/event_event.py:0
 #: code:addons/bf_training_session/models/event_event.py:0
 msgid "Réalisations de la séance"
 msgstr ""
@@ -208,7 +208,7 @@ msgstr ""
 
 #. module: bf_training_session
 #. odoo-python
-#: code:addons/_t25660/bf_training_session/models/training_activity.py:0
+#: code:addons/bf_training_session/models/training_activity.py:0
 #: code:addons/bf_training_session/models/training_activity.py:0
 #: model:ir.model.fields,field_description:bf_training_session.field_bf_training_activity__event_ids
 #: model_terms:ir.ui.view,arch_db:bf_training_session.view_training_activity_form_session
@@ -217,14 +217,24 @@ msgstr ""
 
 #. module: bf_training_session
 #: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
-msgid "h"
+msgid "heure"
+msgstr ""
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "heures"
 msgstr ""
 
 #. module: bf_training_session
 #. odoo-python
-#: code:addons/_t25660/bf_training_session/models/training_record.py:0
+#: code:addons/bf_training_session/models/training_record.py:0
 #: code:addons/bf_training_session/models/training_record.py:0
 msgid "la signature de l'apprenant"
+msgstr ""
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "À préciser"
 msgstr ""
 
 #. module: bf_training_session
@@ -236,7 +246,7 @@ msgstr ""
 
 #. module: bf_training_session
 #. odoo-python
-#: code:addons/_t25660/bf_training_session/models/event_registration.py:0
+#: code:addons/bf_training_session/models/event_registration.py:0
 #: code:addons/bf_training_session/models/event_registration.py:0
 msgid "Écrite automatiquement à la présence en séance."
 msgstr ""

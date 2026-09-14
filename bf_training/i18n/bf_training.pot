@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 15:02+0000\n"
-"PO-Revision-Date: 2026-09-13 15:02+0000\n"
+"POT-Creation-Date: 2026-09-14 03:49+0000\n"
+"PO-Revision-Date: 2026-09-14 03:49+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -38,13 +38,33 @@ msgstr ""
 #. module: bf_training
 #: model:mail.template,body_html:bf_training.mail_template_training_reminder
 msgid ""
-"<div>\n"
-"                    <p>Bonjour,</p>\n"
+"<div style=\"margin: 0; padding: 0;\">\n"
+"                    <p>Bonjour <t t-out=\"object.employee_id.name or object.partner_id.name or ''\">Prénom</t>,</p>\n"
 "                    <p>La formation <strong t-out=\"object.activity_id.name\">Activité</strong>\n"
-"                        est attendue pour le <strong t-out=\"object.due_date\">échéance</strong>.</p>\n"
-"                    <p t-if=\"object.activity_id.duration_hours\">Durée prévue :\n"
-"                        <t t-out=\"object.activity_id.duration_hours\"/> heures.</p>\n"
-"                    <p>Merci,</p>\n"
+"                        est attendue\n"
+"                        <t t-if=\"object.due_date\">pour le\n"
+"                            <!-- &#128308; La date se formate dans la langue de la personne :\n"
+"                                 `t-out` sur une date brute rendait &#171; 2026-09-16 &#187;. -->\n"
+"                            <strong t-out=\"format_date(object.due_date, date_format='d MMMM yyyy', lang_code=object.partner_id.lang)\">16 septembre 2026</strong></t>.</p>\n"
+"                    <p t-if=\"object.activity_id.duration_hours\">\n"
+"                        <!-- &#171; 2.0 heures &#187; devient &#171; 2 heures &#187;, &#171; 1.5 &#187; devient &#171; 1,5 &#187;. -->\n"
+"                        Durée prévue :\n"
+"                        <t t-out=\"('%g' % object.activity_id.duration_hours).replace('.', ',')\">2</t>\n"
+"                        <t t-if=\"object.activity_id.duration_hours &lt;= 1\">heure</t><t t-else=\"\">heures</t>.\n"
+"                    </p>\n"
+"                    <!-- &#128308; La relance n'avait AUCUN lien : la personne savait qu'elle\n"
+"                         devait une formation et n'avait aucun moyen d'y aller. -->\n"
+"                    <p t-if=\"object.training_url\" style=\"margin: 24px 0;\">\n"
+"                        <!-- &#9888;&#65039; La couleur du bouton vient de la SOCI&#201;T&#201; (&#171; couleur des\n"
+"                             boutons &#187; de ses r&#233;glages de courriel), jamais d'un code &#233;crit\n"
+"                             ici : ce module part chez d'autres organisations, et un bleu\n"
+"                             en dur donnait 2,6:1 de contraste avec le texte blanc, sous le\n"
+"                             seuil AA. C'est le patron des gabarits d'Odoo lui-m&#234;me. -->\n"
+"                        <a t-att-href=\"object.training_url\" t-attf-style=\"background-color: {{ object.company_id.email_secondary_color or '#875A7B' }}; padding: 10px 18px; text-decoration: none; color: #fff; border-radius: 5px; font-weight: bold;\">\n"
+"                            Ouvrir la formation\n"
+"                        </a>\n"
+"                    </p>\n"
+"                    <p>Merci,<br/><t t-out=\"object.company_id.name or ''\">La société</t></p>\n"
 "                </div>\n"
 "            "
 msgstr ""
@@ -156,6 +176,9 @@ msgid "Archivées"
 msgstr ""
 
 #. module: bf_training
+#. odoo-python
+#: code:addons/bf_training/models/training_assignment.py:0
+#: code:addons/bf_training/models/training_assignment.py:0
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_form
 msgid "Assignation"
 msgstr ""
@@ -978,6 +1001,7 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_plan.py:0
+#: code:addons/bf_training/models/training_plan.py:0
 msgid ""
 "Le plan doit d'abord être consulté. La consultation est une condition de "
 "l'admissibilité, pas une formalité d'après-coup."
@@ -1002,6 +1026,7 @@ msgstr ""
 
 #. module: bf_training
 #. odoo-python
+#: code:addons/bf_training/models/training_record.py:0
 #: code:addons/bf_training/models/training_record.py:0
 msgid ""
 "Le plan « %(plan)s » ne couvre pas le %(jour)s. Une durée établie dans un "
@@ -1040,6 +1065,11 @@ msgstr ""
 msgid ""
 "Les obligations se fabriquent toutes seules à partir des exigences.\n"
 "               Écrire une exigence, puis lancer « Recalculer »."
+msgstr ""
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__training_url
+msgid "Lien vers la formation"
 msgstr ""
 
 #. module: bf_training
@@ -1227,6 +1257,13 @@ msgid "Ouvrir le registre"
 msgstr ""
 
 #. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_assignment__training_url
+msgid ""
+"Où la relance envoie la personne. Par défaut, la fiche de l'assignation ; un"
+" pont peut l'envoyer directement au contenu."
+msgstr ""
+
+#. module: bf_training
 #: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__period__annual
 msgid "Par année civile"
 msgstr ""
@@ -1339,6 +1376,11 @@ msgid "Quand"
 msgstr ""
 
 #. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+msgid "Quelle formation ?"
+msgstr ""
+
+#. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
 msgid "Qui"
 msgstr ""
@@ -1370,6 +1412,7 @@ msgstr ""
 
 #. module: bf_training
 #. odoo-python
+#: code:addons/bf_training/models/training_assignment.py:0
 #: code:addons/bf_training/models/training_assignment.py:0
 msgid ""
 "Rappel : l'activité « %(activite)s » est attendue pour le %(echeance)s."
@@ -1603,6 +1646,7 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_requirement.py:0
+#: code:addons/bf_training/models/training_requirement.py:0
 msgid "Un déclencheur à date fixe doit porter cette date."
 msgstr ""
 
@@ -1633,6 +1677,7 @@ msgstr ""
 
 #. module: bf_training
 #. odoo-python
+#: code:addons/bf_training/models/training_plan.py:0
 #: code:addons/bf_training/models/training_plan.py:0
 msgid ""
 "Un plan ne passe pas à « consulté » sans la date de la consultation : c'est "
@@ -1686,6 +1731,7 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_requirement.py:0
+#: code:addons/bf_training/models/training_requirement.py:0
 msgid ""
 "Une exigence en heures doit dire combien d'heures. Zéro heure n'est pas une "
 "exigence."
@@ -1693,6 +1739,7 @@ msgstr ""
 
 #. module: bf_training
 #. odoo-python
+#: code:addons/bf_training/models/training_requirement.py:0
 #: code:addons/bf_training/models/training_requirement.py:0
 msgid ""
 "Une exigence portant sur une activité précise doit nommer cette activité."
@@ -1719,17 +1766,20 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_requirement.py:0
+#: code:addons/bf_training/models/training_requirement.py:0
 msgid "Une portée par département doit nommer le département."
 msgstr ""
 
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_requirement.py:0
+#: code:addons/bf_training/models/training_requirement.py:0
 msgid "Une portée par personnes doit nommer au moins une personne."
 msgstr ""
 
 #. module: bf_training
 #. odoo-python
+#: code:addons/bf_training/models/training_requirement.py:0
 #: code:addons/bf_training/models/training_requirement.py:0
 msgid "Une portée par poste doit nommer le poste."
 msgstr ""

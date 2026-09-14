@@ -21,59 +21,72 @@
                 <h2 class="mt16 mb8">Feuille de présence</h2>
                 <h4 class="text-muted mb16"><span t-field="doc.name"/></h4>
 
-                <div class="row mb16">
-                    <div class="col-6">
-                        <strong>Formation</strong><br/>
-                        <span t-field="doc.training_activity_id.name"/>
-                    </div>
-                    <div class="col-6">
-                        <strong>Heures créditées</strong><br/>
-                        <span t-field="doc.training_hours"/> h
-                    </div>
-                </div>
-                <div class="row mb16">
-                    <div class="col-6">
-                        <strong>Date</strong><br/>
-                        <span t-field="doc.date_begin"/>
-                    </div>
-                    <div class="col-6">
-                        <strong>Lieu</strong><br/>
-                        <span t-field="doc.address_id.display_name"/>
-                    </div>
-                </div>
+                <!-- 🔴 Un TABLEAU, pas `row` / `col-6`. wkhtmltopdf ne lit pas la grille
+                     flex de Bootstrap 5 : les quatre renseignements s'empilaient en une
+                     seule colonne étroite au lieu de deux côte à côte. -->
+                <table style="width: 100%; margin-bottom: 18px;">
+                    <tr>
+                        <td style="width: 50%; vertical-align: top; padding: 4px 0;">
+                            <strong>Formation</strong><br/>
+                            <span t-field="doc.training_activity_id.name"/>
+                        </td>
+                        <td style="width: 50%; vertical-align: top; padding: 4px 0;">
+                            <strong>Heures créditées</strong><br/>
+                            <t t-out="('%g' % doc.training_hours).replace('.', ',')"/>
+                            <t t-if="doc.training_hours &lt;= 1">heure</t><t t-else="">heures</t>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top; padding: 4px 0;">
+                            <strong>Date</strong><br/>
+                            <!-- Dans le fuseau de la SÉANCE, sans les secondes. -->
+                            <span t-field="doc.date_begin"
+                                  t-options="{'widget': 'datetime', 'format': 'd MMMM yyyy, HH:mm', 'tz_name': doc.date_tz}"/>
+                        </td>
+                        <td style="vertical-align: top; padding: 4px 0;">
+                            <strong>Lieu</strong><br/>
+                            <!-- 🔴 `address_inline`, pas `address_id.display_name` : le nom
+                                 du partenaire seul affichait « YourCompany » comme lieu. -->
+                            <span t-if="doc.address_inline" t-field="doc.address_inline"/>
+                            <span t-else="" class="text-muted">À préciser</span>
+                        </td>
+                    </tr>
+                </table>
 
-                <table class="table table-sm o_main_table">
+                <!-- 🔴 Largeur imposée au tableau ET à chaque colonne, et une hauteur de
+                     ligne : les cases de signature faisaient environ 80 pixels, trop
+                     étroites pour signer à la main, sur un document dont c'est l'objet. -->
+                <table class="table table-sm o_main_table" style="width: 100%;">
                     <thead>
                         <tr>
-                            <th>Personne</th>
-                            <th class="text-center">Présence</th>
-                            <th class="text-center" style="width:35%">Signature</th>
+                            <th style="width: 40%;">Personne</th>
+                            <th class="text-center" style="width: 15%;">Présence</th>
+                            <th class="text-center" style="width: 45%;">Signature</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr t-foreach="doc.registration_ids.filtered(lambda r: r.state != 'cancel')"
                             t-as="ligne">
-                            <td><span t-field="ligne.name"/></td>
-                            <!-- 🔴 On lit l'ÉTAT, jamais `date_closed` : une
-                                 inscription annulée GARDE sa date de présence,
-                                 son calcul étant gardé par `if not date_closed`.
-                                 Une feuille qui lirait la date compterait des
-                                 présents qui ne sont pas venus. -->
-                            <td class="text-center">
+                            <td style="height: 52px; vertical-align: middle;">
+                                <span t-field="ligne.name"/>
+                            </td>
+                            <!-- 🔴 On lit l'ÉTAT, jamais `date_closed` : une inscription
+                                 annulée GARDE sa date de présence, son calcul étant gardé
+                                 par `if not date_closed`. -->
+                            <td class="text-center" style="vertical-align: middle;">
                                 <span t-if="ligne.state == 'done'">Présent</span>
                                 <span t-else="" class="text-muted">—</span>
                             </td>
-                            <td class="text-center">
+                            <td class="text-center" style="vertical-align: middle;">
                                 <img t-if="ligne.training_signature"
                                      t-att-src="image_data_uri(ligne.training_signature)"
-                                     style="max-height:45px;"/>
-                                <div t-else="" style="border-bottom:1px solid #999;height:38px;"/>
+                                     style="max-height: 44px;"/>
                             </td>
                         </tr>
                     </tbody>
                 </table>
 
-                <p class="text-muted mt16" style="font-size:9pt;">
+                <p class="text-muted mt16" style="font-size: 9pt;">
                     La signature atteste la présence de la personne à la séance
                     nommée ci-dessus. Une présence non signée est consignée au
                     registre et marquée incomplète : elle n'est jamais comptée

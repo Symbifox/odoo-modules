@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 15:02+0000\n"
-"PO-Revision-Date: 2026-09-13 15:02+0000\n"
+"POT-Creation-Date: 2026-09-14 02:51+0000\n"
+"PO-Revision-Date: 2026-09-14 02:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -162,7 +162,7 @@ msgstr ""
 
 #. module: bf_training_qc
 #: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
-msgid "Attestation no"
+msgid "Attestation n°"
 msgstr ""
 
 #. module: bf_training_qc
@@ -177,6 +177,7 @@ msgstr ""
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_activity.py:0
 #: code:addons/bf_training_qc/models/training_activity.py:0
 msgid "Base d'admissibilité non établie."
 msgstr ""
@@ -198,6 +199,7 @@ msgstr ""
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
 #: code:addons/bf_training_qc/models/training_statement.py:0
 msgid "Calculer le relevé avant de le clore."
 msgstr ""
@@ -222,6 +224,7 @@ msgstr ""
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
 #: code:addons/bf_training_qc/models/training_record.py:0
 msgid ""
 "Ces pièces se conservent six ans après la dernière année à laquelle elles se"
@@ -312,6 +315,7 @@ msgstr ""
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_activity.py:0
 #: code:addons/bf_training_qc/models/training_activity.py:0
 msgid "Déclarée non admissible."
 msgstr ""
@@ -668,6 +672,7 @@ msgstr ""
 #. module: bf_training_qc
 #. odoo-python
 #: code:addons/bf_training_qc/models/training_statement.py:0
+#: code:addons/bf_training_qc/models/training_statement.py:0
 msgid "Participation %(annee)s, %(societe)s"
 msgstr ""
 
@@ -698,11 +703,6 @@ msgid "Pourquoi elle ne compte pas"
 msgstr ""
 
 #. module: bf_training_qc
-#: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__rating_ids
-msgid "Ratings"
-msgstr ""
-
-#. module: bf_training_qc
 #: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement__name
 #: model:ir.model.fields,field_description:bf_training_qc.field_bf_training_statement_line__statement_id
 msgid "Relevé"
@@ -715,6 +715,7 @@ msgstr ""
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
 #: code:addons/bf_training_qc/models/training_statement.py:0
 msgid ""
 "Relevé clos avec %(n)s réalisation(s) écartée(s), %(h).2f heure(s) qui ne "
@@ -823,6 +824,7 @@ msgstr ""
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_statement.py:0
 #: code:addons/bf_training_qc/models/training_statement.py:0
 msgid "Réalisations écartées"
 msgstr ""
@@ -970,11 +972,13 @@ msgstr ""
 #. module: bf_training_qc
 #. odoo-python
 #: code:addons/bf_training_qc/models/training_statement.py:0
+#: code:addons/bf_training_qc/models/training_statement.py:0
 msgid "Un relevé clos ne se recalcule pas."
 msgstr ""
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
 #: code:addons/bf_training_qc/models/training_record.py:0
 msgid ""
 "Une attestation nomme une personne et une date. Il en manque sur %s "
@@ -1001,6 +1005,7 @@ msgstr ""
 #. module: bf_training_qc
 #. odoo-python
 #: code:addons/bf_training_qc/models/training_record.py:0
+#: code:addons/bf_training_qc/models/training_record.py:0
 msgid "activité non admissible"
 msgstr ""
 
@@ -1012,12 +1017,13 @@ msgstr ""
 #. module: bf_training_qc
 #. odoo-python
 #: code:addons/bf_training_qc/models/training_record.py:0
+#: code:addons/bf_training_qc/models/training_record.py:0
 msgid "des informations"
 msgstr ""
 
 #. module: bf_training_qc
 #: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
-msgid "heure(s)"
+msgid "heure"
 msgstr ""
 
 #. module: bf_training_qc
@@ -1028,13 +1034,20 @@ msgid ""
 msgstr ""
 
 #. module: bf_training_qc
+#: model_terms:ir.ui.view,arch_db:bf_training_qc.report_training_attestation_document
+msgid "heures"
+msgstr ""
+
+#. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
 #: code:addons/bf_training_qc/models/training_record.py:0
 msgid "il manque %s"
 msgstr ""
 
 #. module: bf_training_qc
 #. odoo-python
+#: code:addons/bf_training_qc/models/training_record.py:0
 #: code:addons/bf_training_qc/models/training_record.py:0
 msgid "la réalisation n'est pas confirmée"
 msgstr ""

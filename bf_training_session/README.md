@@ -17,6 +17,9 @@ deux choses qu'une séance de formation exige et qu'un événement ne porte pas 
   heures créditées et le mode de l'activité.
 - **La feuille se signe, personne par personne**, et se produit en PDF avec les
   signatures apposées, à joindre au dossier.
+- **La feuille est un tableau** à colonnes fixes, avec des lignes assez hautes
+  pour signer : le moteur PDF d'Odoo ignore la grille de Bootstrap 5, qui
+  empilait les informations de la séance au lieu de les aligner.
 
 ## Deux faux amis d'Événements, mesurés dans le code
 

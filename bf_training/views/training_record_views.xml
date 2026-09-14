@@ -48,7 +48,7 @@
                             invisible="expiry_state != 'expired'"/>
                     <div class="oe_title">
                         <label for="activity_id"/>
-                        <h1><field name="activity_id"/></h1>
+                        <h1><field name="activity_id" class="w-100" placeholder="Quelle formation ?"/></h1>
                     </div>
                     <group>
                         <group string="Qui, quand, combien">

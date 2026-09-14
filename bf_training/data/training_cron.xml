@@ -5,16 +5,39 @@
             <field name="name">Registre de formation : relance</field>
             <field name="model_id" ref="model_bf_training_assignment"/>
             <field name="subject">Formation à faire : {{ object.activity_id.name }}</field>
-            <field name="email_from">{{ (object.company_id.email or user.email_formatted) }}</field>
+            <!-- 🔴 `email_formatted`, pas `email` : l'adresse nue arrivait sans nom
+                 d'expéditeur, et « bonjour@… » ne dit pas qui écrit. -->
+            <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
             <field name="partner_to">{{ object.partner_id.id }}</field>
             <field name="body_html" type="html">
-                <div>
-                    <p>Bonjour,</p>
+                <div style="margin: 0; padding: 0;">
+                    <p>Bonjour <t t-out="object.employee_id.name or object.partner_id.name or ''">Prénom</t>,</p>
                     <p>La formation <strong t-out="object.activity_id.name">Activité</strong>
-                        est attendue pour le <strong t-out="object.due_date">échéance</strong>.</p>
-                    <p t-if="object.activity_id.duration_hours">Durée prévue :
-                        <t t-out="object.activity_id.duration_hours"/> heures.</p>
-                    <p>Merci,</p>
+                        est attendue
+                        <t t-if="object.due_date">pour le
+                            <!-- 🔴 La date se formate dans la langue de la personne :
+                                 `t-out` sur une date brute rendait « 2026-09-16 ». -->
+                            <strong t-out="format_date(object.due_date, date_format='d MMMM yyyy', lang_code=object.partner_id.lang)">16 septembre 2026</strong></t>.</p>
+                    <p t-if="object.activity_id.duration_hours">
+                        <!-- « 2.0 heures » devient « 2 heures », « 1.5 » devient « 1,5 ». -->
+                        Durée prévue :
+                        <t t-out="('%g' % object.activity_id.duration_hours).replace('.', ',')">2</t>
+                        <t t-if="object.activity_id.duration_hours &lt;= 1">heure</t><t t-else="">heures</t>.
+                    </p>
+                    <!-- 🔴 La relance n'avait AUCUN lien : la personne savait qu'elle
+                         devait une formation et n'avait aucun moyen d'y aller. -->
+                    <p t-if="object.training_url" style="margin: 24px 0;">
+                        <!-- ⚠️ La couleur du bouton vient de la SOCIÉTÉ (« couleur des
+                             boutons » de ses réglages de courriel), jamais d'un code écrit
+                             ici : ce module part chez d'autres organisations, et un bleu
+                             en dur donnait 2,6:1 de contraste avec le texte blanc, sous le
+                             seuil AA. C'est le patron des gabarits d'Odoo lui-même. -->
+                        <a t-att-href="object.training_url"
+                           t-attf-style="background-color: {{ object.company_id.email_secondary_color or '#875A7B' }}; padding: 10px 18px; text-decoration: none; color: #fff; border-radius: 5px; font-weight: bold;">
+                            Ouvrir la formation
+                        </a>
+                    </p>
+                    <p>Merci,<br/><t t-out="object.company_id.name or ''">La société</t></p>
                 </div>
             </field>
             <field name="lang">{{ object.partner_id.lang }}</field>

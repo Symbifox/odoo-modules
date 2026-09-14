@@ -18,6 +18,10 @@ Le PDF porte l'objet, la date **de la formation**, la durée, le mode, le
 formateur, le numéro, la validité, le plan, et la personne morale **de la
 réalisation**.
 
+Les dates s'écrivent en toutes lettres (« 12 mai 2026 ») : « 05/12/2026 » se lit
+mai ou décembre selon qui le lit, et une attestation est faite pour être lue par
+un tiers.
+
 ⚠️ Deux détails qui ne sont pas des détails, et que le certificat natif d'Odoo
 rate tous les deux :
 

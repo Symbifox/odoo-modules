@@ -14,7 +14,7 @@
                 <field name="scope"/>
                 <field name="obligation_count" string="Visées"/>
                 <field name="covered_count" string="À jour"/>
-                <field name="coverage_rate" widget="percentage" string="Couverture"/>
+                <field name="coverage_rate" widget="progressbar" string="Couverture"/>
                 <field name="legal_basis" optional="hide"/>
             </list>
         </field>
@@ -75,7 +75,7 @@
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active" widget="boolean_toggle"/>
                             <field name="covered_count"/>
-                            <field name="coverage_rate" widget="percentage"/>
+                            <field name="coverage_rate" widget="progressbar"/>
                         </group>
                     </group>
                     <notebook>

@@ -1,6 +1,6 @@
 {
     "name": "Registre de formation",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.0",
     "category": "Human Resources",
     "summary": "Qui doit quelle formation, pour quand, prouvé par quelle pièce, "
                "valide jusqu'à quand. Le registre nominatif que le lecteur eLearning "

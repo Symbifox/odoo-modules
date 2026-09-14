@@ -1,6 +1,6 @@
 {
     "name": "Registre de formation : Québec",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Human Resources",
     "summary": "L'attestation que l'employeur doit pouvoir délivrer, la conservation de "
                "six ans, et le relevé de la participation au développement des compétences",

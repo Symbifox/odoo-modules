@@ -4,17 +4,15 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 23:33+0000\n"
-"PO-Revision-Date: 2026-09-13 23:33+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Language: fr_CA\n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_training_session
 #: model:ir.actions.report,print_report_name:bf_training_session.action_report_attendance_sheet
@@ -91,6 +89,8 @@ msgid ""
 "L'activité du registre que cette séance fait suivre. Sans elle, l'événement "
 "reste un événement : rien n'est écrit au registre."
 msgstr ""
+"L'activité du registre que cette séance fait suivre. Sans elle, l'événement "
+"reste un événement : rien n'est écrit au registre."
 
 #. module: bf_training_session
 #: model:ir.model.fields,help:bf_training_session.field_event_registration__training_record_id
@@ -103,6 +103,8 @@ msgid ""
 "La présence doit être signée par la personne. Tant qu'elle ne l'est pas, la "
 "réalisation est écrite mais marquée incomplète."
 msgstr ""
+"La présence doit être signée par la personne. Tant qu'elle ne l'est pas, la "
+"réalisation est écrite mais marquée incomplète."
 
 #. module: bf_training_session
 #: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
@@ -112,6 +114,10 @@ msgid ""
 "                    registre et marquée incomplète : elle n'est jamais comptée\n"
 "                    pour zéro."
 msgstr ""
+"La signature atteste la présence de la personne à la séance\n"
+"                    nommée ci-dessus. Une présence non signée est consignée au\n"
+"                    registre et marquée incomplète : elle n'est jamais comptée\n"
+"                    pour zéro."
 
 #. module: bf_training_session
 #: model:ir.model.fields,help:bf_training_session.field_event_registration__training_signature
@@ -135,6 +141,9 @@ msgid ""
 "de la séance, ou à défaut depuis l'activité. Laisser à zéro consigne une "
 "réalisation incomplète, jamais zéro heure."
 msgstr ""
+"Les heures portées au registre pour qui assiste. Proposées depuis la durée "
+"de la séance, ou à défaut depuis l'activité. Laisser à zéro consigne une "
+"réalisation incomplète, jamais zéro heure."
 
 #. module: bf_training_session
 #: model_terms:ir.ui.view,arch_db:bf_training_session.view_event_form_training
@@ -143,6 +152,9 @@ msgid ""
 "                    ou à défaut depuis la durée de la séance. La durée d'une séance\n"
 "                    est du temps d'horloge : pauses et repas compris."
 msgstr ""
+"Les heures sont proposées depuis la durée prévue de l'activité,\n"
+"                    ou à défaut depuis la durée de la séance. La durée d'une séance\n"
+"                    est du temps d'horloge : pauses et repas compris."
 
 #. module: bf_training_session
 #: model:ir.model.fields,field_description:bf_training_session.field_bf_training_activity__event_count
@@ -176,7 +188,7 @@ msgstr "Réalisation de formation"
 
 #. module: bf_training_session
 #. odoo-python
-#: code:addons/_t25660/bf_training_session/models/event_event.py:0
+#: code:addons/bf_training_session/models/event_event.py:0
 #: code:addons/bf_training_session/models/event_event.py:0
 msgid "Réalisations de la séance"
 msgstr "Réalisations de la séance"
@@ -209,7 +221,7 @@ msgstr "Séance"
 
 #. module: bf_training_session
 #. odoo-python
-#: code:addons/_t25660/bf_training_session/models/training_activity.py:0
+#: code:addons/bf_training_session/models/training_activity.py:0
 #: code:addons/bf_training_session/models/training_activity.py:0
 #: model:ir.model.fields,field_description:bf_training_session.field_bf_training_activity__event_ids
 #: model_terms:ir.ui.view,arch_db:bf_training_session.view_training_activity_form_session
@@ -218,15 +230,25 @@ msgstr "Séances"
 
 #. module: bf_training_session
 #: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
-msgid "h"
-msgstr "h"
+msgid "heure"
+msgstr "heure"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "heures"
+msgstr "heures"
 
 #. module: bf_training_session
 #. odoo-python
-#: code:addons/_t25660/bf_training_session/models/training_record.py:0
+#: code:addons/bf_training_session/models/training_record.py:0
 #: code:addons/bf_training_session/models/training_record.py:0
 msgid "la signature de l'apprenant"
 msgstr "la signature de l'apprenant"
+
+#. module: bf_training_session
+#: model_terms:ir.ui.view,arch_db:bf_training_session.report_attendance_sheet_document
+msgid "À préciser"
+msgstr "À préciser"
 
 #. module: bf_training_session
 #: model:ir.model.fields,help:bf_training_session.field_event_registration__training_signature_date
@@ -234,10 +256,12 @@ msgid ""
 "Écrit au moment où la signature est apposée. Ce n'est pas la date de la "
 "séance : c'est la date de la signature."
 msgstr ""
+"Écrit au moment où la signature est apposée. Ce n'est pas la date de la "
+"séance : c'est la date de la signature."
 
 #. module: bf_training_session
 #. odoo-python
-#: code:addons/_t25660/bf_training_session/models/event_registration.py:0
+#: code:addons/bf_training_session/models/event_registration.py:0
 #: code:addons/bf_training_session/models/event_registration.py:0
 msgid "Écrite automatiquement à la présence en séance."
 msgstr "Écrite automatiquement à la présence en séance."
