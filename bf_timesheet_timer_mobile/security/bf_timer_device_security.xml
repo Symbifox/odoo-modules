@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔴 Une personne ne voit que SES téléphones. La lecture par l'API se fait
+         en sudo avec un domaine qui nomme l'empreinte ; cette règle protège
+         l'interface et le XML-RPC, où un interne pourrait sinon lister les
+         appareils de toute l'équipe. -->
+    <record id="regle_appareil_chrono_le_mien" model="ir.rule">
+        <field name="name">Appareils du chronomètre : les miens</field>
+        <field name="model_id" ref="model_bf_timer_device"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('hr_timesheet.group_hr_timesheet_user'))]"/>
+    </record>
+
+    <!-- 🔴 La gestion des feuilles de temps LIT et SUPPRIME les appareils de
+         l'équipe, elle n'écrit pas : l'écriture est réservée à l'administration
+         (ACL), et même là, la personne d'un appareil ne se change pas (write). -->
+    <record id="regle_appareil_chrono_gestion" model="ir.rule">
+        <field name="name">Appareils du chronomètre : tous, pour l'administration</field>
+        <field name="model_id" ref="model_bf_timer_device"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('hr_timesheet.group_timesheet_manager'))]"/>
+    </record>
+
+    <record id="regle_appareil_chrono_administration" model="ir.rule">
+        <field name="name">Appareils du chronomètre : tous, pour l'administration du système</field>
+        <field name="model_id" ref="model_bf_timer_device"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+</odoo>

@@ -43,8 +43,10 @@ LGPL-3 — see [LICENSE](#license-text) below.
 - Three actions:
   - **Confirm**: creates a standard `account.analytic.line` timesheet entry
   - **Discard**: deletes the timer without creating a timesheet
-  - **Cancel**: re-activates the timer so it continues counting
-- The `claimed_at` mechanism ensures only one window shows the dialog (other tabs skip the timer for 5 minutes)
+  - **Cancel**: re-activates the timer so it continues counting, without losing the time already counted
+- **The elapsed time is frozen when you stop**, not when you confirm: a dialog left open for an hour still proposes the duration at the moment of stopping, and a timer paused before stopping is not counted twice
+- The timesheet line is dated **the day the timer first started, in the user's time zone** (UTC when the user has none), not the day of the last resume
+- The `claimed_at` mechanism ensures only one window opens the dialog: a timer whose dialog is already open elsewhere is not offered again for 5 minutes, but it stays listed with its frozen duration
 
 ### Description Presets
 - Quick-fill chips above the description field in both stop dialogs
@@ -54,6 +56,7 @@ LGPL-3 — see [LICENSE](#license-text) below.
 
 ### Pinned Tasks
 - Star icon on each task in the recent tasks list to pin/unpin favorites
+- A task the user can no longer read is refused when pinning, and silently left out of the list if it becomes unreadable later (it used to break the systray for that user)
 - Pinned tasks always appear first in the dropdown, regardless of recent activity
 - Per-user: each user manages their own pinned tasks
 - Pinned tasks that have no recent timesheets are still shown (fetched via ORM)
@@ -391,6 +394,19 @@ bf_timesheet_timer/
 ```
 
 ## Changelog
+
+### 18.0.1.12.0 (2026-09-14)
+- **A stopped timer no longer grows.** Stopping used to leave the elapsed time to be recomputed from the start time at every read: a timer stopped at 10:00 and confirmed at 14:00 proposed four extra hours, and a timer paused before stopping was counted twice. The elapsed time is now folded into `accumulated_seconds` at stop, pending timers read that value, and **Cancel** restarts from now without losing what was counted. A migration freezes the timers already stopped at upgrade, once (guarded by a parameter, so a replayed upgrade does not freeze twice).
+- **The timesheet date is the user's day.** Lines were dated with the UTC date of the last resume, so a timer started in the evening in Eastern time landed on the next day. They now take the day of the first start (`first_start`, new field) in the user's time zone.
+- **Gestures check the timer's state**: pausing or resuming a stopped timer is refused, cancelling a running timer does nothing, stopping twice does not freeze twice.
+- **Pins survive lost access**: pinning an unreadable task is refused, and pinned tasks that became unreadable are skipped instead of raising an `AccessError` in the systray. Project names are read the way Odoo displays a many2one, so a readable task in an unreadable project no longer breaks the list.
+- **Multi-company**: starting a timer picks the employee of the task's company first.
+- **One rounding rule everywhere**: `_duration_hours` is shared by the stop dialog, the wizard and the mobile API (25 minutes are written as 0.42 h).
+- `get_pending_timers` now returns every pending timer with a `claimed` flag; the systray skips the claimed ones itself.
+- Used by the new [`bf_timesheet_timer_mobile`](../bf_timesheet_timer_mobile) module, which serves the Symbifox Chronomètre Android app.
+
+### 18.0.1.11.0
+- **Full-page timer**: an app tile opens the timer as a page sized for a phone left on the desk, with a keep-screen-on toggle and browser full screen.
 
 ### 18.0.1.10.0 (2026-08-16)
 - **Installs on its own, for good**: `sh_task_time_adv` (Softhealer, proprietary) is gone from `depends`, and so are the two `view_task_*_hide_sh_timer` overrides that were its only reason to be there. The 18.0.1.9.0 release had reintroduced both, which made the module impossible to install on a database that does not own that commercial module. Those overrides now belong to a separate bridge module kept outside this repository, so the timer stays self-contained here.

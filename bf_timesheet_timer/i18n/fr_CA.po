@@ -10,10 +10,10 @@ msgstr ""
 "PO-Revision-Date: 2026-02-14 16:46+0000\n"
 "Last-Translator: Blue Fox Inc.\n"
 "Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr_CA\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_timesheet_timer
@@ -387,3 +387,18 @@ msgstr "min"
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
 msgid "Épingler"
 msgstr "Épingler"
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__first_start
+msgid "First start"
+msgstr "Premier démarrage"
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,help:bf_timesheet_timer.field_bf_timer__first_start
+msgid ""
+"When the timer was first started. Resume and Cancel move the start time; "
+"this does not, and it dates the timesheet."
+msgstr ""
+"Moment du tout premier démarrage du chrono. Reprendre et Annuler déplacent "
+"l'heure de départ; celle-ci ne bouge pas, et c'est elle qui date la feuille"
+" de temps."

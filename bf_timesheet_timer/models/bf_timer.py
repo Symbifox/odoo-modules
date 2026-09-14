@@ -4,6 +4,9 @@ from datetime import timedelta
 from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
+# A stop dialog opened this recently is still being handled somewhere.
+CLAIM_MINUTES = 5
+
 
 class BfTimer(models.Model):
     _name = "bf.timer"
@@ -20,6 +23,16 @@ class BfTimer(models.Model):
         domain="[('project_id', '=', project_id), ('allow_timesheets', '=', True)]",
     )
     start_time = fields.Datetime(required=True, default=fields.Datetime.now)
+    # ⚠️ start_time moves on every Resume and Cancel. first_start never moves,
+    # and it is what dates the timesheet (see _timesheet_date). A dedicated
+    # field rather than create_date: create_date is the database transaction
+    # clock, not the clock start_time is written with, and it is rewritten by
+    # any import or duplication of the record.
+    first_start = fields.Datetime(
+        string="First start", default=fields.Datetime.now, copy=False, readonly=True,
+        help="When the timer was first started. Resume and Cancel move the start "
+             "time; this does not, and it dates the timesheet.",
+    )
     is_active = fields.Boolean(default=True, index=True)
     description = fields.Char()
     claimed_at = fields.Datetime(
@@ -48,7 +61,7 @@ class BfTimer(models.Model):
                 elapsed = t.accumulated_seconds + (now - t.start_time).total_seconds()
             result.append({
                 "id": t.id,
-                "project_name": t.project_id.name,
+                "project_name": self._project_label(t.project_id)[0],
                 "task_name": t.task_id.name,
                 "task_id": t.task_id.id,
                 "project_id": t.project_id.id,
@@ -72,6 +85,18 @@ class BfTimer(models.Model):
             [("user_id", "=", self.env.uid)], order="sequence, id",
         )
         pinned_task_ids = pinned_recs.mapped("task_id").ids
+        # ⚠️ A pin whose task the user can no longer read (moved to a private
+        # project, say) is skipped, not raised: reading its name below raised
+        # AccessError and took down the systray, the page and the phone app
+        # with it. `search` applies the record rules in SQL, so a value already
+        # in cache cannot let it through.
+        # ⚠️ Read across ALL the user's companies, not the ones selected in the
+        # switcher: a pin is personal, and a task of company B pinned while A
+        # and B were selected must not vanish when only A is.
+        Task = self._all_user_companies().env["project.task"]
+        if pinned_task_ids:
+            readable = set(Task.search([("id", "in", pinned_task_ids)]).ids)
+            pinned_task_ids = [tid for tid in pinned_task_ids if tid in readable]
 
         self.env.cr.execute("""
             SELECT sub.task_id, sub.task_name, sub.project_id, sub.project_name,
@@ -147,14 +172,15 @@ class BfTimer(models.Model):
                 seen_ids.add(tid)
             else:
                 # Pinned task not in recent timesheets — fetch directly
-                task = self.env["project.task"].browse(tid)
+                task = Task.browse(tid)
                 if task.exists() and task.active:
+                    project_name, project_color = self._project_label(task.project_id)
                     result.append({
                         "task_id": task.id,
                         "task_name": task.name,
                         "project_id": task.project_id.id,
-                        "project_name": task.project_id.name,
-                        "project_color": task.project_id.color or 0,
+                        "project_name": project_name,
+                        "project_color": project_color,
                         "stage_name": task.stage_id.name or "",
                         "date_label": "",
                         "is_closed": task.state in ("1_done", "1_canceled"),
@@ -183,24 +209,38 @@ class BfTimer(models.Model):
         ], limit=1)
         if existing:
             raise UserError("Un timer est déjà en cours pour cette tâche.")
-        employee = self.env.user.employee_id or self.env["hr.employee"].search(
-            [("user_id", "=", self.env.uid), ("company_id", "in", self.env.companies.ids)],
-            limit=1,
-        )
+        # ⚠️ The employee of the TASK's company first, as hr_timesheet picks it:
+        # a person employed by two companies times a task of B as employee B,
+        # whatever company is current. Read in sudo (plain users cannot read
+        # hr.employee), with a domain that names the user.
+        Employee = self.env["hr.employee"].sudo()
+        employee = Employee.browse()
+        if task.company_id:
+            employee = Employee.search([
+                ("user_id", "=", self.env.uid),
+                ("company_id", "=", task.company_id.id),
+            ], limit=1)
+        if not employee:
+            employee = self.env.user.employee_id or Employee.search(
+                [("user_id", "=", self.env.uid), ("company_id", "in", self.env.companies.ids)],
+                limit=1,
+            )
         if not employee:
             raise UserError("Aucun employé associé à votre compte utilisateur.")
+        now = fields.Datetime.now()
         timer = self.create({
             "user_id": self.env.uid,
             "employee_id": employee.id,
             "project_id": task.project_id.id,
             "task_id": task.id,
-            "start_time": fields.Datetime.now(),
+            "start_time": now,
+            "first_start": now,
             "is_active": True,
             "description": task.name,
         })
         return {
             "id": timer.id,
-            "project_name": timer.project_id.name,
+            "project_name": self._project_label(timer.project_id)[0],
             "task_name": timer.task_id.name,
             "task_id": timer.task_id.id,
             "project_id": timer.project_id.id,
@@ -217,12 +257,7 @@ class BfTimer(models.Model):
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
             raise UserError("Timer introuvable.")
-        now = fields.Datetime.now()
-        if timer.is_paused:
-            elapsed = timer.accumulated_seconds
-        else:
-            elapsed = timer.accumulated_seconds + (now - timer.start_time).total_seconds()
-        timer.write({"is_active": False, "claimed_at": now, "is_paused": False})
+        elapsed = timer._stop_and_freeze()
         suggested_minutes = self._compute_suggested_minutes(elapsed)
         suggested_hours = round(suggested_minutes / 60.0, 4)
         rounding = self.get_rounding_settings()
@@ -230,7 +265,7 @@ class BfTimer(models.Model):
             "timer_id": timer.id,
             "task_name": timer.task_id.name,
             "task_id": timer.task_id.id,
-            "project_name": timer.project_id.name,
+            "project_name": self._project_label(timer.project_id)[0],
             "project_id": timer.project_id.id,
             "elapsed_seconds": max(0, elapsed),
             "suggested_hours": suggested_hours,
@@ -250,7 +285,7 @@ class BfTimer(models.Model):
             raise ValidationError("La durée doit être supérieure à 0.")
         self.env["account.analytic.line"].create({
             "name": description or timer.task_id.name,
-            "date": timer.start_time.date(),
+            "date": timer._timesheet_date(),
             "unit_amount": duration_hours,
             "task_id": timer.task_id.id,
             "project_id": timer.project_id.id,
@@ -263,36 +298,40 @@ class BfTimer(models.Model):
     def get_pending_timers(self):
         """Return timers that were stopped but not yet confirmed/discarded.
 
-        Skips timers claimed within the last 5 minutes (being handled by a
-        wizard in another window). Abandoned wizards become visible again
-        after 5 min.
+        ⚠️ 1.12.0 — the elapsed time is the one FROZEN at stop
+        (``accumulated_seconds``), never recomputed from ``start_time``: a timer
+        stopped at 10:00 and confirmed at 14:00 used to propose four hours too
+        many, and a timer paused before the stop counted twice.
+
+        ⚠️ Claimed timers are no longer hidden. ``claimed`` is True when a stop
+        dialog was opened in the last ``CLAIM_MINUTES`` minutes: the web client
+        skips those when it auto-opens dialogs, so one stop still opens one
+        dialog, but a caller that shows no dialog (the phone) still sees the
+        timer instead of losing it for five minutes.
         """
-        cutoff = fields.Datetime.now() - timedelta(minutes=5)
         timers = self.search([
             ("user_id", "=", self.env.uid),
             ("is_active", "=", False),
-            "|",
-            ("claimed_at", "=", False),
-            ("claimed_at", "<", cutoff),
         ])
-        now = fields.Datetime.now()
+        cutoff = fields.Datetime.now() - timedelta(minutes=CLAIM_MINUTES)
         rounding = self.get_rounding_settings()
         result = []
         for t in timers:
-            elapsed = t.accumulated_seconds + (now - t.start_time).total_seconds()
+            elapsed = t._elapsed_seconds()
             suggested_minutes = self._compute_suggested_minutes(elapsed)
             result.append({
                 "timer_id": t.id,
                 "task_name": t.task_id.name,
                 "task_id": t.task_id.id,
-                "project_name": t.project_id.name,
+                "project_name": self._project_label(t.project_id)[0],
                 "project_id": t.project_id.id,
-                "elapsed_seconds": max(0, elapsed),
+                "elapsed_seconds": elapsed,
                 "suggested_hours": round(suggested_minutes / 60.0, 4),
                 "suggested_minutes": suggested_minutes,
                 "description": t.description or t.task_id.name,
                 "rounding_increment": rounding["increment"],
                 "rounding_mode": rounding["mode"],
+                "claimed": bool(t.claimed_at and t.claimed_at >= cutoff),
             })
         return result
 
@@ -302,7 +341,19 @@ class BfTimer(models.Model):
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
             raise UserError("Timer introuvable.")
-        timer.write({"is_active": True, "claimed_at": False, "is_paused": False})
+        if timer.is_active:
+            # ⚠️ Already running (a second Cancel, another tab): nothing to do.
+            # Restarting start_time here threw away the running segment.
+            return True
+        # ⚠️ start_time restarts now: the time before the stop is already
+        # folded into accumulated_seconds. Keeping the old start_time would
+        # count again everything, dialog time included.
+        timer.write({
+            "is_active": True,
+            "claimed_at": False,
+            "is_paused": False,
+            "start_time": fields.Datetime.now(),
+        })
         return True
 
     @api.model
@@ -348,7 +399,16 @@ class BfTimer(models.Model):
 
     @api.model
     def pin_task(self, task_id):
-        """Pin a task as favorite for the current user."""
+        """Pin a task as favorite for the current user.
+
+        ⚠️ Refused for a task the user cannot read: nothing checks the target
+        of a many2one, so the pin would be created and then be unreadable.
+        """
+        task = self._all_user_companies().env["project.task"].browse(task_id).exists()
+        if not task:
+            raise UserError("Tâche introuvable.")
+        # Across all the user's companies, like the filter of get_recent_tasks.
+        task.check_access("read")
         PinnedTask = self.env["bf.timer.pinned.task"]
         existing = PinnedTask.search([
             ("user_id", "=", self.env.uid),
@@ -374,6 +434,10 @@ class BfTimer(models.Model):
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
             raise UserError("Timer introuvable.")
+        if not timer.is_active:
+            # ⚠️ A stopped timer's time is frozen in accumulated_seconds; a
+            # pause would add the whole segment since start_time again.
+            raise UserError("Ce timer est arrêté : il ne se met pas en pause.")
         if timer.is_paused:
             raise UserError("Ce timer est d\u00e9j\u00e0 en pause.")
         now = fields.Datetime.now()
@@ -390,6 +454,8 @@ class BfTimer(models.Model):
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
             raise UserError("Timer introuvable.")
+        if not timer.is_active:
+            raise UserError("Ce timer est arrêté : Annuler le relance.")
         if not timer.is_paused:
             raise UserError("Ce timer n'est pas en pause.")
         timer.write({
@@ -397,6 +463,100 @@ class BfTimer(models.Model):
             "start_time": fields.Datetime.now(),
         })
         return True
+
+    # -------------------------------------------------------------------------
+    # Elapsed time
+    # -------------------------------------------------------------------------
+
+    def _elapsed_seconds(self, now=None):
+        """Elapsed seconds of ONE timer, whatever its state.
+
+        Running: accumulated + current segment. Paused or stopped: the
+        accumulated value alone, because the stop folds the last segment into
+        it (see ``_stop_and_freeze``).
+        """
+        self.ensure_one()
+        if not self.is_active or self.is_paused:
+            return max(0.0, self.accumulated_seconds or 0.0)
+        now = now or fields.Datetime.now()
+        return max(0.0, (self.accumulated_seconds or 0.0)
+                   + (now - self.start_time).total_seconds())
+
+    def _timesheet_date(self):
+        """The day the timesheet belongs to: the owner's day at FIRST start.
+
+        🔴 In the timer owner's time zone, not UTC: a timer started at 22:30 in
+        Montréal is 02:30 UTC the next day, and ``start_time.date()`` filed it
+        there. UTC when the owner has no time zone. And at the first start, not
+        at the last Resume or Cancel, which move ``start_time``.
+        """
+        self.ensure_one()
+        moment = self.first_start or self.create_date or self.start_time
+        return fields.Date.context_today(
+            self.with_context(tz=self.user_id.tz or "UTC"), timestamp=moment)
+
+    @api.model
+    def _duration_hours(self, total_minutes):
+        """Minutes confirmed on screen → hours written, as the stop dialog does.
+
+        Same rule as ``bf_timer_stop_dialog.js`` and the stop wizard: below one
+        rounding increment the increment is written (unless rounding is off),
+        then two decimals. The browser dialog, the stop wizard and the phone app
+        (``bf_timesheet_timer_mobile``) all write 25 minutes as 0.42 h.
+        ⚠️ Not every writer goes through here: a caller that writes
+        ``suggested_hours`` directly gets four decimals, not two.
+        """
+        ICP = self.env["ir.config_parameter"].sudo()
+        mode = ICP.get_param("bf_timer.rounding_mode", "round_all")
+        increment = int(ICP.get_param("bf_timer.rounding_increment", "5"))
+        if mode != "none" and total_minutes < increment:
+            total_minutes = increment
+        return round(total_minutes / 60.0, 2)
+
+    @api.model
+    def _project_label(self, project):
+        """(name, colour) of a project, as a many2one shows it.
+
+        ⚠️ A task can be readable in a project that is not (assigned in a
+        private project): reading the project's name then raised AccessError
+        and emptied the whole list. The NAME is read in sudo, exactly what Odoo
+        does to display a many2one; nothing else of the project leaves, and the
+        colour only when the project itself is readable.
+        """
+        if not project:
+            return "", 0
+        color = (project.color or 0) if project.has_access("read") else 0
+        return project.sudo().name or "", color
+
+    def _all_user_companies(self):
+        """This recordset with every company of the user allowed, current first."""
+        current = self.env.company.id
+        ids = [current] + [c for c in self.env.user.company_ids.ids if c != current]
+        return self.with_context(allowed_company_ids=ids)
+
+    def _stop_and_freeze(self):
+        """Stop the timer and freeze its elapsed time. Returns that time.
+
+        🔴 The one place that stops a timer. ``stop_timer`` and the task form
+        button used to each write ``is_active = False`` without folding the
+        running segment into ``accumulated_seconds``; every later read then
+        recomputed from ``start_time`` and the proposed duration kept growing
+        after the stop.
+        """
+        self.ensure_one()
+        if not self.is_active:
+            # Already stopped (a double click, another tab): its time is frozen,
+            # and stamping claimed_at again would re-hide it from other windows.
+            return self._elapsed_seconds()
+        now = fields.Datetime.now()
+        elapsed = self._elapsed_seconds(now)
+        self.write({
+            "is_active": False,
+            "is_paused": False,
+            "claimed_at": now,
+            "accumulated_seconds": elapsed,
+        })
+        return elapsed
 
     @api.model
     def get_rounding_settings(self):
@@ -466,12 +626,7 @@ class ProjectTask(models.Model):
         ], limit=1)
         if not timer:
             raise UserError("Aucun timer actif pour cette tâche.")
-        now = fields.Datetime.now()
-        if timer.is_paused:
-            elapsed = timer.accumulated_seconds
-        else:
-            elapsed = timer.accumulated_seconds + (now - timer.start_time).total_seconds()
-        timer.write({"is_active": False, "claimed_at": now, "is_paused": False})
+        elapsed = timer._stop_and_freeze()
         BfTimer = self.env["bf.timer"]
         suggested_minutes = BfTimer._compute_suggested_minutes(elapsed)
         h = int(suggested_minutes // 60)
@@ -482,7 +637,7 @@ class ProjectTask(models.Model):
         elapsed_display = f"{elapsed_h:02d}:{elapsed_m:02d}:{elapsed_s:02d}"
         wizard = self.env["bf.timer.stop.wizard"].create({
             "timer_id": timer.id,
-            "project_name": timer.project_id.name,
+            "project_name": BfTimer._project_label(timer.project_id)[0],
             "task_name": timer.task_id.name,
             "elapsed_display": elapsed_display,
             "hours": h,

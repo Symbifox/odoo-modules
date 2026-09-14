@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_timer_device_list" model="ir.ui.view">
+        <field name="name">bf.timer.device.list</field>
+        <field name="model">bf.timer.device</field>
+        <field name="arch" type="xml">
+            <!-- Aucune création à la main : un appareil naît d'un appariement,
+                 jamais d'un formulaire. Le seul geste utile ici est de retirer
+                 un téléphone qu'on n'a plus. -->
+            <list string="Appareils du chronomètre" create="false" edit="false">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="platform" optional="hide"/>
+                <field name="app_version" optional="show"/>
+                <field name="last_seen"/>
+                <!-- ⚠️ Lecture seule : réactiver un appareil ne ferait pas
+                     revivre son jeton (effacé à la désactivation), et une
+                     bascule qui promet l'inverse est une trappe. -->
+                <field name="active" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_timer_device_form" model="ir.ui.view">
+        <field name="name">bf.timer.device.form</field>
+        <field name="model">bf.timer.device</field>
+        <field name="arch" type="xml">
+            <form string="Appareil du chronomètre" create="false">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="user_id" readonly="1"/>
+                        <field name="platform" readonly="1"/>
+                        <field name="app_version" readonly="1"/>
+                        <field name="last_seen" readonly="1"/>
+                        <field name="active" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_timer_device" model="ir.actions.act_window">
+        <field name="name">Appareils du chronomètre</field>
+        <field name="res_model">bf.timer.device</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun appareil apparié</p>
+            <p>Un téléphone s'apparie depuis l'application Symbifox Chronomètre,
+            qui ouvre le navigateur le temps d'un aller-retour. Rien ne se crée
+            ici.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_timer_device" name="Appareils du chronomètre"
+              parent="hr_timesheet.hr_timesheet_menu_configuration"
+              action="action_bf_timer_device"
+              groups="hr_timesheet.group_timesheet_manager"
+              sequence="40"/>
+</odoo>

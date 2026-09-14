@@ -1,0 +1,150 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_timesheet_timer_mobile
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 03:58+0000\n"
+"PO-Revision-Date: 2026-09-14 03:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__active
+msgid "Actif"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__name
+msgid "Appareil"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model,name:bf_timesheet_timer_mobile.model_bf_timer_device
+msgid "Appareil apparié pour le chronomètre"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer_mobile.view_bf_timer_device_form
+msgid "Appareil du chronomètre"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.actions.act_window,name:bf_timesheet_timer_mobile.action_bf_timer_device
+#: model:ir.ui.menu,name:bf_timesheet_timer_mobile.menu_bf_timer_device
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer_mobile.view_bf_timer_device_list
+msgid "Appareils du chronomètre"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model_terms:ir.actions.act_window,help:bf_timesheet_timer_mobile.action_bf_timer_device
+msgid "Aucun appareil apparié"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.constraint,message:bf_timesheet_timer_mobile.constraint_bf_timer_device_token_hash_uniq
+msgid "Cette empreinte existe déjà."
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.actions.server,name:bf_timesheet_timer_mobile.cron_purger_appariements_ir_actions_server
+msgid "Chronomètre : purger les appariements abandonnés"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__pending_code
+msgid "Code d'appariement"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__pkce_challenge
+msgid "Défi PKCE"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__token_hash
+msgid "Empreinte du jeton"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__pending_code_expiry
+msgid "Expiration du code"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#. odoo-python
+#: code:addons/bf_timesheet_timer_mobile/models/bf_timer_device.py:0
+msgid ""
+"La personne d'un appareil apparié ne se change pas. Retirez l'appareil et "
+"appariez-le de nouveau."
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__user_id
+msgid "Personne"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__platform
+msgid "Plateforme"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#. odoo-python
+#: code:addons/bf_timesheet_timer_mobile/models/bf_timer_device.py:0
+msgid "Trop d'appareils appariés (%d). Retirez-en un depuis le site."
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model_terms:ir.actions.act_window,help:bf_timesheet_timer_mobile.action_bf_timer_device
+msgid ""
+"Un téléphone s'apparie depuis l'application Symbifox Chronomètre,\n"
+"            qui ouvre le navigateur le temps d'un aller-retour. Rien ne se crée\n"
+"            ici."
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__app_version
+msgid "Version de l'application"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__last_seen
+msgid "Vu la dernière fois"
+msgstr ""

@@ -1,6 +1,6 @@
 {
     "name": "BF Timer - Feuilles de temps",
-    "version": "18.0.1.11.0",
+    "version": "18.0.1.12.0",
     "category": "Services/Timesheets",
     "summary": "Timer global de feuilles de temps avec multi-timer et interface OWL",
     'author': 'Les services de consultation Blue Fox, Inc.',

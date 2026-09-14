@@ -182,6 +182,14 @@ export class BfTimerSystray extends Component {
 
     _checkPendingTimers() {
         for (const pt of this.pendingTimers) {
+            // ⚠️ 1.12.0 : le serveur ne cache plus un chrono réclamé, il le
+            // marque. Un dialogue est déjà ouvert quelque part pour cet arrêt
+            // (le formulaire de tâche, un autre onglet) : ne pas en ouvrir un
+            // second. Il revient ici seul, cinq minutes plus tard, s'il est
+            // resté sans réponse.
+            if (pt.claimed) {
+                continue;
+            }
             // ⚠️ La réservation vit dans le service, pas ici : la page plein
             // écran détecte le MÊME timer en attente, et deux registres privés
             // ouvraient deux dialogues pour un seul arrêt.

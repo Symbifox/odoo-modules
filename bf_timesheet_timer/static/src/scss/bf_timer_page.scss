@@ -61,7 +61,7 @@
         // Mêmes seuils que la barre système : au-delà d'une heure, puis de
         // deux. Deux surfaces qui coloreraient le même timer différemment se
         // contrediraient à l'écran.
-        border-left-color: #29abe2;
+        border-left-color: var(--brand-primary, #29ABE2);
 
         &.bf-timer-warning { border-left-color: #f57c00; }
         &.bf-timer-danger { border-left-color: #d32f2f; }

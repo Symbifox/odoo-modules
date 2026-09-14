@@ -384,3 +384,15 @@ msgstr ""
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
 msgid "Épingler"
 msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__first_start
+msgid "First start"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,help:bf_timesheet_timer.field_bf_timer__first_start
+msgid ""
+"When the timer was first started. Resume and Cancel move the start time; "
+"this does not, and it dates the timesheet."
+msgstr ""

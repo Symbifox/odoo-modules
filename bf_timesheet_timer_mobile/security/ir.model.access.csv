@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_timer_device_user,Appareil du chronomètre (le mien),model_bf_timer_device,hr_timesheet.group_hr_timesheet_user,1,0,0,1
+access_bf_timer_device_manager,Appareil du chronomètre (gestion),model_bf_timer_device,hr_timesheet.group_timesheet_manager,1,0,0,1
+access_bf_timer_device_system,Appareil du chronomètre (administration),model_bf_timer_device,base.group_system,1,1,0,1

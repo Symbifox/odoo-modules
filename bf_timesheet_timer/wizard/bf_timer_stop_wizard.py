@@ -40,15 +40,10 @@ class BfTimerStopWizard(models.TransientModel):
         total_minutes = self.hours * 60 + self.minutes
         if total_minutes <= 0:
             raise ValidationError("La durée doit être supérieure à 0.")
-        ICP = self.env["ir.config_parameter"].sudo()
-        mode = ICP.get_param("bf_timer.rounding_mode", "round_all")
-        increment = int(ICP.get_param("bf_timer.rounding_increment", "5"))
-        if mode != "none" and total_minutes < increment:
-            total_minutes = increment
-        duration_hours = round(total_minutes / 60.0, 2)
+        duration_hours = self.env["bf.timer"]._duration_hours(total_minutes)
         self.env["account.analytic.line"].create({
             "name": self.description or timer.task_id.name,
-            "date": timer.start_time.date(),
+            "date": timer._timesheet_date(),
             "unit_amount": duration_hours,
             "task_id": timer.task_id.id,
             "project_id": timer.project_id.id,
@@ -68,5 +63,7 @@ class BfTimerStopWizard(models.TransientModel):
         """Reactivate the timer (user changed their mind)."""
         self.ensure_one()
         timer = self._check_timer_ownership()
-        timer.write({"is_active": True, "claimed_at": False})
+        # Same gesture as the dialog's Cancel: restart the segment clock, keep
+        # the time frozen at stop.
+        self.env["bf.timer"].reactivate_timer(timer.id)
         return {"type": "ir.actions.act_window_close"}
