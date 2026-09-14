@@ -132,6 +132,10 @@ class BfLinkpageLink(models.Model):
         "source_code", "url", "source_res_model", "source_res_id",
         "page_id.partner_id", "page_id.user_id", "page_id.slug",
         "page_id.booking_slug", "page_id.meet_url",
+        # Le conseiller est lu par les trois sources `advisor_*`. Il manquait
+        # à cette liste que le back-office affiche l'ancienne adresse jusqu'à
+        # la fin de la session, exactement comme `booking_slug` avant lui.
+        "page_id.advisor_user_id",
     )
     def _compute_resolved_url(self):
         Source = self.env["bf.linkpage.source"]

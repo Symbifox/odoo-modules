@@ -19,20 +19,20 @@
 
 @mixin bf-linkpage-light {
     --bf-linkpage-bg: #f4f6f8;
-    --bf-linkpage-bg-glow: rgba(41, 171, 225, 0.10);
-    --bf-linkpage-fg: #2e3132;
+    --bf-linkpage-bg-glow: color-mix(in srgb, var(--brand-primary, #29ABE2) 10%, transparent);
+    --bf-linkpage-fg: var(--brand-dark, #2E3132);
     --bf-linkpage-card: #ffffff;
     --bf-linkpage-card-hover: #ffffff;
-    --bf-linkpage-border: rgba(45, 48, 49, 0.12);
-    --bf-linkpage-muted: rgba(45, 48, 49, 0.62);
+    --bf-linkpage-border: color-mix(in srgb, var(--brand-dark, #2E3132) 12%, transparent);
+    --bf-linkpage-muted: color-mix(in srgb, var(--brand-dark, #2E3132) 62%, transparent);
     // Plates par défaut. Le relief appartient à la disposition « Cartes en
     // relief », qui repose ces deux variables.
     --bf-linkpage-shadow: none;
     --bf-linkpage-shadow-hover: none;
-    --bf-linkpage-shadow-soft: 0 1px 2px rgba(45, 48, 49, 0.05),
-                               0 8px 24px rgba(45, 48, 49, 0.06);
-    --bf-linkpage-shadow-soft-hover: 0 2px 4px rgba(45, 48, 49, 0.07),
-                                     0 12px 32px rgba(45, 48, 49, 0.11);
+    --bf-linkpage-shadow-soft: 0 1px 2px color-mix(in srgb, var(--brand-dark, #2E3132) 5%, transparent),
+                               0 8px 24px color-mix(in srgb, var(--brand-dark, #2E3132) 6%, transparent);
+    --bf-linkpage-shadow-soft-hover: 0 2px 4px color-mix(in srgb, var(--brand-dark, #2E3132) 7%, transparent),
+                                     0 12px 32px color-mix(in srgb, var(--brand-dark, #2E3132) 11%, transparent);
     --bf-linkpage-glow-strength: 12%;
     --bf-linkpage-logo-filter: none;
     --bf-linkpage-logo-opacity: 0.55;
@@ -40,7 +40,7 @@
 
 @mixin bf-linkpage-dark {
     --bf-linkpage-bg: #1c1f20;
-    --bf-linkpage-bg-glow: rgba(41, 171, 225, 0.16);
+    --bf-linkpage-bg-glow: color-mix(in srgb, var(--brand-primary, #29ABE2) 16%, transparent);
     --bf-linkpage-fg: #f4f6f8;
     --bf-linkpage-card: #26292b;
     --bf-linkpage-card-hover: #26292b;

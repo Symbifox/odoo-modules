@@ -45,6 +45,33 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="bf_linkpage.oneoff_expiry_days",
     )
 
+    bf_linkpage_org_expiry_days = fields.Integer(
+        string="Durée de vie d'une page d'organisation (jours)",
+        default=365,
+        help="Une page d'organisation naît avec une échéance : c'est ce qui "
+             "évite la page d'accueil client restée ouverte trois ans après "
+             "la fin du mandat. Zéro = pas d'échéance, à ses risques.",
+        config_parameter="bf_linkpage.org_expiry_days",
+    )
+    bf_linkpage_org_warn_days = fields.Integer(
+        string="Avertir avant l'échéance (jours)",
+        default=30,
+        help="Combien de jours avant la fermeture la page prévient son "
+             "conseiller, au fil et par une activité. Sans cet avertissement, "
+             "l'échéance se manifesterait par un 404 chez le client.",
+        config_parameter="bf_linkpage.org_warn_days",
+    )
+    bf_linkpage_guide_url_fr = fields.Char(
+        string="Guide d'utilisation (français)",
+        help="L'adresse que sert la source « Guide d'utilisation ». Vide : le "
+             "lien ne s'affiche pas, plutôt que de pointer une adresse devinée.",
+        config_parameter="bf_linkpage.guide_url_fr",
+    )
+    bf_linkpage_guide_url_en = fields.Char(
+        string="Guide d'utilisation (anglais)",
+        config_parameter="bf_linkpage.guide_url_en",
+    )
+
     # Lecture seule, pour répondre sur place à « est-ce que ça tourne ? »
     bf_linkpage_cron_next = fields.Datetime(
         string="Prochaine passe",

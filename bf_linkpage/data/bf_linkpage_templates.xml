@@ -384,4 +384,78 @@
         <field name="source_code">social_linkedin</field>
     </record>
 
+    <!-- 8. Accueil d'une organisation cliente ==============================
+         Le seul gabarit qui vise une ORGANISATION, et le défaut pour
+         celles-ci. Sa logique est l'inverse de « Carte de visite » : la carte
+         répond à « comment je joins cette personne », l'accueil répond à
+         « où sont mes affaires ».
+
+         Aucune ligne en « adresse saisie » : un lien de gabarit est supprimé
+         puis recréé à chaque rafraîchissement, donc une adresse propre à un
+         client (son dossier Nextcloud, son outil à lui) ne survivrait pas à
+         la nuit. Ces liens-là s'ajoutent À LA MAIN sur la page, où ils sont
+         épargnés.
+    -->
+    <record id="template_org_accueil" model="bf.linkpage.template">
+        <field name="name">Accueil d'une organisation cliente</field>
+        <field name="sequence">50</field>
+        <field name="target">org</field>
+        <field name="is_default" eval="True"/>
+        <field name="note">Le point d'entrée d'une organisation cliente : à qui parler, où déposer un document, et où retrouver ses affaires au portail. Les trois liens de portail ne s'affichent QUE si quelqu'un de l'organisation a un compte : sans compte, ils n'ouvriraient qu'un écran de connexion. L'écart entre « Liens » et « Liens affichés » au back-office dit ce qui ne résout pas.</field>
+    </record>
+
+    <record id="line_org_rdv" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_org_accueil"/>
+        <field name="sequence">10</field>
+        <field name="name">Prendre rendez-vous</field>
+        <field name="subtitle">Un moment libre dans l'agenda de votre conseiller</field>
+        <field name="icon">fa-calendar-check-o</field>
+        <field name="source_code">advisor_booking</field>
+    </record>
+    <record id="line_org_courriel" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_org_accueil"/>
+        <field name="sequence">15</field>
+        <field name="name">Écrire à votre conseiller</field>
+        <field name="icon">fa-envelope-o</field>
+        <field name="source_code">advisor_email</field>
+    </record>
+    <record id="line_org_depot" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_org_accueil"/>
+        <field name="sequence">20</field>
+        <field name="name">Déposer un document</field>
+        <field name="subtitle">Dépôt sécurisé, sans pièce jointe</field>
+        <field name="icon">fa-paperclip</field>
+        <field name="source_code">advisor_transfer</field>
+    </record>
+    <record id="line_org_portail" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_org_accueil"/>
+        <field name="sequence">30</field>
+        <field name="name">Votre portail</field>
+        <field name="subtitle">Pour les personnes de votre organisation qui ont un compte</field>
+        <field name="icon">fa-user-circle-o</field>
+        <field name="source_code">org_portal</field>
+    </record>
+    <record id="line_org_projets" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_org_accueil"/>
+        <field name="sequence">35</field>
+        <field name="name">Vos projets</field>
+        <field name="icon">fa-tasks</field>
+        <field name="source_code">org_projects</field>
+    </record>
+    <record id="line_org_factures" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_org_accueil"/>
+        <field name="sequence">40</field>
+        <field name="name">Vos factures</field>
+        <field name="icon">fa-file-text-o</field>
+        <field name="source_code">org_invoices</field>
+    </record>
+    <record id="line_org_guide" model="bf.linkpage.template.line">
+        <field name="template_id" ref="template_org_accueil"/>
+        <field name="sequence">50</field>
+        <field name="name">Guide d'utilisation</field>
+        <field name="subtitle">Comment se servir des outils</field>
+        <field name="icon">fa-book</field>
+        <field name="source_code">guide</field>
+    </record>
+
 </odoo>

@@ -68,6 +68,63 @@ class BfLinkpageSource(models.AbstractModel):
                         "quelqu'un envoie des documents sans pièce jointe.",
             },
             {
+                "code": "advisor_booking",
+                "label": "Rendez-vous avec le conseiller",
+                "provider": "resource.booking.type",
+                "help": "La page de rendez-vous du conseiller inscrit sur la "
+                        "page d'organisation. Rien à voir avec la source "
+                        "« Prise de rendez-vous », qui lit la personne DONT "
+                        "la page parle.",
+            },
+            {
+                "code": "advisor_email",
+                "label": "Écrire au conseiller",
+                "provider": False,
+                "help": "mailto: du conseiller inscrit sur la page "
+                        "d'organisation.",
+            },
+            {
+                "code": "advisor_transfer",
+                "label": "Dépôt sécurisé du conseiller",
+                "provider": "secure.transfer.brand",
+                "help": "La page de dépôt /to/<slug> du conseiller, pour que "
+                        "l'organisation envoie des documents sans pièce "
+                        "jointe.",
+            },
+            {
+                "code": "org_portal",
+                "label": "Portail de l'organisation",
+                "provider": False,
+                "help": "Le portail client. ⚠️ Ne résout QUE si au moins une "
+                        "personne de l'organisation a un compte : sans "
+                        "compte, le lien n'ouvrirait qu'un écran de connexion.",
+            },
+            {
+                "code": "org_invoices",
+                "label": "Factures au portail",
+                "provider": "account.move",
+                "help": "Les factures de l'organisation au portail. Mêmes "
+                        "conditions que le portail, plus au moins une facture "
+                        "publiée.",
+            },
+            {
+                "code": "org_projects",
+                "label": "Projets au portail",
+                "provider": "project.project",
+                "help": "Les projets de l'organisation au portail. Mêmes "
+                        "conditions que le portail, plus au moins un projet "
+                        "actif dont la visibilité est « portail ».",
+            },
+            {
+                "code": "guide",
+                "label": "Guide d'utilisation",
+                "provider": False,
+                "help": "Le guide d'utilisation, dans la langue de la page. "
+                        "L'adresse vient des réglages ; sans réglage, le lien "
+                        "ne s'affiche pas plutôt que de pointer une adresse "
+                        "devinée.",
+            },
+            {
                 "code": "partner_email",
                 "label": "Courriel du contact",
                 "provider": False,
@@ -315,6 +372,155 @@ class BfLinkpageSource(models.AbstractModel):
         if not brand or not brand.slug:
             return False
         return "%s/to/%s" % (page._base_url(), brand.slug)
+
+    # -- ce qui tient à l'organisation ---------------------------------------
+
+    @api.model
+    def _org_partner_ids(self, page):
+        """La fiche de l'organisation ET ses contacts.
+
+        Un compte portail, une facture et un projet ne se rattachent pas tous
+        au même endroit : le compte pend au contact, la facture parfois à la
+        société, parfois au contact qui commande. Chercher sur la seule fiche
+        mère fait disparaître des liens qui existent pourtant.
+        """
+        partner = page.partner_id
+        if not partner:
+            return []
+        return [partner.id] + partner.sudo().child_ids.ids
+
+    @api.model
+    def _org_has_portal(self, page):
+        """Vrai si quelqu'un de l'organisation peut ENTRER au portail.
+
+        🔴 C'est la condition qui évite le pire lien d'un accueil client : un
+        bouton « Votre portail » qui n'ouvre qu'un écran de connexion. Mesuré
+        sur une base réelle : les projets rendus visibles au portail se
+        comptent par centaines, et une organisation cliente sur cinq a un
+        compte pour y entrer. Sans cette garde, la grande majorité des pages
+        auraient affiché une porte sans clé.
+        """
+        cibles = self._org_partner_ids(page)
+        if not cibles:
+            return False
+        return bool(self.env["res.users"].sudo().search_count([
+            ("share", "=", True),
+            ("active", "=", True),
+            ("partner_id", "in", cibles),
+        ]))
+
+    @api.model
+    def _resolve_org_portal(self, link):
+        page = link.page_id
+        if not self._org_has_portal(page):
+            return False
+        return "%s/my/home" % page._base_url()
+
+    @api.model
+    def _resolve_org_invoices(self, link):
+        page = link.page_id
+        if not self._org_has_portal(page):
+            return False
+        factures = self.env["account.move"].sudo().search_count([
+            ("move_type", "in", ("out_invoice", "out_refund")),
+            ("state", "=", "posted"),
+            ("partner_id", "in", self._org_partner_ids(page)),
+        ])
+        return "%s/my/invoices" % page._base_url() if factures else False
+
+    @api.model
+    def _resolve_org_projects(self, link):
+        page = link.page_id
+        if not self._org_has_portal(page):
+            return False
+        projets = self.env["project.project"].sudo().search_count([
+            ("active", "=", True),
+            ("privacy_visibility", "=", "portal"),
+            ("partner_id", "in", self._org_partner_ids(page)),
+        ])
+        return "%s/my/projects" % page._base_url() if projets else False
+
+    # -- ce qui tient au conseiller ------------------------------------------
+
+    @api.model
+    def _advisor(self, link):
+        """Le conseiller de la page, ou un ensemble vide."""
+        return link.page_id.advisor_user_id
+
+    @api.model
+    def _resolve_advisor_booking(self, link):
+        """La page de rendez-vous publique du conseiller.
+
+        Même chemin que `_resolve_appointment` (le type ne connaît pas de
+        propriétaire, c'est la ressource qui porte l'utilisateur), mais appuyé
+        sur le conseiller de la page plutôt que sur la personne dont la page
+        parle. Sur une page d'organisation, cette personne n'existe pas.
+
+        🔴 **Et ici, on ne devine pas.** `_resolve_appointment` prend le premier
+        type public par séquence quand rien ne le désigne ; sur une page
+        personnelle c'est acceptable, parce que la personne relit sa propre
+        page. Sur une page d'organisation, ce repli a offert une rencontre
+        exploratoire à un client EXISTANT, vu en jouant une page de
+        démonstration sur une base réelle : une instance en service porte
+        souvent des dizaines de types publics, et la séquence 1 est la prise de
+        contact. Le type se nomme donc sur la page, ou le lien disparaît. Un
+        lien absent se voit au back-office ; une invitation à se présenter
+        envoyée à un client de deux ans ne se rattrape pas.
+        """
+        page = link.page_id
+        booking_type = link._source_record("resource.booking.type")
+        if not booking_type and page.booking_slug:
+            booking_type = self.env["resource.booking.type"].sudo().search(
+                [("slug", "=", page.booking_slug)], limit=1
+            )
+        if not booking_type:
+            return False
+        if not self._advisor(link):
+            return False
+        if not booking_type.is_public or not booking_type.slug:
+            return False
+        return "%s/appointment/%s" % (page._base_url(), booking_type.slug)
+
+    @api.model
+    def _resolve_advisor_email(self, link):
+        user = self._advisor(link)
+        courriel = user.sudo().partner_id.email if user else False
+        return "mailto:%s" % courriel if courriel else False
+
+    @api.model
+    def _resolve_advisor_transfer(self, link):
+        page = link.page_id
+        user = self._advisor(link)
+        if not user:
+            return False
+        Brand = self.env["secure.transfer.brand"].sudo()
+        brand = link._source_record("secure.transfer.brand")
+        if not brand and "owner_user_id" in Brand._fields:
+            brand = Brand.search([("owner_user_id", "=", user.id)], limit=1)
+        if not brand or not brand.slug:
+            return False
+        return "%s/to/%s" % (page._base_url(), brand.slug)
+
+    # -- le guide ------------------------------------------------------------
+
+    @api.model
+    def _resolve_guide(self, link):
+        """L'adresse du guide, dans la langue de la page.
+
+        Elle se lit dans les réglages, jamais dans une constante : un lien
+        déduit enverrait le client d'un autre locataire vers NOTRE guide, et
+        `bf_guide`, quand il est là, porte déjà l'adresse de l'instance. Pas
+        de réglage, pas de lien : c'est mieux qu'une adresse devinée, qui
+        finirait sur un écran de connexion sans que personne le voie.
+        """
+        get = self.env["ir.config_parameter"].sudo().get_param
+        langue = (self.env.context.get("lang") or "fr_CA")[:2].lower()
+        code = "en" if langue == "en" else "fr"
+        for cle in ("bf_linkpage.guide_url_%s" % code, "bf_guide.url_%s" % code):
+            valeur = get(cle)
+            if valeur:
+                return valeur.strip()
+        return False
 
     @api.model
     def _resolve_partner_email(self, link):

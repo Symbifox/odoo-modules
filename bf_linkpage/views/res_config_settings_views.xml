@@ -74,6 +74,43 @@
                             </div>
                         </setting>
                     </block>
+
+                    <block title="Pages d'organisations" name="bf_linkpage_org_block">
+                        <setting id="bf_linkpage_org_expiry_setting"
+                                 string="Durée de vie par défaut"
+                                 help="Une page d'organisation naît avec une échéance. C'est le seul garde-fou contre la page d'accueil restée ouverte trois ans après la fin du mandat : son adresse est opaque, donc personne ne la retrouvera pour la fermer.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="bf_linkpage_org_expiry_days" class="col-lg-3"/>
+                                    <span class="col-lg-3 o_light_label">jours</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="bf_linkpage_org_warn_setting"
+                                 string="Avertir avant la fermeture"
+                                 help="Une page ponctuelle qui expire a fait son travail. Une page d'organisation qui expire pendant un mandat rend un 404 au client sans prévenir personne : cette passe quotidienne avertit le conseiller avant que ça arrive.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="bf_linkpage_org_warn_days" class="col-lg-3"/>
+                                    <span class="col-lg-3 o_light_label">jours avant</span>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting id="bf_linkpage_guide_setting"
+                                 string="Guide d'utilisation"
+                                 help="L'adresse servie par la source « Guide d'utilisation ». Laissée vide, la source ne résout rien et le lien disparaît de la page : un lien absent coûte moins cher qu'un lien qui tombe sur un écran de connexion.">
+                            <div class="content-group">
+                                <div class="row">
+                                    <field name="bf_linkpage_guide_url_fr" class="col-lg-8"
+                                           placeholder="https://exemple.com/guide/"/>
+                                </div>
+                                <div class="row">
+                                    <field name="bf_linkpage_guide_url_en" class="col-lg-8"
+                                           placeholder="https://exemple.com/guide/en/"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
                 </app>
             </xpath>
         </field>

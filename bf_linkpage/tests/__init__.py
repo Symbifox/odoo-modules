@@ -7,4 +7,5 @@ from . import (
     test_avatar,
     test_qr,
     test_providers,
+    test_org_page,
 )

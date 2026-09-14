@@ -79,8 +79,12 @@ class BfLinkpageController(Controller):
             "company_name": company.name if company else "",
             # Une page ponctuelle n'a pas à finir dans un index de moteur de
             # recherche : elle est destinée à une poignée de gens et elle
-            # expire.
-            "noindex": page.kind == "oneoff",
+            # expire. Une page d'organisation non plus, et pour une raison
+            # plus dure : son adresse opaque est tout ce qui la protège, et
+            # une adresse indexée n'est plus opaque. L'index n'est pas le seul
+            # chemin (un client de courriel qui préfetche, un antivirus qui
+            # déplie les liens), d'où l'échéance en second rempart.
+            "noindex": page.kind != "owner",
         })
         return _secure(response)
 

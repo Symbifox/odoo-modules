@@ -1,7 +1,7 @@
 # Link Pages (`bf_linkpage`)
 
-A public page gathering one person's links under a short URL, plus the QR code
-to drop into an email signature.
+A public page gathering the links of one person or one client organisation
+under a short URL, plus the QR code to drop into an email signature.
 
 ## What this adds over a hosted link-page service
 
@@ -43,6 +43,58 @@ eternal share. The expiry is a **date read at render time**, not a state to
 maintain: no scheduled job needs to run for a page to close. The default is 90
 days, adjustable through the `bf_linkpage.oneoff_expiry_days` system parameter.
 
+### 4. An organisation page is not guessable, and its closing is announced
+
+An organisation page (`kind = org`) is the entry point you send when a mandate
+starts: who to talk to, where to drop a document, where to find your own things
+in the portal. Three things set it apart from a person's page, and all three are
+decisions about caution rather than presentation.
+
+**Its address is drawn at random.** A slug derived from the name
+(`/l/client-company-inc`) is guessable by anyone who knows the client list. The
+draw uses `secrets` over an alphabet with no ambiguous characters (no `0`/`o`,
+no `1`/`l`/`i`), in three groups of four, which is 59 bits. The page is also
+served `noindex`.
+
+**It carries an expiry, and the closing is announced.** A one-off page expiring
+is a success: it has served its time. An organisation page expiring in the
+middle of a mandate is a 404 in front of the client that nobody here learns
+about, because the expiry is a computation and not a state some job walks
+through. Hence a scheduled action that closes nothing and merely warns the
+advisor, on the record's thread and through an activity,
+`bf_linkpage.org_warn_days` days ahead. The `expiry_warned_on` marker keeps the
+DATE that was announced rather than a boolean: pushing the expiry back re-arms
+the warning on its own, with nothing to reset.
+
+**Its portal links appear only when they lead somewhere.** The three `org_*`
+sources check that at least one person in the organisation has an active portal
+account. Without an account, a "Your portal" button opens nothing but a login
+screen, which is the worst link an onboarding email can carry. Measured on a
+real database: projects made visible to the portal number in the hundreds, while
+roughly one client organisation in five has an account to get in.
+
+🔴 **The booking type is named, never guessed.** On a person's page,
+`appointment` takes the first public type by sequence when nothing designates
+one, and that is acceptable because the person proof-reads their own page. On an
+organisation page that fallback offered a discovery call to an EXISTING client
+(a running instance often carries dozens of public types, and sequence 1 is the
+first-contact one). `advisor_booking` therefore requires `booking_slug` on the
+page and makes the link disappear otherwise. A missing link is visible in the
+back office; an invitation to introduce themselves, sent to a two-year client,
+cannot be taken back.
+
+⚠️ The **advisor lives on the page** (`advisor_user_id`), like `booking_slug` and
+`meet_url`, because a link that came from a template is deleted and recreated at
+every refresh. It is proposed at creation from the record's salesperson, then
+frozen. Deriving it at render time does not work: on a real database the
+salesperson is filled in on a minority of client records, and on none of those
+carrying a live mandate.
+
+⚠️ The organisation template contains **no "typed address" line**. An address
+specific to one client (their Nextcloud folder, their own tool) placed on a
+template line would be wiped by the first nightly pass. Those links are added by
+hand on the page, where they are left alone.
+
 ## The URL prefix
 
 Pages are served under `/l/<slug>`, never at the root. A slug served at
@@ -66,6 +118,13 @@ characters in the QR code and removes the entire class of failures.
 | `phone_tollfree` | The company's toll-free number | none |
 | `partner_phone` | *Legacy*: the contact's mobile then phone, without saying which | none |
 | `partner_website` | The contact's website | none |
+| `advisor_booking` | The booking page of the organisation page's **advisor**, and only the type named by `booking_slug`: never guessed | `bf_appointment` |
+| `advisor_email` | `mailto:` of the advisor | none |
+| `advisor_transfer` | The advisor's `/to/<slug>` upload page, matched by owner | `bf_securetransfer` |
+| `org_portal` | `/my/home`, **only** when someone in the organisation has an active portal account | none |
+| `org_invoices` | `/my/invoices`, same conditions plus at least one posted invoice | `account` |
+| `org_projects` | `/my/projects`, same conditions plus at least one active project visible to the portal | `project` |
+| `guide` | The user guide address, read from the settings, never guessed | none |
 | `social_linkedin` | The contact's `x_linkedin_url`, the company page otherwise | none |
 | `social_github`, `social_instagram`, `social_facebook`, `social_youtube`, `social_twitter` | The company's `social_*` fields | none |
 

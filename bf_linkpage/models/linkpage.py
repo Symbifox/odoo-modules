@@ -4,8 +4,11 @@ import base64
 import io
 import logging
 import re
+import secrets
 import unicodedata
 from datetime import timedelta
+
+from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -25,6 +28,15 @@ RESERVED_SLUGS = {"new", "qr", "static", "index", "admin", "api", "l"}
 
 _SLUG_RE = re.compile(r"^[a-z0-9]([a-z0-9-]*[a-z0-9])?$")
 
+# L'alphabet des slugs opaques, celui des pages d'organisation. Les caractères
+# qui se confondent à l'oeil et à la voix sont retirés (0/o, 1/l/i), parce
+# qu'un slug finit par être dicté au téléphone ou recopié d'une impression.
+# Trois groupes de quatre sur 31 signes valent 59 bits : deviner l'adresse
+# d'une page coûte plus cher que de la demander.
+_OPAQUE_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"
+_OPAQUE_GROUPS = 3
+_OPAQUE_GROUP_LEN = 4
+
 # Part du côté occupée par le logo incrusté au centre du QR, et la limite au-delà
 # de laquelle la correction d'erreur de niveau H ne reconstruit plus le code.
 # Mesurées au décodeur indépendant le 2026-08-30 : 34 % passe encore, 40 % non.
@@ -35,7 +47,12 @@ LOGO_MAX_RATIO = 0.30
 class BfLinkpage(models.Model):
     _name = "bf.linkpage"
     _description = "Page de liens"
-    _inherit = ["mail.thread"]
+    # `mail.activity.mixin` en plus du fil : la passe d'avertissement pose une
+    # activité sur la page dont l'échéance approche. ⚠️ Créer une activité sur
+    # un modèle qui n'a que `mail.thread` passe sans broncher à l'écriture, puis
+    # casse le TABLEAU DES ACTIVITÉS entier (`ir.model.is_mail_activity` est
+    # faux, et la référence posée par `mail_activity_board` devient invalide).
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
 
     name = fields.Char(
@@ -58,6 +75,7 @@ class BfLinkpage(models.Model):
     kind = fields.Selection(
         [
             ("owner", "Rattachée à une personne"),
+            ("org", "Rattachée à une organisation"),
             ("oneoff", "Ponctuelle"),
         ],
         string="Nature",
@@ -65,6 +83,8 @@ class BfLinkpage(models.Model):
         required=True,
         tracking=True,
         help="Une page rattachée vit aussi longtemps que la personne. Une page "
+             "d'organisation rassemble les accès d'une entreprise cliente : "
+             "son adresse est opaque et elle porte une échéance. Une page "
              "ponctuelle n'a pas de propriétaire : elle porte une expiration.",
     )
 
@@ -83,6 +103,28 @@ class BfLinkpage(models.Model):
         ondelete="set null",
         help="Nécessaire pour résoudre la page de rendez-vous de la personne, "
              "qui passe par sa ressource.",
+    )
+
+    # Le conseiller d'une page d'organisation. Il vit SUR LA PAGE, comme
+    # `booking_slug` et `meet_url`, et pour la même raison : un lien venu d'un
+    # gabarit est supprimé puis recréé à chaque rafraîchissement, donc rien de
+    # propre à une page ne peut vivre sur ses liens.
+    #
+    # Mesuré sur une base réelle avant d'en faire un champ : le vendeur
+    # (`res.partner.user_id`) n'est renseigné que sur une minorité de fiches
+    # clientes, et sur aucune de celles qui portent un mandat vivant. Déduire
+    # le conseiller aurait donc résolu là où ça ne sert pas, et pas là où ça
+    # sert.
+    advisor_user_id = fields.Many2one(
+        "res.users",
+        string="Conseiller",
+        tracking=True,
+        ondelete="set null",
+        help="La personne de chez nous que cette organisation joint : c'est "
+             "son agenda, son courriel et son dépôt sécurisé que la page "
+             "résout. Proposé à la création depuis le vendeur de la fiche, "
+             "puis figé : le vendeur peut changer pour des raisons de "
+             "facturation sans que la page ait à suivre.",
     )
 
     template_id = fields.Many2one(
@@ -168,6 +210,15 @@ class BfLinkpage(models.Model):
         tracking=True,
         copy=False,
         help="Passé cette date la page rend un 404. Vide = pas d'expiration.",
+    )
+    expiry_warned_on = fields.Date(
+        string="Échéance annoncée le",
+        readonly=True,
+        copy=False,
+        help="L'échéance pour laquelle un avertissement est déjà parti. On "
+             "retient la DATE annoncée et non un booléen : repousser "
+             "l'échéance change la date, donc le prochain avertissement "
+             "repart de lui-même, sans geste ni remise à zéro.",
     )
     is_expired = fields.Boolean(
         string="Expirée",
@@ -488,6 +539,25 @@ class BfLinkpage(models.Model):
                     "Une page rattachée à une personne a besoin d'un contact. "
                     "Sans contact, ses sources dynamiques n'ont rien à lire."
                 ))
+            if page.kind != "org":
+                continue
+            if not page.partner_id:
+                raise ValidationError(_(
+                    "Une page d'organisation a besoin de la fiche de "
+                    "l'organisation. Sans elle, aucune de ses sources ne sait "
+                    "de quelle entreprise on parle."
+                ))
+            # Une page d'organisation qui pointe une PERSONNE ne se distingue
+            # d'une page personnelle que par une étiquette, et se met à
+            # résoudre des sources qui ne lui sont pas destinées : le portail
+            # de l'organisation, ses factures, ses projets. On refuse tôt.
+            if not page.partner_id.is_company:
+                raise ValidationError(_(
+                    "« %s » est une personne, pas une organisation. Une page "
+                    "d'organisation se rattache à la fiche de l'entreprise ; "
+                    "pour une personne, choisissez « Rattachée à une "
+                    "personne ».", page.partner_id.display_name,
+                ))
 
     @api.constrains("accent_color")
     def _check_accent_color(self):
@@ -528,8 +598,29 @@ class BfLinkpage(models.Model):
     def create(self, vals_list):
         vus = set()
         for vals in vals_list:
+            # L'ordre compte : le slug opaque se décide AVANT le slug déduit
+            # du nom, sans quoi une page d'organisation naîtrait à l'adresse
+            # `/l/entreprise-cliente-inc`, devinable par quiconque connaît la liste
+            # des clients, et lisible par quiconque voit passer l'adresse.
+            if not vals.get("slug") and vals.get("kind") == "org":
+                vals["slug"] = self._generate_opaque_slug()
             if not vals.get("slug") and vals.get("name"):
                 vals["slug"] = self._generate_slug(vals["name"])
+            # Une page d'organisation naît avec une échéance, comme une page
+            # ponctuelle. La différence est ailleurs : on avertit avant
+            # qu'elle tombe (`_cron_warn_expiring`), parce qu'une page fermée
+            # au milieu d'un mandat rend un 404 au client sans prévenir
+            # personne chez nous.
+            if vals.get("kind") == "org" and not vals.get("date_expiry"):
+                vals["date_expiry"] = self._default_org_expiry()
+            # « Absent » et « vidé » ne se confondent pas : proposer un
+            # conseiller quand personne n'en a nommé est une commodité, le
+            # reposer sur un champ qu'on vient délibérément de vider serait
+            # une correction non demandée.
+            if vals.get("kind") == "org" and "advisor_user_id" not in vals:
+                vals["advisor_user_id"] = self._default_advisor(
+                    vals.get("partner_id")
+                )
             # Une page ponctuelle sans expiration est l'angle mort qu'on
             # refuse : elle reste ouverte parce que personne ne repasse. On
             # arme la date à la création plutôt que de compter sur un geste.
@@ -568,6 +659,79 @@ class BfLinkpage(models.Model):
         if days <= 0:
             days = 90
         return fields.Datetime.now() + timedelta(days=days)
+
+    @api.model
+    def _generate_opaque_slug(self):
+        """Un slug qui ne dit rien de l'organisation qu'il sert.
+
+        Le slug d'une page personnelle est le nom de la personne, et c'est
+        voulu : il vit sous un QR dans une signature, on le lit, on le tape.
+        Celui d'une page d'organisation obéit à l'inverse : il voyage dans un
+        courriel d'accueil et il est la seule chose qui tienne la porte. Un
+        slug déduit du nom la laisserait ouverte à qui connaît le nom.
+
+        `secrets` et non `random` : le second est un générateur reproductible,
+        semé à l'ouverture du processus. Il ne convient pas à ce qui tient lieu
+        de clé.
+        """
+        for _essai in range(20):
+            slug = "-".join(
+                "".join(
+                    secrets.choice(_OPAQUE_ALPHABET)
+                    for _car in range(_OPAQUE_GROUP_LEN)
+                )
+                for _groupe in range(_OPAQUE_GROUPS)
+            )
+            if slug in RESERVED_SLUGS:
+                continue
+            if not self.with_context(active_test=False).sudo().search_count(
+                [("slug", "=", slug)]
+            ):
+                return slug
+        # 59 bits : on n'arrive jamais ici autrement que par une base en
+        # panne. Lever plutôt que rendre un slug dont on ne sait pas s'il est
+        # libre, ce qui donnerait une page servie à la place d'une autre.
+        raise ValidationError(_(
+            "Impossible de tirer une adresse libre pour cette page. "
+            "Réessayez, et signalez-le si ça se reproduit."
+        ))
+
+    @api.model
+    def _default_org_expiry(self):
+        """L'échéance posée sur une page d'organisation qui naît."""
+        raw = self.env["ir.config_parameter"].sudo().get_param(
+            "bf_linkpage.org_expiry_days", "365"
+        )
+        try:
+            days = int(raw)
+        except (TypeError, ValueError):
+            days = 365
+        if days <= 0:
+            return False
+        return fields.Datetime.now() + timedelta(days=days)
+
+    @api.model
+    def _default_advisor(self, partner_id):
+        """Le conseiller proposé à la création d'une page d'organisation.
+
+        Trois chemins, et aucun n'est sûr, d'où un champ sur la page plutôt
+        qu'un calcul : le vendeur de la fiche, à défaut le gestionnaire du
+        projet actif le plus récent de l'organisation, à défaut la personne qui
+        crée la page.
+        """
+        if partner_id:
+            partner = self.env["res.partner"].browse(partner_id).exists()
+            if partner and partner.user_id:
+                return partner.user_id.id
+            if partner:
+                cibles = [partner.id] + partner.child_ids.ids
+                projet = self.env["project.project"].sudo().search(
+                    [("partner_id", "in", cibles), ("user_id", "!=", False)],
+                    order="write_date desc", limit=1,
+                ) if "project.project" in self.env else None
+                if projet:
+                    return projet.user_id.id
+        return self.env.user.id
 
     @api.model
     def _generate_slug(self, value, exclude_id=None):
@@ -634,6 +798,82 @@ class BfLinkpage(models.Model):
     def action_close(self):
         self.write({"state": "closed"})
         return True
+
+    def action_renew(self):
+        """Repousser l'échéance d'autant que la durée par défaut."""
+        echeance = self._default_org_expiry()
+        if not echeance:
+            raise ValidationError(_(
+                "Aucune durée n'est configurée pour les pages "
+                "d'organisation : rien à repousser."
+            ))
+        for page in self:
+            page.date_expiry = echeance
+            page.message_post(body=Markup("<p>%s</p>") % _(
+                "Échéance repoussée au %s.",
+                fields.Datetime.to_string(echeance)[:10],
+            ))
+        return True
+
+    @api.model
+    def _cron_warn_expiring(self):
+        """Prévenir AVANT qu'une page d'organisation se ferme.
+
+        Une page ponctuelle qui expire est un succès : elle a fait son temps,
+        et l'oubli la ferme au lieu de la laisser ouverte. Une page
+        d'organisation qui expire au milieu d'un mandat est l'inverse : le
+        client tombe sur un 404 et personne chez nous ne l'apprend, puisque
+        l'expiration est un CALCUL et non un état qu'un cron traverse.
+
+        D'où cette passe, qui ne ferme rien : elle avertit. C'est la seule
+        pièce du module qui doit tourner pour que l'échéance reste tenable.
+        """
+        get = self.env["ir.config_parameter"].sudo().get_param
+        try:
+            jours = int(get("bf_linkpage.org_warn_days", "30"))
+        except (TypeError, ValueError):
+            jours = 30
+        maintenant = fields.Datetime.now()
+        pages = self.search([
+            ("kind", "=", "org"),
+            ("state", "=", "published"),
+            ("date_expiry", "!=", False),
+            ("date_expiry", ">", maintenant),
+            ("date_expiry", "<=", maintenant + timedelta(days=jours)),
+        ])
+        avertis = 0
+        for page in pages:
+            echeance = page.date_expiry.date()
+            # La marque porte la DATE annoncée : une échéance repoussée
+            # rearme l'avertissement sans qu'on ait à effacer quoi que ce soit.
+            if page.expiry_warned_on == echeance:
+                continue
+            reste = (page.date_expiry - maintenant).days
+            corps = Markup("<p>%s</p>") % _(
+                "Cette page ferme le %(date)s, dans %(jours)s jour(s). "
+                "Passé cette date, son adresse rend un 404 à qui l'a reçue. "
+                "Utilisez « Repousser l'échéance » si le mandat continue.",
+                date=fields.Date.to_string(echeance),
+                jours=reste,
+            )
+            page.message_post(body=corps)
+            responsable = page.advisor_user_id or page.create_uid
+            if responsable:
+                page.activity_schedule(
+                    "mail.mail_activity_data_todo",
+                    date_deadline=echeance,
+                    summary=_("Page d'organisation à reconduire ou à fermer"),
+                    note=corps,
+                    user_id=responsable.id,
+                )
+            page.expiry_warned_on = echeance
+            avertis += 1
+        if avertis:
+            _logger.info(
+                "bf_linkpage: %s page(s) d'organisation près de l'échéance.",
+                avertis,
+            )
+        return avertis
 
     def action_open_public(self):
         self.ensure_one()

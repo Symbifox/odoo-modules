@@ -7,6 +7,7 @@
             <list string="Gabarits">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
+                <field name="target"/>
                 <field name="group_ids" widget="many2many_tags"/>
                 <field name="is_default"/>
                             <field name="layout"/>
@@ -29,7 +30,9 @@
                     </div>
                     <group>
                         <group>
-                            <field name="group_ids" widget="many2many_tags"/>
+                            <field name="target"/>
+                            <field name="group_ids" widget="many2many_tags"
+                                   invisible="target != 'person'"/>
                             <field name="is_default"/>
                         </group>
                         <group>

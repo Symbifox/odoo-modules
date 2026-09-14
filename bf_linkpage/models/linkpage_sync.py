@@ -69,7 +69,7 @@ class BfLinkpageSync(models.Model):
         partner = employee.work_contact_id or employee.user_id.partner_id
         template = self.env["bf.linkpage.template"]._for_user(employee.user_id) \
             if employee.user_id else self.env["bf.linkpage.template"].search(
-                [("is_default", "=", True)], limit=1)
+                [("is_default", "=", True), ("target", "=", "person")], limit=1)
         return {
             "name": employee.name,
             # Le titre d'emploi est déjà saisi sur la fiche : le recopier à la

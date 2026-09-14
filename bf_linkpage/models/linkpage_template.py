@@ -1,6 +1,6 @@
 """Les gabarits : un jeu de liens attribué par groupe.
 
-L'intention du napkin : « templates by user groups », et « employees can get it
+L'intention d'origine : « templates by user groups », et « employees can get it
 by default ». Un gabarit décrit les liens que reçoit une catégorie de personnes
 (l'équipe conseil, la direction), pour qu'une nouvelle page parte déjà garnie.
 """
@@ -16,6 +16,21 @@ class BfLinkpageTemplate(models.Model):
 
     name = fields.Char(string="Nom", required=True)
     sequence = fields.Integer(default=10)
+
+    # Un gabarit de personne et un gabarit d'organisation ne se mélangent pas :
+    # leurs sources ne lisent pas les mêmes fiches. Sans cette séparation, le
+    # gabarit par défaut, pensé pour une signature courriel, se poserait sur
+    # la page d'accueil d'un client et y résoudrait le téléphone de
+    # l'entreprise cliente comme si c'était le nôtre.
+    target = fields.Selection(
+        [
+            ("person", "Pages de personnes"),
+            ("org", "Pages d'organisations"),
+        ],
+        string="S'applique à",
+        default="person",
+        required=True,
+    )
     active = fields.Boolean(default=True)
     note = fields.Text(string="Remarques")
 
@@ -78,18 +93,25 @@ class BfLinkpageTemplate(models.Model):
             "accent_color": self.accent_color or "#29ABE2",
         }
 
-    @api.constrains("is_default")
+    # La contrainte est PAR CIBLE et non globale : il faut bien un gabarit par
+    # défaut pour les personnes et un pour les organisations, sans quoi l'un
+    # des deux ne pourrait jamais en avoir.
+    @api.constrains("is_default", "target")
     def _check_single_default(self):
         for template in self:
             if not template.is_default:
                 continue
             other = self.search_count([
-                ("is_default", "=", True), ("id", "!=", template.id),
+                ("is_default", "=", True),
+                ("target", "=", template.target),
+                ("id", "!=", template.id),
             ])
             if other:
                 raise ValidationError(_(
-                    "Il ne peut y avoir qu'un seul gabarit par défaut. "
-                    "Retirez la case sur l'autre avant de la poser ici."
+                    "Il ne peut y avoir qu'un seul gabarit par défaut pour "
+                    "« %s ». Retirez la case sur l'autre avant de la poser "
+                    "ici.",
+                    dict(self._fields["target"].selection).get(template.target),
                 ))
 
     @api.model
@@ -101,11 +123,29 @@ class BfLinkpageTemplate(models.Model):
         séquence tranche, de sorte que le choix ne dépende jamais de l'ordre
         d'insertion en base.
         """
-        by_group = self.search([("group_ids", "!=", False)], order="sequence, id")
+        by_group = self.search(
+            [("group_ids", "!=", False), ("target", "=", "person")],
+            order="sequence, id",
+        )
         for template in by_group:
             if user.groups_id & template.group_ids:
                 return template
-        return self.search([("is_default", "=", True)], limit=1)
+        return self.search(
+            [("is_default", "=", True), ("target", "=", "person")], limit=1
+        )
+
+    @api.model
+    def _for_org(self):
+        """Le gabarit posé sur une page d'organisation qui naît.
+
+        Pas d'équivalent des groupes ici : un groupe est une propriété d'un
+        UTILISATEUR, et une organisation n'en est pas un. Le jour où il faudra
+        distinguer les organisations entre elles, ce sera par une étiquette de
+        contact, et ce sera un choix à faire, pas un défaut à deviner.
+        """
+        return self.search(
+            [("is_default", "=", True), ("target", "=", "org")], limit=1
+        )
 
 
 class BfLinkpageTemplateLine(models.Model):

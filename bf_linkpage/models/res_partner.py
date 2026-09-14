@@ -1,6 +1,7 @@
 """Le raccourci depuis une fiche de contact."""
 
 from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class ResPartner(models.Model):
@@ -34,8 +35,48 @@ class ResPartner(models.Model):
             "context": {
                 "default_partner_id": self.id,
                 "default_name": self.name,
-                "default_kind": "owner",
+                "default_kind": "org" if self.is_company else "owner",
             },
+        }
+
+    def action_create_org_linkpage(self):
+        """Créer la page d'accueil de cette organisation.
+
+        Elle naît PUBLIÉE, comme les pages d'employés, et pour la même raison :
+        une page créée en brouillon rend un 404 indiscernable d'une adresse
+        inconnue, et c'est toujours après l'envoi du courriel qu'on s'en
+        aperçoit. Son adresse est opaque et son échéance armée : c'est là que
+        se joue sa discrétion, pas dans l'état.
+        """
+        self.ensure_one()
+        if not self.is_company:
+            raise UserError(_(
+                "« %s » est une personne. Une page d'organisation se crée "
+                "depuis la fiche de l'entreprise.", self.display_name,
+            ))
+        existante = self.env["bf.linkpage"].search(
+            [("partner_id", "=", self.id), ("kind", "=", "org")], limit=1
+        )
+        if existante:
+            return {
+                "type": "ir.actions.act_window",
+                "res_model": "bf.linkpage",
+                "res_id": existante.id,
+                "view_mode": "form",
+            }
+        template = self.env["bf.linkpage.template"]._for_org()
+        page = self.env["bf.linkpage"].create({
+            "name": self.name,
+            "partner_id": self.id,
+            "kind": "org",
+            "state": "published",
+            "template_id": template.id if template else False,
+        })
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "bf.linkpage",
+            "res_id": page.id,
+            "view_mode": "form",
         }
 
     def action_create_linkpage(self):

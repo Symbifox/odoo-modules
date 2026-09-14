@@ -15,6 +15,20 @@
                         invisible="linkpage_count == 0">
                     <field name="linkpage_count" widget="statinfo" string="Pages de liens"/>
                 </button>
+                <!-- Le bouton de création ne s'offre qu'aux SOCIÉTÉS, et
+                     seulement tant qu'aucune page n'existe : la page
+                     d'organisation est unique par fiche, et deux adresses
+                     opaques pour le même client seraient impossibles à
+                     démêler après coup. -->
+                <button class="oe_stat_button" type="object" icon="fa-sitemap"
+                        name="action_create_org_linkpage"
+                        groups="bf_linkpage.group_bf_linkpage_manager"
+                        invisible="not is_company or linkpage_count &gt; 0">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Page</span>
+                        <span class="o_stat_text">d'organisation</span>
+                    </div>
+                </button>
             </div>
         </field>
     </record>

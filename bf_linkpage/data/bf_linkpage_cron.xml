@@ -35,4 +35,35 @@
         <field name="value">published</field>
     </record>
 
+    <!-- La passe d'avertissement des pages d'organisation. Elle ne FERME
+         rien : l'expiration reste un calcul, et aucune tâche n'a besoin de
+         tourner pour qu'une page se ferme. Ce cron sert à ce que la fermeture
+         ne soit pas une surprise. Sans lui, une page d'accueil client
+         tomberait en 404 au milieu d'un mandat et personne chez nous ne
+         l'apprendrait avant que le client le dise. -->
+    <record id="cron_warn_expiring" model="ir.cron">
+        <field name="name">Pages de liens : avertir avant la fermeture d'une page d'organisation</field>
+        <field name="model_id" ref="model_bf_linkpage"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_warn_expiring()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="nextcall" eval="(DateTime.now().replace(hour=10, minute=15, second=0) + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')"/>
+    </record>
+
+    <!-- Les deux durées sont SEMÉES et non laissées absentes. Un paramètre
+         absent se lit 0 dans le formulaire de réglages, et un 0 enregistré
+         par mégarde voudrait dire « pas d'échéance », soit exactement ce que
+         la page d'organisation cherche à éviter. -->
+    <record id="param_org_expiry_days" model="ir.config_parameter">
+        <field name="key">bf_linkpage.org_expiry_days</field>
+        <field name="value">365</field>
+    </record>
+    <record id="param_org_warn_days" model="ir.config_parameter">
+        <field name="key">bf_linkpage.org_warn_days</field>
+        <field name="value">30</field>
+    </record>
+
 </odoo>

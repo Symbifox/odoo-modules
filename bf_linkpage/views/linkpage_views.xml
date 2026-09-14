@@ -15,6 +15,7 @@
                 <field name="kind"/>
                 <field name="partner_id" optional="show"/>
                 <field name="template_id" optional="hide"/>
+                <field name="advisor_user_id" optional="hide"/>
                 <field name="link_count" string="Liens"/>
                 <field name="visible_link_count" string="Affichés"/>
                 <field name="visit_count" string="Visites" sum="Visites"/>
@@ -36,6 +37,9 @@
                             class="btn-primary" invisible="state == 'published'"/>
                     <button name="action_close" type="object" string="Fermer"
                             invisible="state != 'published'"/>
+                    <button name="action_renew" type="object"
+                            string="Repousser l'échéance"
+                            invisible="kind != 'org'"/>
                     <button name="action_apply_template" type="object"
                             string="Réappliquer le gabarit"
                             invisible="not template_id"
@@ -70,7 +74,7 @@
                             <field name="kind"/>
                             <field name="active" invisible="1"/>
                         </group>
-                        <group string="Personne">
+                        <group string="Personne" invisible="kind == 'org'">
                             <field name="partner_id"
                                    required="kind == 'owner'"
                                    invisible="kind != 'owner'"/>
@@ -78,9 +82,24 @@
                                    help="Sert à résoudre la page de rendez-vous."/>
                             <field name="template_id"/>
                         </group>
+                        <group string="Organisation" invisible="kind != 'org'">
+                            <field name="partner_id" string="Organisation"
+                                   required="kind == 'org'"
+                                   domain="[('is_company', '=', True)]"
+                                   context="{'default_is_company': True}"/>
+                            <field name="advisor_user_id"
+                                   help="La personne de chez nous dont la page résout l'agenda, le courriel et le dépôt sécurisé."/>
+                            <field name="template_id" string="Gabarit"/>
+                            <field name="booking_slug"
+                                   string="Type de rendez-vous offert"
+                                   placeholder="rencontre-flexible"
+                                   help="Le slug du type à ouvrir. Sans lui, le lien de rendez-vous NE S'AFFICHE PAS : la recherche prendrait le premier type public, qui est la rencontre exploratoire, et l'offrirait à un client existant."/>
+                        </group>
                         <group string="Cycle de vie">
                             <field name="date_expiry"
-                                   required="kind == 'oneoff'"/>
+                                   required="kind in ('oneoff', 'org')"/>
+                            <field name="expiry_warned_on" readonly="1"
+                                   invisible="kind != 'org'"/>
                             <field name="is_expired" invisible="1"/>
                             <field name="is_live" invisible="1"/>
                             <field name="last_visit" readonly="1"/>
@@ -91,7 +110,8 @@
                             <field name="show_vcard"/>
                             <field name="accent_color" widget="color"/>
                         </group>
-                        <group string="Propre à la personne">
+                        <group string="Propre à la personne"
+                               invisible="kind == 'org'">
                             <field name="booking_slug"
                                    placeholder="rencontre-flexible"/>
                             <field name="meet_url"

@@ -1,8 +1,8 @@
 {
     "name": "Pages de liens",
-    "version": "18.0.9.1.1",
+    "version": "18.0.10.0.2",
     "category": "Website",
-    "summary": "Page publique de liens rattachée à une personne ou ponctuelle, avec QR à la marque pour signature courriel",
+    "summary": "Page publique de liens rattachée à une personne, à une organisation cliente ou ponctuelle, avec QR à la marque pour signature courriel",
     "description": """
 Une page publique qui rassemble les liens d'une personne sous une URL courte,
 et le QR à poser dans une signature courriel.
@@ -14,10 +14,17 @@ pas des chaînes recopiées à la main. La page les RÉSOUT à l'affichage. Quan
 le slug de rendez-vous d'une personne change, sa page suit, et le QR déjà
 imprimé dans sa signature continue de pointer au bon endroit.
 
-Deux natures de page :
+Trois natures de page :
 
 - rattachée à une personne (un contact, un employé), qui hérite d'un gabarit
   attribué par groupe et vit aussi longtemps que la personne ;
+- rattachée à une ORGANISATION cliente : le point d'entrée qu'on envoie à
+  l'accueil d'un mandat : à qui parler, où déposer un document, où retrouver
+  ses affaires au portail. Son adresse est TIRÉE AU SORT et non déduite du nom
+  du client, et elle porte une échéance qu'on annonce avant qu'elle tombe.
+  Ses trois liens de portail ne s'affichent que si quelqu'un de
+  l'organisation a un compte : un bouton « Votre portail » qui n'ouvre qu'un
+  écran de connexion est le pire lien d'un courriel d'accueil ;
 - ponctuelle, sans propriétaire, ARMÉE D'UNE EXPIRATION par défaut. Une page
   publique que personne ne révoque est le même angle mort qu'un partage
   éternel ; ici l'oubli ferme la page au lieu de la laisser ouverte.
