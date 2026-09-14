@@ -4,6 +4,34 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.35.1] — 2026-09-13
+
+Le téléphone montrait une boîte de réception vide depuis l'arrivée de la
+sourdine, au-dessus d'une boîte pleine au poste.
+
+### Fixed
+
+- 🔴 **Les lignes d'avant la sourdine sortaient de la boîte du téléphone.**
+  `is_muted` est arrivé en 18.0.11.34.0. Odoo n'écrit pas la valeur par défaut
+  d'un booléen neuf dans les lignes qui existent déjà, puisque pour l'ORM NULL
+  et faux se valent : sur une base réelle, la colonne est restée NULL sur
+  toutes les lignes sauf celles arrivées après la montée. Le domaine Python
+  `('is_muted', '=', False)` devient `is_muted IS NULL OR is_muted = false` et
+  voyait tout ; le filtre du téléphone, du SQL écrit à la main,
+  `is_muted = false`, écartait tout. Il transcrit maintenant ce que l'ORM
+  génère : `IS NOT TRUE` pour les booléens (boîte, non lus, non classés), et un
+  dossier IMAP vide compte comme absent, comme un Char à `False`. Aucune
+  écriture en base.
+
+### Tests
+
+- L'essai de parité entre le domaine et le SQL mobile comparait bien les deux
+  sur les mêmes lignes, mais ces lignes naissaient par l'ORM, qui écrit
+  `false` : il éprouvait une population qui n'existe pas en production.
+  `test_boite_mobile_lignes_anciennes` pose la population réelle (NULL,
+  dossier vide) et vérifie la liste de l'app et la pastille, pas seulement le
+  SQL. Ses cinq essais tombent sur la 18.0.11.35.0.
+
 ## [18.0.11.35.0] — 2026-09-13
 
 La détection d'absence à l'agenda ne voyait pas les deux tiers de l'agenda, et

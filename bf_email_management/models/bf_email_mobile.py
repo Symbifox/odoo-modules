@@ -398,18 +398,26 @@ class BfEmailMobile(models.Model):
         clauses = {
             # ⚠️ Transcription SQL de `bf.email._inbox_domain` : un test
             # compare les deux sur un jeu de lignes, pas sur leur texte.
-            "inbox": ("is_handled = false AND is_muted = false "
-                      "AND (imap_in_inbox = true "
+            #
+            # 🔴 Transcrire ce que l'ORM ÉCRIT en SQL, pas ce que le domaine a
+            # l'air de dire. `('is_muted', '=', False)` devient
+            # `is_muted IS NULL OR is_muted = false`, et un Char à False
+            # devient `IS NULL OR = ''`. Or Odoo ne remplit pas un booléen neuf
+            # dans les lignes existantes : `is_muted = false` écartait toutes
+            # les lignes d'avant la sourdine, et le téléphone montrait une
+            # boîte vide au-dessus de celle du poste.
+            "inbox": ("is_handled IS NOT TRUE AND is_muted IS NOT TRUE "
+                      "AND (imap_in_inbox IS TRUE "
                       "OR source IN ('chatter','gateway') "
-                      "OR imap_folder IS NULL)", []),
-            "unread": ("status = 'new' AND is_handled = false", []),
+                      "OR imap_folder IS NULL OR imap_folder = '')", []),
+            "unread": ("status = 'new' AND is_handled IS NOT TRUE", []),
             "snoozed": ("is_handled = true AND snoozed_until IS NOT NULL "
                         "AND snoozed_until > %s", [now]),
             "handled": ("is_handled = true AND (snoozed_until IS NULL "
                         "OR snoozed_until <= %s)", [now]),
             "sent": ("direction = 'out'", []),
             "unrouted": ("source = 'imap' AND res_model IS NULL "
-                         "AND is_handled = false", []),
+                         "AND is_handled IS NOT TRUE", []),
             "all": ("true", []),
         }
         if name not in clauses:

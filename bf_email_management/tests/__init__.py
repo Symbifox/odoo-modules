@@ -33,6 +33,7 @@ from . import test_images_distantes
 from . import test_invitations_et_robots
 from . import test_recherche_plein_texte
 from . import test_sourdine_et_relances
+from . import test_boite_mobile_lignes_anciennes
 from . import test_desabonnement
 from . import test_petits_gestes
 from . import test_conversations_et_gen
