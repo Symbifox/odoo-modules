@@ -80,3 +80,21 @@ Two defects in the calendar detection, measured on a live calendar and fixed in
 | `bf.absence.house.message` | The default messages, one per tone, with the stand-in sentence kept as a separate field so it is only added when there is somebody to name |
 | `bf.absence.me.wizard` | The "I'm away" gesture |
 | `bf.partner.absence` (inherited) | The switch, the tone, and the link to the responder it armed |
+
+## Languages
+
+Since 18.0.1.1.0 the source strings are **English** and `i18n/fr_CA.po` carries
+the French. The house messages ship in both.
+
+* **The responder speaks the language of the person who is away.** Not the
+  language of the administrator who ticked the box, and not the absence of any
+  language in the scheduled job that reads the calendar: the text goes out to
+  correspondents, in that person's name.
+* Upgrading from 18.0.1.0.x switches a house message to English **only where it
+  is still, term for term, the shipped text**. A message edited by hand is left
+  as it is, in every language.
+* ⚠️ Odoo rebuilds a term-by-term translated HTML field on the structure of its
+  English value every time the module's catalogue is loaded. A French house
+  message edited with one paragraph more or less than the English one would fall
+  back to the shipped text. The 18.0.1.1.0 upgrade sets those values aside before
+  that reload and puts them back after it; later upgrades carry the same risk.

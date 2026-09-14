@@ -22,3 +22,10 @@ of form.
   point.
 * The banner reads `activeThread.partner_id`, which the thread payload already
   carries. A test guards that contract.
+
+## Languages
+
+Since 18.0.1.1.0 the source strings are **English** and `i18n/fr_CA.po` carries
+the French, like the rest of the contact absences family. The banner's icon
+label, read aloud by screen readers, is "Absence" in French: a noun, so that it
+agrees with nobody.

@@ -8,7 +8,7 @@
              une absence éteint un avertissement que quelqu'un d'autre a posé. -->
 
         <record id="rule_bf_partner_absence_company" model="ir.rule">
-            <field name="name">Absences : la société de l'utilisateur</field>
+            <field name="name">Absences: the user's company</field>
             <field name="model_id" ref="model_bf_partner_absence"/>
             <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
             <field name="global" eval="True"/>

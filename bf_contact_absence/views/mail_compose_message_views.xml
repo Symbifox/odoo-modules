@@ -10,14 +10,14 @@
                 <field name="bf_absence_return_date" invisible="1"/>
                 <div class="alert alert-warning py-2 mb-2 bf-absence-banner" role="status"
                      invisible="not bf_absence_hint_html">
-                    <i class="fa fa-plane me-2" role="img" aria-label="Absent"/>
+                    <i class="fa fa-plane me-2" role="img" aria-label="Away"/>
                     <field name="bf_absence_hint_html" widget="html" readonly="1"
                            nolabel="1" options="{'safe': True}" class="d-inline"/>
                     <button name="action_bf_send_on_return" type="object"
-                            string="Programmer à son retour"
+                            string="Schedule for their return"
                             class="btn btn-sm btn-secondary ms-2"
                             invisible="not bf_absence_return_date"
-                            help="Range le message dans les envois différés, au matin du lendemain du retour."/>
+                            help="Queues the message as a scheduled send, on the morning after the return."/>
                 </div>
             </xpath>
         </field>

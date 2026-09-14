@@ -8,23 +8,23 @@
         <record id="house_message_delay" model="bf.absence.house.message">
             <field name="tone">delay</field>
             <field name="sequence">10</field>
-            <field name="name">Tout le monde</field>
-            <field name="body_html"><![CDATA[<p>Bonjour,</p>
-<p>Merci pour votre message. Je suis en déplacement jusqu'au {retour} : je lis mes courriels, mais mes réponses seront plus lentes que d'habitude.</p>
-<p>Bonne journée!</p>
+            <field name="name">Everyone</field>
+            <field name="body_html"><![CDATA[<p>Hello,</p>
+<p>Thank you for your message. I am travelling until {retour}: I read my email, but my replies will be slower than usual.</p>
+<p>Have a good day!</p>
 <p>{nom}</p>]]></field>
-            <field name="backup_html"><![CDATA[<p>Si c'est urgent, écrivez à [[releve]] ([[courriel]]), qui prend le relais.</p>]]></field>
+            <field name="backup_html"><![CDATA[<p>If it is urgent, write to [[releve]] ([[courriel]]), who is covering for me.</p>]]></field>
         </record>
 
         <record id="house_message_away" model="bf.absence.house.message">
             <field name="tone">away</field>
             <field name="sequence">20</field>
-            <field name="name">Tout le monde</field>
-            <field name="body_html"><![CDATA[<p>Bonjour,</p>
-<p>Merci pour votre message. Je suis à l'extérieur du bureau jusqu'au {retour} et je ne consulte pas mes courriels d'ici là. Je traiterai votre demande à mon retour.</p>
-<p>Bonne journée!</p>
+            <field name="name">Everyone</field>
+            <field name="body_html"><![CDATA[<p>Hello,</p>
+<p>Thank you for your message. I am out of the office until {retour} and will not be checking my email until then. I will handle your request when I am back.</p>
+<p>Have a good day!</p>
 <p>{nom}</p>]]></field>
-            <field name="backup_html"><![CDATA[<p>Si c'est urgent, écrivez à [[releve]] ([[courriel]]), qui prend le relais.</p>]]></field>
+            <field name="backup_html"><![CDATA[<p>If it is urgent, write to [[releve]] ([[courriel]]), who is covering for me.</p>]]></field>
         </record>
 
     </data>

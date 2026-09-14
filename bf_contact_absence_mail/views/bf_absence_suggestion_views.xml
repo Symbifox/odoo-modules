@@ -23,12 +23,12 @@
                        decoration-success="state == 'accepted'"
                        decoration-warning="state == 'pending'"/>
                 <button name="action_accept" type="object" icon="fa-check"
-                        title="Accepter et poser l'absence"
+                        title="Accept and record the absence"
                         invisible="state != 'pending' or not complete"/>
                 <button name="action_reject" type="object" icon="fa-times"
-                        title="Refuser" invisible="state != 'pending'"/>
+                        title="Reject" invisible="state != 'pending'"/>
                 <button name="action_open_email" type="object" icon="fa-envelope-o"
-                        title="Voir le courriel d'origine"/>
+                        title="View the original email"/>
             </list>
         </field>
     </record>
@@ -39,21 +39,20 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_accept" type="object" string="Accepter"
+                    <button name="action_accept" type="object" string="Accept"
                             class="btn-primary"
                             invisible="state != 'pending' or not complete"/>
-                    <button name="action_reject" type="object" string="Refuser"
+                    <button name="action_reject" type="object" string="Reject"
                             invisible="state != 'pending'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <div class="alert alert-info" role="status"
                          invisible="complete or state != 'pending'">
-                        Le répondeur ne donnait pas de période lisible. Saisir les dates
-                        avant d'accepter, ou refuser.
+                        The auto-reply gave no readable period. Enter the dates before accepting, or reject.
                     </div>
                     <group>
-                        <group string="Ce que le répondeur disait">
+                        <group string="What the auto-reply said">
                             <field name="partner_id" readonly="1"/>
                             <field name="email_date" readonly="1"/>
                             <field name="email_subject" readonly="1"/>
@@ -62,7 +61,7 @@
                             <field name="read_by" readonly="1"/>
                             <field name="backup_hint" readonly="1"/>
                         </group>
-                        <group string="Ce qu'on en retient">
+                        <group string="What we keep">
                             <field name="date_from"/>
                             <field name="date_to"/>
                             <field name="nature"/>
@@ -84,31 +83,31 @@
         <field name="arch" type="xml">
             <search>
                 <field name="partner_id"/>
-                <filter name="pending" string="À décider" domain="[('state', '=', 'pending')]"/>
-                <filter name="acknowledgements" string="Accusés de réception"
+                <filter name="pending" string="To decide" domain="[('state', '=', 'pending')]"/>
+                <filter name="acknowledgements" string="Acknowledgements"
                         domain="[('kind', '=', 'acknowledgement')]"
-                        help="Reconnus comme répondeurs par leur objet, mais ce sont des accusés de réception de candidature ou de demande."/>
-                <filter name="incomplete" string="Sans période lisible"
+                        help="Recognised as auto-replies by their subject, but they are application or request acknowledgements."/>
+                <filter name="incomplete" string="No readable period"
                         domain="[('complete', '=', False)]"/>
                 <separator/>
-                <filter name="accepted" string="Acceptées" domain="[('state', '=', 'accepted')]"/>
-                <filter name="rejected" string="Refusées" domain="[('state', '=', 'rejected')]"/>
-                <group expand="0" string="Regrouper par">
+                <filter name="accepted" string="Accepted" domain="[('state', '=', 'accepted')]"/>
+                <filter name="rejected" string="Rejected" domain="[('state', '=', 'rejected')]"/>
+                <group expand="0" string="Group by">
                     <filter name="group_partner" string="Contact" context="{'group_by': 'partner_id'}"/>
-                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_bf_absence_suggestion" model="ir.actions.act_window">
-        <field name="name">Absences proposées</field>
+        <field name="name">Proposed absences</field>
         <field name="res_model">bf.partner.absence.suggestion</field>
         <field name="view_mode">list,form</field>
         <field name="context">{'search_default_pending': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Rien à décider</p>
-            <p>Les répondeurs d'absence reçus apparaissent ici. Un clic les accepte, un clic les refuse.</p>
+            <p class="o_view_nocontent_smiling_face">Nothing to decide</p>
+            <p>Received out-of-office replies appear here. One click accepts, one click rejects.</p>
         </field>
     </record>
 

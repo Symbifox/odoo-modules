@@ -28,11 +28,9 @@
                     <group string="Message">
                         <field name="body_html" nolabel="1"/>
                     </group>
-                    <group string="Phrase de relève">
+                    <group string="Stand-in sentence">
                         <div class="text-muted" colspan="2">
-                            Ajoutée seulement quand une relève est nommée.
-                            Le marqueur du nom et celui de l'adresse sont
-                            décrits dans l'infobulle du champ.
+                            Added only when a stand-in is named. The name marker and the address marker are described in the field tooltip.
                         </div>
                         <field name="backup_html" nolabel="1"/>
                     </group>
@@ -42,13 +40,12 @@
     </record>
 
     <record id="action_bf_absence_house_message" model="ir.actions.act_window">
-        <field name="name">Messages d'absence de la maison</field>
+        <field name="name">House absence messages</field>
         <field name="res_model">bf.absence.house.message</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Aucun message de maison</p>
-            <p>Sans texte, aucun répondeur ne s'arme. C'est voulu : un gabarit
-               vide envoyé à un client coûte plus cher qu'un silence.</p>
+            <p class="o_view_nocontent_smiling_face">No house message</p>
+            <p>Without text, no responder arms. That is deliberate: an empty template sent to a client costs more than a silence.</p>
         </field>
     </record>
 

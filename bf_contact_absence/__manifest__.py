@@ -8,7 +8,11 @@
     #   chatter. La relève est nommée, le report à la date de retour passe par
     #   `mail.scheduled.message` (natif en 18), et un rappel de reprise est
     #   posé au lendemain du retour.
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français au lieu de le recopier. Odoo ne traduit
+    #   jamais vers en_US, qui est la langue source : un usager réglé en
+    #   anglais lisait le module en français.
+    "version": "18.0.1.1.0",
     "category": "Sales/CRM",
     "summary": "Savoir qu'un contact est absent avant de lui écrire, de lui "
                "texter ou de l'appeler",

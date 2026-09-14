@@ -146,14 +146,14 @@ class BfEmail(models.Model):
     _inherit = "bf.email"
 
     bf_absence_scanned = fields.Boolean(
-        string="Lu par la vigie des absences",
+        string="Read by the absence watch",
         default=False,
         index=True,
         copy=False,
     )
     bf_absence_suggestion_id = fields.Many2one(
         comodel_name="bf.partner.absence.suggestion",
-        string="Absence proposée",
+        string="Proposed absence",
         readonly=True,
         copy=False,
     )
@@ -542,7 +542,7 @@ class BfEmail(models.Model):
             "tag": "display_notification",
             "params": {
                 "type": "success" if poses else "info",
-                "message": _("%s absence(s) proposée(s).") % poses,
+                "message": _("%s absence(s) proposed.") % poses,
                 "sticky": False,
             },
         }

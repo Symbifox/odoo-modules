@@ -22,46 +22,46 @@ from odoo.exceptions import UserError
 
 # (clé, libellé, début, fin inclusive)
 FERMETURES = [
-    ("estival_2026", "Congé estival 2026", date(2026, 7, 19), date(2026, 8, 1)),
-    ("hivernal_2026", "Congé hivernal 2026-2027", date(2026, 12, 20), date(2027, 1, 2)),
-    ("estival_2027", "Congé estival 2027", date(2027, 7, 25), date(2027, 8, 7)),
-    ("hivernal_2027", "Congé hivernal 2027-2028", date(2027, 12, 19), date(2028, 1, 1)),
+    ("estival_2026", "2026 summer holiday", date(2026, 7, 19), date(2026, 8, 1)),
+    ("hivernal_2026", "2026-2027 winter holiday", date(2026, 12, 20), date(2027, 1, 2)),
+    ("estival_2027", "2027 summer holiday", date(2027, 7, 25), date(2027, 8, 7)),
+    ("hivernal_2027", "2027-2028 winter holiday", date(2027, 12, 19), date(2028, 1, 1)),
 ]
 PAR_CLE = {c: (lib, deb, fin) for c, lib, deb, fin in FERMETURES}
 
 
 class BfAbsenceClosureWizard(models.TransientModel):
     _name = "bf.absence.closure.wizard"
-    _description = "Semer une fermeture connue"
+    _description = "Seed a known shutdown"
 
     closure = fields.Selection(
         selection=[(c, lib) for c, lib, _d, _f in FERMETURES],
-        string="Fermeture",
+        string="Shutdown",
         required=True,
         default=lambda self: self._default_closure(),
     )
-    date_from = fields.Date(string="Du", compute="_compute_dates", store=True,
+    date_from = fields.Date(string="From", compute="_compute_dates", store=True,
                             readonly=False)
-    date_to = fields.Date(string="Au", compute="_compute_dates", store=True,
+    date_to = fields.Date(string="To", compute="_compute_dates", store=True,
                           readonly=False,
-                          help="Dernier jour de fermeture, inclus.")
+                          help="Last day of the shutdown, inclusive.")
     partner_ids = fields.Many2many(
-        comodel_name="res.partner", string="Entreprises",
+        comodel_name="res.partner", string="Companies",
         domain="[('is_company', '=', True)]",
-        help="Une fermeture se pose sur la SOCIÉTÉ : elle avertit ensuite "
-             "pour chacun de ses contacts.")
+        help="A shutdown is recorded on the COMPANY: it then warns for "
+             "each of its contacts.")
     industry_id = fields.Many2one(
-        comodel_name="res.partner.industry", string="Ou tout un secteur",
-        help="Toutes les sociétés de ce secteur, en plus de celles nommées "
-             "ci-dessus.")
+        comodel_name="res.partner.industry", string="Or a whole industry",
+        help="Every company in this industry, in addition to those named "
+             "above.")
     only_with_contacts = fields.Boolean(
-        string="Seulement celles à qui on écrit", default=True,
-        help="Écarte les sociétés qui n'ont ni contact rattaché ni courriel : "
-             "un avertissement qui ne servira jamais est du bruit.")
-    reminder = fields.Boolean(string="Rappel au retour", default=False,
-                              help="Rarement voulu pour une fermeture "
-                                   "d'entreprise : personne ne prend des "
-                                   "nouvelles d'une société qui rouvre.")
+        string="Only those we write to", default=True,
+        help="Leaves out companies with neither an attached contact nor "
+             "an email: a warning that will never be used is noise.")
+    reminder = fields.Boolean(string="Reminder on return", default=False,
+                              help="Rarely wanted for a company shutdown: "
+                                   "nobody checks in on a company that "
+                                   "reopens.")
 
     @api.model
     def _default_closure(self):
@@ -96,12 +96,11 @@ class BfAbsenceClosureWizard(models.TransientModel):
     def action_seed(self):
         self.ensure_one()
         if not self.date_from or not self.date_to:
-            raise UserError(_("Choisir une fermeture, ou saisir ses dates."))
+            raise UserError(_("Pick a shutdown, or enter its dates."))
         cibles = self._cibles()
         if not cibles:
             raise UserError(_(
-                "Aucune entreprise visée. Nommer des sociétés, ou choisir un "
-                "secteur."))
+                "No company targeted. Name companies, or pick an industry."))
         Absence = self.env["bf.partner.absence"]
         poses, sautes = Absence, Absence
         for partner in cibles:
@@ -125,7 +124,7 @@ class BfAbsenceClosureWizard(models.TransientModel):
                 "source": "import",
                 "note": PAR_CLE.get(self.closure, (self.closure,))[0],
             })
-        message = _("%(poses)s fermeture(s) posée(s), %(sautes)s déjà connue(s).",
+        message = _("%(poses)s shutdown(s) recorded, %(sautes)s already known.",
                     poses=len(poses), sautes=len(sautes))
         if not poses:
             return {
@@ -136,7 +135,7 @@ class BfAbsenceClosureWizard(models.TransientModel):
             }
         return {
             "type": "ir.actions.act_window",
-            "name": _("Fermetures posées"),
+            "name": _("Shutdowns recorded"),
             "res_model": "bf.partner.absence",
             "view_mode": "list,form",
             "domain": [("id", "in", poses.ids)],

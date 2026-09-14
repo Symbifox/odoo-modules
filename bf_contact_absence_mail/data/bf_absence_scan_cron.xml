@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="cron_bf_absence_scan" model="ir.cron">
-            <field name="name">Absences des contacts : lire les répondeurs reçus</field>
+            <field name="name">Contact absences: read received auto-replies</field>
             <field name="model_id" ref="model_bf_email"/>
             <field name="state">code</field>
             <field name="code">model._cron_bf_absence_scan()</field>

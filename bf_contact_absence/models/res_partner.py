@@ -20,25 +20,27 @@ class ResPartner(models.Model):
         inverse_name="partner_id",
         string="Absences",
     )
-    bf_absence_count = fields.Integer(compute="_compute_bf_absence")
+    bf_absence_count = fields.Integer(
+        string="Absence count", compute="_compute_bf_absence")
     bf_is_away = fields.Boolean(
-        string="Absent aujourd'hui",
+        string="Away today",
         compute="_compute_bf_absence",
         search="_search_bf_is_away",
     )
     bf_away_until = fields.Date(
-        string="Absent jusqu'au",
+        string="Away until",
         compute="_compute_bf_absence",
         search="_search_bf_away_until",
     )
     bf_absence_phrase = fields.Char(
         string="Absence",
         compute="_compute_bf_absence",
-        help="La phrase affichée au moment d'écrire.",
+        help="The sentence shown at the moment of writing.",
     )
 
     @api.depends("bf_absence_ids.date_from", "bf_absence_ids.date_to",
                  "bf_absence_ids.active", "parent_id")
+    @api.depends_context("lang")
     def _compute_bf_absence(self):
         # ⚠️ Rien pour un utilisateur EXTERNE. La fiche contact est lisible au
         # portail, et savoir qui est en vacances chez nos clients est une
@@ -70,7 +72,7 @@ class ResPartner(models.Model):
     def _search_bf_is_away(self, operator, value):
         if operator not in ("=", "!="):
             raise UserError(_(
-                "« Absent aujourd'hui » ne se filtre qu'avec = ou !=."))
+                "\"Away today\" can only be filtered with = or !=."))
         ids = self.env["bf.partner.absence"]._partners_away_ids()
         positif = (operator == "=") == bool(value)
         return [("id", "in" if positif else "not in", list(ids))]
@@ -79,7 +81,7 @@ class ResPartner(models.Model):
     def _search_bf_away_until(self, operator, value):
         if operator not in ("=", "!=", "<", "<=", ">", ">="):
             raise UserError(_(
-                "« Absent jusqu'au » ne se filtre que par comparaison de date."))
+                "\"Away until\" can only be filtered by date comparison."))
         borne = fields.Date.to_date(value)
         absences = self.env["bf.partner.absence"].sudo().search(
             self.env["bf.partner.absence"]._applicable_domain())
@@ -108,7 +110,7 @@ class ResPartner(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Absences de %s") % self.display_name,
+            "name": _("Absences of %s") % self.display_name,
             "res_model": "bf.partner.absence",
             "view_mode": "list,form",
             "domain": [("partner_id", "=", self.id)],

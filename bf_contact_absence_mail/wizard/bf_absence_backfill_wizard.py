@@ -17,17 +17,17 @@ from odoo import _, api, fields, models
 
 class BfAbsenceBackfillWizard(models.TransientModel):
     _name = "bf.absence.backfill.wizard"
-    _description = "Lire le courrier déjà reçu"
+    _description = "Read mail already received"
 
     days = fields.Integer(
-        string="Remonter de (jours)", default=400, required=True,
-        help="400 jours couvrent un cycle complet de vacances, été comme "
-             "hiver, sans relire des années d'archives.")
+        string="Look back (days)", default=400, required=True,
+        help="400 days cover a full holiday cycle, summer and winter, "
+             "without rereading years of archives.")
     limit = fields.Integer(
-        string="Au plus (courriels)", default=3000, required=True,
-        help="Une passe longue tient dans une transaction : mieux vaut deux "
-             "passes qu'un verrou d'une heure.")
-    pending = fields.Integer(string="Jamais lus dans la fenêtre",
+        string="At most (emails)", default=3000, required=True,
+        help="A long pass runs in one transaction: two passes are better "
+             "than an hour-long lock.")
+    pending = fields.Integer(string="Never read in the window",
                              compute="_compute_pending")
 
     @api.depends("days")
@@ -58,13 +58,13 @@ class BfAbsenceBackfillWizard(models.TransientModel):
                 "tag": "display_notification",
                 "params": {
                     "type": "info",
-                    "message": _("Aucun répondeur d'absence dans le courrier lu."),
+                    "message": _("No out-of-office reply in the mail read."),
                     "sticky": False,
                 },
             }
         return {
             "type": "ir.actions.act_window",
-            "name": _("Absences proposées"),
+            "name": _("Proposed absences"),
             "res_model": "bf.partner.absence.suggestion",
             "view_mode": "list,form",
             "domain": [("id", "in", nouvelles.ids)],

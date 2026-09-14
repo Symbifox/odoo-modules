@@ -22,7 +22,10 @@ class BfEmailAbsence(models.Model):
         if seed is not None:
             return seed
         Maison = self.env["bf.absence.house.message"]
-        maison = Maison._for_tone(Maison._default_tone())
+        # Dans la langue de la personne : le travail planifié qui appelle ceci
+        # n'en porte aucune, et le texte part en son nom.
+        maison = Maison._for_tone(Maison._default_tone()).with_context(
+            lang=user.lang or "en_US")
         if not maison:
             return None
         # Rien d'autre que le texte : le reste vient des défauts du modèle.

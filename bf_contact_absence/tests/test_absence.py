@@ -116,8 +116,10 @@ class TestContactAbsence(TransactionCase):
                       nature="closure")
         self.line.invalidate_recordset()
         self.assertTrue(self.line.bf_is_away)
-        self.assertIn("fermeture", self.line.bf_absence_phrase)
-        self.assertIn("Societe Essai", self.line.bf_absence_phrase)
+        # La phrase suit la langue de celui qui lit : la source est anglaise.
+        phrase = self.line.with_context(lang="en_US").bf_absence_phrase
+        self.assertIn("closed", phrase)
+        self.assertIn("Societe Essai", phrase)
 
     def test_une_fermeture_qui_ne_vaut_que_pour_la_societe(self):
         aujourd_hui = date.today()
@@ -136,7 +138,7 @@ class TestContactAbsence(TransactionCase):
                       nature="vacation")
         self.line.invalidate_recordset()
         self.assertEqual(self.line.bf_away_until, aujourd_hui + timedelta(days=2))
-        self.assertIn("absence", self.line.bf_absence_phrase)
+        self.assertIn("away", self.line.with_context(lang="en_US").bf_absence_phrase)
 
     # ------------------------------------------------------------------
     # 🔴 Le critère de recherche
@@ -476,8 +478,8 @@ class TestQuickWinsAbsence(TransactionCase):
         absences = self.Absence._for_partners(self.ouvrier.ids,
                                               at_date=date(2026, 12, 24))
         self.assertIn(self.ouvrier.id, absences)
-        self.assertIn("fermeture", absences[self.ouvrier.id]._phrase(
-            for_partner=self.ouvrier))
+        self.assertIn("closed", absences[self.ouvrier.id].with_context(
+            lang="en_US")._phrase(for_partner=self.ouvrier))
 
     def test_le_semis_par_secteur_prend_tout_le_secteur(self):
         wizard = self.Wizard.create({"closure": "estival_2027",

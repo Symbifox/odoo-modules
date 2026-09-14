@@ -1,73 +1,118 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_contact_absence
-#
+# Translation template for Symbifox Absences des contacts.
+# The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_contact_absence 18.0.1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 05:04+0000\n"
-"PO-Revision-Date: 2026-09-13 05:04+0000\n"
+"POT-Creation-Date: 2026-09-14 03:45+0000\n"
+"PO-Revision-Date: 2026-09-14 03:45+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 
 #. module: bf_contact_absence
 #. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid ""
-"%(contact)s a déjà une absence qui couvre ces dates (%(autre)s). Deux "
-"périodes qui se chevauchent rendraient le bandeau ambigu."
+#: code:addons/bf_contact_absence/models/res_partner.py:0
+msgid "\"Away today\" can only be filtered with = or !=."
+msgstr ""
+
+#. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/models/res_partner.py:0
+msgid "\"Away until\" can only be filtered by date comparison."
 msgstr ""
 
 #. module: bf_contact_absence
 #. odoo-python
 #: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "%(contact)s était absent jusqu'au %(fin)s."
+msgid ""
+"%(contact)s already has an absence covering these dates (%(autre)s). Two "
+"overlapping periods would make the banner ambiguous."
+msgstr ""
+
+#. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
+msgid "%(contact)s away until %(fin)s."
+msgstr ""
+
+#. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
+msgid "%(contact)s: %(nature)s from %(start)s to %(end)s"
 msgstr ""
 
 #. module: bf_contact_absence
 #. odoo-python
 #: code:addons/bf_contact_absence/wizard/bf_absence_closure_wizard.py:0
-msgid "%(poses)s fermeture(s) posée(s), %(sautes)s déjà connue(s)."
+msgid "%(poses)s shutdown(s) recorded, %(sautes)s already known."
 msgstr ""
 
 #. module: bf_contact_absence
 #. odoo-python
 #: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "%(qui)s : absence jusqu'au %(fin)s, retour le %(retour)s."
+msgid "%(qui)s: away until %(fin)s, back on %(retour)s."
 msgstr ""
 
 #. module: bf_contact_absence
 #. odoo-python
 #: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "%(qui)s : fermeture jusqu'au %(fin)s, réouverture le %(retour)s."
+msgid "%(qui)s: closed until %(fin)s, reopening on %(retour)s."
 msgstr ""
 
 #. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "%(qui)s est absent jusqu'au %(fin)s (retour le %(retour)s)."
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_absence_closure_wizard__closure__estival_2026
+msgid "2026 summer holiday"
 msgstr ""
 
 #. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "%(qui)s est fermé jusqu'au %(fin)s (ouverture le %(retour)s)."
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_absence_closure_wizard__closure__hivernal_2026
+msgid "2026-2027 winter holiday"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_absence_closure_wizard__closure__estival_2027
+msgid "2027 summer holiday"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_absence_closure_wizard__closure__hivernal_2027
+msgid "2027-2028 winter holiday"
 msgstr ""
 
 #. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_partner_kanban_absence
-msgid "<i class=\"fa fa-plane me-1\" role=\"img\" aria-label=\"Absent\"/>"
+msgid "<i class=\"fa fa-plane me-1\" role=\"img\" aria-label=\"Away\"/>"
 msgstr ""
 
 #. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_mail_compose_message_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_partner_form_absence
-msgid "<i class=\"fa fa-plane me-2\" role=\"img\" aria-label=\"Absent\"/>"
+msgid "<i class=\"fa fa-plane me-2\" role=\"img\" aria-label=\"Away\"/>"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__nature
+msgid ""
+"A deliberately short list with no health reason: this field is personal data"
+" kept to a minimum."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model_terms:ir.actions.act_window,help:bf_contact_absence.action_bf_partner_absence
+msgid ""
+"A period, a stand-in, and the banner shows up on its own in the chatter of "
+"the record, the task or the opportunity."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_absence_closure_wizard__partner_ids
+msgid ""
+"A shutdown is recorded on the COMPANY: it then warns for each of its "
+"contacts."
 msgstr ""
 
 #. module: bf_contact_absence
@@ -77,14 +122,14 @@ msgid "Absence"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model,name:bf_contact_absence.model_bf_partner_absence
-msgid "Absence d'un contact"
+#: model:ir.model.fields,field_description:bf_contact_absence.field_res_partner__bf_absence_count
+#: model:ir.model.fields,field_description:bf_contact_absence.field_res_users__bf_absence_count
+msgid "Absence count"
 msgstr ""
 
 #. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "Absence de %(contact)s jusqu'au %(fin)s."
+#: model:ir.model.fields,field_description:bf_contact_absence.field_mail_compose_message__bf_absence_hint_html
+msgid "Absence warning"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -99,95 +144,77 @@ msgstr ""
 #. module: bf_contact_absence
 #. odoo-python
 #: code:addons/bf_contact_absence/models/res_partner.py:0
-msgid "Absences de %s"
+msgid "Absences of %s"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.actions.act_window,name:bf_contact_absence.action_bf_partner_absence
-msgid "Absences des contacts"
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__active
+msgid "Active"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.actions.server,name:bf_contact_absence.cron_bf_absence_reminders_ir_actions_server
-msgid "Absences des contacts : rappels de reprise"
+#. odoo-python
+#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
+msgid "An absence cannot end before it starts."
+msgstr ""
+
+#. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
+msgid ""
+"An absence must have an end date. Without one, the warning would stay lit "
+"indefinitely."
+msgstr ""
+
+#. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
+msgid "And %s other recipient(s) away."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
+msgid "Any absence touching the current week, even one that started earlier."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__applies_to_children
+msgid "Applies to every contact of the company"
 msgstr ""
 
 #. module: bf_contact_absence
 #. odoo-javascript
 #: code:addons/bf_contact_absence/static/src/xml/absence_chatter.xml:0
-msgid "Absent"
+msgid "Away"
 msgstr ""
 
 #. module: bf_contact_absence
 #: model:ir.model.fields,field_description:bf_contact_absence.field_res_partner__bf_is_away
 #: model:ir.model.fields,field_description:bf_contact_absence.field_res_users__bf_is_away
-msgid "Absent aujourd'hui"
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_res_partner_filter_absence
+msgid "Away today"
 msgstr ""
 
 #. module: bf_contact_absence
 #: model:ir.model.fields,field_description:bf_contact_absence.field_res_partner__bf_away_until
 #: model:ir.model.fields,field_description:bf_contact_absence.field_res_users__bf_away_until
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_partner_tree_absence
-msgid "Absent jusqu'au"
+msgid "Away until"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_res_partner_filter_absence
-msgid "Absents aujourd'hui"
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
+msgid "Back early"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__active
-msgid "Actif"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__reminder_activity_id
-msgid "Activité de reprise"
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__date_return
+msgid "Back on"
 msgstr ""
 
 #. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_absence_closure_wizard_form
-msgid "Annuler"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__date_to
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__date_to
-msgid "Au"
-msgstr ""
-
-#. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/mail_compose_message.py:0
-msgid "Aucune date de retour connue pour ces destinataires."
-msgstr ""
-
-#. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/wizard/bf_absence_closure_wizard.py:0
-msgid "Aucune entreprise visée. Nommer des sociétés, ou choisir un secteur."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__other
-msgid "Autre"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_mail_compose_message__bf_absence_hint_html
-msgid "Avertissement d'absence"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_res_partner__bf_absence_count
-#: model:ir.model.fields,field_description:bf_contact_absence.field_res_users__bf_absence_count
-msgid "Bf Absence Count"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
-msgid "Cette semaine"
+msgid "Cancel"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -196,39 +223,19 @@ msgid "Check if the contact is a company, otherwise it is a person"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_absence_closure_wizard_form
-msgid "Chez qui"
-msgstr ""
-
-#. module: bf_contact_absence
 #. odoo-python
-#: code:addons/bf_contact_absence/wizard/bf_absence_closure_wizard.py:0
-msgid "Choisir une fermeture, ou saisir ses dates."
+#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
+msgid "Check in on their return"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__leave
-msgid "Congé"
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__partner_ids
+msgid "Companies"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_absence_closure_wizard__closure__estival_2026
-msgid "Congé estival 2026"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_absence_closure_wizard__closure__estival_2027
-msgid "Congé estival 2027"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_absence_closure_wizard__closure__hivernal_2026
-msgid "Congé hivernal 2026-2027"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_absence_closure_wizard__closure__hivernal_2027
-msgid "Congé hivernal 2027-2028"
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__company_id
+msgid "Company"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -236,6 +243,21 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__partner_id
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
 msgid "Contact"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model,name:bf_contact_absence.model_bf_partner_absence
+msgid "Contact absence"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.actions.act_window,name:bf_contact_absence.action_bf_partner_absence
+msgid "Contact absences"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.actions.server,name:bf_contact_absence.cron_bf_absence_reminders_ir_actions_server
+msgid "Contact absences: return reminders"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -251,43 +273,9 @@ msgid "Created on"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__date_to
-msgid ""
-"DERNIER jour d'absence, inclus. Une absence sans fin laisserait un "
-"avertissement allumé pour toujours : la fin est obligatoire."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__date_return
-msgid "De retour le"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_absence_closure_wizard__date_to
-msgid "Dernier jour de fermeture, inclus."
-msgstr ""
-
-#. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "Dernier échange : « %s »."
-msgstr ""
-
-#. module: bf_contact_absence
 #: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__display_name
 #: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__display_name
 msgid "Display Name"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__date_from
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__date_from
-msgid "Du"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
-msgid "Début"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -296,43 +284,54 @@ msgid "Email composition wizard"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__state__running
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
+msgid "Enter either one: the module corrects the other."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__source__manual
+msgid "Entered by hand"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_absence_closure_wizard__industry_id
+msgid "Every company in this industry, in addition to those named above."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__date_from
+msgid "First day away, inclusive."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__date_return
+msgid "First day back. Derived from \"To\", and corrects it when entered instead."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__user_id
+msgid "Followed by"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__date_from
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__date_from
+msgid "From"
+msgstr ""
+
+#. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
-msgid "En cours"
+msgid "From an auto-reply"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__partner_ids
-msgid "Entreprises"
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
+msgid "Group by"
 msgstr ""
 
 #. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "Et %s autre(s) destinataire(s) absent(s)."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__closure
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__closure
-msgid "Fermeture"
-msgstr ""
-
-#. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/wizard/bf_absence_closure_wizard.py:0
-msgid "Fermetures posées"
-msgstr ""
-
-#. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "Filtre non supporté sur l'état d'une absence."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__training
-msgid "Formation ou congrès"
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__vacation
+msgid "Holiday"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -343,7 +342,7 @@ msgstr ""
 
 #. module: bf_contact_absence
 #: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__source__import
-msgid "Importée"
+msgid "Imported"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -352,21 +351,10 @@ msgid "Is a Company"
 msgstr ""
 
 #. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "La fin d'une absence ne peut pas précéder son début."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_res_partner__bf_absence_phrase
-#: model:ir.model.fields,help:bf_contact_absence.field_res_users__bf_absence_phrase
-msgid "La phrase affichée au moment d'écrire."
-msgstr ""
-
-#. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "La relève ne peut pas être la personne absente."
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__date_to
+msgid ""
+"LAST day away, inclusive. An absence without an end would leave a warning "
+"lit forever: the end is mandatory."
 msgstr ""
 
 #. module: bf_contact_absence
@@ -382,25 +370,31 @@ msgid "Last Updated on"
 msgstr ""
 
 #. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_absence_closure_wizard__date_to
+msgid "Last day of the shutdown, inclusive."
+msgstr ""
+
+#. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
+msgid "Last exchange: \"%s\"."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__leave
+msgid "Leave"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_absence_closure_wizard__only_with_contacts
+msgid ""
+"Leaves out companies with neither an attached contact nor an email: a "
+"warning that will never be used is noise."
+msgstr ""
+
+#. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
-msgid ""
-"Le contact est revenu avant la date prévue : l'avertissement s'éteint "
-"aujourd'hui."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_absence_closure_wizard_form
-msgid ""
-"Les vacances de la construction sont publiées un an d'avance par la CCQ.\n"
-"                    Un client du secteur ferme donc à une date connue, qu'aucun répondeur n'a\n"
-"                    besoin de nous apprendre."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__nature
-msgid ""
-"Liste volontairement courte et sans motif de santé : ce champ est une donnée"
-" personnelle qu'on garde au minimum."
+msgid "Meanwhile"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -410,146 +404,136 @@ msgid "Nature"
 msgstr ""
 
 #. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/wizard/bf_absence_closure_wizard.py:0
+msgid "No company targeted. Name companies, or pick an industry."
+msgstr ""
+
+#. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/models/mail_compose_message.py:0
+msgid "No known return date for these recipients."
+msgstr ""
+
+#. module: bf_contact_absence
 #: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__note
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
 msgid "Note"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model_terms:ir.actions.act_window,help:bf_contact_absence.action_bf_partner_absence
-msgid "Noter une absence"
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__applies_to_children
+msgid ""
+"On a company, a shutdown warns for every person attached to it. Untick for "
+"an absence that concerns only the company record itself."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__note
+msgid "One line, for us. Never the text of an auto-reply."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
+msgid "One line, for us. Never the text of an out-of-office reply."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__only_with_contacts
+msgid "Only those we write to"
 msgstr ""
 
 #. module: bf_contact_absence
 #: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__industry_id
-msgid "Ou tout un secteur"
+msgid "Or a whole industry"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
-msgid "Pendant ce temps-là"
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__other
+msgid "Other"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__reminder
-msgid ""
-"Pose une activité « prendre des nouvelles » au lendemain du retour. Le "
-"lendemain, et non le jour même : personne ne veut être le premier message "
-"d'une boîte pleine."
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__source__autoreply
+msgid "Out-of-office responder"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__date_from
-msgid "Premier jour d'absence, inclus."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__date_return
-msgid ""
-"Premier jour de présence. Se déduit de « Au », et le corrige quand on saisit"
-" celui-ci à la place."
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__state__over
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
+msgid "Over"
 msgstr ""
 
 #. module: bf_contact_absence
 #. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "Prendre des nouvelles au retour"
+#: code:addons/bf_contact_absence/wizard/bf_absence_closure_wizard.py:0
+msgid "Pick a shutdown, or enter its dates."
 msgstr ""
 
 #. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_mail_compose_message_absence
-msgid "Programmer à son retour"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__backup_info
 msgid ""
-"Quand la relève n'a pas de fiche : une adresse, un numéro, « la réception »."
+"Queues the message as a scheduled send, on the morning after the return."
 msgstr ""
 
 #. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_absence_closure_wizard_form
-msgid "Quelle fermeture"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__user_id
-msgid "Qui reçoit le rappel de reprise."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
-msgid "Qui, et quand"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_mail_compose_message_absence
 msgid ""
-"Range le message dans les envois différés, au matin du lendemain du retour."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__reminder
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__reminder
-msgid "Rappel au retour"
+"Québec's construction holidays are published a year ahead by the CCQ. A "
+"client in that industry therefore closes on a known date, which no auto-"
+"reply needs to tell us."
 msgstr ""
 
 #. module: bf_contact_absence
 #: model:ir.model.fields,help:bf_contact_absence.field_bf_absence_closure_wizard__reminder
 msgid ""
-"Rarement voulu pour une fermeture d'entreprise : personne ne prend des "
-"nouvelles d'une société qui rouvre."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
-msgid "Regrouper par"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__backup_partner_id
-msgid "Relève"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__backup_info
-msgid "Relève (texte)"
-msgstr ""
-
-#. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid "Relève : %s."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
-msgid "Rentré plus tôt"
+"Rarely wanted for a company shutdown: nobody checks in on a company that "
+"reopens."
 msgstr ""
 
 #. module: bf_contact_absence
 #: model:ir.model.fields,field_description:bf_contact_absence.field_mail_compose_message__bf_absence_return_date
-msgid "Retour du destinataire"
+msgid "Recipient's return"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__source__autoreply
-msgid "Répondeur d'absence"
+#: model_terms:ir.actions.act_window,help:bf_contact_absence.action_bf_partner_absence
+msgid "Record an absence"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__source__manual
-msgid "Saisie à la main"
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__reminder
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__reminder
+msgid "Reminder on return"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
-msgid "Saisir l'un ou l'autre : le module corrige le second."
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__reminder_activity_id
+msgid "Return activity"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__state__running
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
+msgid "Running"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_mail_compose_message_absence
+msgid "Schedule for their return"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__reminder
+msgid ""
+"Schedules a \"check in\" activity for the day after the return. The day "
+"after, not the day itself: nobody wants to be the first message in a full "
+"inbox."
 msgstr ""
 
 #. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_absence_closure_wizard_form
-msgid "Semer"
+msgid "Seed"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -557,17 +541,19 @@ msgstr ""
 #: model:ir.model,name:bf_contact_absence.model_bf_absence_closure_wizard
 #: model:ir.ui.menu,name:bf_contact_absence.menu_bf_absence_closure_wizard
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_absence_closure_wizard_form
-msgid "Semer une fermeture connue"
+msgid "Seed a known shutdown"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__only_with_contacts
-msgid "Seulement celles à qui on écrit"
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__closure
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__closure
+msgid "Shutdown"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__company_id
-msgid "Société"
+#. odoo-python
+#: code:addons/bf_contact_absence/wizard/bf_absence_closure_wizard.py:0
+msgid "Shutdowns recorded"
 msgstr ""
 
 #. module: bf_contact_absence
@@ -576,124 +562,110 @@ msgid "Source"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__user_id
-msgid "Suivi par"
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__backup_partner_id
+msgid "Stand-in"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__applies_to_children
-msgid ""
-"Sur une société, une fermeture avertit pour toutes les personnes qui lui "
-"sont rattachées. Décocher pour une absence qui ne vise que la fiche de la "
-"société elle-même."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__state__over
-msgid "Terminée"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
-msgid "Terminées"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
-msgid "Toute absence qui touche la semaine en cours, même commencée avant."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_absence_closure_wizard__industry_id
-msgid ""
-"Toutes les sociétés de ce secteur, en plus de celles nommées ci-dessus."
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__backup_info
+msgid "Stand-in (text)"
 msgstr ""
 
 #. module: bf_contact_absence
 #. odoo-python
 #: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
-msgid ""
-"Une absence doit avoir une date de fin. Sans elle, l'avertissement resterait"
-" allumé indéfiniment."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_absence_closure_wizard__partner_ids
-msgid ""
-"Une fermeture se pose sur la SOCIÉTÉ : elle avertit ensuite pour chacun de "
-"ses contacts."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
-msgid "Une ligne, pour nous. Jamais le texte d'un répondeur d'absence."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__note
-msgid "Une ligne, pour nous. Jamais le texte d'un répondeur."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model_terms:ir.actions.act_window,help:bf_contact_absence.action_bf_partner_absence
-msgid ""
-"Une période, une relève, et le bandeau apparaît tout seul sur le chatter de "
-"la fiche, de la tâche ou de l'opportunité."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__vacation
-msgid "Vacances"
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__applies_to_children
-msgid "Vaut pour tous les contacts de la société"
+msgid "Stand-in: %s."
 msgstr ""
 
 #. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
-msgid "Venues d'un répondeur"
+msgid "Start"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__state
+msgid "State"
 msgstr ""
 
 #. module: bf_contact_absence
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
-msgid "reception@exemple.test, 450 555-1212"
-msgstr ""
-
-#. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/res_partner.py:0
-msgid "« Absent aujourd'hui » ne se filtre qu'avec = ou !=."
-msgstr ""
-
-#. module: bf_contact_absence
-#. odoo-python
-#: code:addons/bf_contact_absence/models/res_partner.py:0
-msgid "« Absent jusqu'au » ne se filtre que par comparaison de date."
-msgstr ""
-
-#. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__backup_partner_id
 msgid ""
-"À qui écrire pendant l'absence. C'est la moitié de l'utilité du module : un "
-"bandeau qui redirige vaut mieux qu'un bandeau qui dit seulement d'attendre."
+"The contact came back earlier than planned: the warning goes out today."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_res_partner__bf_absence_phrase
+#: model:ir.model.fields,help:bf_contact_absence.field_res_users__bf_absence_phrase
+msgid "The sentence shown at the moment of writing."
+msgstr ""
+
+#. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
+msgid "The stand-in cannot be the person who is away."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
+msgid "This week"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_absence_closure_wizard__date_to
+#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__date_to
+msgid "To"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__nature__training
+msgid "Training or conference"
+msgstr ""
+
+#. module: bf_contact_absence
+#. odoo-python
+#: code:addons/bf_contact_absence/models/bf_partner_absence.py:0
+msgid "Unsupported filter on an absence state."
 msgstr ""
 
 #. module: bf_contact_absence
 #: model:ir.model.fields.selection,name:bf_contact_absence.selection__bf_partner_absence__state__planned
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_search
-msgid "À venir"
+msgid "Upcoming"
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,help:bf_contact_absence.field_bf_absence_closure_wizard__only_with_contacts
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__backup_info
+msgid "When the stand-in has no record: an address, a number, \"the front desk\"."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_absence_closure_wizard_form
+msgid "Where"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_absence_closure_wizard_form
+msgid "Which shutdown"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__user_id
+msgid "Who receives the return reminder."
+msgstr ""
+
+#. module: bf_contact_absence
+#: model:ir.model.fields,help:bf_contact_absence.field_bf_partner_absence__backup_partner_id
 msgid ""
-"Écarte les sociétés qui n'ont ni contact rattaché ni courriel : un "
-"avertissement qui ne servira jamais est du bruit."
+"Who to write to during the absence. That is half the point of the module: a "
+"banner that redirects beats a banner that only says to wait."
 msgstr ""
 
 #. module: bf_contact_absence
-#: model:ir.model.fields,field_description:bf_contact_absence.field_bf_partner_absence__state
-msgid "État"
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
+msgid "Who, and when"
+msgstr ""
+
+#. module: bf_contact_absence
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence.view_bf_partner_absence_form
+msgid "frontdesk@example.test, 450 555-1212"
 msgstr ""

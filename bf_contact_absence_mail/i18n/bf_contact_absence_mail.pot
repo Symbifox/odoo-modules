@@ -1,38 +1,43 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_contact_absence_mail
-#
+# Translation template for Symbifox Absences des contacts : lecture des répondeurs.
+# The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_contact_absence_mail 18.0.1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 04:40+0000\n"
-"PO-Revision-Date: 2026-09-13 04:40+0000\n"
+"POT-Creation-Date: 2026-09-14 03:27+0000\n"
+"PO-Revision-Date: 2026-09-14 03:27+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 
 #. module: bf_contact_absence_mail
 #. odoo-python
 #: code:addons/bf_contact_absence_mail/models/bf_email.py:0
-msgid "%s absence(s) proposée(s)."
+msgid "%s absence(s) proposed."
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_absence_backfill_wizard__days
 msgid ""
-"400 jours couvrent un cycle complet de vacances, été comme hiver, sans "
-"relire des années d'archives."
+"400 days cover a full holiday cycle, summer and winter, without rereading "
+"years of archives."
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_email_form_absence
 msgid ""
-"<i class=\"fa fa-plane me-2\" role=\"img\" aria-label=\"Absence\"/>\n"
-"                    Ce courriel a produit une proposition d'absence."
+"<i class=\"fa fa-plane me-2\" role=\"img\" aria-label=\"Absence\"/> This "
+"email produced an absence proposal."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_absence_backfill_wizard__limit
+msgid ""
+"A long pass runs in one transaction: two passes are better than an hour-long"
+" lock."
 msgstr ""
 
 #. module: bf_contact_absence_mail
@@ -41,114 +46,67 @@ msgid "Absence"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__absence_id
-msgid "Absence posée"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_email__bf_absence_suggestion_id
-msgid "Absence proposée"
-msgstr ""
-
-#. module: bf_contact_absence_mail
 #: model:ir.model,name:bf_contact_absence_mail.model_bf_partner_absence_suggestion
-msgid "Absence proposée par un répondeur"
+msgid "Absence proposed by an auto-reply"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.actions.server,name:bf_contact_absence_mail.cron_bf_absence_scan_ir_actions_server
-msgid "Absences des contacts : lire les répondeurs reçus"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#. odoo-python
-#: code:addons/bf_contact_absence_mail/wizard/bf_absence_backfill_wizard.py:0
-#: model:ir.actions.act_window,name:bf_contact_absence_mail.action_bf_absence_suggestion
-#: model:ir.ui.menu,name:bf_contact_absence_mail.menu_bf_absence_suggestion
-msgid "Absences proposées"
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__absence_id
+msgid "Absence recorded"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_form
-msgid "Accepter"
+msgid "Accept"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_list
-msgid "Accepter et poser l'absence"
+msgid "Accept and record the absence"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__state__accepted
-msgid "Acceptée"
-msgstr ""
-
-#. module: bf_contact_absence_mail
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
-msgid "Acceptées"
+msgid "Accepted"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__kind__acknowledgement
-msgid "Accusé de réception"
+msgid "Acknowledgement"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
-msgid "Accusés de réception"
+msgid "Acknowledgements"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_backfill_wizard_form
-msgid "Annuler"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_partner_absence_suggestion__backup_partner_id
+#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_partner_absence_suggestion__kind
 msgid ""
-"Apparié sur l'adresse quand elle correspond à une fiche existante. Jamais "
-"créé."
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__date_to
-msgid "Au (dernier jour absent)"
+"An application or request acknowledgement carries the subject of an auto-"
+"reply without being one. It is rejected up front and kept for the record, "
+"rather than cluttering the pile."
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_absence_backfill_wizard__limit
-msgid "Au plus (courriels)"
+msgid "At most (emails)"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#. odoo-python
-#: code:addons/bf_contact_absence_mail/wizard/bf_absence_backfill_wizard.py:0
-msgid "Aucun répondeur d'absence dans le courrier lu."
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__bf_email_id
+msgid "Auto-reply received"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__other
-msgid "Autre"
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_backfill_wizard_form
+msgid "Cancel"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model.constraint,message:bf_contact_absence_mail.constraint_bf_partner_absence_suggestion_bf_absence_suggestion_email_uniq
-msgid "Ce courriel a déjà produit une proposition d'absence."
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_form
-msgid "Ce qu'on en retient"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_form
-msgid "Ce que le répondeur disait"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__leave
-msgid "Congé"
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__company_id
+msgid "Company"
 msgstr ""
 
 #. module: bf_contact_absence_mail
@@ -158,8 +116,8 @@ msgid "Contact"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model,name:bf_contact_absence_mail.model_bf_email
-msgid "Courriel"
+#: model:ir.actions.server,name:bf_contact_absence_mail.cron_bf_absence_scan_ir_actions_server
+msgid "Contact absences: read received auto-replies"
 msgstr ""
 
 #. module: bf_contact_absence_mail
@@ -176,7 +134,7 @@ msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__read_by
-msgid "Dates lues par"
+msgid "Dates read by"
 msgstr ""
 
 #. module: bf_contact_absence_mail
@@ -187,22 +145,17 @@ msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__date_from
-msgid "Du"
+msgid "From"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__closure
-msgid "Fermeture"
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
+msgid "Group by"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__training
-msgid "Formation ou congrès"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__kind
-msgid "Genre"
+#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__vacation
+msgid "Holiday"
 msgstr ""
 
 #. module: bf_contact_absence_mail
@@ -212,21 +165,8 @@ msgid "ID"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_absence_backfill_wizard__pending
-msgid "Jamais lus dans la fenêtre"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_partner_absence_suggestion__backup_hint
-msgid "L'adresse ou le numéro nommé dans le répondeur."
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#. odoo-python
-#: code:addons/bf_contact_absence_mail/models/bf_absence_suggestion.py:0
-msgid ""
-"La période de cette proposition est incomplète : saisir « Du » et « Au » "
-"avant de l'accepter."
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__kind
+msgid "Kind"
 msgstr ""
 
 #. module: bf_contact_absence_mail
@@ -242,56 +182,19 @@ msgid "Last Updated on"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#. odoo-python
-#: code:addons/bf_contact_absence_mail/models/bf_absence_suggestion.py:0
-msgid "Le courriel d'origine n'est plus disponible."
+#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__leave
+msgid "Leave"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_partner_absence_suggestion__bf_email_id
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_absence_backfill_wizard__days
+msgid "Look back (days)"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_partner_absence_suggestion__backup_partner_id
 msgid ""
-"Le courriel d'origine reste à sa place : rien de son texte n'est recopié "
-"ici."
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_backfill_wizard_form
-msgid ""
-"Le courrier déjà reçu contient des répondeurs d'absence que personne n'a\n"
-"                    encore lus. Cette passe les relève une fois et propose les périodes ;\n"
-"                    elle n'écrit aucune absence toute seule."
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_form
-msgid ""
-"Le répondeur ne donnait pas de période lisible. Saisir les dates\n"
-"                        avant d'accepter, ou refuser."
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.actions.act_window,help:bf_contact_absence_mail.action_bf_absence_suggestion
-msgid ""
-"Les répondeurs d'absence reçus apparaissent ici. Un clic les accepte, un "
-"clic les refuse."
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_backfill_wizard_form
-msgid "Lire"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.actions.act_window,name:bf_contact_absence_mail.action_bf_absence_backfill_wizard
-#: model:ir.model,name:bf_contact_absence_mail.model_bf_absence_backfill_wizard
-#: model:ir.ui.menu,name:bf_contact_absence_mail.menu_bf_absence_backfill
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_backfill_wizard_form
-msgid "Lire le courrier déjà reçu"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_email__bf_absence_scanned
-msgid "Lu par la vigie des absences"
+"Matched on the address when it belongs to an existing record. Never created."
 msgstr ""
 
 #. module: bf_contact_absence_mail
@@ -300,121 +203,200 @@ msgid "Nature"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__email_subject
-msgid "Objet"
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_absence_backfill_wizard__pending
+msgid "Never read in the window"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#. odoo-python
+#: code:addons/bf_contact_absence_mail/wizard/bf_absence_backfill_wizard.py:0
+msgid "No out-of-office reply in the mail read."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
+msgid "No readable period"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model_terms:ir.actions.act_window,help:bf_contact_absence_mail.action_bf_absence_suggestion
+msgid "Nothing to decide"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__other
+msgid "Other"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_email__bf_absence_suggestion_id
+msgid "Proposed absence"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#. odoo-python
+#: code:addons/bf_contact_absence_mail/wizard/bf_absence_backfill_wizard.py:0
+#: model:ir.actions.act_window,name:bf_contact_absence_mail.action_bf_absence_suggestion
+#: model:ir.ui.menu,name:bf_contact_absence_mail.menu_bf_absence_suggestion
+msgid "Proposed absences"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__backup_hint
+msgid "Proposed stand-in"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_backfill_wizard_form
+msgid "Read"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_email__bf_absence_scanned
+msgid "Read by the absence watch"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.actions.act_window,name:bf_contact_absence_mail.action_bf_absence_backfill_wizard
+#: model:ir.model,name:bf_contact_absence_mail.model_bf_absence_backfill_wizard
+#: model:ir.ui.menu,name:bf_contact_absence_mail.menu_bf_absence_backfill
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_backfill_wizard_form
+msgid "Read mail already received"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__complete
-msgid "Période lisible"
+msgid "Readable period"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__detected_by
-msgid "Reconnu par"
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__email_date
+msgid "Received on"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model_terms:ir.actions.act_window,help:bf_contact_absence_mail.action_bf_absence_suggestion
+msgid ""
+"Received out-of-office replies appear here. One click accepts, one click "
+"rejects."
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
 msgid ""
-"Reconnus comme répondeurs par leur objet, mais ce sont des accusés de "
-"réception de candidature ou de demande."
+"Recognised as auto-replies by their subject, but they are application or "
+"request acknowledgements."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__detected_by
+msgid "Recognised by"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_form
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_list
-msgid "Refuser"
+msgid "Reject"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__state__rejected
-msgid "Refusée"
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
+msgid "Rejected"
 msgstr ""
 
 #. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
-msgid "Refusées"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
-msgid "Regrouper par"
+#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__closure
+msgid "Shutdown"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__backup_partner_id
-msgid "Relève"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__backup_hint
-msgid "Relève proposée"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_absence_backfill_wizard__days
-msgid "Remonter de (jours)"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__email_date
-msgid "Reçu le"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.actions.act_window,help:bf_contact_absence_mail.action_bf_absence_suggestion
-msgid "Rien à décider"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__bf_email_id
-msgid "Répondeur reçu"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
-msgid "Sans période lisible"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__company_id
-msgid "Société"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_partner_absence_suggestion__kind
-msgid ""
-"Un accusé de réception de candidature ou de demande porte l'objet d'un "
-"répondeur sans en être un. Il est refusé d'office et gardé pour la trace, "
-"plutôt que d'encombrer la pile."
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_absence_backfill_wizard__limit
-msgid ""
-"Une passe longue tient dans une transaction : mieux vaut deux passes qu'un "
-"verrou d'une heure."
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__vacation
-msgid "Vacances"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_list
-msgid "Voir le courriel d'origine"
-msgstr ""
-
-#. module: bf_contact_absence_mail
-#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__state__pending
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
-msgid "À décider"
+msgid "Stand-in"
 msgstr ""
 
 #. module: bf_contact_absence_mail
 #: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__state
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
-msgid "État"
+msgid "State"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__email_subject
+msgid "Subject"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_partner_absence_suggestion__backup_hint
+msgid "The address or number named in the auto-reply."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_form
+msgid ""
+"The auto-reply gave no readable period. Enter the dates before accepting, or"
+" reject."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_backfill_wizard_form
+msgid ""
+"The mail already received holds out-of-office replies nobody has read yet. "
+"This pass picks them up once and proposes the periods; it never records an "
+"absence on its own."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#. odoo-python
+#: code:addons/bf_contact_absence_mail/models/bf_absence_suggestion.py:0
+msgid "The original email is no longer available."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,help:bf_contact_absence_mail.field_bf_partner_absence_suggestion__bf_email_id
+msgid "The original email stays where it is: none of its text is copied here."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.constraint,message:bf_contact_absence_mail.constraint_bf_partner_absence_suggestion_bf_absence_suggestion_email_uniq
+msgid "This email already produced an absence proposal."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#. odoo-python
+#: code:addons/bf_contact_absence_mail/models/bf_absence_suggestion.py:0
+msgid ""
+"This proposal's period is incomplete: enter \"From\" and \"To\" before "
+"accepting it."
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields,field_description:bf_contact_absence_mail.field_bf_partner_absence_suggestion__date_to
+msgid "To (last day away)"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__state__pending
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_search
+msgid "To decide"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model:ir.model.fields.selection,name:bf_contact_absence_mail.selection__bf_partner_absence_suggestion__nature__training
+msgid "Training or conference"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_list
+msgid "View the original email"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_form
+msgid "What the auto-reply said"
+msgstr ""
+
+#. module: bf_contact_absence_mail
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_mail.view_bf_absence_suggestion_form
+msgid "What we keep"
 msgstr ""

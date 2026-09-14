@@ -1,42 +1,40 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_contact_absence_calendar
-#
+# Translation template for Symbifox Absences des contacts : calendrier Nextcloud.
+# The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: bf_contact_absence_calendar 18.0.1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 06:30+0000\n"
-"PO-Revision-Date: 2026-09-13 06:30+0000\n"
+"POT-Creation-Date: 2026-09-14 03:27+0000\n"
+"PO-Revision-Date: 2026-09-14 03:27+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
 
 #. module: bf_contact_absence_calendar
 #. odoo-python
 #: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
 msgid ""
-"%(poses)s proposée(s), %(deja)s déjà connue(s), %(sans)s sans contact "
-"reconnu."
+"%(poses)s proposed, %(deja)s already known, %(sans)s with no recognised "
+"contact."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model,name:bf_contact_absence_calendar.model_bf_absence_calendar_source
+msgid "Absence calendar to read"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.actions.act_window,name:bf_contact_absence_calendar.action_bf_absence_calendar_source
+#: model:ir.ui.menu,name:bf_contact_absence_calendar.menu_bf_absence_calendar_source
+msgid "Absence calendars"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
 #: model:ir.model,name:bf_contact_absence_calendar.model_bf_partner_absence_suggestion
-msgid "Absence proposée par un répondeur"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model:ir.actions.server,name:bf_contact_absence_calendar.cron_bf_absence_calendar_ir_actions_server
-msgid "Absences des contacts : lire le calendrier"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#. odoo-python
-#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
-msgid "Absences proposées"
+msgid "Absence proposed by an auto-reply"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
@@ -45,225 +43,189 @@ msgid "Active"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__days_ahead
-msgid "Aller jusqu'à (jours)"
+#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_source__days_back
+msgid "An absence noted more than four months ago is already over."
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__other
-msgid "Autre"
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_alias.py:0
+msgid "An empty shortcut teaches nothing."
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model,name:bf_contact_absence_calendar.model_bf_absence_calendar_source
-msgid "Calendrier d'absences à lire"
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_alias__source_id
+msgid "Calendar"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.actions.act_window,name:bf_contact_absence_calendar.action_bf_absence_calendar_source
-#: model:ir.ui.menu,name:bf_contact_absence_calendar.menu_bf_absence_calendar_source
-msgid "Calendriers d'absences"
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_partner_absence_suggestion__calendar_uid
+msgid "Calendar entry"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__leave
-msgid "Congé"
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__calendar_slug
+msgid "Calendar identifier"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__config_key
-msgid "Connexion Nextcloud"
+#: model:ir.model,name:bf_contact_absence_calendar.model_bf_absence_calendar_alias
+msgid "Calendar shortcut"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_partner_absence_suggestion__calendar_label
+msgid "Calendar title"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.actions.server,name:bf_contact_absence_calendar.cron_bf_absence_calendar_ir_actions_server
+msgid "Contact absences: read the calendar"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_alias__create_uid
 #: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__create_uid
 msgid "Created by"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_alias__create_date
 #: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__create_date
 msgid "Created on"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__last_run
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
-msgid "Dernière lecture"
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__nature
+msgid "Default nature"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_alias__display_name
 #: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__display_name
 msgid "Display Name"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_partner_absence_suggestion__calendar_uid
-msgid "Entrée du calendrier"
+#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_source__name
+msgid "For you. For example \"Client holidays\"."
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__closure
-msgid "Fermeture"
+#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__vacation
+msgid "Holiday"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__training
-msgid "Formation ou congrès"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_alias__id
 #: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__id
 msgid "ID"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__calendar_slug
-msgid "Identifiant du calendrier"
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
+msgid "Initials or nickname"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_partner_absence_suggestion__calendar_uid
-msgid ""
-"L'identifiant de l'événement d'origine. C'est lui qui évite de proposer deux"
-" fois la même entrée à chaque lecture."
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_alias__partner_id
+msgid "Is this contact"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_source__config_key
-msgid ""
-"La configuration de synchronisation déjà en place fournit l'adresse, le "
-"compte et le mot de passe d'application. Aucun identifiant neuf n'est "
-"demandé."
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#. odoo-python
-#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
-msgid "La connexion Nextcloud choisie n'existe plus."
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#. odoo-python
-#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
-msgid "La connexion Nextcloud n'a ni adresse ni compte."
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#. odoo-python
-#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
-msgid "La connexion Nextcloud n'a pas de mot de passe d'application."
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#. odoo-python
-#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
-msgid ""
-"La synchronisation de calendrier Nextcloud n'est pas installée : c'est elle "
-"qui porte l'adresse du serveur et le mot de passe d'application."
-msgstr ""
-
-#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_alias__write_uid
 #: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__write_uid
 msgid "Last Updated by"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_alias__write_date
 #: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__write_date
 msgid "Last Updated on"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#. odoo-python
-#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
-msgid ""
-"Le calendrier a répondu %(code)s. Vérifier l'identifiant du calendrier et la"
-" connexion."
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__last_run
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
+msgid "Last read"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
+#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__leave
+msgid "Leave"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__days_ahead
+msgid "Look ahead (days)"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__days_back
+msgid "Look back (days)"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
 msgid ""
-"Le calendrier est lu, jamais écrit, et il n'entre pas dans l'agenda\n"
-"                        d'Odoo. Ce qui y est trouvé est proposé, et une personne décide."
+"Nextcloud calendar synchronisation is not installed: it is what holds the "
+"server address and the app password."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__config_key
+msgid "Nextcloud connection"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
+msgid "Not recognised: %s"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
+msgid "Nothing new."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__other
+msgid "Other"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
+msgid "Pick the Nextcloud connection before reading the calendar."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
+msgid "Proposed absences"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
 #: model_terms:ir.actions.act_window,help:bf_contact_absence_calendar.action_bf_absence_calendar_source
-msgid ""
-"Le calendrier où vous notez les vacances de vos clients devient une source\n"
-"               de propositions, sans rien y écrire."
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_source__calendar_slug
-msgid ""
-"Le dernier morceau de l'adresse du calendrier, par exemple « migrated-"
-"vacances-cts »."
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_partner_absence_suggestion__calendar_label
-msgid ""
-"Le titre tel qu'il est écrit dans le calendrier, pour qu'on puisse juger "
-"l'appariement."
+msgid "Read a hand-kept calendar"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
 #: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_list
-msgid "Lire maintenant"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model_terms:ir.actions.act_window,help:bf_contact_absence_calendar.action_bf_absence_calendar_source
-msgid "Lire un calendrier tenu à la main"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__nature
-msgid "Nature par défaut"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__name
-msgid "Nom"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#. odoo-python
-#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
-msgid "Non reconnus : %s"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
-msgid "Où lire"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_source__name
-msgid "Pour vous. Par exemple « Vacances des clients »."
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
-msgid "Quoi lire"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__days_back
-msgid "Remonter de (jours)"
-msgstr ""
-
-#. module: bf_contact_absence_calendar
-#. odoo-python
-#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
-msgid "Rien de neuf."
+msgid "Read now"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
 #: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__last_message
-msgid "Résultat"
+msgid "Result"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
@@ -272,18 +234,126 @@ msgid "Sequence"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_partner_absence_suggestion__calendar_label
-msgid "Titre au calendrier"
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_source__alias_ids
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
+msgid "Shortcuts"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_source__days_back
-msgid "Une absence notée il y a plus de quatre mois est déjà finie."
+#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__closure
+msgid "Shutdown"
 msgstr ""
 
 #. module: bf_contact_absence_calendar
-#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__vacation
-msgid "Vacances"
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
+msgid "The Nextcloud connection has neither an address nor an account."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
+msgid "The Nextcloud connection has no app password."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
+msgid ""
+"The calendar answered %(code)s. Check the calendar identifier and the "
+"connection."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
+msgid ""
+"The calendar is read, never written, and it does not enter Odoo's calendar. "
+"What is found is proposed, and a person decides."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model_terms:ir.actions.act_window,help:bf_contact_absence_calendar.action_bf_absence_calendar_source
+msgid ""
+"The calendar where you note your clients' holidays becomes a source of "
+"proposals, without writing anything to it."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#. odoo-python
+#: code:addons/bf_contact_absence_calendar/models/bf_absence_calendar_source.py:0
+msgid "The chosen Nextcloud connection no longer exists."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_partner_absence_suggestion__calendar_uid
+msgid ""
+"The identifier of the original event. It is what keeps the same entry from "
+"being proposed twice on each read."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_source__calendar_slug
+msgid ""
+"The last part of the calendar address, for example \"migrated-vacances-"
+"cts\"."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_alias__label
+msgid ""
+"The shortcut as it appears, for example initials. Case and accents do not "
+"matter."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_source__config_key
+msgid ""
+"The synchronisation already in place provides the address, the account and "
+"the app password. No new credential is asked for."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_partner_absence_suggestion__calendar_label
+msgid "The title as written in the calendar, so the match can be judged."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.constraint,message:bf_contact_absence_calendar.constraint_bf_absence_calendar_alias_bf_absence_alias_uniq
+msgid "This shortcut is already defined for this calendar."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields.selection,name:bf_contact_absence_calendar.selection__bf_absence_calendar_source__nature__training
+msgid "Training or conference"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,help:bf_contact_absence_calendar.field_bf_absence_calendar_source__alias_ids
+msgid ""
+"What gets written in the calendar that is nobody's name: initials, a "
+"nickname, a file name."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
+msgid ""
+"What gets written in the calendar that is nobody's name: initials, a "
+"nickname, a file name. The module does not guess it, it learns it here."
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
+msgid "What to read"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model_terms:ir.ui.view,arch_db:bf_contact_absence_calendar.view_bf_absence_calendar_source_form
+msgid "Where to read"
+msgstr ""
+
+#. module: bf_contact_absence_calendar
+#: model:ir.model.fields,field_description:bf_contact_absence_calendar.field_bf_absence_calendar_alias__label
+msgid "Written in the calendar"
 msgstr ""
 
 #. module: bf_contact_absence_calendar

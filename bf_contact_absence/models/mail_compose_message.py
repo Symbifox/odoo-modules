@@ -21,12 +21,12 @@ class MailComposeMessage(models.TransientModel):
     _inherit = "mail.compose.message"
 
     bf_absence_hint_html = fields.Html(
-        string="Avertissement d'absence",
+        string="Absence warning",
         compute="_compute_bf_absence_hint",
         sanitize=False,
     )
     bf_absence_return_date = fields.Date(
-        string="Retour du destinataire",
+        string="Recipient's return",
         compute="_compute_bf_absence_hint",
     )
 
@@ -52,7 +52,7 @@ class MailComposeMessage(models.TransientModel):
         self.ensure_one()
         if not self.bf_absence_return_date:
             raise UserError(_(
-                "Aucune date de retour connue pour ces destinataires."))
+                "No known return date for these recipients."))
         quand = self.env["bf.partner.absence"]._return_datetime(
             self.bf_absence_return_date)
         return self.action_schedule_message(quand)

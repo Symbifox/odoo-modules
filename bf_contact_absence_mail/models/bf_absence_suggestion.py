@@ -29,72 +29,74 @@ _logger = logging.getLogger(__name__)
 
 class BfPartnerAbsenceSuggestion(models.Model):
     _name = "bf.partner.absence.suggestion"
-    _description = "Absence proposée par un répondeur"
+    _description = "Absence proposed by an auto-reply"
     _order = "create_date desc, id desc"
 
     partner_id = fields.Many2one(
         comodel_name="res.partner", string="Contact",
         required=True, index=True, ondelete="cascade")
     bf_email_id = fields.Many2one(
-        comodel_name="bf.email", string="Répondeur reçu",
+        comodel_name="bf.email", string="Auto-reply received",
         ondelete="set null", index=True,
-        help="Le courriel d'origine reste à sa place : rien de son texte "
-             "n'est recopié ici.")
-    email_date = fields.Datetime(related="bf_email_id.date", string="Reçu le",
+        help="The original email stays where it is: none of its text is "
+             "copied here.")
+    email_date = fields.Datetime(related="bf_email_id.date", string="Received "
+                                                                    "on",
                                  store=True)
-    email_subject = fields.Char(related="bf_email_id.subject", string="Objet")
+    email_subject = fields.Char(related="bf_email_id.subject", string="Subject")
 
-    date_from = fields.Date(string="Du")
-    date_to = fields.Date(string="Au (dernier jour absent)")
+    date_from = fields.Date(string="From")
+    date_to = fields.Date(string="To (last day away)")
     nature = fields.Selection(
         selection=[
-            ("vacation", "Vacances"),
-            ("leave", "Congé"),
-            ("closure", "Fermeture"),
-            ("training", "Formation ou congrès"),
-            ("other", "Autre"),
+            ("vacation", "Holiday"),
+            ("leave", "Leave"),
+            ("closure", "Shutdown"),
+            ("training", "Training or conference"),
+            ("other", "Other"),
         ],
         string="Nature", default="vacation", required=True)
     backup_hint = fields.Char(
-        string="Relève proposée",
-        help="L'adresse ou le numéro nommé dans le répondeur.")
+        string="Proposed stand-in",
+        help="The address or number named in the auto-reply.")
     backup_partner_id = fields.Many2one(
-        comodel_name="res.partner", string="Relève",
+        comodel_name="res.partner", string="Stand-in",
         compute="_compute_backup_partner_id", store=True, readonly=False,
-        help="Apparié sur l'adresse quand elle correspond à une fiche "
-             "existante. Jamais créé.")
+        help="Matched on the address when it belongs to an existing "
+             "record. Never created.")
 
     kind = fields.Selection(
         selection=[
             ("absence", "Absence"),
-            ("acknowledgement", "Accusé de réception"),
+            ("acknowledgement", "Acknowledgement"),
         ],
-        string="Genre", default="absence", required=True, index=True,
-        help="Un accusé de réception de candidature ou de demande porte "
-             "l'objet d'un répondeur sans en être un. Il est refusé d'office "
-             "et gardé pour la trace, plutôt que d'encombrer la pile.")
-    detected_by = fields.Char(string="Reconnu par", readonly=True)
-    read_by = fields.Char(string="Dates lues par", readonly=True)
-    complete = fields.Boolean(string="Période lisible",
+        string="Kind", default="absence", required=True, index=True,
+        help="An application or request acknowledgement carries the "
+             "subject of an auto-reply without being one. It is rejected "
+             "up front and kept for the record, rather than cluttering "
+             "the pile.")
+    detected_by = fields.Char(string="Recognised by", readonly=True)
+    read_by = fields.Char(string="Dates read by", readonly=True)
+    complete = fields.Boolean(string="Readable period",
                               compute="_compute_complete", store=True)
 
     state = fields.Selection(
         selection=[
-            ("pending", "À décider"),
-            ("accepted", "Acceptée"),
-            ("rejected", "Refusée"),
+            ("pending", "To decide"),
+            ("accepted", "Accepted"),
+            ("rejected", "Rejected"),
         ],
-        string="État", default="pending", required=True, index=True)
+        string="State", default="pending", required=True, index=True)
     absence_id = fields.Many2one(
-        comodel_name="bf.partner.absence", string="Absence posée",
+        comodel_name="bf.partner.absence", string="Absence recorded",
         readonly=True, ondelete="set null")
     company_id = fields.Many2one(
-        comodel_name="res.company", string="Société",
+        comodel_name="res.company", string="Company",
         default=lambda self: self.env.company)
 
     _sql_constraints = [
         ("bf_absence_suggestion_email_uniq", "unique(bf_email_id)",
-         "Ce courriel a déjà produit une proposition d'absence."),
+         "This email already produced an absence proposal."),
     ]
 
     @api.depends("date_from", "date_to")
@@ -132,8 +134,8 @@ class BfPartnerAbsenceSuggestion(models.Model):
                 continue
             if not suggestion.complete:
                 raise UserError(_(
-                    "La période de cette proposition est incomplète : "
-                    "saisir « Du » et « Au » avant de l'accepter."))
+                    "This proposal's period is incomplete: enter \"From\" "
+                    "and \"To\" before accepting it."))
             absence = Absence.create({
                 "partner_id": suggestion.partner_id.id,
                 "date_from": suggestion.date_from,
@@ -163,7 +165,7 @@ class BfPartnerAbsenceSuggestion(models.Model):
     def action_open_email(self):
         self.ensure_one()
         if not self.bf_email_id:
-            raise UserError(_("Le courriel d'origine n'est plus disponible."))
+            raise UserError(_("The original email is no longer available."))
         return {
             "type": "ir.actions.act_window",
             "res_model": "bf.email",

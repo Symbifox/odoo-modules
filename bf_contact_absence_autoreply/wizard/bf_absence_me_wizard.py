@@ -26,60 +26,62 @@ from ..models.bf_absence_house_message import TONS
 
 class BfAbsenceMeWizard(models.TransientModel):
     _name = "bf.absence.me.wizard"
-    _description = "Je m'absente"
+    _description = "I'm away"
 
     date_from = fields.Date(
-        string="Du",
+        string="From",
         required=True,
         default=fields.Date.context_today,
-        help="Premier jour d'absence, inclus.",
+        help="First day away, inclusive.",
     )
     date_to = fields.Date(
-        string="Au",
+        string="To",
         required=True,
         default=lambda self: fields.Date.context_today(self) + timedelta(days=4),
-        help="DERNIER jour d'absence, inclus. La fin est obligatoire : sans "
-             "elle, un répondeur reste allumé et personne ne s'en aperçoit.",
+        help="LAST day away, inclusive. The end is mandatory: without it, "
+             "a responder stays on and nobody notices.",
     )
     date_return = fields.Date(
-        string="De retour le",
+        string="Back on",
         compute="_compute_date_return",
         readonly=True,
-        help="Premier jour de présence, déduit de la date de fin.",
+        help="First day back, derived from the end date.",
     )
     nature = fields.Selection(
+        # Traduite : une sélection calculée n'a pas de libellés en base, et
+        # `.selection` rendrait ceux de la source.
         selection=lambda self: self.env["bf.partner.absence"]._fields[
-            "nature"].selection,
+            "nature"]._description_selection(self.env),
         string="Nature",
         required=True,
         default="vacation",
     )
     backup_partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Relève",
-        help="À qui écrire pendant l'absence. Son nom est écrit en clair dans "
-             "le message, pas laissé à un marqueur.",
+        string="Stand-in",
+        help="Who to write to during the absence. Their name is written "
+             "in plain text in the message, not left to a marker.",
     )
     backup_info = fields.Char(
-        string="Relève (texte)",
-        help="Quand la relève n'a pas de fiche : une adresse, un numéro, "
-             "« la réception ».",
+        string="Stand-in (text)",
+        help="When the stand-in has no record: an address, a number, "
+             "\"the front desk\".",
     )
     autoreply = fields.Boolean(
-        string="Répondre automatiquement à mon courrier",
+        string="Reply automatically to my mail",
         default=True,
     )
     autoreply_tone = fields.Selection(
         selection=TONS,
-        string="Ton du message",
+        string="Message tone",
         default=lambda self: self.env["bf.absence.house.message"]._default_tone(),
     )
     decline_meetings = fields.Boolean(
-        string="Refuser les invitations reçues pour cette période",
+        string="Decline invitations received for this period",
         default=True,
     )
     preview_html = fields.Html(
-        string="Ce qui partira",
+        string="What will go out",
         compute="_compute_preview",
         sanitize=False,
         readonly=True,
@@ -93,6 +95,7 @@ class BfAbsenceMeWizard(models.TransientModel):
 
     @api.depends("autoreply", "autoreply_tone", "backup_partner_id",
                  "backup_info")
+    @api.depends_context("lang")
     def _compute_preview(self):
         """Montrer le texte AVANT d'armer.
 
@@ -132,10 +135,10 @@ class BfAbsenceMeWizard(models.TransientModel):
         partner = self.env.user.partner_id
         if not partner:
             raise UserError(_(
-                "Votre compte n'a pas de fiche contact : il n'y a nulle part "
-                "où poser l'absence."))
+                "Your account has no contact record: there is nowhere to "
+                "record the absence."))
         if self.date_to < self.date_from:
-            raise UserError(_("La fin de l'absence précède son début."))
+            raise UserError(_("The absence ends before it starts."))
         absence = self.env["bf.partner.absence"].create({
             "partner_id": partner.id,
             "date_from": self.date_from,
@@ -151,7 +154,7 @@ class BfAbsenceMeWizard(models.TransientModel):
         })
         return {
             "type": "ir.actions.act_window",
-            "name": _("Mon absence"),
+            "name": _("My absence"),
             "res_model": "bf.partner.absence",
             "res_id": absence.id,
             "view_mode": "form",

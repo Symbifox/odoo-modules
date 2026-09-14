@@ -5,19 +5,17 @@
         <field name="name">bf.absence.closure.wizard.form</field>
         <field name="model">bf.absence.closure.wizard</field>
         <field name="arch" type="xml">
-            <form string="Semer une fermeture connue">
+            <form string="Seed a known shutdown">
                 <div class="alert alert-info" role="status">
-                    Les vacances de la construction sont publiées un an d'avance par la CCQ.
-                    Un client du secteur ferme donc à une date connue, qu'aucun répondeur n'a
-                    besoin de nous apprendre.
+                    Québec's construction holidays are published a year ahead by the CCQ. A client in that industry therefore closes on a known date, which no auto-reply needs to tell us.
                 </div>
                 <group>
-                    <group string="Quelle fermeture">
+                    <group string="Which shutdown">
                         <field name="closure"/>
                         <field name="date_from"/>
                         <field name="date_to"/>
                     </group>
-                    <group string="Chez qui">
+                    <group string="Where">
                         <field name="partner_ids" widget="many2many_tags"
                                options="{'no_create': True}"/>
                         <field name="industry_id" options="{'no_create': True}"/>
@@ -26,16 +24,16 @@
                     </group>
                 </group>
                 <footer>
-                    <button name="action_seed" type="object" string="Semer"
+                    <button name="action_seed" type="object" string="Seed"
                             class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_absence_closure_wizard" model="ir.actions.act_window">
-        <field name="name">Semer une fermeture connue</field>
+        <field name="name">Seed a known shutdown</field>
         <field name="res_model">bf.absence.closure.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

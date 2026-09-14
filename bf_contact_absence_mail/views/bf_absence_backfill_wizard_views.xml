@@ -5,11 +5,9 @@
         <field name="name">bf.absence.backfill.wizard.form</field>
         <field name="model">bf.absence.backfill.wizard</field>
         <field name="arch" type="xml">
-            <form string="Lire le courrier déjà reçu">
+            <form string="Read mail already received">
                 <div class="alert alert-info" role="status">
-                    Le courrier déjà reçu contient des répondeurs d'absence que personne n'a
-                    encore lus. Cette passe les relève une fois et propose les périodes ;
-                    elle n'écrit aucune absence toute seule.
+                    The mail already received holds out-of-office replies nobody has read yet. This pass picks them up once and proposes the periods; it never records an absence on its own.
                 </div>
                 <group>
                     <field name="days"/>
@@ -17,16 +15,16 @@
                     <field name="pending" readonly="1"/>
                 </group>
                 <footer>
-                    <button name="action_run" type="object" string="Lire"
+                    <button name="action_run" type="object" string="Read"
                             class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_absence_backfill_wizard" model="ir.actions.act_window">
-        <field name="name">Lire le courrier déjà reçu</field>
+        <field name="name">Read mail already received</field>
         <field name="res_model">bf.absence.backfill.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

@@ -20,7 +20,7 @@
             <xpath expr="//sheet" position="before">
                 <div class="alert alert-warning mb-0 rounded-0 bf-absence-banner"
                      role="status" invisible="not bf_is_away">
-                    <i class="fa fa-plane me-2" role="img" aria-label="Absent"/>
+                    <i class="fa fa-plane me-2" role="img" aria-label="Away"/>
                     <field name="bf_absence_phrase" readonly="1" nolabel="1" class="d-inline"/>
                 </div>
             </xpath>
@@ -70,7 +70,7 @@
             </list>
             <list position="inside">
                 <field name="bf_is_away" column_invisible="True"/>
-                <field name="bf_away_until" string="Absent jusqu'au" optional="hide"/>
+                <field name="bf_away_until" string="Away until" optional="hide"/>
             </list>
         </field>
     </record>
@@ -89,7 +89,7 @@
             </field>
             <xpath expr="//main//field[@name='email']" position="after">
                 <div t-if="record.bf_is_away.raw_value" class="text-warning text-truncate">
-                    <i class="fa fa-plane me-1" role="img" aria-label="Absent"/>
+                    <i class="fa fa-plane me-1" role="img" aria-label="Away"/>
                     <t t-esc="record.bf_absence_phrase.value"/>
                 </div>
             </xpath>
@@ -103,7 +103,7 @@
         <field name="arch" type="xml">
             <filter name="type_company" position="after">
                 <separator/>
-                <filter name="bf_is_away" string="Absents aujourd'hui"
+                <filter name="bf_is_away" string="Away today"
                         domain="[('bf_is_away', '=', True)]"/>
             </filter>
         </field>

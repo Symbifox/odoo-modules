@@ -5,7 +5,18 @@
     #   celui où l'on note les vacances de ses clients, et en propose les
     #   périodes. Lecture seule : le calendrier reste la feuille de notes de
     #   son propriétaire, et rien n'y est écrit en retour.
-    "version": "18.0.1.0.0",
+    # 18.0.1.0.1: le travail planifié tombait, le bouton passait. Une
+    #   variable locale nommée `uid` — l'identifiant d'un événement du
+    #   calendrier — était prise pour un identifiant d'usager par le devineur
+    #   de langue de `_()`, qui fouille les variables locales de l'appelant
+    #   quand le contexte ne porte pas de langue. Renommée `uid_ics`, et la
+    #   passe entière est maintenant couverte par des essais qui appellent la
+    #   vraie méthode.
+    # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français au lieu de le recopier. Odoo ne traduit
+    #   jamais vers en_US, qui est la langue source : un usager réglé en
+    #   anglais lisait le module en français.
+    "version": "18.0.1.1.0",
     "category": "Sales/CRM",
     "summary": "Proposer les absences notées à la main dans un calendrier "
                "Nextcloud",

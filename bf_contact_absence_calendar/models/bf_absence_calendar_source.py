@@ -14,6 +14,16 @@ c'est de là que viennent toutes les règles d'ici :
 ⚠️ Le module ne CRÉE aucun contact et n'écrit rien dans le calendrier. Une
 entrée dont le nom ne correspond à personne est rapportée telle quelle :
 appeler « David » le mauvais David enverrait le courrier d'un client à un autre.
+
+🔴 Aucune variable locale d'ici ne s'appelle `uid`, `user`, `cr`, `cursor` ni
+`context`, et l'identifiant d'un événement s'appelle donc `uid_ics`. Ce n'est
+pas de la coquetterie : quand le contexte ne porte pas de langue — le cas d'un
+travail planifié, jamais celui d'un bouton — `_()` devine la langue en
+FOUILLANT LES VARIABLES LOCALES DE CELUI QUI L'APPELLE (`tools/translate.py`,
+`_get_uid`) et prend `uid` tel quel comme identifiant d'usager. Un `uid` de
+calendrier est un UUID, qu'Odoo est alors allé chercher dans `res_users.id` :
+`invalid input syntax for type integer`, et le travail planifié tombe. Le
+bouton, lui, passait.
 """
 
 import logging
@@ -35,7 +45,7 @@ RX_PREFIXE = re.compile(r"^\s*(vacances|conges?|absence|absent[e]?|fermeture|hol
 # Une entrée peut commencer par une frimousse : elle n'est pas un nom.
 RX_ORNEMENT = re.compile(r"^[\W_]+", re.UNICODE)
 # 🔴 Le mot qui dit la nature peut être en SUFFIXE autant qu'en préfixe :
-# « MMDB - vacances » autant que « Vacances - MMDB ». Sans ça, « vacances »
+# « Société - vacances » autant que « Vacances - Société ». Sans ça, « vacances »
 # devient un indice de société et empêche l'appariement. Vu en lisant le vrai
 # calendrier, pas en imaginant ses formes.
 NATURES = {
@@ -60,49 +70,49 @@ def _sansaccent(texte):
 
 class BfAbsenceCalendarSource(models.Model):
     _name = "bf.absence.calendar.source"
-    _description = "Calendrier d'absences à lire"
+    _description = "Absence calendar to read"
     _order = "sequence, id"
 
-    name = fields.Char(string="Nom", required=True,
-                       help="Pour vous. Par exemple « Vacances des clients ».")
+    name = fields.Char(string="Name", required=True,
+                       help="For you. For example \"Client holidays\".")
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True)
     config_key = fields.Selection(
         selection="_selection_config",
-        string="Connexion Nextcloud",
+        string="Nextcloud connection",
         # ⚠️ Pas obligatoire à la création : on doit pouvoir poser le
         # calendrier et ses raccourcis avant d'avoir choisi la connexion. Le
         # manque est dit clairement au moment de lire, pas au moment d'écrire.
-        help="La configuration de synchronisation déjà en place fournit "
-             "l'adresse, le compte et le mot de passe d'application. Aucun "
-             "identifiant neuf n'est demandé.")
+        help="The synchronisation already in place provides the address, "
+             "the account and the app password. No new credential is "
+             "asked for.")
     calendar_slug = fields.Char(
-        string="Identifiant du calendrier",
+        string="Calendar identifier",
         required=True,
-        help="Le dernier morceau de l'adresse du calendrier, par exemple "
-             "« migrated-vacances-cts ».")
+        help="The last part of the calendar address, for example "
+             "\"migrated-vacances-cts\".")
     days_back = fields.Integer(
-        string="Remonter de (jours)", default=120, required=True,
-        help="Une absence notée il y a plus de quatre mois est déjà finie.")
+        string="Look back (days)", default=120, required=True,
+        help="An absence noted more than four months ago is already over.")
     days_ahead = fields.Integer(
-        string="Aller jusqu'à (jours)", default=400, required=True)
+        string="Look ahead (days)", default=400, required=True)
     nature = fields.Selection(
         selection=[
-            ("vacation", "Vacances"),
-            ("leave", "Congé"),
-            ("closure", "Fermeture"),
-            ("training", "Formation ou congrès"),
-            ("other", "Autre"),
+            ("vacation", "Holiday"),
+            ("leave", "Leave"),
+            ("closure", "Shutdown"),
+            ("training", "Training or conference"),
+            ("other", "Other"),
         ],
-        string="Nature par défaut", default="vacation", required=True)
+        string="Default nature", default="vacation", required=True)
     alias_ids = fields.One2many(
         comodel_name="bf.absence.calendar.alias",
         inverse_name="source_id",
-        string="Raccourcis",
-        help="Ce qu'on écrit dans le calendrier et qui n'est le nom de "
-             "personne : des initiales, un surnom, le nom d'un dossier.")
-    last_run = fields.Datetime(string="Dernière lecture", readonly=True)
-    last_message = fields.Char(string="Résultat", readonly=True)
+        string="Shortcuts",
+        help="What gets written in the calendar that is nobody's name: "
+             "initials, a nickname, a file name.")
+    last_run = fields.Datetime(string="Last read", readonly=True)
+    last_message = fields.Char(string="Result", readonly=True)
 
     # ------------------------------------------------------------------
     # La connexion, retrouvée sans en dépendre
@@ -133,16 +143,16 @@ class BfAbsenceCalendarSource(models.Model):
         self.ensure_one()
         if self.MODELE_CONFIG not in self.env:
             raise UserError(_(
-                "La synchronisation de calendrier Nextcloud n'est pas "
-                "installée : c'est elle qui porte l'adresse du serveur et le "
-                "mot de passe d'application."))
+                "Nextcloud calendar synchronisation is not installed: it "
+                "is what holds the server address and the app password."))
         config = self.env[self.MODELE_CONFIG].sudo().browse(
             int(self.config_key or 0)).exists()
         if not self.config_key:
             raise UserError(_(
-                "Choisir la connexion Nextcloud avant de lire le calendrier."))
+                "Pick the Nextcloud connection before reading the calendar."))
         if not config:
-            raise UserError(_("La connexion Nextcloud choisie n'existe plus."))
+            raise UserError(_("The chosen Nextcloud connection no longer "
+                              "exists."))
         return config
 
     # ------------------------------------------------------------------
@@ -152,12 +162,13 @@ class BfAbsenceCalendarSource(models.Model):
         self.ensure_one()
         config = self._config()
         base = (config.nextcloud_base_url or "").rstrip("/")
-        user = config.nextcloud_user or ""
-        if not base or not user:
+        compte = config.nextcloud_user or ""
+        if not base or not compte:
             raise UserError(_(
-                "La connexion Nextcloud n'a ni adresse ni compte."))
+                "The Nextcloud connection has neither an address nor an "
+                "account."))
         return "%s/remote.php/dav/calendars/%s/%s/" % (
-            base, user, (self.calendar_slug or "").strip("/"))
+            base, compte, (self.calendar_slug or "").strip("/"))
 
     def _fetch(self):
         """Rend le texte des VEVENT du calendrier sur la fenêtre demandée.
@@ -171,7 +182,7 @@ class BfAbsenceCalendarSource(models.Model):
         mdp = config._decrypt_value(config.nextcloud_app_password_encrypted)
         if not mdp:
             raise UserError(_(
-                "La connexion Nextcloud n'a pas de mot de passe d'application."))
+                "The Nextcloud connection has no app password."))
         today = fields.Date.context_today(self)
         debut = (today - timedelta(days=max(0, self.days_back))).strftime("%Y%m%dT000000Z")
         fin = (today + timedelta(days=max(1, self.days_ahead))).strftime("%Y%m%dT235959Z")
@@ -194,22 +205,22 @@ class BfAbsenceCalendarSource(models.Model):
         )
         if rep.status_code >= 300:
             raise UserError(_(
-                "Le calendrier a répondu %(code)s. Vérifier l'identifiant du "
-                "calendrier et la connexion.", code=rep.status_code))
+                "The calendar answered %(code)s. Check the calendar "
+                "identifier and the connection.", code=rep.status_code))
         return rep.text
 
     @api.model
     def _parse_ics(self, texte):
-        """Les entrées du calendrier : (uid, jour, titre), toutes journées."""
+        """Les entrées du calendrier : (uid_ics, jour, titre), toutes journées."""
         sorties = []
         for bloc in re.findall(r"BEGIN:VEVENT(.*?)END:VEVENT", texte or "", re.S):
             # ⚠️ Une ligne ICS se replie sur la suivante avec une espace en
             # tête : sans ce recollage, un titre long est tronqué en silence.
             plat = re.sub(r"\r?\n[ \t]", "", bloc)
-            uid = re.search(r"^UID:(.+)$", plat, re.M)
+            uid_ics = re.search(r"^UID:(.+)$", plat, re.M)
             titre = re.search(r"^SUMMARY[^:]*:(.+)$", plat, re.M)
             debut = re.search(r"^DTSTART[^:]*:(\d{8})", plat, re.M)
-            if not (uid and titre and debut):
+            if not (uid_ics and titre and debut):
                 continue
             brut = debut.group(1)
             try:
@@ -217,7 +228,7 @@ class BfAbsenceCalendarSource(models.Model):
             except ValueError:
                 continue
             propre = titre.group(1).replace("\\,", ",").replace("\\;", ";").strip()
-            sorties.append((uid.group(1).strip(), jour, propre))
+            sorties.append((uid_ics.group(1).strip(), jour, propre))
         return sorted(sorties, key=lambda t: t[1])
 
     # ------------------------------------------------------------------
@@ -298,14 +309,14 @@ class BfAbsenceCalendarSource(models.Model):
         for source in self:
             entrees = source._parse_ics(source._fetch())
             departs, retours = [], []
-            for uid, jour, titre in entrees:
+            for uid_ics, jour, titre in entrees:
                 cle, indices, est_retour = source._cle_personne(titre)
                 if not cle:
                     continue
                 if est_retour:
                     retours.append((_sansaccent(cle), jour))
                 else:
-                    departs.append((uid, jour, titre, cle, indices))
+                    departs.append((uid_ics, jour, titre, cle, indices))
 
             poses, sans_contact, deja = 0, [], 0
             # 🔴 Un retour se consomme UNE fois. Il ferme le départ qu'il suit
@@ -313,8 +324,8 @@ class BfAbsenceCalendarSource(models.Model):
             # parcourus dans l'ordre, et le retour retenu est retiré du lot.
             departs.sort(key=lambda d: d[1])
             restants = list(retours)
-            for uid, jour, titre, cle, indices in departs:
-                if Suggestion.search_count([("calendar_uid", "=", uid)]):
+            for uid_ics, jour, titre, cle, indices in departs:
+                if Suggestion.search_count([("calendar_uid", "=", uid_ics)]):
                     deja += 1
                     continue
                 partner = source._apparier(cle, indices)
@@ -322,8 +333,8 @@ class BfAbsenceCalendarSource(models.Model):
                     sans_contact.append(titre)
                     continue
                 # 🔴 Le retour le plus proche APRÈS le départ, apparié sur un
-                # PRÉFIXE : « Retour de vacances François » ne répète pas le
-                # nom de famille de « Vacances - François Béland ». L'appariement
+                # PRÉFIXE : « Retour de vacances Prénom » ne répète pas le
+                # nom de famille de « Vacances - Prénom Nom ». L'appariement
                 # à l'identique laissait la période sans fin.
                 depart_n = _sansaccent(cle)
                 candidats = [
@@ -351,17 +362,17 @@ class BfAbsenceCalendarSource(models.Model):
                     "nature": source._nature_du_titre(titre, source.nature),
                     "detected_by": "calendrier",
                     "read_by": "calendrier" if fin else False,
-                    "calendar_uid": uid,
+                    "calendar_uid": uid_ics,
                     "calendar_label": titre[:120],
                 })
                 poses += 1
             total_poses += poses
             message = _(
-                "%(poses)s proposée(s), %(deja)s déjà connue(s), "
-                "%(sans)s sans contact reconnu.",
+                "%(poses)s proposed, %(deja)s already known, %(sans)s "
+                "with no recognised contact.",
                 poses=poses, deja=deja, sans=len(sans_contact))
             if sans_contact:
-                message += " " + _("Non reconnus : %s") % ", ".join(sans_contact[:5])
+                message += " " + _("Not recognised: %s") % ", ".join(sans_contact[:5])
             source.write({"last_run": fields.Datetime.now(),
                           "last_message": message[:250]})
             _logger.info("bf_contact_absence_calendar: %s -> %s",
@@ -371,11 +382,11 @@ class BfAbsenceCalendarSource(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {"type": "info", "sticky": False,
-                           "message": self[:1].last_message or _("Rien de neuf.")},
+                           "message": self[:1].last_message or _("Nothing new.")},
             }
         return {
             "type": "ir.actions.act_window",
-            "name": _("Absences proposées"),
+            "name": _("Proposed absences"),
             "res_model": "bf.partner.absence.suggestion",
             "view_mode": "list,form",
             "domain": [("calendar_uid", "!=", False), ("state", "=", "pending")],

@@ -15,36 +15,36 @@ from odoo.exceptions import ValidationError
 
 class BfAbsenceCalendarAlias(models.Model):
     _name = "bf.absence.calendar.alias"
-    _description = "Raccourci du calendrier"
+    _description = "Calendar shortcut"
     _order = "label"
 
     source_id = fields.Many2one(
         comodel_name="bf.absence.calendar.source",
-        string="Calendrier",
+        string="Calendar",
         required=True,
         ondelete="cascade",
         index=True,
     )
     label = fields.Char(
-        string="Écrit dans le calendrier",
+        string="Written in the calendar",
         required=True,
-        help="Le raccourci tel qu'il apparaît, par exemple des initiales. "
-             "La casse et les accents n'ont pas d'importance.",
+        help="The shortcut as it appears, for example initials. Case and "
+             "accents do not matter.",
     )
     partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Est ce contact",
+        string="Is this contact",
         required=True,
         ondelete="cascade",
     )
 
     _sql_constraints = [
         ("bf_absence_alias_uniq", "unique(source_id, label)",
-         "Ce raccourci est déjà défini pour ce calendrier."),
+         "This shortcut is already defined for this calendar."),
     ]
 
     @api.constrains("label")
     def _check_label(self):
         for alias in self:
             if not (alias.label or "").strip():
-                raise ValidationError(_("Un raccourci vide n'apprend rien."))
+                raise ValidationError(_("An empty shortcut teaches nothing."))

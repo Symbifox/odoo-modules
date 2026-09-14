@@ -242,10 +242,16 @@ class TestAbsenceAutoreply(TransactionCase):
                                autoreply_tone="away")
         self.assertNotEqual(delai.email_absence_id.reply_ids.body_html,
                             dehors.email_absence_id.reply_ids.body_html)
-        self.assertIn("plus lentes",
-                      delai.email_absence_id.reply_ids.body_html)
-        self.assertIn("ne consulte pas",
-                      dehors.email_absence_id.reply_ids.body_html)
+        # Le texte suit la langue de la base : on vérifie le ton par le message
+        # de maison qui l'a produit, pas par une formulation dans une langue.
+        # Chacun dans SA langue : c'est celle de la personne absente qui compte.
+        Maison = self.Maison.sudo()
+        self.assertEqual(delai.email_absence_id.reply_ids.body_html,
+                         Maison.with_context(lang=self.thomas.lang)
+                         ._for_tone("delay")._rendered_body())
+        self.assertEqual(dehors.email_absence_id.reply_ids.body_html,
+                         Maison.with_context(lang=self.olivia.lang)
+                         ._for_tone("away")._rendered_body())
 
     def test_aucun_texte_de_maison_ne_saccorde_en_genre(self):
         """Odoo ne porte pas le genre d'une personne, et le message part sous
@@ -388,6 +394,9 @@ class TestAbsenceAutoreply(TransactionCase):
     # ------------------------------------------------------------------
     def test_la_date_de_retour_se_lit_dans_le_fuseau_de_labsent(self):
         """🔴 Sinon une absence finie le 9 s'annonce « 10 » à l'autre bout."""
+        # Le mois en toutes lettres se lit en français seulement si la langue
+        # est active : sur une base anglaise, le format retombe sur en_US.
+        self.env["res.lang"]._activate_lang("fr_CA")
         absence = self._absence(self.thomas.partner_id, date(2026, 10, 5),
                                 date(2026, 10, 9), autoreply=True)
         repondeur = absence.email_absence_id

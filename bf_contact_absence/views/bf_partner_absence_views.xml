@@ -26,26 +26,26 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_end_now" type="object" string="Rentré plus tôt"
+                    <button name="action_end_now" type="object" string="Back early"
                             class="btn-secondary" invisible="state != 'running'"
-                            help="Le contact est revenu avant la date prévue : l'avertissement s'éteint aujourd'hui."/>
+                            help="The contact came back earlier than planned: the warning goes out today."/>
                     <field name="state" widget="statusbar" statusbar_visible="planned,running,over"/>
                 </header>
                 <sheet>
                     <group>
-                        <group string="Qui, et quand">
+                        <group string="Who, and when">
                             <field name="partner_id" options="{'no_create': True}"/>
                             <field name="partner_is_company" invisible="1"/>
                             <field name="nature"/>
                             <field name="date_from"/>
                             <field name="date_to"/>
                             <field name="date_return"
-                                   help="Saisir l'un ou l'autre : le module corrige le second."/>
+                                   help="Enter either one: the module corrects the other."/>
                             <field name="applies_to_children" invisible="not partner_is_company"/>
                         </group>
-                        <group string="Pendant ce temps-là">
+                        <group string="Meanwhile">
                             <field name="backup_partner_id" options="{'no_create': True}"/>
-                            <field name="backup_info" placeholder="reception@exemple.test, 450 555-1212"/>
+                            <field name="backup_info" placeholder="frontdesk@example.test, 450 555-1212"/>
                             <field name="reminder"/>
                             <field name="user_id" invisible="not reminder"/>
                             <field name="source"/>
@@ -55,7 +55,7 @@
                     </group>
                     <group string="Note">
                         <field name="note" nolabel="1"
-                               placeholder="Une ligne, pour nous. Jamais le texte d'un répondeur d'absence."/>
+                               placeholder="One line, for us. Never the text of an out-of-office reply."/>
                     </group>
                     <field name="reminder_activity_id" invisible="1"/>
                 </sheet>
@@ -87,33 +87,33 @@
             <search>
                 <field name="partner_id"/>
                 <field name="backup_partner_id"/>
-                <filter name="running" string="En cours" domain="[('state', '=', 'running')]"/>
-                <filter name="cette_semaine" string="Cette semaine"
+                <filter name="running" string="Running" domain="[('state', '=', 'running')]"/>
+                <filter name="cette_semaine" string="This week"
                         domain="[('date_from', '&lt;=', (context_today() + relativedelta(weeks=1, weekday=6)).strftime('%Y-%m-%d')),
                                  ('date_to', '&gt;=', (context_today() + relativedelta(weekday=0, days=-7)).strftime('%Y-%m-%d'))]"
-                        help="Toute absence qui touche la semaine en cours, même commencée avant."/>
-                <filter name="planned" string="À venir" domain="[('state', '=', 'planned')]"/>
-                <filter name="over" string="Terminées" domain="[('state', '=', 'over')]"/>
+                        help="Any absence touching the current week, even one that started earlier."/>
+                <filter name="planned" string="Upcoming" domain="[('state', '=', 'planned')]"/>
+                <filter name="over" string="Over" domain="[('state', '=', 'over')]"/>
                 <separator/>
-                <filter name="from_autoreply" string="Venues d'un répondeur"
+                <filter name="from_autoreply" string="From an auto-reply"
                         domain="[('source', '=', 'autoreply')]"/>
-                <group expand="0" string="Regrouper par">
+                <group expand="0" string="Group by">
                     <filter name="group_partner" string="Contact" context="{'group_by': 'partner_id'}"/>
                     <filter name="group_nature" string="Nature" context="{'group_by': 'nature'}"/>
-                    <filter name="group_month" string="Début" context="{'group_by': 'date_from:month'}"/>
+                    <filter name="group_month" string="Start" context="{'group_by': 'date_from:month'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="action_bf_partner_absence" model="ir.actions.act_window">
-        <field name="name">Absences des contacts</field>
+        <field name="name">Contact absences</field>
         <field name="res_model">bf.partner.absence</field>
         <field name="view_mode">list,calendar,form</field>
         <field name="context">{'search_default_running': 1, 'search_default_planned': 1}</field>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">Noter une absence</p>
-            <p>Une période, une relève, et le bandeau apparaît tout seul sur le chatter de la fiche, de la tâche ou de l'opportunité.</p>
+            <p class="o_view_nocontent_smiling_face">Record an absence</p>
+            <p>A period, a stand-in, and the banner shows up on its own in the chatter of the record, the task or the opportunity.</p>
         </field>
     </record>
 

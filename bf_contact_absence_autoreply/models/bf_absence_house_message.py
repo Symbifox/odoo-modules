@@ -20,55 +20,56 @@ clair au moment où on arme.
 from odoo import api, fields, models
 
 TONS = [
-    ("delay", "Je réponds moins vite"),
-    ("away", "Je suis à l'extérieur"),
+    ("delay", "I reply more slowly"),
+    ("away", "I am out of the office"),
 ]
 
 
 class BfAbsenceHouseMessage(models.Model):
     _name = "bf.absence.house.message"
-    _description = "Message d'absence de la maison"
+    _description = "House absence message"
     _order = "sequence, id"
 
-    sequence = fields.Integer(string="Séquence", default=10)
+    sequence = fields.Integer(string="Sequence", default=10)
     tone = fields.Selection(
         selection=TONS,
-        string="Ton",
+        string="Tone",
         required=True,
-        help="« Je réponds moins vite » annonce un délai, « Je suis à "
-             "l'extérieur » annonce une absence. Le premier tient même quand "
-             "on finit par répondre, et c'est le cas le plus fréquent.\n\n"
-             "⚠️ Aucun des deux textes ne s'accorde en genre : Odoo ne porte "
-             "pas le genre d'une personne, et un message de maison part sous "
-             "le nom de n'importe qui.",
+        help="\"I reply more slowly\" announces a delay, \"I am out of "
+             "the office\" announces an absence. The first holds even "
+             "when you end up replying, which is the most common "
+             "case.\n\n⚠️ Neither text agrees in gender: Odoo does not "
+             "carry a person's gender, and a house message goes out under "
+             "anybody's name.",
     )
     name = fields.Char(
         string="Audience",
         required=True,
-        default="Tout le monde",
-        help="Le libellé de la ligne de message créée dans le répondeur. Pour "
-             "vous, pas pour l'expéditeur.",
+        translate=True,
+        default=lambda self: self.env._("Everyone"),
+        help="The label of the message line created in the responder. For "
+             "you, not for the sender.",
     )
     body_html = fields.Html(
         string="Message",
         required=True,
         translate=True,
         sanitize=True,
-        help="Marqueurs disponibles : {nom}, {retour}, {motif}. La relève se "
-             "pose par la phrase ci-dessous, pas par un marqueur.",
+        help="Available markers: {nom}, {retour}, {motif}. The stand-in "
+             "is set by the sentence below, not by a marker.",
     )
     backup_html = fields.Html(
-        string="Phrase de relève",
+        string="Stand-in sentence",
         translate=True,
         sanitize=True,
-        help="Ajoutée au message SEULEMENT quand une relève est nommée. "
-             "[[releve]] y est remplacé par le nom, [[courriel]] par "
-             "l'adresse ou le texte libre.\n\n"
-             "⚠️ Deux crochets et non %(...)s : dans un fichier de données "
-             "Odoo, %(quelquechose)s est une RÉFÉRENCE à un identifiant XML, "
-             "et le module refuse de s'installer.",
+        help="Added to the message ONLY when a stand-in is named. "
+             "[[releve]] is replaced by the name, [[courriel]] by the "
+             "address or the free text.\n\n⚠️ Double brackets, never the "
+             "percent form: in an Odoo data file, a percent placeholder "
+             "is a REFERENCE to an XML identifier, and the module refuses "
+             "to install.",
     )
-    active = fields.Boolean(string="Actif", default=True)
+    active = fields.Boolean(string="Active", default=True)
 
     @api.model
     def _for_tone(self, tone):
@@ -103,8 +104,9 @@ class BfAbsenceHouseMessage(models.Model):
         return raw if raw in dict(TONS) else "delay"
 
     @api.depends("tone", "name")
+    @api.depends_context("lang")
     def _compute_display_name(self):
-        tons = dict(TONS)
+        tons = dict(self._fields["tone"]._description_selection(self.env))
         for message in self:
             message.display_name = "%s (%s)" % (
                 tons.get(message.tone, ""), message.name or "")

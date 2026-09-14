@@ -209,3 +209,88 @@ class TestPontCalendrier(TransactionCase):
                 fins.append(False)
         self.assertEqual(fins[0], False, "le départ de 2025 ne doit rien fermer")
         self.assertEqual(fins[1], date(2026, 9, 18))
+
+    # ---- La passe entière, pour de vrai ------------------------------
+    def test_la_passe_entiere_tourne_sans_langue_au_contexte(self):
+        """🔴 Les essais d'ici rejouaient la logique d'`action_read` morceau par
+        morceau; la méthode elle-même n'était jamais appelée, et c'est là que
+        le défaut vivait.
+
+        Quand le contexte ne porte pas de langue — le cas d'un travail
+        planifié, jamais celui d'un bouton — `_()` devine la langue en
+        fouillant les variables locales de celui qui l'appelle, et prenait
+        l'`uid` du calendrier pour un identifiant d'usager. Le travail planifié
+        tombait sur « invalid input syntax for type integer ». Ce test appelle
+        la vraie méthode, dans un contexte sans langue.
+        """
+        from unittest.mock import patch
+
+        self.assertFalse(self.env.context.get("lang"),
+                         "ce test ne vaut que sans langue au contexte")
+        personne = self.env["res.partner"].create({"name": "Camille Exemple"})
+        src = self.Source.create({
+            "name": "Essai passe entiere", "calendar_slug": "x",
+            "days_back": 4000, "days_ahead": 4000,
+        })
+        ics = ("BEGIN:VCALENDAR\n"
+               "BEGIN:VEVENT\nUID:bded9c35-4fa8-4a1d-b3a9-6b03376301da\n"
+               "DTSTART;VALUE=DATE:20260330\n"
+               "SUMMARY:Vacances - Camille Exemple\nEND:VEVENT\n"
+               "END:VCALENDAR\n")
+        chemin = ("odoo.addons.bf_contact_absence_calendar.models"
+                  ".bf_absence_calendar_source.BfAbsenceCalendarSource._fetch")
+        with patch(chemin, return_value=ics):
+            src.action_read()
+
+        suggestion = self.env["bf.partner.absence.suggestion"].search(
+            [("calendar_uid", "=", "bded9c35-4fa8-4a1d-b3a9-6b03376301da")])
+        self.assertEqual(len(suggestion), 1)
+        self.assertEqual(suggestion.partner_id, personne)
+        self.assertEqual(suggestion.date_from, date(2026, 3, 30))
+        self.assertTrue(src.last_message, "la passe doit laisser son résultat")
+
+    def test_une_seconde_passe_ne_propose_pas_deux_fois(self):
+        """L'identifiant du calendrier est ce qui évite le doublon : le travail
+        planifié tourne aux six heures sur le même calendrier."""
+        from unittest.mock import patch
+
+        self.env["res.partner"].create({"name": "Camille Exemple"})
+        src = self.Source.create({
+            "name": "Essai deux passes", "calendar_slug": "x",
+            "days_back": 4000, "days_ahead": 4000,
+        })
+        ics = ("BEGIN:VCALENDAR\n"
+               "BEGIN:VEVENT\nUID:uid-repete\n"
+               "DTSTART;VALUE=DATE:20260330\n"
+               "SUMMARY:Vacances - Camille Exemple\nEND:VEVENT\n"
+               "END:VCALENDAR\n")
+        chemin = ("odoo.addons.bf_contact_absence_calendar.models"
+                  ".bf_absence_calendar_source.BfAbsenceCalendarSource._fetch")
+        with patch(chemin, return_value=ics):
+            src.action_read()
+            src.action_read()
+        self.assertEqual(
+            self.env["bf.partner.absence.suggestion"].search_count(
+                [("calendar_uid", "=", "uid-repete")]), 1)
+
+    def test_le_travail_planifie_lit_toutes_les_sources(self):
+        """🔴 Le défaut tombait ici, pas au bouton : c'est le chemin planifié."""
+        from unittest.mock import patch
+
+        self.env["res.partner"].create({"name": "Camille Exemple"})
+        self.Source.create({
+            "name": "Essai planifie", "calendar_slug": "x",
+            "days_back": 4000, "days_ahead": 4000,
+        })
+        ics = ("BEGIN:VCALENDAR\n"
+               "BEGIN:VEVENT\nUID:uid-planifie\n"
+               "DTSTART;VALUE=DATE:20260330\n"
+               "SUMMARY:Vacances - Camille Exemple\nEND:VEVENT\n"
+               "END:VCALENDAR\n")
+        chemin = ("odoo.addons.bf_contact_absence_calendar.models"
+                  ".bf_absence_calendar_source.BfAbsenceCalendarSource._fetch")
+        with patch(chemin, return_value=ics):
+            self.Source._cron_read_all()
+        self.assertEqual(
+            self.env["bf.partner.absence.suggestion"].search_count(
+                [("calendar_uid", "=", "uid-planifie")]), 1)

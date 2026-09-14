@@ -6,7 +6,7 @@
             <div t-if="bfAbsenceVisible"
                  class="alert alert-warning py-1 px-2 mb-1 small bf-absence-banner"
                  role="status">
-                <i class="fa fa-plane me-1" role="img" aria-label="Absent"/>
+                <i class="fa fa-plane me-1" role="img" aria-label="Away"/>
                 <t t-foreach="bfAbsence.lines" t-as="ligne" t-key="ligne_index">
                     <span class="bf-absence-line" t-esc="ligne"/>
                 </t>

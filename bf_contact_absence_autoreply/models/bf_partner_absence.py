@@ -35,44 +35,44 @@ class BfPartnerAbsence(models.Model):
 
     absent_user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Personne de la maison",
+        string="Person in the organisation",
         compute="_compute_absent_user",
-        help="L'utilisateur interne rattaché à la fiche. C'est lui qui décide "
-             "si un répondeur est possible : une absence de contact n'écrit "
-             "jamais à personne.",
+        help="The internal user attached to the record. It decides "
+             "whether a responder is possible: a contact's absence never "
+             "writes to anyone.",
     )
     autoreply = fields.Boolean(
-        string="Répondre automatiquement pendant l'absence",
-        help="Arme le répondeur de cette personne pour la période, et "
-             "l'éteint à la fin. Le message est le sien s'il en a rédigé un, "
-             "celui de la maison sinon.",
+        string="Reply automatically while away",
+        help="Arms this person's responder for the period, and switches "
+             "it off at the end. The message is theirs if they wrote one, "
+             "the house one otherwise.",
     )
     autoreply_tone = fields.Selection(
         selection=TONS,
-        string="Ton du message",
+        string="Message tone",
         default=lambda self: self.env["bf.absence.house.message"]._default_tone(),
-        help="Sert seulement quand le message vient de la maison. Un « message "
-             "type » personnel, s'il existe, l'emporte.",
+        help="Only used when the message comes from the house. A personal "
+             "\"message type\", if there is one, wins.",
     )
     autoreply_decline_meetings = fields.Boolean(
-        string="Refuser les invitations reçues pendant l'absence",
+        string="Decline invitations received while away",
         default=True,
-        help="Marque la participation comme refusée pour les invitations dont "
-             "la date tombe dans la période. L'événement n'est jamais modifié "
-             "ni supprimé, seule la réponse l'est.",
+        help="Marks attendance as declined for invitations falling inside "
+             "the period. The event is never modified or deleted, only "
+             "the answer is.",
     )
     email_absence_id = fields.Many2one(
         comodel_name="bf.email.absence",
-        string="Répondeur",
+        string="Responder",
         readonly=True,
         ondelete="set null",
         copy=False,
-        help="La période créée dans les réponses d'absence. Elle porte le "
-             "journal des envois.",
+        help="The period created among the absence replies. It holds the "
+             "send log.",
     )
     autoreply_state = fields.Selection(
         related="email_absence_id.state",
-        string="État du répondeur",
+        string="Responder state",
         readonly=True,
     )
 
@@ -164,8 +164,13 @@ class BfPartnerAbsence(models.Model):
         ], limit=1)
         if gabarit and gabarit.reply_ids:
             return [(0, 0, ligne._copy_vals()) for ligne in gabarit.reply_ids]
+        # 🔴 Dans la langue de la personne ABSENTE : c'est en son nom que le
+        # texte part. Lu dans la langue de qui a cliqué (un administrateur
+        # anglophone), ou sans langue (le travail planifié), il partirait dans
+        # la langue source.
         maison = self.env["bf.absence.house.message"]._for_tone(
-            self.autoreply_tone)
+            self.autoreply_tone).with_context(
+                lang=self.absent_user_id.lang or "en_US")
         if not maison:
             return None
         nom, contact = self._autoreply_backup()
@@ -183,7 +188,8 @@ class BfPartnerAbsence(models.Model):
         delegue = self.backup_partner_id.sudo().user_ids.filtered(
             lambda u: not u.share and u.active)[:1]
         return {
-            "name": self.display_name,
+            "name": self.with_context(
+                lang=self.absent_user_id.lang or "en_US").display_name,
             "user_id": self.absent_user_id.id,
             "company_id": (self.company_id or self.absent_user_id.company_id).id,
             "date_from": debut,
@@ -232,9 +238,10 @@ class BfPartnerAbsence(models.Model):
         if self.env.user.has_group("base.group_system"):
             return
         raise UserError(_(
-            "Vous pouvez noter l'absence de %(nom)s, mais pas armer son "
-            "répondeur : un message automatique part sous son nom, depuis sa "
-            "boîte. Cette case lui revient, ou à un administrateur courriel.",
+            "You can record %(nom)s's absence, but not arm their "
+            "responder: an automatic message goes out under their name, "
+            "from their mailbox. That box belongs to them, or to an email "
+            "administrator.",
             nom=self.absent_user_id.name,
         ))
 
@@ -262,9 +269,9 @@ class BfPartnerAbsence(models.Model):
             clash = absence._autoreply_clash(debut, fin)
             if clash:
                 raise UserError(_(
-                    "%(nom)s a déjà une réponse d'absence active sur ces "
-                    "dates : « %(autre)s ». Terminez-la avant d'en armer une "
-                    "autre, sinon deux messages se disputeraient la réponse.",
+                    "%(nom)s already has an active absence reply on these "
+                    "dates: \"%(autre)s\". End it before arming another, "
+                    "or two messages would compete for the reply.",
                     nom=absence.absent_user_id.name, autre=clash.name,
                 ))
 
@@ -280,8 +287,8 @@ class BfPartnerAbsence(models.Model):
             lignes = absence._autoreply_reply_commands()
             if lignes is None:
                 raise UserError(_(
-                    "Aucun message d'absence n'est disponible : ni le vôtre, "
-                    "ni celui de la maison. Sans texte, on ne répond pas."
+                    "No absence message is available: neither yours nor "
+                    "the house one. No text, no reply."
                 ))
             vals["reply_ids"] = lignes
             absence.email_absence_id = Absence.create(vals)
@@ -321,10 +328,10 @@ class BfPartnerAbsence(models.Model):
     def action_open_email_absence(self):
         self.ensure_one()
         if not self.email_absence_id:
-            raise UserError(_("Aucun répondeur n'est armé pour cette absence."))
+            raise UserError(_("No responder is armed for this absence."))
         return {
             "type": "ir.actions.act_window",
-            "name": _("Réponse d'absence"),
+            "name": _("Absence reply"),
             "res_model": "bf.email.absence",
             "res_id": self.email_absence_id.id,
             "view_mode": "form",

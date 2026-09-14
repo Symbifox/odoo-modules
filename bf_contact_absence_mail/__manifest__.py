@@ -6,7 +6,11 @@
     #   contact. Jamais une absence directement : sur les 28 répondeurs
     #   mesurés sur un corpus réel, 9 ne portent aucune date
     #   lisible et le filet attrape des MAILER-DAEMON.
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français au lieu de le recopier. Odoo ne traduit
+    #   jamais vers en_US, qui est la langue source : un usager réglé en
+    #   anglais lisait le module en français.
+    "version": "18.0.1.1.0",
     "category": "Sales/CRM",
     "summary": "Reconnaître les répondeurs d'absence reçus et proposer la "
                "période au lieu de l'écrire",

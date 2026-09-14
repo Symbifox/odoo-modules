@@ -67,3 +67,10 @@ the stand-in wrong sends a client's mail to somebody else.
 None of the reply's text is copied onto the contact record: a period, a nature,
 at most a stand-in, and a link to the original email, which stays in the unified
 mailbox under its own retention rules.
+
+## Languages
+
+Since 18.0.1.1.0 the source strings are **English** and `i18n/fr_CA.po` carries
+the French, like the rest of the contact absences family. Upgrading from
+18.0.1.0.x reloads the French catalogue; a scheduled job renamed by hand keeps
+its name.

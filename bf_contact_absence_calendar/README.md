@@ -60,3 +60,10 @@ depending on it would make this bridge **uninstallable** where the library is
 missing, for the sake of an address and a password. The configuration is looked
 up in the registry at run time, and the module says so plainly when it is not
 there.
+
+## Languages
+
+Since 18.0.1.1.0 the source strings are **English** and `i18n/fr_CA.po` carries
+the French, like the rest of the contact absences family. Upgrading from
+18.0.1.0.x reloads the French catalogue; a scheduled job renamed by hand keeps
+its name.

@@ -80,3 +80,18 @@ Only the vocabulary is borrowed.
   employee without the "Contact Creation" right; the native
   `action_schedule_message` is refused at the same place. From a task, an
   opportunity or a unified mailbox, an ordinary employee goes through.
+
+## Languages
+
+Since 18.0.1.1.0 the source strings are **English** and `i18n/fr_CA.po` carries
+the French. Odoo never translates into `en_US`, which is the source language:
+while the source was French, a user set to English read this module in French,
+and nobody could notice on a database where everyone speaks French.
+
+* Text **written to the database** is written in the language of the person who
+  will read it, not in the language of whoever triggered it. The return reminder
+  is drafted in the assignee's language, including when the scheduled job, which
+  carries no language, creates it.
+* Upgrading from 18.0.1.0.x reloads the French catalogue and renames the
+  scheduled job in English, **only if it still carries its shipped name**. A job
+  renamed by hand keeps its name.

@@ -13,7 +13,7 @@
             <xpath expr="//sheet" position="inside">
                 <field name="absent_user_id" invisible="1"/>
                 <field name="email_absence_id" invisible="1"/>
-                <group string="Répondeur d'absence" invisible="not absent_user_id">
+                <group string="Out-of-office responder" invisible="not absent_user_id">
                     <field name="autoreply"/>
                     <field name="autoreply_tone" invisible="not autoreply"/>
                     <field name="autoreply_decline_meetings" invisible="not autoreply"/>
@@ -22,7 +22,7 @@
             </xpath>
             <xpath expr="//header" position="inside">
                 <button name="action_open_email_absence" type="object"
-                        string="Voir le répondeur" class="btn-secondary"
+                        string="View responder" class="btn-secondary"
                         invisible="not email_absence_id"/>
             </xpath>
         </field>
@@ -34,7 +34,7 @@
         <field name="inherit_id" ref="bf_contact_absence.view_bf_partner_absence_list"/>
         <field name="arch" type="xml">
             <xpath expr="//list" position="inside">
-                <field name="autoreply" optional="show" string="Répondeur"/>
+                <field name="autoreply" optional="show" string="Responder"/>
             </xpath>
         </field>
     </record>

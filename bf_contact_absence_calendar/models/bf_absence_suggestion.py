@@ -7,13 +7,13 @@ class BfPartnerAbsenceSuggestion(models.Model):
     _inherit = "bf.partner.absence.suggestion"
 
     calendar_uid = fields.Char(
-        string="Entrée du calendrier",
+        string="Calendar entry",
         index=True,
         copy=False,
-        help="L'identifiant de l'événement d'origine. C'est lui qui évite de "
-             "proposer deux fois la même entrée à chaque lecture.")
+        help="The identifier of the original event. It is what keeps the "
+             "same entry from being proposed twice on each read.")
     calendar_label = fields.Char(
-        string="Titre au calendrier",
+        string="Calendar title",
         readonly=True,
-        help="Le titre tel qu'il est écrit dans le calendrier, pour qu'on "
-             "puisse juger l'appariement.")
+        help="The title as written in the calendar, so the match can be "
+             "judged.")

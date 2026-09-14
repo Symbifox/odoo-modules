@@ -51,7 +51,7 @@ MAX_LIGNES_BANDEAU = 3
 
 class BfPartnerAbsence(models.Model):
     _name = "bf.partner.absence"
-    _description = "Absence d'un contact"
+    _description = "Contact absence"
     _order = "date_from desc, id desc"
     _rec_name = "display_name"
 
@@ -65,16 +65,16 @@ class BfPartnerAbsence(models.Model):
     partner_is_company = fields.Boolean(related="partner_id.is_company")
 
     date_from = fields.Date(
-        string="Du",
+        string="From",
         required=True,
         default=fields.Date.context_today,
-        help="Premier jour d'absence, inclus.",
+        help="First day away, inclusive.",
     )
     date_to = fields.Date(
-        string="Au",
+        string="To",
         required=True,
-        help="DERNIER jour d'absence, inclus. Une absence sans fin laisserait "
-             "un avertissement allumé pour toujours : la fin est obligatoire.",
+        help="LAST day away, inclusive. An absence without an end would "
+             "leave a warning lit forever: the end is mandatory.",
     )
     # La prose des répondeurs d'absence donne les deux formes : « jusqu'au
     # 3 mai » (dernier jour absent) et « de retour le 4 mai » (jour de
@@ -82,83 +82,83 @@ class BfPartnerAbsence(models.Model):
     # recopier l'une ou l'autre sans se tromper d'un jour, et c'est cette
     # erreur d'un jour qui ferait parler le bandeau le jour du retour.
     date_return = fields.Date(
-        string="De retour le",
+        string="Back on",
         compute="_compute_date_return",
         inverse="_inverse_date_return",
         store=True,
         readonly=False,
-        help="Premier jour de présence. Se déduit de « Au », et le corrige "
-             "quand on saisit celui-ci à la place.",
+        help="First day back. Derived from \"To\", and corrects it when "
+             "entered instead.",
     )
 
     nature = fields.Selection(
         selection=[
-            ("vacation", "Vacances"),
-            ("leave", "Congé"),
-            ("closure", "Fermeture"),
-            ("training", "Formation ou congrès"),
-            ("other", "Autre"),
+            ("vacation", "Holiday"),
+            ("leave", "Leave"),
+            ("closure", "Shutdown"),
+            ("training", "Training or conference"),
+            ("other", "Other"),
         ],
         string="Nature",
         required=True,
         default="vacation",
-        help="Liste volontairement courte et sans motif de santé : ce champ "
-             "est une donnée personnelle qu'on garde au minimum.",
+        help="A deliberately short list with no health reason: this field "
+             "is personal data kept to a minimum.",
     )
 
     backup_partner_id = fields.Many2one(
         comodel_name="res.partner",
-        string="Relève",
-        help="À qui écrire pendant l'absence. C'est la moitié de l'utilité du "
-             "module : un bandeau qui redirige vaut mieux qu'un bandeau qui "
-             "dit seulement d'attendre.",
+        string="Stand-in",
+        help="Who to write to during the absence. That is half the point "
+             "of the module: a banner that redirects beats a banner that "
+             "only says to wait.",
     )
     backup_info = fields.Char(
-        string="Relève (texte)",
-        help="Quand la relève n'a pas de fiche : une adresse, un numéro, "
-             "« la réception ».",
+        string="Stand-in (text)",
+        help="When the stand-in has no record: an address, a number, "
+             "\"the front desk\".",
     )
 
     applies_to_children = fields.Boolean(
-        string="Vaut pour tous les contacts de la société",
+        string="Applies to every contact of the company",
         default=True,
-        help="Sur une société, une fermeture avertit pour toutes les "
-             "personnes qui lui sont rattachées. Décocher pour une absence "
-             "qui ne vise que la fiche de la société elle-même.",
+        help="On a company, a shutdown warns for every person attached to "
+             "it. Untick for an absence that concerns only the company "
+             "record itself.",
     )
 
     reminder = fields.Boolean(
-        string="Rappel au retour",
+        string="Reminder on return",
         default=True,
-        help="Pose une activité « prendre des nouvelles » au lendemain du "
-             "retour. Le lendemain, et non le jour même : personne ne veut "
-             "être le premier message d'une boîte pleine.",
+        help="Schedules a \"check in\" activity for the day after the "
+             "return. The day after, not the day itself: nobody wants to "
+             "be the first message in a full inbox.",
     )
     reminder_activity_id = fields.Many2one(
         comodel_name="mail.activity",
-        string="Activité de reprise",
+        string="Return activity",
         readonly=True,
         ondelete="set null",
     )
 
     user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Suivi par",
+        string="Followed by",
         default=lambda self: self.env.user,
-        help="Qui reçoit le rappel de reprise.",
+        help="Who receives the return reminder.",
     )
     company_id = fields.Many2one(
         comodel_name="res.company",
-        string="Société",
+        string="Company",
         default=lambda self: self.env.company,
     )
-    active = fields.Boolean(string="Actif", default=True)
+    active = fields.Boolean(string="Active", default=True)
 
     source = fields.Selection(
         selection=[
-            ("manual", "Saisie à la main"),
-            ("autoreply", "Répondeur d'absence"),
-            ("import", "Importée"),
+            ("manual", "Entered by hand"),
+            ("autoreply", "Out-of-office responder"),
+            ("import", "Imported"),
         ],
         string="Source",
         default="manual",
@@ -166,16 +166,16 @@ class BfPartnerAbsence(models.Model):
     )
     note = fields.Char(
         string="Note",
-        help="Une ligne, pour nous. Jamais le texte d'un répondeur.",
+        help="One line, for us. Never the text of an auto-reply.",
     )
 
     state = fields.Selection(
         selection=[
-            ("planned", "À venir"),
-            ("running", "En cours"),
-            ("over", "Terminée"),
+            ("planned", "Upcoming"),
+            ("running", "Running"),
+            ("over", "Over"),
         ],
-        string="État",
+        string="State",
         compute="_compute_state",
         search="_search_state",
     )
@@ -213,7 +213,7 @@ class BfPartnerAbsence(models.Model):
         # existe pour ça, et elle refuse bruyamment ce qu'elle ne sait pas
         # traduire plutôt que de rendre un résultat faux.
         if operator not in ("=", "!=", "in", "not in"):
-            raise UserError(_("Filtre non supporté sur l'état d'une absence."))
+            raise UserError(_("Unsupported filter on an absence state."))
         values = value if isinstance(value, (list, tuple)) else [value]
         today = fields.Date.context_today(self)
         domains = {
@@ -229,17 +229,23 @@ class BfPartnerAbsence(models.Model):
         return [("id", "in" if positif else "not in", retenus.ids)]
 
     @api.depends("partner_id", "date_from", "date_to", "nature")
+    @api.depends_context("lang")
     def _compute_display_name(self):
-        natures = dict(self._fields["nature"].selection)
+        # ⚠️ `_description_selection` et non `.selection` : la liste brute
+        # porte les libellés de la source, en anglais pour tout le monde.
+        natures = dict(self._fields["nature"]._description_selection(self.env))
         for absence in self:
             if not absence.partner_id:
                 absence.display_name = natures.get(absence.nature, "")
                 continue
-            absence.display_name = "%s : %s du %s au %s" % (
-                absence.partner_id.display_name,
-                natures.get(absence.nature, ""),
-                absence._jour(absence.date_from) or "?",
-                absence._jour(absence.date_to) or "?",
+            # `env._` et non `_` : la phrase et les natures lisent la MÊME
+            # langue. `_` devine la sienne dans les variables de l'appelant.
+            absence.display_name = self.env._(
+                "%(contact)s: %(nature)s from %(start)s to %(end)s",
+                contact=absence.partner_id.display_name,
+                nature=natures.get(absence.nature, ""),
+                start=absence._jour(absence.date_from) or "?",
+                end=absence._jour(absence.date_to) or "?",
             )
 
     # ------------------------------------------------------------------
@@ -250,12 +256,12 @@ class BfPartnerAbsence(models.Model):
         for absence in self:
             if not absence.date_to:
                 raise ValidationError(_(
-                    "Une absence doit avoir une date de fin. Sans elle, "
-                    "l'avertissement resterait allumé indéfiniment."
+                    "An absence must have an end date. Without one, the "
+                    "warning would stay lit indefinitely."
                 ))
             if absence.date_to < absence.date_from:
                 raise ValidationError(_(
-                    "La fin d'une absence ne peut pas précéder son début."
+                    "An absence cannot end before it starts."
                 ))
 
     @api.constrains("partner_id", "date_from", "date_to", "active")
@@ -269,9 +275,9 @@ class BfPartnerAbsence(models.Model):
             ], limit=1)
             if chevauche:
                 raise ValidationError(_(
-                    "%(contact)s a déjà une absence qui couvre ces dates "
-                    "(%(autre)s). Deux périodes qui se chevauchent rendraient "
-                    "le bandeau ambigu.",
+                    "%(contact)s already has an absence covering these "
+                    "dates (%(autre)s). Two overlapping periods would "
+                    "make the banner ambiguous.",
                     contact=absence.partner_id.display_name,
                     autre=chevauche.display_name,
                 ))
@@ -281,7 +287,7 @@ class BfPartnerAbsence(models.Model):
         for absence in self:
             if absence.backup_partner_id == absence.partner_id:
                 raise ValidationError(_(
-                    "La relève ne peut pas être la personne absente."
+                    "The stand-in cannot be the person who is away."
                 ))
 
     # ------------------------------------------------------------------
@@ -365,11 +371,15 @@ class BfPartnerAbsence(models.Model):
             assigne = absence.user_id
             if not assigne or assigne.share:
                 assigne = self.env.user
+            # 🔴 Le rappel est ÉCRIT en base, souvent par le travail planifié,
+            # qui n'a pas de langue au contexte : sans cette ligne, un usager
+            # français recevrait une activité rédigée dans la langue source.
+            dans_sa_langue = absence.with_context(lang=assigne.lang or "en_US")
             if absence.reminder_activity_id:
                 absence.reminder_activity_id.sudo().write({
                     "date_deadline": echeance,
                     "user_id": assigne.id,
-                    "note": absence._reminder_note(),
+                    "note": dans_sa_langue._reminder_note(),
                 })
                 continue
             if not type_activite:
@@ -381,8 +391,8 @@ class BfPartnerAbsence(models.Model):
                 "res_model_id": self.env["ir.model"]._get_id("res.partner"),
                 "res_id": absence.partner_id.id,
                 "activity_type_id": type_activite.id,
-                "summary": _("Prendre des nouvelles au retour"),
-                "note": absence._reminder_note(),
+                "summary": dans_sa_langue.env._("Check in on their return"),
+                "note": dans_sa_langue._reminder_note(),
                 "date_deadline": echeance,
                 "user_id": assigne.id,
             })
@@ -390,12 +400,12 @@ class BfPartnerAbsence(models.Model):
 
     def _reminder_note(self):
         self.ensure_one()
-        note = _("Absence de %(contact)s jusqu'au %(fin)s.",
+        note = _("%(contact)s away until %(fin)s.",
                  contact=self.partner_id.name,
                  fin=self._jour(self.date_to))
         prise = self._last_exchange_hint()
         if prise:
-            note += " " + _("Dernier échange : « %s ».") % prise
+            note += " " + _("Last exchange: \"%s\".") % prise
         return note
 
     # ------------------------------------------------------------------
@@ -492,18 +502,19 @@ class BfPartnerAbsence(models.Model):
         # jours dans le bandeau. La tournure nominale règle le problème au lieu
         # de le déplacer, et elle se lit mieux dans un bandeau.
         if self.nature == "closure" or (herite and self.partner_id.is_company):
-            phrase = _("%(qui)s : fermeture jusqu'au %(fin)s, réouverture le %(retour)s.",
+            phrase = _("%(qui)s: closed until %(fin)s, reopening on "
+                       "%(retour)s.",
                        qui=self.partner_id.name,
                        fin=self._jour(self.date_to),
                        retour=retour)
         else:
-            phrase = _("%(qui)s : absence jusqu'au %(fin)s, retour le %(retour)s.",
+            phrase = _("%(qui)s: away until %(fin)s, back on %(retour)s.",
                        qui=self.partner_id.name,
                        fin=self._jour(self.date_to),
                        retour=retour)
         releve = self.backup_partner_id.name or self.backup_info
         if releve:
-            phrase += " " + _("Relève : %s.") % releve
+            phrase += " " + _("Stand-in: %s.") % releve
         return phrase
 
     VIDE = {"lines": [], "return_date": False}
@@ -543,7 +554,7 @@ class BfPartnerAbsence(models.Model):
         if len(lignes) > MAX_LIGNES_BANDEAU:
             reste = len(lignes) - MAX_LIGNES_BANDEAU
             lignes = lignes[:MAX_LIGNES_BANDEAU] + [
-                _("Et %s autre(s) destinataire(s) absent(s).") % reste]
+                _("And %s other recipient(s) away.") % reste]
         return {
             "lines": lignes,
             "return_date": fields.Date.to_string(retour) if retour else False,

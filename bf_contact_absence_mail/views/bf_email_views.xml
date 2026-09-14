@@ -9,8 +9,7 @@
             <xpath expr="//sheet" position="before">
                 <div class="alert alert-info mb-0 rounded-0" role="status"
                      invisible="not bf_absence_suggestion_id">
-                    <i class="fa fa-plane me-2" role="img" aria-label="Absence"/>
-                    Ce courriel a produit une proposition d'absence.
+                    <i class="fa fa-plane me-2" role="img" aria-label="Absence"/> This email produced an absence proposal.
                     <field name="bf_absence_suggestion_id" readonly="1" nolabel="1" class="d-inline"/>
                 </div>
             </xpath>
