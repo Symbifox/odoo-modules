@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- La carte « Parc informatique », posée dans la rangée « Modules » juste
+         après la carte Hébergement. Le prédicat vise la colonne QUI CONTIENT
+         openHostingDashboard, pas une position : d'autres satellites du
+         tableau de bord insèrent dans la même rangée, et un xpath positionnel
+         changerait de cible selon l'ordre de chargement.
+
+         Trois états, comme les tuiles du socle : données présentes, collecteur
+         en panne (nommé dans state.data.failed), et rien du tout, qui est le
+         cas d'une personne sans accès à l'hébergement : pas de carte.
+
+         « Muets » et « Compte inconnu » passent en tête : ce sont les deux
+         lignes qui disent que personne ne mesure. Et le pied porte TOUJOURS la
+         date du relevé, parce qu'un zéro sans date se lit comme un zéro
+         d'aujourd'hui. -->
+    <t t-inherit="bf_dashboard.Dashboard" t-inherit-mode="extension">
+        <xpath expr="//div[@class='col-lg-4 mb-3'][.//*[@t-on-click='openHostingDashboard']]" position="after">
+            <div class="col-lg-4 mb-3" t-if="state.data.hosting_patch or state.data.failed.hosting_patch">
+                <t t-if="state.data.hosting_patch">
+                    <t t-set="parc" t-value="state.data.hosting_patch"/>
+                    <div class="card h-100 cursor-pointer" t-on-click="() => this.openPatchSystems()">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0">
+                                <i class="fa fa-desktop me-2"/>Parc informatique
+                                <small class="text-muted fw-normal">
+                                    · <t t-esc="parc.systems_tracked"/> <t t-if="parc.systems_tracked > 1">systèmes suivis</t><t t-else="">système suivi</t>
+                                </small>
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2 cursor-pointer"
+                                 t-on-click.stop="() => this.openPatchSystems('stale')">
+                                <span><i class="fa fa-microphone-slash text-danger me-2"/>Muets (48 h)</span>
+                                <strong t-attf-class="{{parc.muted > 0 ? 'text-danger' : 'text-muted'}}"
+                                        t-esc="parc.muted"/>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 cursor-pointer"
+                                 t-on-click.stop="() => this.openPatchSystems('blind')">
+                                <span><i class="fa fa-eye-slash text-danger me-2"/>Compte inconnu</span>
+                                <strong t-attf-class="{{parc.blind > 0 ? 'text-danger' : 'text-muted'}}"
+                                        t-esc="parc.blind"/>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 cursor-pointer"
+                                 t-on-click.stop="() => this.openPatchSystems('security')">
+                                <span><i class="fa fa-shield text-warning me-2"/>Sécurité en attente</span>
+                                <strong t-attf-class="{{parc.security > 0 ? 'text-danger' : 'text-muted'}}"
+                                        t-esc="parc.security"/>
+                            </div>
+                            <div class="d-flex justify-content-between cursor-pointer"
+                                 t-on-click.stop="() => this.openPatchSystems('reboot')">
+                                <span><i class="fa fa-refresh text-info me-2"/>Redémarrage requis</span>
+                                <strong t-attf-class="{{parc.reboot > 0 ? 'text-warning' : 'text-muted'}}"
+                                        t-esc="parc.reboot"/>
+                            </div>
+                        </div>
+                        <div t-if="parc.last_report" class="card-footer text-center text-muted small">
+                            <i class="fa fa-clock-o me-1"/>Dernier relevé le
+                            <t t-esc="patchLastReport(parc.last_report)"/>
+                        </div>
+                        <div t-else="" class="card-footer text-center text-danger small">
+                            <i class="fa fa-exclamation-triangle me-1"/>Aucun relevé : ces chiffres ne disent rien
+                        </div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="card h-100">
+                        <div class="card-header bg-light">
+                            <h6 class="mb-0"><i class="fa fa-desktop me-2"/>Parc informatique</h6>
+                        </div>
+                        <div class="card-body text-center text-muted py-4">
+                            <i class="fa fa-exclamation-triangle me-1"/>Données non disponibles
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+    </t>
+
+</templates>

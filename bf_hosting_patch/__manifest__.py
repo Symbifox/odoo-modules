@@ -2,7 +2,7 @@
 {
     "name": "Hébergement — Mises à jour du système",
     "summary": "Relevé des paquets, du noyau et des redémarrages, par système installé",
-    "version": "18.0.4.3.0",
+    "version": "18.0.4.4.1",
     "category": "Services",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -23,4 +23,10 @@
         "views/hosting_maintenance_schedule_views.xml",
         "views/bf_hosting_patch_menu.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "bf_hosting_patch/static/src/js/patch_card_patch.js",
+            "bf_hosting_patch/static/src/xml/patch_card.xml",
+        ],
+    },
 }

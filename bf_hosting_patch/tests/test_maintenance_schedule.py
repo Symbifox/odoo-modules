@@ -130,9 +130,9 @@ class TestMaintenanceSchedule(TransactionCase):
 
 @tagged("post_install", "-at_install")
 class TestDashboardData(TransactionCase):
-    """Les chiffres servis au tableau de bord. La carte n'est pas encore
-    posée, mais les données doivent déjà être justes et ne jamais faire tomber
-    le tableau de bord entier."""
+    """Les chiffres servis à la tuile « Parc informatique ». La carte
+    elle-même, son ancre et ses gardes sont éprouvés dans
+    `test_dashboard_card`."""
 
     @classmethod
     def setUpClass(cls):

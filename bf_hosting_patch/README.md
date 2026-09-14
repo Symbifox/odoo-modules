@@ -171,6 +171,24 @@ change the machine, and none needs privileges.
 sandbox would make `dpkg` fail in a way that looks like an unreachable
 repository. What holds the line there is the consent file, not the sandbox.
 
+## The home-page tile
+
+A fleet card (*Parc informatique*) joins the "Modules" row of the `bf_home`
+home page, right after the Hosting card. Four numbers, not
+a chart: systems silent for 48 hours, systems whose package count is unknown,
+systems with security fixes pending, systems waiting for a reboot. The first two come first, because they are
+the ones saying that nobody is measuring.
+
+The footer always carries the time of the latest report, in the viewer's time
+zone, and says so plainly when there is none: a zero without a date reads like a
+zero from today. Each line opens the systems filtered on its state, and its
+number counts exactly that list; the card itself opens the systems that need a
+look.
+
+Someone without hosting access does not see the card at all. A collector that
+fails keeps the card in place and says its data is unavailable, following the
+`bf_home` contract, instead of letting it vanish.
+
 ## Cadence
 
 | Gesture | Cadence |
@@ -203,13 +221,17 @@ odoo -d <db> -u bf_hosting_patch --test-enable --test-tags=/bf_hosting_patch \
      --stop-after-init --db-filter='^<db>$' --http-port=8169
 ```
 
-83 tests, weighted towards the unhappy paths: missing token, revoked token,
+91 tests, weighted towards the unhappy paths: missing token, revoked token,
 unreadable body, oversized body, invented selection value, duplicate machine-id,
 a hardware UUID already carried by another record (archived ones included), the
 flip to `stale` as time passes with nothing written, an order handed to the
 wrong machine, an order without local consent, a refusal that must withdraw the
 consent, counters left behind by an applied order, and a terminal state an agent
 tries to rewrite.
+On the tile side: the template anchor replayed against `bf_home`'s own template,
+the user without access who must neither see the card nor read a failure,
+per-client isolation of the counters, and each number matching the list its
+click opens.
 
 ## Licence
 
