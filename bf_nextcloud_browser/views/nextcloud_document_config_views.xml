@@ -8,12 +8,24 @@
         <field name="arch" type="xml">
             <field name="webdav_path" position="after">
                 <field name="browser_root_prefix"/>
+                <field name="nc_require_email_match"/>
                 <field name="nc_open_extensions"/>
                 <field name="nc_folder_color" widget="color"/>
                 <field name="nc_panel_width_pct"/>
                 <field name="nc_panel_height_pct"/>
             </field>
             <group name="sharing" position="after">
+                <group string="Connexions des personnes" colspan="2" groups="base.group_system">
+                    <field name="nc_user_credential_ids" nolabel="1" readonly="0">
+                        <list create="0" edit="0" delete="1">
+                            <field name="user_id"/>
+                            <field name="nc_display_name"/>
+                            <field name="nc_login"/>
+                            <field name="state"/>
+                            <field name="connected_on"/>
+                        </list>
+                    </field>
+                </group>
                 <group string="Prereglages de partage" colspan="2">
                     <field name="share_preset_ids" nolabel="1">
                         <list editable="bottom">

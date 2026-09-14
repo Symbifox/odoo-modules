@@ -1,6 +1,6 @@
 /** @odoo-module **/
 
-import { Component, useState, useRef, onWillStart } from "@odoo/owl";
+import { Component, useState, useRef, onWillStart, onWillUnmount } from "@odoo/owl";
 import { browser } from "@web/core/browser/browser";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
@@ -168,8 +168,46 @@ export class NcBrowser extends Component {
             presets: [],
             filter: "",
             selected: [], // rels of checked entries
+            // Connexion Nextcloud de la personne (18.0.4.0.0). Le navigateur
+            // n'emprunte plus le compte de la configuration : sans connexion,
+            // il n'affiche rien d'autre que la carte qui invite a en ouvrir une.
+            conn: {
+                checked: false,
+                connected: false,
+                pending: false,
+                rejected: false,
+                login: "",
+                displayName: "",
+                server: "",
+                loginUrl: "",
+            },
         });
-        onWillStart(() => this.load(this._rememberedPath()));
+        this._pollTimer = null;
+        onWillStart(() => this._start());
+        onWillUnmount(() => this._stopPolling());
+    }
+
+    async _start() {
+        if (this.needsRecord && !this.resId) {
+            return this.load();
+        }
+        try {
+            this._applyConnection(await this._call("nc_status", []));
+        } catch (e) {
+            this.state.error =
+                (e && e.data && e.data.message) || (e && e.message) || _t("Erreur de chargement.");
+            this.state.ready = true;
+            return;
+        }
+        if (this.state.conn.connected) {
+            return this.load(this._rememberedPath());
+        }
+        if (this.state.conn.pending) {
+            // Une approbation lancee avant un rechargement de la page : le flux
+            // vit cote serveur, on reprend simplement le sondage.
+            this._startPolling();
+        }
+        this.state.ready = true;
     }
 
     get model() {
@@ -206,8 +244,203 @@ export class NcBrowser extends Component {
     }
 
     _err(e) {
+        if (this._handleConnectionError(e)) {
+            return;
+        }
         const msg = (e && e.data && e.data.message) || (e && e.message) || _t("Erreur.");
         this.notification.add(msg, { type: "danger" });
+    }
+
+    // ----------------------------------------------------------------
+    // Connexion Nextcloud par personne
+    // ----------------------------------------------------------------
+    /** Le nom de classe Python de l'erreur, tel que le serveur le serialise. */
+    _ncErrorKind(e) {
+        const name = (e && e.data && e.data.name) || "";
+        if (name.endsWith(".NcNotConnected")) {
+            return "not_connected";
+        }
+        if (name.endsWith(".NcTokenRejected")) {
+            return "rejected";
+        }
+        return "";
+    }
+
+    /**
+     * Une connexion absente ou revoquee n'est pas une erreur a afficher en
+     * rouge : c'est l'etat « connectez-vous ». On bascule sur la carte.
+     */
+    _handleConnectionError(e) {
+        const kind = this._ncErrorKind(e);
+        if (!kind) {
+            return false;
+        }
+        this.state.conn.connected = false;
+        this.state.conn.rejected = kind === "rejected";
+        this.state.entries = [];
+        this.state.breadcrumb = [];
+        this.state.error = "";
+        return true;
+    }
+
+    _applyConnection(res) {
+        Object.assign(this.state.conn, {
+            checked: true,
+            // Une reconnexion en cours n'est pas une connexion : tant que la
+            // nouvelle approbation n'est pas arrivee, on garde la carte et son
+            // attente, meme si l'ancienne ligne dit encore « connecte ».
+            connected: !!res.connected && !res.pending,
+            pending: !!res.pending,
+            login: res.login || "",
+            displayName: res.display_name || res.login || "",
+            server: res.server || this.state.conn.server,
+        });
+        if (res.connected) {
+            this.state.conn.rejected = false;
+        }
+    }
+
+    get showConnectCard() {
+        return (
+            this.state.conn.checked &&
+            !this.state.conn.connected &&
+            !this.state.error &&
+            !(this.needsRecord && !this.resId)
+        );
+    }
+
+    async connect() {
+        // La fenetre s'ouvre pendant le clic, avant l'appel au serveur : un
+        // window.open fait apres un await est bloque par les navigateurs.
+        const win = window.open("", "bf_nc_connect", "width=560,height=720");
+        try {
+            const res = await this._call("nc_connect_start", []);
+            this._applyConnection(res);
+            this.state.conn.loginUrl = res.login_url;
+            if (win && !win.closed) {
+                // La page de Nextcloud ne doit pas pouvoir piloter l'onglet Odoo.
+                // Le prix : Odoo ne peut plus fermer cette fenetre (Chrome refuse
+                // un close() a qui n'est plus son ouvreur), d'ou la consigne de la
+                // fermer soi-meme une fois l'acces autorise.
+                win.opener = null;
+                win.location.href = res.login_url;
+            }
+            this._startPolling();
+        } catch (e) {
+            if (win && !win.closed) {
+                win.close();
+            }
+            this._err(e);
+        }
+    }
+
+    reopenConnectWindow() {
+        if (!this.state.conn.loginUrl) {
+            return;
+        }
+        window.open(this.state.conn.loginUrl, "bf_nc_connect", "width=560,height=720,noopener");
+    }
+
+    _startPolling() {
+        this._stopPolling();
+        this._pollTimer = browser.setInterval(() => this._pollOnce(), 2000);
+    }
+
+    _stopPolling() {
+        if (this._pollTimer) {
+            browser.clearInterval(this._pollTimer);
+            this._pollTimer = null;
+        }
+    }
+
+    async _pollOnce() {
+        if (this._polling) {
+            return; // un sondage lent ne doit pas en empiler un second
+        }
+        this._polling = true;
+        try {
+            const res = await this._call("nc_connect_poll", []);
+            this._applyConnection(res);
+            if (res.error) {
+                this._stopPolling();
+                this.state.conn.loginUrl = "";
+                this.notification.add(res.error, { type: "danger", sticky: true });
+                if (res.connected) {
+                    // Reconnexion refusee : l'ancienne connexion tient toujours.
+                    await this.load(this._rememberedPath());
+                }
+                return;
+            }
+            if (res.expired) {
+                this._stopPolling();
+                this.state.conn.loginUrl = "";
+                this.notification.add(
+                    _t("La demande de connexion a expire. Recommencez."),
+                    { type: "warning" }
+                );
+                if (res.connected) {
+                    await this.load(this._rememberedPath());
+                }
+                return;
+            }
+            if (res.just_connected) {
+                this._stopPolling();
+                this.state.conn.loginUrl = "";
+                this.notification.add(
+                    _t("Nextcloud connecte : %s", this.state.conn.displayName),
+                    { type: "success" }
+                );
+                await this.load(this._rememberedPath());
+            } else if (!res.pending) {
+                // Le flux a pris fin ailleurs (annule dans un autre onglet) :
+                // l'ancienne connexion, s'il y en a une, tient toujours.
+                this._stopPolling();
+                this.state.conn.loginUrl = "";
+                if (res.connected) {
+                    await this.load(this._rememberedPath());
+                }
+            }
+        } catch (e) {
+            this._stopPolling();
+            this._err(e);
+        } finally {
+            this._polling = false;
+        }
+    }
+
+    async cancelConnect() {
+        this._stopPolling();
+        try {
+            this._applyConnection(await this._call("nc_connect_cancel", []));
+        } catch (e) {
+            this._err(e);
+        }
+        this.state.conn.loginUrl = "";
+        if (this.state.conn.connected) {
+            // Reconnexion abandonnee : l'ancienne connexion tient toujours.
+            await this.load(this._rememberedPath());
+        }
+    }
+
+    disconnect() {
+        this.dialog.add(ConfirmationDialog, {
+            title: _t("Deconnecter Nextcloud"),
+            body: _t(
+                "Le navigateur n'aura plus acces a vos fichiers, et l'acces donne a Odoo sera supprime de votre Nextcloud."
+            ),
+            confirmLabel: _t("Deconnecter"),
+            confirm: async () => {
+                try {
+                    this._applyConnection(await this._call("nc_disconnect", []));
+                    this.state.entries = [];
+                    this.state.breadcrumb = [];
+                    this.state.tree = [];
+                } catch (e) {
+                    this._err(e);
+                }
+            },
+            cancel: () => {},
+        });
     }
 
     _call(method, args) {
@@ -239,6 +472,9 @@ export class NcBrowser extends Component {
             this.state.filter = "";
             this._syncTree(res.rel_path, res.entries);
         } catch (e) {
+            if (this._handleConnectionError(e)) {
+                return;
+            }
             // Le dossier memorise a pu etre supprime ou renomme depuis la
             // derniere visite : on retombe sur la racine plutot que d'ouvrir
             // le panneau sur une erreur.

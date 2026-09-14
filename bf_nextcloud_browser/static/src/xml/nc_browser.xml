@@ -9,6 +9,44 @@
                     <i class="fa fa-spinner fa-spin me-1"/> Chargement…
                 </div>
             </t>
+            <t t-elif="showConnectCard">
+                <div class="o_nc_connect card mx-auto my-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-2">
+                            <i class="fa fa-cloud me-2"/>Connectez votre Nextcloud
+                        </h5>
+                        <div t-if="state.conn.rejected" class="alert alert-warning py-2">
+                            Votre connexion a ete revoquee dans Nextcloud. Reconnectez votre compte pour continuer.
+                        </div>
+                        <p class="mb-2">
+                            Le navigateur agit en votre nom : vous voyez les fichiers que Nextcloud
+                            vous donne le droit de voir, et les liens de partage portent votre nom.
+                        </p>
+                        <p class="text-muted small mb-3">
+                            Une fenetre Nextcloud va s'ouvrir. Approuvez l'acces demande par Odoo,
+                            puis fermez cette fenetre. Vous pourrez retirer l'acces a tout moment,
+                            ici ou dans Nextcloud (Parametres, Securite, Appareils et sessions).
+                            <t t-if="state.conn.server"><br/>Serveur : <t t-esc="state.conn.server"/></t>
+                        </p>
+                        <t t-if="!state.conn.pending">
+                            <button class="btn btn-primary" t-on-click="connect">
+                                <i class="fa fa-sign-in me-1"/> Connecter mon Nextcloud
+                            </button>
+                        </t>
+                        <t t-else="">
+                            <div class="d-flex align-items-center flex-wrap gap-2">
+                                <span class="text-muted">
+                                    <i class="fa fa-spinner fa-spin me-1"/> En attente de votre approbation dans la fenetre Nextcloud…
+                                </span>
+                                <button t-if="state.conn.loginUrl" class="btn btn-sm btn-link" t-on-click="reopenConnectWindow">
+                                    Rouvrir la fenetre
+                                </button>
+                                <button class="btn btn-sm btn-secondary" t-on-click="cancelConnect">Annuler</button>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
             <t t-else="">
                 <div class="o_nc_toolbar d-flex align-items-center flex-wrap gap-2 mb-2">
                     <button class="btn btn-sm btn-secondary" t-on-click="() => this.load(state.relPath)" title="Rafraichir">
@@ -57,6 +95,13 @@
                             <span class="input-group-text"><i class="fa fa-search"/></span>
                             <input type="text" class="form-control" placeholder="Filtrer…" t-model="state.filter"/>
                         </div>
+                        <span t-if="state.conn.connected" class="o_nc_identity text-muted small text-nowrap"
+                              t-att-title="'Compte Nextcloud : ' + state.conn.login">
+                            <i class="fa fa-user-circle-o me-1"/><t t-esc="state.conn.displayName"/>
+                            <button class="btn btn-sm btn-link p-0 ms-1" t-on-click="disconnect" title="Deconnecter Nextcloud">
+                                <i class="fa fa-sign-out"/>
+                            </button>
+                        </span>
                     </div>
                 </div>
 

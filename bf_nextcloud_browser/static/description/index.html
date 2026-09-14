@@ -17,6 +17,7 @@
             <ul>
                 <li>Embedded <em>Fichiers Nextcloud</em> tab on projects and tasks</li>
                 <li>Standalone <em>Nextcloud</em> application and systray launcher</li>
+                <li>One Nextcloud account per person, connected once, revocable any time</li>
                 <li>Folder tree, sortable columns, inline modal preview</li>
                 <li>Upload (drag-and-drop, multi-file), folder, rename, move, delete</li>
                 <li>Configurable share presets (internal / external)</li>
@@ -32,9 +33,12 @@
             <h3 class="oe_slogan">Security by design</h3>
             <p>
                 Every operation is gated by an access group, scoped to the record's
-                folder, and validated against path traversal. Credentials are reused
-                from the encrypted service-account configuration; no secrets are stored
-                in this module.
+                folder, and validated against path traversal. Each person connects their
+                own Nextcloud account through Nextcloud's Login Flow v2, single sign-on
+                included: Nextcloud applies its own permissions, and every share link and
+                activity entry carries the person's name. App passwords are stored
+                encrypted, never reach the browser, and are revoked on disconnection or
+                when the Odoo account is archived.
             </p>
         </div>
     </div>

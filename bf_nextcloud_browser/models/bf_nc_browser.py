@@ -10,6 +10,12 @@ model. Every entry point:
 
 All actual WebDAV/OCS calls reuse the hardened helpers on
 nextcloud.document.config (PROPFIND/GET/PUT/MKCOL/DELETE/MOVE/share).
+
+Since 18.0.4.0.0 those calls are made AS THE CALLER: the resolved configuration
+is returned in sudo (so a member of the group who is not an administrator can
+read the connection fields at all) and with `bf_nc_as_user` in its context (so
+the helpers use the caller's own Nextcloud account, see nextcloud_document_config).
+Record access is still checked as the caller, before any of this.
 """
 
 import base64
@@ -38,9 +44,8 @@ _logger = logging.getLogger(__name__)
 
 GROUP = "bf_nextcloud_browser.group_nc_browser_user"
 ALLOWED_MODELS = ("project.project", "project.task")
-# Display tz is pinned to Montreal: the service-account user context has no tz,
-# and Blue Fox always shows local Montreal time (never UTC).
-MONTREAL_TZ = pytz.timezone("America/Montreal")
+# Modification times are shown in the person's own time zone, never in UTC.
+DEFAULT_TZ = "America/Montreal"
 # Cap RPC uploads (base64 in a single call) to protect the worker's memory.
 MAX_UPLOAD_BYTES = 64 * 1024 * 1024  # 64 MiB
 
@@ -66,12 +71,22 @@ class BfNcBrowser(models.TransientModel):
     # ------------------------------------------------------------------
     # Access & resolution
     # ------------------------------------------------------------------
+    @staticmethod
+    def _as_id(value):
+        """An RPC id argument as an int, or a clean refusal instead of a trace."""
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            raise UserError(_("Identifiant invalide."))
+
     def _check_access(self):
         if not self.env.user.has_group(GROUP):
             raise AccessError(_("Acces au navigateur Nextcloud non autorise."))
 
     def _default_config(self):
-        Config = self.env["nextcloud.document.config"]
+        # sudo: the connection fields are system-only and the model is not
+        # readable by every browser user; access is decided by the group.
+        Config = self.env["nextcloud.document.config"].sudo()
         cfg_id = self.env["ir.config_parameter"].sudo().get_param(
             "bf_document_nextcloud_sync.default_config_id"
         )
@@ -85,17 +100,25 @@ class BfNcBrowser(models.TransientModel):
     def _resolve_record(self, model, res_id):
         if model not in ALLOWED_MODELS:
             raise ValidationError(_("Modele non supporte: %s") % model)
-        record = self.env[model].browse(int(res_id))
+        record = self.env[model].browse(self._as_id(res_id))
         if not record.exists():
             raise UserError(_("Enregistrement introuvable."))
         record.check_access("read")
         return record
 
+    def _as_person(self, config):
+        """The configuration, speaking as the caller (see module docstring)."""
+        return config.sudo().with_context(bf_nc_as_user=self.env.uid)
+
+    def _record_config(self, model, res_id):
+        record = self._resolve_record(model, res_id)
+        config = record.nc_documents_config_id or self._default_config()
+        return record, config.sudo()
+
     def _resolve_root(self, model, res_id):
         """Return (config, root_path) for a record, or raise if not configured."""
         self._check_access()
-        record = self._resolve_record(model, res_id)
-        config = record.nc_documents_config_id or self._default_config()
+        record, config = self._record_config(model, res_id)
         if not config:
             raise UserError(_("Aucune configuration Nextcloud disponible."))
         root = record.nc_documents_folder
@@ -115,11 +138,11 @@ class BfNcBrowser(models.TransientModel):
         if prefix in ("", "/"):
             raise UserError(_(
                 "Le navigateur requiert un prefixe racine. Definissez "
-                "« Prefixe racine (navigateur) » (ex: /Blue Fox/) sur la "
+                "« Prefixe racine (navigateur) » (ex: /Entreprise/) sur la "
                 "configuration Nextcloud."
             ))
         _validate_path_under_prefix(root, _sanitize_nc_path(prefix))
-        return config, root
+        return self._as_person(config), root
 
     def _resolve_path(self, model, res_id, rel_path):
         """Resolve a client relative path to a sanitised absolute NC path."""
@@ -144,10 +167,10 @@ class BfNcBrowser(models.TransientModel):
         if prefix in ("", "/"):
             raise UserError(_(
                 "Le navigateur autonome requiert un prefixe racine. Definissez "
-                "« Prefixe racine (navigateur) » (ex: /Blue Fox/) sur la "
+                "« Prefixe racine (navigateur) » (ex: /Entreprise/) sur la "
                 "configuration Nextcloud avant d'utiliser cette application."
             ))
-        return config, _sanitize_nc_path(prefix)
+        return self._as_person(config), _sanitize_nc_path(prefix)
 
     def _resolve_path_standalone(self, rel_path):
         config, root = self._resolve_root_standalone()
@@ -159,9 +182,19 @@ class BfNcBrowser(models.TransientModel):
     # ------------------------------------------------------------------
     # Helpers
     # ------------------------------------------------------------------
-    def _href_to_nc_path(self, config, href):
-        """Convert a PROPFIND <href> back to a Nextcloud absolute path."""
-        dav_root = urlparse(config.webdav_url).path.rstrip("/")
+    def _dav_root(self, config):
+        # Both sides unquoted: a per-person account id is quoted in webdav_url
+        # (an '@' becomes %40) and Nextcloud may or may not quote it in <href>.
+        return url_unquote(urlparse(config.webdav_url).path).rstrip("/")
+
+    def _href_to_nc_path(self, config, href, dav_root=None):
+        """Convert a PROPFIND <href> back to a Nextcloud absolute path.
+
+        Pass `dav_root` when converting a whole listing: webdav_url looks the
+        person's connection up, and a listing has up to 500 entries.
+        """
+        if dav_root is None:
+            dav_root = self._dav_root(config)
         p = url_unquote(urlparse(href).path)
         if p.startswith(dav_root):
             p = p[len(dav_root):]
@@ -180,11 +213,10 @@ class BfNcBrowser(models.TransientModel):
         """
         if not self.env.user.has_group(GROUP):
             return {}
-        config = (
-            self.env["nextcloud.document.config"]
-            .sudo()
-            .search([("active", "=", True)], limit=1)
-        )
+        # The same configuration the panel will open, held to the same rule:
+        # the button used to test "any active configuration", so it showed on
+        # an instance whose browser refuses to run (a root prefix of "/").
+        config = self._browsable_config()
         if not config:
             return {}
         return {
@@ -192,6 +224,89 @@ class BfNcBrowser(models.TransientModel):
             "width_pct": config.nc_panel_width_pct or 80,
             "height_pct": config.nc_panel_height_pct or 80,
         }
+
+    @api.model
+    def _browsable_config(self):
+        """The default configuration if the standalone browser can run on it."""
+        config = self._default_config()
+        if config and config.active and config._browser_prefix_ok():
+            return config
+        return self.env["nextcloud.document.config"].sudo().browse()
+
+    # ------------------------------------------------------------------
+    # Per-person Nextcloud connection
+    # ------------------------------------------------------------------
+    def _connection_payload(self, config, extra=None):
+        cred = self.env["bf.nc.user.credential"]._for(config)
+        return {
+            **cred._status(),
+            "server": config.nextcloud_base_url or "",
+            **(extra or {}),
+        }
+
+    def _scope_config(self, model=None, res_id=None):
+        self._check_access()
+        if model:
+            _record, config = self._record_config(model, res_id)
+        else:
+            config = self._default_config()
+        if not config:
+            raise UserError(_("Aucune configuration Nextcloud disponible."))
+        return config
+
+    @api.model
+    def nc_status(self, model, res_id):
+        return self._connection_payload(self._scope_config(model, res_id))
+
+    @api.model
+    def nc_connect_start(self, model, res_id):
+        config = self._scope_config(model, res_id)
+        return self.env["bf.nc.user.credential"]._flow_start(config)
+
+    @api.model
+    def nc_connect_poll(self, model, res_id):
+        config = self._scope_config(model, res_id)
+        res = self.env["bf.nc.user.credential"]._flow_poll(config)
+        return {**res, "server": config.nextcloud_base_url or ""}
+
+    @api.model
+    def nc_connect_cancel(self, model, res_id):
+        config = self._scope_config(model, res_id)
+        cred = self.env["bf.nc.user.credential"]._for(config)
+        if cred:
+            cred._flow_clear()
+            if cred.state == "pending":
+                cred.unlink()
+        return self._connection_payload(config)
+
+    @api.model
+    def nc_disconnect(self, model, res_id):
+        config = self._scope_config(model, res_id)
+        # unlink() deletes the app password on Nextcloud too.
+        self.env["bf.nc.user.credential"]._for(config).unlink()
+        return self._connection_payload(config)
+
+    @api.model
+    def root_nc_status(self):
+        return self._connection_payload(self._scope_config())
+
+    @api.model
+    def root_nc_connect_start(self):
+        return self.env["bf.nc.user.credential"]._flow_start(self._scope_config())
+
+    @api.model
+    def root_nc_connect_poll(self):
+        config = self._scope_config()
+        res = self.env["bf.nc.user.credential"]._flow_poll(config)
+        return {**res, "server": config.nextcloud_base_url or ""}
+
+    @api.model
+    def root_nc_connect_cancel(self):
+        return self.nc_connect_cancel(None, None)
+
+    @api.model
+    def root_nc_disconnect(self):
+        return self.nc_disconnect(None, None)
 
     # ------------------------------------------------------------------
     # Browse
@@ -205,12 +320,17 @@ class BfNcBrowser(models.TransientModel):
         """Render one directory listing (shared by record + standalone scopes).
         Inputs are already-resolved, validated absolute paths."""
         raw = config._webdav_propfind(abs_path, depth="1")
+        dav_root = self._dav_root(config)
+        try:
+            tz = pytz.timezone(self.env.user.tz or DEFAULT_TZ)
+        except pytz.UnknownTimeZoneError:
+            tz = pytz.timezone(DEFAULT_TZ)
 
         abs_norm = posixpath.normpath(abs_path)
         root_norm = posixpath.normpath(root)
         entries = []
         for e in raw:
-            nc_path = self._href_to_nc_path(config, e.get("href", ""))
+            nc_path = self._href_to_nc_path(config, e.get("href", ""), dav_root)
             if posixpath.normpath(nc_path) == abs_norm:
                 continue  # the directory itself
             try:
@@ -224,7 +344,7 @@ class BfNcBrowser(models.TransientModel):
                     dt = parsedate_to_datetime(lastmod)
                     if dt.tzinfo is None:
                         dt = pytz.utc.localize(dt)
-                    iso = dt.astimezone(MONTREAL_TZ).strftime("%Y-%m-%d %H:%M")
+                    iso = dt.astimezone(tz).strftime("%Y-%m-%d %H:%M")
                 except (TypeError, ValueError):
                     iso = lastmod
             is_dir = bool(e.get("is_dir"))
@@ -359,7 +479,7 @@ class BfNcBrowser(models.TransientModel):
         preset is given. is_dir is derived server-side, never from the client."""
         if not preset_id:
             return {}
-        preset = self.env["nextcloud.share.preset"].browse(int(preset_id))
+        preset = self.env["nextcloud.share.preset"].browse(self._as_id(preset_id))
         if not preset.exists() or preset.config_id != config:
             return {}
         is_dir = self._path_is_dir(config, abs_path)
@@ -425,7 +545,7 @@ class BfNcBrowser(models.TransientModel):
     @api.model
     def link_to_knowledge_item(self, model, res_id, rel_path, item_id):
         config, abs_path, root = self._resolve_path(model, res_id, rel_path)
-        item = self.env["project.knowledge.item"].browse(int(item_id))
+        item = self.env["project.knowledge.item"].browse(self._as_id(item_id))
         if not item.exists():
             raise UserError(_("Element de matrice introuvable."))
         item.check_access("write")
@@ -452,7 +572,7 @@ class BfNcBrowser(models.TransientModel):
                 _("L'application Odoo Knowledge n'est pas installee sur cette instance.")
             )
         config, abs_path, root = self._resolve_path(model, res_id, rel_path)
-        article = Article.browse(int(article_id))
+        article = Article.browse(self._as_id(article_id))
         if not article.exists():
             raise UserError(_("Article introuvable."))
         article.check_access("write")
