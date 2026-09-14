@@ -1,0 +1,1874 @@
+# Translation template for Daily To-Do Digest.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: daily_todo_digest 18.0.2.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 06:18+0000\n"
+"PO-Revision-Date: 2026-09-14 06:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid " and "
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%s hidden task(s)"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%s meeting(s)"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%s overdue"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%s today"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "(no name)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Activities:</strong> activities (mail.activity) assigned to the "
+"recipients are included."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Common coordinates:</strong><br/>\n"
+"                                    Montréal: 45.5017, -73.5673<br/>\n"
+"                                    Québec: 46.8139, -71.2080<br/>\n"
+"                                    Toronto: 43.6532, -79.3832<br/>\n"
+"                                    Ottawa: 45.4215, -75.6972"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "<strong>Quotes:</strong> a random quote is picked from the collection."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Sending time:</strong> the scheduled job checks every hour. The "
+"digest goes out at the configured hour <strong>in each recipient's time "
+"zone</strong> (Timezone field of their user record)."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Tasks:</strong> project tasks assigned to the recipients are "
+"included (subtasks included). The \"today\" window is computed in each "
+"recipient's time zone."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Upcoming tasks:</strong> preview of the tasks of the next days (1 to"
+" 7 days, configurable)."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Weather:</strong> uses the free Open-Meteo API. The default city and"
+" coordinates above apply, but each recipient can set their own city in their"
+" preferences (Weather city (digest))."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_52
+msgid ""
+"A dreamer is one who can only find his way by moonlight, and his punishment "
+"is that he sees the dawn before the rest of the world."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_94
+msgid "A good tree can shelter ten thousand birds."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_37
+msgid ""
+"A map of the world that does not include Utopia is not worth even glancing "
+"at."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_86
+msgid "A room of one's own and five hundred a year."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_47
+msgid "A society is judged by the way it treats its most vulnerable members."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "A test digest was sent to %s."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_112
+msgid "Aaron Swartz"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__active
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_quote__active
+msgid "Active"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Activities"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Activity"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_104
+msgid "Adapted proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.actions.act_window,help:daily_todo_digest.action_daily_digest_quote
+msgid "Add inspiring quotes"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_101
+#: model:daily.digest.quote,author:daily_todo_digest.quote_43
+#: model:daily.digest.quote,author:daily_todo_digest.quote_61
+msgid "African proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Agendas to prepare (next 7 days)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_116
+#: model:daily.digest.quote,author:daily_todo_digest.quote_117
+msgid "Aimé Césaire"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_17
+#: model:daily.digest.quote,author:daily_todo_digest.quote_18
+#: model:daily.digest.quote,author:daily_todo_digest.quote_19
+#: model:daily.digest.quote,author:daily_todo_digest.quote_20
+msgid "Albert Camus"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_118
+#: model:daily.digest.quote,author:daily_todo_digest.quote_89
+#: model:daily.digest.quote,author:daily_todo_digest.quote_90
+#: model:daily.digest.quote,author:daily_todo_digest.quote_91
+msgid "Albert Einstein"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_61
+msgid "Alone we go faster, together we go further."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_42
+msgid "Alter-globalisation slogan"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_02
+msgid "Anarchy is order without power."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_60
+msgid "Anaïs Nin"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_57
+msgid "André Malraux"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/inspirational_quote.py:0
+msgid "Anonymous"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_42
+msgid "Another world is possible."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_97
+msgid "Aristotle"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_30
+msgid "Art washes away from the soul the dust of everyday life."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_08
+#: model:daily.digest.quote,author:daily_todo_digest.quote_09
+msgid "Arthur Rimbaud"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_16
+msgid "As I did not worry about being born, I do not worry about dying."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_49
+#: model:daily.digest.quote,author:daily_todo_digest.quote_50
+#: model:daily.digest.quote,author:daily_todo_digest.quote_51
+#: model:daily.digest.quote,author:daily_todo_digest.quote_81
+msgid "Audre Lorde"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_33
+msgid "Augustine of Hippo"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_quote__author
+msgid "Author"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_40
+msgid "Be realistic, demand the impossible."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_77
+msgid "Be the change you wish to see in the world."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_34
+msgid "Be yourself; everyone else is already taken."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_41
+msgid "Beneath the paving stones, the beach."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_93
+msgid "Bob Marley"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_92
+msgid "Bono"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_53
+msgid "Borders are the scars of history."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_94
+msgid "Burmese proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_51
+msgid ""
+"Caring for myself is not self-indulgence, it is self-preservation, and that "
+"is an act of political warfare."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_99
+msgid "Chance favours only the prepared mind."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_66
+msgid "Chief Seattle"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_103
+#: model:daily.digest.quote,author:daily_todo_digest.quote_62
+#: model:daily.digest.quote,author:daily_todo_digest.quote_63
+msgid "Chinese proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_111
+msgid "Christian Lous Lange"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Clear sky"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_88
+msgid "Coco Chanel"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__company_id
+msgid "Company"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_send_log__config_id
+msgid "Config"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.ui.menu,name:daily_todo_digest.menu_daily_digest_config
+msgid "Configuration"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.actions.act_window,help:daily_todo_digest.action_daily_digest_config
+msgid "Create your first daily digest"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__create_uid
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_quote__create_uid
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_send_log__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__create_date
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_quote__create_date
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_send_log__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_91
+msgid "Creativity is intelligence having fun."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_57
+msgid "Culture cannot be inherited, it has to be conquered."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model,name:daily_todo_digest.model_daily_digest_config
+msgid "Daily Digest Configuration"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model,name:daily_todo_digest.model_daily_digest_send_log
+msgid "Daily Digest Send Log"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.actions.server,name:daily_todo_digest.ir_cron_daily_todo_digest_ir_actions_server
+msgid "Daily To-Do Digest: daily send"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.ui.menu,name:daily_todo_digest.menu_daily_digest_root
+msgid "Daily digest"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_daily_digest_config
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_list
+msgid "Daily digests"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Date"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__upcoming_days
+msgid "Days ahead"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__weather_city
+msgid ""
+"Default city. Each recipient can replace it in their preferences (Weather "
+"city (digest) on their user record)."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Dense drizzle"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Dense freezing drizzle"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Digest configuration"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Digest sent"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_36
+msgid "Disobedience is man's original virtue."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__display_name
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_quote__display_name
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_send_log__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Due"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_115
+msgid ""
+"Each generation must, out of relative obscurity, discover its mission, "
+"fulfil it, or betray it."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_67
+msgid "Edmund Hillary"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_24
+#: model:daily.digest.quote,author:daily_todo_digest.quote_25
+msgid "Eduardo Galeano"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_74
+msgid "Education is the most powerful weapon for changing the world."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_93
+msgid ""
+"Emancipate yourselves from mental slavery. None but ourselves can free our "
+"minds."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_05
+#: model:daily.digest.quote,author:daily_todo_digest.quote_06
+msgid "Emma Goldman"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_53
+msgid "Ernst Jünger"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Error"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/inspirational_quote.py:0
+msgid "Every day is a new opportunity to do better."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_90
+msgid ""
+"Everybody is a genius. But if you judge a fish by its ability to climb a "
+"tree, it will live its whole life believing that it is stupid."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_68
+msgid "Fall seven times, stand up eight."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_15
+#: model:daily.digest.quote,author:daily_todo_digest.quote_16
+msgid "Federico García Lorca"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_28
+msgid "Feet, what do I need them for if I have wings to fly?"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_85
+msgid ""
+"Feminism has never meant hating men. It means fighting for equality between "
+"the sexes."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__company_id
+msgid "Filter tasks by this company only"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Fog"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_115
+msgid "Frantz Fanon"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_54
+msgid "Freedom begins where ignorance ends."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Freezing fog"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_27
+#: model:daily.digest.quote,author:daily_todo_digest.quote_28
+#: model:daily.digest.quote,author:daily_todo_digest.quote_29
+msgid "Frida Kahlo"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_59
+msgid "Friedrich Nietzsche (adapted)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_48
+#: model:daily.digest.quote,author:daily_todo_digest.quote_77
+#: model:daily.digest.quote,author:daily_todo_digest.quote_78
+#: model:daily.digest.quote,author:daily_todo_digest.quote_79
+#: model:daily.digest.quote,author:daily_todo_digest.quote_80
+msgid "Gandhi"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "General"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_107
+#: model:daily.digest.quote,author:daily_todo_digest.quote_108
+msgid "Greta Thunberg"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_23
+msgid "Guy Debord"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_97
+msgid "Happiness depends upon ourselves."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Have a good day!"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Heavy freezing rain"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Heavy rain"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Heavy snow"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Heavy snow showers"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Hello %s,"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Help"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Here is your agenda for %s."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "High"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_25
+msgid "History is a prophet who looks back."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "How does the daily digest work?"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_82
+msgid "I am a phenomenal woman. Phenomenally. That's me."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_15
+msgid "I am going to dream, but not to sleep."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_49
+msgid ""
+"I am not free while any woman is unfree, even when her shackles are very "
+"different from my own."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_116
+msgid ""
+"I am talking about millions of men in whom fear, the inferiority complex, "
+"trembling, kneeling, despair and servility have been cunningly instilled."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_29
+msgid "I do not paint dreams or nightmares, I paint my own reality."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_32
+msgid "I do not seek, I find."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_76
+msgid "I never lose. I either win or I learn."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_27
+msgid "I paint flowers so they will not die."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_20
+msgid "I rebel, therefore we exist."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_12
+msgid "I want to do with you what spring does with the cherry trees."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__id
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_quote__id
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_send_log__id
+msgid "ID"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_05
+msgid "If I can't dance, it's not my revolution."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_44
+msgid ""
+"If you have come here to help me, you are wasting your time. But if you have"
+" come because your liberation is bound up with mine, then let us work "
+"together."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_101
+msgid ""
+"If you want to go fast, go alone. If you want to go far, let us go together."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_120
+msgid "In a world where you can be anything, be kind."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_70
+msgid "In an avalanche, no snowflake ever feels responsible."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_17
+msgid ""
+"In the midst of winter, I found there was, within me, an invincible summer."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_upcoming_tasks
+msgid "Include the tasks of the next days"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_meetings
+msgid ""
+"Include upcoming meetings with an agenda to prepare and past meetings whose "
+"minutes are still to complete (bf_meeting cycle)."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_113
+msgid "Information wants to be free."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_71
+msgid "Injustice anywhere is a threat to justice everywhere."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model,name:daily_todo_digest.model_daily_digest_quote
+msgid "Inspirational Quote for Daily Digest"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_quote
+msgid "Inspiring quote"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.actions.act_window,name:daily_todo_digest.action_daily_digest_quote
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_quote_list
+msgid "Inspiring quotes"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_75
+msgid "It always seems impossible until it's done."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_98
+msgid ""
+"It is not because things are difficult that we do not dare; it is because we"
+" do not dare that they are difficult."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_67
+msgid "It is not the mountain we conquer, but ourselves."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_106
+#: model:daily.digest.quote,author:daily_todo_digest.quote_68
+#: model:daily.digest.quote,author:daily_todo_digest.quote_69
+msgid "Japanese proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_56
+msgid "Jean-Jacques Rousseau"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_38
+#: model:daily.digest.quote,author:daily_todo_digest.quote_39
+msgid "Khalil Gibran"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_96
+msgid "Know thyself."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__write_uid
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_quote__write_uid
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_send_log__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__write_date
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_quote__write_date
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_send_log__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__last_sent
+msgid "Last sent"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_send_log__last_sent
+msgid "Last sent (UTC)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__weather_latitude
+msgid "Latitude"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_res_users__digest_weather_city
+msgid ""
+"Leave empty to use the digest's default city. Otherwise, also fill in the "
+"latitude and longitude below."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_58
+msgid "Lewis Carroll"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_95
+msgid ""
+"Life is not about waiting for the storm to pass, it is about learning to "
+"dance in the rain."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Light drizzle"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Light freezing drizzle"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Light freezing rain"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Light rain"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Light showers"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Light snow"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Light snow showers"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_44
+msgid "Lilla Watson"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_79
+msgid ""
+"Live as if you were to die tomorrow. Learn as if you were to live forever."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_89
+msgid "Logic will get you from A to B. Imagination will take you everywhere."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__weather_longitude
+msgid "Longitude"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_99
+msgid "Louis Pasteur"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Low"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Mainly clear"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_56
+msgid "Man is born free, and everywhere he is in chains."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_46
+msgid "Marcel Proust"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_114
+#: model:daily.digest.quote,author:daily_todo_digest.quote_71
+#: model:daily.digest.quote,author:daily_todo_digest.quote_72
+#: model:daily.digest.quote,author:daily_todo_digest.quote_73
+msgid "Martin Luther King Jr."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_45
+msgid "Martin Niemöller"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_40
+#: model:daily.digest.quote,author:daily_todo_digest.quote_41
+msgid "May 68"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_82
+#: model:daily.digest.quote,author:daily_todo_digest.quote_83
+#: model:daily.digest.quote,author:daily_todo_digest.quote_84
+msgid "Maya Angelou"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Meeting"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Meetings"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_meetings
+msgid "Meetings (agendas + minutes)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_11
+msgid "Melancholy is the happiness of being sad."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_07
+msgid "Michael Bakunin"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Minutes to complete"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Moderate drizzle"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Moderate rain"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Moderate showers"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Moderate snow"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_105
+#: model:daily.digest.quote,author:daily_todo_digest.quote_120
+msgid "Modern proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_92
+msgid "Music can change the world because it can change people."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_03
+msgid "Mutual aid is the most important factor of evolution."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "My daily digest"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_117
+msgid "My mouth shall be the mouth of those calamities that have no mouth."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__name
+msgid "Name"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_65
+msgid "Native American proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_64
+msgid "Native American proverb (Cree)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_74
+#: model:daily.digest.quote,author:daily_todo_digest.quote_75
+#: model:daily.digest.quote,author:daily_todo_digest.quote_76
+msgid "Nelson Mandela"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_26
+msgid ""
+"Never ask directions from someone who knows the way, because you will not be"
+" able to get lost."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Next 7 days at a glance"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_110
+msgid ""
+"No one educates anyone else, no one educates themselves; people educate each"
+" other through the world."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_07
+msgid "No one is free until everyone is free."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "No overdue task or activity, and nothing due today."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "No project"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_100
+msgid "No wind is favourable for those who do not know where they are going."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_08
+msgid "Nobody's serious when they're seventeen."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_106
+msgid "None of us is as smart as all of us together."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_119
+msgid ""
+"Normality is a paved road: it is comfortable to walk, but no flowers grow on"
+" it."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_55
+msgid ""
+"Nothing is more dangerous than an idea when it is the only one we have."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__upcoming_days
+msgid "Number of days to preview (1-7)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_21
+msgid "One is not born, but rather becomes, a woman."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_09
+msgid "One must be absolutely modern."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_18
+msgid "One must imagine Sisyphus happy."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.constraint,message:daily_todo_digest.constraint_daily_digest_send_log_uniq_config_user
+msgid "Only one send log per recipient and per digest."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_34
+#: model:daily.digest.quote,author:daily_todo_digest.quote_35
+#: model:daily.digest.quote,author:daily_todo_digest.quote_36
+#: model:daily.digest.quote,author:daily_todo_digest.quote_37
+#: model:daily.digest.quote,author:daily_todo_digest.quote_52
+msgid "Oscar Wilde"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_107
+msgid "Our house is on fire. I want you to panic."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_73
+msgid ""
+"Our lives begin to end the day we become silent about things that matter."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Overcast"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_overdue_activities
+msgid "Overdue activities"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_overdue_tasks
+msgid "Overdue tasks"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_12
+#: model:daily.digest.quote,author:daily_todo_digest.quote_13
+#: model:daily.digest.quote,author:daily_todo_digest.quote_14
+msgid "Pablo Neruda"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_30
+#: model:daily.digest.quote,author:daily_todo_digest.quote_31
+#: model:daily.digest.quote,author:daily_todo_digest.quote_32
+msgid "Pablo Picasso"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Partly cloudy"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_109
+#: model:daily.digest.quote,author:daily_todo_digest.quote_110
+msgid "Paulo Freire"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_47
+msgid "Pearl S. Buck"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_83
+msgid ""
+"People will forget what you said, people will forget what you did, but "
+"people will never forget how you made them feel."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_102
+msgid "Persian proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_03
+#: model:daily.digest.quote,author:daily_todo_digest.quote_04
+msgid "Peter Kropotkin"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_01
+#: model:daily.digest.quote,author:daily_todo_digest.quote_02
+msgid "Pierre-Joseph Proudhon"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_14
+msgid "Poetry is an act of peace."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Precipitation: %(mm)s mm (%(prob)s%%)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_01
+msgid "Property is theft."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_quote__quote
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Quote"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.ui.menu,name:daily_todo_digest.menu_daily_digest_quotes
+msgid "Quotes"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_19
+msgid "Real generosity towards the future lies in giving all to the present."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_26
+msgid "Rebbe Nachman of Breslov"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.actions.act_window,help:daily_todo_digest.action_daily_digest_config
+msgid ""
+"Receive every morning a summary of your overdue and today's activities and tasks,\n"
+"                with the weather and an inspiring quote."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__user_ids
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Recipients"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_23
+msgid "Revolution is not showing life to people, but making them live."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Send now"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__send_hour
+msgid "Sending hour"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__send_hour
+msgid ""
+"Sending hour (0-23), evaluated in each recipient's time zone (res.users.tz, "
+"default America/Montreal)."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_100
+#: model:daily.digest.quote,author:daily_todo_digest.quote_95
+#: model:daily.digest.quote,author:daily_todo_digest.quote_98
+msgid "Seneca"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_80
+msgid ""
+"Silence becomes cowardice when the occasion demands speaking out the whole "
+"truth and acting accordingly."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_21
+#: model:daily.digest.quote,author:daily_todo_digest.quote_22
+msgid "Simone de Beauvoir"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Snow grains"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_96
+msgid "Socrates"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_31
+msgid ""
+"Some painters transform the sun into a yellow spot, others transform a "
+"yellow spot into the sun."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_104
+msgid ""
+"Speech is silver, but silence is golden... except in the face of injustice."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_70
+msgid "Stanislaw Jerzy Lec"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_113
+msgid "Stewart Brand"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_78
+msgid ""
+"Strength does not come from physical capacity. It comes from an indomitable "
+"will."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Subtasks with \"Show in project\" turned off."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Task"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Tasks"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Tasks + activities per day (click to see)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_111
+msgid "Technology is a useful servant but a dangerous master."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Test (me only)"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Test sent"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_112
+msgid "The Internet must remain a space of freedom and of sharing knowledge."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_69
+msgid "The bamboo that bends is stronger than the oak that resists."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_62
+msgid ""
+"The best time to plant a tree was twenty years ago. The second best time is "
+"now."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_48
+msgid ""
+"The degree of a people's civilisation can be judged by the way it treats its"
+" animals."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "The digest was sent to the recipients."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_66
+msgid "The earth does not belong to man; man belongs to the earth."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_04
+msgid "The happiness of others is essential to our own happiness."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_50
+msgid "The master's tools will never dismantle the master's house."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_88
+msgid "The most courageous act is still to think for yourself. Aloud."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_102
+msgid "The ocean is made of drops of water."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_58
+msgid "The only way to achieve the impossible is to believe it is possible."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_22
+msgid ""
+"The present is not a potential past; it is the moment of choice and action."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_72
+msgid ""
+"The question is not whether we will be extremists, but what kind of "
+"extremists we will be."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_46
+msgid ""
+"The real voyage of discovery consists not in seeking new landscapes, but in "
+"having new eyes."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_114
+msgid ""
+"The ultimate measure of a man is not where he stands in moments of comfort "
+"and convenience, but where he stands at times of challenge and controversy."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_33
+msgid "The world is a book and those who do not travel read only one page."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_118
+msgid ""
+"The world will not be destroyed by those who do evil, but by those who watch"
+" them without doing anything."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_84
+msgid "There is no greater agony than bearing an untold story inside you."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.actions.act_window,help:daily_todo_digest.action_daily_digest_quote
+msgid "These quotes will appear in rotation in the daily digest emails."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_10
+msgid "Those who live are those who fight."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Thunderstorm"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Thunderstorm with heavy hail"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Thunderstorm with light hail"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_today_activities
+msgid "Today's activities"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_today_tasks
+msgid "Today's tasks"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_06
+msgid "True emancipation begins in woman's soul."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Unknown"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_43
+msgid ""
+"Until the lions have their own historians, the history of the hunt will "
+"always glorify the hunter."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_upcoming_tasks
+msgid "Upcoming tasks"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model,name:daily_todo_digest.model_res_users
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_send_log__user_id
+msgid "User"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__user_ids
+msgid "Users who will receive the daily digest"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_24
+msgid ""
+"Utopia is on the horizon. I take two steps, it moves two steps away. I take "
+"ten steps and the horizon runs ten steps further. So what is utopia for? It "
+"is for this: to keep walking."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_10
+#: model:daily.digest.quote,author:daily_todo_digest.quote_11
+#: model:daily.digest.quote,author:daily_todo_digest.quote_54
+msgid "Victor Hugo"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_119
+msgid "Vincent van Gogh"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Violent showers"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_86
+#: model:daily.digest.quote,author:daily_todo_digest.quote_87
+msgid "Virginia Woolf"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_105
+msgid "Walls were built by those who were afraid of those who are different."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_35
+msgid "We are all in the gutter, but some of us are looking at the stars."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_65
+msgid ""
+"We do not inherit the earth from our ancestors, we borrow it from our "
+"children."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_60
+msgid "We do not see things as they are, we see them as we are."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_weather
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Weather"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__weather_city
+msgid "Weather city (default)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_weather_city
+msgid "Weather city (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_weather_latitude
+msgid "Weather latitude (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_res_users__digest_weather_longitude
+msgid "Weather longitude (digest)"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_59
+msgid "What does not kill me makes me stronger... but first, it really hurts."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_109
+msgid ""
+"When education is not liberating, the dream of the oppressed is to become "
+"the oppressor."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_64
+msgid ""
+"When the last tree has been cut down, the last river poisoned and the last "
+"fish caught, only then will you realise that money cannot be eaten."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_45
+msgid ""
+"When they came for the communists, I said nothing; I was not a communist..."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_103
+msgid ""
+"Whoever asks a question looks foolish for five minutes; whoever does not "
+"stays foolish for life."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Widgets"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_38
+msgid "Work is love made visible."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_108
+msgid "You are never too small to make a difference."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_13
+msgid "You can cut all the flowers but you cannot keep spring from coming."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_81
+msgid "You cannot dismantle the master's house with the master's tools."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_87
+msgid "You cannot find peace by avoiding life."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_63
+msgid ""
+"You cannot stop the birds of sorrow from flying over your head, but you can "
+"stop them from nesting there."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Your agenda for today"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,quote:daily_todo_digest.quote_39
+msgid ""
+"Your children are not your children. They are the sons and daughters of "
+"Life's longing for itself."
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Your day"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Your user has no email address configured."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_85
+msgid "bell hooks"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "subtask"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:daily.digest.quote,author:daily_todo_digest.quote_55
+msgid "Émile Chartier (Alain)"
+msgstr ""

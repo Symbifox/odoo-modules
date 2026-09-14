@@ -17,16 +17,16 @@ class ResUsers(models.Model):
     # shared config defaults — so a recipient elsewhere gets their own local
     # weather even if the config default points to another city.
     digest_weather_city = fields.Char(
-        string="Ville météo (digest)",
-        help="Laisser vide pour utiliser la ville par défaut du digest. "
-             "Sinon, renseignez aussi la latitude/longitude ci-dessous.",
+        string="Weather city (digest)",
+        help="Leave empty to use the digest's default city. Otherwise, "
+             "also fill in the latitude and longitude below.",
     )
     digest_weather_latitude = fields.Float(
-        string="Latitude météo (digest)",
+        string="Weather latitude (digest)",
         digits=(10, 4),
     )
     digest_weather_longitude = fields.Float(
-        string="Longitude météo (digest)",
+        string="Weather longitude (digest)",
         digits=(10, 4),
     )
 

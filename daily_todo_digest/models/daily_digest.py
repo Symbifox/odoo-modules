@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
 import logging
 import requests
+from markupsafe import escape
 import pytz
 from datetime import timedelta
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from odoo.tools.misc import format_date, format_datetime
+from odoo.tools.translate import LazyTranslate
+
+_lt = LazyTranslate(__name__)
 
 _logger = logging.getLogger(__name__)
 
@@ -24,18 +29,6 @@ def datetime_to_local_date(dt, tz_name=DEFAULT_TZ):
     local_dt = dt.astimezone(local_tz)
     return local_dt.date()
 
-# French day and month names
-JOURS_FR = {
-    'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi',
-    'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi', 'Sunday': 'Dimanche'
-}
-MOIS_FR = {
-    'January': 'janvier', 'February': 'février', 'March': 'mars', 'April': 'avril',
-    'May': 'mai', 'June': 'juin', 'July': 'juillet', 'August': 'août',
-    'September': 'septembre', 'October': 'octobre', 'November': 'novembre', 'December': 'décembre'
-}
-
-
 def _coerce_translatable(val):
     """Defensive: if a translatable jsonb field leaked as a raw dict
     ({'en_US': ..., 'fr_CA': ...}), resolve it to a single string instead of
@@ -49,15 +42,39 @@ def _coerce_translatable(val):
     return val
 
 
-def format_date_fr(date_obj):
-    """Format a date in French: 'Jeudi, le 5 février 2026'"""
-    day_en = date_obj.strftime('%A')
-    month_en = date_obj.strftime('%B')
-    day_num = date_obj.day
-    year = date_obj.year
-    jour = JOURS_FR.get(day_en, day_en)
-    mois = MOIS_FR.get(month_en, month_en)
-    return f"{jour}, le {day_num} {mois} {year}"
+# Weather code descriptions (WMO codes), translated at rendering time in the
+# recipient's language.
+WEATHER_CODES = {
+    0: ("☀️", _lt("Clear sky")),
+    1: ("🌤️", _lt("Mainly clear")),
+    2: ("⛅", _lt("Partly cloudy")),
+    3: ("☁️", _lt("Overcast")),
+    45: ("🌫️", _lt("Fog")),
+    48: ("🌫️", _lt("Freezing fog")),
+    51: ("🌧️", _lt("Light drizzle")),
+    53: ("🌧️", _lt("Moderate drizzle")),
+    55: ("🌧️", _lt("Dense drizzle")),
+    56: ("🌧️", _lt("Light freezing drizzle")),
+    57: ("🌧️", _lt("Dense freezing drizzle")),
+    61: ("🌧️", _lt("Light rain")),
+    63: ("🌧️", _lt("Moderate rain")),
+    65: ("🌧️", _lt("Heavy rain")),
+    66: ("🧊", _lt("Light freezing rain")),
+    67: ("🧊", _lt("Heavy freezing rain")),
+    71: ("🌨️", _lt("Light snow")),
+    73: ("🌨️", _lt("Moderate snow")),
+    75: ("❄️", _lt("Heavy snow")),
+    77: ("🌨️", _lt("Snow grains")),
+    80: ("🌦️", _lt("Light showers")),
+    81: ("🌦️", _lt("Moderate showers")),
+    82: ("⛈️", _lt("Violent showers")),
+    85: ("🌨️", _lt("Light snow showers")),
+    86: ("❄️", _lt("Heavy snow showers")),
+    95: ("⛈️", _lt("Thunderstorm")),
+    96: ("⛈️", _lt("Thunderstorm with light hail")),
+    99: ("⛈️", _lt("Thunderstorm with heavy hail")),
+}
+WEATHER_UNKNOWN = _lt("Unknown")
 
 # Default palette. `bg_outer` / `header` / `accent` are overwritten at the
 # top of `_generate_html` with the user company's brand colors
@@ -96,13 +113,13 @@ class DailyDigestSendLog(models.Model):
     user_id = fields.Many2one(
         "res.users", required=True, ondelete="cascade", index=True
     )
-    last_sent = fields.Datetime(string="Dernier envoi (UTC)")
+    last_sent = fields.Datetime(string="Last sent (UTC)")
 
     _sql_constraints = [
         (
             "uniq_config_user",
             "unique(config_id, user_id)",
-            "Un seul journal d'envoi par destinataire et par digest.",
+            "Only one send log per recipient and per digest.",
         ),
     ]
 
@@ -111,60 +128,60 @@ class DailyDigestConfig(models.Model):
     _name = "daily.digest.config"
     _description = "Daily Digest Configuration"
 
-    name = fields.Char(string="Nom", required=True, default="Mon digest quotidien")
+    name = fields.Char(string="Name", required=True, default=lambda self: self.env._("My daily digest"))
     active = fields.Boolean(default=True)
 
     # Recipients
     user_ids = fields.Many2many(
         "res.users",
-        string="Destinataires",
-        help="Utilisateurs qui recevront le digest quotidien",
+        string="Recipients",
+        help="Users who will receive the daily digest",
     )
 
     # Schedule
     send_hour = fields.Integer(
-        string="Heure d'envoi",
+        string="Sending hour",
         default=4,
-        help="Heure d'envoi (0-23), évaluée dans le fuseau horaire de chaque "
-             "destinataire (res.users.tz, défaut America/Montreal).",
+        help="Sending hour (0-23), evaluated in each recipient's time "
+             "zone (res.users.tz, default America/Montreal).",
     )
 
     # Widget toggles
     include_overdue_activities = fields.Boolean(
-        string="Activités en retard",
+        string="Overdue activities",
         default=True,
     )
     include_today_activities = fields.Boolean(
-        string="Activités du jour",
+        string="Today's activities",
         default=True,
     )
     include_overdue_tasks = fields.Boolean(
-        string="Tâches en retard",
+        string="Overdue tasks",
         default=True,
     )
     include_today_tasks = fields.Boolean(
-        string="Tâches du jour",
+        string="Today's tasks",
         default=True,
     )
     include_upcoming_tasks = fields.Boolean(
-        string="Tâches à venir",
+        string="Upcoming tasks",
         default=False,
-        help="Inclure les tâches des prochains jours",
+        help="Include the tasks of the next days",
     )
     upcoming_days = fields.Integer(
-        string="Jours à venir",
+        string="Days ahead",
         default=3,
-        help="Nombre de jours à afficher en aperçu (1-7)",
+        help="Number of days to preview (1-7)",
     )
     include_weather = fields.Boolean(
-        string="Météo",
+        string="Weather",
         default=True,
     )
     weather_city = fields.Char(
-        string="Ville météo (défaut)",
+        string="Weather city (default)",
         default="Montréal",
-        help="Ville par défaut. Chaque destinataire peut la remplacer dans "
-             "ses préférences (Ville météo (digest) sur sa fiche utilisateur).",
+        help="Default city. Each recipient can replace it in their "
+             "preferences (Weather city (digest) on their user record).",
     )
     weather_latitude = fields.Float(
         string="Latitude",
@@ -177,26 +194,27 @@ class DailyDigestConfig(models.Model):
         digits=(10, 4),
     )
     include_quote = fields.Boolean(
-        string="Citation inspirante",
+        string="Inspiring quote",
         default=True,
     )
     include_meetings = fields.Boolean(
-        string="Rencontres (OdJ + CR)",
+        string="Meetings (agendas + minutes)",
         default=True,
-        help="Inclure les rencontres à venir avec OdJ à préparer et les comptes rendus "
-             "des rencontres passées encore à compléter (cycle bf_meeting).",
+        help="Include upcoming meetings with an agenda to prepare and "
+             "past meetings whose minutes are still to complete "
+             "(bf_meeting cycle).",
     )
 
     # Company filter
     company_id = fields.Many2one(
         "res.company",
-        string="Compagnie",
+        string="Company",
         default=lambda self: self.env.company,
-        help="Filtrer les tâches par cette compagnie uniquement",
+        help="Filter tasks by this company only",
     )
 
     # Tracking
-    last_sent = fields.Datetime(string="Dernier envoi", readonly=True)
+    last_sent = fields.Datetime(string="Last sent", readonly=True)
 
     def action_send_now(self):
         """Manually send the digest now."""
@@ -206,8 +224,8 @@ class DailyDigestConfig(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Digest envoyé"),
-                "message": _("Le digest a été envoyé aux destinataires."),
+                "title": _("Digest sent"),
+                "message": _("The digest was sent to the recipients."),
                 "type": "success",
             },
         }
@@ -221,8 +239,8 @@ class DailyDigestConfig(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": _("Erreur"),
-                    "message": _("Votre utilisateur n'a pas d'adresse courriel configurée."),
+                    "title": _("Error"),
+                    "message": _("Your user has no email address configured."),
                     "type": "danger",
                 },
             }
@@ -231,8 +249,8 @@ class DailyDigestConfig(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Test envoyé"),
-                "message": _("Un digest test a été envoyé à %s.") % current_user.email,
+                "title": _("Test sent"),
+                "message": _("A test digest was sent to %s.") % current_user.email,
                 "type": "success",
             },
         }
@@ -312,43 +330,50 @@ class DailyDigestConfig(models.Model):
             if not user.email:
                 _logger.warning("User %s has no email, skipping", user.name)
                 continue
+            # 🔴 In the RECIPIENT's language: the digest is sent by the scheduled
+            # job, which carries no language, and used to be written in French
+            # for everybody.
+            self.with_context(lang=user.lang or "en_US", tz=user.tz)._send_digest_to(user)
 
-            # Gather data per recipient, in the recipient's own timezone, so the
-            # "today" window (and week preview) reflect their local day.
-            tz_name = user.tz or DEFAULT_TZ
-            data = self._gather_digest_data(user, tz_name=tz_name)
+    def _send_digest_to(self, user):
+        """Build and send one recipient's digest, in the language of the context."""
+        self.ensure_one()
+        # Gather data per recipient, in the recipient's own timezone, so the
+        # "today" window (and week preview) reflect their local day.
+        tz_name = user.tz or DEFAULT_TZ
+        data = self._gather_digest_data(user, tz_name=tz_name)
 
-            has_content = any([
-                data.get("overdue_activities"),
-                data.get("today_activities"),
-                data.get("overdue_tasks"),
-                data.get("today_tasks"),
-                data.get("meetings_by_user"),
-            ])
-            if not has_content and not self.include_weather and not self.include_quote:
-                _logger.info(
-                    "Nothing to report for %s on digest '%s'", user.name, self.name
-                )
-                continue
+        has_content = any([
+            data.get("overdue_activities"),
+            data.get("today_activities"),
+            data.get("overdue_tasks"),
+            data.get("today_tasks"),
+            data.get("meetings_by_user"),
+        ])
+        if not has_content and not self.include_weather and not self.include_quote:
+            _logger.info(
+                "Nothing to report for %s on digest '%s'", user.name, self.name
+            )
+            return
 
-            # Generate personalized HTML
-            body_html = self._generate_html(data, user)
+        # Generate personalized HTML
+        body_html = self._generate_html(data, user)
 
-            # Subject date in the recipient's local day
-            today_local = pytz.UTC.localize(fields.Datetime.now()).astimezone(
-                pytz.timezone(tz_name)
-            ).date()
-            date_str = format_date_fr(today_local)
+        # Subject date in the recipient's local day
+        today_local = pytz.UTC.localize(fields.Datetime.now()).astimezone(
+            pytz.timezone(tz_name)
+        ).date()
+        date_str = format_date(self.env, today_local, date_format="full")
 
-            mail_values = {
-                "subject": f"🌄 Votre journée | {date_str}",
-                "email_from": self.env.company.email or self.env.user.email_formatted,
-                "email_to": user.email,
-                "body_html": body_html,
-                "auto_delete": True,
-            }
-            mail = self.env["mail.mail"].sudo().create(mail_values)
-            mail.send()
+        mail_values = {
+            "subject": "🌄 %s | %s" % (self.env._("Your day"), date_str),
+            "email_from": self.env.company.email or self.env.user.email_formatted,
+            "email_to": user.email,
+            "body_html": body_html,
+            "auto_delete": True,
+        }
+        mail = self.env["mail.mail"].sudo().create(mail_values)
+        mail.send()
 
     def _gather_digest_data(self, users=None, tz_name=None):
         """Gather all data for the digest.
@@ -461,7 +486,7 @@ class DailyDigestConfig(models.Model):
 
             week_preview.append({
                 "date": target_date,
-                "day_name": JOURS_FR.get(target_date.strftime('%A'), target_date.strftime('%A'))[:3],
+                "day_name": format_date(self.env, target_date, date_format="EEE"),
                 "day_num": target_date.day,
                 "tasks": task_count,
                 "activities": activity_count,
@@ -515,7 +540,7 @@ class DailyDigestConfig(models.Model):
 
             result.append({
                 "id": act.id,
-                "summary": act.summary or act.activity_type_id.name or "Activité",
+                "summary": act.summary or act.activity_type_id.name or self.env._("Activity"),
                 "record_name": record_name,
                 "model": model_name,
                 "deadline": act.date_deadline,
@@ -556,7 +581,7 @@ class DailyDigestConfig(models.Model):
             visible_tasks.append({
                 "id": task.id,
                 "name": task.name,
-                "project": task.project_id.name if task.project_id else "Sans projet",
+                "project": task.project_id.name if task.project_id else self.env._("No project"),
                 "deadline": datetime_to_local_date(task.date_deadline),
                 "user": ", ".join(task.user_ids.mapped("name")),
                 "link": link,
@@ -609,43 +634,11 @@ class DailyDigestConfig(models.Model):
             response.raise_for_status()
             data = response.json()
 
-            # Weather code descriptions (WMO codes) with emojis
-            weather_codes = {
-                0: ("☀️", "Ciel dégagé"),
-                1: ("🌤️", "Principalement dégagé"),
-                2: ("⛅", "Partiellement nuageux"),
-                3: ("☁️", "Couvert"),
-                45: ("🌫️", "Brouillard"),
-                48: ("🌫️", "Brouillard givrant"),
-                51: ("🌧️", "Bruine légère"),
-                53: ("🌧️", "Bruine modérée"),
-                55: ("🌧️", "Bruine dense"),
-                56: ("🌧️", "Bruine verglaçante légère"),
-                57: ("🌧️", "Bruine verglaçante dense"),
-                61: ("🌧️", "Pluie légère"),
-                63: ("🌧️", "Pluie modérée"),
-                65: ("🌧️", "Pluie forte"),
-                66: ("🧊", "Pluie verglaçante légère"),
-                67: ("🧊", "Pluie verglaçante forte"),
-                71: ("🌨️", "Neige légère"),
-                73: ("🌨️", "Neige modérée"),
-                75: ("❄️", "Neige forte"),
-                77: ("🌨️", "Grains de neige"),
-                80: ("🌦️", "Averses légères"),
-                81: ("🌦️", "Averses modérées"),
-                82: ("⛈️", "Averses violentes"),
-                85: ("🌨️", "Averses de neige légères"),
-                86: ("❄️", "Averses de neige fortes"),
-                95: ("⛈️", "Orage"),
-                96: ("⛈️", "Orage avec grêle légère"),
-                99: ("⛈️", "Orage avec grêle forte"),
-            }
-
             current = data.get("current", {})
             daily = data.get("daily", {})
 
             weather_code = daily.get("weathercode", [0])[0]
-            weather_info = weather_codes.get(weather_code, ("🌡️", "Inconnu"))
+            emoji, label = WEATHER_CODES.get(weather_code, ("🌡️", WEATHER_UNKNOWN))
 
             return {
                 "city": city,
@@ -654,8 +647,8 @@ class DailyDigestConfig(models.Model):
                 "low": round(daily.get("temperature_2m_min", [0])[0]),
                 "precipitation": round(daily.get("precipitation_sum", [0])[0], 1),
                 "precipitation_prob": daily.get("precipitation_probability_max", [0])[0],
-                "emoji": weather_info[0],
-                "description": weather_info[1],
+                "emoji": emoji,
+                "description": self.env._(label),
             }
         except Exception as e:
             _logger.warning("Failed to fetch weather: %s", e)
@@ -668,17 +661,19 @@ class DailyDigestConfig(models.Model):
         today = pytz.UTC.localize(fields.Datetime.now()).astimezone(
             pytz.timezone(tz_name)
         ).date()
-        today_str = format_date_fr(today)
+        today_str = format_date(self.env, today, date_format="full")
 
         # Weather is per-recipient (own city/coordinates + own timezone).
         weather = self._get_weather(user) if self.include_weather else None
 
         # Pull brand colors from the user's company. Single-threaded write to
         # the module-level palette is safe inside the cron-driven send loop.
+        # `report_brand_*` come from bf_onboarding_base, which this module does
+        # not depend on: read them only when they exist.
         co = user.company_id
-        COLORS["bg_outer"] = co.report_brand_dark or "#212529"
-        COLORS["header"] = co.report_brand_dark or "#212529"
-        COLORS["accent"] = co.report_brand_primary or "#714B67"
+        COLORS["bg_outer"] = getattr(co, "report_brand_dark", False) or "#212529"
+        COLORS["header"] = getattr(co, "report_brand_dark", False) or "#212529"
+        COLORS["accent"] = getattr(co, "report_brand_primary", False) or "#714B67"
 
         # Filter data for this specific user
         user_data = self._filter_data_for_user(data, user)
@@ -688,10 +683,10 @@ class DailyDigestConfig(models.Model):
         # Greeting
         content_parts.append(f"""
             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;color:{COLORS['text_dark']};margin:0 0 16px 0;">
-                Bonjour <strong>{user.name.split()[0] if user.name else 'vous'}</strong>,
+                {self.env._("Hello %s,", f"<strong>{escape(user.name.split()[0]) if user.name else ''}</strong>")}
             </p>
             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:15px;color:{COLORS['text_gray']};margin:0 0 24px 0;">
-                Voici votre agenda pour le {today_str}.
+                {self.env._("Here is your agenda for %s.", today_str)}
             </p>
         """)
 
@@ -702,7 +697,7 @@ class DailyDigestConfig(models.Model):
         # Overdue activities
         if self.include_overdue_activities and user_data.get("overdue_activities"):
             content_parts.append(self._render_activity_section(
-                "Activités en retard",
+                self.env._("Overdue activities"),
                 user_data["overdue_activities"],
                 COLORS["red"],
                 is_overdue=True,
@@ -711,7 +706,7 @@ class DailyDigestConfig(models.Model):
         # Today's activities
         if self.include_today_activities and user_data.get("today_activities"):
             content_parts.append(self._render_activity_section(
-                "Activités du jour",
+                self.env._("Today's activities"),
                 user_data["today_activities"],
                 COLORS["accent"],
                 is_overdue=False,
@@ -720,7 +715,7 @@ class DailyDigestConfig(models.Model):
         # Overdue tasks
         if self.include_overdue_tasks and user_data.get("overdue_tasks"):
             content_parts.append(self._render_task_section(
-                "Tâches en retard",
+                self.env._("Overdue tasks"),
                 user_data["overdue_tasks"],
                 COLORS["red"],
                 is_overdue=True,
@@ -729,7 +724,7 @@ class DailyDigestConfig(models.Model):
         # Today's tasks
         if self.include_today_tasks and user_data.get("today_tasks"):
             content_parts.append(self._render_task_section(
-                "Tâches du jour",
+                self.env._("Today's tasks"),
                 user_data["today_tasks"],
                 COLORS["accent"],
                 is_overdue=False,
@@ -766,8 +761,8 @@ class DailyDigestConfig(models.Model):
             content_parts.append(f"""
                 <div style="background-color:#d1e7dd;border:1px solid #a3cfbb;border-radius:8px;padding:16px;margin:16px 0;">
                     <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;color:{COLORS['green']};margin:0;">
-                        <strong>Aucune tâche ni activité en retard ou prévue aujourd'hui.</strong><br/>
-                        Bonne journée!
+                        <strong>{self.env._("No overdue task or activity, and nothing due today.")}</strong><br/>
+                        {self.env._("Have a good day!")}
                     </p>
                 </div>
             """)
@@ -784,17 +779,17 @@ class DailyDigestConfig(models.Model):
         today_count = len(user_data.get("today_activities", [])) + len(user_data.get("today_tasks", []))
         meetings_count = len(user_data.get("meetings_odj", [])) + len(user_data.get("meetings_cr", []))
         if overdue_count > 0:
-            preheader_parts.append(f"{overdue_count} en retard")
+            preheader_parts.append(self.env._("%s overdue", overdue_count))
         if today_count > 0:
-            preheader_parts.append(f"{today_count} aujourd'hui")
+            preheader_parts.append(self.env._("%s today", today_count))
         if meetings_count > 0:
-            preheader_parts.append(f"{meetings_count} rencontre{'s' if meetings_count > 1 else ''}")
+            preheader_parts.append(self.env._("%s meeting(s)", meetings_count))
         if weather:
             w = weather
             preheader_parts.append(f"{w.get('emoji', '')} {w['current_temp']}°C")
-        preheader = " | ".join(preheader_parts) if preheader_parts else "Votre agenda du jour"
+        preheader = " | ".join(preheader_parts) if preheader_parts else self.env._("Your agenda for today")
 
-        return self._wrap_email("Votre journée", content, preheader)
+        return self._wrap_email(self.env._("Your day"), content, preheader, company=co)
 
     def _filter_data_for_user(self, data, user):
         """Filter activities and tasks for a specific user.
@@ -858,7 +853,8 @@ class DailyDigestConfig(models.Model):
         """Render the weather section."""
         precip_text = ""
         if weather["precipitation"] > 0 or weather["precipitation_prob"] > 30:
-            precip_text = f" | Précipitations: {weather['precipitation']} mm ({weather['precipitation_prob']}%)"
+            precip_text = " | " + self.env._("Precipitation: %(mm)s mm (%(prob)s%%)",
+                                             mm=weather['precipitation'], prob=weather['precipitation_prob'])
 
         emoji = weather.get("emoji", "🌡️")
 
@@ -875,7 +871,7 @@ class DailyDigestConfig(models.Model):
                             </span>
                         </td>
                         <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:{COLORS['text_gray']};">
-                            Max: <strong>{weather['high']}°C</strong> | Min: <strong>{weather['low']}°C</strong>{precip_text}
+                            {self.env._("High")}: <strong>{weather['high']}°C</strong> | {self.env._("Low")}: <strong>{weather['low']}°C</strong>{precip_text}
                         </td>
                     </tr>
                 </table>
@@ -925,10 +921,10 @@ class DailyDigestConfig(models.Model):
                     <thead>
                         <tr style="background-color:{color};">
                             <th style="padding:10px 12px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:{COLORS['white']};text-transform:uppercase;">
-                                Activité
+                                {self.env._("Activity")}
                             </th>
                             <th style="padding:10px 12px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:{COLORS['white']};text-transform:uppercase;width:80px;">
-                                Échéance
+                                {self.env._("Due")}
                             </th>
                         </tr>
                     </thead>
@@ -949,14 +945,13 @@ class DailyDigestConfig(models.Model):
             if task["deadline"]:
                 if show_full_date:
                     # Show day name + date for upcoming tasks
-                    day_en = task["deadline"].strftime('%A')
-                    jour = JOURS_FR.get(day_en, day_en)[:3]  # Abbreviated day
+                    jour = format_date(self.env, task["deadline"], date_format="EEE")  # Abbreviated day
                     deadline_str = f"{jour} {task['deadline'].strftime('%d/%m')}"
                 else:
                     deadline_str = task["deadline"].strftime("%d/%m")
             else:
                 deadline_str = "—"
-            subtask_indicator = '<span style="color:#6B7280;font-size:11px;"> (sous-tâche)</span>' if task["is_subtask"] else ""
+            subtask_indicator = f'<span style="color:#6B7280;font-size:11px;"> ({self.env._("subtask")})</span>' if task["is_subtask"] else ""
             priority_icon = '<span style="color:#dc3545;">*</span> ' if task["priority"] == "1" else ""
 
             rows += f"""
@@ -994,10 +989,10 @@ class DailyDigestConfig(models.Model):
                     <thead>
                         <tr style="background-color:{color};">
                             <th style="padding:10px 12px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:{COLORS['white']};text-transform:uppercase;">
-                                Tâche
+                                {self.env._("Task")}
                             </th>
                             <th style="padding:10px 12px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:{COLORS['white']};text-transform:uppercase;width:80px;">
-                                Échéance
+                                {self.env._("Due")}
                             </th>
                         </tr>
                     </thead>
@@ -1015,10 +1010,10 @@ class DailyDigestConfig(models.Model):
         total = hidden_overdue + hidden_today
         parts = []
         if hidden_overdue > 0:
-            parts.append(f"{hidden_overdue} en retard")
+            parts.append(self.env._("%s overdue", hidden_overdue))
         if hidden_today > 0:
-            parts.append(f"{hidden_today} aujourd'hui")
-        detail = " et ".join(parts)
+            parts.append(self.env._("%s today", hidden_today))
+        detail = self.env._(" and ").join(parts)
 
         # Build link to view hidden tasks in Odoo
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
@@ -1034,10 +1029,10 @@ class DailyDigestConfig(models.Model):
                 <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:{COLORS['text_gray']};margin:0;">
                     <a href="{hidden_tasks_url}" style="text-decoration:none;color:{COLORS['header']};">
                         <span style="opacity:0.6;margin-right:6px;">👁</span>
-                        <strong>{total} tâche(s) non visible(s)</strong>
+                        <strong>{self.env._("%s hidden task(s)", total)}</strong>
                     </a>
                     <span style="font-size:12px;"> ({detail})</span><br/>
-                    <span style="font-size:12px;font-style:italic;">Sous-tâches avec "Afficher dans le projet" désactivé.</span>
+                    <span style="font-size:12px;font-style:italic;">{self.env._('Subtasks with "Show in project" turned off.')}</span>
                 </p>
             </div>
         """
@@ -1110,7 +1105,7 @@ class DailyDigestConfig(models.Model):
         return f"""
             <div style="margin:24px 0;padding:16px;background-color:#f9fafb;border:1px solid {COLORS['border']};border-radius:8px;">
                 <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;font-weight:600;color:{COLORS['header']};margin:0 0 12px 0;">
-                    📅 Aperçu des 7 prochains jours
+                    📅 {self.env._("Next 7 days at a glance")}
                 </p>
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
@@ -1118,7 +1113,7 @@ class DailyDigestConfig(models.Model):
                     </tr>
                 </table>
                 <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:11px;color:{COLORS['text_gray']};margin:12px 0 0 0;text-align:center;">
-                    Tâches + activités par jour (cliquez pour voir)
+                    {self.env._("Tasks + activities per day (click to see)")}
                 </p>
             </div>
         """
@@ -1135,13 +1130,14 @@ class DailyDigestConfig(models.Model):
         base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "").rstrip("/")
         tz_name = user.tz or DEFAULT_TZ
 
+        env = self.env
+
         def _row(r):
             dt = r["date"]
             if dt:
-                if dt.tzinfo is None:
-                    dt = pytz.UTC.localize(dt)
-                local_dt = dt.astimezone(pytz.timezone(tz_name))
-                date_str = local_dt.strftime("%a %d/%m, %H:%M")
+                if dt.tzinfo is not None:
+                    dt = dt.astimezone(pytz.UTC).replace(tzinfo=None)
+                date_str = format_datetime(env, dt, tz=tz_name, dt_format="EEE d/MM, HH:mm")
             else:
                 date_str = "—"
             # Link priority : record > agenda > calendar event
@@ -1162,7 +1158,7 @@ class DailyDigestConfig(models.Model):
             return f"""
                 <tr>
                     <td style="padding:12px;border-bottom:1px solid {COLORS['border']};font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;">
-                        <a href="{url}" style="color:{COLORS['accent']};text-decoration:none;font-weight:500;">{escape(r['name'] or '(sans nom)')}</a>
+                        <a href="{url}" style="color:{COLORS['accent']};text-decoration:none;font-weight:500;">{escape(r['name'] or env._('(no name)'))}</a>
                         <br/>
                         <span style="font-size:12px;color:{COLORS['text_gray']};">{meta}</span>
                     </td>
@@ -1194,10 +1190,10 @@ class DailyDigestConfig(models.Model):
                         <thead>
                             <tr style="background-color:{color};">
                                 <th style="padding:10px 12px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:{COLORS['white']};text-transform:uppercase;">
-                                    Rencontre
+                                    {env._("Meeting")}
                                 </th>
                                 <th style="padding:10px 12px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:{COLORS['white']};text-transform:uppercase;width:120px;">
-                                    Date
+                                    {env._("Date")}
                                 </th>
                             </tr>
                         </thead>
@@ -1206,8 +1202,8 @@ class DailyDigestConfig(models.Model):
                 </div>
             """
 
-        odj_block = _block("📋 OdJ à préparer (7 prochains jours)", odj_rows, COLORS["accent"], "#e8f6fd")
-        cr_block = _block("📝 CR à compléter", cr_rows, COLORS["red"], "#f8d7da")
+        odj_block = _block("📋 " + env._("Agendas to prepare (next 7 days)"), odj_rows, COLORS["accent"], "#e8f6fd")
+        cr_block = _block("📝 " + env._("Minutes to complete"), cr_rows, COLORS["red"], "#f8d7da")
         return f'<div style="margin:0 0 24px 0;">{odj_block}{cr_block}</div>'
 
     def _render_quote_section(self, quote):
@@ -1218,13 +1214,25 @@ class DailyDigestConfig(models.Model):
                     "{quote['quote']}"
                 </p>
                 <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:{COLORS['text_gray']};margin:0;">
-                    — {quote['author']}
+                    {quote['author']}
                 </p>
             </div>
         """
 
-    def _wrap_email(self, title, content, preheader=""):
-        """Wrap content in Blue Fox branded email template."""
+    def _wrap_email(self, title, content, preheader="", company=None):
+        """Wrap content in the recipient company's branded email template.
+
+        The logo, name and address are the company's own: they used to be Blue
+        Fox's, hard-coded, for every tenant and every recipient.
+        """
+        company = company or self.env.company
+        base_url = (self.env["ir.config_parameter"].sudo().get_param("web.base.url") or "").rstrip("/")
+        logo_url = f"{base_url}/logo.png?company={company.id}"
+        site_url = company.website or base_url
+        company_name = escape(company.name or "")
+        company_email = escape(company.email or "")
+        contact_html = (f'<a href="mailto:{company_email}" style="color:{COLORS["accent"]};text-decoration:none;">'
+                        f'{company_email}</a>') if company.email else ""
         # Hidden preheader text for email clients
         preheader_html = f"""
             <div style="display:none;font-size:1px;color:#f8f9fa;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
@@ -1252,8 +1260,8 @@ class DailyDigestConfig(models.Model):
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td align="left">
-                                        <a href="https://bluefoxconsultant.com" style="text-decoration:none;">
-                                            <img src="https://bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14" alt="Blue Fox" height="48" style="display:block;border:0;height:48px;width:auto;">
+                                        <a href="{site_url}" style="text-decoration:none;">
+                                            <img src="{logo_url}" alt="{company_name}" height="48" style="display:block;border:0;height:48px;width:auto;">
                                         </a>
                                     </td>
                                     <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:20px;font-weight:700;color:{COLORS['text_light']};">
@@ -1283,11 +1291,10 @@ class DailyDigestConfig(models.Model):
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:{COLORS['text_gray']};">
-                                        <strong style="color:{COLORS['header']};">Blue Fox</strong><br/>
-                                        Solutions éthiques et souveraines pour vos données.
+                                        <strong style="color:{COLORS['header']};">{company_name}</strong>
                                     </td>
                                     <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#9CA3AF;">
-                                        <a href="mailto:service@example.com" style="color:{COLORS['accent']};text-decoration:none;">service@example.com</a>
+                                        {contact_html}
                                     </td>
                                 </tr>
                             </table>

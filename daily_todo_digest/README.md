@@ -82,7 +82,8 @@ docker exec <container> odoo -d <database> -i daily_todo_digest --stop-after-ini
 ## Quotes
 
 The module ships **120 quotes** from artists, revolutionaries, poets and
-dreamers, organised by theme:
+dreamers, in English and in French: each recipient reads the version of their
+own language. They are organised by theme:
 
 - **Mutualism and anarchism**: Proudhon, Kropotkin, Emma Goldman, Bakunin
 - **Poets and writers**: Rimbaud, Hugo, Neruda, García Lorca, Camus, Beauvoir, Galeano
@@ -166,17 +167,24 @@ The module uses the **Open-Meteo** API (free, no API key required).
 
 ### Subject
 ```
-🌄 Your day | Thursday, 5 February 2026
+🌄 Your day | Thursday, February 5, 2026
 ```
 
+The whole email is written in **the recipient's language** (texts, dates,
+weather, quote), whoever or whatever triggers the sending.
+
 ### HTML structure
-- Header with the Symbifox logo and a title
-- Cyan accent bar (#29ABE2)
+- Header with the logo of the recipient's company and a title
+- Accent bar in the company's brand colour
 - Content sections with styled tables
-- Footer with contact details
+- Footer with the company's name and email address
 - Two-tone accent bars at the bottom
 
-### Symbifox colours
+### Colours
+
+The header, background and accent follow the company's brand colours
+(`report_brand_dark` / `report_brand_primary`, from `bf_onboarding_base`) when
+they are set; otherwise the defaults below apply.
 
 | Element | Colour |
 |---------|--------|
@@ -214,6 +222,14 @@ env.cr.commit()
 ### Python libraries
 - `pytz` (ships with Odoo)
 - `requests` (ships with Odoo)
+
+## Changelog
+
+### 18.0.2.2.0
+- **The email is written in each recipient's language.** It was assembled in hard-coded French for everybody: day and month names, weather, section titles. Texts now go through the catalogue, dates are formatted by the recipient's locale, and the scheduled job renders each recipient in their own language.
+- **The header and footer carry the recipient company's logo, name and email address**, instead of a fixed logo and signature.
+- **Quotes are translatable** and ship in English and French. Upgrading switches a shipped quote to English only where it is still the shipped text; a quote edited by hand keeps its wording in every language.
+- English source strings, French in `i18n/fr_CA.po`.
 
 ## Author
 

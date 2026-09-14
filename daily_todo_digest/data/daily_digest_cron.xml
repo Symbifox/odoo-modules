@@ -3,7 +3,7 @@
     <data noupdate="1">
         <!-- Cron job to send daily digests - runs every hour to check -->
         <record id="ir_cron_daily_todo_digest" model="ir.cron">
-            <field name="name">Daily To-Do Digest: Envoi quotidien</field>
+            <field name="name">Daily To-Do Digest: daily send</field>
             <field name="model_id" ref="model_daily_digest_config"/>
             <field name="state">code</field>
             <field name="code">model._cron_send_daily_digests()</field>
