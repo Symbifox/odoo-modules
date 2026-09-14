@@ -80,32 +80,8 @@ msgstr "<p>On %s's side, the deadline was moved to %s.</p>"
 #. module: bf_federation
 #. odoo-python
 #: code:addons/bf_federation/models/federation_link.py:0
-msgid "<p>Chez %s, la tâche a été %s ; le miroir est archivé.</p>"
-msgstr "<p>On %s's side, the task was %s; the mirror is archived.</p>"
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/federation_link.py:0
-msgid ""
-"<p>Chez %s, la tâche est de nouveau partagée ; le miroir est réactivé.</p>"
-msgstr ""
-"<p>On %s's side, the task is shared again; the mirror is reactivated.</p>"
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/federation_link.py:0
 msgid "<p>Chez %s, la tâche est passée à « %s »%s.</p>"
 msgstr "<p>On %s's side, the task moved to \"%s\"%s.</p>"
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/federation_link.py:0
-msgid ""
-"<p>Chez %s, le miroir de cette tâche a été %s : plus rien ne lui parviendra "
-"tant qu'elle n'est pas partagée de nouveau.</p>"
-msgstr ""
-"<p>On %s's side, this task's mirror was %s: nothing more will reach it until"
-" it is shared again.</p>"
 
 #. module: bf_federation
 #. odoo-python
@@ -118,15 +94,6 @@ msgstr ""
 "<p>Tasks that %s shares with us through federation. The state, the deadline "
 "day, the messages and the attachments travel back to them; a message or a "
 "note starting with 🔒 stays here.</p>"
-
-#. module: bf_federation
-#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
-msgid ""
-"<span class=\"fw-bold\">celle de cette instance</span>)\n"
-"                            et le code ci-dessous. Chez lui : Fédération › Accepter une invitation."
-msgstr ""
-"<span class=\"fw-bold\">this instance's</span>)\n"
-"                            and the code below. On their side: Federation › Accept an invitation."
 
 #. module: bf_federation
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__state__failed
@@ -485,11 +452,6 @@ msgid "Fédérer une tâche demande le rôle de gestionnaire de projet."
 msgstr "Federating a task requires the project manager role."
 
 #. module: bf_federation
-#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_peer_id
-msgid "Fédérée avec"
-msgstr "Federated with"
-
-#. module: bf_federation
 #: model_terms:ir.ui.view,arch_db:bf_federation.view_task_search_federation
 msgid "Fédérées"
 msgstr "Federated"
@@ -702,11 +664,6 @@ msgid "Lien fédéré"
 msgstr "Federated link"
 
 #. module: bf_federation
-#: model:ir.model,name:bf_federation.model_federation_link
-msgid "Lien fédéré d'une tâche"
-msgstr "A task's federated link"
-
-#. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer__link_ids
 #: model:ir.ui.menu,name:bf_federation.menu_federation_links
 msgid "Liens"
@@ -846,11 +803,6 @@ msgid "Pairs permis"
 msgstr "Allowed peers"
 
 #. module: bf_federation
-#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_allowed_peer_ids
-msgid "Pairs permis par le projet"
-msgstr "Peers allowed by the project"
-
-#. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer__handshake_part
 msgid "Part locale du secret"
 msgstr "Local half of the secret"
@@ -859,12 +811,6 @@ msgstr "Local half of the secret"
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__task_share
 msgid "Partage d'une tâche"
 msgstr "Sharing a task"
-
-#. module: bf_federation
-#: model:ir.model.fields.selection,name:bf_federation.selection__federation_link__origin__local
-#: model:ir.model.fields.selection,name:bf_federation.selection__project_task__federation_origin__local
-msgid "Partagée d'ici"
-msgstr "Shared from here"
 
 #. module: bf_federation
 #: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_search
@@ -938,12 +884,6 @@ msgid "Reçu le"
 msgstr "Received on"
 
 #. module: bf_federation
-#: model:ir.model.fields.selection,name:bf_federation.selection__federation_link__origin__remote
-#: model:ir.model.fields.selection,name:bf_federation.selection__project_task__federation_origin__remote
-msgid "Reçue du pair"
-msgstr "Received from the peer"
-
-#. module: bf_federation
 #: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_search
 msgid "Reçues du pair"
 msgstr "Received from the peer"
@@ -964,11 +904,6 @@ msgstr "Retry"
 #: model:ir.model.fields,field_description:bf_federation.field_federation_link_message__remote_ref
 msgid "Référence chez le pair"
 msgstr "Reference on the peer"
-
-#. module: bf_federation
-#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__sender_ref
-msgid "Référence de la tâche ici"
-msgstr "Task reference here"
 
 #. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__response
@@ -1051,20 +986,6 @@ msgid "Tester la connexion"
 msgstr "Test the connection"
 
 #. module: bf_federation
-#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
-msgid ""
-"Transmettez au pair, par un canal sûr, votre adresse\n"
-"                            ("
-msgstr ""
-"Hand the peer, over a safe channel, your address\n"
-"                            ("
-
-#. module: bf_federation
-#: model:ir.model.fields,field_description:bf_federation.field_federation_link__task_id
-msgid "Tâche"
-msgstr "Task"
-
-#. module: bf_federation
 #. odoo-python
 #: code:addons/bf_federation/models/project_task.py:0
 msgid ""
@@ -1092,32 +1013,6 @@ msgid "Tâches fédérées"
 msgstr "Federated tasks"
 
 #. module: bf_federation
-#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
-msgid ""
-"Un message reçu dont l'auteur porte ce courriel chez le pair s'écrit ici au nom de ce contact.\n"
-"                                Sans ligne, un utilisateur interne au même courriel est cherché ; sinon le message porte le nom de l'organisation du pair."
-msgstr ""
-"A received message whose author carries this email on the peer is written here under this contact's name.\n"
-"                                Without a line, an internal user with the same email is looked up; otherwise the message carries the peer organisation's name."
-
-#. module: bf_federation
-#: model:ir.model.constraint,message:bf_federation.constraint_federation_link_peer_task_unique
-msgid "Une tâche n'a qu'un lien par pair."
-msgstr "A task has only one link per peer."
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/project_task.py:0
-msgid "Une tâche reçue d'un pair ne peut pas être fédérée avec un autre pair."
-msgstr "A task received from a peer cannot be federated with another peer."
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/project_task.py:0
-msgid "Une tâche reçue d'un pair ne peut pas être fédérée de nouveau."
-msgstr "A task received from a peer cannot be federated again."
-
-#. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer__website_message_ids
 msgid "Website Messages"
 msgstr ""
@@ -1135,18 +1030,6 @@ msgstr "[attachment: %s (%.1f MiB, left with %s)]"
 
 #. module: bf_federation
 #. odoo-python
-#: code:addons/bf_federation/models/project_task.py:0
-msgid "archivé"
-msgstr "archived"
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/project_task.py:0
-msgid "archivée"
-msgstr "archived"
-
-#. module: bf_federation
-#. odoo-python
 #: code:addons/bf_federation/models/federation_peer.py:0
 msgid "aucun détail"
 msgstr "no detail"
@@ -1159,16 +1042,10 @@ msgid "aucune réponse"
 msgstr "no answer"
 
 #. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/project_task.py:0
-msgid "détaché"
-msgstr "detached"
-
-#. module: bf_federation
 #: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_accept_wizard_form
 #: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
 msgid "https://…"
-msgstr ""
+msgstr "https://…"
 
 #. module: bf_federation
 #: model:ir.model.fields,help:bf_federation.field_federation_accept_wizard__base_url
@@ -1180,31 +1057,6 @@ msgstr "https://… of the instance that invited you"
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid "inconnu"
 msgstr "unknown"
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/federation_link.py:0
-msgid "retiré"
-msgstr "removed"
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/federation_link.py:0
-#: code:addons/bf_federation/models/project_task.py:0
-msgid "retirée du partage"
-msgstr "removed from sharing"
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/project_task.py:0
-msgid "supprimé"
-msgstr "deleted"
-
-#. module: bf_federation
-#. odoo-python
-#: code:addons/bf_federation/models/project_task.py:0
-msgid "supprimée"
-msgstr "deleted"
 
 #. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer__outbox_pending
@@ -1226,3 +1078,517 @@ msgstr "To do"
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__task_state
 msgid "État"
 msgstr "State"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "%s vous invite à fédérer vos Symbifox"
+msgstr "%s invites you to federate your Symbifox"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "(objet disparu)"
+msgstr "(object gone)"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid ""
+"<p>%(nous)s vous invite à fédérer votre Symbifox avec le sien : les objets "
+"partagés d'un côté paraissent chez l'autre, sans que personne ait besoin "
+"d'un compte chez l'autre.</p><p>Dans votre Symbifox, <i>Fédération › "
+"Accepter une invitation</i> :</p><ul><li>Adresse : "
+"<code>%(url)s</code></li><li>Code : <code>%(code)s</code></li></ul><p>Le "
+"code ne sert qu'une fois et expire le %(fin)s.</p>"
+msgstr ""
+"<p>%(nous)s invites you to federate your Symbifox with theirs: objects "
+"shared on one side appear on the other, without anyone needing an account on"
+" the other side.</p><p>In your Symbifox, <i>Federation › Accept an "
+"invitation</i>:</p><ul><li>Address: <code>%(url)s</code></li><li>Code: "
+"<code>%(code)s</code></li></ul><p>The code works once and expires on "
+"%(fin)s.</p>"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s), qui ne figure "
+"pas dans les personnes appariées de ce pair : elle est déposée chez "
+"%(repli)s. Ajoutez la ligne d'appariement sur la fiche du pair pour que la "
+"prochaine arrive au bon endroit.</p>"
+msgstr ""
+"<p>%(pair)s addressed this task to %(qui)s (%(courriel)s), who is not in "
+"this peer's matched people: it is left with %(repli)s. Add the matching row "
+"on the peer's record so the next one lands in the right place.</p>"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"<p>%(pair)s a adressé cette tâche à %(qui)s ; elle est assignée à "
+"%(compte)s.</p>"
+msgstr ""
+"<p>%(pair)s addressed this task to %(qui)s; it is assigned to "
+"%(compte)s.</p>"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid ""
+"<p>Chez %(pair)s, %(objet)s est maintenant adressé à %(qui)s. Le miroir "
+"n'est pas réassigné : c'est à vous de voir.</p>"
+msgstr ""
+"<p>On %(pair)s's side, %(objet)s is now addressed to %(qui)s. The mirror is "
+"not reassigned: that is yours to decide.</p>"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid ""
+"<p>Chez %s, %s ne fait plus partie du partage (%s) ; le miroir est "
+"archivé.</p>"
+msgstr ""
+"<p>On %s's side, %s is no longer part of the sharing (%s); the mirror is "
+"archived.</p>"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "<p>Chez %s, %s revient dans le partage ; le miroir est réactivé.</p>"
+msgstr ""
+"<p>On %s's side, %s is back in the sharing; the mirror is reactivated.</p>"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid ""
+"<p>Chez %s, le miroir de %s a disparu (%s) : plus rien ne lui parviendra "
+"tant que le partage n'est pas refait.</p>"
+msgstr ""
+"<p>On %s's side, the mirror of %s is gone (%s): nothing more will reach it "
+"until the sharing is done again.</p>"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__invitation_email
+msgid "Adresse d'invitation"
+msgstr "Invitation address"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"Adressez d'abord la tâche à un pair : sans pair, « %s » ne désigne personne."
+msgstr ""
+"Address the task to a peer first: with no peer, « %s » designates no one."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "Ce porteur ne fédère pas avec %s : ajoutez ce pair d'abord."
+msgstr "This holder does not federate with %s: add this peer first."
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__inbound_model_ids
+msgid ""
+"Ce que ce pair a le droit de déposer ici. Les messages, l'archivage et la "
+"remise suivent l'objet auquel ils se rapportent."
+msgstr ""
+"What this peer may drop here. Messages, archiving and handover follow the "
+"object they relate to."
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__inbound_policy
+msgid "Ce que ce pair peut m'envoyer"
+msgstr "What this peer may send me"
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__accepted_kinds
+msgid ""
+"Ce que le pair a annoncé savoir recevoir, au dernier contact. Vide : jamais "
+"annoncé (pair d'une version antérieure), et on n'empêche alors rien."
+msgstr ""
+"What the peer announced it can receive, at the last contact. Empty: never "
+"announced (a peer on an earlier version), and nothing is then prevented."
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__local_user_id
+msgid "Compte ici"
+msgstr "Account here"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_assignee_id
+msgid "Destinataire chez le pair"
+msgstr "Addressee on the peer"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__remote_assignee
+msgid "Destinataire proposé par le pair"
+msgstr "Addressee proposed by the peer"
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Envoyer l'invitation"
+msgstr "Send the invitation"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "Fédérer un objet demande le rôle de gestionnaire de projet."
+msgstr "Federating an object requires the project manager role."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "Fédéré avec %s : le miroir apparaîtra chez lui au prochain envoi."
+msgstr ""
+"Federated with %s: the mirror will appear on their side at the next send."
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_federable__federation_peer_id
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_peer_id
+msgid "Fédéré avec"
+msgstr "Federated with"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__accepted_kinds
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Genres acceptés par le pair"
+msgstr "Kinds accepted by the peer"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__accepted_kinds_date
+msgid "Genres annoncés le"
+msgstr "Kinds announced on"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__res_id
+msgid "Identifiant ici"
+msgstr "Identifier here"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Indiquez une seule adresse de courriel valide."
+msgstr "Give a single valid email address."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "Invitation envoyée à %s."
+msgstr "Invitation sent to %s."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_outbox.py:0
+msgid ""
+"La charge de %s envoi(s) a été retirée après abandon : il n'y a plus rien à "
+"rejouer. Repartagez l'objet."
+msgstr ""
+"The payload of %s send(s) was removed after they were abandoned: there is "
+"nothing left to replay. Share the object again."
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_link__remote_assignee
+msgid ""
+"Le dernier courriel que le pair a inscrit sur sa carte. Gardé pour ne pas "
+"redire deux fois la même proposition à chaque carte qui passe."
+msgstr ""
+"The last email the peer wrote on its card. Kept so the same proposal is not "
+"said twice on every card that passes."
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid ""
+"Le pair a besoin de deux choses : votre adresse\n"
+"                            ("
+msgstr ""
+"The peer needs two things: your address\n"
+"                            ("
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_federable__federation_peer_id
+msgid ""
+"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+msgstr ""
+"The peer where this object has a mirror. Clearing the field archives the "
+"mirror."
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__mirror_user_id
+msgid ""
+"Le repli : la personne qui reçoit ce que le pair n'a adressé à personne, ou "
+"ce qu'il a adressé à quelqu'un qui n'est pas dans les personnes appariées."
+msgstr ""
+"The fallback: the person who receives what the peer addressed to no one, or "
+"what it addressed to someone who is not in the matched people."
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__res_model
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_search
+msgid "Modèle"
+msgstr "Model"
+
+#. module: bf_federation
+#: model:ir.model,name:bf_federation.model_federation_federable
+msgid "Objet fédérable"
+msgstr "Federable object"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__inbound_model_ids
+msgid "Objets acceptés de ce pair"
+msgstr "Objects accepted from this peer"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer__federation_model_ids
+msgid "Objets fédérables ici"
+msgstr "Objects federable here"
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "Objets fédérés"
+msgstr "Federated objects"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__record_name
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_link_list
+msgid "Objet"
+msgstr "Object"
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_federable__federation_origin__local
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_link__origin__local
+#: model:ir.model.fields.selection,name:bf_federation.selection__project_task__federation_origin__local
+msgid "Partagé d'ici"
+msgstr "Shared from here"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_assignee_allowed_ids
+msgid "Personnes chez le pair"
+msgstr "People on the peer"
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid ""
+"Qui est qui, entre les deux instances. Cette table est la vôtre : le pair présente un courriel, il ne désigne jamais un compte ici.\n"
+"                                <br/>Un message reçu dont l'auteur porte ce courriel s'écrit au nom du <b>contact</b>. Sans ligne, il porte le nom de l'organisation du pair.\n"
+"                                <br/>Une tâche que le pair adresse à ce courriel est assignée au <b>compte</b>. Sans compte ici, le contact en fournit un s'il n'en a qu'un seul, interne et actif ; sinon la tâche est déposée chez la personne du repli, avec une note qui dit à qui elle était adressée."
+msgstr ""
+"Who is who, between the two instances. This table is yours: the peer presents an email, it never designates an account here.\n"
+"                                <br/>A received message whose author carries this email is written under the <b>contact</b>'s name. With no row, it carries the name of the peer's organisation.\n"
+"                                <br/>A task the peer addresses to this email is assigned to the <b>account</b>. With no account here, the contact provides one if it has exactly one, internal and active; otherwise the task is left with the fallback person, with a note saying who it was addressed to."
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_federable__federation_origin__remote
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_link__origin__remote
+#: model:ir.model.fields.selection,name:bf_federation.selection__project_task__federation_origin__remote
+msgid "Reçu du pair"
+msgstr "Received from the peer"
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_outbox__sender_ref
+msgid "Référence de l'objet ici"
+msgstr "Reference of the object here"
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_peer__inbound_policy__listed
+msgid "Seulement ce qui est coché"
+msgstr "Only what is ticked"
+
+#. module: bf_federation
+#: model:ir.model.fields.selection,name:bf_federation.selection__federation_peer__inbound_policy__all
+msgid "Tout ce que je sais recevoir"
+msgstr "Everything I can receive"
+
+#. module: bf_federation
+#: model:ir.model.constraint,message:bf_federation.constraint_federation_link_peer_record_unique
+msgid "Un objet n'a qu'un lien par pair."
+msgstr "An object has only one link per peer."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "Un objet reçu d'un pair ne peut pas être fédéré avec un autre pair."
+msgstr "An object received from a peer cannot be federated with another peer."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "Un objet reçu d'un pair ne peut pas être fédéré de nouveau."
+msgstr "An object received from a peer cannot be federated again."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "archivage"
+msgstr "archiving"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "cet objet"
+msgstr "this object"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "cette tâche"
+msgstr "this task"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "détachement"
+msgstr "detachment"
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "jamais annoncé"
+msgstr "never announced"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "l'objet"
+msgstr "the object"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "la tâche"
+msgstr "the task"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "retrait du partage"
+msgstr "removal from sharing"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid "retrait"
+msgstr "removal"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_federable.py:0
+msgid "suppression"
+msgstr "deletion"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "« %s » n'est pas une personne de %s."
+msgstr "« %s » is not a person of %s."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid ""
+"« %s » ne peut pas recevoir les tâches d'un pair : il faut un compte interne"
+" actif."
+msgstr ""
+"« %s » cannot receive a peer's tasks: it takes an active internal account."
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer_identity__local_user_id
+msgid ""
+"À qui donner ce que le pair adresse à cette personne. Vide : le compte "
+"interne du contact, s'il n'y en a qu'un. Sinon, le repli du pair."
+msgstr ""
+"Who to give what the peer addresses to this person. Empty: the contact's "
+"internal account, if it has exactly one. Otherwise, the peer's fallback."
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__invitation_email
+msgid ""
+"À qui envoyer le code. Un code dans une boîte de courriel est un code dans "
+"une boîte de courriel : il reste à usage unique et limité dans le temps."
+msgstr ""
+"Who to send the code to. A code in a mailbox is a code in a mailbox: it "
+"stays single-use and time-limited."
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_project_task__federation_assignee_id
+msgid ""
+"À qui, chez le pair, cette tâche est adressée. Une proposition, pas une "
+"assignation : le pair la résout avec sa propre table des personnes "
+"appariées, et garde le dernier mot. Vide : elle arrive chez la personne "
+"qu'il a désignée pour tout recevoir."
+msgstr ""
+"Who, on the peer's side, this task is addressed to. A proposal, not an "
+"assignment: the peer resolves it with its own matched people table, and "
+"keeps the last word. Empty: it arrives with the person they designated to "
+"receive everything."
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid "à qui envoyer le code"
+msgstr "who to send the code to"
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid ""
+"<span class=\"fw-bold\">celle de cette instance</span>)\n"
+"                            et le code ci-dessous. Chez lui : Fédération › Accepter une invitation.\n"
+"                            Transmettez-les comme vous voulez, ou faites-les envoyer par courriel."
+msgstr ""
+"<span class=\"fw-bold\">this instance's</span>)\n"
+"                            and the code below. On their side: Federation › Accept an invitation.\n"
+"                            Pass them along however you like, or have them sent by email."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s), qui ne figure "
+"pas dans les personnes appariées de ce pair, et la personne du repli n'est "
+"plus un compte interne actif : la tâche n'est assignée à personne.</p>"
+msgstr ""
+"<p>%(pair)s addressed this task to %(qui)s (%(courriel)s), who is not in "
+"this peer's matched people, and the fallback person is no longer an active "
+"internal account: the task is assigned to no one.</p>"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "Adresser une tâche fédérée demande le rôle de gestionnaire de projet."
+msgstr "Addressing a federated task requires the project manager role."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid ""
+"Organisation du pair : la fiche existante « %s » (n° %s), retrouvée par le "
+"nom saisi ici."
+msgstr ""
+"Peer organisation: the existing record « %s » (no. %s), found by the name "
+"entered here."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "« %s » est déjà apparié pour ce pair."
+msgstr "« %s » is already matched for this peer."
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s). Ce courriel est "
+"apparié, mais la ligne ne donne aucun compte utilisable ici (compte portail,"
+" plusieurs comptes, ou compte désigné devenu invalide) : elle est déposée "
+"chez %(repli)s. Désignez un compte sur la ligne d'appariement.</p>"
+msgstr ""
+"<p>%(pair)s addressed this task to %(qui)s (%(courriel)s). This email is "
+"matched, but the row gives no usable account here (portal account, several "
+"accounts, or a designated account that became invalid): it is left with "
+"%(repli)s. Designate an account on the matching row.</p>"
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "personne"
+msgstr "no one"

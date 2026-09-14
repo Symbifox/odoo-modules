@@ -24,7 +24,8 @@ satellites qui remplissent le contrat de fédérabilité :
    est un code dans une boîte de courriel : c'est le consentement par pair, plus
    haut, qui borne ce qu'un jumelage de trop permettrait.
 2. Chez B : *Fédération › Accepter une invitation* : adresse de A, code, à qui assigner
-   les tâches reçues, et si les notes internes de B doivent partir vers A.
+   par défaut les tâches reçues (le repli), et si les notes internes de B doivent
+   partir vers A.
 3. B présente le code et sa part du secret ; A répond avec la sienne. Le secret
    partagé naît des deux parts, aucune instance ne le choisit seule. Les deux côtés
    sont actifs ; **Tester la connexion** signe un message vide et attend la réponse.
@@ -43,7 +44,8 @@ Champ **Fédérée avec** sur la tâche, ou action de masse **Fédérer avec…*
 retirer ou changer le pair demande le rôle de gestionnaire de projet, par quelque porte
 que ce soit. Seuls les projets qui nomment un pair (*Paramètres › Pairs de fédération*)
 proposent le champ. Le miroir naît chez le pair dans un projet fermé « *Pair* (fédéré) »
-(visibilité abonnés, sans partenaire, trois étapes), assigné à la personne choisie.
+(visibilité abonnés, sans partenaire, trois étapes), chez la personne que le receveur
+choisit (voir la section suivante).
 
 | Voyage | Ne voyage jamais |
 |---|---|
@@ -63,6 +65,53 @@ détache son miroir ne touche jamais la tâche d'origine : elle est avertie par 
 cesse d'être fédérée. Un miroir ne peut pas être fédéré vers un troisième pair. Glisser
 le miroir dans « Terminé » termine la part du receveur et ramène la tâche d'origine
 « En cours » ; un changement de colonne qui recalcule l'état part aussi.
+
+## À qui, chez le pair
+
+L'émetteur peut **adresser** la tâche : champ *Destinataire chez le pair*, borné aux
+contacts qu'il a déjà sous la fiche de l'organisation du pair. C'est une proposition,
+pas une assignation. Rien de l'annuaire du receveur ne traverse : l'émetteur propose
+quelqu'un qu'il connaît, et rien ne lui dit si la proposition a été suivie. Il ne
+l'apprend que si la personne visée lui répond sur le miroir, puisqu'un message porte le
+nom de son auteur.
+
+Le receveur la résout avec **sa** table des personnes appariées, onglet de la fiche du
+pair :
+
+1. le courriel proposé est cherché dans la table, sans égard à la casse ;
+2. la ligne trouvée donne son *Compte ici* s'il est posé ;
+3. sinon (et seulement si aucun compte n'est désigné) le compte du contact apparié,
+   **s'il n'en a qu'un**, interne et actif : un compte portail ne reçoit jamais une
+   tâche, deux comptes ne se devinent pas, et un compte désigné devenu invalide ne cède
+   pas la place au compte du contact ;
+4. sinon la personne du repli, *Assigner les tâches reçues à*, si elle est encore un
+   compte interne actif, avec une note sur le miroir qui nomme la personne visée et son
+   courriel, et qui dit quoi réparer : ajouter la ligne d'appariement, ou désigner un
+   compte sur une ligne qui existe mais n'en donne aucun. Un repli archivé ou
+   devenu portail ne reçoit rien : la tâche naît sans assigné, et la note le dit.
+
+Un courriel n'a qu'une ligne par pair. Adresser une tâche fédérée demande le rôle de
+gestionnaire de projet, comme la fédérer. Seule la tâche sait quoi faire d'un
+destinataire : un pair qui en inscrit un sur un livrable ou une cartographie ne fait
+rien poser.
+
+La résolution se fait **à la naissance du miroir seulement**. Un émetteur qui
+ré-adresse une tâche déjà partagée fait poser une note chez le receveur ; le miroir ne
+change pas de mains tout seul. Sans destinataire, la carte ne porte aucune clé de
+plus, et tout se passe comme avant.
+
+Le repli doit être un compte interne actif (contrainte, pas seulement domaine), et le
+changer met à jour le gestionnaire du projet miroir.
+
+L'organisation du pair borne les destinataires proposables, et c'est elle qui permet à
+un livrable adressé à une personne de ne proposer que le pair de sa maison. Elle est
+**retrouvée** au jumelage seulement si le nom du pair a été **saisi ici** : une société
+racine de ce nom, dans la société du pair, s'il n'y en a qu'une, et une note le dit.
+Un nom annoncé par le pair ne rattache jamais à une fiche existante : un pair qui se
+présenterait sous le nom d'un client serait sinon proposé pour les livrables de ce
+client. Faute de candidat unique, une société est créée au nom du pair, comme avant ;
+aucun rattachement n'est proposé après coup, parce que ce nom-là peut avoir été annoncé
+par le pair.
 
 ## Rendre un modèle fédérable
 
@@ -158,5 +207,7 @@ porte l'anglais : un locataire qui active English (CA) lit l'interface en anglai
 `--test-tags federation` : jumelage et types inattendus, signature et rejeu, partage,
 état dans les deux sens, changement de colonne, messages, notes, marqueur 🔒, pièces
 jointes, échéance, carte, retrait et remise, suppression, ménage du receveur, ordre de
-la file et réponse perdue, notes échappées, droits. Les tests pairent l'instance avec
+la file et réponse perdue, notes échappées, droits, destinataire proposé et sa résolution
+(appariement, compte explicite, portail, homonymes, casse, ré-adressage sans réassignation,
+repli interne, organisation retrouvée). Les tests pairent l'instance avec
 elle-même. Sans `bf_task_waiting_states`, une tâche qui attend l'autre reste « En cours ».

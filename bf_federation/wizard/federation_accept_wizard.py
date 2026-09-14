@@ -10,7 +10,8 @@ class FederationAcceptWizard(models.TransientModel):
     code = fields.Char(string="Code d'invitation", required=True)
     name = fields.Char(string="Nom du pair", help="Laissez vide pour prendre le nom que le pair annonce.")
     mirror_user_id = fields.Many2one("res.users", string="Assigner les tâches reçues à", required=True,
-                                     default=lambda self: self.env.user)
+                                     default=lambda self: self.env.user,
+                                     domain="[('share', '=', False), ('active', '=', True)]")
     send_notes = fields.Boolean(string="Envoyer aussi mes notes internes à ce pair")
 
     def action_accept(self):

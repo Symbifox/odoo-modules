@@ -67,13 +67,15 @@
                     </group>
                     <notebook>
                         <page string="Personnes appariées" name="identities">
-                            <div class="text-muted mb-2">Un message reçu dont l'auteur porte ce courriel chez le pair s'écrit ici au nom de ce contact.
-                                Sans ligne, un utilisateur interne au même courriel est cherché ; sinon le message porte le nom de l'organisation du pair.</div>
+                            <div class="text-muted mb-2">Qui est qui, entre les deux instances. Cette table est la vôtre : le pair présente un courriel, il ne désigne jamais un compte ici.
+                                <br/>Un message reçu dont l'auteur porte ce courriel s'écrit au nom du <b>contact</b>. Sans ligne, il porte le nom de l'organisation du pair.
+                                <br/>Une tâche que le pair adresse à ce courriel est assignée au <b>compte</b>. Sans compte ici, le contact en fournit un s'il n'en a qu'un seul, interne et actif ; sinon la tâche est déposée chez la personne du repli, avec une note qui dit à qui elle était adressée.</div>
                             <field name="identity_ids">
                                 <list editable="bottom">
                                     <field name="remote_email"/>
                                     <field name="remote_name"/>
                                     <field name="local_partner_id"/>
+                                    <field name="local_user_id"/>
                                 </list>
                             </field>
                         </page>

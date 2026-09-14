@@ -13,7 +13,7 @@ revient « En cours » chez l'émetteur plutôt que de se fermer.
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 
 from . import transport
 
@@ -40,7 +40,14 @@ STATE_MIRROR_TO_OWNER = {
     "1_canceled": "01_in_progress",
 }
 WATCHED = ("name", "description", "priority", "state", "stage_id", "date_deadline", "active",
-           "federation_peer_id")
+           "federation_peer_id", "federation_assignee_id")
+
+
+def _as_id(value):
+    """Un identifiant, qu'on ait écrit un entier, un enregistrement ou rien."""
+    if hasattr(value, "_name"):
+        return value.id if len(value) == 1 else False
+    return value or False
 
 
 def _state_label(env, state):
@@ -54,9 +61,77 @@ class ProjectTask(models.Model):
 
     _federation_kind = "task"
     _federation_verbs = ("card", "state", "day")
+    #: Le genre sait quoi faire d'un destinataire proposé. Les autres l'ignorent,
+    #: et un pair qui en inscrit un sur un livrable ne fait poser aucune note.
+    _federation_addressable = True
 
     federation_peer_id = fields.Many2one(
         help="Le pair chez qui cette tâche a un miroir. Vider le champ archive le miroir.")
+    federation_assignee_id = fields.Many2one(
+        "res.partner", string="Destinataire chez le pair", copy=False, tracking=True,
+        domain="[('id', 'in', federation_assignee_allowed_ids)]",
+        help="À qui, chez le pair, cette tâche est adressée. Une proposition, pas une "
+             "assignation : le pair la résout avec sa propre table des personnes "
+             "appariées, et garde le dernier mot. Vide : elle arrive chez la personne "
+             "qu'il a désignée pour tout recevoir.")
+    federation_assignee_allowed_ids = fields.Many2many(
+        "res.partner", compute="_compute_federation_assignee_allowed",
+        string="Personnes chez le pair")
+
+    @api.depends("federation_peer_id", "federation_peer_id.partner_id")
+    def _compute_federation_assignee_allowed(self):
+        """Les personnes de l'organisation du pair, telles qu'ICI on les connaît.
+
+        Rien n'est demandé au pair : ce sont nos propres contacts, sous sa fiche.
+        C'est ce qui fait que proposer quelqu'un n'apprend rien à personne, dans
+        aucun des deux sens.
+        """
+        for task in self:
+            # Le pair peut appartenir à une société que l'utilisateur ne voit pas : le
+            # formulaire de la tâche ne doit pas tomber pour autant.
+            peer = task.federation_peer_id.sudo()
+            maison = peer.partner_id.commercial_partner_id if peer.partner_id else False
+            if not maison:
+                task.federation_assignee_allowed_ids = self.env["res.partner"]
+                continue
+            task.federation_assignee_allowed_ids = self.env["res.partner"].search([
+                ("id", "child_of", maison.id), ("is_company", "=", False),
+                ("email", "!=", False), ("active", "=", True)])
+
+    @api.constrains("federation_assignee_id", "federation_peer_id")
+    def _check_federation_assignee(self):
+        """Se tromper de destinataire chez un client à cinq pairs n'est pas une coquille."""
+        for task in self:
+            if not task.federation_assignee_id:
+                continue
+            if not task.federation_peer_id:
+                raise ValidationError(
+                    _("Adressez d'abord la tâche à un pair : sans pair, « %s » ne désigne personne.")
+                    % task.federation_assignee_id.display_name)
+            if task.federation_assignee_id not in task.federation_assignee_allowed_ids:
+                raise ValidationError(
+                    _("« %s » n'est pas une personne de %s.")
+                    % (task.federation_assignee_id.display_name, task.federation_peer_id.name))
+
+    def _federation_check_writer(self, vals):
+        """Adresser une tâche fédérée demande le même rôle que la fédérer.
+
+        La vue réserve le champ aux gestionnaires ; une vue n'est pas une garde. Par
+        un appel direct, n'importe qui pouvant écrire la tâche ré-adressait le pair.
+        """
+        super()._federation_check_writer(vals)
+        if "federation_assignee_id" not in vals or self.env.su:
+            return
+        # Un import qui réécrit la même valeur n'adresse rien : seul un changement compte.
+        nouveau = _as_id(vals.get("federation_assignee_id"))
+        change = bool(nouveau) if not self else any(t.federation_assignee_id.id != nouveau for t in self)
+        if change and not self.env.user.has_group("project.group_project_manager"):
+            raise AccessError(_("Adresser une tâche fédérée demande le rôle de gestionnaire de projet."))
+
+    @api.onchange("federation_peer_id")
+    def _onchange_federation_peer_assignee(self):
+        if self.federation_assignee_id and self.federation_assignee_id not in self.federation_assignee_allowed_ids:
+            self.federation_assignee_id = False
 
     # --- Le contrat ----------------------------------------------------------------
     def _federation_allowed_peers(self):
@@ -76,24 +151,45 @@ class ProjectTask(models.Model):
         self.ensure_one()
         tz = self.env["federation.peer"]._our_tz()
         base = self.env["federation.peer"]._our_base_url()
-        return {
+        card = {
             "name": self.name, "description_text": transport.html_to_text(self.description),
             "day": transport.day_in_zone(self.date_deadline, tz), "tz": tz,
             "priority": self.priority or "0", "state": self.state,
             "url": f"{base}/odoo/project/{self.project_id.id}/tasks/{self.id}" if base else False,
         }
+        # ⚠️ La clé n'est posée que s'il y a un destinataire. L'empreinte de carte
+        # hache toutes les clés sauf `state`, `day`, `url` et `tz` : une clé toujours
+        # présente changerait l'empreinte de tous les liens vivants et ferait repartir
+        # une carte par tâche à la première écriture qui suit la mise à jour.
+        # Et la personne doit être ENCORE de l'organisation du pair : un contact qui en
+        # est sorti, ou un pair rattaché à une autre fiche, ne part plus sur la carte.
+        # Vu en superutilisateur : la carte ne doit pas dépendre de qui a écrit la tâche,
+        # sinon deux rédacteurs de sociétés différentes la feraient alterner.
+        assignee = self.sudo().federation_assignee_id
+        if assignee and assignee.email and assignee in self.sudo().federation_assignee_allowed_ids:
+            card["assignee"] = {"name": assignee.name, "email": assignee.email}
+        return card
 
     @api.model
     def _federation_receive(self, peer, card):
-        """Le miroir naît dans le projet fermé du pair, assigné à la personne qu'il a choisie."""
+        """Le miroir naît dans le projet fermé du pair, chez la personne que NOUS choisissons.
+
+        L'émetteur peut avoir adressé la tâche à quelqu'un. C'est une proposition :
+        elle ne vaut que si le receveur a lui-même apparié ce courriel à un de ses
+        comptes. Sinon, le repli, et une note qui dit à qui c'était adressé, pour
+        que l'appariement manquant se répare en une ligne au lieu de se deviner.
+        """
         project = peer._ensure_mirror_project()
         state = self._federation_available_state(
             STATE_OWNER_TO_MIRROR.get(card.get("state"), "01_in_progress"))
+        nom_propose, courriel_propose = peer._proposed_assignee(card)
+        resolu = peer._local_assignee(courriel_propose)
+        assigne = resolu or peer._fallback_user()
         vals = {
             "name": transport.clean_text(card.get("name"), 500) or _("(sans titre)"),
             "description": self._federation_mirror_description(peer, card),
             "priority": card.get("priority") if card.get("priority") in ("0", "1") else "0",
-            "project_id": project.id, "user_ids": [(6, 0, [peer.mirror_user_id.id])], "partner_id": False,
+            "project_id": project.id, "user_ids": [(6, 0, assigne.ids)], "partner_id": False,
             "company_id": peer.company_id.id, "federation_peer_id": peer.id,
         }
         if "time_of_day_id" in self._fields:
@@ -106,7 +202,51 @@ class ProjectTask(models.Model):
         day = transport.valid_day(card.get("day"))
         if day:
             transport.write_deadline_day(task, day, peer._our_tz())
+        if courriel_propose:
+            task._federation_assignee_note(peer, nom_propose, courriel_propose, resolu)
         return task
+
+    def _federation_assignee_note(self, peer, nom, courriel, resolu):
+        """La note posée à la naissance du miroir quand le pair a adressé la tâche.
+
+        Elle nomme l'échec quand il y en a un : un appariement manquant qu'on ne
+        sait pas nommer ne se répare jamais.
+        """
+        self.ensure_one()
+        peer._ensure_partner()
+        qui = transport.html.escape(nom or courriel or "")
+        repli = peer._fallback_user()
+        if resolu:
+            # Résolu, même si le compte est aussi celui du repli : la ligne existe.
+            corps = _("<p>%(pair)s a adressé cette tâche à %(qui)s ; elle est assignée à "
+                      "%(compte)s.</p>") % {"pair": transport.html.escape(peer.name),
+                                            "qui": qui,
+                                            "compte": transport.html.escape(resolu.display_name)}
+        elif peer._identity_for(courriel):
+            corps = _("<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s). Ce courriel est "
+                      "apparié, mais la ligne ne donne aucun compte utilisable ici (compte portail, "
+                      "plusieurs comptes, ou compte désigné devenu invalide) : elle est déposée chez "
+                      "%(repli)s. Désignez un compte sur la ligne d'appariement.</p>") % {
+                "pair": transport.html.escape(peer.name), "qui": qui,
+                "courriel": transport.html.escape(courriel),
+                "repli": transport.html.escape(repli.display_name) if repli else _("personne")}
+        elif not repli:
+            corps = _("<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s), qui ne figure "
+                      "pas dans les personnes appariées de ce pair, et la personne du repli n'est "
+                      "plus un compte interne actif : la tâche n'est assignée à personne.</p>") % {
+                "pair": transport.html.escape(peer.name), "qui": qui,
+                "courriel": transport.html.escape(courriel)}
+        else:
+            corps = _("<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s), qui ne figure "
+                      "pas dans les personnes appariées de ce pair : elle est déposée chez "
+                      "%(repli)s. Ajoutez la ligne d'appariement sur la fiche du pair pour que "
+                      "la prochaine arrive au bon endroit.</p>") % {
+                "pair": transport.html.escape(peer.name), "qui": qui,
+                "courriel": transport.html.escape(courriel),
+                "repli": transport.html.escape(repli.display_name)}
+        self.sudo().with_context(federation_inbound=True).message_post(
+            body=Markup(corps), message_type="comment", subtype_xmlid="mail.mt_note",
+            author_id=peer.partner_id.id)
 
     def _federation_apply_card(self, link, card):
         self.ensure_one()
@@ -205,6 +345,20 @@ class ProjectTask(models.Model):
         return tasks
 
     def write(self, vals):
+        # Changer de pair, ou le retirer, retire le destinataire du pair d'avant : sinon
+        # la contrainte refuserait le changement, et un partage en lot tomberait en
+        # entier pour une seule tâche encore adressée à l'ancien pair.
+        if "federation_peer_id" in vals and "federation_assignee_id" not in vals:
+            nouveau_pair = _as_id(vals["federation_peer_id"])
+            changent = self.filtered(lambda t: t.federation_assignee_id and t.federation_peer_id.id != nouveau_pair)
+            if changent and changent != self:
+                # ⚠️ Deux copies du dictionnaire : `project.task.write` en retire des clés en
+                # place (`milestone_id`), et la seconde écriture les aurait perdues.
+                (self - changent).write(dict(vals))
+                changent.write(dict(vals, federation_assignee_id=False))
+                return True
+            if changent:
+                vals = dict(vals, federation_assignee_id=False)
         links, before = self._federation_hook_before_write(vals)
         res = super().write(vals)
         self._federation_hook_after_write(vals, links, before)
@@ -245,7 +399,8 @@ class ProjectTask(models.Model):
             if done_stage and self.stage_id == done_stage and self.state not in ("1_done", "1_canceled"):
                 self.write({"state": "1_done"})
                 return
-        if link.origin == "local" and any(f in vals for f in ("name", "description", "priority")):
+        if link.origin == "local" and any(f in vals for f in ("name", "description", "priority",
+                                                               "federation_assignee_id")):
             card = self._federation_card()
             fp = self.env["federation.link"]._card_fingerprint(card)
             if fp != link.fingerprint:

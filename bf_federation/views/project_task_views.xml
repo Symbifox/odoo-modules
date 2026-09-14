@@ -11,6 +11,9 @@
                 <field name="federation_peer_id" groups="project.group_project_manager" invisible="not federation_possible"/>
                 <field name="federation_remote_url" widget="url" invisible="not federation_remote_url"/>
                 <field name="federation_origin" invisible="not federation_origin"/>
+                <field name="federation_assignee_allowed_ids" invisible="1"/>
+                <field name="federation_assignee_id" groups="project.group_project_manager"
+                       invisible="not federation_peer_id or federation_origin == 'remote'"/>
             </xpath>
         </field>
     </record>

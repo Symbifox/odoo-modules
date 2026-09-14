@@ -223,8 +223,13 @@ class FederationFederable(models.AbstractModel):
             [("res_model", "=", records._name), ("res_id", "in", records.ids)])}
 
     def _federation_check_writer(self, vals):
-        """Fédérer, retirer ou changer le pair demande un rôle, quelle que soit la porte."""
-        if "federation_peer_id" not in vals or self.env.su or self.env.context.get("federation_inbound"):
+        """Fédérer, retirer ou changer le pair demande un rôle, quelle que soit la porte.
+
+        🔴 La clé de contexte `federation_inbound` ne dispense de rien à elle seule :
+        n'importe quel client RPC peut la poser, et elle contournait le rôle. Tous les
+        vrais chemins entrants écrivent en superutilisateur, et c'est cela qui dispense.
+        """
+        if "federation_peer_id" not in vals or self.env.su:
             return
         if not self.env.user.has_group("project.group_project_manager"):
             raise AccessError(_("Fédérer un objet demande le rôle de gestionnaire de projet."))
@@ -245,9 +250,14 @@ class FederationFederable(models.AbstractModel):
     def _federation_hook_before_write(self, vals):
         """À appeler avant `super().write()`. Rend (liens, instantanés) ou (None, None)
         quand il n'y a rien à faire."""
-        if self.env.context.get("federation_inbound") or not any(f in vals for f in self._federation_watched()):
+        if not any(f in vals for f in self._federation_watched()):
             return None, None
+        # 🔴 La garde passe AVANT la sortie des écritures entrantes : la clé de contexte
+        # se pose depuis n'importe quel client RPC, et la sortie la court-circuitait.
+        # Les vrais chemins entrants écrivent en superutilisateur, que la garde laisse passer.
         self._federation_check_writer(vals)
+        if self.env.context.get("federation_inbound"):
+            return None, None
         links = self._federation_links_for(self, include_inactive=True)
         if not links and "federation_peer_id" not in vals:
             return None, None

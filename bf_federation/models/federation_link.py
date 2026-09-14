@@ -39,6 +39,10 @@ class FederationLink(models.Model):
     fingerprint = fields.Char(string="Empreinte de la carte")
     last_state_sent = fields.Char(string="Dernier état envoyé")
     last_day_sent = fields.Char(string="Dernière échéance envoyée")
+    remote_assignee = fields.Char(
+        string="Destinataire proposé par le pair", readonly=True,
+        help="Le dernier courriel que le pair a inscrit sur sa carte. Gardé pour ne "
+             "pas redire deux fois la même proposition à chaque carte qui passe.")
     message_ids = fields.One2many("federation.link.message", "link_id", string="Messages passés")
     company_id = fields.Many2one(related="peer_id.company_id", string="Société")
 
@@ -175,7 +179,8 @@ class FederationLink(models.Model):
         return self.sudo().create({
             "peer_id": peer.id, "res_model": model._name, "res_id": record.id,
             "remote_ref": str(sender_ref), "remote_url": self._safe_url(card.get("url")),
-            "origin": "remote", "fingerprint": self._card_fingerprint(card)})
+            "origin": "remote", "fingerprint": self._card_fingerprint(card),
+            "remote_assignee": peer._proposed_assignee(card)[1]})
 
     # --- Réception : les verbes du genre --------------------------------------------
     def _apply_verb(self, verb, data):
@@ -207,6 +212,32 @@ class FederationLink(models.Model):
             return False
         record._federation_apply_card(self, card)
         self.fingerprint = fp
+        if self.origin == "remote" and getattr(record, "_federation_addressable", False):
+            self._note_assignee_change(card)
+        return True
+
+    def _note_assignee_change(self, card):
+        """Le pair a ré-adressé son objet : on le dit, on ne redonne pas le travail.
+
+        Un miroir déjà né appartient à qui l'a pris. Réassigner sur une carte
+        enlèverait la tâche des mains de quelqu'un à distance, ce qu'aucun des deux
+        côtés n'a demandé. Le module a déjà cette loi pour l'état et l'échéance ;
+        l'assignation est plus sensible, pas moins.
+        """
+        self.ensure_one()
+        peer = self.peer_id
+        nom, courriel = peer._proposed_assignee(card)
+        if (courriel or "") == (self.remote_assignee or ""):
+            return False
+        self.remote_assignee = courriel or ""
+        if not courriel:
+            return False
+        _the, this = self._labels()
+        note = self._note(Markup(_("<p>Chez %(pair)s, %(objet)s est maintenant adressé à "
+                                   "%(qui)s. Le miroir n'est pas réassigné : c'est à vous "
+                                   "de voir.</p>")) % {
+            "pair": peer.name, "objet": this, "qui": nom or courriel})
+        self._inbox_notify(note)
         return True
 
     # --- Réception : les verbes génériques -------------------------------------------

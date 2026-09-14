@@ -42,8 +42,12 @@ class FederationPeer(models.Model):
     partner_id = fields.Many2one("res.partner", string="Organisation du pair", copy=False,
                                  help="Auteur des messages reçus dont la personne n'est pas dans la table des personnes appariées.")
     mirror_project_id = fields.Many2one("project.project", string="Projet des tâches reçues", copy=False)
-    mirror_user_id = fields.Many2one("res.users", string="Assigner les tâches reçues à",
-                                     default=lambda self: self.env.user, required=True)
+    mirror_user_id = fields.Many2one(
+        "res.users", string="Assigner les tâches reçues à", required=True,
+        default=lambda self: self._default_mirror_user(),
+        domain="[('share', '=', False), ('active', '=', True)]",
+        help="Le repli : la personne qui reçoit ce que le pair n'a adressé à personne, "
+             "ou ce qu'il a adressé à quelqu'un qui n'est pas dans les personnes appariées.")
     send_notes = fields.Boolean(string="Envoyer aussi mes notes internes",
                                 help="Les notes internes écrites ici sur une tâche fédérée partent vers ce pair. "
                                      "Décoché : seuls les messages « Envoyer un message » partent.")
@@ -84,6 +88,19 @@ class FederationPeer(models.Model):
 
     _sql_constraints = [("uuid_unique", "unique(uuid)", "Cet identifiant existe déjà.")]
 
+    @api.model
+    def _default_mirror_user(self):
+        """L'utilisateur courant s'il peut recevoir, sinon l'administrateur.
+
+        Sous le superutilisateur (un script, un shell), `env.user` est OdooBot, inactif :
+        le prendre par défaut ferait refuser la fiche par la contrainte du repli.
+        """
+        user = self.env.user
+        if user.active and not user.share:
+            return user
+        admin = self.env.ref("base.user_admin", raise_if_not_found=False)
+        return admin if admin and admin.active and not admin.share else self.env["res.users"]
+
     def _compute_federation_models(self):
         noms = list(self.env["federation.federable"]._federation_models().values())
         modeles = self.env["ir.model"].sudo().search([("model", "in", noms)])
@@ -123,6 +140,20 @@ class FederationPeer(models.Model):
     def _url_ok(self, url):
         url = (url or "").strip().lower()
         return url.startswith("https://") or (url.startswith("http://") and self._http_allowed())
+
+    @api.constrains("mirror_user_id")
+    def _check_mirror_user(self):
+        """Un domaine est une garde d'écran ; la contrainte est la vraie garde.
+
+        Un compte de partage posé ici finirait dans les assignés d'une tâche, où
+        le champ d'Odoo l'interdit par domaine et l'accepte par code.
+        """
+        for peer in self:
+            user = peer.mirror_user_id
+            if user and (user.share or not user.active):
+                raise ValidationError(
+                    _("« %s » ne peut pas recevoir les tâches d'un pair : il faut un compte "
+                      "interne actif.") % user.display_name)
 
     @api.constrains("base_url")
     def _check_base_url(self):
@@ -230,7 +261,8 @@ class FederationPeer(models.Model):
             vals["base_url"] = remote_base_url.rstrip("/")
         peer.write(vals)
         peer._remember_kinds({"kinds": remote_kinds})
-        peer._ensure_partner()
+        # Côté invitant, le nom du pair a été saisi ici, à la création de la fiche.
+        peer._ensure_partner(nom_saisi_ici=True)
         peer.message_post(body=_("Jumelage accepté par %s.") % transport.clean_text(remote_name or peer.name))
         return peer, local_part
 
@@ -254,7 +286,9 @@ class FederationPeer(models.Model):
         self.sudo().write({"secret": self._derive_secret(data["part"], my_part), "remote_uuid": data["uuid"], "state": "active",
                            "name": self.name if typed else (transport.clean_text(data.get("name")) or self.name),
                            "last_ping": fields.Datetime.now(), "invitation_code": False, "invitation_expiry": False})
-        self._ensure_partner()
+        # Côté invité, le nom peut être celui que le PAIR a annoncé : on ne s'en sert
+        # pour retrouver une fiche que si l'administrateur l'a saisi lui-même.
+        self._ensure_partner(nom_saisi_ici=typed)
         self.message_post(body=_("Jumelage établi avec %s.") % self.name)
         return True
 
@@ -298,6 +332,21 @@ class FederationPeer(models.Model):
                 raise UserError(_("Ce pair n'a jamais été jumelé ; émettez ou acceptez une invitation."))
         self.write({"state": "active"})
 
+    def write(self, vals):
+        """Changer la personne qui reçoit change aussi le gestionnaire du projet miroir.
+
+        Mesuré sur une instance en service : le projet est né au nom de qui a accepté
+        l'invitation, le pair a basculé sur quelqu'un d'autre, et le projet est resté
+        au nom du premier.
+        """
+        res = super().write(vals)
+        if vals.get("mirror_user_id"):
+            for peer in self:
+                projet = peer.sudo().mirror_project_id
+                if projet and projet.exists() and projet.user_id != peer.mirror_user_id:
+                    projet.write({"user_id": peer.mirror_user_id.id})
+        return res
+
     @api.model
     def _for_partner(self, partner):
         """Les pairs actifs qui SONT ce contact, sa société, ou l'une de ses personnes.
@@ -313,11 +362,47 @@ class FederationPeer(models.Model):
         famille = maison | maison.child_ids | partner
         return self.search([("state", "=", "active"), ("partner_id", "in", famille.ids)])
 
-    def _ensure_partner(self):
+    def _partner_candidates(self, name):
+        """Les sociétés racines d'ici qui portent exactement ce nom, dans la société du pair."""
+        self.ensure_one()
+        if not name:
+            return self.env["res.partner"]
+        return self.env["res.partner"].sudo().search([
+            ("name", "=", name), ("is_company", "=", True), ("parent_id", "=", False),
+            ("active", "=", True), ("company_id", "in", [False, self.company_id.id])])
+
+    def _ensure_partner(self, nom_saisi_ici=False):
+        """L'organisation du pair : retrouvée si le nom vient d'ici, créée sinon.
+
+        🔴 Créer sans chercher produisait un doublon par pair (une société vide au
+        nom du pair, à côté de la vraie fiche client qui porte les personnes), et
+        `_for_partner`, qui cherche le pair par la MAISON du contact, ne proposait
+        alors aucun pair pour un livrable adressé à une personne de la vraie fiche.
+
+        🔴 Mais retrouver par le nom sans savoir d'où vient ce nom est pire que le
+        doublon. Côté invité, le nom peut être celui que le pair ANNONCE : un pair
+        qui se présente sous le nom d'un client se verrait rattaché à la fiche de ce
+        client, proposé pour ses livrables, et signerait ses messages en son nom.
+        On ne retrouve donc que sur un nom saisi ici, dans la société du pair, et
+        s'il n'y a qu'un candidat. Sinon on crée, comme avant.
+
+        ⚠️ Pas de rattachement après coup, même d'un clic d'administrateur. Quand
+        l'invité laisse le nom vide, la société créée porte le nom ANNONCÉ par le
+        pair ; proposer ensuite « la fiche existante du même nom » remettrait la fiche
+        d'un client à qui l'a réclamée, un clic plus tard.
+        """
+        Partner = self.env["res.partner"].sudo()
         for peer in self:
-            if not peer.partner_id:
-                peer.sudo().partner_id = self.env["res.partner"].sudo().create({
-                    "name": peer.name, "is_company": True, "active": True, "company_id": peer.company_id.id})
+            if peer.partner_id:
+                continue
+            candidats = peer._partner_candidates(peer.name) if nom_saisi_ici else Partner
+            if len(candidats) == 1:
+                peer.sudo().partner_id = candidats
+                peer.message_post(body=_("Organisation du pair : la fiche existante « %s » (n° %s), "
+                                         "retrouvée par le nom saisi ici.") % (candidats.name, candidats.id))
+                continue
+            peer.sudo().partner_id = Partner.create({
+                "name": peer.name, "is_company": True, "active": True, "company_id": peer.company_id.id})
 
     # --- Transport ---------------------------------------------------------------
     def _post(self, path, payload, signed=True):
@@ -408,6 +493,50 @@ class FederationPeer(models.Model):
             return self.env["project.task.type"]
         return project.type_ids.filtered(lambda s: s.name == dict(self._stage_names())["done"])[:1]
 
+    def _proposed_assignee(self, card):
+        """Ce que l'émetteur a écrit sur la carte, nettoyé. Rend (nom, courriel).
+
+        Il ne nomme personne d'ici : c'est un contact de SA base, et c'est tout ce
+        qu'il sait. Rien de l'annuaire d'ici n'a traversé pour qu'il l'écrive.
+        """
+        self.ensure_one()
+        proposed = card.get("assignee") if isinstance(card, dict) else None
+        if not isinstance(proposed, dict):
+            return "", ""
+        email = transport.clean_text(proposed.get("email"), 254).strip().lower()
+        if "@" not in email:
+            # La proposition est adossée au courriel, des deux côtés : sans courriel,
+            # il n'y a rien à résoudre ni à redire, et un nom seul ne pose pas de note.
+            return "", ""
+        return transport.clean_text(proposed.get("name"), 100), email
+
+    def _fallback_user(self):
+        """Le repli, s'il peut encore recevoir : un compte archivé ou devenu portail après
+        coup ne reçoit rien, la tâche naît sans assigné et la note le dit."""
+        self.ensure_one()
+        user = self.mirror_user_id
+        return user if user and user.active and not user.share else self.env["res.users"]
+
+    def _local_assignee(self, email):
+        """Le compte d'ici que le receveur a apparié à ce courriel, ou un recordset vide.
+
+        Seule la table des personnes appariées décide, comme pour l'auteur d'un
+        message : le pair présente un courriel, il ne désigne pas un compte. Et la
+        règle d'Odoo pour `@nom` s'applique, un seul candidat ou rien.
+        """
+        self.ensure_one()
+        ident = self._identity_for(email)
+        return ident._assignable_user() if ident else self.env["res.users"]
+
+    def _identity_for(self, email):
+        """La ligne d'appariement de ce courriel, ou un recordset vide."""
+        self.ensure_one()
+        email = (email or "").strip().lower()
+        if not email:
+            return self.env["federation.peer.identity"]
+        return self.identity_ids.filtered(
+            lambda i: (i.remote_email or "").strip().lower() == email)[:1]
+
     def _local_author(self, name, email):
         """Seule la table des personnes appariées désigne une personne d'ici ; sinon l'organisation du pair.
 
@@ -431,4 +560,38 @@ class FederationPeerIdentity(models.Model):
     remote_email = fields.Char(string="Courriel chez le pair", required=True)
     remote_name = fields.Char(string="Nom chez le pair")
     local_partner_id = fields.Many2one("res.partner", string="Contact ici", required=True)
+    local_user_id = fields.Many2one(
+        "res.users", string="Compte ici",
+        domain="[('share', '=', False), ('active', '=', True)]",
+        help="À qui donner ce que le pair adresse à cette personne. Vide : le compte "
+             "interne du contact, s'il n'y en a qu'un. Sinon, le repli du pair.")
     company_id = fields.Many2one(related="peer_id.company_id", string="Société")
+
+    @api.constrains("peer_id", "remote_email")
+    def _check_unique_email(self):
+        """Deux lignes au même courriel se résolvaient en silence sur la première."""
+        for ident in self:
+            courriel = (ident.remote_email or "").strip().lower()
+            doublons = ident.peer_id.identity_ids.filtered(
+                lambda i: i != ident and (i.remote_email or "").strip().lower() == courriel)
+            if courriel and doublons:
+                raise ValidationError(_("« %s » est déjà apparié pour ce pair.") % ident.remote_email)
+
+    def _assignable_user(self):
+        """Le compte à qui confier ce qui est adressé à cette personne, ou rien.
+
+        Le contact et le compte ne sont pas le même objet, et le déduire se trompe :
+        mesuré sur une instance en service, le contact apparié d'une personne du pair
+        portait un compte PORTAIL, qu'Odoo refuse comme assigné par domaine et accepte
+        par code. Un seul compte interne
+        actif, ou rien.
+        """
+        self.ensure_one()
+        if self.local_user_id:
+            # Un compte désigné exprès et devenu invalide ne cède pas la place au compte
+            # du contact, que l'administrateur avait justement écarté : c'est le repli.
+            user = self.local_user_id
+            return user if user.active and not user.share else self.env["res.users"]
+        comptes = self.local_partner_id.sudo().user_ids.filtered(
+            lambda u: u.active and not u.share)
+        return comptes if len(comptes) == 1 else self.env["res.users"]

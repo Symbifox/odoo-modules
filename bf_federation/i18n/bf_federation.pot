@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 14:24+0000\n"
-"PO-Revision-Date: 2026-09-13 14:24+0000\n"
+"POT-Creation-Date: 2026-09-14 03:29+0000\n"
+"PO-Revision-Date: 2026-09-14 03:29+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -86,9 +86,54 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_federation/models/project_task.py:0
 msgid ""
+"<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s), qui ne figure "
+"pas dans les personnes appariées de ce pair : elle est déposée chez "
+"%(repli)s. Ajoutez la ligne d'appariement sur la fiche du pair pour que la "
+"prochaine arrive au bon endroit.</p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s), qui ne figure "
+"pas dans les personnes appariées de ce pair, et la personne du repli n'est "
+"plus un compte interne actif : la tâche n'est assignée à personne.</p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"<p>%(pair)s a adressé cette tâche à %(qui)s (%(courriel)s). Ce courriel est "
+"apparié, mais la ligne ne donne aucun compte utilisable ici (compte portail,"
+" plusieurs comptes, ou compte désigné devenu invalide) : elle est déposée "
+"chez %(repli)s. Désignez un compte sur la ligne d'appariement.</p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"<p>%(pair)s a adressé cette tâche à %(qui)s ; elle est assignée à "
+"%(compte)s.</p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
 "<p><i>Tâche partagée par %s. L'état, le jour d'échéance, les messages et les"
 " pièces jointes reviennent chez lui ; un message ou une note qui commence "
 "par 🔒 reste ici.</i></p>"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_link.py:0
+msgid ""
+"<p>Chez %(pair)s, %(objet)s est maintenant adressé à %(qui)s. Le miroir "
+"n'est pas réassigné : c'est à vous de voir.</p>"
 msgstr ""
 
 #. module: bf_federation
@@ -199,6 +244,19 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_federation.field_federation_accept_wizard__base_url
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer__base_url
 msgid "Adresse du pair"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "Adresser une tâche fédérée demande le rôle de gestionnaire de projet."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid ""
+"Adressez d'abord la tâche à un pair : sans pair, « %s » ne désigne personne."
 msgstr ""
 
 #. module: bf_federation
@@ -339,6 +397,11 @@ msgid "Code d'invitation"
 msgstr ""
 
 #. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__local_user_id
+msgid "Compte ici"
+msgstr ""
+
+#. module: bf_federation
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__kind__ping
 msgid "Contact"
 msgstr ""
@@ -409,6 +472,16 @@ msgstr ""
 #. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_link__last_day_sent
 msgid "Dernière échéance envoyée"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_assignee_id
+msgid "Destinataire chez le pair"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_federation_link__remote_assignee
+msgid "Destinataire proposé par le pair"
 msgstr ""
 
 #. module: bf_federation
@@ -629,7 +702,7 @@ msgstr ""
 #. module: bf_federation
 #. odoo-python
 #: code:addons/bf_federation/models/federation_peer.py:0
-msgid "Indiquez l'adresse à qui envoyer l'invitation."
+msgid "Indiquez une seule adresse de courriel valide."
 msgstr ""
 
 #. module: bf_federation
@@ -695,6 +768,14 @@ msgid ""
 msgstr ""
 
 #. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_outbox.py:0
+msgid ""
+"La charge de %s envoi(s) a été retirée après abandon : il n'y a plus rien à "
+"rejouer. Repartagez l'objet."
+msgstr ""
+
+#. module: bf_federation
 #: model:ir.model.fields,help:bf_federation.field_federation_accept_wizard__name
 msgid "Laissez vide pour prendre le nom que le pair annonce."
 msgstr ""
@@ -726,6 +807,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer_identity__write_date
 #: model:ir.model.fields,field_description:bf_federation.field_federation_share_wizard__write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_link__remote_assignee
+msgid ""
+"Le dernier courriel que le pair a inscrit sur sa carte. Gardé pour ne pas "
+"redire deux fois la même proposition à chaque carte qui passe."
 msgstr ""
 
 #. module: bf_federation
@@ -776,6 +864,13 @@ msgstr ""
 #: code:addons/bf_federation/models/project_task.py:0
 msgid ""
 "Le projet « %s » ne fédère pas avec %s : ajoutez ce pair au projet d'abord."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer__mirror_user_id
+msgid ""
+"Le repli : la personne qui reçoit ce que le pair n'a adressé à personne, ou "
+"ce qu'il a adressé à quelqu'un qui n'est pas dans les personnes appariées."
 msgstr ""
 
 #. module: bf_federation
@@ -931,6 +1026,14 @@ msgid "Organisation du pair"
 msgstr ""
 
 #. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid ""
+"Organisation du pair : la fiche existante « %s » (n° %s), retrouvée par le "
+"nom saisi ici."
+msgstr ""
+
+#. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_federable__federation_origin
 #: model:ir.model.fields,field_description:bf_federation.field_federation_link__origin
 #: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_origin
@@ -983,11 +1086,8 @@ msgid "Partage d'une tâche"
 msgstr ""
 
 #. module: bf_federation
-#: model:ir.model.fields.selection,name:bf_federation.selection__bf_process__federation_origin__local
-#: model:ir.model.fields.selection,name:bf_federation.selection__federation_document__federation_origin__local
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_federable__federation_origin__local
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_link__origin__local
-#: model:ir.model.fields.selection,name:bf_federation.selection__meeting_agenda__federation_origin__local
 #: model:ir.model.fields.selection,name:bf_federation.selection__project_task__federation_origin__local
 msgid "Partagé d'ici"
 msgstr ""
@@ -1009,6 +1109,11 @@ msgid "Personnes appariées"
 msgstr ""
 
 #. module: bf_federation
+#: model:ir.model.fields,field_description:bf_federation.field_project_task__federation_assignee_allowed_ids
+msgid "Personnes chez le pair"
+msgstr ""
+
+#. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer__attachment_limit_mb
 msgid "Plafond des pièces jointes (Mio)"
 msgstr ""
@@ -1026,6 +1131,14 @@ msgstr ""
 #. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer__mirror_project_id
 msgid "Projet des tâches reçues"
+msgstr ""
+
+#. module: bf_federation
+#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
+msgid ""
+"Qui est qui, entre les deux instances. Cette table est la vôtre : le pair présente un courriel, il ne désigne jamais un compte ici.\n"
+"                                <br/>Un message reçu dont l'auteur porte ce courriel s'écrit au nom du <b>contact</b>. Sans ligne, il porte le nom de l'organisation du pair.\n"
+"                                <br/>Une tâche que le pair adresse à ce courriel est assignée au <b>compte</b>. Sans compte ici, le contact en fournit un s'il n'en a qu'un seul, interne et actif ; sinon la tâche est déposée chez la personne du repli, avec une note qui dit à qui elle était adressée."
 msgstr ""
 
 #. module: bf_federation
@@ -1059,11 +1172,8 @@ msgid "Reçu"
 msgstr ""
 
 #. module: bf_federation
-#: model:ir.model.fields.selection,name:bf_federation.selection__bf_process__federation_origin__remote
-#: model:ir.model.fields.selection,name:bf_federation.selection__federation_document__federation_origin__remote
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_federable__federation_origin__remote
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_link__origin__remote
-#: model:ir.model.fields.selection,name:bf_federation.selection__meeting_agenda__federation_origin__remote
 #: model:ir.model.fields.selection,name:bf_federation.selection__project_task__federation_origin__remote
 msgid "Reçu du pair"
 msgstr ""
@@ -1210,13 +1320,6 @@ msgid "Tâches fédérées"
 msgstr ""
 
 #. module: bf_federation
-#: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_peer_form
-msgid ""
-"Un message reçu dont l'auteur porte ce courriel chez le pair s'écrit ici au nom de ce contact.\n"
-"                                Sans ligne, un utilisateur interne au même courriel est cherché ; sinon le message porte le nom de l'organisation du pair."
-msgstr ""
-
-#. module: bf_federation
 #: model:ir.model.constraint,message:bf_federation.constraint_federation_link_peer_record_unique
 msgid "Un objet n'a qu'un lien par pair."
 msgstr ""
@@ -1322,6 +1425,12 @@ msgstr ""
 
 #. module: bf_federation
 #. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "personne"
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
 #: code:addons/bf_federation/models/federation_link.py:0
 msgid "retrait"
 msgstr ""
@@ -1340,6 +1449,26 @@ msgid "suppression"
 msgstr ""
 
 #. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid "« %s » est déjà apparié pour ce pair."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/project_task.py:0
+msgid "« %s » n'est pas une personne de %s."
+msgstr ""
+
+#. module: bf_federation
+#. odoo-python
+#: code:addons/bf_federation/models/federation_peer.py:0
+msgid ""
+"« %s » ne peut pas recevoir les tâches d'un pair : il faut un compte interne"
+" actif."
+msgstr ""
+
+#. module: bf_federation
 #: model:ir.model.fields,field_description:bf_federation.field_federation_peer__outbox_pending
 #: model:ir.model.fields.selection,name:bf_federation.selection__federation_outbox__state__pending
 #: model_terms:ir.ui.view,arch_db:bf_federation.view_federation_outbox_search
@@ -1354,10 +1483,26 @@ msgid "À faire"
 msgstr ""
 
 #. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_federation_peer_identity__local_user_id
+msgid ""
+"À qui donner ce que le pair adresse à cette personne. Vide : le compte "
+"interne du contact, s'il n'y en a qu'un. Sinon, le repli du pair."
+msgstr ""
+
+#. module: bf_federation
 #: model:ir.model.fields,help:bf_federation.field_federation_peer__invitation_email
 msgid ""
 "À qui envoyer le code. Un code dans une boîte de courriel est un code dans "
 "une boîte de courriel : il reste à usage unique et limité dans le temps."
+msgstr ""
+
+#. module: bf_federation
+#: model:ir.model.fields,help:bf_federation.field_project_task__federation_assignee_id
+msgid ""
+"À qui, chez le pair, cette tâche est adressée. Une proposition, pas une "
+"assignation : le pair la résout avec sa propre table des personnes "
+"appariées, et garde le dernier mot. Vide : elle arrive chez la personne "
+"qu'il a désignée pour tout recevoir."
 msgstr ""
 
 #. module: bf_federation
