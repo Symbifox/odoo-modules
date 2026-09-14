@@ -179,6 +179,9 @@ class HostingDigest(models.Model):
         from . import hosting_email_template as email_tpl
 
         content_parts = []
+        societe = self.env.company
+        police = email_tpl._brand_font(societe)
+        danger, avert, succes = (email_tpl.ETATS[k] for k in ("danger", "avertissement", "succes"))
 
         # Salutation
         frequency_text = {
@@ -188,11 +191,11 @@ class HostingDigest(models.Model):
         }.get(self.frequency, "")
 
         content_parts.append(
-            f'<p style="font-family:\'Lexend\',\'Segoe UI\',Arial,sans-serif; font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;">'
+            f'<p style="font-family:{police}; font-size:16px; line-height:26px; color:#374151; margin:0 0 8px 0;">'
             f"Bonjour {recipient.name},</p>"
         )
         content_parts.append(
-            f'<p style="font-family:\'Lexend\',\'Segoe UI\',Arial,sans-serif; font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">'
+            f'<p style="font-family:{police}; font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">'
             f"Voici votre résumé <strong>{frequency_text}</strong> des services d'hébergement.</p>"
         )
 
@@ -216,11 +219,11 @@ class HostingDigest(models.Model):
 
         # Section Services expirant
         if data["expiring_services"]:
-            content_parts.append(email_tpl.get_section_title("Services expirant bientôt", "#dc3545"))
+            content_parts.append(email_tpl.get_section_title("Services expirant bientôt", danger["texte"], company=societe))
             rows = []
             for service in data["expiring_services"]:
                 days = service.days_until_expiration
-                days_style = "color:#dc3545; font-weight:600;" if days <= 30 else "color:#ffc107; font-weight:600;"
+                days_style = f"color:{danger['texte']}; font-weight:600;" if days <= 30 else f"color:{avert['texte']}; font-weight:600;"
                 rows.append([
                     f"{_esc(service.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(service.code)}</span>",
                     _esc(service.partner_id.name or ""),
@@ -230,15 +233,13 @@ class HostingDigest(models.Model):
             content_parts.append(email_tpl.get_data_table(
                 ["Service", "Client", "Expiration", "Jours restants"],
                 rows,
-                header_bg="#dc3545"
+                header_bg=danger["entete"], header_color=danger["entete_texte"], company=societe,
             ))
 
         # Section Mises à jour disponibles
         if data["updates_services"]:
             content_parts.append(email_tpl.get_section_title(
-                "Mises à jour disponibles",
-                self.env.company.report_brand_primary or "#714B67",
-            ))
+                "Mises à jour disponibles", company=societe))
             rows = []
             for service in data["updates_services"]:
                 software_name = _esc(service.software_id.name) if service.software_id else "N/D"
@@ -248,21 +249,21 @@ class HostingDigest(models.Model):
                     f"{_esc(service.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(service.code)}</span>",
                     _esc(service.partner_id.name or ""),
                     software_name,
-                    f"{current_ver} → <span style='color:#198754; font-weight:600;'>{latest_ver}</span>",
+                    f"{current_ver} → <span style='color:{succes['texte']}; font-weight:600;'>{latest_ver}</span>",
                 ])
             content_parts.append(email_tpl.get_data_table(
                 ["Service", "Client", "Logiciel", "Version"],
                 rows,
-                header_bg=self.env.company.report_brand_primary or "#714B67",
+                header_bg=email_tpl._brand_primary(societe), company=societe,
             ))
 
         # Section Alertes de stockage
         if data["storage_alert_services"]:
-            content_parts.append(email_tpl.get_section_title("Alertes de stockage", "#ffc107"))
+            content_parts.append(email_tpl.get_section_title("Alertes de stockage", avert["texte"], company=societe))
             rows = []
             for service in data["storage_alert_services"]:
                 usage = service.storage_used_percent
-                usage_style = "color:#dc3545; font-weight:600;" if usage >= 90 else "color:#ffc107; font-weight:600;"
+                usage_style = f"color:{danger['texte']}; font-weight:600;" if usage >= 90 else f"color:{avert['texte']}; font-weight:600;"
                 rows.append([
                     f"{_esc(service.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(service.code)}</span>",
                     _esc(service.partner_id.name or ""),
@@ -271,17 +272,16 @@ class HostingDigest(models.Model):
             content_parts.append(email_tpl.get_data_table(
                 ["Service", "Client", "Utilisation"],
                 rows,
-                header_bg="#ffc107",
-                header_color=self.env.company.report_brand_dark or "#212529",
+                header_bg=avert["entete"], header_color=avert["entete_texte"], company=societe,
             ))
 
         # Section Problèmes de santé
         if data["health_issue_services"]:
-            content_parts.append(email_tpl.get_section_title("Problèmes de santé", "#dc3545"))
+            content_parts.append(email_tpl.get_section_title("Problèmes de santé", danger["texte"], company=societe))
             rows = []
             for service in data["health_issue_services"]:
                 status = service.last_health_status or "Inconnu"
-                status_badge = email_tpl.get_status_badge(status, "small")
+                status_badge = email_tpl.get_status_badge(status, "small", company=societe)
                 rows.append([
                     f"{_esc(service.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(service.code)}</span>",
                     _esc(service.partner_id.name or ""),
@@ -290,17 +290,17 @@ class HostingDigest(models.Model):
             content_parts.append(email_tpl.get_data_table(
                 ["Service", "Client", "État"],
                 rows,
-                header_bg="#dc3545"
+                header_bg=danger["entete"], header_color=danger["entete_texte"], company=societe,
             ))
 
         # Section Maintenance en retard
         if data["maintenance_overdue"]:
-            content_parts.append(email_tpl.get_section_title("Maintenance en retard", "#dc3545"))
+            content_parts.append(email_tpl.get_section_title("Maintenance en retard", danger["texte"], company=societe))
             rows = []
             for schedule in data["maintenance_overdue"]:
                 # days_until_due est négatif pour une tâche échue
                 days = abs(schedule.days_until_due)
-                days_style = "color:#dc3545; font-weight:600;"
+                days_style = f"color:{danger['texte']}; font-weight:600;"
                 maint_type = schedule._get_type_display()
                 assigned = _esc(schedule.user_id.name) if schedule.user_id else "Non assigné"
                 rows.append([
@@ -313,17 +313,17 @@ class HostingDigest(models.Model):
             content_parts.append(email_tpl.get_data_table(
                 ["Service", "Tâche de maintenance", "Date d'échéance", "Jours", "Assigné à"],
                 rows,
-                header_bg="#dc3545"
+                header_bg=danger["entete"], header_color=danger["entete_texte"], company=societe,
             ))
 
         # Section Maintenance à venir
         if data["maintenance_due_soon"]:
-            content_parts.append(email_tpl.get_section_title("Maintenance à venir", "#ffc107"))
+            content_parts.append(email_tpl.get_section_title("Maintenance à venir", avert["texte"], company=societe))
             rows = []
             for schedule in data["maintenance_due_soon"]:
                 days = schedule.days_until_due
                 if days <= 7:
-                    days_style = "color:#ffc107; font-weight:600;"
+                    days_style = f"color:{avert['texte']}; font-weight:600;"
                 else:
                     days_style = "color:#6B7280;"
                 maint_type = schedule._get_type_display()
@@ -338,12 +338,11 @@ class HostingDigest(models.Model):
             content_parts.append(email_tpl.get_data_table(
                 ["Service", "Tâche de maintenance", "Date d'échéance", "Jours", "Assigné à"],
                 rows,
-                header_bg="#ffc107",
-                header_color=self.env.company.report_brand_dark or "#212529",
+                header_bg=avert["entete"], header_color=avert["entete_texte"], company=societe,
             ))
 
         # Pied de page de contact
-        content_parts.append(email_tpl.get_contact_footer())
+        content_parts.append(email_tpl.get_contact_footer(company=societe))
 
         content = "".join(content_parts)
         return email_tpl.get_email_wrapper("Résumé des services", content, company=self.env.company)

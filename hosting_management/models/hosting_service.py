@@ -1317,17 +1317,23 @@ class HostingService(models.Model):
         else:
             return
 
+        societe = self.env.company
+        police = email_tpl._brand_font(societe)
+        # Les liens en accent de marque, comme la mise en page de marque ; les états
+        # dans leur couleur de TEXTE (le jaune d'accent rendait 1,63:1 sur blanc).
+        lien = email_tpl._brand_primary(societe)
+        avert, succes = email_tpl.ETATS["avertissement"], email_tpl.ETATS["succes"]
         table_rows = []
         for item in services_list:
             service = item["service"]
             safe_url = _esc(service.server_url or "")
-            url_link = f'<a href="{safe_url}" style="color:#29abe2; text-decoration:none;">{safe_url}</a>'
+            url_link = f'<a href="{safe_url}" style="color:{lien}; text-decoration:none;">{safe_url}</a>'
             svc_cell = f"{_esc(service.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(service.code)}</span>"
             partner_cell = _esc(service.partner_id.name or "")
 
             if alert_type == "down":
                 status = item.get("status", "DOWN").upper()
-                status_badge = email_tpl.get_status_badge(status, "small")
+                status_badge = email_tpl.get_status_badge(status, "small", company=societe)
                 error = item.get("error") or "N/D"
                 safe_error = _esc(error[:50]) + ("..." if len(error) > 50 else "")
                 row = [
@@ -1343,7 +1349,7 @@ class HostingService(models.Model):
                     svc_cell,
                     partner_cell,
                     url_link,
-                    f"<span style='color:#198754; font-weight:600;'>{response_time} ms</span>",
+                    f"<span style='color:{succes['texte']}; font-weight:600;'>{response_time} ms</span>",
                 ]
             elif alert_type == "slow":
                 response_time = item.get("response_time_ms", 0)
@@ -1352,16 +1358,16 @@ class HostingService(models.Model):
                     svc_cell,
                     partner_cell,
                     url_link,
-                    f"<span style='color:#ffc107; font-weight:600;'>{response_time} ms</span>",
+                    f"<span style='color:{avert['texte']}; font-weight:600;'>{response_time} ms</span>",
                     f"{threshold} ms",
                 ]
 
             table_rows.append(row)
 
         content_parts = [
-            f'<p style="font-family:\'Lexend\',\'Segoe UI\',Arial,sans-serif; font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">{description}</p>',
-            email_tpl.get_data_table(headers, table_rows, company=self.env.company),
-            email_tpl.get_contact_footer(),
+            f'<p style="font-family:{police}; font-size:16px; line-height:26px; color:#374151; margin:0 0 20px 0;">{description}</p>',
+            email_tpl.get_data_table(headers, table_rows, company=societe),
+            email_tpl.get_contact_footer(company=societe),
         ]
 
         content = "".join(content_parts)
@@ -1370,7 +1376,7 @@ class HostingService(models.Model):
         try:
             mail_values = {
                 "subject": subject,
-                "email_from": self.env.company.email or self.env.user.email_formatted,
+                "email_from": self.env.company.email_formatted or self.env.user.email_formatted,
                 "email_to": alert_email,
                 "body_html": body_html,
                 "auto_delete": True,
