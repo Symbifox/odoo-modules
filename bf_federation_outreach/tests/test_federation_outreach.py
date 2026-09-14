@@ -129,9 +129,14 @@ class TestFederationOutreach(TestFederation):
         self.assertTrue(cible.do_not_contact, "la cible est passée à « ne pas contacter » chez l'agence")
         self.assertIn("Déjà notre client", cible.do_not_contact_reason or "")
         suivi.invalidate_recordset()
-        self.assertTrue(suivi.line_ids.filtered(lambda l: l.name == "Transport Lachance").excluded_by_client)
+        chez_l_agence = suivi.line_ids.filtered(lambda l: l.name == "Transport Lachance")
+        self.assertTrue(chez_l_agence.excluded_by_client)
+        self.assertTrue(chez_l_agence.do_not_contact,
+                        "🔴 la ligne du suivi se lit « écartée par le client » et encore « à contacter » "
+                        "jusqu'au rafraîchissement du lendemain")
         autre = campagne.target_ids.filtered(lambda c: c.name == "Boulangerie du Vieux-Port")
         self.assertFalse(autre.do_not_contact, "écarter une cible ne touche pas les autres")
+        self.assertFalse(suivi.line_ids.filtered(lambda l: l.name == "Boulangerie du Vieux-Port").do_not_contact)
 
     def test_o08_une_cle_hors_du_suivi_ne_touche_rien(self):
         """🔴 La clé arrive du réseau : elle ne sert jamais à retrouver une cible hors de

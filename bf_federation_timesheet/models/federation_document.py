@@ -14,5 +14,5 @@ class FederationDocument(models.Model):
         """Un relevé des heures naît d'un projet : il faut pouvoir le dire."""
         out = super()._selection_source()
         if "project.project" in self.env and "project.project" not in {nom for nom, _l in out}:
-            out.append(("project.project", self.env["project.project"]._description or "project.project"))
+            out.append(("project.project", self._libelle_modele("project.project")))
         return out

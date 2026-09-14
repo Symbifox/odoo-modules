@@ -30,6 +30,32 @@
             <xpath expr="//button[@name='action_bf_gantt_importer']" position="attributes">
                 <attribute name="invisible">federation_is_mirror</attribute>
             </xpath>
+            <!-- Un échéancier reçu refuse d'être retouché : l'écran ne l'offre pas non plus
+                 (« Ajouter une ligne », les corbeilles et la barre d'état menaient à un refus). -->
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="readonly">federation_is_mirror</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="readonly">federation_is_mirror</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="readonly">federation_is_mirror</attribute>
+            </xpath>
+            <xpath expr="//field[@name='project_id']" position="attributes">
+                <attribute name="readonly">federation_is_mirror</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                <attribute name="readonly">federation_is_mirror</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_end']" position="attributes">
+                <attribute name="readonly">federation_is_mirror</attribute>
+            </xpath>
+            <xpath expr="//field[@name='item_ids']" position="attributes">
+                <attribute name="readonly">federation_is_mirror</attribute>
+            </xpath>
+            <xpath expr="//field[@name='note']" position="attributes">
+                <attribute name="readonly">federation_is_mirror</attribute>
+            </xpath>
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="federation_peer_id" invisible="federation_is_mirror or not federation_possible"/>
             </xpath>

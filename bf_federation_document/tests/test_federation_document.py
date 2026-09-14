@@ -319,3 +319,13 @@ class TestFederationDocument(TestFederation):
         self.assertEqual(doc.acknowledged_by, self.env.user.name)
         abandons = self.Outbox.search([("kind", "=", "document.ack"), ("state", "=", "failed")])
         self.assertFalse(abandons, "l'accusé a été abandonné : %s" % abandons.mapped("last_error"))
+
+    def test_d20_la_source_se_nomme_dans_la_langue_de_la_personne(self):
+        """🔴 `_description` est la source du nom, anglaise pour les modèles d'Odoo :
+        « Produit à partir de » affichait « Task » dans une interface française."""
+        langues = [code for code, _nom in self.env["res.lang"].get_installed()]
+        for langue in langues:
+            libelles = dict(self.env["federation.document"].with_context(lang=langue)._selection_source())
+            attendu = self.env["ir.model"].with_context(lang=langue)._get("project.task").name
+            self.assertEqual(libelles["project.task"], attendu,
+                             f"🔴 la source ne se nomme pas dans la langue {langue}")

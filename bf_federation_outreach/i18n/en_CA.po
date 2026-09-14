@@ -154,7 +154,6 @@ msgid "Cible écartée par le client"
 msgstr "Target set aside by the client"
 
 #. module: bf_federation_outreach
-#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__line_ids
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__target_count
 #: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
 msgid "Cibles"
@@ -277,6 +276,11 @@ msgid "Has Message"
 msgstr ""
 
 #. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__touch_ids
+msgid "Historique des touches"
+msgstr "Touch history"
+
+#. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__id
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__id
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__id
@@ -362,6 +366,11 @@ msgstr "The targets of this report are received from the agency: they are read-o
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_link_id
 msgid "Lien fédéré"
 msgstr "Federated link"
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__line_ids
+msgid "Lignes du suivi"
+msgstr "Report lines"
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__message_has_error
@@ -557,7 +566,6 @@ msgstr "Touch of a federated prospecting report"
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__touch_count
-#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__touch_ids
 msgid "Touches"
 msgstr "Touches"
 

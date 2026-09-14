@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 10:09+0000\n"
-"PO-Revision-Date: 2026-09-14 10:09+0000\n"
+"POT-Creation-Date: 2026-09-14 10:36+0000\n"
+"PO-Revision-Date: 2026-09-14 10:36+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -162,7 +162,6 @@ msgid "Cible écartée par le client"
 msgstr ""
 
 #. module: bf_federation_outreach
-#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__line_ids
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__target_count
 #: model_terms:ir.ui.view,arch_db:bf_federation_outreach.view_federation_outreach_report_form
 msgid "Cibles"
@@ -285,6 +284,11 @@ msgid "Has Message"
 msgstr ""
 
 #. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__touch_ids
+msgid "Historique des touches"
+msgstr ""
+
+#. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_exclude_wizard__id
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__id
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__id
@@ -372,6 +376,11 @@ msgstr ""
 #. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__federation_link_id
 msgid "Lien fédéré"
+msgstr ""
+
+#. module: bf_federation_outreach
+#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report__line_ids
+msgid "Lignes du suivi"
 msgstr ""
 
 #. module: bf_federation_outreach
@@ -576,7 +585,6 @@ msgstr ""
 
 #. module: bf_federation_outreach
 #: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__touch_count
-#: model:ir.model.fields,field_description:bf_federation_outreach.field_federation_outreach_report_line__touch_ids
 msgid "Touches"
 msgstr ""
 

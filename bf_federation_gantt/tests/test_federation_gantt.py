@@ -198,3 +198,18 @@ class TestFederationGantt(TestFederation):
         self._flush()
         miroir.invalidate_recordset()
         self.assertFalse(miroir.active, "le miroir est archivé, jamais supprimé")
+
+    def test_g15_l_ecran_du_miroir_n_offre_pas_de_retouche(self):
+        """🔴 La garde refusait bien, mais l'écran offrait « Ajouter une ligne », les corbeilles
+        et la barre d'état cliquable : chaque geste menait à un refus. Tout ce que la garde
+        protège doit se lire en lecture seule sur un miroir."""
+        from lxml import etree
+
+        from odoo.addons.bf_federation_gantt.models.bf_gantt_plan import CHAMPS_DU_MIROIR
+
+        arch = etree.fromstring(self.env["bf.gantt.plan"].get_view(view_type="form")["arch"])
+        for champ in sorted(CHAMPS_DU_MIROIR):
+            noeud = arch.xpath("//form/header/field[@name=$n] | //form/sheet//field[@name=$n][not(ancestor::list)]", n=champ)
+            self.assertTrue(noeud, f"{champ} n'est pas dans le formulaire")
+            self.assertIn("federation_is_mirror", noeud[0].get("readonly") or "",
+                          f"🔴 {champ} s'offre à la retouche sur un échéancier reçu")

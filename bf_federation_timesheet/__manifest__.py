@@ -1,6 +1,6 @@
 {
     "name": "Fédération : relevés des heures",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Project",
     "summary": "Le relevé des heures d'une période, remis au partenaire comme un livrable, avec son accusé de réception",
     "description": """

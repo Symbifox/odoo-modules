@@ -1,6 +1,6 @@
 {
     "name": "Fédération : suivis de démarchage",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Sales",
     "summary": "L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter",
     "description": """

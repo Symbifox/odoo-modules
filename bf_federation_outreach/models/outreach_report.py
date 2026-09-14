@@ -90,7 +90,7 @@ class FederationOutreachReport(models.Model):
     date_end = fields.Date(string="Fin prévue", readonly=True)
     description = fields.Text(string="Argumentaire", readonly=True)
     last_refresh = fields.Datetime(string="Rafraîchi le", readonly=True, copy=False)
-    line_ids = fields.One2many("federation.outreach.report.line", "report_id", string="Cibles")
+    line_ids = fields.One2many("federation.outreach.report.line", "report_id", string="Lignes du suivi")
     target_count = fields.Integer(string="Cibles", compute="_compute_counts", store=True)
     contacted_count = fields.Integer(string="Jointes", compute="_compute_counts", store=True)
     replied_count = fields.Integer(string="Ont répondu", compute="_compute_counts", store=True)
@@ -370,8 +370,12 @@ class FederationOutreachReport(models.Model):
             return False
         motif = transport.clean_text(data.get("reason"), 200) or _("aucun motif donné")
         maintenant = fields.Datetime.now()
+        # La ligne passe « ne pas contacter » tout de suite : attendre le rafraîchissement du
+        # lendemain la montrait écartée par le client ET encore à contacter, et la note
+        # ci-dessous annonçait déjà le contraire.
         ligne.sudo().with_context(federation_inbound=True).write({
-            "excluded_by_client": True, "excluded_on": maintenant, "excluded_reason": motif})
+            "excluded_by_client": True, "excluded_on": maintenant, "excluded_reason": motif,
+            "do_not_contact": True})
         campagne = self.campaign_ref
         if campagne and campagne._name == CAMPAGNE and campagne.exists():
             # La clé désigne une ligne de CE suivi ; la cible se cherche dans SA campagne.
@@ -473,7 +477,7 @@ class FederationOutreachReportLine(models.Model):
     excluded_by_client = fields.Boolean(string="Écartée par le client", readonly=True)
     excluded_on = fields.Datetime(string="Écartée le", readonly=True)
     excluded_reason = fields.Char(string="Motif de l'écart", readonly=True)
-    touch_ids = fields.One2many("federation.outreach.report.touch", "line_id", string="Touches")
+    touch_ids = fields.One2many("federation.outreach.report.touch", "line_id", string="Historique des touches")
     touch_count = fields.Integer(string="Touches", compute="_compute_touch_count", store=True)
 
     @api.depends("touch_ids")

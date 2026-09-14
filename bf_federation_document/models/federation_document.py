@@ -67,11 +67,18 @@ class FederationDocument(models.Model):
         """Les modèles d'où une remise peut naître, parmi ceux qui sont installés."""
         candidats = ["project.document", "bf.process", "meeting.record", "meeting.agenda",
                      "bf.gantt.plan", "project.task"]
-        out = []
-        for name in candidats:
-            if name in self.env:
-                out.append((name, self.env[name]._description or name))
-        return out
+        return [(name, self._libelle_modele(name)) for name in candidats if name in self.env]
+
+    @api.model
+    def _libelle_modele(self, name):
+        """Le nom d'un modèle dans la langue de la personne.
+
+        🔴 Pas `_description` : c'est la SOURCE du nom, anglaise pour les modèles d'Odoo et
+        française pour les nôtres. « Produit à partir de » affichait « Task » dans une interface
+        française, et « Échéancier autonome » dans une interface anglaise. `ir.model` porte le nom
+        traduit, lu dans la langue du contexte.
+        """
+        return self.env["ir.model"].sudo()._get(name).name or self.env[name]._description or name
 
     # --- Le contrat ------------------------------------------------------------------
     def _federation_allowed_peers(self):

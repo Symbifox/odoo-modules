@@ -176,6 +176,11 @@ class TestFederationTimesheet(TestFederation):
     def test_t12_le_projet_devient_une_source_de_livrable(self):
         sources = dict(self.env["federation.document"]._selection_source())
         self.assertIn("project.project", sources)
+        for langue in [code for code, _nom in self.env["res.lang"].get_installed()]:
+            libelles = dict(self.env["federation.document"].with_context(lang=langue)._selection_source())
+            self.assertEqual(libelles["project.project"],
+                             self.env["ir.model"].with_context(lang=langue)._get("project.project").name,
+                             f"🔴 « Produit à partir de » ne nomme pas le projet dans la langue {langue}")
 
     def test_t13_un_releve_recu_de_meme_reference_n_est_jamais_reecrit(self):
         """🔴 Un relevé reçu porte la référence de son émetteur, et les identifiants de projet

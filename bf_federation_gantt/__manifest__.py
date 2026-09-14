@@ -1,6 +1,6 @@
 {
     "name": "Fédération : échéanciers",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Project",
     "summary": "L'échéancier d'un chantier commun vit chez les deux firmes, et la date qui bouge bouge des deux côtés",
     "description": """
