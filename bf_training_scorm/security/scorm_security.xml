@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- 🔴 Une tentative SCORM porte un SCORE. Sans règle, l'ACL de lecture
+             ouverte à `base.group_user` laisse n'importe quel employé lire les
+             résultats de tout le monde — exactement ce que le socle refuse pour
+             les réalisations, les obligations et les assignations.
+
+             Le défaut n'apparaît pas en admin : un compte système traverse les
+             règles sans les éprouver. Il s'est vu en jouant le parcours dans le
+             rôle visé. -->
+        <record id="rule_scorm_attempt_own" model="ir.rule">
+            <field name="name">Tentatives SCORM : les miennes</field>
+            <field name="model_id" ref="model_bf_scorm_attempt"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_scorm_attempt_officer" model="ir.rule">
+            <field name="name">Tentatives SCORM : toutes, pour le registre</field>
+            <field name="model_id" ref="model_bf_scorm_attempt"/>
+            <field name="groups" eval="[(4, ref('bf_training.group_training_officer'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- Un paquet est du CATALOGUE, pas une donnée personnelle : tout le
+             monde le lit, comme une activité de formation. Ce qui est personnel
+             est la tentative, et elle a sa règle ci-dessus. -->
+        <record id="rule_scorm_package_all" model="ir.rule">
+            <field name="name">Paquets SCORM : le catalogue</field>
+            <field name="model_id" ref="model_bf_scorm_package"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    </data>
+</odoo>

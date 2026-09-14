@@ -303,3 +303,49 @@ class TestTrainingScorm(TransactionCase):
         self.assertEqual(
             canal.nbr_scorm, 1,
             "le canal doit compter ses paquets SCORM comme il compte le reste")
+
+    # ------------------------------------------------------------------
+    # 🔴 Ce qu'un employé ordinaire a le droit de LIRE
+    # ------------------------------------------------------------------
+    def test_un_employe_ne_lit_QUE_sa_propre_tentative(self):
+        """Une tentative porte un SCORE : c'est une donnée personnelle.
+
+        🔴 Le défaut existait : l'ACL ouvrait la lecture à `base.group_user` sans
+        aucune règle d'enregistrement, donc n'importe quel employé lisait les
+        résultats de tout le monde — exactement ce que le socle refuse pour les
+        réalisations, les obligations et les assignations.
+
+        ⚠️ Il ne s'est PAS vu en composant les vues : un compte administrateur
+        traverse les règles sans les éprouver. Il s'est vu en jouant le parcours
+        dans le rôle visé. Un essai en admin n'est pas un essai.
+        """
+        paquet = self._paquet()
+        autre = self.env["res.partner"].create({"name": "Quelqu un d autre"})
+        mienne = self.env["bf.scorm.attempt"]._pour(paquet, self.partenaire)
+        sienne = self.env["bf.scorm.attempt"]._pour(paquet, autre)
+
+        moi = self.env["res.users"].create({
+            "name": "Employé ordinaire", "login": "essai_scorm_ordinaire",
+            "partner_id": self.partenaire.id,
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+
+        vues = self.env["bf.scorm.attempt"].with_user(moi).search([])
+        self.assertIn(mienne, vues, "je dois voir la mienne")
+        self.assertNotIn(sienne, vues, "je ne dois PAS voir celle d'un autre")
+
+    def test_le_registre_voit_toutes_les_tentatives(self):
+        """Le refus porte sur l'employé ordinaire, pas sur qui tient le registre."""
+        paquet = self._paquet()
+        autre = self.env["res.partner"].create({"name": "Encore quelqu un"})
+        self.env["bf.scorm.attempt"]._pour(paquet, self.partenaire)
+        self.env["bf.scorm.attempt"]._pour(paquet, autre)
+
+        agent = self.env["res.users"].create({
+            "name": "Agent du registre", "login": "essai_scorm_agent",
+            "groups_id": [(6, 0, [
+                self.env.ref("base.group_user").id,
+                self.env.ref("bf_training.group_training_officer").id])]})
+
+        self.assertGreaterEqual(
+            len(self.env["bf.scorm.attempt"].with_user(agent).search([])), 2,
+            "qui tient le registre doit voir toutes les tentatives")

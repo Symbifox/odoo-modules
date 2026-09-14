@@ -1,6 +1,6 @@
 {
     "name": "Registre de formation : contenus SCORM",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Human Resources",
     "summary": "Jouer un paquet SCORM 1.2 ou 2004 dans l'eLearning d'Odoo, et porter "
                "sa complétion au registre",
@@ -51,6 +51,7 @@ Ce qu'il refuse
     "depends": ["bf_training_slides"],
     "data": [
         "security/ir.model.access.csv",
+        "security/scorm_security.xml",
         "views/scorm_views.xml",
         "views/slide_views.xml",
     ],
