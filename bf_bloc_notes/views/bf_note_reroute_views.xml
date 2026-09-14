@@ -5,9 +5,9 @@
         <field name="name">bf.note.reroute.form</field>
         <field name="model">bf.note.reroute</field>
         <field name="arch" type="xml">
-            <form string="Re-router la note">
+            <form string="Reroute the note">
                 <group invisible="state != 'draft'">
-                    <group string="Note(s) sélectionnée(s)">
+                    <group string="Selected note(s)">
                         <field name="note_count"/>
                         <field name="sample_name" readonly="1"
                                invisible="note_count != 1"/>
@@ -22,17 +22,17 @@
                         <field name="target_reference"
                                widget="bf_chatter_target"
                                required="1"
-                               placeholder="Nom, numéro, task:22299, bf.email:17, ou URL Odoo…"/>
+                               placeholder="Name, number, task:22299, bf.email:17, or Odoo URL…"/>
                         <field name="mode" widget="radio"/>
                     </group>
                     <div class="alert alert-info" role="alert" colspan="2">
-                        <p class="mb-1"><strong>Comment ça fonctionne :</strong></p>
+                        <p class="mb-1"><strong>How it works:</strong></p>
                         <ul class="mb-0">
-                            <li>Toute fiche dotée d'un chatter est une destination valide — tâche, ticket, contact, opportunité, courriel archivé, ordre du jour, transfert sécurisé…</li>
-                            <li>Cherchez la fiche par son nom : le sélecteur balaie tous les modules d'un coup, sans qu'on ait à choisir le type d'objet.</li>
-                            <li>Un numéro (<code>22299</code>), un raccourci (<code>task:22299</code>), une référence technique (<code>bf.email:17</code>) ou une URL Odoo collée se résolvent en fiche exacte, remontée en tête de liste.</li>
-                            <li><em>Remplacer</em> déplace la note : ses liens actuels sont retirés au profit de la nouvelle fiche. <em>Ajouter</em> la laisse rattachée aux deux.</li>
-                            <li>Rien n'est publié ni envoyé : seuls les liens de la note changent.</li>
+                            <li>Any record with a chatter is a valid destination: task, ticket, contact, opportunity, archived email, agenda, secure transfer…</li>
+                            <li>Search for the record by its name: the picker scans every module at once, without having to choose the type of object.</li>
+                            <li>A number (<code>22299</code>), a shortcut (<code>task:22299</code>), a technical reference (<code>bf.email:17</code>) or a pasted Odoo URL resolve to the exact record, listed first.</li>
+                            <li><em>Replace</em> moves the note: its current links are removed in favour of the new record. <em>Add</em> leaves it attached to both.</li>
+                            <li>Nothing is posted or sent: only the note's links change.</li>
                         </ul>
                     </div>
                 </group>
@@ -42,18 +42,18 @@
                 <field name="state" invisible="1"/>
                 <footer>
                     <button name="action_confirm"
-                            string="Re-router"
+                            string="Reroute"
                             type="object"
                             class="btn-primary"
                             invisible="state != 'draft'"/>
-                    <button string="Fermer" special="cancel"/>
+                    <button string="Close" special="cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="bf_note_reroute_action" model="ir.actions.act_window">
-        <field name="name">Re-router la note</field>
+        <field name="name">Reroute the note</field>
         <field name="res_model">bf.note.reroute</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -61,7 +61,7 @@
 
     <!-- Re-routage en lot depuis la liste des notes -->
     <record id="bf_note_reroute_action_bulk" model="ir.actions.server">
-        <field name="name">Re-router vers une fiche</field>
+        <field name="name">Reroute to a record</field>
         <field name="model_id" ref="model_bf_note"/>
         <field name="binding_model_id" ref="model_bf_note"/>
         <field name="binding_view_types">list,kanban</field>

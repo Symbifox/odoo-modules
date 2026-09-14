@@ -3,7 +3,7 @@ from odoo import fields, models
 
 class BfTimeOfDayUserPref(models.Model):
     _name = "bf.time.of.day.user_pref"
-    _description = "Préférence personnelle de plage horaire"
+    _description = "Personal time slot preference"
     _rec_name = "time_of_day_id"
 
     user_id = fields.Many2one(
@@ -16,18 +16,18 @@ class BfTimeOfDayUserPref(models.Model):
         "bf.time.of.day",
         required=True,
         ondelete="cascade",
-        string="Plage horaire",
+        string="Time slot",
     )
     override_time = fields.Float(
-        string="Mon heure",
+        string="My time",
         required=True,
-        help="Remplace l'heure suggérée par l'admin pour cette plage.",
+        help="Replaces the time suggested by the administrator for this slot.",
     )
 
     _sql_constraints = [
         (
             "user_tod_uniq",
             "unique(user_id, time_of_day_id)",
-            "Une seule préférence par plage horaire et par utilisateur.",
+            "Only one preference per time slot and per user.",
         ),
     ]

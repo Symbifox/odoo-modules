@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo noupdate="1">
     <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
-        <field name="title">Configurer votre bureau</field>
-        <field name="description">Choisissez les widgets à afficher et leur disposition par défaut.</field>
-        <field name="button_text">Ouvrir Paramètres</field>
-        <field name="done_text">Préférences réglées</field>
+        <field name="title">Configure your desk</field>
+        <field name="description">Choose the widgets to show and their default layout.</field>
+        <field name="button_text">Open Settings</field>
+        <field name="done_text">Preferences set</field>
         <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
         <field name="sequence">1</field>
     </record>
     <record id="bf_onb_step_open_desk" model="onboarding.onboarding.step">
-        <field name="title">Ouvrir votre bureau</field>
-        <field name="description">[action:bf_bureau.bf_bureau_open_default_desk_action] Lancez votre vue bureau pour personnaliser les widgets.</field>
-        <field name="button_text">Ouvrir le bureau</field>
-        <field name="done_text">Bureau actif</field>
+        <field name="title">Open your desk</field>
+        <field name="description">[action:bf_bureau.bf_bureau_open_default_desk_action] Open your desk view to customise the widgets.</field>
+        <field name="button_text">Open the desk</field>
+        <field name="done_text">Desk on</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">2</field>
     </record>
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Bureau Blue Fox</field>
+        <field name="name">Desk</field>
         <field name="route_name">bf_bureau_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_bureau</field>
         <field name="step_ids" eval="[

@@ -2,19 +2,19 @@
 <odoo>
     <data noupdate="1">
         <record id="tag_idee" model="bf.note.tag">
-            <field name="name">Idée</field>
+            <field name="name">Idea</field>
             <field name="color">2</field>
         </record>
         <record id="tag_a_faire" model="bf.note.tag">
-            <field name="name">À faire</field>
+            <field name="name">To do</field>
             <field name="color">3</field>
         </record>
         <record id="tag_reference" model="bf.note.tag">
-            <field name="name">Référence</field>
+            <field name="name">Reference</field>
             <field name="color">4</field>
         </record>
         <record id="tag_brouillon" model="bf.note.tag">
-            <field name="name">Brouillon</field>
+            <field name="name">Draft</field>
             <field name="color">7</field>
         </record>
     </data>

@@ -395,6 +395,12 @@ bf_timesheet_timer/
 
 ## Changelog
 
+### 18.0.1.13.0
+- **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read this module in French.
+- **Error messages are translatable.** They were plain French strings: an English-speaking user read "Tâche introuvable." They now go through the catalogue, as do the stop dialog's title and the pin/unpin tooltips.
+- The "last used" label of a recent task (today, yesterday, N days ago) follows the user's language.
+- Upgrading reloads the French catalogue; the onboarding panel, shipped as `noupdate` data, switches to English only where it still carries the shipped text.
+
 ### 18.0.1.12.0 (2026-09-14)
 - **A stopped timer no longer grows.** Stopping used to leave the elapsed time to be recomputed from the start time at every read: a timer stopped at 10:00 and confirmed at 14:00 proposed four extra hours, and a timer paused before stopping was counted twice. The elapsed time is now folded into `accumulated_seconds` at stop, pending timers read that value, and **Cancel** restarts from now without losing what was counted. A migration freezes the timers already stopped at upgrade, once (guarded by a parameter, so a replayed upgrade does not freeze twice).
 - **The timesheet date is the user's day.** Lines were dated with the UTC date of the last resume, so a timer started in the evening in Eastern time landed on the next day. They now take the day of the first start (`first_start`, new field) in the user's time zone.

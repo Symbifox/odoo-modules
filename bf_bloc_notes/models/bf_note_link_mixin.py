@@ -12,7 +12,7 @@ class BfNoteLinkMixin(models.AbstractModel):
     """
 
     _name = "bf.note.link.mixin"
-    _description = "Mixin: smart button vers les notes liées"
+    _description = "Mixin: smart button to linked notes"
 
     bf_note_count = fields.Integer(compute="_compute_bf_note_count")
 

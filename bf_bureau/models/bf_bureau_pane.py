@@ -1,6 +1,6 @@
 import ast
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
 from .bf_bureau_desk import LAYOUT_SLOTS
@@ -8,18 +8,18 @@ from .bf_bureau_desk import LAYOUT_SLOTS
 
 VIEW_TYPES = [
     ("kanban", "Kanban"),
-    ("list", "Liste"),
-    ("form", "Fiche"),
-    ("pivot", "Tableau croisé"),
-    ("graph", "Graphique"),
-    ("calendar", "Calendrier"),
-    ("activity", "Activité"),
+    ("list", "List"),
+    ("form", "Form"),
+    ("pivot", "Pivot table"),
+    ("graph", "Graph"),
+    ("calendar", "Calendar"),
+    ("activity", "Activity"),
 ]
 
 
 class BfBureauPane(models.Model):
     _name = "bf.bureau.pane"
-    _description = "BF Bureau — panneau dans un bureau"
+    _description = "Desk pane"
     _order = "desk_id, slot"
 
     desk_id = fields.Many2one(
@@ -30,18 +30,18 @@ class BfBureauPane(models.Model):
     )
     slot = fields.Selection(
         [
-            ("full", "Plein écran"),
-            ("left_full", "Colonne gauche"),
-            ("right_full", "Colonne droite"),
-            ("top_full", "Rangée du haut"),
-            ("top_left", "Haut-gauche"),
-            ("top_right", "Haut-droite"),
-            ("bottom_full", "Rangée du bas"),
-            ("bottom_left", "Bas-gauche"),
-            ("bottom_right", "Bas-droite"),
-            ("row_1", "Rangée 1"),
-            ("row_2", "Rangée 2"),
-            ("row_3", "Rangée 3"),
+            ("full", "Full screen"),
+            ("left_full", "Left column"),
+            ("right_full", "Right column"),
+            ("top_full", "Top row"),
+            ("top_left", "Top left"),
+            ("top_right", "Top right"),
+            ("bottom_full", "Bottom row"),
+            ("bottom_left", "Bottom left"),
+            ("bottom_right", "Bottom right"),
+            ("row_1", "Row 1"),
+            ("row_2", "Row 2"),
+            ("row_3", "Row 3"),
         ],
         required=True,
     )
@@ -59,30 +59,30 @@ class BfBureauPane(models.Model):
     name_override = fields.Char()
     weight = fields.Integer(
         default=1,
-        help="Poids relatif (1 = normal, 2 = grand, 3 = très grand). "
-             "Influence la taille du panneau dans la grille.",
+        help="Relative weight (1 = normal, 2 = large, 3 = very large). "
+             "Affects the size of the pane in the grid.",
     )
     domain_override = fields.Char(
-        help="Expression Python qui sera ajoutée (AND) au domaine de "
-             "l'action. Ex.: [('priority','=','1')]. Laissez vide pour "
-             "utiliser le domaine de l'action tel quel.",
+        help="Python expression added (AND) to the action's domain. E.g.: "
+             "[('priority','=','1')]. Leave empty to use the action's "
+             "domain as is.",
     )
     context_override = fields.Char(
-        help="Dictionnaire Python fusionné par-dessus le contexte de "
-             "l'action. Ex.: {'search_default_my_filter': 1}. Laissez "
-             "vide pour utiliser le contexte de l'action tel quel.",
+        help="Python dictionary merged over the action's context. E.g.: "
+             "{'search_default_my_filter': 1}. Leave empty to use the "
+             "action's context as is.",
     )
 
     _sql_constraints = [
         (
             "desk_slot_unique",
             "UNIQUE (desk_id, slot)",
-            "Un seul panneau par emplacement dans un bureau.",
+            "Only one pane per slot in a desk.",
         ),
         (
             "weight_positive",
             "CHECK (weight >= 1 AND weight <= 4)",
-            "Le poids doit être entre 1 et 4.",
+            "The weight must be between 1 and 4.",
         ),
     ]
 
@@ -91,22 +91,23 @@ class BfBureauPane(models.Model):
         for pane in self:
             allowed = LAYOUT_SLOTS.get(pane.desk_id.layout, ())
             if pane.slot not in allowed:
-                raise ValidationError(
-                    f"L'emplacement « {pane.slot} » n'est pas valide pour la "
-                    f"mise en page « {pane.desk_id.layout} ». "
-                    f"Emplacements permis : {', '.join(allowed)}."
-                )
+                raise ValidationError(_(
+                    "The slot \"%(slot)s\" is not valid for the layout \"%(layout)s\". "
+                    "Allowed slots: %(allowed)s.",
+                    slot=pane.slot, layout=pane.desk_id.layout, allowed=", ".join(allowed),
+                ))
 
     @api.constrains("view_type", "action_id")
     def _check_view_type_in_action(self):
         for pane in self:
             modes = (pane.action_id.view_mode or "").split(",")
             if pane.view_type not in [m.strip() for m in modes]:
-                raise ValidationError(
-                    f"Le type de vue « {pane.view_type} » n'est pas supporté par "
-                    f"l'action « {pane.action_id.name} » (modes disponibles : "
-                    f"{pane.action_id.view_mode})."
-                )
+                raise ValidationError(_(
+                    "The view type \"%(view)s\" is not supported by the action "
+                    "\"%(action)s\" (available modes: %(modes)s).",
+                    view=pane.view_type, action=pane.action_id.name,
+                    modes=pane.action_id.view_mode,
+                ))
 
     @api.constrains("domain_override")
     def _check_domain_override_parses(self):
@@ -116,14 +117,12 @@ class BfBureauPane(models.Model):
             try:
                 value = ast.literal_eval(pane.domain_override)
             except (SyntaxError, ValueError) as exc:
-                raise ValidationError(
-                    f"Domaine invalide : {exc}. Doit être une liste Python, "
-                    f"ex. [('priority','=','1')]."
-                )
+                raise ValidationError(_(
+                    "Invalid domain: %s. It must be a Python list, "
+                    "e.g. [('priority','=','1')].", exc,
+                ))
             if not isinstance(value, list):
-                raise ValidationError(
-                    "Domaine invalide : doit être une liste Python."
-                )
+                raise ValidationError(_("Invalid domain: it must be a Python list."))
 
     @api.constrains("context_override")
     def _check_context_override_parses(self):
@@ -133,11 +132,9 @@ class BfBureauPane(models.Model):
             try:
                 value = ast.literal_eval(pane.context_override)
             except (SyntaxError, ValueError) as exc:
-                raise ValidationError(
-                    f"Contexte invalide : {exc}. Doit être un dictionnaire "
-                    f"Python, ex. {{'search_default_my_filter': 1}}."
-                )
+                raise ValidationError(_(
+                    "Invalid context: %s. It must be a Python dictionary, "
+                    "e.g. {'search_default_my_filter': 1}.", exc,
+                ))
             if not isinstance(value, dict):
-                raise ValidationError(
-                    "Contexte invalide : doit être un dictionnaire Python."
-                )
+                raise ValidationError(_("Invalid context: it must be a Python dictionary."))

@@ -1,101 +1,225 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_bloc_notes
-#
+# Translation of BF Bloc-notes - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260119\n"
+"Project-Id-Version: bf_bloc_notes 18.0.2.10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-03 02:45+0000\n"
-"X-Source: pot\n"
-"PO-Revision-Date: 2026-05-03 02:45+0000\n"
+"POT-Creation-Date: 2026-09-14 05:47+0000\n"
+"PO-Revision-Date: 2026-09-14 05:47+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "+1 semaine"
-msgstr "+1 semaine"
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_reroute.py:0
+msgid "%(ok)s/%(total)s note(s) rerouted to %(target)s."
+msgstr "%(ok)s/%(total)s note(s) re-routée(s) vers %(target)s."
 
 #. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "+2 jours"
-msgstr "+2 jours"
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "%s activity(ies) in total."
+msgstr "%s activité(s) au total."
 
 #. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
-msgid "<i class=\"fa fa-calendar\" title=\"Échéance\"/>"
-msgstr "<i class=\"fa fa-calendar\" title=\"Échéance\"/>"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
-msgid "<i class=\"fa fa-link\" title=\"Lié à\"/>"
-msgstr "<i class=\"fa fa-link\" title=\"Lié à\"/>"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_needaction
-msgid "Action Needed"
-msgstr "Action Needed"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__active
-msgid "Active"
-msgstr "Active"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_count
-msgid "Activity Count"
-msgstr "Activity Count"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Activités"
-msgstr "Activités"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_ids
-msgid "Activités créées"
-msgstr "Activités créées"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Ajouter un lien primaire"
-msgstr "Ajouter un lien primaire"
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_activity_wizard.py:0
+msgid "%s activity(ies)."
+msgstr "%s activité(s)."
 
 #. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
-msgid "Annuler"
-msgstr "Annuler"
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_default_reminder__1week
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "+1 week"
+msgstr "+1 semaine"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__user_id
-msgid "Assignée à"
-msgstr "Assignée à"
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_default_reminder__2days
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "+2 days"
+msgstr "+2 jours"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid ""
+"<em>Replace</em> moves the note: its current links are removed in favour of "
+"the new record. <em>Add</em> leaves it attached to both."
+msgstr ""
+"<em>Remplacer</em> déplace la note : ses liens actuels sont retirés au "
+"profit de la nouvelle fiche. <em>Ajouter</em> la laisse rattachée aux deux."
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "<i class=\"fa fa-calendar\" title=\"Due date\"/>"
+msgstr "<i class=\"fa fa-calendar\" title=\"Échéance\"/>"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "<i class=\"fa fa-link\" title=\"Linked to\"/>"
+msgstr "<i class=\"fa fa-link\" title=\"Lié à\"/>"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid "<strong>How it works:</strong>"
+msgstr "<strong>Comment ça fonctionne :</strong>"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid ""
+"A number (<code>22299</code>), a shortcut (<code>task:22299</code>), a "
+"technical reference (<code>bf.email:17</code>) or a pasted Odoo URL resolve "
+"to the exact record, listed first."
+msgstr ""
+"Un numéro (<code>22299</code>), un raccourci (<code>task:22299</code>), une "
+"référence technique (<code>bf.email:17</code>) ou une URL Odoo collée se "
+"résolvent en fiche exacte, remontée en tête de liste."
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Actions"
+msgstr "Actions"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__active
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_ids
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__tracked_activity_ids
+msgid "Activities created"
+msgstr "Activité(s) créée(s)"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "Activities created from the note"
+msgstr "Activités créées depuis la note"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Indicateur d’exception d’activité"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_state
+msgid "Activity State"
+msgstr "Statut de l'activité"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_activity_wizard.py:0
+msgid "Activity created"
+msgstr "Activité créée"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
+msgid "Activity details…"
+msgstr "Détails de l'activité…"
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Add a primary link"
+msgstr "Ajouter un lien primaire"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_reroute__mode__add
+msgid "Add to existing links"
+msgstr "Ajouter aux liens existants"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_task_wizard__link_back
+msgid "Adds the new task to the note's links to keep a trace."
+msgstr "Ajoute la nouvelle tâche aux liens de la note pour garder une trace."
+
+#. module: bf_bloc_notes
+#: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_all
+msgid "All notes"
+msgstr "Toutes les notes"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
 msgid ""
-"Astuce : utilise plutôt « Lien primaire » ci-dessous pour ajouter rapidement"
-" une fiche."
+"Any record with a chatter is a valid destination: task, ticket, contact, "
+"opportunity, archived email, agenda, secure transfer…"
 msgstr ""
-"Astuce : utilise plutôt « Lien primaire » ci-dessous pour ajouter rapidement"
-" une fiche."
+"Toute fiche dotée d'un chatter est une destination valide : tâche, ticket, "
+"contact, opportunité, courriel archivé, ordre du jour, transfert sécurisé…"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Archive"
+msgstr "Archiver"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__archive_note
+msgid "Archive the note"
+msgstr "Archiver la note"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Archive this note?"
+msgstr "Archiver cette note ?"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Archived"
+msgstr "Archivée"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_task_wizard__archive_note
+msgid ""
+"Archives the note once the task is created (recommended if it is no longer "
+"needed)."
+msgstr ""
+"Archive la note après création de la tâche (recommandé si elle ne sert "
+"plus)."
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__user_id
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__user_ids
+msgid "Assigned to"
+msgstr "Assignée à"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_attachment_count
 msgid "Attachment Count"
-msgstr "Attachment Count"
+msgstr "Nombre de pièces jointes"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__user_id
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Auteur"
+msgid "Author"
 msgstr "Auteur"
 
 #. module: bf_bloc_notes
@@ -106,49 +230,47 @@ msgstr "Auteur"
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_res_partner__bf_note_count
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_res_users__bf_note_count
 msgid "Bf Note Count"
-msgstr "Bf Note Count"
+msgstr "Nombre de notes"
 
 #. module: bf_bloc_notes
-#: model:ir.actions.act_window,name:bf_bloc_notes.bf_note_action
-#: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_root
-msgid "Bloc-notes"
-msgstr "Bloc-notes"
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_task_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_user_pref_view_form
+msgid "Cancel"
+msgstr "Annuler"
 
 #. module: bf_bloc_notes
-#: model:bf.note.tag,name:bf_bloc_notes.tag_brouillon
-msgid "Brouillon"
-msgstr "Brouillon"
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__partner_id
+msgid "Client"
+msgstr "Client"
 
 #. module: bf_bloc_notes
-#: model:ir.model.constraint,message:bf_bloc_notes.constraint_bf_note_link_uniq_note_target
-msgid "Cette note est déjà liée à cette fiche."
-msgstr "Cette note est déjà liée à cette fiche."
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Cette semaine"
-msgstr "Cette semaine"
-
-#. module: bf_bloc_notes
-#: model:ir.model.constraint,message:bf_bloc_notes.constraint_bf_note_tag_name_uniq
-msgid "Cette étiquette existe déjà."
-msgstr "Cette étiquette existe déjà."
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__link_target_ref
-msgid "Cible"
-msgstr "Cible"
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid "Close"
+msgstr "Fermer"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__color
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__color
 msgid "Color"
-msgstr "Color"
+msgstr "Couleur"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Colour"
+msgstr "Couleur"
 
 #. module: bf_bloc_notes
 #: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_config
 msgid "Configuration"
 msgstr "Configuration"
+
+#. module: bf_bloc_notes
+#: model:onboarding.onboarding.step,title:bf_bloc_notes.bf_onb_step_settings
+msgid "Configure note preferences"
+msgstr "Configurer les préférences notes"
 
 #. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_res_partner
@@ -158,236 +280,323 @@ msgstr "Contact"
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__body
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Contenu"
+msgid "Content"
 msgstr "Contenu"
 
 #. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
-msgid "Convertir en activité"
-msgstr "Convertir en activité"
+#: model:ir.model,name:bf_bloc_notes.model_bf_note_task_wizard
+msgid "Convert a note to a task"
+msgstr "Convertir une note en tâche"
 
 #. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_bf_note_activity_wizard
-msgid "Convertir une note en activité"
+msgid "Convert a note to an activity"
 msgstr "Convertir une note en activité"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
+msgid "Convert to activity"
+msgstr "Convertir en activité"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_task_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Convert to task"
+msgstr "Convertir en tâche"
+
+#. module: bf_bloc_notes
+#: model:onboarding.onboarding.step,title:bf_bloc_notes.bf_onb_step_first_note
+msgid "Create a first note"
+msgstr "Créer une première note"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+msgid "Create a task"
+msgstr "Créer une tâche"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+msgid "Create a task with this title and content instead"
+msgstr "Créer plutôt une tâche avec ce titre et ce contenu"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
+msgid "Create the activity"
+msgstr "Créer l'activité"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_task_wizard_form
+msgid "Create the task"
+msgstr "Créer la tâche"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.actions.act_window,help:bf_bloc_notes.bf_note_action
+msgid "Create your first quick note"
+msgstr "Crée ta première note rapide"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__create_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__create_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__create_uid
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__create_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__create_uid
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__create_uid
 msgid "Created by"
-msgstr "Created by"
+msgstr "Créé par"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__create_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__create_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__create_date
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__create_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__create_date
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__create_date
 msgid "Created on"
-msgstr "Created on"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.actions.act_window,help:bf_bloc_notes.bf_note_action
-msgid "Crée ta première note rapide"
-msgstr "Crée ta première note rapide"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
-msgid "Créer l'activité"
-msgstr "Créer l'activité"
+msgstr "Créé le"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-msgid "Ctrl+Entrée"
+msgid "Ctrl+Enter"
 msgstr "Ctrl+Entrée"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__current_target
+msgid "Current link"
+msgstr "Lien actuel"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Demain"
-msgstr "Demain"
+msgid "Customise…"
+msgstr "Personnaliser…"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_res_users__bf_note_default_reminder
+msgid "Default reminder (Notepad)"
+msgstr "Rappel par défaut (Bloc-notes)"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Delete"
+msgstr "Supprimer"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__description
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid "Destination"
+msgstr "Destination"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__note_html
+msgid "Details"
+msgstr "Détails"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__display_name
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__display_name
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__display_name
 msgid "Display Name"
-msgstr "Display Name"
+msgstr "Nom d'affichage"
 
 #. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Désépingler"
-msgstr "Désépingler"
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_reroute__state__done
+msgid "Done"
+msgstr "Terminé"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__note_html
-msgid "Détails"
-msgstr "Détails"
+#: model:bf.note.tag,name:bf_bloc_notes.tag_brouillon
+msgid "Draft"
+msgstr "Brouillon"
 
 #. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
-msgid "Détails de l'activité…"
-msgstr "Détails de l'activité…"
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__deadline_date
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__date_deadline
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__date_deadline
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Due date"
+msgstr "Échéance"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Due today"
+msgstr "Échéance aujourd'hui"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Edit"
+msgstr "Modifier"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
-#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-msgid "Enregistrer"
-msgstr "Enregistrer"
+#: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
+msgid "Enter a title or content to create the task."
+msgstr "Saisis un titre ou un contenu pour créer la tâche."
 
 #. module: bf_bloc_notes
-#. odoo-javascript
-#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-msgid "Enregistrer + ouvrir la liste"
-msgstr "Enregistrer + ouvrir la liste"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__failed_message_ids
-msgid "Failed Messages"
-msgstr "Failed Messages"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
-msgid "Fiche cible"
-msgstr "Fiche cible"
+#: model:onboarding.onboarding.step,done_text:bf_bloc_notes.bf_onb_step_first_note
+msgid "First note created"
+msgstr "Première note créée"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_follower_ids
 msgid "Followers"
-msgstr "Followers"
+msgstr "Abonnés"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome par ex. fa-tasks"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__target_ref
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Form"
+msgstr "Fiche"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Group by"
+msgstr "Regrouper par"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__has_message
 msgid "Has Message"
-msgstr "Has Message"
+msgstr "A un message"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__res_id
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__id
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__id
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__id
 msgid "ID"
 msgstr "ID"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône pour indiquer une activité d'exception."
+
+#. module: bf_bloc_notes
 #: model:bf.note.tag,name:bf_bloc_notes.tag_idee
-msgid "Idée"
+msgid "Idea"
 msgstr "Idée"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__is_shared
+msgid "If checked, other internal users can see this note."
+msgstr "Si cochée, les autres utilisateurs internes peuvent voir cette note."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_has_error
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_is_follower
 msgid "Is Follower"
-msgstr "Is Follower"
-
-#. module: bf_bloc_notes
-#. odoo-javascript
-#: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
-msgid "La note est vide."
-msgstr "La note est vide."
+msgstr "Est un abonné"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__write_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__write_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__write_uid
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__write_uid
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__write_uid
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__write_uid
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Dernière mise à jour par"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__write_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__write_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__write_date
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__write_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__write_date
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__write_date
 msgid "Last Updated on"
-msgstr "Last Updated on"
+msgstr "Dernière mise à jour le"
 
 #. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_crm_lead
 msgid "Lead/Opportunity"
-msgstr "Lead/Opportunity"
+msgstr "Piste/opportunité"
 
 #. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_bf_note_link
-msgid "Lien d'une note vers une fiche"
+msgid "Link from a note to a record"
 msgstr "Lien d'une note vers une fiche"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__res_ref
-msgid "Lien primaire"
-msgstr "Lien primaire"
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__link_back
+msgid "Link the note to the task"
+msgstr "Lier la note à la tâche"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__link_ids
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Liens"
-msgstr "Liens"
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Linked model"
+msgstr "Modèle lié"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__res_name
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_list
-msgid "Lié à"
+msgid "Linked to"
 msgstr "Lié à"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Linked to a record"
+msgstr "Liées à une fiche"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-msgid "Liée à :"
+msgid "Linked to:"
 msgstr "Liée à :"
 
 #. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Liées à une fiche"
-msgstr "Liées à une fiche"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Mes notes"
-msgstr "Mes notes"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_content
-msgid "Message Content"
-msgstr "Message Content"
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__link_ids
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Links"
+msgstr "Liens"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_has_error
 msgid "Message Delivery error"
-msgstr "Message Delivery error"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_search
-msgid "Message Search"
-msgstr "Message Search"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_content
-msgid "Message content, to be used only in searches"
-msgstr "Message content, to be used only in searches"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_search
-msgid "Message search, to be used only in searches"
-msgstr "Message search, to be used only in searches"
+msgstr "Erreur d'envoi du message"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_ids
@@ -396,69 +605,183 @@ msgstr "Messages"
 
 #. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_bf_note_link_mixin
-msgid "Mixin: smart button vers les notes liées"
+msgid "Mixin: smart button to linked notes"
 msgstr "Mixin: smart button vers les notes liées"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__mode
+msgid "Mode"
+msgstr "Mode"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__res_model
+msgid "Model"
+msgstr "Modèle"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_link__target_ref
+msgid ""
+"Model + record picker, to edit a link without typing the model's technical "
+"name by hand."
+msgstr ""
+"Sélecteur modèle + fiche, pour éditer un lien sans saisir le nom technique "
+"du modèle à la main."
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_list
-msgid "Modifiée"
+msgid "Modified"
 msgstr "Modifiée"
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Modifiées aujourd'hui"
+msgid "Modified today"
 msgstr "Modifiées aujourd'hui"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__res_model
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Modèle"
-msgstr "Modèle"
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Modèle lié"
-msgstr "Modèle lié"
+msgid "My notes"
+msgstr "Mes notes"
+
+#. module: bf_bloc_notes
+#: model:ir.actions.server,name:bf_bloc_notes.bf_note_user_pref_action
+#: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_preferences
+msgid "My preferences"
+msgstr "Mes préférences"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__name
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Name"
-msgstr "Name"
+msgstr "Nom"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid "Name, number, task:22299, bf.email:17, or Odoo URL…"
+msgstr "Nom, numéro, task:22299, bf.email:17, ou URL Odoo…"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Name, number, task:22299, or Odoo URL…"
+msgstr "Nom, numéro, task:22299, ou URL Odoo…"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__needs_target
 msgid "Needs Target"
-msgstr "Needs Target"
+msgstr "Cible requise"
 
 #. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Nom"
-msgstr "Nom"
+#: model:onboarding.onboarding.step,button_text:bf_bloc_notes.bf_onb_step_first_note
+msgid "New note"
+msgstr "Nouvelle note"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__res_name
-msgid "Nom de la fiche"
-msgstr "Nom de la fiche"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__note_id
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__note_id
-msgid "Note"
-msgstr "Note"
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+msgid "New note (Alt+N); right-click or Alt+Shift+N for the list"
+msgstr "Nouvelle note (Alt+N) : clic droit ou Alt+Shift+N pour la liste"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
-msgid "Note enregistrée"
+msgid "New quick note"
+msgstr "Nouvelle note rapide"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__target_reference
+msgid "New record"
+msgstr "Nouvelle fiche"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
+msgid "New task"
+msgstr "Nouvelle tâche"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Activité suivante de l'événement du calendrier"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de l'activité suivante"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type d'activités à venir"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_reroute.py:0
+msgid "No link"
+msgstr "Aucun lien"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_reroute.py:0
+msgid "No note to reroute."
+msgstr "Aucune note à re-router."
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_default_reminder__none
+msgid "None"
+msgstr "Aucun"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__note_id
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__note_id
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__sample_name
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__note_id
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__note_count
+msgid "Note count"
+msgstr "Nb notes"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
+msgid "Note saved"
 msgstr "Note enregistrée"
 
 #. module: bf_bloc_notes
-#: model:ir.model,name:bf_bloc_notes.model_bf_note
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Note rapide"
-msgstr "Note rapide"
+#: model:ir.model,name:bf_bloc_notes.model_bf_note_tag
+msgid "Note tag"
+msgstr "Étiquette de note"
 
 #. module: bf_bloc_notes
+#: model:ir.actions.act_window,name:bf_bloc_notes.bf_note_action
+#: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_root
+#: model:onboarding.onboarding,name:bf_bloc_notes.bf_onboarding_panel
+msgid "Notepad"
+msgstr "Bloc-notes"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/res_users.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_user_pref_view_form
+msgid "Notepad preferences"
+msgstr "Préférences Bloc-notes"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__note_ids
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_calendar
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_list
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
@@ -470,159 +793,458 @@ msgid "Notes"
 msgstr "Notes"
 
 #. module: bf_bloc_notes
-#: model:ir.actions.act_window,name:bf_bloc_notes.bf_note_action_pinned
-msgid "Notes épinglées"
-msgstr "Notes épinglées"
-
-#. module: bf_bloc_notes
-#. odoo-javascript
-#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-msgid "Nouvelle note (Alt+N) — clic droit ou Alt+Shift+N pour la liste"
-msgstr "Nouvelle note (Alt+N) — clic droit ou Alt+Shift+N pour la liste"
-
-#. module: bf_bloc_notes
-#. odoo-javascript
-#: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
-msgid "Nouvelle note rapide"
-msgstr "Nouvelle note rapide"
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid "Nothing is posted or sent: only the note's links change."
+msgstr "Rien n'est publié ni envoyé : seuls les liens de la note changent."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_needaction_counter
 msgid "Number of Actions"
-msgstr "Number of Actions"
+msgstr "Nombre d'actions"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_has_error_counter
 msgid "Number of errors"
-msgstr "Number of errors"
+msgstr "Nombre d'erreurs"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_needaction_counter
 msgid "Number of messages requiring action"
-msgstr "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_bloc_notes
+#: model:ir.model,name:bf_bloc_notes.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr "Parcours d'intégration"
+
+#. module: bf_bloc_notes
+#: model:onboarding.onboarding.step,step_image_alt:bf_bloc_notes.bf_onb_step_first_note
+#: model:onboarding.onboarding.step,step_image_alt:bf_bloc_notes.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Ouvrir"
+msgid "Open"
 msgstr "Ouvrir"
+
+#. module: bf_bloc_notes
+#: model:onboarding.onboarding.step,button_text:bf_bloc_notes.bf_onb_step_settings
+msgid "Open Settings"
+msgstr "Ouvrir Paramètres"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__open_task
+msgid "Open the task"
+msgstr "Ouvrir la tâche"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_task_wizard__parent_id
+msgid "Optional: create the new task as a subtask."
+msgstr "Optionnel : créer la nouvelle tâche comme sous-tâche."
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Overdue"
+msgstr "Échéance dépassée"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__parent_id
+msgid "Parent task"
+msgstr "Tâche parente"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Pin"
+msgstr "Épingler"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Pin / unpin"
+msgstr "Épingler / désépingler"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__pinned
+#: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_pinned
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Pinned"
+msgstr "Épinglée"
+
+#. module: bf_bloc_notes
+#: model:ir.actions.act_window,name:bf_bloc_notes.bf_note_action_pinned
+msgid "Pinned notes"
+msgstr "Notes épinglées"
+
+#. module: bf_bloc_notes
+#: model:onboarding.onboarding.step,done_text:bf_bloc_notes.bf_onb_step_settings
+msgid "Preferences set"
+msgstr "Préférences réglées"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__res_ref
+msgid "Primary link"
+msgstr "Lien primaire"
+
+#. module: bf_bloc_notes
+#: model:ir.model,name:bf_bloc_notes.model_project_project
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__project_id
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+#: model:ir.model,name:bf_bloc_notes.model_bf_note
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Quick note"
+msgstr "Note rapide"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_reroute__state__draft
+msgid "Ready"
+msgstr "Prêt"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__res_name
+msgid "Record name"
+msgstr "Nom de la fiche"
+
+#. module: bf_bloc_notes
+#: model:bf.note.tag,name:bf_bloc_notes.tag_reference
+msgid "Reference"
+msgstr "Référence"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+msgid "Reminder"
+msgstr "Rappel"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_res_users__bf_note_default_reminder
+msgid "Reminder preselected in the quick creation dialog (Alt+N)."
+msgstr "Rappel pré-sélectionné dans le dialogue de création rapide (Alt+N)."
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_reroute__mode__replace
+msgid "Replace existing links"
+msgstr "Remplacer les liens existants"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid "Reroute"
+msgstr "Re-router"
+
+#. module: bf_bloc_notes
+#: model:ir.model,name:bf_bloc_notes.model_bf_note_reroute
+msgid "Reroute a note to another record"
+msgstr "Re-router une note vers une autre fiche"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+#: model:ir.actions.act_window,name:bf_bloc_notes.bf_note_reroute_action
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid "Reroute the note"
+msgstr "Re-router la note"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "Reroute the notes"
+msgstr "Re-router les notes"
+
+#. module: bf_bloc_notes
+#: model:ir.actions.server,name:bf_bloc_notes.bf_note_reroute_action_bulk
+msgid "Reroute to a record"
+msgstr "Re-router vers une fiche"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Reroute…"
+msgstr "Re-router…"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__res_id
+msgid "Res"
+msgstr "Fiche"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__res_model
+msgid "Res Model"
+msgstr "Modèle res"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__activity_user_id
+msgid "Responsible User"
+msgstr "Utilisateur responsable"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__result_text
+msgid "Result"
+msgstr "Résultat"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_user_pref_view_form
+msgid "Save"
+msgstr "Enregistrer"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+msgid "Save + open the list"
+msgstr "Enregistrer + ouvrir la liste"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_reroute__target_reference
+msgid ""
+"Search for the record by its name, its number, a shortcut (task:22299, "
+"ticket:42), a technical reference (bf.email:17) or paste an Odoo URL."
+msgstr ""
+"Cherchez la fiche par son nom, son numéro, un raccourci (task:22299, "
+"ticket:42), une référence technique (bf.email:17) ou collez une URL Odoo."
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid ""
+"Search for the record by its name: the picker scans every module at once, "
+"without having to choose the type of object."
+msgstr ""
+"Cherchez la fiche par son nom : le sélecteur balaie tous les modules d'un "
+"coup, sans qu'on ait à choisir le type d'objet."
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "See the record"
+msgstr "Voir la fiche"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
+msgid "Selected note(s)"
+msgstr "Note(s) sélectionnée(s)"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_bloc_notes
+#: model:onboarding.onboarding.step,description:bf_bloc_notes.bf_onb_step_settings
+msgid "Set autosave, sharing options and chatter integration."
+msgstr "Réglez l'autosave, les options de partage et l'intégration chatter."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__is_shared
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
-msgid "Partagée"
-msgstr "Partagée"
-
-#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Partagées"
-msgstr "Partagées"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Personnaliser…"
-msgstr "Personnaliser…"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__pinned
-msgid "Pinned"
-msgstr "Pinned"
-
-#. module: bf_bloc_notes
-#: model:ir.model,name:bf_bloc_notes.model_project_project
-msgid "Project"
-msgstr "Project"
+msgid "Shared"
+msgstr "Partagée"
 
 #. module: bf_bloc_notes
 #: model_terms:ir.actions.act_window,help:bf_bloc_notes.bf_note_action
 msgid ""
-"Raccourci : <b>Alt+N</b> pour une nouvelle note, <b>Alt+Shift+N</b> pour la "
-"liste."
+"Shortcut: <b>Alt+N</b> for a new note, <b>Alt+Shift+N</b> for the list."
 msgstr ""
 "Raccourci : <b>Alt+N</b> pour une nouvelle note, <b>Alt+Shift+N</b> pour la "
 "liste."
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__rating_ids
-msgid "Ratings"
-msgstr "Ratings"
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__stage_id
+msgid "Stage"
+msgstr "Étape"
 
 #. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Regrouper par"
-msgstr "Regrouper par"
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__state
+msgid "State"
+msgstr "État"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__res_id
-msgid "Res"
-msgstr "Res"
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__res_model
-msgid "Res Model"
-msgstr "Res Model"
-
-#. module: bf_bloc_notes
-#: model:bf.note.tag,name:bf_bloc_notes.tag_reference
-msgid "Référence"
-msgstr "Référence"
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Statut basé sur les activités\n"
+"En retard : la date d'échéance est déjà dépassée\n"
+"Aujourd'hui : la date d'activité est aujourd'hui\n"
+"Planifiée : activités futures"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__summary
-msgid "Résumé"
+msgid "Summary"
 msgstr "Résumé"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr "SMS Delivery error"
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "Tag"
+msgstr "Étiquette"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__sequence
-msgid "Sequence"
-msgstr "Sequence"
+#: model:ir.actions.act_window,name:bf_bloc_notes.bf_note_tag_action
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__tag_ids
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__tag_ids
+#: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_tags
+msgid "Tags"
+msgstr "Étiquettes"
 
 #. module: bf_bloc_notes
-#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__is_shared
-msgid "Si cochée, les autres utilisateurs internes peuvent voir cette note."
-msgstr "Si cochée, les autres utilisateurs internes peuvent voir cette note."
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__link_target_ref
+msgid "Target"
+msgstr "Cible"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
+msgid "Target record"
+msgstr "Fiche cible"
 
 #. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_project_task
 msgid "Task"
-msgstr "Task"
+msgstr "Tâche"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_task_wizard.py:0
+msgid "Task created"
+msgstr "Tâche créée"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_task_wizard_form
+msgid "Task description…"
+msgstr "Description de la tâche…"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Tasks"
+msgstr "Tâches"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__tracked_task_ids
+msgid "Tasks created"
+msgstr "Tâches créées"
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "Tasks created from the note"
+msgstr "Tâches créées depuis la note"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
+msgid "The image upload failed."
+msgstr "Échec de l'upload de l'image."
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
+msgid "The note is empty."
+msgstr "La note est vide."
+
+#. module: bf_bloc_notes
+#: model:ir.model.constraint,message:bf_bloc_notes.constraint_bf_note_link_uniq_note_target
+msgid "This note is already linked to this record."
+msgstr "Cette note est déjà liée à cette fiche."
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_user_pref_view_form
+msgid ""
+"This reminder will be preselected in the quick creation dialog\n"
+"                        (systray icon or <kbd>Alt+N</kbd>). You can still change it\n"
+"                        when creating."
+msgstr ""
+"Ce rappel sera pré-sélectionné dans le dialogue de création rapide\n"
+"                        (icône systray ou <kbd>Alt+N</kbd>). Tu peux toujours le changer au\n"
+"                        moment de la création."
+
+#. module: bf_bloc_notes
+#: model:ir.model.constraint,message:bf_bloc_notes.constraint_bf_note_tag_name_uniq
+msgid "This tag already exists."
+msgstr "Cette étiquette existe déjà."
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
+msgid "This week"
+msgstr "Cette semaine"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid ""
+"Tip: \"Reroute…\" in the header moves the note to another record\n"
+"                                (or adds it to a second one). Everywhere here, a record is found by its name,\n"
+"                                its number, a shortcut (<code>task:22299</code>) or a pasted Odoo URL."
+msgstr ""
+"Astuce : « Re-router… » dans l'entête déplace la note vers une autre fiche\n"
+"                                (ou l'ajoute à une seconde). Partout ici, la fiche se cherche par son nom,\n"
+"                                son numéro, un raccourci (<code>task:22299</code>) ou une URL Odoo collée."
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__name
-msgid "Titre"
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__name
+msgid "Title"
 msgstr "Titre"
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Titre (auto si vide)"
+msgid "Title (automatic if empty)"
 msgstr "Titre (auto si vide)"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-msgid "Titre (optionnel — auto-rempli depuis le contenu)"
-msgstr "Titre (optionnel — auto-rempli depuis le contenu)"
+msgid "Title (optional, filled in from the content)"
+msgstr "Titre (optionnel, rempli depuis le contenu)"
 
 #. module: bf_bloc_notes
-#: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_all
-msgid "Toutes les notes"
-msgstr "Toutes les notes"
+#: model:bf.note.tag,name:bf_bloc_notes.tag_a_faire
+msgid "To do"
+msgstr "À faire"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_default_reminder__today
+msgid "Today"
+msgstr "Aujourd'hui"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-msgid "Tu peux coller ou glisser une image directement dans la zone de texte."
-msgstr "Tu peux coller ou glisser une image directement dans la zone de texte."
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_default_reminder__tomorrow
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Tomorrow"
+msgstr "Demain"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__tracked_activity_count
+msgid "Tracked Activity Count"
+msgstr "Nombre d'activités suivies"
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__tracked_task_count
+msgid "Tracked Task Count"
+msgstr "Nombre de tâches suivies"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__activity_type_id
@@ -630,100 +1252,65 @@ msgid "Type"
 msgstr "Type"
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type d'activité d'exception enregistrée."
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Voir la fiche"
-msgstr "Voir la fiche"
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Unarchive"
+msgstr "Désarchiver"
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
+msgid "Unpin"
+msgstr "Désépingler"
+
+#. module: bf_bloc_notes
+#: model:ir.model,name:bf_bloc_notes.model_res_users
+msgid "User"
+msgstr "Utilisateur"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__website_message_ids
 msgid "Website Messages"
-msgstr "Website Messages"
+msgstr "Messages du site web"
 
 #. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__website_message_ids
 msgid "Website communication history"
-msgstr "Website communication history"
-
-#. module: bf_bloc_notes
-#. odoo-javascript
-#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
-msgid "pour enregistrer"
-msgstr "pour enregistrer"
-
-#. module: bf_bloc_notes
-#: model:bf.note.tag,name:bf_bloc_notes.tag_a_faire
-msgid "À faire"
-msgstr "À faire"
-
-#. module: bf_bloc_notes
-#. odoo-javascript
-#: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
-msgid "Échec de l'upload de l'image."
-msgstr "Échec de l'upload de l'image."
-
-#. module: bf_bloc_notes
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__deadline_date
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__date_deadline
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Échéance"
-msgstr "Échéance"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Échéance aujourd'hui"
-msgstr "Échéance aujourd'hui"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Échéance dépassée"
-msgstr "Échéance dépassée"
+msgstr "Historique de communication du site web"
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Écris ta note ici…"
+msgid "Write your note here…"
 msgstr "Écris ta note ici…"
 
 #. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+msgid "You can paste or drag an image straight into the text area."
+msgstr ""
+"Tu peux coller ou glisser une image directement dans la zone de texte."
+
+#. module: bf_bloc_notes
+#: model:onboarding.onboarding.step,description:bf_bloc_notes.bf_onb_step_first_note
+msgid ""
+"[action:bf_bloc_notes.bf_note_action] Start a note to check the workflow."
+msgstr ""
+"[action:bf_bloc_notes.bf_note_action] Lancez une note pour valider le "
+"workflow."
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
+msgid "to save"
+msgstr "pour enregistrer"
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Épingler"
-msgstr "Épingler"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
-msgid "Épingler / désépingler"
-msgstr "Épingler / désépingler"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "Épinglée"
-msgstr "Épinglée"
-
-#. module: bf_bloc_notes
-#: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_pinned
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Épinglées"
-msgstr "Épinglées"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
-msgid "Étiquette"
-msgstr "Étiquette"
-
-#. module: bf_bloc_notes
-#: model:ir.model,name:bf_bloc_notes.model_bf_note_tag
-msgid "Étiquette de note"
-msgstr "Étiquette de note"
-
-#. module: bf_bloc_notes
-#: model:ir.actions.act_window,name:bf_bloc_notes.bf_note_tag_action
-#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__tag_ids
-#: model:ir.ui.menu,name:bf_bloc_notes.bf_note_menu_tags
-msgid "Étiquettes"
-msgstr "Étiquettes"
-
-#. module: bf_bloc_notes
-#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
-msgid "🗓️ Aujourd'hui"
+msgid "🗓️ Today"
 msgstr "🗓️ Aujourd'hui"

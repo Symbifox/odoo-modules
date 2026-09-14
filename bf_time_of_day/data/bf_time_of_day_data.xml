@@ -3,7 +3,7 @@
     <data noupdate="1">
 
         <record id="tod_morning" model="bf.time.of.day">
-            <field name="name">Matinée</field>
+            <field name="name">Morning</field>
             <field name="code">morning</field>
             <field name="sequence">10</field>
             <field name="color">10</field>
@@ -12,7 +12,7 @@
         </record>
 
         <record id="tod_midday" model="bf.time.of.day">
-            <field name="name">Midi</field>
+            <field name="name">Midday</field>
             <field name="code">midday</field>
             <field name="sequence">20</field>
             <field name="color">3</field>
@@ -21,7 +21,7 @@
         </record>
 
         <record id="tod_eod" model="bf.time.of.day">
-            <field name="name">Fin de jour</field>
+            <field name="name">End of day</field>
             <field name="code">eod</field>
             <field name="sequence">30</field>
             <field name="color">4</field>
@@ -30,7 +30,7 @@
         </record>
 
         <record id="tod_after_hours" model="bf.time.of.day">
-            <field name="name">Hors heures</field>
+            <field name="name">After hours</field>
             <field name="code">after_hours</field>
             <field name="sequence">40</field>
             <field name="color">9</field>

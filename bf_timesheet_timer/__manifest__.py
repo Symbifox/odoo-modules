@@ -1,6 +1,10 @@
 {
     "name": "BF Timer - Feuilles de temps",
-    "version": "18.0.1.12.0",
+    # 18.0.1.13.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.13.0",
     "category": "Services/Timesheets",
     "summary": "Timer global de feuilles de temps avec multi-timer et interface OWL",
     'author': 'Les services de consultation Blue Fox, Inc.',

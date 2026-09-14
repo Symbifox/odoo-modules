@@ -4,7 +4,7 @@
     }
     button:hover .fa-sticky-note-o {
         transform: scale(1.15);
-        color: #29ABE2;
+        color: var(--brand-primary, #29ABE2);
     }
 }
 
@@ -14,7 +14,7 @@
         line-height: 1.45;
 
         &:focus {
-            outline: 2px solid rgba(41, 171, 225, 0.35);
+            outline: 2px solid color-mix(in srgb, var(--brand-primary, #29ABE2) 35%, transparent);
             outline-offset: 0;
         }
 

@@ -34,7 +34,7 @@ class ProjectTask(models.Model):
 
     time_of_day_id = fields.Many2one(
         "bf.time.of.day",
-        string="Plage horaire",
+        string="Time slot",
         ondelete="set null",
         group_expand="_read_group_time_of_day_ids",
         index=True,
@@ -43,28 +43,29 @@ class ProjectTask(models.Model):
     time_of_day_color = fields.Integer(
         related="time_of_day_id.color",
         store=True,
-        string="Couleur plage",
+        string="Slot colour",
     )
     time_of_day_icon = fields.Char(
         related="time_of_day_id.icon",
         store=False,
-        string="Icône plage",
+        string="Slot icon",
     )
     time_of_day_code = fields.Selection(
         selection=[
-            ("morning", "Matinée"),
-            ("midday", "Midi"),
-            ("eod", "Fin de jour"),
-            ("after_hours", "Hors heures"),
+            ("morning", "Morning"),
+            ("midday", "Midday"),
+            ("eod", "End of day"),
+            ("after_hours", "After hours"),
         ],
-        string="Code plage horaire",
+        string="Time slot code",
         compute="_compute_time_of_day_code",
         store=True,
         index=True,
-        help="Code stable de la plage horaire, miroir de time_of_day_id.code. "
-        "Sert de clé à la barre de progression kanban (colors mappés par code). "
-        "Limité aux 4 plages livrées par le module : une plage admin ajoutée "
-        "hors de cette liste laisse le champ vide.",
+        help="Stable code of the time slot, mirroring "
+             "time_of_day_id.code. Used as the key of the kanban progress "
+             "bar (colours mapped by code). Limited to the 4 slots "
+             "shipped with the module: a slot an administrator adds "
+             "outside this list leaves the field empty.",
     )
 
     @api.depends("time_of_day_id", "time_of_day_id.code")

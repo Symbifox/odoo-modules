@@ -10,16 +10,16 @@
              t-att-class="state.sidebarVisible ? 'bf-bureau-with-sidebar' : ''">
             <t t-if="state.loading">
                 <div class="bf-bureau-loading">
-                    <i class="fa fa-spinner fa-spin"/> Chargement…
+                    <i class="fa fa-spinner fa-spin"/> Loading…
                 </div>
             </t>
             <t t-elif="!state.desk">
                 <div class="bf-bureau-empty">
-                    <h2>Aucun bureau</h2>
-                    <p>Vous n'avez pas encore créé de bureau. Lancez-vous !</p>
+                    <h2>No desk</h2>
+                    <p>You have not created a desk yet. Go ahead!</p>
                     <button class="btn btn-primary"
                             t-on-click="() => this.createNewDesk()">
-                        Créer mon premier bureau
+                        Create my first desk
                     </button>
                 </div>
             </t>
@@ -27,10 +27,10 @@
                 <aside class="bf-bureau-sidebar"
                        t-if="state.sidebarVisible">
                     <div class="bf-bureau-sidebar-header">
-                        <span>Mes bureaux</span>
+                        <span>My desks</span>
                         <button class="btn btn-sm btn-light"
                                 t-on-click="() => this.createNewDesk()"
-                                title="Nouveau bureau">
+                                title="New desk">
                             <i class="fa fa-plus"/>
                         </button>
                     </div>
@@ -42,7 +42,7 @@
                                       t-esc="d.name"/>
                                 <span class="bf-bureau-sidebar-meta">
                                     <i t-if="d.is_default" class="fa fa-star"
-                                       title="Par défaut"/>
+                                       title="Default"/>
                                     <t t-if="d.shortcut_key">
                                         <kbd t-esc="d.shortcut_key"/>
                                     </t>
@@ -55,7 +55,7 @@
                     <div class="bf-bureau-toolbar">
                         <button class="btn btn-sm btn-light"
                                 t-on-click="() => this.toggleSidebar()"
-                                t-att-title="state.sidebarVisible ? 'Masquer la barre' : 'Afficher la barre des bureaux'">
+                                t-att-title="state.sidebarVisible ? hideSidebarLabel : showSidebarLabel">
                             <i class="fa fa-bars"/>
                         </button>
                         <span class="bf-bureau-desk-name">
@@ -65,17 +65,17 @@
                         <div class="bf-bureau-toolbar-actions">
                             <button class="btn btn-sm btn-secondary"
                                     t-on-click="() => this.saveLayout()"
-                                    title="Enregistrer les types de vue actuels comme défauts">
-                                <i class="fa fa-floppy-o"/> Enregistrer la disposition
+                                    title="Save the current view types as defaults">
+                                <i class="fa fa-floppy-o"/> Save the layout
                             </button>
                             <button class="btn btn-sm btn-light"
                                     t-on-click="() => this.openDeskEditor()"
-                                    title="Modifier ce bureau">
+                                    title="Edit this desk">
                                 <i class="fa fa-pencil"/>
                             </button>
                             <button class="btn btn-sm btn-light"
                                     t-on-click="() => this.openDeskList()"
-                                    title="Voir tous mes bureaux">
+                                    title="See all my desks">
                                 <i class="fa fa-th-list"/>
                             </button>
                         </div>
@@ -102,7 +102,7 @@
                                     </t>
                                     <button type="button"
                                             class="btn bf-bureau-switch-idle"
-                                            title="Rafraîchir le panneau"
+                                            title="Refresh the pane"
                                             t-on-click="() => this.refreshPane(pane.id)">
                                         <i class="fa fa-refresh"/>
                                     </button>

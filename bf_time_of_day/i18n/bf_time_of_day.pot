@@ -1,0 +1,287 @@
+# Translation template for BF Time of Day.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_time_of_day 18.0.1.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 05:48+0000\n"
+"PO-Revision-Date: 2026-09-14 05:48+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model,name:bf_time_of_day.model_mail_activity
+msgid "Activity"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:bf.time.of.day,name:bf_time_of_day.tod_after_hours
+#: model:ir.model.fields.selection,name:bf_time_of_day.selection__project_task__time_of_day_code__after_hours
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.view_task_search_form_inherit_bf_time_of_day
+msgid "After hours"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.bf_time_of_day_view_form
+msgid "Archived"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,help:bf_time_of_day.field_bf_time_of_day__default_time
+msgid ""
+"Clock time (HH:MM) applied to a task's deadline when this slot is selected. "
+"Leave empty to force nothing."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__code
+msgid "Code"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__color
+msgid "Color"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:onboarding.onboarding.step,title:bf_time_of_day.bf_onb_step_settings
+msgid "Configure time slots"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__create_uid
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day_user_pref__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__create_date
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day_user_pref__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:onboarding.onboarding.step,description:bf_time_of_day.bf_onb_step_settings
+msgid ""
+"Define the periods (morning, afternoon, evening) used to filter and route "
+"tasks."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__display_name
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day_user_pref__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:bf.time.of.day,name:bf_time_of_day.tod_eod
+#: model:ir.model.fields.selection,name:bf_time_of_day.selection__project_task__time_of_day_code__eod
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.view_task_search_form_inherit_bf_time_of_day
+msgid "End of day"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,help:bf_time_of_day.field_bf_time_of_day__icon
+#: model:ir.model.fields,help:bf_time_of_day.field_mail_activity__time_of_day_icon
+#: model:ir.model.fields,help:bf_time_of_day.field_project_task__time_of_day_icon
+msgid ""
+"Font Awesome class (e.g. fa-coffee, fa-sun-o, fa-moon-o). Shown as a prefix "
+"in the drop-down menu."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.res_users_view_form_inherit_bf_time_of_day
+msgid ""
+"For each slot, I can set my own time. It\n"
+"                        replaces the time suggested by the administrator when I select the\n"
+"                        slot on a task."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__id
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day_user_pref__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__write_uid
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day_user_pref__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__write_date
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day_user_pref__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:bf.time.of.day,name:bf_time_of_day.tod_midday
+#: model:ir.model.fields.selection,name:bf_time_of_day.selection__project_task__time_of_day_code__midday
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.view_task_search_form_inherit_bf_time_of_day
+msgid "Midday"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:bf.time.of.day,name:bf_time_of_day.tod_morning
+#: model:ir.model.fields.selection,name:bf_time_of_day.selection__project_task__time_of_day_code__morning
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.view_task_search_form_inherit_bf_time_of_day
+msgid "Morning"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day_user_pref__override_time
+msgid "My time"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_res_users__bf_time_of_day_pref_ids
+msgid "My time slots"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.view_task_search_form_inherit_bf_time_of_day
+msgid "No slot"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model,name:bf_time_of_day.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:onboarding.onboarding.step,step_image_alt:bf_time_of_day.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.constraint,message:bf_time_of_day.constraint_bf_time_of_day_user_pref_user_tod_uniq
+msgid "Only one preference per time slot and per user."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:onboarding.onboarding.step,button_text:bf_time_of_day.bf_onb_step_settings
+msgid "Open Settings"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model,name:bf_time_of_day.model_bf_time_of_day_user_pref
+msgid "Personal time slot preference"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,help:bf_time_of_day.field_bf_time_of_day_user_pref__override_time
+msgid "Replaces the time suggested by the administrator for this slot."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_mail_activity__time_of_day_color
+#: model:ir.model.fields,field_description:bf_time_of_day.field_project_task__time_of_day_color
+msgid "Slot colour"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_mail_activity__time_of_day_icon
+#: model:ir.model.fields,field_description:bf_time_of_day.field_project_task__time_of_day_icon
+msgid "Slot icon"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:onboarding.onboarding.step,done_text:bf_time_of_day.bf_onb_step_settings
+msgid "Slots defined"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,help:bf_time_of_day.field_project_task__time_of_day_code
+msgid ""
+"Stable code of the time slot, mirroring time_of_day_id.code. Used as the key"
+" of the kanban progress bar (colours mapped by code). Limited to the 4 slots"
+" shipped with the module: a slot an administrator adds outside this list "
+"leaves the field empty."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,help:bf_time_of_day.field_bf_time_of_day__code
+msgid "Stable identifier (morning, midday, …)."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__default_time
+msgid "Suggested time"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model,name:bf_time_of_day.model_project_task
+msgid "Task"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.bf_time_of_day_view_form
+msgid ""
+"The <b>suggested time</b> is applied to a task's deadline\n"
+"                        when a user selects this slot. Each user\n"
+"                        can override this time in their personal preferences."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.constraint,message:bf_time_of_day.constraint_bf_time_of_day_code_uniq
+msgid "The time slot code must be unique."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model,name:bf_time_of_day.model_bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day_user_pref__time_of_day_id
+#: model:ir.model.fields,field_description:bf_time_of_day.field_mail_activity__time_of_day_id
+#: model:ir.model.fields,field_description:bf_time_of_day.field_project_task__time_of_day_id
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.view_task_search_form_inherit_bf_time_of_day
+msgid "Time slot"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_project_task__time_of_day_code
+msgid "Time slot code"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.actions.act_window,name:bf_time_of_day.bf_time_of_day_action
+#: model:ir.ui.menu,name:bf_time_of_day.bf_time_of_day_menu_root
+#: model:onboarding.onboarding,name:bf_time_of_day.bf_onboarding_panel
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.res_users_view_form_inherit_bf_time_of_day
+msgid "Time slots"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model,name:bf_time_of_day.model_res_users
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day_user_pref__user_id
+msgid "User"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.bf_time_of_day_view_form
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.bf_time_of_day_view_list
+msgid "fa-coffee"
+msgstr ""

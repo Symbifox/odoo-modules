@@ -11,12 +11,12 @@ LAYOUT_SLOTS = {
 }
 
 LAYOUT_LABELS = [
-    ("single", "Un seul panneau"),
-    ("two_columns", "Deux colonnes"),
-    ("two_top_one_bottom", "Deux haut + un bas"),
-    ("two_bottom_one_top", "Un haut + deux bas"),
-    ("four_quadrant", "Quatre quadrants (2×2)"),
-    ("stacked_three", "Trois rangées empilées"),
+    ("single", "Single pane"),
+    ("two_columns", "Two columns"),
+    ("two_top_one_bottom", "Two top + one bottom"),
+    ("two_bottom_one_top", "One top + two bottom"),
+    ("four_quadrant", "Four quadrants (2×2)"),
+    ("stacked_three", "Three stacked rows"),
 ]
 
 # Hour ranges (24h, end exclusive) keyed by active_when value.
@@ -32,7 +32,7 @@ ACTIVE_HOURS = {
 
 class BfBureauDesk(models.Model):
     _name = "bf.bureau.desk"
-    _description = "BF Bureau — vue multi-panneaux configurable"
+    _description = "Desk: configurable multi-pane view"
     _order = "sequence, id"
 
     name = fields.Char(required=True)
@@ -46,8 +46,8 @@ class BfBureauDesk(models.Model):
     sequence = fields.Integer(default=10)
     is_default = fields.Boolean(
         default=False,
-        help="Bureau ouvert par défaut quand l'utilisateur clique sur Mon bureau "
-             "(sauf si un autre bureau a un créneau horaire actif).",
+        help="Desk opened by default when the user clicks My desk (unless "
+             "another desk has an active time slot).",
     )
     layout = fields.Selection(
         LAYOUT_LABELS,
@@ -57,35 +57,35 @@ class BfBureauDesk(models.Model):
     pane_ids = fields.One2many("bf.bureau.pane", "desk_id")
     active = fields.Boolean(default=True)
     shortcut_key = fields.Char(
-        string="Raccourci clavier",
-        help="Combinaison déclenchant l'ouverture du bureau, ex. « alt+1 » "
-             "ou « shift+g ». Vide = pas de raccourci.",
+        string="Keyboard shortcut",
+        help="Key combination that opens the desk, e.g. \"alt+1\" or "
+             "\"shift+g\". Empty = no shortcut.",
     )
     active_when = fields.Selection(
         [
-            ("always", "En tout temps"),
-            ("morning", "Matin (5h–12h)"),
-            ("afternoon", "Après-midi (12h–18h)"),
-            ("evening", "Soir (18h–minuit)"),
-            ("night", "Nuit (minuit–5h)"),
+            ("always", "At any time"),
+            ("morning", "Morning (5:00 to 12:00)"),
+            ("afternoon", "Afternoon (12:00 to 18:00)"),
+            ("evening", "Evening (18:00 to midnight)"),
+            ("night", "Night (midnight to 5:00)"),
         ],
         default="always",
         required=True,
-        help="Plage horaire pendant laquelle ce bureau prend automatiquement "
-             "le pas sur le bureau « par défaut ».",
+        help="Time slot during which this desk automatically takes "
+             "precedence over the \"default\" desk.",
     )
 
     _sql_constraints = [
         (
             "user_default_unique",
             "EXCLUDE (user_id WITH =) WHERE (is_default AND active)",
-            "Un seul bureau par défaut par utilisateur.",
+            "Only one default desk per user.",
         ),
         (
             "user_shortcut_unique",
             "EXCLUDE (user_id WITH =, shortcut_key WITH =) "
             "WHERE (shortcut_key IS NOT NULL AND shortcut_key != '' AND active)",
-            "Ce raccourci est déjà utilisé par un autre bureau.",
+            "This shortcut is already used by another desk.",
         ),
     ]
 

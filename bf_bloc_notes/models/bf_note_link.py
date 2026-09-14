@@ -4,30 +4,30 @@ from odoo.exceptions import AccessError
 
 class BfNoteLink(models.Model):
     _name = "bf.note.link"
-    _description = "Lien d'une note vers une fiche"
+    _description = "Link from a note to a record"
     _order = "sequence, id"
 
     note_id = fields.Many2one("bf.note", required=True, ondelete="cascade", index=True)
     sequence = fields.Integer(default=10)
-    res_model = fields.Char(string="Modèle", required=True, index=True)
+    res_model = fields.Char(string="Model", required=True, index=True)
     res_id = fields.Many2oneReference(
         string="ID", model_field="res_model", required=True, index=True
     )
-    res_name = fields.Char(string="Nom de la fiche", compute="_compute_res_name", store=True)
+    res_name = fields.Char(string="Record name", compute="_compute_res_name", store=True)
     target_ref = fields.Reference(
-        string="Fiche",
+        string="Form",
         selection="_selection_target_model",
         compute="_compute_target_ref",
         inverse="_inverse_target_ref",
-        help="Sélecteur modèle + fiche, pour éditer un lien sans saisir le nom "
-             "technique du modèle à la main.",
+        help="Model + record picker, to edit a link without typing the "
+             "model's technical name by hand.",
     )
 
     _sql_constraints = [
         (
             "uniq_note_target",
             "unique(note_id, res_model, res_id)",
-            "Cette note est déjà liée à cette fiche.",
+            "This note is already linked to this record.",
         ),
     ]
 

@@ -71,13 +71,13 @@ export class BfTimerStopDialog extends Component {
             durationHours,
             this.state.description
         );
-        this.notification.add(_t("Feuille de temps enregistrée."), { type: "success" });
+        this.notification.add(_t("Timesheet saved."), { type: "success" });
         this.props.close();
     }
 
     async onDiscard() {
         await this.props.onDiscard(this.props.timerData.timer_id);
-        this.notification.add(_t("Timer supprimé sans enregistrement."), { type: "warning" });
+        this.notification.add(_t("Timer deleted without saving."), { type: "warning" });
         this.props.close();
     }
 

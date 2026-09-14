@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import _, fields, models
 
 
 class ResUsers(models.Model):
@@ -6,15 +6,15 @@ class ResUsers(models.Model):
 
     bf_note_default_reminder = fields.Selection(
         [
-            ("none", "Aucun"),
-            ("today", "Aujourd'hui"),
-            ("tomorrow", "Demain"),
-            ("2days", "+2 jours"),
-            ("1week", "+1 semaine"),
+            ("none", "None"),
+            ("today", "Today"),
+            ("tomorrow", "Tomorrow"),
+            ("2days", "+2 days"),
+            ("1week", "+1 week"),
         ],
-        string="Rappel par défaut (Bloc-notes)",
+        string="Default reminder (Notepad)",
         default="today",
-        help="Rappel pré-sélectionné dans le dialogue de création rapide (Alt+N).",
+        help="Reminder preselected in the quick creation dialog (Alt+N).",
     )
 
     @property
@@ -29,7 +29,7 @@ class ResUsers(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Préférences Bloc-notes",
+            "name": _("Notepad preferences"),
             "res_model": "res.users",
             "res_id": self.env.user.id,
             "view_mode": "form",

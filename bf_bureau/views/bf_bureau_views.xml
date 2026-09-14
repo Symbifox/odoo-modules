@@ -5,7 +5,7 @@
         <field name="name">bf.bureau.desk.tree</field>
         <field name="model">bf.bureau.desk</field>
         <field name="arch" type="xml">
-            <list string="Mes bureaux">
+            <list string="My desks">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="layout"/>
@@ -14,12 +14,12 @@
                 <field name="is_default" widget="boolean_toggle"/>
                 <field name="active" widget="boolean_toggle" optional="hide"/>
                 <button name="action_open" type="object"
-                        string="Ouvrir" icon="fa-external-link"/>
+                        string="Open" icon="fa-external-link"/>
                 <button name="action_set_default" type="object"
-                        string="Définir par défaut" icon="fa-star-o"
+                        string="Set as default" icon="fa-star-o"
                         invisible="is_default"/>
                 <button name="action_duplicate_for_me" type="object"
-                        string="Dupliquer" icon="fa-copy"/>
+                        string="Duplicate" icon="fa-copy"/>
             </list>
         </field>
     </record>
@@ -28,27 +28,27 @@
         <field name="name">bf.bureau.desk.form</field>
         <field name="model">bf.bureau.desk</field>
         <field name="arch" type="xml">
-            <form string="Bureau">
+            <form string="Desk">
                 <header>
                     <button name="action_open" type="object"
-                            string="Ouvrir le bureau" class="oe_highlight"
+                            string="Open the desk" class="oe_highlight"
                             icon="fa-external-link"/>
                     <button name="action_set_default" type="object"
-                            string="Définir par défaut" icon="fa-star-o"
+                            string="Set as default" icon="fa-star-o"
                             invisible="is_default"/>
                     <button name="action_duplicate_for_me" type="object"
-                            string="Dupliquer" icon="fa-copy"/>
+                            string="Duplicate" icon="fa-copy"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Par défaut"
+                    <widget name="web_ribbon" title="Default"
                             invisible="not is_default"/>
-                    <widget name="web_ribbon" title="Archivé"
+                    <widget name="web_ribbon" title="Archived"
                             bg_color="text-bg-danger"
                             invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="Mon bureau"/>
+                            <field name="name" placeholder="My desk"/>
                         </h1>
                     </div>
                     <group>
@@ -67,7 +67,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Panneaux" name="panes">
+                        <page string="Panes" name="panes">
                             <field name="pane_ids">
                                 <list editable="bottom">
                                     <field name="slot"/>
@@ -76,7 +76,7 @@
                                     <field name="view_type"/>
                                     <field name="weight"/>
                                     <field name="name_override"
-                                           placeholder="(Titre par défaut de l'action)"
+                                           placeholder="(Default action title)"
                                            optional="show"/>
                                     <field name="domain_override"
                                            placeholder="[('priority','=','1')]"
@@ -94,24 +94,24 @@
     </record>
 
     <record id="bf_bureau_desk_action" model="ir.actions.act_window">
-        <field name="name">Mes bureaux</field>
+        <field name="name">My desks</field>
         <field name="res_model">bf.bureau.desk</field>
         <field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Créez votre premier bureau
+                Create your first desk
             </p>
             <p>
-                Un bureau est une mise en page de plusieurs actions Odoo
-                affichées simultanément. Choisissez la mise en page,
-                ajoutez des panneaux pointant vers vos actions favorites,
-                puis ouvrez le bureau via le menu « Mon bureau ».
+                A desk is a layout of several Odoo actions
+                shown at the same time. Choose the layout,
+                add panes pointing to your favourite actions,
+                then open the desk from the "My desk" menu.
             </p>
         </field>
     </record>
 
     <record id="bf_bureau_open_default_desk_action" model="ir.actions.client">
-        <field name="name">Mon bureau</field>
+        <field name="name">My desk</field>
         <field name="tag">bf_bureau_desk</field>
     </record>
 

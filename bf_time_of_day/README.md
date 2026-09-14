@@ -125,6 +125,12 @@ bf_time_of_day/
 
 ## Changelog
 
+### 18.0.1.4.0
+- **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read this module in French.
+- The four shipped time slots (Morning, Midday, End of day, After hours) are translated; a slot renamed by hand keeps its name on upgrade. The slot's display name now follows the reader's language.
+- The anthracite of the progress bar reads the active company's brand (`--brand-dark`).
+- ⚠️ The two saved filters ("Ma journée par plage", "Tâches par jour") keep their French names: a saved filter's name is not a translatable field in Odoo.
+
 ### 18.0.1.3.1 (2026-05-14)
 - The `time_of_day_code` progress bar recoloured in soft tones (a pastel arc of the day), segment icons switched to anthracite. The track (`bg-300`) and the "Other" segment (`bg-200`) brought back to a very soft grey. Purely an SCSS change, scoped to `o_bf_tod_progressbar`.
 

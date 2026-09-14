@@ -23,7 +23,7 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <widget name="web_ribbon" title="Archivée" bg_color="bg-danger"
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
                             invisible="active"/>
                     <group>
                         <group>
@@ -39,9 +39,9 @@
                         </group>
                     </group>
                     <p class="text-muted">
-                        L'<b>heure suggérée</b> est appliquée à la deadline d'une tâche
-                        quand un utilisateur sélectionne cette plage. Chaque utilisateur
-                        peut surcharger cette heure dans ses préférences personnelles.
+                        The <b>suggested time</b> is applied to a task's deadline
+                        when a user selects this slot. Each user
+                        can override this time in their personal preferences.
                     </p>
                 </sheet>
             </form>
@@ -49,7 +49,7 @@
     </record>
 
     <record id="bf_time_of_day_action" model="ir.actions.act_window">
-        <field name="name">Plages horaires</field>
+        <field name="name">Time slots</field>
         <field name="res_model">bf.time.of.day</field>
         <field name="view_mode">list,form</field>
     </record>

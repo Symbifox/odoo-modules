@@ -1,9 +1,9 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class BfNoteActivityWizard(models.TransientModel):
     _name = "bf.note.activity.wizard"
-    _description = "Convertir une note en activité"
+    _description = "Convert a note to an activity"
 
     note_id = fields.Many2one("bf.note", required=True, ondelete="cascade")
     activity_type_id = fields.Many2one(
@@ -13,21 +13,21 @@ class BfNoteActivityWizard(models.TransientModel):
         default=lambda self: self.env.ref("mail.mail_activity_data_todo", raise_if_not_found=False),
     )
     date_deadline = fields.Date(
-        string="Échéance",
+        string="Due date",
         required=True,
         default=fields.Date.context_today,
     )
-    summary = fields.Char(string="Résumé", required=True)
-    note_html = fields.Html(string="Détails", sanitize=True)
+    summary = fields.Char(string="Summary", required=True)
+    note_html = fields.Html(string="Details", sanitize=True)
     user_id = fields.Many2one(
         "res.users",
-        string="Assignée à",
+        string="Assigned to",
         required=True,
         default=lambda self: self.env.user,
     )
     needs_target = fields.Boolean(compute="_compute_needs_target")
     link_target_ref = fields.Reference(
-        string="Cible",
+        string="Target",
         selection="_selection_target_model",
     )
 
@@ -65,8 +65,8 @@ class BfNoteActivityWizard(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Activité créée",
-                "message": f"{len(new_activities)} activité(s).",
+                "title": _("Activity created"),
+                "message": _("%s activity(ies).", len(new_activities)),
                 "type": "success",
             },
         }

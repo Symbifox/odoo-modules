@@ -5,7 +5,7 @@
         <field name="name">bf.note.task.wizard.form</field>
         <field name="model">bf.note.task.wizard</field>
         <field name="arch" type="xml">
-            <form string="Convertir en tâche">
+            <form string="Convert to task">
                 <group>
                     <group>
                         <field name="project_id" options="{'no_create_edit': True}"/>
@@ -32,7 +32,7 @@
                 </group>
                 <field name="description"
                        widget="html"
-                       placeholder="Description de la tâche…"/>
+                       placeholder="Task description…"/>
                 <group>
                     <group>
                         <field name="link_back"/>
@@ -46,9 +46,9 @@
                 <footer>
                     <button name="action_create"
                             type="object"
-                            string="Créer la tâche"
+                            string="Create the task"
                             class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>

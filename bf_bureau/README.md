@@ -103,6 +103,14 @@ Add the module to Odoo's `addons_path` and install it from the Apps menu. On fir
 - **Editing a desk**: layout dropdown + inline pane table (slot, action, view type, weight, overrides).
 - **Sidebar**: ☰ icon in the desk's bar to toggle.
 
+## Changelog
+
+### 18.0.3.3.0
+- **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read this module in French.
+- **Validation messages are translatable** (invalid slot, view type, domain or context): they were French f-strings.
+- The desk's colours read the active company's brand (`--brand-primary`, `--brand-dark`).
+- ⚠️ The desk seeded for the administrator keeps its name "Mon bureau": a desk's name is the user's own content, not a translatable label.
+
 ---
 
 <sub>Authored and maintained by Les services de consultation Blue Fox, Inc. AI coding assistants were used as productivity tools during development.</sub>

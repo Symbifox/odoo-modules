@@ -5,7 +5,7 @@
         <field name="name">bf.note.activity.wizard.form</field>
         <field name="model">bf.note.activity.wizard</field>
         <field name="arch" type="xml">
-            <form string="Convertir en activité">
+            <form string="Convert to activity">
                 <group>
                     <group>
                         <field name="activity_type_id" options="{'no_create': True}"/>
@@ -18,20 +18,20 @@
                                widget="bf_chatter_target"
                                invisible="not needs_target"
                                required="needs_target"
-                               string="Fiche cible"
-                               placeholder="Nom, numéro, task:22299, ou URL Odoo…"/>
+                               string="Target record"
+                               placeholder="Name, number, task:22299, or Odoo URL…"/>
                     </group>
                 </group>
                 <group>
                     <field name="summary"/>
                 </group>
-                <field name="note_html" widget="html" placeholder="Détails de l'activité…"/>
+                <field name="note_html" widget="html" placeholder="Activity details…"/>
                 <footer>
                     <button name="action_create"
                             type="object"
-                            string="Créer l'activité"
+                            string="Create the activity"
                             class="btn-primary"/>
-                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>

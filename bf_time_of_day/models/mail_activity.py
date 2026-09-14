@@ -22,18 +22,18 @@ class MailActivity(models.Model):
 
     time_of_day_id = fields.Many2one(
         "bf.time.of.day",
-        string="Plage horaire",
+        string="Time slot",
         ondelete="set null",
         index=True,
     )
     time_of_day_color = fields.Integer(
         related="time_of_day_id.color",
         store=True,
-        string="Couleur plage",
+        string="Slot colour",
     )
     time_of_day_icon = fields.Char(
         related="time_of_day_id.icon",
-        string="Icône plage",
+        string="Slot icon",
     )
 
     @api.model

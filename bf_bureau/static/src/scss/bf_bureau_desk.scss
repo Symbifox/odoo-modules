@@ -1,5 +1,5 @@
-$bf-bureau-anthracite: #2E3132;
-$bf-bureau-bleu: #29ABE2;
+$bf-bureau-anthracite: var(--brand-dark, #2E3132);
+$bf-bureau-bleu: var(--brand-primary, #29ABE2);
 $bf-bureau-toolbar-h: 36px;
 $bf-bureau-switcher-h: 30px;
 $bf-bureau-sidebar-w: 220px;
@@ -54,11 +54,11 @@ $bf-bureau-sidebar-w: 220px;
     border-left: 3px solid transparent;
 
     &:hover {
-        background: rgba($bf-bureau-bleu, 0.08);
+        background: color-mix(in srgb, var(--brand-primary, #29ABE2) 8%, transparent);
     }
 
     &.active {
-        background: rgba($bf-bureau-bleu, 0.12);
+        background: color-mix(in srgb, var(--brand-primary, #29ABE2) 12%, transparent);
         border-left-color: $bf-bureau-bleu;
         font-weight: 600;
     }
@@ -261,7 +261,7 @@ $bf-bureau-sidebar-w: 220px;
 
         &:hover {
             color: $bf-bureau-bleu;
-            background: rgba($bf-bureau-bleu, 0.1);
+            background: color-mix(in srgb, var(--brand-primary, #29ABE2) 10%, transparent);
         }
     }
 

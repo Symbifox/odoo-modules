@@ -7,7 +7,7 @@ class ResUsers(models.Model):
     bf_time_of_day_pref_ids = fields.One2many(
         "bf.time.of.day.user_pref",
         "user_id",
-        string="Mes plages horaires",
+        string="My time slots",
     )
 
     def _tod_effective_time(self, time_of_day):

@@ -13,9 +13,9 @@ class ResUsers(models.Model):
     # default by an administrator. The web client seeds the local cookie and
     # toggle from this value on load (see static/src/js/dark_mode_button.js).
     bf_dark_mode_enabled = fields.Boolean(
-        string="Mode sombre (Blue Fox)",
-        help="Active le thème sombre Blue Fox pour le client web Odoo. "
-             "La préférence vous suit sur tous vos navigateurs et appareils.",
+        string="Dark mode",
+        help="Turns on the dark theme for the Odoo web client. The "
+             "preference follows you across all your browsers and devices.",
     )
 
     @property

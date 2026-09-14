@@ -28,6 +28,10 @@ import { BfTimerStopDialog } from "./bf_timer_stop_dialog";
  */
 export class BfTimerPage extends Component {
     static template = "bf_timesheet_timer.Page";
+
+    // Two labels, both translatable: a ternary of literals in the template is not.
+    unpinLabel = _t("Unpin");
+    pinLabel = _t("Pin");
     static props = ["*"];
 
     setup() {
@@ -96,12 +100,12 @@ export class BfTimerPage extends Component {
 
     get awakeTitle() {
         return this.state.awake
-            ? _t("Laisser l'écran s'éteindre")
-            : _t("Garder l'écran allumé");
+            ? _t("Let the screen turn off")
+            : _t("Keep the screen on");
     }
 
     get fullscreenTitle() {
-        return this.state.fullscreen ? _t("Quitter le plein écran") : _t("Plein écran");
+        return this.state.fullscreen ? _t("Exit full screen") : _t("Full screen");
     }
 
     get filteredTasks() {
@@ -177,7 +181,7 @@ export class BfTimerPage extends Component {
         }
         if (!("wakeLock" in navigator)) {
             this.notification.add(
-                _t("Ce navigateur ne sait pas garder l'écran allumé."),
+                _t("This browser cannot keep the screen on."),
                 { type: "warning" }
             );
             return;
@@ -190,7 +194,7 @@ export class BfTimerPage extends Component {
             });
             this.state.awake = true;
         } catch {
-            this.notification.add(_t("L'écran n'a pas pu être maintenu allumé."), {
+            this.notification.add(_t("The screen could not be kept on."), {
                 type: "warning",
             });
         }
@@ -221,7 +225,7 @@ export class BfTimerPage extends Component {
             document.exitFullscreen().catch(() => {});
         } else {
             document.documentElement.requestFullscreen().catch(() => {
-                this.notification.add(_t("Le plein écran a été refusé."), {
+                this.notification.add(_t("Full screen was refused."), {
                     type: "warning",
                 });
             });

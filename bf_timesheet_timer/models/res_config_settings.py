@@ -6,11 +6,11 @@ class ResConfigSettings(models.TransientModel):
 
     bf_timer_rounding_mode = fields.Selection(
         [
-            ("none", "Aucun arrondi"),
-            ("round_all", "Arrondir toujours"),
-            ("round_below_threshold", "Arrondir sous un seuil"),
+            ("none", "No rounding"),
+            ("round_all", "Always round"),
+            ("round_below_threshold", "Round below a threshold"),
         ],
-        string="Mode d'arrondi",
+        string="Rounding mode",
         config_parameter="bf_timer.rounding_mode",
         default="round_all",
     )
@@ -21,13 +21,14 @@ class ResConfigSettings(models.TransientModel):
             ("10", "10 minutes"),
             ("15", "15 minutes"),
         ],
-        string="Incr\u00e9ment d'arrondi",
+        string="Rounding increment",
         config_parameter="bf_timer.rounding_increment",
         default="5",
     )
     bf_timer_rounding_threshold = fields.Integer(
-        string="Seuil d'arrondi (minutes)",
+        string="Rounding threshold (minutes)",
         config_parameter="bf_timer.rounding_threshold",
         default=30,
-        help="Arrondir uniquement si la dur\u00e9e brute est inf\u00e9rieure \u00e0 ce seuil (en minutes).",
+        help="Round only if the raw duration is below this threshold (in "
+             "minutes).",
     )

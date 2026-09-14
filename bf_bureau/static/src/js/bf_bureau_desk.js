@@ -104,6 +104,10 @@ function safePyParse(expr, fallback) {
 
 export class BfBureauDesk extends Component {
     static template = "bf_bureau.Desk";
+
+    // Two translatable labels: a ternary of literals in the template is not.
+    hideSidebarLabel = _t("Hide the bar");
+    showSidebarLabel = _t("Show the desks bar");
     static components = { View, BfBureauPaneView };
     static props = ["*"];
 
@@ -326,7 +330,7 @@ export class BfBureauDesk extends Component {
             })
         );
         await Promise.all(writes);
-        this.notification.add(_t("Disposition enregistrée"), { type: "success" });
+        this.notification.add(_t("Layout saved"), { type: "success" });
         for (const pane of this.state.panes) {
             pane.view_type = this.state.paneTypes[pane.id];
         }

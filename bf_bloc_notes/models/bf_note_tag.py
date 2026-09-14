@@ -3,7 +3,7 @@ from odoo import fields, models
 
 class BfNoteTag(models.Model):
     _name = "bf.note.tag"
-    _description = "Étiquette de note"
+    _description = "Note tag"
     _order = "name"
 
     name = fields.Char(required=True, translate=True)
@@ -11,5 +11,5 @@ class BfNoteTag(models.Model):
     active = fields.Boolean(default=True)
 
     _sql_constraints = [
-        ("name_uniq", "unique(name)", "Cette étiquette existe déjà."),
+        ("name_uniq", "unique(name)", "This tag already exists."),
     ]

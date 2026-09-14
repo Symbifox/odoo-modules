@@ -39,7 +39,7 @@
             &::before {
                 font-family: "FontAwesome";
                 font-size: 0.65rem;
-                color: #2E3132;  // anthracite BF — lisible sur les tons doux
+                color: var(--brand-dark, #2E3132);  // anthracite BF — lisible sur les tons doux
             }
         }
         .bg-info::before    { content: "\f0f4"; }  // fa-coffee  — Matinée

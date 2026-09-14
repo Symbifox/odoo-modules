@@ -31,13 +31,13 @@
     </record>
 
     <record id="action_bf_timer_preset" model="ir.actions.act_window">
-        <field name="name">Presets de description</field>
+        <field name="name">Description presets</field>
         <field name="res_model">bf.timer.description.preset</field>
         <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_bf_timer_preset"
-              name="Presets de description"
+              name="Description presets"
               parent="hr_timesheet.menu_hr_time_tracking"
               action="action_bf_timer_preset"
               sequence="30"/>

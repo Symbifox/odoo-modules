@@ -10,11 +10,11 @@
                 <div class="bf-timer-page-totals">
                     <div class="bf-timer-page-total">
                         <span class="bf-timer-page-total-value" t-esc="formattedTodayTotal"/>
-                        <span class="bf-timer-page-total-label">aujourd'hui</span>
+                        <span class="bf-timer-page-total-label">today</span>
                     </div>
                     <div class="bf-timer-page-total">
                         <span class="bf-timer-page-total-value" t-esc="formattedWeekTotal"/>
-                        <span class="bf-timer-page-total-label">cette semaine</span>
+                        <span class="bf-timer-page-total-label">this week</span>
                     </div>
                 </div>
                 <div class="bf-timer-page-screen">
@@ -50,7 +50,7 @@
                             <button t-if="timer.is_paused"
                                     class="btn btn-outline-secondary bf-timer-page-btn"
                                     t-on-click="() => this.onResumeTimer(timer.id)">
-                                <i class="fa fa-play me-1"/>Reprendre
+                                <i class="fa fa-play me-1"/>Resume
                             </button>
                             <button t-else=""
                                     class="btn btn-outline-secondary bf-timer-page-btn"
@@ -59,34 +59,34 @@
                             </button>
                             <button class="btn btn-primary bf-timer-page-btn"
                                     t-on-click="() => this.onStopTimer(timer.id)">
-                                <i class="fa fa-stop me-1"/>Arrêter
+                                <i class="fa fa-stop me-1"/>Stop
                             </button>
                         </div>
                     </div>
                 </t>
             </div>
             <div t-else="" class="bf-timer-page-idle">
-                Aucune minuterie en cours.
+                No timer running.
             </div>
 
             <!-- Épinglées puis récentes, dans l'ordre que rend le serveur. -->
             <div class="bf-timer-page-picker">
                 <input type="text" class="form-control bf-timer-page-search"
-                       placeholder="Chercher une tâche…"
+                       placeholder="Search for a task…"
                        t-att-value="state.searchQuery"
                        t-on-input="onSearchInput"/>
 
                 <div t-if="!filteredTasks.length" class="bf-timer-page-empty">
-                    Aucune tâche à démarrer ici. Épinglez-en depuis la barre du
-                    haut d'Odoo, ou saisissez une feuille de temps : les tâches
-                    récentes apparaissent d'elles-mêmes.
+                    No task to start here. Pin some from Odoo's top
+                    bar, or log a timesheet: recent tasks
+                    show up on their own.
                 </div>
 
                 <t t-foreach="filteredTasks" t-as="task" t-key="task.task_id">
                     <div class="bf-timer-page-row" t-att-class="task.is_closed ? 'bf-timer-page-row-closed' : ''">
                         <button class="btn btn-link bf-timer-page-pin"
                                 t-on-click="() => task.is_pinned ? this.onUnpinTask(task.task_id) : this.onPinTask(task.task_id)"
-                                t-att-title="task.is_pinned ? 'Désépingler' : 'Épingler'">
+                                t-att-title="task.is_pinned ? unpinLabel : pinLabel">
                             <i class="fa" t-att-class="task.is_pinned ? 'fa-thumb-tack' : 'fa-thumb-tack bf-timer-page-pin-off'"/>
                         </button>
                         <div class="bf-timer-page-row-text">
@@ -98,7 +98,7 @@
                         </div>
                         <button class="btn btn-success bf-timer-page-start"
                                 t-on-click="() => this.onStartTask(task.task_id)"
-                                title="Démarrer">
+                                title="Start">
                             <i class="fa fa-play"/>
                         </button>
                     </div>

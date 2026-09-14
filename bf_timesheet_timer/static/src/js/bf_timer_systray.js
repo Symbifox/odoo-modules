@@ -251,7 +251,7 @@ export class BfTimerSystray extends Component {
         if (this.timers.length > 0 && !localStorage.getItem("bf_timer_skip_warning")) {
             return new Promise((resolve) => {
                 this.dialogService.add(ConfirmationDialog, {
-                    title: _t("Timer déjà en cours"),
+                    title: _t("Timer already running"),
                     body: markup(
                         `<p>Un timer est déjà en cours. Voulez-vous en démarrer un autre?</p>
                          <div class="form-check mt-2">
@@ -259,7 +259,7 @@ export class BfTimerSystray extends Component {
                            <label class="form-check-label" for="bf_skip_warning_cb">Ne plus me demander</label>
                          </div>`
                     ),
-                    confirmLabel: _t("Continuer"),
+                    confirmLabel: _t("Continue"),
                     confirm: async () => {
                         const cb = document.getElementById("bf_skip_warning_cb");
                         if (cb && cb.checked) {
@@ -354,7 +354,7 @@ export class BfTimerSystray extends Component {
                 if (this.state.recentTasks.length > 0) {
                     await this.timerService.startTimer(this.state.recentTasks[0].task_id);
                 } else {
-                    this.notification.add(_t("Aucune tâche récente trouvée."), { type: "info" });
+                    this.notification.add(_t("No recent task found."), { type: "info" });
                 }
             }
         }

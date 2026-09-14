@@ -98,6 +98,12 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 
 ## Changelog
 
+### 18.0.2.10.0
+- **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read this module in French.
+- **Action titles and notifications are translatable** ("Convert to task", "Task created", the reroute summary): they were plain French strings in Python.
+- The accent colour reads the active company's brand (`--brand-primary`) instead of a fixed hex value, like `bf_dark_mode` 18.0.1.4.2.
+- Upgrading reloads the French catalogue; the four shipped tags and the onboarding panel switch to English only where they still carry the shipped text, so a tag renamed by hand keeps its name.
+
 ### 18.0.2.9.0 (2026-08-17)
 - Changed: the reroute wizard, the note links and the primary link now use the shared **`bf_chatter_target`** picker instead of this module's own copy of the target list and URL resolver. One search box for any chatter-bearing record: results grouped by model, no model to pick first, and a pasted Odoo URL, bare id, shorthand (`task:22299`) or technical reference surfaces as an "Exact reference" at the top of the list.
 

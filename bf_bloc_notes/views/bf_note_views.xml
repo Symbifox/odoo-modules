@@ -5,53 +5,53 @@
         <field name="name">bf.note.form</field>
         <field name="model">bf.note</field>
         <field name="arch" type="xml">
-            <form string="Note rapide">
+            <form string="Quick note">
                 <header>
                     <button name="action_create_activity_quick"
                             type="object"
-                            string="🗓️ Aujourd'hui"
+                            string="🗓️ Today"
                             class="btn-primary"
                             context="{'offset': 0}"/>
                     <button name="action_create_activity_quick"
                             type="object"
-                            string="Demain"
+                            string="Tomorrow"
                             context="{'offset': 1}"/>
                     <button name="action_create_activity_quick"
                             type="object"
-                            string="+2 jours"
+                            string="+2 days"
                             context="{'offset': 2}"/>
                     <button name="action_create_activity_quick"
                             type="object"
-                            string="+1 semaine"
+                            string="+1 week"
                             context="{'offset': 7}"/>
                     <button name="action_open_activity_wizard"
                             type="object"
-                            string="Personnaliser…"/>
+                            string="Customise…"/>
                     <button name="action_open_task_wizard"
                             type="object"
-                            string="Convertir en tâche"
+                            string="Convert to task"
                             class="btn-secondary"/>
                     <button name="action_open_reroute_wizard"
                             type="object"
-                            string="Re-router…"
+                            string="Reroute…"
                             class="btn-secondary"/>
                     <button name="action_toggle_pinned"
                             type="object"
-                            string="Épingler"
+                            string="Pin"
                             invisible="pinned"/>
                     <button name="action_toggle_pinned"
                             type="object"
-                            string="Désépingler"
+                            string="Unpin"
                             invisible="not pinned"/>
                     <button name="toggle_active"
                             type="object"
-                            string="Archiver"
+                            string="Archive"
                             class="btn-secondary"
                             invisible="not active"
-                            confirm="Archiver cette note ?"/>
+                            confirm="Archive this note?"/>
                     <button name="toggle_active"
                             type="object"
-                            string="Désarchiver"
+                            string="Unarchive"
                             class="btn-secondary"
                             invisible="active"/>
                 </header>
@@ -62,37 +62,37 @@
                                 class="oe_stat_button"
                                 icon="fa-external-link"
                                 invisible="not res_id">
-                            <field name="res_name" string="Voir la fiche"/>
+                            <field name="res_name" string="See the record"/>
                         </button>
                         <button name="action_open_activities"
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-tasks"
                                 invisible="tracked_activity_count == 0">
-                            <field name="tracked_activity_count" widget="statinfo" string="Activités"/>
+                            <field name="tracked_activity_count" widget="statinfo" string="Activities"/>
                         </button>
                         <button name="action_open_tasks"
                                 type="object"
                                 class="oe_stat_button"
                                 icon="fa-check-square-o"
                                 invisible="tracked_task_count == 0">
-                            <field name="tracked_task_count" widget="statinfo" string="Tâches"/>
+                            <field name="tracked_task_count" widget="statinfo" string="Tasks"/>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Archivée"
+                    <widget name="web_ribbon" title="Archived"
                             bg_color="text-bg-danger"
                             invisible="active"/>
-                    <widget name="web_ribbon" title="Épinglée"
+                    <widget name="web_ribbon" title="Pinned"
                             bg_color="text-bg-warning"
                             invisible="not pinned or not active"/>
-                    <widget name="web_ribbon" title="Partagée"
+                    <widget name="web_ribbon" title="Shared"
                             bg_color="text-bg-info"
                             invisible="not is_shared or not active or pinned"/>
                     <field name="active" invisible="1"/>
                     <field name="color" widget="color_picker"/>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
-                        <h1><field name="name" placeholder="Titre (auto si vide)"/></h1>
+                        <h1><field name="name" placeholder="Title (automatic if empty)"/></h1>
                     </div>
                     <group>
                         <group>
@@ -107,31 +107,31 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Contenu" name="body">
+                        <page string="Content" name="body">
                             <field name="body"
                                    widget="html"
                                    options="{'collaborative': false}"
-                                   placeholder="Écris ta note ici…"/>
+                                   placeholder="Write your note here…"/>
                         </page>
-                        <page string="Liens" name="links">
+                        <page string="Links" name="links">
                             <field name="link_ids">
                                 <list editable="bottom">
                                     <field name="sequence" widget="handle"/>
-                                    <field name="target_ref" string="Fiche"
+                                    <field name="target_ref" string="Form"
                                            widget="bf_chatter_target"/>
-                                    <field name="res_name" string="Nom"/>
-                                    <button name="action_open" type="object" icon="fa-external-link" string="Ouvrir"/>
+                                    <field name="res_name" string="Name"/>
+                                    <button name="action_open" type="object" icon="fa-external-link" string="Open"/>
                                 </list>
                             </field>
                             <p class="text-muted small">
-                                Astuce : « Re-router… » dans l'entête déplace la note vers une autre fiche
-                                (ou l'ajoute à une seconde). Partout ici, la fiche se cherche par son nom,
-                                son numéro, un raccourci (<code>task:22299</code>) ou une URL Odoo collée.
+                                Tip: "Reroute…" in the header moves the note to another record
+                                (or adds it to a second one). Everywhere here, a record is found by its name,
+                                its number, a shortcut (<code>task:22299</code>) or a pasted Odoo URL.
                             </p>
                             <group>
-                                <field name="res_ref" string="Ajouter un lien primaire"
+                                <field name="res_ref" string="Add a primary link"
                                        widget="bf_chatter_target"
-                                       placeholder="Nom, numéro, task:22299, ou URL Odoo…"/>
+                                       placeholder="Name, number, task:22299, or Odoo URL…"/>
                             </group>
                         </page>
                     </notebook>
@@ -152,10 +152,10 @@
                 <field name="is_shared" widget="boolean_toggle" optional="hide"/>
                 <field name="name"/>
                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
-                <field name="res_name" string="Lié à"/>
+                <field name="res_name" string="Linked to"/>
                 <field name="deadline_date" optional="show"/>
                 <field name="user_id" widget="many2one_avatar_user"/>
-                <field name="write_date" string="Modifiée"/>
+                <field name="write_date" string="Modified"/>
             </list>
         </field>
     </record>
@@ -182,14 +182,14 @@
                                 </a>
                                 <div class="dropdown-menu" role="menu">
                                     <a role="menuitem" type="edit" class="dropdown-item"
-                                       t-if="widget.editable">Modifier</a>
+                                       t-if="widget.editable">Edit</a>
                                     <a role="menuitem" type="object" name="toggle_active"
                                        class="dropdown-item">
-                                        <t t-if="record.active.raw_value">Archiver</t>
-                                        <t t-else="">Désarchiver</t>
+                                        <t t-if="record.active.raw_value">Archive</t>
+                                        <t t-else="">Unarchive</t>
                                     </a>
                                     <a role="menuitem" type="delete" class="dropdown-item"
-                                       t-if="widget.deletable">Supprimer</a>
+                                       t-if="widget.deletable">Delete</a>
                                     <div role="separator" class="dropdown-divider"/>
                                     <ul class="oe_kanban_colorpicker" data-field="color"/>
                                 </div>
@@ -202,13 +202,13 @@
                                 <button class="btn btn-link p-0 ms-1 o_bf_note_pin_btn"
                                         type="object"
                                         name="action_toggle_pinned"
-                                        title="Épingler / désépingler"
+                                        title="Pin / unpin"
                                         t-attf-style="opacity: #{record.pinned.raw_value ? 1 : 0.35};">
                                     <i class="fa fa-thumb-tack"/>
                                 </button>
                                 <i t-if="record.is_shared.raw_value"
                                    class="fa fa-users ms-1 text-info"
-                                   title="Partagée"/>
+                                   title="Shared"/>
                             </div>
                             <div class="o_bf_note_card_body">
                                 <field name="body" widget="html_text" class="text-muted"/>
@@ -221,11 +221,11 @@
                                 <field name="user_id" widget="many2one_avatar_user"/>
                             </div>
                             <div t-if="record.res_name.raw_value" class="text-muted small mt-1">
-                                <i class="fa fa-link" title="Lié à"/> <field name="res_name"/>
+                                <i class="fa fa-link" title="Linked to"/> <field name="res_name"/>
                             </div>
                             <div t-if="record.deadline_date.raw_value"
                                  t-attf-class="small #{record.deadline_date.raw_value &lt; (new Date()).toISOString().slice(0,10) ? 'text-danger fw-bold' : 'text-muted'}">
-                                <i class="fa fa-calendar" title="Échéance"/> <field name="deadline_date"/>
+                                <i class="fa fa-calendar" title="Due date"/> <field name="deadline_date"/>
                             </div>
                         </div>
                     </t>
@@ -260,51 +260,51 @@
                 <field name="body"/>
                 <field name="tag_ids"/>
                 <field name="res_name"/>
-                <filter name="my_notes" string="Mes notes" domain="[('user_id', '=', uid)]"/>
-                <filter name="pinned" string="Épinglées" domain="[('pinned', '=', True)]"/>
-                <filter name="shared" string="Partagées" domain="[('is_shared', '=', True)]"/>
-                <filter name="linked" string="Liées à une fiche" domain="[('link_ids', '!=', False)]"/>
+                <filter name="my_notes" string="My notes" domain="[('user_id', '=', uid)]"/>
+                <filter name="pinned" string="Pinned" domain="[('pinned', '=', True)]"/>
+                <filter name="shared" string="Shared" domain="[('is_shared', '=', True)]"/>
+                <filter name="linked" string="Linked to a record" domain="[('link_ids', '!=', False)]"/>
                 <separator/>
-                <filter name="filter_today" string="Modifiées aujourd'hui"
+                <filter name="filter_today" string="Modified today"
                         domain="[('write_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="filter_week" string="Cette semaine"
+                <filter name="filter_week" string="This week"
                         domain="[('write_date', '&gt;=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 <separator/>
-                <filter name="deadline_overdue" string="Échéance dépassée"
+                <filter name="deadline_overdue" string="Overdue"
                         domain="[('deadline_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter name="deadline_today" string="Échéance aujourd'hui"
+                <filter name="deadline_today" string="Due today"
                         domain="[('deadline_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
                 <separator/>
-                <filter name="archived" string="Archivées" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_user" string="Auteur" context="{'group_by': 'user_id'}"/>
-                    <filter name="group_tag" string="Étiquette" context="{'group_by': 'tag_ids'}"/>
-                    <filter name="group_color" string="Couleur" context="{'group_by': 'color'}"/>
-                    <filter name="group_model" string="Modèle lié" context="{'group_by': 'res_model'}"/>
-                    <filter name="group_deadline" string="Échéance" context="{'group_by': 'deadline_date'}"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_user" string="Author" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_tag" string="Tag" context="{'group_by': 'tag_ids'}"/>
+                    <filter name="group_color" string="Colour" context="{'group_by': 'color'}"/>
+                    <filter name="group_model" string="Linked model" context="{'group_by': 'res_model'}"/>
+                    <filter name="group_deadline" string="Due date" context="{'group_by': 'deadline_date'}"/>
                 </group>
             </search>
         </field>
     </record>
 
     <record id="bf_note_action" model="ir.actions.act_window">
-        <field name="name">Bloc-notes</field>
+        <field name="name">Notepad</field>
         <field name="res_model">bf.note</field>
         <field name="view_mode">kanban,list,calendar,form</field>
         <field name="search_view_id" ref="bf_note_view_search"/>
         <field name="context">{'search_default_my_notes': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Crée ta première note rapide
+                Create your first quick note
             </p>
             <p>
-                Raccourci : <b>Alt+N</b> pour une nouvelle note, <b>Alt+Shift+N</b> pour la liste.
+                Shortcut: <b>Alt+N</b> for a new note, <b>Alt+Shift+N</b> for the list.
             </p>
         </field>
     </record>
 
     <record id="bf_note_action_pinned" model="ir.actions.act_window">
-        <field name="name">Notes épinglées</field>
+        <field name="name">Pinned notes</field>
         <field name="res_model">bf.note</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[('pinned', '=', True), '|', ('user_id', '=', uid), ('is_shared', '=', True)]</field>

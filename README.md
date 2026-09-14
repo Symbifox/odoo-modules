@@ -75,13 +75,13 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.0.2 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
-| `bf_bloc_notes` | BF Bloc-notes | 18.0.2.9.1 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
+| `bf_bloc_notes` | BF Bloc-notes | 18.0.2.10.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_budget` | Budgets opérationnels | 18.0.1.0.2 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.1.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.0.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
 | `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.0.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.0.1 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
-| `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.2.1 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
+| `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.5.0.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_celebrations` | Célébrations | 18.0.2.1.1 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
@@ -119,7 +119,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_sms` | Expérience client : invitation de sondage par SMS | 18.0.1.0.0 | BUSL-1.1 | Survey link sent by SMS to contacts without an email address |
 | `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.0.1 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
-| `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.4.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
+| `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.5.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.4.1 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
@@ -226,8 +226,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.0.1 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
 | `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.1.8.0 | LGPL-3 | Notifies assignees when their task becomes unblocked |
 | `bf_task_waiting_states` | Task Waiting States | 18.0.1.0.0 | LGPL-3 | Add Attente - Client / Attente - Externe task states |
-| `bf_time_of_day` | BF Time of Day | 18.0.1.3.2 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
-| `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.12.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
+| `bf_time_of_day` | BF Time of Day | 18.0.1.4.0 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
+| `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.13.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timesheet_timer_mobile` | Chronomètre : application Android | 18.0.1.0.0 | BUSL-1.1 | API for the Symbifox Chronomètre Android app: PKCE device pairing and timer gestures, stop and log in one request |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
 | `bf_training` | Registre de formation | 18.0.1.2.0 | BUSL-1.1 | Qui doit quelle formation, pour quand, prouvé par quelle pièce, valide jusqu'à quand. Le registre nominatif que le lecteur eLearning ne tient pas |

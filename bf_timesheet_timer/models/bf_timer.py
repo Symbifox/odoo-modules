@@ -1,7 +1,7 @@
 import math
 from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 # A stop dialog opened this recently is still being handled somewhere.
@@ -10,7 +10,7 @@ CLAIM_MINUTES = 5
 
 class BfTimer(models.Model):
     _name = "bf.timer"
-    _description = "Timer de feuille de temps"
+    _description = "Timesheet timer"
     _order = "start_time desc"
 
     user_id = fields.Many2one(
@@ -141,11 +141,13 @@ class BfTimer(models.Model):
             delta_days = (today - last_date).days if last_date else None
             if delta_days is not None:
                 if delta_days == 0:
-                    date_label = "aujourd'hui"
+                    # `self.env._` : dans une fonction imbriquée, `_` ne trouve pas
+                    # la langue dans les variables locales.
+                    date_label = self.env._("today")
                 elif delta_days == 1:
-                    date_label = "hier"
+                    date_label = self.env._("yesterday")
                 else:
-                    date_label = f"il y a {delta_days}j"
+                    date_label = self.env._("%sd ago", delta_days)
             else:
                 date_label = ""
             state = r.get("state", "")
@@ -199,16 +201,16 @@ class BfTimer(models.Model):
         """Start a new timer for the given task."""
         task = self.env["project.task"].browse(task_id)
         if not task.exists():
-            raise UserError("Tâche introuvable.")
+            raise UserError(_("Task not found."))
         if not task.allow_timesheets:
-            raise UserError("Les feuilles de temps ne sont pas activées sur cette tâche.")
+            raise UserError(_("Timesheets are not enabled on this task."))
         existing = self.search([
             ("user_id", "=", self.env.uid),
             ("task_id", "=", task_id),
             ("is_active", "=", True),
         ], limit=1)
         if existing:
-            raise UserError("Un timer est déjà en cours pour cette tâche.")
+            raise UserError(_("A timer is already running for this task."))
         # ⚠️ The employee of the TASK's company first, as hr_timesheet picks it:
         # a person employed by two companies times a task of B as employee B,
         # whatever company is current. Read in sudo (plain users cannot read
@@ -226,7 +228,7 @@ class BfTimer(models.Model):
                 limit=1,
             )
         if not employee:
-            raise UserError("Aucun employé associé à votre compte utilisateur.")
+            raise UserError(_("No employee is linked to your user account."))
         now = fields.Datetime.now()
         timer = self.create({
             "user_id": self.env.uid,
@@ -256,7 +258,7 @@ class BfTimer(models.Model):
         """Stop a timer and return data for the confirmation dialog."""
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
-            raise UserError("Timer introuvable.")
+            raise UserError(_("Timer not found."))
         elapsed = timer._stop_and_freeze()
         suggested_minutes = self._compute_suggested_minutes(elapsed)
         suggested_hours = round(suggested_minutes / 60.0, 4)
@@ -280,9 +282,9 @@ class BfTimer(models.Model):
         """Create the timesheet entry from a stopped timer."""
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
-            raise UserError("Timer introuvable.")
+            raise UserError(_("Timer not found."))
         if duration_hours <= 0:
-            raise ValidationError("La durée doit être supérieure à 0.")
+            raise ValidationError(_("The duration must be greater than 0."))
         self.env["account.analytic.line"].create({
             "name": description or timer.task_id.name,
             "date": timer._timesheet_date(),
@@ -340,7 +342,7 @@ class BfTimer(models.Model):
         """Re-activate a timer that was stopped (Cancel in dialog)."""
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
-            raise UserError("Timer introuvable.")
+            raise UserError(_("Timer not found."))
         if timer.is_active:
             # ⚠️ Already running (a second Cancel, another tab): nothing to do.
             # Restarting start_time here threw away the running segment.
@@ -361,7 +363,7 @@ class BfTimer(models.Model):
         """Delete a timer without creating a timesheet."""
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
-            raise UserError("Timer introuvable.")
+            raise UserError(_("Timer not found."))
         timer.unlink()
         return True
 
@@ -406,7 +408,7 @@ class BfTimer(models.Model):
         """
         task = self._all_user_companies().env["project.task"].browse(task_id).exists()
         if not task:
-            raise UserError("Tâche introuvable.")
+            raise UserError(_("Task not found."))
         # Across all the user's companies, like the filter of get_recent_tasks.
         task.check_access("read")
         PinnedTask = self.env["bf.timer.pinned.task"]
@@ -433,13 +435,13 @@ class BfTimer(models.Model):
         """Pause a running timer, accumulating elapsed seconds."""
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
-            raise UserError("Timer introuvable.")
+            raise UserError(_("Timer not found."))
         if not timer.is_active:
             # ⚠️ A stopped timer's time is frozen in accumulated_seconds; a
             # pause would add the whole segment since start_time again.
-            raise UserError("Ce timer est arrêté : il ne se met pas en pause.")
+            raise UserError(_("This timer is stopped: it cannot be paused."))
         if timer.is_paused:
-            raise UserError("Ce timer est d\u00e9j\u00e0 en pause.")
+            raise UserError(_("This timer is already paused."))
         now = fields.Datetime.now()
         segment = (now - timer.start_time).total_seconds()
         timer.write({
@@ -453,11 +455,11 @@ class BfTimer(models.Model):
         """Resume a paused timer."""
         timer = self.browse(timer_id)
         if not timer.exists() or timer.user_id.id != self.env.uid:
-            raise UserError("Timer introuvable.")
+            raise UserError(_("Timer not found."))
         if not timer.is_active:
-            raise UserError("Ce timer est arrêté : Annuler le relance.")
+            raise UserError(_("This timer is stopped: Cancel restarts it."))
         if not timer.is_paused:
-            raise UserError("Ce timer n'est pas en pause.")
+            raise UserError(_("This timer is not paused."))
         timer.write({
             "is_paused": False,
             "start_time": fields.Datetime.now(),
@@ -597,7 +599,7 @@ class ProjectTask(models.Model):
 
     bf_has_active_timer = fields.Boolean(
         compute="_compute_bf_has_active_timer",
-        string="Timer actif",
+        string="Active timer",
     )
 
     def _compute_bf_has_active_timer(self):
@@ -625,7 +627,7 @@ class ProjectTask(models.Model):
             ("is_active", "=", True),
         ], limit=1)
         if not timer:
-            raise UserError("Aucun timer actif pour cette tâche.")
+            raise UserError(_("No active timer for this task."))
         elapsed = timer._stop_and_freeze()
         BfTimer = self.env["bf.timer"]
         suggested_minutes = BfTimer._compute_suggested_minutes(elapsed)
@@ -646,7 +648,7 @@ class ProjectTask(models.Model):
         })
         return {
             "type": "ir.actions.act_window",
-            "name": "Arrêter le timer",
+            "name": _("Stop the timer"),
             "res_model": "bf.timer.stop.wizard",
             "res_id": wizard.id,
             "views": [[False, "form"]],

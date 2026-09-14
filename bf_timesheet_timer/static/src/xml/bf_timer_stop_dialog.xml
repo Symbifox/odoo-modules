@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
     <t t-name="bf_timesheet_timer.StopDialog">
-        <Dialog title="'Arrêter le timer'" size="'md'">
+        <Dialog title.translate="Stop the timer" size="'md'">
             <div class="p-3">
                 <!-- Info -->
                 <div class="mb-3">
                     <div class="row mb-1">
-                        <div class="col-4 text-muted">Projet</div>
+                        <div class="col-4 text-muted">Project</div>
                         <div class="col-8 fw-semibold">
                             <t t-esc="props.timerData.project_name"/>
                         </div>
                     </div>
                     <div class="row mb-1">
-                        <div class="col-4 text-muted">Tâche</div>
+                        <div class="col-4 text-muted">Task</div>
                         <div class="col-8 fw-semibold">
                             <t t-esc="props.timerData.task_name"/>
                         </div>
                     </div>
                     <div class="row mb-1">
-                        <div class="col-4 text-muted">Temps écoulé</div>
+                        <div class="col-4 text-muted">Elapsed time</div>
                         <div class="col-8">
                             <t t-esc="rawElapsed"/>
                         </div>
@@ -27,7 +27,7 @@
 
                 <!-- Duration inputs -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Durée à enregistrer</label>
+                    <label class="form-label fw-semibold">Duration to log</label>
                     <div class="d-flex align-items-center gap-2">
                         <div class="input-group" style="max-width: 120px;">
                             <input type="number" class="form-control text-center"
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     <div t-if="state.belowMinimum" class="text-info small mt-1">
-                        <i class="fa fa-info-circle me-1"/>Arrondi &#224; <t t-esc="roundingIncrement"/> minutes minimum
+                        <i class="fa fa-info-circle me-1"/>Rounded to <t t-esc="roundingIncrement"/> minutes minimum
                     </div>
                 </div>
 
@@ -66,20 +66,20 @@
                     <input type="text" class="form-control"
                            t-att-value="state.description"
                            t-on-input="onChangeDescription"
-                           placeholder="Description de la feuille de temps"/>
+                           placeholder="Timesheet description"/>
                 </div>
             </div>
 
             <!-- Footer buttons -->
             <t t-set-slot="footer">
                 <button class="btn btn-primary" t-on-click="onConfirm">
-                    <i class="fa fa-check me-1"/>Confirmer
+                    <i class="fa fa-check me-1"/>Confirm
                 </button>
                 <button class="btn btn-danger" t-on-click="onDiscard">
-                    <i class="fa fa-trash me-1"/>Supprimer
+                    <i class="fa fa-trash me-1"/>Delete
                 </button>
                 <button class="btn btn-secondary" t-on-click="onCancel">
-                    Annuler
+                    Cancel
                 </button>
             </t>
         </Dialog>

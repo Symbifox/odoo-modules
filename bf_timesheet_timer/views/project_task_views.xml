@@ -10,11 +10,11 @@
             <xpath expr="//header" position="inside">
                 <field name="bf_has_active_timer" invisible="1"/>
                 <button name="action_bf_start_timer" type="object"
-                        string="Commencer" class="btn-primary"
+                        string="Start" class="btn-primary"
                         icon="fa-play"
                         invisible="bf_has_active_timer or not allow_timesheets"/>
                 <button name="action_bf_stop_timer" type="object"
-                        string="Arrêter" class="btn-danger"
+                        string="Stop" class="btn-danger"
                         icon="fa-stop"
                         invisible="not bf_has_active_timer"/>
             </xpath>
@@ -38,13 +38,13 @@
                 <button t-if="record.allow_timesheets.raw_value and !record.bf_has_active_timer.raw_value"
                         name="action_bf_start_timer" type="object"
                         class="btn btn-sm btn-outline-success bf-timer-btn me-1"
-                        title="Commencer">
+                        title="Start">
                     <i class="fa fa-play"/>
                 </button>
                 <button t-if="record.bf_has_active_timer.raw_value"
                         name="action_bf_stop_timer" type="object"
                         class="btn btn-sm btn-outline-danger bf-timer-btn me-1"
-                        title="Arrêter">
+                        title="Stop">
                     <i class="fa fa-stop"/>
                 </button>
             </xpath>

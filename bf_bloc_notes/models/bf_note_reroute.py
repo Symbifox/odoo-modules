@@ -10,7 +10,7 @@ promue au socle, le résolveur de `bf_email_management` ayant été retiré.
 
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
@@ -19,7 +19,7 @@ _logger = logging.getLogger(__name__)
 class BfNoteReroute(models.TransientModel):
     _name = "bf.note.reroute"
     _inherit = ["bf.chatter.target.mixin"]
-    _description = "Re-router une note vers une autre fiche"
+    _description = "Reroute a note to another record"
 
     note_ids = fields.Many2many(
         comodel_name="bf.note",
@@ -30,23 +30,23 @@ class BfNoteReroute(models.TransientModel):
         # enchaînement courant, et la liste a un filtre « Archivées ».
         context={"active_test": False},
     )
-    note_count = fields.Integer(string="Nb notes", compute="_compute_note_count")
+    note_count = fields.Integer(string="Note count", compute="_compute_note_count")
     sample_name = fields.Char(string="Note", compute="_compute_sample")
-    current_target = fields.Char(string="Lien actuel", compute="_compute_sample")
+    current_target = fields.Char(string="Current link", compute="_compute_sample")
 
     # Obligatoire côté vue, pas côté modèle : `required=True` poserait un
     # NOT NULL sur la colonne du transient, donc plus moyen d'instancier le
     # wizard avant que l'utilisateur ait choisi sa cible.
     target_reference = fields.Reference(
-        string="Nouvelle fiche",
-        help="Cherchez la fiche par son nom, son numéro, un raccourci "
-             "(task:22299, ticket:42), une référence technique (bf.email:17) "
-             "ou collez une URL Odoo.",
+        string="New record",
+        help="Search for the record by its name, its number, a shortcut "
+             "(task:22299, ticket:42), a technical reference "
+             "(bf.email:17) or paste an Odoo URL.",
     )
     mode = fields.Selection(
         selection=[
-            ("replace", "Remplacer les liens existants"),
-            ("add", "Ajouter aux liens existants"),
+            ("replace", "Replace existing links"),
+            ("add", "Add to existing links"),
         ],
         string="Mode",
         default="replace",
@@ -54,10 +54,10 @@ class BfNoteReroute(models.TransientModel):
     )
 
     state = fields.Selection(
-        selection=[("draft", "Prêt"), ("done", "Terminé")],
+        selection=[("draft", "Ready"), ("done", "Done")],
         default="draft",
     )
-    result_text = fields.Text(string="Résultat", readonly=True)
+    result_text = fields.Text(string="Result", readonly=True)
 
     # ------------------------------------------------------------------
     # Defaults / computes
@@ -88,7 +88,7 @@ class BfNoteReroute(models.TransientModel):
                 link.res_name or f"{link.res_model} #{link.res_id}"
                 for link in first.link_ids
             ]
-            wiz.current_target = ", ".join(labels) if labels else "Aucun lien"
+            wiz.current_target = ", ".join(labels) if labels else _("No link")
 
     # ------------------------------------------------------------------
     # Résolution d'une référence collée
@@ -109,7 +109,7 @@ class BfNoteReroute(models.TransientModel):
     def action_confirm(self):
         self.ensure_one()
         if not self.note_ids:
-            raise UserError("Aucune note à re-router.")
+            raise UserError(_("No note to reroute."))
         # Re-router une note ne publie rien sur la cible : la lecture suffit.
         target = self._get_chatter_target("read")
 
@@ -142,8 +142,8 @@ class BfNoteReroute(models.TransientModel):
         self.write({
             "state": "done",
             "result_text": "\n".join(results)
-            + f"\n\n{successes}/{len(self.note_ids)} note(s) re-routée(s) vers "
-            + f"{target.display_name}.",
+            + "\n\n" + _("%(ok)s/%(total)s note(s) rerouted to %(target)s.",
+                           ok=successes, total=len(self.note_ids), target=target.display_name),
         })
 
         if successes == 1 and len(self.note_ids) == 1:

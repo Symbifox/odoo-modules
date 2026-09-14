@@ -1,50 +1,51 @@
 from datetime import datetime, time
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class BfNoteTaskWizard(models.TransientModel):
     _name = "bf.note.task.wizard"
-    _description = "Convertir une note en tâche"
+    _description = "Convert a note to a task"
 
     note_id = fields.Many2one("bf.note", required=True, ondelete="cascade")
 
-    name = fields.Char(string="Titre", required=True)
+    name = fields.Char(string="Title", required=True)
     description = fields.Html(string="Description", sanitize=True)
 
-    project_id = fields.Many2one("project.project", string="Projet", required=True)
+    project_id = fields.Many2one("project.project", string="Project", required=True)
     stage_id = fields.Many2one(
         "project.task.type",
-        string="Étape",
+        string="Stage",
         domain="[('project_ids', '=', project_id)]",
     )
     parent_id = fields.Many2one(
         "project.task",
-        string="Tâche parente",
+        string="Parent task",
         domain="[('project_id', '=', project_id)]",
-        help="Optionnel : créer la nouvelle tâche comme sous-tâche.",
+        help="Optional: create the new task as a subtask.",
     )
     user_ids = fields.Many2many(
         "res.users",
-        string="Assignée à",
+        string="Assigned to",
         default=lambda self: self.env.user,
     )
-    date_deadline = fields.Datetime(string="Échéance")
-    tag_ids = fields.Many2many("project.tags", string="Étiquettes")
+    date_deadline = fields.Datetime(string="Due date")
+    tag_ids = fields.Many2many("project.tags", string="Tags")
     partner_id = fields.Many2one("res.partner", string="Client")
 
     link_back = fields.Boolean(
-        string="Lier la note à la tâche",
+        string="Link the note to the task",
         default=True,
-        help="Ajoute la nouvelle tâche aux liens de la note pour garder une trace.",
+        help="Adds the new task to the note's links to keep a trace.",
     )
     archive_note = fields.Boolean(
-        string="Archiver la note",
+        string="Archive the note",
         default=False,
-        help="Archive la note après création de la tâche (recommandé si elle ne sert plus).",
+        help="Archives the note once the task is created (recommended if "
+             "it is no longer needed).",
     )
     open_task = fields.Boolean(
-        string="Ouvrir la tâche",
+        string="Open the task",
         default=True,
     )
 
@@ -148,7 +149,7 @@ class BfNoteTaskWizard(models.TransientModel):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Tâche créée",
+                "title": _("Task created"),
                 "message": task.display_name,
                 "type": "success",
                 "sticky": False,

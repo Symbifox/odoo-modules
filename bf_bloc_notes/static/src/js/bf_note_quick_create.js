@@ -19,7 +19,7 @@ export class BfNoteQuickCreateDialog extends Component {
         this.orm = useService("orm");
         this.notification = useService("notification");
         this.action = useService("action");
-        this.title = _t("Nouvelle note rapide");
+        this.title = _t("New quick note");
         this.state = useState({
             name: "",
             body: "",
@@ -146,7 +146,7 @@ export class BfNoteQuickCreateDialog extends Component {
                 const img = `<img src="${url}" alt="" style="max-width: 100%; height: auto;"/>`;
                 this._insertHtmlAtCursor(img);
             } catch (e) {
-                this.notification.add(_t("Échec de l'upload de l'image."), { type: "danger" });
+                this.notification.add(_t("The image upload failed."), { type: "danger" });
                 throw e;
             }
         };
@@ -185,7 +185,7 @@ export class BfNoteQuickCreateDialog extends Component {
         const html = this.bodyRef.el?.innerHTML?.trim() || "";
         const text = this.bodyRef.el?.innerText?.trim() || "";
         if (!text && !this.state.name.trim()) {
-            this.notification.add(_t("La note est vide."), { type: "warning" });
+            this.notification.add(_t("The note is empty."), { type: "warning" });
             return;
         }
         this.state.saving = true;
@@ -205,7 +205,7 @@ export class BfNoteQuickCreateDialog extends Component {
             }
             const result = await this.orm.call("bf.note", "quick_create_from_context", [vals]);
             if (this.props.onSaved) this.props.onSaved(result.id);
-            this.notification.add(_t("Note enregistrée"), { type: "success" });
+            this.notification.add(_t("Note saved"), { type: "success" });
             this.props.close();
         } catch (e) {
             this.state.saving = false;
@@ -231,7 +231,7 @@ export class BfNoteQuickCreateDialog extends Component {
         const text = this.bodyRef.el?.innerText?.trim() || "";
         const title = this.state.name.trim();
         if (!title && !text) {
-            this.notification.add(_t("Saisis un titre ou un contenu pour créer la tâche."), { type: "warning" });
+            this.notification.add(_t("Enter a title or content to create the task."), { type: "warning" });
             return;
         }
         this.state.saving = true;
@@ -267,7 +267,7 @@ export class BfNoteQuickCreateDialog extends Component {
             }
             await this.action.doAction({
                 type: "ir.actions.act_window",
-                name: _t("Nouvelle tâche"),
+                name: _t("New task"),
                 res_model: "project.task",
                 views: [[false, "form"]],
                 target: "current",

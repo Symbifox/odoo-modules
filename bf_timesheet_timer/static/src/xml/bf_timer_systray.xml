@@ -22,7 +22,7 @@
                     </span>
                     <span t-if="primaryTimer.is_paused"
                           class="badge rounded-pill bg-warning text-dark bf-timer-badge ms-1"
-                          title="En pause">
+                          title="Paused">
                         <i class="fa fa-pause" style="font-size: 0.7em;"/>
                     </span>
                     <span t-if="timerCount > 1"
@@ -36,21 +36,21 @@
                     <!-- Active timers section -->
                     <t t-if="hasActiveTimers">
                         <div class="d-flex align-items-center justify-content-between mb-1">
-                            <span class="fw-bold text-muted small">Timers actifs</span>
+                            <span class="fw-bold text-muted small">Active timers</span>
                             <div t-if="hasMultipleTimers or hasRedTimers" class="d-flex gap-1">
                                 <button t-if="hasRedTimers"
                                         class="btn btn-sm btn-outline-danger py-0 px-1"
                                         style="font-size: 0.7em;"
                                         t-on-click="onStopAllRedTimers"
-                                        title="Arr&#234;ter tous les timers de 2h+">
-                                    <i class="fa fa-stop me-1"/>Arr&#234;ter les rouges
+                                        title="Stop all timers running 2h+">
+                                    <i class="fa fa-stop me-1"/>Stop the red ones
                                 </button>
                                 <button t-if="hasMultipleTimers"
                                         class="btn btn-sm btn-outline-danger py-0 px-1"
                                         style="font-size: 0.7em;"
                                         t-on-click="onStopAllTimers"
-                                        title="Arr&#234;ter tous les timers actifs">
-                                    <i class="fa fa-stop me-1"/>Tout arr&#234;ter
+                                        title="Stop all active timers">
+                                    <i class="fa fa-stop me-1"/>Stop all
                                 </button>
                             </div>
                         </div>
@@ -83,12 +83,12 @@
                                     <button t-if="timer.is_paused"
                                             class="bf-timer-btn btn btn-sm btn-outline-success"
                                             t-on-click="() => this.onResumeTimer(timer.id)"
-                                            title="Reprendre">
+                                            title="Resume">
                                         <i class="fa fa-play"/>
                                     </button>
                                     <button class="bf-timer-btn btn btn-sm btn-outline-danger"
                                             t-on-click="() => this.onStopTimer(timer.id)"
-                                            title="Arr&#234;ter">
+                                            title="Stop">
                                         <i class="fa fa-stop"/>
                                     </button>
                                 </div>
@@ -99,7 +99,7 @@
                     <!-- No active timers -->
                     <t t-if="!hasActiveTimers">
                         <div class="text-muted text-center py-2">
-                            <i class="fa fa-hourglass-half me-1"/>Aucun timer actif
+                            <i class="fa fa-hourglass-half me-1"/>No active timer
                         </div>
                     </t>
 
@@ -108,16 +108,16 @@
 
                     <!-- Recent tasks (Top 10) with search -->
                     <div class="d-flex align-items-center justify-content-between mb-1">
-                        <span class="fw-bold text-muted small">T&#226;ches r&#233;centes</span>
+                        <span class="fw-bold text-muted small">Recent tasks</span>
                     </div>
                     <div class="mb-2">
                         <input type="text" class="form-control form-control-sm"
-                               placeholder="Rechercher..."
+                               placeholder="Search..."
                                t-att-value="state.searchQuery"
                                t-on-input="onSearchInput"/>
                     </div>
                     <t t-if="filteredRecentTasks.length === 0">
-                        <div class="text-muted small py-1">Aucune t&#226;che trouv&#233;e</div>
+                        <div class="text-muted small py-1">No task found</div>
                     </t>
                     <t t-foreach="filteredRecentTasks" t-as="task" t-key="task.task_id">
                         <div t-att-class="'d-flex align-items-center justify-content-between py-1' + (task.is_closed ? ' bf-task-closed' : '')">
@@ -148,27 +148,27 @@
                                 <button t-if="task.is_pinned"
                                         class="bf-pin-btn btn btn-sm"
                                         t-on-click.stop="() => this.onUnpinTask(task.task_id)"
-                                        title="D&#233;s&#233;pingler">
+                                        title="Unpin">
                                     <i class="fa fa-star text-warning"/>
                                 </button>
                                 <button t-if="!task.is_pinned"
                                         class="bf-pin-btn btn btn-sm"
                                         t-on-click.stop="() => this.onPinTask(task.task_id)"
-                                        title="&#201;pingler">
+                                        title="Pin">
                                     <i class="fa fa-star-o text-muted"/>
                                 </button>
                                 <!-- Stop button if timer active for this task -->
                                 <button t-if="isTaskTimerActive(task.task_id)"
                                         class="bf-timer-btn btn btn-sm btn-outline-danger"
                                         t-on-click="() => this.onStopTaskTimer(task.task_id)"
-                                        title="Arr&#234;ter">
+                                        title="Stop">
                                     <i class="fa fa-stop"/>
                                 </button>
                                 <!-- Play button if no timer active for this task -->
                                 <button t-if="!isTaskTimerActive(task.task_id)"
                                         class="bf-timer-btn btn btn-sm btn-outline-success"
                                         t-on-click="() => this.onStartTask(task.task_id)"
-                                        title="Commencer">
+                                        title="Start">
                                     <i class="fa fa-play"/>
                                 </button>
                             </div>
@@ -181,17 +181,17 @@
                     <!-- Today + Week totals -->
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="small">
-                            <i class="fa fa-calendar-o me-1"/>Aujourd'hui:
+                            <i class="fa fa-calendar-o me-1"/>Today:
                             <strong><t t-esc="formattedTodayTotal"/></strong>
                             <span class="text-muted mx-1">|</span>
-                            Semaine:
+                            Week:
                             <strong><t t-esc="formattedWeekTotal"/></strong>
                         </span>
                     </div>
                     <div class="text-end mt-1">
                         <a href="#" class="small text-primary"
                            t-on-click.prevent="onOpenTimesheets">
-                            Mes feuilles de temps
+                            My timesheets
                         </a>
                     </div>
                 </div>

@@ -1,0 +1,649 @@
+# Translation of BF Bureau : vues multi-panneaux - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_bureau 18.0.3.3.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 05:48+0000\n"
+"PO-Revision-Date: 2026-09-14 05:48+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_bureau
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "(Default action title)"
+msgstr "(Titre par défaut de l'action)"
+
+#. module: bf_bureau
+#: model_terms:ir.actions.act_window,help:bf_bureau.bf_bureau_desk_action
+msgid ""
+"A desk is a layout of several Odoo actions\n"
+"                shown at the same time. Choose the layout,\n"
+"                add panes pointing to your favourite actions,\n"
+"                then open the desk from the \"My desk\" menu."
+msgstr ""
+"Un bureau est une mise en page de plusieurs actions Odoo\n"
+"                affichées simultanément. Choisissez la mise en page,\n"
+"                ajoutez des panneaux pointant vers vos actions favorites,\n"
+"                puis ouvrez le bureau via le menu « Mon bureau »."
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__action_id
+msgid "Action"
+msgstr "Action"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__active_when
+msgid "Active When"
+msgstr "Actif quand"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__view_type__activity
+msgid "Activity"
+msgstr "Activité"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__active_when__afternoon
+msgid "Afternoon (12:00 to 18:00)"
+msgstr "Après-midi (12 h à 18 h)"
+
+#. module: bf_bureau
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "Archived"
+msgstr "Archivée"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__active_when__always
+msgid "At any time"
+msgstr "En tout temps"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__bottom_left
+msgid "Bottom left"
+msgstr "Bas-gauche"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__bottom_right
+msgid "Bottom right"
+msgstr "Bas-droite"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__bottom_full
+msgid "Bottom row"
+msgstr "Rangée du bas"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__view_type__calendar
+msgid "Calendar"
+msgstr "Calendrier"
+
+#. module: bf_bureau
+#: model:onboarding.onboarding.step,description:bf_bureau.bf_onb_step_settings
+msgid "Choose the widgets to show and their default layout."
+msgstr "Choisissez les widgets à afficher et leur disposition par défaut."
+
+#. module: bf_bureau
+#: model:onboarding.onboarding.step,title:bf_bureau.bf_onb_step_settings
+msgid "Configure your desk"
+msgstr "Configurer votre bureau"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__context_override
+msgid "Context Override"
+msgstr "Contexte remplacé"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "Create my first desk"
+msgstr "Créer mon premier bureau"
+
+#. module: bf_bureau
+#: model_terms:ir.actions.act_window,help:bf_bureau.bf_bureau_desk_action
+msgid "Create your first desk"
+msgstr "Créez votre premier bureau"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__create_uid
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__create_date
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "Default"
+msgstr "Par défaut"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__desk_id
+#: model:onboarding.onboarding,name:bf_bureau.bf_onboarding_panel
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "Desk"
+msgstr "Bureau"
+
+#. module: bf_bureau
+#: model:onboarding.onboarding.step,done_text:bf_bureau.bf_onb_step_open_desk
+msgid "Desk on"
+msgstr "Bureau actif"
+
+#. module: bf_bureau
+#: model:ir.model.fields,help:bf_bureau.field_bf_bureau_desk__is_default
+msgid ""
+"Desk opened by default when the user clicks My desk (unless another desk has"
+" an active time slot)."
+msgstr ""
+"Bureau ouvert par défaut quand l'utilisateur clique sur Mon bureau (sauf si "
+"un autre bureau a un créneau horaire actif)."
+
+#. module: bf_bureau
+#: model:ir.model,name:bf_bureau.model_bf_bureau_pane
+msgid "Desk pane"
+msgstr "Panneau de bureau"
+
+#. module: bf_bureau
+#: model:ir.model,name:bf_bureau.model_bf_bureau_desk
+msgid "Desk: configurable multi-pane view"
+msgstr "Bureau : vue multi-panneaux configurable"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__display_name
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__domain_override
+msgid "Domain Override"
+msgstr "Domaine ajouté"
+
+#. module: bf_bureau
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_tree
+msgid "Duplicate"
+msgstr "Dupliquer"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "Edit this desk"
+msgstr "Modifier ce bureau"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__active_when__evening
+msgid "Evening (18:00 to midnight)"
+msgstr "Soir (18 h à minuit)"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__view_type__form
+msgid "Form"
+msgstr "Fiche"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__layout__four_quadrant
+msgid "Four quadrants (2×2)"
+msgstr "Quatre quadrants (2×2)"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__full
+msgid "Full screen"
+msgstr "Plein écran"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__view_type__graph
+msgid "Graph"
+msgstr "Graphique"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/js/bf_bureau_desk.js:0
+msgid "Hide the bar"
+msgstr "Masquer la barre"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__id
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_bureau
+#. odoo-python
+#: code:addons/bf_bureau/models/bf_bureau_pane.py:0
+msgid ""
+"Invalid context: %s. It must be a Python dictionary, e.g. "
+"{'search_default_my_filter': 1}."
+msgstr ""
+"Contexte invalide : %s. Doit être un dictionnaire Python, ex. "
+"{'search_default_my_filter': 1}."
+
+#. module: bf_bureau
+#. odoo-python
+#: code:addons/bf_bureau/models/bf_bureau_pane.py:0
+msgid "Invalid context: it must be a Python dictionary."
+msgstr "Contexte invalide : doit être un dictionnaire Python."
+
+#. module: bf_bureau
+#. odoo-python
+#: code:addons/bf_bureau/models/bf_bureau_pane.py:0
+msgid ""
+"Invalid domain: %s. It must be a Python list, e.g. [('priority','=','1')]."
+msgstr ""
+"Domaine invalide : %s. Doit être une liste Python, ex. "
+"[('priority','=','1')]."
+
+#. module: bf_bureau
+#. odoo-python
+#: code:addons/bf_bureau/models/bf_bureau_pane.py:0
+msgid "Invalid domain: it must be a Python list."
+msgstr "Domaine invalide : doit être une liste Python."
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__is_default
+msgid "Is Default"
+msgstr "Par défaut"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__view_type__kanban
+msgid "Kanban"
+msgstr "Kanban"
+
+#. module: bf_bureau
+#: model:ir.model.fields,help:bf_bureau.field_bf_bureau_desk__shortcut_key
+msgid ""
+"Key combination that opens the desk, e.g. \"alt+1\" or \"shift+g\". Empty = "
+"no shortcut."
+msgstr ""
+"Combinaison déclenchant l'ouverture du bureau, ex. « alt+1 » ou « shift+g »."
+" Vide = pas de raccourci."
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__shortcut_key
+msgid "Keyboard shortcut"
+msgstr "Raccourci clavier"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__write_uid
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__write_date
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__layout
+msgid "Layout"
+msgstr "Mise en page"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/js/bf_bureau_desk.js:0
+msgid "Layout saved"
+msgstr "Disposition enregistrée"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__left_full
+msgid "Left column"
+msgstr "Colonne gauche"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__view_type__list
+msgid "List"
+msgstr "Liste"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "Loading…"
+msgstr "Chargement…"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__active_when__morning
+msgid "Morning (5:00 to 12:00)"
+msgstr "Matin (5 h à 12 h)"
+
+#. module: bf_bureau
+#: model:ir.actions.client,name:bf_bureau.bf_bureau_open_default_desk_action
+#: model:ir.ui.menu,name:bf_bureau.menu_bf_bureau_root
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "My desk"
+msgstr "Mon bureau"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+#: model:ir.actions.act_window,name:bf_bureau.bf_bureau_desk_action
+#: model:ir.ui.menu,name:bf_bureau.menu_bf_bureau_desks
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_tree
+msgid "My desks"
+msgstr "Mes bureaux"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__name_override
+msgid "Name Override"
+msgstr "Nom remplacé"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "New desk"
+msgstr "Nouveau bureau"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__active_when__night
+msgid "Night (midnight to 5:00)"
+msgstr "Nuit (minuit à 5 h)"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "No desk"
+msgstr "Aucun bureau"
+
+#. module: bf_bureau
+#: model:ir.model,name:bf_bureau.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr "Parcours d'intégration"
+
+#. module: bf_bureau
+#: model:onboarding.onboarding.step,step_image_alt:bf_bureau.bf_onb_step_open_desk
+#: model:onboarding.onboarding.step,step_image_alt:bf_bureau.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__layout__two_bottom_one_top
+msgid "One top + two bottom"
+msgstr "Un haut + deux bas"
+
+#. module: bf_bureau
+#: model:ir.model.constraint,message:bf_bureau.constraint_bf_bureau_desk_user_default_unique
+msgid "Only one default desk per user."
+msgstr "Un seul bureau par défaut par utilisateur."
+
+#. module: bf_bureau
+#: model:ir.model.constraint,message:bf_bureau.constraint_bf_bureau_pane_desk_slot_unique
+msgid "Only one pane per slot in a desk."
+msgstr "Un seul panneau par emplacement dans un bureau."
+
+#. module: bf_bureau
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_tree
+msgid "Open"
+msgstr "Ouvrir"
+
+#. module: bf_bureau
+#: model:onboarding.onboarding.step,button_text:bf_bureau.bf_onb_step_settings
+msgid "Open Settings"
+msgstr "Ouvrir Paramètres"
+
+#. module: bf_bureau
+#: model:onboarding.onboarding.step,button_text:bf_bureau.bf_onb_step_open_desk
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "Open the desk"
+msgstr "Ouvrir le bureau"
+
+#. module: bf_bureau
+#: model:onboarding.onboarding.step,title:bf_bureau.bf_onb_step_open_desk
+msgid "Open your desk"
+msgstr "Ouvrir votre bureau"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__pane_ids
+msgid "Pane"
+msgstr "Panneau"
+
+#. module: bf_bureau
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "Panes"
+msgstr "Panneaux"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__view_type__pivot
+msgid "Pivot table"
+msgstr "Tableau croisé"
+
+#. module: bf_bureau
+#: model:onboarding.onboarding.step,done_text:bf_bureau.bf_onb_step_settings
+msgid "Preferences set"
+msgstr "Préférences réglées"
+
+#. module: bf_bureau
+#: model:ir.model.fields,help:bf_bureau.field_bf_bureau_pane__context_override
+msgid ""
+"Python dictionary merged over the action's context. E.g.: "
+"{'search_default_my_filter': 1}. Leave empty to use the action's context as "
+"is."
+msgstr ""
+"Dictionnaire Python fusionné par-dessus le contexte de l'action. Ex.: "
+"{'search_default_my_filter': 1}. Laissez vide pour utiliser le contexte de "
+"l'action tel quel."
+
+#. module: bf_bureau
+#: model:ir.model.fields,help:bf_bureau.field_bf_bureau_pane__domain_override
+msgid ""
+"Python expression added (AND) to the action's domain. E.g.: "
+"[('priority','=','1')]. Leave empty to use the action's domain as is."
+msgstr ""
+"Expression Python qui sera ajoutée (AND) au domaine de l'action. Ex.: "
+"[('priority','=','1')]. Laissez vide pour utiliser le domaine de l'action "
+"tel quel."
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "Refresh the pane"
+msgstr "Rafraîchir le panneau"
+
+#. module: bf_bureau
+#: model:ir.model.fields,help:bf_bureau.field_bf_bureau_pane__weight
+msgid ""
+"Relative weight (1 = normal, 2 = large, 3 = very large). Affects the size of"
+" the pane in the grid."
+msgstr ""
+"Poids relatif (1 = normal, 2 = grand, 3 = très grand). Influence la taille "
+"du panneau dans la grille."
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__right_full
+msgid "Right column"
+msgstr "Colonne droite"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__row_1
+msgid "Row 1"
+msgstr "Rangée 1"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__row_2
+msgid "Row 2"
+msgstr "Rangée 2"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__row_3
+msgid "Row 3"
+msgstr "Rangée 3"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "Save the current view types as defaults"
+msgstr "Enregistrer les types de vue actuels comme défauts"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "Save the layout"
+msgstr "Enregistrer la disposition"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "See all my desks"
+msgstr "Voir tous mes bureaux"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_bureau
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_tree
+msgid "Set as default"
+msgstr "Définir par défaut"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/js/bf_bureau_desk.js:0
+msgid "Show the desks bar"
+msgstr "Afficher la barre des bureaux"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__layout__single
+msgid "Single pane"
+msgstr "Un seul panneau"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__slot
+msgid "Slot"
+msgstr "Emplacement"
+
+#. module: bf_bureau
+#. odoo-python
+#: code:addons/bf_bureau/models/bf_bureau_pane.py:0
+msgid ""
+"The slot \"%(slot)s\" is not valid for the layout \"%(layout)s\". Allowed "
+"slots: %(allowed)s."
+msgstr ""
+"L'emplacement « %(slot)s » n'est pas valide pour la mise en page « "
+"%(layout)s ». Emplacements permis : %(allowed)s."
+
+#. module: bf_bureau
+#. odoo-python
+#: code:addons/bf_bureau/models/bf_bureau_pane.py:0
+msgid ""
+"The view type \"%(view)s\" is not supported by the action \"%(action)s\" "
+"(available modes: %(modes)s)."
+msgstr ""
+"Le type de vue « %(view)s » n'est pas supporté par l'action « %(action)s » "
+"(modes disponibles : %(modes)s)."
+
+#. module: bf_bureau
+#: model:ir.model.constraint,message:bf_bureau.constraint_bf_bureau_pane_weight_positive
+msgid "The weight must be between 1 and 4."
+msgstr "Le poids doit être entre 1 et 4."
+
+#. module: bf_bureau
+#: model:ir.model.constraint,message:bf_bureau.constraint_bf_bureau_desk_user_shortcut_unique
+msgid "This shortcut is already used by another desk."
+msgstr "Ce raccourci est déjà utilisé par un autre bureau."
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__layout__stacked_three
+msgid "Three stacked rows"
+msgstr "Trois rangées empilées"
+
+#. module: bf_bureau
+#: model:ir.model.fields,help:bf_bureau.field_bf_bureau_desk__active_when
+msgid ""
+"Time slot during which this desk automatically takes precedence over the "
+"\"default\" desk."
+msgstr ""
+"Plage horaire pendant laquelle ce bureau prend automatiquement le pas sur le"
+" bureau « par défaut »."
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__top_left
+msgid "Top left"
+msgstr "Haut-gauche"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__top_right
+msgid "Top right"
+msgstr "Haut-droite"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_pane__slot__top_full
+msgid "Top row"
+msgstr "Rangée du haut"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__layout__two_columns
+msgid "Two columns"
+msgstr "Deux colonnes"
+
+#. module: bf_bureau
+#: model:ir.model.fields.selection,name:bf_bureau.selection__bf_bureau_desk__layout__two_top_one_bottom
+msgid "Two top + one bottom"
+msgstr "Deux haut + un bas"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_desk__user_id
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__view_type
+msgid "View Type"
+msgstr "Type de vue"
+
+#. module: bf_bureau
+#: model:ir.model.fields,field_description:bf_bureau.field_bf_bureau_pane__weight
+msgid "Weight"
+msgstr "Poids"
+
+#. module: bf_bureau
+#. odoo-javascript
+#: code:addons/bf_bureau/static/src/xml/bf_bureau_desk.xml:0
+msgid "You have not created a desk yet. Go ahead!"
+msgstr "Vous n'avez pas encore créé de bureau. Lancez-vous !"
+
+#. module: bf_bureau
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "[('priority','=','1')]"
+msgstr "[('priority','=','1')]"
+
+#. module: bf_bureau
+#: model:onboarding.onboarding.step,description:bf_bureau.bf_onb_step_open_desk
+msgid ""
+"[action:bf_bureau.bf_bureau_open_default_desk_action] Open your desk view to"
+" customise the widgets."
+msgstr ""
+"[action:bf_bureau.bf_bureau_open_default_desk_action] Lancez votre vue "
+"bureau pour personnaliser les widgets."
+
+#. module: bf_bureau
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "alt+1"
+msgstr "alt+1"
+
+#. module: bf_bureau
+#: model_terms:ir.ui.view,arch_db:bf_bureau.bf_bureau_desk_view_form
+msgid "{'search_default_my_filter': 1}"
+msgstr "{'search_default_my_filter': 1}"

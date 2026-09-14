@@ -80,19 +80,19 @@
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='unassigned']" position="after">
                 <separator/>
-                <filter string="Matinée" name="tod_morning"
+                <filter string="Morning" name="tod_morning"
                         domain="[('time_of_day_id.code', '=', 'morning')]"/>
-                <filter string="Midi" name="tod_midday"
+                <filter string="Midday" name="tod_midday"
                         domain="[('time_of_day_id.code', '=', 'midday')]"/>
-                <filter string="Fin de jour" name="tod_eod"
+                <filter string="End of day" name="tod_eod"
                         domain="[('time_of_day_id.code', '=', 'eod')]"/>
-                <filter string="Hors heures" name="tod_after_hours"
+                <filter string="After hours" name="tod_after_hours"
                         domain="[('time_of_day_id.code', '=', 'after_hours')]"/>
-                <filter string="Sans plage" name="tod_none"
+                <filter string="No slot" name="tod_none"
                         domain="[('time_of_day_id', '=', False)]"/>
             </xpath>
             <xpath expr="//filter[@name='stage']" position="after">
-                <filter string="Plage horaire" name="group_by_time_of_day"
+                <filter string="Time slot" name="group_by_time_of_day"
                         domain="[]" context="{'group_by': 'time_of_day_id'}"/>
             </xpath>
         </field>

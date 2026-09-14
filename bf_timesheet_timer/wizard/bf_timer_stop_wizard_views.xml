@@ -4,7 +4,7 @@
         <field name="name">bf.timer.stop.wizard.form</field>
         <field name="model">bf.timer.stop.wizard</field>
         <field name="arch" type="xml">
-            <form string="Arrêter le timer">
+            <form string="Stop the timer">
                 <group>
                     <group>
                         <field name="project_name" readonly="1"/>
@@ -20,14 +20,14 @@
                 </group>
                 <footer>
                     <button name="action_confirm" type="object"
-                            string="Confirmer" class="btn-primary"
+                            string="Confirm" class="btn-primary"
                             icon="fa-check"/>
                     <button name="action_discard" type="object"
-                            string="Supprimer" class="btn-danger"
+                            string="Delete" class="btn-danger"
                             icon="fa-trash"
-                            confirm="Supprimer le timer sans enregistrer?"/>
+                            confirm="Delete the timer without saving?"/>
                     <button name="action_cancel" type="object"
-                            string="Annuler" class="btn-secondary"/>
+                            string="Cancel" class="btn-secondary"/>
                 </footer>
             </form>
         </field>

@@ -6,20 +6,20 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="Feuilles de temps" string="Feuilles de temps"
+                <app data-string="Timesheets" string="Timesheets"
                      name="bf_timesheet_timer"
                      groups="hr_timesheet.group_timesheet_manager">
-                    <block title="Arrondi du timer">
-                        <setting string="Mode d'arrondi"
-                                 help="D&#233;finit comment les dur&#233;es des timers sont arrondies.">
+                    <block title="Timer rounding">
+                        <setting string="Rounding mode"
+                                 help="Defines how timer durations are rounded.">
                             <field name="bf_timer_rounding_mode" widget="radio"/>
                         </setting>
-                        <setting string="Incr&#233;ment d'arrondi"
-                                 help="Les dur&#233;es sont arrondies au prochain multiple de cet incr&#233;ment.">
+                        <setting string="Rounding increment"
+                                 help="Durations are rounded up to the next multiple of this increment.">
                             <field name="bf_timer_rounding_increment"/>
                         </setting>
-                        <setting string="Seuil d'arrondi (minutes)"
-                                 help="En mode 'Arrondir sous un seuil', seules les dur&#233;es inf&#233;rieures &#224; ce seuil sont arrondies."
+                        <setting string="Rounding threshold (minutes)"
+                                 help="In 'Round below a threshold' mode, only durations below this threshold are rounded."
                                  invisible="bf_timer_rounding_mode != 'round_below_threshold'">
                             <field name="bf_timer_rounding_threshold"/>
                         </setting>

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo noupdate="1">
     <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
-        <field name="title">Configurer les préférences notes</field>
-        <field name="description">Réglez l'autosave, les options de partage et l'intégration chatter.</field>
-        <field name="button_text">Ouvrir Paramètres</field>
-        <field name="done_text">Préférences réglées</field>
+        <field name="title">Configure note preferences</field>
+        <field name="description">Set autosave, sharing options and chatter integration.</field>
+        <field name="button_text">Open Settings</field>
+        <field name="done_text">Preferences set</field>
         <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
         <field name="sequence">1</field>
     </record>
     <record id="bf_onb_step_first_note" model="onboarding.onboarding.step">
-        <field name="title">Créer une première note</field>
-        <field name="description">[action:bf_bloc_notes.bf_note_action] Lancez une note pour valider le workflow.</field>
-        <field name="button_text">Nouvelle note</field>
-        <field name="done_text">Première note créée</field>
+        <field name="title">Create a first note</field>
+        <field name="description">[action:bf_bloc_notes.bf_note_action] Start a note to check the workflow.</field>
+        <field name="button_text">New note</field>
+        <field name="done_text">First note created</field>
         <field name="panel_step_open_action_name">bf_open_action</field>
         <field name="sequence">2</field>
     </record>
     <record id="bf_onboarding_panel" model="onboarding.onboarding">
-        <field name="name">Bloc-notes BF</field>
+        <field name="name">Notepad</field>
         <field name="route_name">bf_bloc_notes_onboarding</field>
         <field name="panel_close_action_name">action_close_panel_bf_bloc_notes</field>
         <field name="step_ids" eval="[

@@ -142,6 +142,10 @@ bf_dark_mode/
 
 ## Changelog
 
+### 18.0.1.5.0
+
+- **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read this module in French.
+
 ### 18.0.1.4.2
 
 - Surfaces and accent read `--brand-dark`/`--brand-primary` (the active company's brand) instead of fixed hex values.

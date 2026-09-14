@@ -17,29 +17,31 @@ ICON_TO_EMOJI = {
 
 class BfTimeOfDay(models.Model):
     _name = "bf.time.of.day"
-    _description = "Plage horaire"
+    _description = "Time slot"
     _order = "sequence, id"
 
     name = fields.Char(required=True, translate=True)
-    code = fields.Char(required=True, help="Identifiant stable (morning, midday, …).")
+    code = fields.Char(required=True, help="Stable identifier (morning, "
+                                           "midday, …).")
     sequence = fields.Integer(default=10)
     color = fields.Integer(default=0)
     icon = fields.Char(
-        help="Classe Font Awesome (ex. fa-coffee, fa-sun-o, fa-moon-o). "
-        "Préfixée en émoji dans le menu déroulant.",
+        help="Font Awesome class (e.g. fa-coffee, fa-sun-o, fa-moon-o). "
+             "Shown as a prefix in the drop-down menu.",
     )
     default_time = fields.Float(
-        string="Heure suggérée",
-        help="Heure-cadran (HH:MM) appliquée à la deadline d'une tâche quand "
-        "cette plage est sélectionnée. Laisser vide pour ne rien forcer.",
+        string="Suggested time",
+        help="Clock time (HH:MM) applied to a task's deadline when this "
+             "slot is selected. Leave empty to force nothing.",
     )
     active = fields.Boolean(default=True)
 
     _sql_constraints = [
-        ("code_uniq", "unique(code)", "Le code de la plage horaire doit être unique."),
+        ("code_uniq", "unique(code)", "The time slot code must be unique."),
     ]
 
     @api.depends("name", "icon")
+    @api.depends_context("lang")
     def _compute_display_name(self):
         for rec in self:
             emoji = ICON_TO_EMOJI.get(rec.icon or "", "")

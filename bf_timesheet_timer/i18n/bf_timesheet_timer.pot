@@ -1,19 +1,54 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_timesheet_timer
-#
+# Translation template for BF Timer - Feuilles de temps.
+# The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260119\n"
+"Project-Id-Version: bf_timesheet_timer 18.0.1.13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-14 16:46+0000\n"
-"PO-Revision-Date: 2026-02-14 16:46+0000\n"
+"POT-Creation-Date: 2026-09-14 05:54+0000\n"
+"PO-Revision-Date: 2026-09-14 05:54+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "%sd ago"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields.selection,name:bf_timesheet_timer.selection__res_config_settings__bf_timer_rounding_increment__1
+msgid "1 minute"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields.selection,name:bf_timesheet_timer.selection__res_config_settings__bf_timer_rounding_increment__10
+msgid "10 minutes"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields.selection,name:bf_timesheet_timer.selection__res_config_settings__bf_timer_rounding_increment__15
+msgid "15 minutes"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields.selection,name:bf_timesheet_timer.selection__res_config_settings__bf_timer_rounding_increment__5
+msgid "5 minutes"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "A timer is already running for this task."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__accumulated_seconds
+msgid "Accumulated Seconds"
+msgstr ""
 
 #. module: bf_timesheet_timer
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_description_preset__active
@@ -21,63 +56,31 @@ msgid "Active"
 msgstr ""
 
 #. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_project_task__bf_has_active_timer
+msgid "Active timer"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Active timers"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields.selection,name:bf_timesheet_timer.selection__res_config_settings__bf_timer_rounding_mode__round_all
+msgid "Always round"
+msgstr ""
+
+#. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_bf_timer_stop_wizard_form
-msgid "Annuler"
+msgid "Cancel"
 msgstr ""
 
 #. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
-msgid "Arrondi à 5 minutes minimum"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_task_form_bf_timer
-#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_task_kanban_bf_timer
-msgid "Arrêter"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_bf_timer_stop_wizard_form
-msgid "Arrêter le timer"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#: model:ir.model,name:bf_timesheet_timer.model_bf_timer_stop_wizard
-msgid "Assistant d'arrêt du timer"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Aucun timer actif"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_systray.js:0
-msgid "Aucune tâche récente trouvée."
-msgstr ""
-
-#. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Aucune tâche trouvée"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Aujourd'hui:"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#: model:ir.model.constraint,message:bf_timesheet_timer.constraint_bf_timer_pinned_task_user_task_unique
-msgid "Cette tâche est déjà épinglée."
+#: model:onboarding.onboarding.step,description:bf_timesheet_timer.bf_onb_step_settings
+msgid "Choose the timer's rounding, idle threshold and keyboard shortcut."
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -86,24 +89,26 @@ msgid "Claimed At"
 msgstr ""
 
 #. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_task_form_bf_timer
-#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_task_kanban_bf_timer
-msgid "Commencer"
+#: model:ir.model,name:bf_timesheet_timer.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:onboarding.onboarding.step,title:bf_timesheet_timer.bf_onb_step_presets
+msgid "Configure presets"
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_bf_timer_stop_wizard_form
-msgid "Confirmer"
+msgid "Confirm"
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/js/bf_timer_systray.js:0
-msgid "Continuer"
+msgid "Continue"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -123,6 +128,23 @@ msgid "Created on"
 msgstr ""
 
 #. module: bf_timesheet_timer
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.res_config_settings_view_form_bf_timer
+msgid "Defines how timer durations are rounded."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_bf_timer_stop_wizard_form
+msgid "Delete"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_bf_timer_stop_wizard_form
+msgid "Delete the timer without saving?"
+msgstr ""
+
+#. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__description
@@ -131,9 +153,9 @@ msgid "Description"
 msgstr ""
 
 #. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
-msgid "Description de la feuille de temps"
+#: model:ir.actions.act_window,name:bf_timesheet_timer.action_bf_timer_preset
+#: model:ir.ui.menu,name:bf_timesheet_timer.menu_bf_timer_preset
+msgid "Description presets"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -147,20 +169,18 @@ msgstr ""
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
-#: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_stop_wizard__elapsed_display
-msgid "Durée brute"
+msgid "Duration to log"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.res_config_settings_view_form_bf_timer
+msgid "Durations are rounded up to the next multiple of this increment."
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
-msgid "Durée à enregistrer"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Désépingler"
+msgid "Elapsed time"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -170,13 +190,30 @@ msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_stop_dialog.js:0
-msgid "Feuille de temps enregistrée."
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_page.js:0
+msgid "Exit full screen"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__first_start
+msgid "First start"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_page.js:0
+msgid "Full screen"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_page.js:0
+msgid "Full screen was refused."
 msgstr ""
 
 #. module: bf_timesheet_timer
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_stop_wizard__hours
-msgid "Heures"
+msgid "Hours"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -188,8 +225,26 @@ msgid "ID"
 msgstr ""
 
 #. module: bf_timesheet_timer
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.res_config_settings_view_form_bf_timer
+msgid ""
+"In 'Round below a threshold' mode, only durations below this threshold are "
+"rounded."
+msgstr ""
+
+#. module: bf_timesheet_timer
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__is_active
 msgid "Is Active"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__is_paused
+msgid "Is Paused"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_page.js:0
+msgid "Keep the screen on"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -210,8 +265,8 @@ msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Mes feuilles de temps"
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_page.js:0
+msgid "Let the screen turn off"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -220,8 +275,105 @@ msgid "Minutes"
 msgstr ""
 
 #. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "My timesheets"
+msgstr ""
+
+#. module: bf_timesheet_timer
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_description_preset__name
-msgid "Nom"
+msgid "Name"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "No active timer"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "No active timer for this task."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "No employee is linked to your user account."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_systray.js:0
+msgid "No recent task found."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields.selection,name:bf_timesheet_timer.selection__res_config_settings__bf_timer_rounding_mode__none
+msgid "No rounding"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "No task found"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_page.xml:0
+msgid ""
+"No task to start here. Pin some from Odoo's top\n"
+"                    bar, or log a timesheet: recent tasks\n"
+"                    show up on their own."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_page.xml:0
+msgid "No timer running."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model,name:bf_timesheet_timer.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:onboarding.onboarding.step,step_image_alt:bf_timesheet_timer.bf_onb_step_presets
+#: model:onboarding.onboarding.step,step_image_alt:bf_timesheet_timer.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:onboarding.onboarding.step,button_text:bf_timesheet_timer.bf_onb_step_settings
+msgid "Open Settings"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_page.xml:0
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Pause"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Paused"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_page.js:0
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Pin"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model,name:bf_timesheet_timer.model_bf_timer_pinned_task
+msgid "Pinned task for the timer"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -230,17 +382,13 @@ msgid "Preset"
 msgstr ""
 
 #. module: bf_timesheet_timer
-#: model:ir.model,name:bf_timesheet_timer.model_bf_timer_description_preset
-msgid "Preset de description pour timer"
+#: model:onboarding.onboarding.step,done_text:bf_timesheet_timer.bf_onb_step_presets
+msgid "Presets ready"
 msgstr ""
 
 #. module: bf_timesheet_timer
-#: model:ir.actions.act_window,name:bf_timesheet_timer.action_bf_timer_preset
-#: model:ir.ui.menu,name:bf_timesheet_timer.menu_bf_timer_preset
-msgid "Presets de description"
-msgstr ""
-
-#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__project_id
 msgid "Project"
 msgstr ""
@@ -251,27 +399,83 @@ msgid "Project Name"
 msgstr ""
 
 #. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_stop_wizard__elapsed_display
+msgid "Raw duration"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Recent tasks"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_page.xml:0
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Resume"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields.selection,name:bf_timesheet_timer.selection__res_config_settings__bf_timer_rounding_mode__round_below_threshold
+msgid "Round below a threshold"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,help:bf_timesheet_timer.field_res_config_settings__bf_timer_rounding_threshold
+msgid "Round only if the raw duration is below this threshold (in minutes)."
+msgstr ""
+
+#. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
-msgid "Projet"
+msgid "Rounded to"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_res_config_settings__bf_timer_rounding_increment
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.res_config_settings_view_form_bf_timer
+msgid "Rounding increment"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_res_config_settings__bf_timer_rounding_mode
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.res_config_settings_view_form_bf_timer
+msgid "Rounding mode"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.fields,field_description:bf_timesheet_timer.field_res_config_settings__bf_timer_rounding_threshold
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.res_config_settings_view_form_bf_timer
+msgid "Rounding threshold (minutes)"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_page.xml:0
+msgid "Search for a task…"
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Rechercher..."
+msgid "Search..."
 msgstr ""
 
 #. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Semaine:"
+#: model:onboarding.onboarding.step,button_text:bf_timesheet_timer.bf_onb_step_presets
+msgid "See the presets"
 msgstr ""
 
 #. module: bf_timesheet_timer
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_description_preset__sequence
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_pinned_task__sequence
 msgid "Sequence"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:onboarding.onboarding.step,title:bf_timesheet_timer.bf_onb_step_settings
+msgid "Set up the timer"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -282,23 +486,64 @@ msgid ""
 msgstr ""
 
 #. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_page.xml:0
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_task_form_bf_timer
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_task_kanban_bf_timer
+msgid "Start"
+msgstr ""
+
+#. module: bf_timesheet_timer
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__start_time
 msgid "Start Time"
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_page.xml:0
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_task_form_bf_timer
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_task_kanban_bf_timer
+msgid "Stop"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Stop all"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Stop all active timers"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Stop all timers running 2h+"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Stop the red ones"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_bf_timer_stop_wizard_form
-msgid "Supprimer"
+msgid "Stop the timer"
 msgstr ""
 
 #. module: bf_timesheet_timer
-#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.view_bf_timer_stop_wizard_form
-msgid "Supprimer le timer sans enregistrer?"
-msgstr ""
-
-#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
 #: model:ir.model,name:bf_timesheet_timer.model_project_task
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__task_id
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_pinned_task__task_id
@@ -311,60 +556,152 @@ msgid "Task Name"
 msgstr ""
 
 #. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "Task not found."
+msgstr ""
+
+#. module: bf_timesheet_timer
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_description_preset__text
-msgid "Texte"
+msgid "Text"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+#: code:addons/bf_timesheet_timer/wizard/bf_timer_stop_wizard.py:0
+msgid "The duration must be greater than 0."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_page.js:0
+msgid "The screen could not be kept on."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_page.js:0
+msgid "This browser cannot keep the screen on."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model.constraint,message:bf_timesheet_timer.constraint_bf_timer_pinned_task_user_task_unique
+msgid "This task is already pinned."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "This timer is already paused."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "This timer is not paused."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "This timer is stopped: Cancel restarts it."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "This timer is stopped: it cannot be paused."
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+#: model:ir.actions.client,name:bf_timesheet_timer.action_bf_timer_page
 #: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer_stop_wizard__timer_id
+#: model:ir.ui.menu,name:bf_timesheet_timer.menu_bf_timer_root
 msgid "Timer"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#: model:ir.model.fields,field_description:bf_timesheet_timer.field_project_task__bf_has_active_timer
-msgid "Timer actif"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#: model:ir.model,name:bf_timesheet_timer.model_bf_timer
-msgid "Timer de feuille de temps"
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/js/bf_timer_systray.js:0
-msgid "Timer déjà en cours"
+msgid "Timer already running"
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/js/bf_timer_stop_dialog.js:0
-msgid "Timer supprimé sans enregistrement."
+msgid "Timer deleted without saving."
 msgstr ""
 
 #. module: bf_timesheet_timer
-#. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Timers actifs"
+#: model:ir.model,name:bf_timesheet_timer.model_bf_timer_description_preset
+msgid "Timer description preset"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+#: code:addons/bf_timesheet_timer/wizard/bf_timer_stop_wizard.py:0
+msgid "Timer not found."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:onboarding.onboarding.step,done_text:bf_timesheet_timer.bf_onb_step_settings
+msgid "Timer ready"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.res_config_settings_view_form_bf_timer
+msgid "Timer rounding"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model,name:bf_timesheet_timer.model_bf_timer_stop_wizard
+msgid "Timer stop wizard"
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
-msgid "Tâche"
+msgid "Timesheet description"
 msgstr ""
 
 #. module: bf_timesheet_timer
-#: model:ir.model,name:bf_timesheet_timer.model_bf_timer_pinned_task
-msgid "Tâche épinglée pour timer"
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_stop_dialog.js:0
+msgid "Timesheet saved."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:ir.model,name:bf_timesheet_timer.model_bf_timer
+#: model:onboarding.onboarding,name:bf_timesheet_timer.bf_onboarding_panel
+msgid "Timesheet timer"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model_terms:ir.ui.view,arch_db:bf_timesheet_timer.res_config_settings_view_form_bf_timer
+msgid "Timesheets"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "Timesheets are not enabled on this task."
 msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Tâches récentes"
+msgid "Today:"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/js/bf_timer_page.js:0
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
+msgid "Unpin"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -375,19 +712,8 @@ msgstr ""
 
 #. module: bf_timesheet_timer
 #. odoo-javascript
-#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
-msgid "min"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#. odoo-javascript
 #: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_systray.xml:0
-msgid "Épingler"
-msgstr ""
-
-#. module: bf_timesheet_timer
-#: model:ir.model.fields,field_description:bf_timesheet_timer.field_bf_timer__first_start
-msgid "First start"
+msgid "Week:"
 msgstr ""
 
 #. module: bf_timesheet_timer
@@ -395,4 +721,55 @@ msgstr ""
 msgid ""
 "When the timer was first started. Resume and Cancel move the start time; "
 "this does not, and it dates the timesheet."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/wizard/bf_timer_stop_wizard.py:0
+msgid "You cannot change another user's timer."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#: model:onboarding.onboarding.step,description:bf_timesheet_timer.bf_onb_step_presets
+msgid ""
+"[action:bf_timesheet_timer.action_bf_timer_preset] Prepare project/task "
+"presets to start a timer in one click."
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
+msgid "h"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
+msgid "min"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_stop_dialog.xml:0
+msgid "minutes minimum"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_page.xml:0
+msgid "this week"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+#: code:addons/bf_timesheet_timer/static/src/xml/bf_timer_page.xml:0
+msgid "today"
+msgstr ""
+
+#. module: bf_timesheet_timer
+#. odoo-python
+#: code:addons/bf_timesheet_timer/models/bf_timer.py:0
+msgid "yesterday"
 msgstr ""

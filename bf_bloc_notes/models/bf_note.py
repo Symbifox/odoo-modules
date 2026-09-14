@@ -1,7 +1,7 @@
 import re
 from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 
 # Modèles remontés en tête du sélecteur : ce sont ceux qu'on route au
@@ -29,13 +29,13 @@ REMINDER_OFFSETS = {
 
 class BfNote(models.Model):
     _name = "bf.note"
-    _description = "Note rapide"
+    _description = "Quick note"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "pinned desc, write_date desc"
 
-    name = fields.Char(string="Titre", compute="_compute_name", store=True, readonly=False)
+    name = fields.Char(string="Title", compute="_compute_name", store=True, readonly=False)
     body = fields.Html(
-        string="Contenu",
+        string="Content",
         sanitize=True,
         sanitize_style=True,
         strip_classes=True,
@@ -44,38 +44,38 @@ class BfNote(models.Model):
     pinned = fields.Boolean(default=False)
     color = fields.Integer(default=0)
     is_shared = fields.Boolean(
-        string="Partagée",
+        string="Shared",
         default=False,
-        help="Si cochée, les autres utilisateurs internes peuvent voir cette note.",
+        help="If checked, other internal users can see this note.",
     )
-    deadline_date = fields.Date(string="Échéance")
-    tag_ids = fields.Many2many("bf.note.tag", string="Étiquettes")
+    deadline_date = fields.Date(string="Due date")
+    tag_ids = fields.Many2many("bf.note.tag", string="Tags")
 
     user_id = fields.Many2one(
         "res.users",
-        string="Auteur",
+        string="Author",
         default=lambda self: self.env.user,
         required=True,
         index=True,
     )
 
-    link_ids = fields.One2many("bf.note.link", "note_id", string="Liens")
+    link_ids = fields.One2many("bf.note.link", "note_id", string="Links")
     res_ref = fields.Reference(
-        string="Lien primaire",
+        string="Primary link",
         selection="_selection_target_model",
         compute="_compute_res_ref",
         inverse="_inverse_res_ref",
     )
     res_model = fields.Char(compute="_compute_res_model_id", store=True, index=True)
     res_id = fields.Integer(compute="_compute_res_model_id", store=True, index=True)
-    res_name = fields.Char(string="Lié à", compute="_compute_res_name", store=True)
+    res_name = fields.Char(string="Linked to", compute="_compute_res_name", store=True)
 
     tracked_activity_ids = fields.Many2many(
         "mail.activity",
         "bf_note_tracked_activity_rel",
         "note_id",
         "activity_id",
-        string="Activités créées",
+        string="Activities created",
     )
     tracked_activity_count = fields.Integer(compute="_compute_tracked_activity_count")
 
@@ -84,7 +84,7 @@ class BfNote(models.Model):
         "bf_note_tracked_task_rel",
         "note_id",
         "task_id",
-        string="Tâches créées",
+        string="Tasks created",
     )
     tracked_task_count = fields.Integer(compute="_compute_tracked_task_count")
 
@@ -202,7 +202,7 @@ class BfNote(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Activités créées depuis la note",
+            "name": _("Activities created from the note"),
             "res_model": "mail.activity",
             "view_mode": "list,form",
             "domain": [("id", "in", self.tracked_activity_ids.ids)],
@@ -220,8 +220,8 @@ class BfNote(models.Model):
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": "Activité(s) créée(s)",
-                "message": f"{sum(n.tracked_activity_count for n in self)} activité(s) au total.",
+                "title": _("Activities created"),
+                "message": _("%s activity(ies) in total.", sum(n.tracked_activity_count for n in self)),
                 "sticky": False,
                 "type": "success",
             },
@@ -231,7 +231,7 @@ class BfNote(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Convertir en activité",
+            "name": _("Convert to activity"),
             "res_model": "bf.note.activity.wizard",
             "view_mode": "form",
             "target": "new",
@@ -242,7 +242,7 @@ class BfNote(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Convertir en tâche",
+            "name": _("Convert to task"),
             "res_model": "bf.note.task.wizard",
             "view_mode": "form",
             "target": "new",
@@ -253,7 +253,7 @@ class BfNote(models.Model):
         """Ouvre le wizard de re-routage (une note ou une sélection)."""
         return {
             "type": "ir.actions.act_window",
-            "name": "Re-router la note" if len(self) == 1 else "Re-router les notes",
+            "name": _("Reroute the note") if len(self) == 1 else _("Reroute the notes"),
             "res_model": "bf.note.reroute",
             "view_mode": "form",
             "target": "new",
@@ -264,7 +264,7 @@ class BfNote(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": "Tâches créées depuis la note",
+            "name": _("Tasks created from the note"),
             "res_model": "project.task",
             "view_mode": "list,form",
             "domain": [("id", "in", self.tracked_task_ids.ids)],
@@ -324,7 +324,7 @@ class BfNote(models.Model):
                 "res_model_id": model_rec.id,
                 "res_model": model_name,
                 "res_id": rec_id,
-                "summary": self.name or "Note rapide",
+                "summary": self.name or _("Quick note"),
                 "note": self.body or "",
                 "user_id": self.env.user.id,
                 "date_deadline": deadline,
@@ -349,7 +349,7 @@ class BfNote(models.Model):
             "res_model_id": model_rec.id,
             "res_model": "bf.note",
             "res_id": self.id,
-            "summary": self.name or "Note rapide",
+            "summary": self.name or _("Quick note"),
             "note": self.body or "",
             "user_id": self.env.user.id,
             "date_deadline": deadline,
