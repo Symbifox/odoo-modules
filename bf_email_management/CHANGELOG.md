@@ -4,6 +4,47 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.35.0] — 2026-09-13
+
+La détection d'absence à l'agenda ne voyait pas les deux tiers de l'agenda, et
+le répondeur exigeait qu'on ait rédigé un gabarit avant de pouvoir s'armer.
+
+### Fixed
+
+- 🔴 **L'organisateur ne dit plus qui est absent.** `_cron_sync_calendar`
+  cherchait `calendar.event.user_id = user`. Sur un agenda tenu par une
+  synchronisation, les événements ont pour organisateur ET pour `create_uid` le
+  superutilisateur, parce que c'est sous son identité que la synchronisation
+  écrit : mesuré sur une base réelle, les deux tiers d'une année entière. La
+  recherche lit maintenant **l'organisateur ou les participants**, et une
+  invitation **déclinée** n'arme rien, puisqu'elle dit le contraire d'une
+  absence.
+- 🔴 **Une occurrence de récurrence n'arme plus rien.** Le motif attrape
+  `f[ée]ri[ée]`, et un jour férié annuel est une seule chaîne de récurrence qui
+  court sur des siècles. Les deux défauts se masquaient l'un l'autre : corriger
+  le premier seul aurait armé un répondeur pour un férié, chaque année,
+  indéfiniment.
+- 🔴 **La date de retour se lisait dans le fuseau du LECTEUR.** `_placeholders`
+  prenait `context_timestamp`, c'est-à-dire le fuseau de l'utilisateur courant :
+  une absence qui finit à 23 h 59 s'annonçait au lendemain chez un
+  correspondant situé plus à l'est. C'est le fuseau de la **personne absente**
+  qui fait foi, et le défaut ne se voyait nulle part, puisque personne ne lit
+  son propre courrier sortant. La date se rend aussi en `d MMMM y` plutôt qu'au
+  format court, ambigu hors du Québec (« 09/17/2026 »).
+
+### Added
+
+- **`_absence_seed(user)`, le point d'accroche du texte.** La détection à
+  l'agenda exigeait un « message type » personnel : sans lui, la passe sautait
+  son tour en silence. C'est ce préalable qui expliquait qu'un répondeur
+  complet, en service depuis des semaines, n'ait **jamais** été armé sur aucune
+  base. Un module qui porte un message par défaut surcharge désormais cette
+  méthode, et la règle qui reste est la bonne : **sans texte, on ne répond
+  pas** — un gabarit vide envoyé à un client coûte plus cher qu'un silence.
+- **Un plafond de durée** (`bf_email.absence_calendar_max_days`, 90 jours par
+  défaut) : ceinture pour le titre malheureux posé sur un événement d'un an. Un
+  répondeur allumé trop longtemps ne se voit pas.
+
 ## [18.0.11.34.0] — 2026-09-13
 
 La recherche voit enfin le corps entier, un fil se met en sourdine, et nos

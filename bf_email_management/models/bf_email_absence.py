@@ -40,9 +40,11 @@ import logging
 import re
 from datetime import timedelta
 
+import pytz
+
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-from odoo.tools import formataddr, html_escape
+from odoo.tools import format_date, formataddr, html_escape
 
 _logger = logging.getLogger(__name__)
 
@@ -60,6 +62,9 @@ _ROBOT_LOCALPART = re.compile(
 
 # Default pattern for calendar-driven absences. Deliberately narrow: a false
 # positive here turns the responder on while somebody is at their desk.
+# Un événement plus long que ça n'arme plus rien : voir `_calendar_event_arms`.
+DEFAULT_CALENDAR_MAX_DAYS = 90
+
 DEFAULT_CALENDAR_PATTERN = (
     r"(?i)\b(vacances?|cong[ée]s?|absence|absent[e]?|out\s*of\s*office|ooo"
     r"|f[ée]ri[ée]|sabbatique)\b"
@@ -439,14 +444,35 @@ class BfEmailAbsence(models.Model):
         return (partner.lang if partner and partner.lang
                 else self.user_id.lang) or "en_US"
 
-    def _placeholders(self, record):
+    def _placeholders(self, record, lang=None):
+        """Ce que les marqueurs valent pour CE message.
+
+        🔴 Deux corrections, toutes deux visibles seulement chez le
+        destinataire, c'est-à-dire là où personne ne relit :
+
+        - **la date de retour se lit dans le fuseau de la personne absente**,
+          pas dans celui du lecteur. `context_timestamp` prend le fuseau de
+          l'utilisateur courant : une absence qui finit à 23 h 59 s'affichait
+          au lendemain pour un lecteur situé plus à l'est ;
+        - **le format court de la locale est ambigu** (« 09/17/2026 »).
+          `d MMMM y` rend « 17 septembre 2026 », dans la langue du
+          correspondant.
+        """
         self.ensure_one()
         delegate = self.delegate_user_id
-        back = fields.Datetime.context_timestamp(
-            self, self.date_to) if self.date_to else None
+        back = ""
+        if self.date_to:
+            tz_name = self.user_id.sudo().tz or "UTC"
+            try:
+                tz = pytz.timezone(tz_name)
+            except pytz.UnknownTimeZoneError:
+                tz = pytz.utc
+            fin = pytz.utc.localize(self.date_to).astimezone(tz)
+            back = format_date(self.env, fin, lang_code=lang,
+                               date_format="d MMMM y")
         return {
             "{nom}": self.user_id.name or "",
-            "{retour}": back.strftime("%d/%m/%Y") if back else "",
+            "{retour}": back,
             "{releve}": delegate.name if delegate else "",
             "{releve_courriel}": (delegate.email or "") if delegate else "",
             "{motif}": self.name or "",
@@ -457,7 +483,7 @@ class BfEmailAbsence(models.Model):
         self.ensure_one()
         lang = self._target_lang(record)
         body = reply.with_context(lang=lang).body_html or ""
-        for token, value in self._placeholders(record).items():
+        for token, value in self._placeholders(record, lang=lang).items():
             body = body.replace(token, html_escape(value))
 
         if self.include_booking_links:
@@ -595,12 +621,102 @@ class BfEmailAbsence(models.Model):
         return raw or DEFAULT_CALENDAR_PATTERN
 
     @api.model
+    def _calendar_max_days(self):
+        """Au-delà de tant de jours, un événement n'arme plus rien.
+
+        Ceinture pour le jour où un titre attrape une plage démesurée. Un
+        répondeur allumé six mois par erreur ne se voit pas : personne ne lit
+        son propre courrier sortant.
+        """
+        raw = self.env["ir.config_parameter"].sudo().get_param(
+            "bf_email.absence_calendar_max_days")
+        try:
+            return max(1, int(raw)) if raw else DEFAULT_CALENDAR_MAX_DAYS
+        except ValueError:
+            return DEFAULT_CALENDAR_MAX_DAYS
+
+    @api.model
+    def _absence_seed(self, user):
+        """Les valeurs à recopier pour une absence créée toute seule.
+
+        Rend ``None`` quand il n'y a rien à recopier, et c'est une règle et non
+        un accident : **sans texte, on ne répond pas**. Un gabarit vide envoyé
+        à un client coûte plus cher qu'un silence.
+
+        Point d'accroche exprès : un module qui porte un message de maison
+        surcharge cette méthode pour que le zéro cesse d'être structurel. Ici,
+        seul le « message type » de la personne est connu.
+        """
+        template = self.sudo().search([
+            ("user_id", "=", user.id), ("is_template", "=", True),
+        ], limit=1)
+        if not template or not template.reply_ids:
+            return None
+        return {
+            "delegate_user_id": template.delegate_user_id.id,
+            "route_to_delegate": template.route_to_delegate,
+            "include_booking_links": template.include_booking_links,
+            "cooldown_days": template.cooldown_days,
+            "decline_meetings": template.decline_meetings,
+            "reply_ids": [
+                (0, 0, reply._copy_vals()) for reply in template.reply_ids
+            ],
+        }
+
+    @api.model
+    def _calendar_event_arms(self, user, event, pattern):
+        """Cet événement dit-il vraiment que cette personne est absente?
+
+        🔴 Trois refus, tous mesurés sur un agenda réel et non imaginés :
+
+        - **une occurrence de récurrence n'arme rien.** Un jour férié annuel
+          est une seule chaîne de récurrence qui court sur des siècles, et le
+          motif attrape « férié ». Un jour férié n'est pas une absence, et une
+          récurrence en fait des centaines ;
+        - **une invitation déclinée ne dit pas que je suis absent**, elle dit
+          le contraire. Elle n'entre dans le champ que depuis qu'on lit les
+          participants en plus de l'organisateur ;
+        - **un plafond de durée**, parce qu'un titre malheureux sur un
+          événement d'un an allumerait le répondeur pour un an.
+        """
+        if not pattern.search(event.name or ""):
+            return False
+        if event.recurrency or event.recurrence_id:
+            _logger.info(
+                "bf.email.absence: « %s » est une occurrence de récurrence, "
+                "elle n'arme pas le répondeur de %s.",
+                event.name, user.login,
+            )
+            return False
+        if event.user_id != user:
+            mien = event.attendee_ids.filtered(
+                lambda a: a.partner_id == user.partner_id)
+            if mien and mien[0].state == "declined":
+                return False
+        start, stop = self._event_window(event)
+        if (stop - start).days > self._calendar_max_days():
+            _logger.info(
+                "bf.email.absence: « %s » dure plus de %s jours, elle n'arme "
+                "pas le répondeur de %s.",
+                event.name, self._calendar_max_days(), user.login,
+            )
+            return False
+        return True
+
+    @api.model
     def _cron_sync_calendar(self):
         """Create, move and retire absences from the calendar.
 
         Only touches rows it created (`source='calendar'`). A period typed by
         hand is never moved by a cron: the person who typed it is the one who
         decides when it ends.
+
+        🔴 **L'organisateur ne dit plus qui est absent.** Sur un agenda tenu
+        par une synchronisation, les événements ont pour organisateur ET pour
+        `create_uid` le superutilisateur, parce que c'est sous son identité que
+        la synchronisation écrit : mesuré sur une base réelle, les deux tiers
+        d'une année. Une recherche sur `user_id` seul ne les voyait donc pas,
+        sans rien dire. C'est `partner_ids` qui porte la présence.
         """
         Users = self.env["res.users"].sudo()
         owners = Users.search([
@@ -615,27 +731,29 @@ class BfEmailAbsence(models.Model):
         touched = 0
 
         for user in owners:
-            template = self.sudo().search([
-                ("user_id", "=", user.id), ("is_template", "=", True),
-            ], limit=1)
-            if not template:
+            seed = self._absence_seed(user)
+            if seed is None:
                 _logger.info(
                     "bf.email.absence: %s a demandé la détection à l'agenda "
-                    "mais n'a pas de message type — rien à copier.",
+                    "mais aucun message n'est disponible, ni le sien ni celui "
+                    "de la maison. Rien à recopier.",
                     user.login,
                 )
                 continue
 
             events = self.env["calendar.event"].sudo().search([
-                ("user_id", "=", user.id),
                 ("start", "<=", fields.Datetime.to_string(horizon_to)),
                 ("stop", ">=", fields.Datetime.to_string(horizon_from)),
+                "|",
+                ("user_id", "=", user.id),
+                ("partner_ids", "in", user.partner_id.ids),
             ])
-            matching = events.filtered(lambda e: pattern.search(e.name or ""))
-            touched += self._sync_user_calendar(user, template, matching)
+            matching = events.filtered(
+                lambda e: self._calendar_event_arms(user, e, pattern))
+            touched += self._sync_user_calendar(user, seed, matching)
         return touched
 
-    def _sync_user_calendar(self, user, template, events):
+    def _sync_user_calendar(self, user, seed, events):
         """One user's calendar-driven absences, reconciled with ``events``."""
         existing = self.sudo().with_context(active_test=False).search([
             ("user_id", "=", user.id),
@@ -663,7 +781,7 @@ class BfEmailAbsence(models.Model):
                         "bf.email.absence %s: période reprise de l'agenda "
                         "(%s → %s)", absence.id, start, stop)
                 continue
-            created = self.sudo().create({
+            vals = dict(seed, **{
                 "name": event.name or _("Absence"),
                 "user_id": user.id,
                 "company_id": user.company_id.id,
@@ -671,15 +789,8 @@ class BfEmailAbsence(models.Model):
                 "calendar_event_id": event.id,
                 "date_from": start,
                 "date_to": stop,
-                "delegate_user_id": template.delegate_user_id.id,
-                "route_to_delegate": template.route_to_delegate,
-                "include_booking_links": template.include_booking_links,
-                "cooldown_days": template.cooldown_days,
-                "decline_meetings": template.decline_meetings,
-                "reply_ids": [
-                    (0, 0, reply._copy_vals()) for reply in template.reply_ids
-                ],
             })
+            created = self.sudo().create(vals)
             touched += 1
             _logger.info(
                 "bf.email.absence %s: créée depuis l'événement « %s » "

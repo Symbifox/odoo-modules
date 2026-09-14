@@ -250,14 +250,25 @@ class AbsenceCase(TransactionCase):
         self.assertEqual(str(start), "2026-09-01 00:00:00")
         self.assertEqual(str(stop), "2026-09-01 23:59:59")
 
-    def test_the_calendar_cron_needs_a_template_and_says_so(self):
+    def test_the_calendar_cron_needs_a_text_and_says_so(self):
+        """Sans texte, on ne répond pas, et la passe ne lève pas non plus.
+
+        ⚠️ La règle porte sur le TEXTE, pas sur le « message type ». Depuis
+        18.0.11.35.0, `_absence_seed` est un point d'accroche : un module peut
+        prêter un message de maison, et la détection cesse alors d'exiger un
+        gabarit personnel. L'essai vérifie donc le cas où il n'y a de texte
+        NULLE PART, ce qui est la seule garantie que ce module donne.
+        """
         self.delegate.bf_absence_from_calendar = True
         self.env["calendar.event"].create({
             "name": "Vacances", "allday": True, "user_id": self.delegate.id,
             "start": fields.Datetime.now(),
             "stop": fields.Datetime.add(fields.Datetime.now(), days=3),
         })
-        # Aucun message type : la passe ne doit rien créer, et ne pas lever.
+        if self.env["bf.email.absence"]._absence_seed(self.delegate) is not None:
+            self.skipTest(
+                "un module prête un message de maison : la garde du texte "
+                "absent est éprouvée chez lui")
         self.env["bf.email.absence"]._cron_sync_calendar()
         self.assertFalse(self.env["bf.email.absence"].sudo().search_count([
             ("user_id", "=", self.delegate.id), ("source", "=", "calendar")]))
