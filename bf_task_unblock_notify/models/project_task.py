@@ -1,6 +1,6 @@
 import logging
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.tools import format_datetime
 
 _logger = logging.getLogger(__name__)
@@ -59,59 +59,70 @@ class ProjectTask(models.Model):
         return result
 
     def _notify_tasks_unblocked(self, tasks, resolved_blockers):
-        """Send unblock notification via message_notify (same pattern as core task assignment)."""
+        """Send unblock notification via message_notify (same pattern as core task assignment).
+
+        🔴 One rendering PER LANGUAGE of the assignees. The notification used to be
+        rendered once, in the language of whoever closed the blocking task, and
+        sent as is to every assignee: an English-speaking colleague unblocking a
+        task wrote to French-speaking assignees in English, and the other way
+        round.
+        """
         odoobot = self.env.ref('base.partner_root', raise_if_not_found=False)
         odoobot_id = odoobot.id if odoobot else self.env.company.partner_id.id
-        task_model_description = self.env['ir.model']._get('project.task').display_name
-        state_labels = dict(
-            self.env['project.task']._fields['state']._description_selection(self.env)
-        )
         closing_user = self.env.user.name
-        closing_time = format_datetime(self.env, fields.Datetime.now())
+        now = fields.Datetime.now()
 
         for task in tasks:
             try:
                 partners = task.user_ids.partner_id
                 if not partners:
                     continue
-
                 blockers = resolved_blockers.get(task.id, self.env['project.task'])
-                blocker_info = [
-                    {
-                        'name': b.display_name,
-                        'state_label': state_labels.get(b.state, b.state),
-                        'project_name': b.project_id.display_name or '',
-                        'client_name': b.project_id.partner_id.name or '',
-                    }
-                    for b in blockers
-                ]
-
-                subject = _("Tâche débloquée : %s", task.display_name)
-
-                body = self.env['ir.qweb']._render(
-                    'bf_task_unblock_notify.task_unblocked_notification',
-                    {
-                        'task': task,
-                        'blocker_info': blocker_info,
-                        'closing_user': closing_user,
-                        'closing_time': closing_time,
-                        'access_link': task._notify_get_action_link('view'),
-                    },
-                    minimal_qcontext=True,
-                )
-                body = self.env['mail.render.mixin']._replace_local_links(body)
-
-                task.with_context(mail_notify_author=True).message_notify(
-                    subject=subject,
-                    body=body,
-                    partner_ids=partners.ids,
-                    author_id=odoobot_id,
-                    email_layout_xmlid='mail.mail_notification_layout',
-                    model_description=task_model_description,
-                    mail_auto_delete=False,
-                )
+                for lang in set(partners.mapped('lang')):
+                    recipients = partners.filtered(lambda p, lang=lang: p.lang == lang)
+                    self.with_context(lang=lang or 'en_US')._notify_task_unblocked_in_lang(
+                        task, blockers, recipients, closing_user, now, odoobot_id)
             except Exception:
                 _logger.error(
                     "Failed to send unblock notification for task %s (id=%s)",
                     task.display_name, task.id, exc_info=True,
                 )
+
+    def _notify_task_unblocked_in_lang(self, task, blockers, recipients, closing_user,
+                                       now, odoobot_id):
+        """Render and send the notification in the language of the context."""
+        task = task.with_env(self.env)
+        blockers = blockers.with_env(self.env)
+        state_labels = dict(
+            self.env['project.task']._fields['state']._description_selection(self.env)
+        )
+        blocker_info = [
+            {
+                'name': b.display_name,
+                'state_label': state_labels.get(b.state, b.state),
+                'project_name': b.project_id.display_name or '',
+                'client_name': b.project_id.partner_id.name or '',
+            }
+            for b in blockers
+        ]
+        body = self.env['ir.qweb']._render(
+            'bf_task_unblock_notify.task_unblocked_notification',
+            {
+                'task': task,
+                'blocker_info': blocker_info,
+                'closing_user': closing_user,
+                'closing_time': format_datetime(self.env, now),
+                'access_link': task._notify_get_action_link('view'),
+            },
+            minimal_qcontext=True,
+        )
+        body = self.env['mail.render.mixin']._replace_local_links(body)
+        task.with_context(mail_notify_author=True).message_notify(
+            subject=self.env._("Task unblocked: %s", task.display_name),
+            body=body,
+            partner_ids=recipients.ids,
+            author_id=odoobot_id,
+            email_layout_xmlid='mail.mail_notification_layout',
+            model_description=self.env['ir.model']._get('project.task').display_name,
+            mail_auto_delete=False,
+        )

@@ -18,16 +18,16 @@ class ResUsers(models.Model):
 
     bf_universal_search_ctrl_k = fields.Selection(
         [
-            ("instance", "Selon le réglage de l'instance"),
-            ("star", "La recherche universelle (*)"),
-            ("default", "Les commandes Odoo"),
+            ("instance", "Per the instance setting"),
+            ("star", "Universal search (*)"),
+            ("default", "The Odoo commands"),
         ],
-        string="Ctrl+K ouvre",
+        string="Ctrl+K opens",
         default="instance",
-        help="Ce que la palette affiche quand vous appuyez sur Ctrl+K. "
-             "« La recherche universelle » pré-remplit le préfixe * : tapez "
-             "directement ce que vous cherchez. Backspace sur le champ vide "
-             "ramène aux commandes Odoo ; / @ # restent disponibles.",
+        help="What the palette shows when you press Ctrl+K. \"Universal "
+             "search\" pre-fills the * prefix: type what you are looking "
+             "for straight away. Backspace on the empty field brings back "
+             "the Odoo commands; / @ # remain available.",
     )
 
     @property

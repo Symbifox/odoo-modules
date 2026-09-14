@@ -1,102 +1,73 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_universal_search
-#
+# Translation of BF Recherche universelle - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Project-Id-Version: bf_universal_search 18.0.2.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-05 07:25+0000\n"
-"PO-Revision-Date: 2026-07-12 22:43+0000\n"
-"Last-Translator: Blue Fox Inc.\n"
-"Language-Team: \n"
+"POT-Creation-Date: 2026-09-14 05:12+0000\n"
+"PO-Revision-Date: 2026-09-14 05:12+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__closed_domain
+msgid "\"Done\" domain"
+msgstr "Domaine « terminé »"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__active
-msgid "Actif"
+msgid "Active"
 msgstr "Actif"
 
 #. module: bf_universal_search
-#. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
-#: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
-msgid "Aucun résultat trouvé"
-msgstr "Aucun résultat trouvé"
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Agendas"
+msgstr "Ordres du jour"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Blog posts"
+msgstr "Articles de blogue"
 
 #. module: bf_universal_search
 #. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
-#: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
-msgid "Autres"
-msgstr "Autres"
-
-#. module: bf_universal_search
-#. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
 #: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
 msgid "CRM"
 msgstr "CRM"
 
 #. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Calls"
+msgstr "Appels"
+
+#. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__category
-msgid "Catégorie"
+msgid "Category"
 msgstr "Catégorie"
 
 #. module: bf_universal_search
-#: model:ir.model.fields,help:bf_universal_search.field_res_users__bf_universal_search_ctrl_k
-msgid ""
-"Ce que la palette affiche quand vous appuyez sur Ctrl+K. « La recherche "
-"universelle » pré-remplit le préfixe * : tapez directement ce que vous "
-"cherchez. Backspace sur le champ vide ramène aux commandes Odoo ; / @ # "
-"restent disponibles."
-msgstr ""
-
-#. module: bf_universal_search
-#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__detail_fields
-msgid ""
-"Champs affichés à droite du résultat, séparés par des virgules (ex: "
-"project_id,stage_id). Un many2one affiche son nom, une sélection son libellé."
-msgstr ""
-"Champs affichés à droite du résultat, séparés par des virgules (ex: "
-"project_id,stage_id). Un many2one affiche son nom, une sélection son libellé."
-
-#. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__detail_fields
-msgid "Champs de contexte"
-msgstr "Champs de contexte"
-
-#. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__search_fields
-msgid "Champs de recherche"
-msgstr "Champs de recherche"
-
-#. module: bf_universal_search
-#: model:onboarding.onboarding.step,description:bf_universal_search.bf_onb_step_settings
-msgid ""
-"Choisissez les modèles indexés et les priorités d'affichage dans la barre "
-"Cmd+K."
-msgstr ""
-"Choisissez les modèles indexés et les priorités d'affichage dans la barre "
-"Cmd+K."
-
-#. module: bf_universal_search
-#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__icon
-msgid "Classe CSS FontAwesome (ex: fa fa-users)"
-msgstr "Classe CSS FontAwesome (ex: fa fa-users)"
-
-#. module: bf_universal_search
 #: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__category
-msgid "Clé de catégorie pour le regroupement (ex: search_contacts)"
+msgid "Category key for grouping (e.g. search_contacts)"
 msgstr "Clé de catégorie pour le regroupement (ex: search_contacts)"
 
 #. module: bf_universal_search
+#: model:onboarding.onboarding.step,description:bf_universal_search.bf_onb_step_settings
+msgid "Choose the indexed models and the display priorities in the Cmd+K bar."
+msgstr ""
+"Choisissez les modèles indexés et les priorités d'affichage dans la barre "
+"Cmd+K."
+
+#. module: bf_universal_search
 #. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
 #: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
 msgid "Communications"
 msgstr "Communications"
@@ -104,109 +75,129 @@ msgstr "Communications"
 #. module: bf_universal_search
 #: model:ir.model,name:bf_universal_search.model_res_config_settings
 msgid "Config Settings"
-msgstr "Config Settings"
-
-#. module: bf_universal_search
-#: model:ir.model,name:bf_universal_search.model_bf_universal_search_config
-msgid "Configuration de recherche universelle"
-msgstr "Configuration de recherche universelle"
+msgstr "Paramètres de configuration"
 
 #. module: bf_universal_search
 #: model:onboarding.onboarding.step,title:bf_universal_search.bf_onb_step_settings
-msgid "Configurer la recherche universelle"
+msgid "Configure universal search"
 msgstr "Configurer la recherche universelle"
 
 #. module: bf_universal_search
 #. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
 #: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
 msgid "Contacts"
 msgstr "Contacts"
 
 #. module: bf_universal_search
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__detail_fields
+msgid "Context fields"
+msgstr "Champs de contexte"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Corporate resolutions"
+msgstr "Résolutions corporatives"
+
+#. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__create_uid
 msgid "Created by"
-msgstr "Created by"
+msgstr "Créé par"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__create_date
 msgid "Created on"
-msgstr "Created on"
+msgstr "Créé le"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_res_users__bf_universal_search_ctrl_k
-msgid "Ctrl+K ouvre"
+msgid "Ctrl+K opens"
 msgstr "Ctrl+K ouvre"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_res_config_settings__bf_universal_search_ctrl_k_star
 #: model_terms:ir.ui.view,arch_db:bf_universal_search.res_config_settings_view_form_bf_universal_search
-msgid "Ctrl+K ouvre la recherche universelle"
+msgid "Ctrl+K opens universal search"
 msgstr "Ctrl+K ouvre la recherche universelle"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__display_name
 msgid "Display Name"
-msgstr "Display Name"
+msgstr "Nom d'affichage"
 
 #. module: bf_universal_search
 #. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
 #: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
 msgid "Documents"
 msgstr "Documents"
 
 #. module: bf_universal_search
-#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__domain
-msgid ""
-"Domaine Odoo appliqué en plus de la recherche textuelle (ex: [('move_type','!"
-"=','entry')] pour ne garder que les factures)."
-msgstr ""
-"Domaine Odoo appliqué en plus de la recherche textuelle (ex: [('move_type','!"
-"=','entry')] pour ne garder que les factures)."
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Domains"
+msgstr "Domaines"
 
 #. module: bf_universal_search
 #. odoo-python
-#: code:addons/_t25355/bf_universal_search/models/bf_universal_search_config.py:0
-#: code:addons/bf_universal_search/models/bf_universal_search_config.py:0
-msgid "Domaine invalide sur « %(label)s » : %(error)s"
-msgstr "Domaine invalide sur « %(label)s » : %(error)s"
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Emails"
+msgstr "Courriels"
 
 #. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__closed_domain
-msgid "Domaine « terminé »"
-msgstr "Domaine « terminé »"
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Events"
+msgstr "Événements"
 
 #. module: bf_universal_search
-#: model:ir.model.fields,help:bf_universal_search.field_res_config_settings__bf_universal_search_ctrl_k_star
+#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__search_fields
+msgid "Field names, comma-separated (e.g. name,email,phone)"
+msgstr "Noms de champs séparés par des virgules (ex: name,email,phone)"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__detail_fields
 msgid ""
-"Défaut de l'instance : la palette de commandes s'ouvre sur la recherche "
-"universelle (préfixe *) plutôt que sur les commandes Odoo. Chaque usager "
-"peut choisir autrement dans ses préférences."
+"Fields shown to the right of the result, comma-separated (e.g. "
+"project_id,stage_id). A many2one shows its name, a selection its label."
 msgstr ""
+"Champs affichés à droite du résultat, séparés par des virgules (ex: "
+"project_id,stage_id). Un many2one affiche son nom, une sélection son "
+"libellé."
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__domain
-msgid "Filtre"
+msgid "Filter"
 msgstr "Filtre"
 
 #. module: bf_universal_search
 #. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
 #: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
 msgid "Finance"
 msgstr "Finance"
 
 #. module: bf_universal_search
+#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__icon
+msgid "FontAwesome CSS class (e.g. fa fa-users)"
+msgstr "Classe CSS FontAwesome (ex: fa fa-users)"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__icon
+msgid "FontAwesome icon"
+msgstr "Icône FontAwesome"
+
+#. module: bf_universal_search
 #: model:ir.model,name:bf_universal_search.model_ir_http
 msgid "HTTP Routing"
-msgstr "HTTP Routing"
+msgstr "Routage HTTP"
 
 #. module: bf_universal_search
 #. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
 #: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
-msgid "Hébergement"
+msgid "Hosting"
 msgstr "Hébergement"
 
 #. module: bf_universal_search
@@ -215,206 +206,334 @@ msgid "ID"
 msgstr "ID"
 
 #. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__icon
-msgid "Icône FontAwesome"
-msgstr "Icône FontAwesome"
-
-#. module: bf_universal_search
-#: model_terms:ir.ui.view,arch_db:bf_universal_search.res_config_settings_view_form_bf_universal_search
+#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__search_by_id
 msgid ""
-"La palette de commandes s'ouvre avec le préfixe * déjà en place : on tape "
-"directement ce qu'on cherche. Backspace sur le champ vide ramène aux "
-"commandes Odoo. Chaque usager peut choisir autrement dans ses préférences."
+"If checked, a numeric query (e.g. 142 or #142) also finds the record with "
+"that identifier."
 msgstr ""
+"Si coché, une requête numérique (ex: 142 ou #142) retrouve aussi la fiche "
+"portant cet identifiant."
 
 #. module: bf_universal_search
-#: model:ir.model.fields.selection,name:bf_universal_search.selection__res_users__bf_universal_search_ctrl_k__star
-msgid "La recherche universelle (*)"
-msgstr "La recherche universelle (*)"
+#: model:ir.model.fields,help:bf_universal_search.field_res_config_settings__bf_universal_search_ctrl_k_star
+msgid ""
+"Instance default: the command palette opens on universal search (* prefix) "
+"rather than on the Odoo commands. Each user can choose otherwise in their "
+"preferences."
+msgstr ""
+"Défaut de l'instance : la palette de commandes s'ouvre sur la recherche "
+"universelle (préfixe *) plutôt que sur les commandes Odoo. Chaque usager "
+"peut choisir autrement dans ses préférences."
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/models/bf_universal_search_config.py:0
+msgid "Invalid domain on \"%(label)s\": %(error)s"
+msgstr "Domaine invalide sur « %(label)s » : %(error)s"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Invoices"
+msgstr "Factures"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Knowledge"
+msgstr "Connaissances"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Knowledge matrices"
+msgstr "Matrices de connaissances"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__name
+msgid "Label"
+msgstr "Libellé"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__write_uid
 msgid "Last Updated by"
-msgstr "Last Updated by"
+msgstr "Dernière mise à jour par"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__write_date
 msgid "Last Updated on"
-msgstr "Last Updated on"
-
-#. module: bf_universal_search
-#. odoo-python
-#: code:addons/_t25355/bf_universal_search/models/bf_universal_search_config.py:0
-#: code:addons/bf_universal_search/models/bf_universal_search_config.py:0
-msgid "Le domaine de « %(label)s » doit être une liste."
-msgstr "Le domaine de « %(label)s » doit être une liste."
-
-#. module: bf_universal_search
-#: model:ir.model.fields.selection,name:bf_universal_search.selection__res_users__bf_universal_search_ctrl_k__default
-msgid "Les commandes Odoo"
-msgstr "Les commandes Odoo"
-
-#. module: bf_universal_search
-#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__closed_domain
-msgid ""
-"Les fiches correspondant à ce domaine passent en fin de liste, grisées et "
-"biffées (ex: [('state','in',['1_done','1_canceled'])])."
-msgstr ""
-"Les fiches correspondant à ce domaine passent en fin de liste, grisées et "
-"biffées (ex: [('state','in',['1_done','1_canceled'])])."
-
-#. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__name
-msgid "Libellé"
-msgstr "Libellé"
+msgstr "Dernière mise à jour le"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__limit
-msgid "Limite par modèle"
+msgid "Limit per model"
 msgstr "Limite par modèle"
 
 #. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__min_length
-msgid "Longueur minimale"
-msgstr "Longueur minimale"
-
-#. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__model_id
-msgid "Modèle"
-msgstr "Modèle"
-
-#. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__model_name
-msgid "Nom technique"
-msgstr "Nom technique"
-
-#. module: bf_universal_search
 #: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__limit
-msgid "Nombre maximum de résultats retournés par modèle"
+msgid "Maximum number of results returned per model"
 msgstr "Nombre maximum de résultats retournés par modèle"
+
+#. module: bf_universal_search
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+#: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
+msgid "Meetings"
+msgstr "Rencontres"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__min_length
+msgid "Minimum length"
+msgstr "Longueur minimale"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__min_length
 msgid ""
-"Nombre minimal de caractères avant d'interroger ce modèle. À monter à 3 ou 4 "
-"pour les modèles volumineux (SMS, courriels)."
+"Minimum number of characters before this model is queried. Raise it to 3 or "
+"4 for large models (SMS, emails)."
 msgstr ""
-"Nombre minimal de caractères avant d'interroger ce modèle. À monter à 3 ou 4 "
-"pour les modèles volumineux (SMS, courriels)."
+"Nombre minimal de caractères avant d'interroger ce modèle. À monter à 3 ou 4"
+" pour les modèles volumineux (SMS, courriels)."
 
 #. module: bf_universal_search
-#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__search_fields
-msgid "Noms de champs séparés par des virgules (ex: name,email,phone)"
-msgstr "Noms de champs séparés par des virgules (ex: name,email,phone)"
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__model_id
+msgid "Model"
+msgstr "Modèle"
+
+#. module: bf_universal_search
+#. odoo-javascript
+#: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
+msgid "No results found"
+msgstr "Aucun résultat trouvé"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__domain
+msgid ""
+"Odoo domain applied on top of the text search (e.g. "
+"[('move_type','!=','entry')] to keep invoices only)."
+msgstr ""
+"Domaine Odoo appliqué en plus de la recherche textuelle (ex: "
+"[('move_type','!=','entry')] pour ne garder que les factures)."
 
 #. module: bf_universal_search
 #: model:ir.model,name:bf_universal_search.model_onboarding_onboarding
 msgid "Onboarding"
-msgstr "Onboarding"
+msgstr "Parcours d'intégration"
 
 #. module: bf_universal_search
 #: model:onboarding.onboarding.step,step_image_alt:bf_universal_search.bf_onb_step_settings
 msgid "Onboarding Step Image"
-msgstr "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_universal_search
+#: model:onboarding.onboarding.step,button_text:bf_universal_search.bf_onb_step_settings
+msgid "Open Settings"
+msgstr "Ouvrir Paramètres"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Opportunities"
+msgstr "Opportunités"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__order
 msgid ""
-"Ordre passé au search_read (ex: write_date desc). Vide = ordre par défaut du "
-"modèle."
+"Order passed to search_read (e.g. write_date desc). Empty = the model's "
+"default order."
 msgstr ""
-"Ordre passé au search_read (ex: write_date desc). Vide = ordre par défaut du "
-"modèle."
-
-#. module: bf_universal_search
-#: model:onboarding.onboarding.step,button_text:bf_universal_search.bf_onb_step_settings
-msgid "Ouvrir Paramètres"
-msgstr "Ouvrir Paramètres"
+"Ordre passé au search_read (ex: write_date desc). Vide = ordre par défaut du"
+" modèle."
 
 #. module: bf_universal_search
 #. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
 #: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
-msgid "Projets"
+msgid "Other"
+msgstr "Autres"
+
+#. module: bf_universal_search
+#: model:ir.model.fields.selection,name:bf_universal_search.selection__res_users__bf_universal_search_ctrl_k__instance
+msgid "Per the instance setting"
+msgstr "Selon le réglage de l'instance"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Products and services"
+msgstr "Produits et services"
+
+#. module: bf_universal_search
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+#: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
+msgid "Projects"
 msgstr "Projets"
 
 #. module: bf_universal_search
-#: model:onboarding.onboarding.step,done_text:bf_universal_search.bf_onb_step_settings
-msgid "Recherche calibrée"
-msgstr "Recherche calibrée"
+#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__closed_domain
+msgid ""
+"Records matching this domain go to the end of the list, greyed out and "
+"struck through (e.g. [('state','in',['1_done','1_canceled'])])."
+msgstr ""
+"Les fiches correspondant à ce domaine passent en fin de liste, grisées et "
+"biffées (ex: [('state','in',['1_done','1_canceled'])])."
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "SMS"
+msgstr "SMS"
 
 #. module: bf_universal_search
 #: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__search_by_id
-msgid "Recherche par numéro"
+msgid "Search by number"
 msgstr "Recherche par numéro"
+
+#. module: bf_universal_search
+#. odoo-javascript
+#: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
+msgid "Search everywhere... (a number opens the task or the ticket)"
+msgstr "Rechercher partout... (un numéro ouvre la tâche ou le ticket)"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__search_fields
+msgid "Search fields"
+msgstr "Champs de recherche"
+
+#. module: bf_universal_search
+#: model:onboarding.onboarding.step,done_text:bf_universal_search.bf_onb_step_settings
+msgid "Search tuned"
+msgstr "Recherche calibrée"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Secure transfers"
+msgstr "Transferts sécurisés"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Servers"
+msgstr "Serveurs"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Services"
+msgstr "Services"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Signature requests"
+msgstr "Demandes de signature"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Software"
+msgstr "Logiciels"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__order
+msgid "Sort"
+msgstr "Tri"
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Tasks"
+msgstr "Tâches"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__model_name
+msgid "Technical name"
+msgstr "Nom technique"
+
+#. module: bf_universal_search
+#: model:ir.model.fields.selection,name:bf_universal_search.selection__res_users__bf_universal_search_ctrl_k__default
+msgid "The Odoo commands"
+msgstr "Les commandes Odoo"
+
+#. module: bf_universal_search
+#: model_terms:ir.ui.view,arch_db:bf_universal_search.res_config_settings_view_form_bf_universal_search
+msgid ""
+"The command palette opens with the * prefix already in place: you type what "
+"you are looking for straight away. Backspace on the empty field brings back "
+"the Odoo commands. Each user can choose otherwise in their preferences."
+msgstr ""
+"La palette de commandes s'ouvre avec le préfixe * déjà en place : on tape "
+"directement ce qu'on cherche. Backspace sur le champ vide ramène aux "
+"commandes Odoo. Chaque usager peut choisir autrement dans ses préférences."
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/models/bf_universal_search_config.py:0
+msgid "The domain of \"%(label)s\" must be a list."
+msgstr "Le domaine de « %(label)s » doit être une liste."
+
+#. module: bf_universal_search
+#. odoo-python
+#: code:addons/bf_universal_search/hooks.py:0
+msgid "Tickets"
+msgstr "Tickets"
+
+#. module: bf_universal_search
+#. odoo-javascript
+#: code:addons/bf_universal_search/static/src/js/command_palette_patch.js:0
+msgid "Type at least two characters to search everywhere."
+msgstr "Tapez au moins deux caractères pour chercher partout."
 
 #. module: bf_universal_search
 #: model:ir.model,name:bf_universal_search.model_bf_universal_search
 #: model:onboarding.onboarding,name:bf_universal_search.bf_onboarding_panel
 #: model_terms:ir.ui.view,arch_db:bf_universal_search.res_config_settings_view_form_bf_universal_search
-msgid "Recherche universelle"
+msgid "Universal search"
 msgstr "Recherche universelle"
 
 #. module: bf_universal_search
+#: model:ir.model.fields.selection,name:bf_universal_search.selection__res_users__bf_universal_search_ctrl_k__star
+msgid "Universal search (*)"
+msgstr "La recherche universelle (*)"
+
+#. module: bf_universal_search
 #. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/xml/universal_search.xml:0
 #: code:addons/bf_universal_search/static/src/xml/universal_search.xml:0
-msgid "Recherche universelle (Ctrl+K puis *)"
+msgid "Universal search (Ctrl+K then *)"
 msgstr "Recherche universelle (Ctrl+K puis *)"
 
 #. module: bf_universal_search
-#. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
-#: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
-msgid "Rechercher partout... (un numéro ouvre la tâche ou le ticket)"
-msgstr "Rechercher partout... (un numéro ouvre la tâche ou le ticket)"
-
-#. module: bf_universal_search
-#. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
-#: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
-msgid "Rencontres"
-msgstr "Rencontres"
-
-#. module: bf_universal_search
-#: model:ir.model.fields.selection,name:bf_universal_search.selection__res_users__bf_universal_search_ctrl_k__instance
-msgid "Selon le réglage de l'instance"
-msgstr "Selon le réglage de l'instance"
-
-#. module: bf_universal_search
-#: model:ir.model.fields,help:bf_universal_search.field_bf_universal_search_config__search_by_id
-msgid ""
-"Si coché, une requête numérique (ex: 142 ou #142) retrouve aussi la fiche "
-"portant cet identifiant."
-msgstr ""
-"Si coché, une requête numérique (ex: 142 ou #142) retrouve aussi la fiche "
-"portant cet identifiant."
-
-#. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__sequence
-msgid "Séquence"
-msgstr "Séquence"
-
-#. module: bf_universal_search
-#. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/command_palette_patch.js:0
-#: code:addons/bf_universal_search/static/src/js/command_palette_patch.js:0
-msgid "Tapez au moins deux caractères pour chercher partout."
-msgstr "Tapez au moins deux caractères pour chercher partout."
-
-#. module: bf_universal_search
-#: model:ir.model.fields,field_description:bf_universal_search.field_bf_universal_search_config__order
-msgid "Tri"
-msgstr "Tri"
+#: model:ir.model,name:bf_universal_search.model_bf_universal_search_config
+msgid "Universal search configuration"
+msgstr "Configuration de recherche universelle"
 
 #. module: bf_universal_search
 #: model:ir.model,name:bf_universal_search.model_res_users
 msgid "User"
-msgstr "User"
+msgstr "Utilisateur"
+
+#. module: bf_universal_search
+#: model:ir.model.fields,help:bf_universal_search.field_res_users__bf_universal_search_ctrl_k
+msgid ""
+"What the palette shows when you press Ctrl+K. \"Universal search\" pre-fills"
+" the * prefix: type what you are looking for straight away. Backspace on the"
+" empty field brings back the Odoo commands; / @ # remain available."
+msgstr ""
+"Ce que la palette affiche quand vous appuyez sur Ctrl+K. « La recherche "
+"universelle » pré-remplit le préfixe * : tapez directement ce que vous "
+"cherchez. Backspace sur le champ vide ramène aux commandes Odoo ; / @ # "
+"restent disponibles."
 
 #. module: bf_universal_search
 #. odoo-javascript
-#: code:addons/_t25355/bf_universal_search/static/src/js/universal_search_provider.js:0
 #: code:addons/bf_universal_search/static/src/js/universal_search_provider.js:0
-msgid "enregistrements"
+msgid "records"
 msgstr "enregistrements"

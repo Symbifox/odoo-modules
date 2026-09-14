@@ -104,6 +104,11 @@ bf_task_unblock_notify/
 
 ## Changelog
 
+### 18.0.1.8.0
+- **Each assignee reads the notification in their own language.** It used to be rendered once, in the language of whoever closed the blocking task, and sent as is to every assignee: an English-speaking colleague wrote to French-speaking assignees in English. It is now rendered once per language among the assignees.
+- **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language, so while the strings were written in French an English-speaking user received them in French. The template is written in whole sentences, each one a catalogue entry.
+- The onboarding panel, shipped as `noupdate` data, switches to English on upgrade only where it still carries the shipped text; an edited value is left as it is.
+
 ### 18.0.1.7.0
 - Documentation and metadata sync (license/LICENSE). See git history for the full detail.
 

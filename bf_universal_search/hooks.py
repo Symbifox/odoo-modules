@@ -1,6 +1,9 @@
 import logging
 
+from odoo.tools.translate import LazyTranslate
+
 _logger = logging.getLogger(__name__)
+_lt = LazyTranslate(__name__)
 
 # Canonical search scope. Shared by post_init_hook (fresh installs) and by the
 # 18.0.2.0.0 migration (existing databases).
@@ -23,14 +26,14 @@ _logger = logging.getLogger(__name__)
 _SEARCH_CONFIGS = [
     # --- Contacts -----------------------------------------------------------
     {
-        "suffix": "contacts", "name": "Contacts", "model": "res.partner",
+        "suffix": "contacts", "name": _lt("Contacts"), "model": "res.partner",
         "search_fields": "name,email,phone", "detail_fields": "email,phone",
         "icon": "fa fa-users", "category": "search_contacts",
         "sequence": 10, "limit": 5,
     },
     # --- CRM ----------------------------------------------------------------
     {
-        "suffix": "crm_leads", "name": "Opportunités", "model": "crm.lead",
+        "suffix": "crm_leads", "name": _lt("Opportunities"), "model": "crm.lead",
         "search_fields": "name,partner_name,contact_name,email_from",
         "detail_fields": "stage_id,partner_id",
         "order": "write_date desc",
@@ -39,13 +42,13 @@ _SEARCH_CONFIGS = [
     },
     # --- Projets ------------------------------------------------------------
     {
-        "suffix": "projects", "name": "Projets", "model": "project.project",
+        "suffix": "projects", "name": _lt("Projects"), "model": "project.project",
         "search_fields": "name", "detail_fields": "partner_id",
         "icon": "fa fa-folder", "category": "search_projects",
         "sequence": 20, "limit": 5,
     },
     {
-        "suffix": "tasks", "name": "Tâches", "model": "project.task",
+        "suffix": "tasks", "name": _lt("Tasks"), "model": "project.task",
         "search_fields": "name", "detail_fields": "project_id,stage_id",
         "closed_domain": "[('state', 'in', ['1_done', '1_canceled'])]",
         "order": "write_date desc", "search_by_id": True,
@@ -54,7 +57,7 @@ _SEARCH_CONFIGS = [
     },
     # --- Rencontres ---------------------------------------------------------
     {
-        "suffix": "meetings", "name": "Rencontres", "model": "meeting.record",
+        "suffix": "meetings", "name": _lt("Meetings"), "model": "meeting.record",
         "search_fields": "name,summary,location",
         "detail_fields": "project_id,date",
         "order": "date desc",
@@ -62,7 +65,7 @@ _SEARCH_CONFIGS = [
         "sequence": 32, "limit": 5,
     },
     {
-        "suffix": "agendas", "name": "Ordres du jour", "model": "meeting.agenda",
+        "suffix": "agendas", "name": _lt("Agendas"), "model": "meeting.agenda",
         "search_fields": "name,objectives", "detail_fields": "project_id,state",
         "closed_domain": "[('state', 'in', ['done', 'cancelled'])]",
         "order": "id desc",
@@ -71,7 +74,7 @@ _SEARCH_CONFIGS = [
     },
     # --- Communications -----------------------------------------------------
     {
-        "suffix": "emails", "name": "Courriels", "model": "bf.email",
+        "suffix": "emails", "name": _lt("Emails"), "model": "bf.email",
         # : `body_preview` s'arrête à 300 caractères, soit 11,2 % du
         # texte mesuré sur BF. La palette cherchait donc dans un aperçu.
         "search_fields": "subject,email_from,body_text",
@@ -82,7 +85,7 @@ _SEARCH_CONFIGS = [
         "sequence": 42, "limit": 5,
     },
     {
-        "suffix": "sms", "name": "SMS", "model": "sms.archive.message",
+        "suffix": "sms", "name": _lt("SMS"), "model": "sms.archive.message",
         "search_fields": "body,contact_name",
         "detail_fields": "contact_name,date_sent",
         "order": "date_sent desc", "min_length": 3,
@@ -90,7 +93,7 @@ _SEARCH_CONFIGS = [
         "sequence": 44, "limit": 5,
     },
     {
-        "suffix": "calls", "name": "Appels", "model": "call.archive.call",
+        "suffix": "calls", "name": _lt("Calls"), "model": "call.archive.call",
         "search_fields": "contact_name", "detail_fields": "call_type,date",
         "order": "date desc", "min_length": 3,
         "icon": "fa fa-phone", "category": "search_comms",
@@ -98,47 +101,47 @@ _SEARCH_CONFIGS = [
     },
     # --- Hébergement --------------------------------------------------------
     {
-        "suffix": "services", "name": "Services", "model": "hosting.service",
+        "suffix": "services", "name": _lt("Services"), "model": "hosting.service",
         "search_fields": "name,code,domain_name",
         "detail_fields": "partner_id,server_id",
         "icon": "fa fa-server", "category": "search_hosting",
         "sequence": 40, "limit": 5,
     },
     {
-        "suffix": "servers", "name": "Serveurs", "model": "hosting.server",
+        "suffix": "servers", "name": _lt("Servers"), "model": "hosting.server",
         "search_fields": "name,hostname", "detail_fields": "hostname,provider",
         "icon": "fa fa-database", "category": "search_hosting",
         "sequence": 50, "limit": 5,
     },
     {
-        "suffix": "domains", "name": "Domaines", "model": "hosting.domain",
+        "suffix": "domains", "name": _lt("Domains"), "model": "hosting.domain",
         "search_fields": "name", "detail_fields": "partner_id,registrar",
         "icon": "fa fa-globe", "category": "search_hosting",
         "sequence": 60, "limit": 5,
     },
     {
-        "suffix": "software", "name": "Logiciels", "model": "hosting.software",
+        "suffix": "software", "name": _lt("Software"), "model": "hosting.software",
         "search_fields": "name",
         "icon": "fa fa-cube", "category": "search_hosting",
         "sequence": 110, "limit": 5,
     },
     # --- Documents ----------------------------------------------------------
     {
-        "suffix": "documents", "name": "Documents", "model": "project.document",
+        "suffix": "documents", "name": _lt("Documents"), "model": "project.document",
         "search_fields": "name,code", "detail_fields": "code,project_id",
         "closed_domain": "[('state', '=', 'archived')]",
         "icon": "fa fa-file-text", "category": "search_documents",
         "sequence": 70, "limit": 5,
     },
     {
-        "suffix": "matrices", "name": "Matrices de connaissances",
+        "suffix": "matrices", "name": _lt("Knowledge matrices"),
         "model": "project.knowledge.matrix",
         "search_fields": "name,description", "detail_fields": "project_id",
         "icon": "fa fa-th", "category": "search_documents",
         "sequence": 75, "limit": 5,
     },
     {
-        "suffix": "knowledge", "name": "Connaissances",
+        "suffix": "knowledge", "name": _lt("Knowledge"),
         "model": "project.knowledge.item",
         "search_fields": "name", "detail_fields": "project_id,state",
         "closed_domain": "[('state', 'in', ['done', 'na', 'rejected', 'superseded'])]",
@@ -146,14 +149,14 @@ _SEARCH_CONFIGS = [
         "sequence": 80, "limit": 5,
     },
     {
-        "suffix": "resolutions", "name": "Résolutions corporatives",
+        "suffix": "resolutions", "name": _lt("Corporate resolutions"),
         "model": "corporate.resolution",
         "search_fields": "name,sequence", "detail_fields": "company_id",
         "icon": "fa fa-gavel", "category": "search_documents",
         "sequence": 85, "limit": 5,
     },
     {
-        "suffix": "signatures", "name": "Demandes de signature",
+        "suffix": "signatures", "name": _lt("Signature requests"),
         "model": "bf.sign.request",
         "search_fields": "name,title", "detail_fields": "state",
         "closed_domain":
@@ -163,7 +166,7 @@ _SEARCH_CONFIGS = [
         "sequence": 95, "limit": 5,
     },
     {
-        "suffix": "transfers", "name": "Transferts sécurisés",
+        "suffix": "transfers", "name": _lt("Secure transfers"),
         "model": "secure.transfer",
         "search_fields": "name", "detail_fields": "sender_name,state",
         "closed_domain": "[('state', 'in', ['expired', 'deleted', 'cancelled'])]",
@@ -173,7 +176,7 @@ _SEARCH_CONFIGS = [
     },
     # --- Finance ------------------------------------------------------------
     {
-        "suffix": "invoices", "name": "Factures", "model": "account.move",
+        "suffix": "invoices", "name": _lt("Invoices"), "model": "account.move",
         "search_fields": "name,ref,payment_reference,invoice_origin",
         "detail_fields": "partner_id,state",
         "domain": "[('move_type', '!=', 'entry')]",
@@ -184,7 +187,7 @@ _SEARCH_CONFIGS = [
     },
     # --- Autres -------------------------------------------------------------
     {
-        "suffix": "tickets", "name": "Tickets", "model": "helpdesk.ticket",
+        "suffix": "tickets", "name": _lt("Tickets"), "model": "helpdesk.ticket",
         "search_fields": "name,number", "detail_fields": "partner_id,stage_id",
         "closed_domain": "[('stage_id.closed', '=', True)]",
         "order": "write_date desc", "search_by_id": True,
@@ -192,7 +195,7 @@ _SEARCH_CONFIGS = [
         "sequence": 100, "limit": 5,
     },
     {
-        "suffix": "calendar", "name": "Événements", "model": "calendar.event",
+        "suffix": "calendar", "name": _lt("Events"), "model": "calendar.event",
         "search_fields": "name", "detail_fields": "start",
         # Recurring meetings generate events years ahead; without this cap a
         # "start desc" sort would only ever show 2040 occurrences.
@@ -204,14 +207,14 @@ _SEARCH_CONFIGS = [
         "sequence": 120, "limit": 5,
     },
     {
-        "suffix": "blog", "name": "Articles de blogue", "model": "blog.post",
+        "suffix": "blog", "name": _lt("Blog posts"), "model": "blog.post",
         "search_fields": "name,subtitle", "detail_fields": "blog_id,post_date",
         "order": "post_date desc",
         "icon": "fa fa-rss", "category": "search_other",
         "sequence": 150, "limit": 5,
     },
     {
-        "suffix": "products", "name": "Produits et services",
+        "suffix": "products", "name": _lt("Products and services"),
         "model": "product.template",
         "search_fields": "name,default_code", "detail_fields": "default_code",
         "icon": "fa fa-shopping-cart", "category": "search_other",
@@ -228,11 +231,28 @@ _CONFIG_FIELDS = (
 
 
 def config_values(spec, model_id):
-    values = {"name": spec["name"], "model_id": model_id}
+    # The source (en_US) value; the other languages are written after creation.
+    values = {"name": spec["name"]._translate("en_US"), "model_id": model_id}
     for field_name in _CONFIG_FIELDS:
         if field_name in spec:
             values[field_name] = spec[field_name]
     return values
+
+
+def write_label_translations(env, config, spec):
+    """Write the group label in every installed language but the source one.
+
+    🔴 Configs are created by the install hook, which runs AFTER Odoo has loaded
+    the module's catalogues: a label left to the catalogue would stay in English
+    for every French-speaking user of a fresh install.
+    """
+    # ⚠️ `update_field_translations` and not `write` in the language: on a
+    # database where en_US is not active, Odoo copies a write in any language
+    # into en_US too, and the source label would be lost.
+    config.update_field_translations("name", {
+        lang: spec["name"]._translate(lang)
+        for lang, _name in env["res.lang"].get_installed() if lang != "en_US"
+    })
 
 
 def create_search_configs(env, specs=None):
@@ -255,11 +275,12 @@ def create_search_configs(env, specs=None):
         if not ir_model:
             _logger.info(
                 "Universal search: skipping %s — model %s not installed",
-                spec["name"], spec["model"],
+                spec["name"]._translate("en_US"), spec["model"],
             )
             continue
 
         config = Config.create(config_values(spec, ir_model.id))
+        write_label_translations(env, config, spec)
         # Register an XML ID so the config can be referenced and updated later.
         IrModelData.create({
             "module": "bf_universal_search",
@@ -270,7 +291,7 @@ def create_search_configs(env, specs=None):
         })
         created += 1
         _logger.info(
-            "Universal search: created config for %s (%s)", spec["name"], spec["model"]
+            "Universal search: created config for %s (%s)", spec["name"]._translate("en_US"), spec["model"]
         )
     return created
 

@@ -61,7 +61,7 @@ patch(CommandPalette.prototype, {
             (options.searchValue || "").trim().length < 2
         ) {
             this.state.emptyMessage = _t(
-                "Tapez au moins deux caractères pour chercher partout."
+                "Type at least two characters to search everywhere."
             );
         }
     },

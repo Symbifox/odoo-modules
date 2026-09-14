@@ -8,76 +8,77 @@ from odoo.tools.safe_eval import time as safe_time
 
 class BfUniversalSearchConfig(models.Model):
     _name = "bf.universal.search.config"
-    _description = "Configuration de recherche universelle"
+    _description = "Universal search configuration"
     _order = "sequence, id"
 
-    name = fields.Char(string="Libellé", required=True)
+    name = fields.Char(string="Label", required=True, translate=True)
     model_id = fields.Many2one(
         "ir.model",
-        string="Modèle",
+        string="Model",
         required=True,
         ondelete="cascade",
     )
     model_name = fields.Char(
         related="model_id.model",
-        string="Nom technique",
+        string="Technical name",
         store=True,
     )
     search_fields = fields.Char(
-        string="Champs de recherche",
+        string="Search fields",
         required=True,
-        help="Noms de champs séparés par des virgules (ex: name,email,phone)",
+        help="Field names, comma-separated (e.g. name,email,phone)",
     )
     detail_fields = fields.Char(
-        string="Champs de contexte",
-        help="Champs affichés à droite du résultat, séparés par des virgules "
-             "(ex: project_id,stage_id). Un many2one affiche son nom, "
-             "une sélection son libellé.",
+        string="Context fields",
+        help="Fields shown to the right of the result, comma-separated "
+             "(e.g. project_id,stage_id). A many2one shows its name, a "
+             "selection its label.",
     )
     domain = fields.Char(
-        string="Filtre",
-        help="Domaine Odoo appliqué en plus de la recherche textuelle "
-             "(ex: [('move_type','!=','entry')] pour ne garder que les factures).",
+        string="Filter",
+        help="Odoo domain applied on top of the text search (e.g. "
+             "[('move_type','!=','entry')] to keep invoices only).",
     )
     closed_domain = fields.Char(
-        string="Domaine « terminé »",
-        help="Les fiches correspondant à ce domaine passent en fin de liste, "
-             "grisées et biffées (ex: [('state','in',['1_done','1_canceled'])]).",
+        string="\"Done\" domain",
+        help="Records matching this domain go to the end of the list, "
+             "greyed out and struck through (e.g. "
+             "[('state','in',['1_done','1_canceled'])]).",
     )
     order = fields.Char(
-        string="Tri",
-        help="Ordre passé au search_read (ex: write_date desc). "
-             "Vide = ordre par défaut du modèle.",
+        string="Sort",
+        help="Order passed to search_read (e.g. write_date desc). Empty = "
+             "the model's default order.",
     )
     search_by_id = fields.Boolean(
-        string="Recherche par numéro",
+        string="Search by number",
         default=False,
-        help="Si coché, une requête numérique (ex: 142 ou #142) retrouve aussi "
-             "la fiche portant cet identifiant.",
+        help="If checked, a numeric query (e.g. 142 or #142) also finds "
+             "the record with that identifier.",
     )
     min_length = fields.Integer(
-        string="Longueur minimale",
+        string="Minimum length",
         default=2,
-        help="Nombre minimal de caractères avant d'interroger ce modèle. "
-             "À monter à 3 ou 4 pour les modèles volumineux (SMS, courriels).",
+        help="Minimum number of characters before this model is queried. "
+             "Raise it to 3 or 4 for large models (SMS, emails).",
     )
     icon = fields.Char(
-        string="Icône FontAwesome",
+        string="FontAwesome icon",
         default="fa fa-search",
-        help="Classe CSS FontAwesome (ex: fa fa-users)",
+        help="FontAwesome CSS class (e.g. fa fa-users)",
     )
     category = fields.Char(
-        string="Catégorie",
+        string="Category",
         required=True,
-        help="Clé de catégorie pour le regroupement (ex: search_contacts)",
+        help="Category key for grouping (e.g. search_contacts)",
     )
-    sequence = fields.Integer(string="Séquence", default=100)
+    sequence = fields.Integer(string="Sequence", default=100)
     limit = fields.Integer(
-        string="Limite par modèle",
+        string="Limit per model",
         default=5,
-        help="Nombre maximum de résultats retournés par modèle",
+        help="Maximum number of results returned per model",
     )
-    active = fields.Boolean(string="Actif", default=True)
+    active = fields.Boolean(string="Active", default=True)
 
     def _domain_eval_context(self):
         """Same helpers as an ir.filters domain, so dates can be relative."""
@@ -114,11 +115,11 @@ class BfUniversalSearchConfig(models.Model):
                     parsed = config._eval_domain(raw)
                 except Exception as exc:
                     raise ValidationError(
-                        _("Domaine invalide sur « %(label)s » : %(error)s",
+                        _("Invalid domain on \"%(label)s\": %(error)s",
                           label=config.name, error=exc)
                     ) from exc
                 if not isinstance(parsed, list):
                     raise ValidationError(
-                        _("Le domaine de « %(label)s » doit être une liste.",
+                        _("The domain of \"%(label)s\" must be a list.",
                           label=config.name)
                     )

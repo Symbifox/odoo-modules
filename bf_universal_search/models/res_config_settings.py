@@ -7,9 +7,9 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_universal_search_ctrl_k_star = fields.Boolean(
-        string="Ctrl+K ouvre la recherche universelle",
+        string="Ctrl+K opens universal search",
         config_parameter=PARAM_CTRL_K_STAR,
-        help="Défaut de l'instance : la palette de commandes s'ouvre sur la "
-             "recherche universelle (préfixe *) plutôt que sur les commandes "
-             "Odoo. Chaque usager peut choisir autrement dans ses préférences.",
+        help="Instance default: the command palette opens on universal "
+             "search (* prefix) rather than on the Odoo commands. Each "
+             "user can choose otherwise in their preferences.",
     )

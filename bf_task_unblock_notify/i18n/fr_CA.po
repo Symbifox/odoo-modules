@@ -1,0 +1,109 @@
+# Translation of BF Notification de déblocage de tâche - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_task_unblock_notify 18.0.1.8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 04:58+0000\n"
+"PO-Revision-Date: 2026-09-14 04:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>The task</span>"
+msgstr "<span>La tâche</span>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>completed the following blocking tasks on</span>"
+msgstr "<span>a terminé les tâches bloquantes suivantes le</span>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>for the client</span>"
+msgstr "<span>pour le client</span>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>in the project</span>"
+msgstr "<span>du projet</span>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>is now <strong>unblocked</strong> and ready to resume.</span>"
+msgstr ""
+"<span>est maintenant <strong>débloquée</strong> et prête à être "
+"reprise.</span>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>· client</span>"
+msgstr "<span>· client</span>"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>· project</span>"
+msgstr "<span>· projet</span>"
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding.step,description:bf_task_unblock_notify.bf_onb_step_settings
+msgid ""
+"Choose who is notified when a blocking task is cleared, and the format of "
+"the messages."
+msgstr ""
+"Choisissez qui est notifié quand une tâche bloquante est débloquée et le "
+"format des messages."
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "Hello,"
+msgstr "Bonjour,"
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding.step,done_text:bf_task_unblock_notify.bf_onb_step_settings
+msgid "Notifications on"
+msgstr "Notifications actives"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model,name:bf_task_unblock_notify.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr "Parcours d'intégration"
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding.step,step_image_alt:bf_task_unblock_notify.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding.step,button_text:bf_task_unblock_notify.bf_onb_step_settings
+msgid "Open Settings"
+msgstr "Ouvrir Paramètres"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "Over to you!"
+msgstr "À vous de jouer !"
+
+#. module: bf_task_unblock_notify
+#: model:ir.model,name:bf_task_unblock_notify.model_project_task
+msgid "Task"
+msgstr "Tâche"
+
+#. module: bf_task_unblock_notify
+#. odoo-python
+#: code:addons/bf_task_unblock_notify/models/project_task.py:0
+msgid "Task unblocked: %s"
+msgstr "Tâche débloquée : %s"
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding,name:bf_task_unblock_notify.bf_onboarding_panel
+#: model:onboarding.onboarding.step,title:bf_task_unblock_notify.bf_onb_step_settings
+msgid "Unblock notifications"
+msgstr "Notifications de déblocage"

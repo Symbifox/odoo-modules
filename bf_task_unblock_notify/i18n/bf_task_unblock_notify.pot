@@ -1,0 +1,103 @@
+# Translation template for BF Notification de déblocage de tâche.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_task_unblock_notify 18.0.1.8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 04:58+0000\n"
+"PO-Revision-Date: 2026-09-14 04:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>The task</span>"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>completed the following blocking tasks on</span>"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>for the client</span>"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>in the project</span>"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>is now <strong>unblocked</strong> and ready to resume.</span>"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>· client</span>"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "<span>· project</span>"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding.step,description:bf_task_unblock_notify.bf_onb_step_settings
+msgid ""
+"Choose who is notified when a blocking task is cleared, and the format of "
+"the messages."
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "Hello,"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding.step,done_text:bf_task_unblock_notify.bf_onb_step_settings
+msgid "Notifications on"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model:ir.model,name:bf_task_unblock_notify.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding.step,step_image_alt:bf_task_unblock_notify.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding.step,button_text:bf_task_unblock_notify.bf_onb_step_settings
+msgid "Open Settings"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model_terms:ir.ui.view,arch_db:bf_task_unblock_notify.task_unblocked_notification
+msgid "Over to you!"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model:ir.model,name:bf_task_unblock_notify.model_project_task
+msgid "Task"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#. odoo-python
+#: code:addons/bf_task_unblock_notify/models/project_task.py:0
+msgid "Task unblocked: %s"
+msgstr ""
+
+#. module: bf_task_unblock_notify
+#: model:onboarding.onboarding,name:bf_task_unblock_notify.bf_onboarding_panel
+#: model:onboarding.onboarding.step,title:bf_task_unblock_notify.bf_onb_step_settings
+msgid "Unblock notifications"
+msgstr ""

@@ -224,7 +224,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.2.0 | LGPL-3 | File-upload question type for Odoo surveys |
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.0.1 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
-| `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.1.7.0 | LGPL-3 | Notifies assignees when their task becomes unblocked |
+| `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.1.8.0 | LGPL-3 | Notifies assignees when their task becomes unblocked |
 | `bf_task_waiting_states` | Task Waiting States | 18.0.1.0.0 | LGPL-3 | Add Attente - Client / Attente - Externe task states |
 | `bf_time_of_day` | BF Time of Day | 18.0.1.3.2 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.12.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
@@ -239,7 +239,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_training_session` | Registre de formation : la séance et sa feuille signée | 18.0.1.0.1 | BUSL-1.1 | La séance en salle tenue par Événements, et la feuille de présence signée qui en fait une preuve |
 | `bf_training_sign` | Registre de formation : accusé signé par module | 18.0.1.0.0 | BUSL-1.1 | Lire une politique et le confirmer par écrit devient une ligne du registre, datée et rattachée à la version lue |
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.1 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
-| `bf_universal_search` | BF Recherche universelle | 18.0.2.3.0 | LGPL-3 | Cross-module search through the command palette |
+| `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.10.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.16.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |

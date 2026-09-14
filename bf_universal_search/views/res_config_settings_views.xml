@@ -7,10 +7,10 @@
         <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//block[@name='users_setting_container']" position="after">
-                <block title="Recherche universelle" name="bf_universal_search_setting_container">
+                <block title="Universal search" name="bf_universal_search_setting_container">
                     <setting id="bf_universal_search_ctrl_k_setting"
-                             string="Ctrl+K ouvre la recherche universelle"
-                             help="La palette de commandes s'ouvre avec le préfixe * déjà en place : on tape directement ce qu'on cherche. Backspace sur le champ vide ramène aux commandes Odoo. Chaque usager peut choisir autrement dans ses préférences.">
+                             string="Ctrl+K opens universal search"
+                             help="The command palette opens with the * prefix already in place: you type what you are looking for straight away. Backspace on the empty field brings back the Odoo commands. Each user can choose otherwise in their preferences.">
                         <field name="bf_universal_search_ctrl_k_star"/>
                     </setting>
                 </block>

@@ -8,9 +8,9 @@ import { registry } from "@web/core/registry";
 // ---------------------------------------------------------------------------
 registry.category("command_setup").add("*", {
     debounceDelay: 300,
-    emptyMessage: _t("Aucun résultat trouvé"),
-    name: _t("enregistrements"),
-    placeholder: _t("Rechercher partout... (un numéro ouvre la tâche ou le ticket)"),
+    emptyMessage: _t("No results found"),
+    name: _t("records"),
+    placeholder: _t("Search everywhere... (a number opens the task or the ticket)"),
 });
 
 // ---------------------------------------------------------------------------
@@ -19,13 +19,13 @@ registry.category("command_setup").add("*", {
 const catReg = registry.category("command_categories");
 catReg.add("search_contacts", { namespace: "*", name: _t("Contacts") }, { sequence: 10 });
 catReg.add("search_crm", { namespace: "*", name: _t("CRM") }, { sequence: 15 });
-catReg.add("search_projects", { namespace: "*", name: _t("Projets") }, { sequence: 20 });
-catReg.add("search_meetings", { namespace: "*", name: _t("Rencontres") }, { sequence: 25 });
+catReg.add("search_projects", { namespace: "*", name: _t("Projects") }, { sequence: 20 });
+catReg.add("search_meetings", { namespace: "*", name: _t("Meetings") }, { sequence: 25 });
 catReg.add("search_comms", { namespace: "*", name: _t("Communications") }, { sequence: 30 });
-catReg.add("search_hosting", { namespace: "*", name: _t("Hébergement") }, { sequence: 35 });
+catReg.add("search_hosting", { namespace: "*", name: _t("Hosting") }, { sequence: 35 });
 catReg.add("search_documents", { namespace: "*", name: _t("Documents") }, { sequence: 40 });
 catReg.add("search_finance", { namespace: "*", name: _t("Finance") }, { sequence: 45 });
-catReg.add("search_other", { namespace: "*", name: _t("Autres") }, { sequence: 50 });
+catReg.add("search_other", { namespace: "*", name: _t("Other") }, { sequence: 50 });
 
 // ---------------------------------------------------------------------------
 // 3. Command item — model icon, context line, struck out when closed

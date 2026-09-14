@@ -22,7 +22,7 @@ _MAX_CONFIGS = 40
 
 class BfUniversalSearch(models.AbstractModel):
     _name = "bf.universal.search"
-    _description = "Recherche universelle"
+    _description = "Universal search"
     # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
     # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
     # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que

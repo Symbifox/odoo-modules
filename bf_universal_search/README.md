@@ -318,6 +318,12 @@ Three approaches were evaluated:
 
 ## Changelog
 
+### 18.0.2.4.0
+
+- **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read the search in French.
+- **Result group labels are translatable.** They are seeded by the install hook, which runs *after* Odoo has loaded the module's catalogues, so the hook writes each installed language itself, through `update_field_translations`: on a database where `en_US` is not active, a plain write in another language is copied into `en_US` too and the source label would be lost.
+- Upgrading switches a label to English only when it still carries a shipped name; a label renamed by hand keeps its name in every language.
+
 ### 18.0.2.2.0
 
 - **On by default.** `Ctrl+K` now opens the universal search out of the box: the install hook seeds the instance setting and a migration turns it on for databases upgraded from an earlier release. A user who prefers the native command list still wins from their own preferences, and an administrator who has already made a choice keeps it.
