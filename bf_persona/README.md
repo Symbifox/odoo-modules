@@ -103,6 +103,13 @@ a few lines.
 
 ## Changelog
 
+### 18.0.3.1.0
+- The assistant is told how long our mail to this contact usually runs, as a
+  ceiling rather than a target. Above the long-message threshold it is asked to
+  write shorter than that; below it, not to run past the measured median.
+  Previously the figure only reached the assistant when we were already
+  over-writing.
+
 ### 18.0.3.0.1
 - Every field carries an explicit label. Half the form used to render in
   English on a French screen ("Partner", "Addressing Style",

@@ -197,6 +197,35 @@ class TestFacts(PersonaCase):
         persona._refresh_relationship_facts()
         self.assertEqual(persona.our_words_median, 20)
 
+    def test_gen_is_given_the_measured_length_as_a_ceiling(self):
+        """Gen is told how long our mail to this person usually runs.
+
+        Below the long-message threshold the median is a ceiling, not a target:
+        the point is to write like we already write to them, or shorter.
+        """
+        persona = self.Persona.create({"partner_id": self.eli.id})
+        for day in (3, 2, 1):
+            self.sent([self.eli], body="<p>" + "mot " * 30 + "</p>", days=day)
+        persona._refresh_relationship_facts()
+        self.assertEqual(persona.our_words_median, 30)
+        summary = persona.claude_context_summary
+        self.assertIn("30 mots", summary)
+        self.assertIn("ne pas dépasser", summary)
+
+    def test_gen_is_told_to_write_shorter_when_we_over_write(self):
+        persona = self.Persona.create({"partner_id": self.eli.id})
+        for day in (3, 2, 1):
+            self.sent([self.eli], body="<p>" + "mot " * 200 + "</p>", days=day)
+        persona._refresh_relationship_facts()
+        self.assertEqual(persona.our_words_median, 200)
+        self.assertIn("plus court", persona.claude_context_summary)
+
+    def test_no_length_line_without_a_measure(self):
+        persona = self.Persona.create({"partner_id": self.hm.id})
+        persona._refresh_relationship_facts()
+        self.assertEqual(persona.our_words_median, 0)
+        self.assertNotIn("mots de médiane", persona.claude_context_summary)
+
     def test_words_ignore_signature_and_links(self):
         persona = self.Persona.create({"partner_id": self.eli.id})
         signature = (

@@ -1,7 +1,7 @@
 {
     "name": "Persona des contacts",
     "summary": "Ce qu'il faut savoir avant d'écrire à un contact : registre, copies, relation mesurée",
-    "version": "18.0.3.0.1",
+    "version": "18.0.3.1.0",
     "category": "Sales/CRM",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

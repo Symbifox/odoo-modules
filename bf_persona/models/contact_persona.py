@@ -475,7 +475,14 @@ class ContactPersona(models.Model):
         if self.our_words_median >= LONG_MESSAGE_WORDS:
             lines.append(
                 f"Nos derniers courriels à ce contact font {self.our_words_median} mots "
-                f"de médiane : écrire court."
+                f"de médiane, ce qui est long : écrire plus court que ça."
+            )
+        elif self.our_words_median:
+            # The median is the length this person is used to reading from us.
+            # Given as a ceiling, not a target: nobody complains about short.
+            lines.append(
+                f"Nos derniers courriels à ce contact font {self.our_words_median} mots "
+                f"de médiane : ne pas dépasser cette longueur."
             )
         if self.unanswered_count and not any("sans réponse" in r for _l, r in signals):
             lines.append(
