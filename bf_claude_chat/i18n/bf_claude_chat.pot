@@ -663,20 +663,6 @@ msgid "Role"
 msgstr ""
 
 #. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
-#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
-msgid "Réponse interrompue — demande-moi de continuer."
-msgstr ""
-
-#. module: bf_claude_chat
-#. odoo-javascript
-#: code:addons/_qa/bf_claude_chat/static/src/xml/claude_chat.xml:0
-#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
-msgid "Réponse interrompue."
-msgstr ""
-
-#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__scope
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
 msgid "Scope"
@@ -1259,4 +1245,133 @@ msgstr ""
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 #, python-format
 msgid "%s steps"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Answer interrupted."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Answer interrupted. Ask me to continue."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__auto_continue_count
+msgid "Automatic Resumes"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__auto_continue_count
+msgid "Automatic resumes after the bridge ended the turn cleanly (wall limit, step limit, overload)."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__client_token
+msgid "Client Token"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Connection lost. Picking the thread back up…"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__end_reason
+msgid "End Reason"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_turn.js:0
+msgid "Gen is still working on your previous request. Here is where it stands."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_turn.js:0
+msgid "Gen picks up where it left off"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_turn.js:0
+msgid "Gen picks up where it left off (%s of %s)"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_chat_message.py:0
+msgid "Gen was interrupted before answering."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.actions.server,name:bf_claude_chat.ir_cron_recover_stale_turns_ir_actions_server
+msgid "Gen: resume turns left without a worker"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__turn_key
+msgid "Identifies the turn at the bridge, to re-attach to it."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__runner_heartbeat
+msgid "Last sign of life of the thread writing this turn. A pending turn without a recent one is taken over by another thread."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__prefix_len
+msgid "Length of the text written by earlier resumes: what a screen that re-attaches shows before replaying the current part."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__prefix_len
+msgid "Resumed Text Length"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__runner_heartbeat
+msgid "Runner Heartbeat"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__stop_requested
+msgid "Stop Requested"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__client_token
+msgid "Token drawn by the screen when asking: a question sent again after a cut finds its turn instead of starting a second one."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__turn_key
+msgid "Turn Key"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__turn_payload
+msgid "Turn Payload"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__turn_payload
+msgid "What the turn sent to the bridge, without the API key: an automatic resume starts again from it, even when the cron runs it."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_message__end_reason
+msgid "Why the turn did not end normally, as the bridge said it (timeout, max_turns, stopped, unknown_turn...)."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_chat_message.py:0
+#, python-format
+msgid "Only the server may set these fields on a Gen message: %s"
 msgstr ""

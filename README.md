@@ -90,7 +90,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.0.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
-| `bf_claude_chat` | Gen | 18.0.1.21.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
+| `bf_claude_chat` | Gen | 18.0.1.22.1 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
 | `bf_contact_absence` | Symbifox Absences des contacts | 18.0.1.1.0 | BUSL-1.1 | Savoir qu'un contact est absent avant de lui écrire, de lui texter ou de l'appeler |

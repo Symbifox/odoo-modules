@@ -92,6 +92,37 @@ A session whose streamed turns keep failing is **forked** rather than resumed on
 the next message (`stream_fail_count`), so a record that got a thread stuck stops
 being permanently broken.
 
+### Turns that survive their screen
+
+A turn does not live and die with the browser's connection. `/claude-chat/stream`
+records the question and a pending answer, then hands the turn to a worker thread
+(`controllers/turns.py`) that consumes the bridge and writes text, steps and a
+heartbeat into that message as they come. The response only relays what the
+thread produces. If the browser leaves (reload, proxy timeout, network), the
+thread carries on and saves the answer.
+
+- **Re-attach.** The screen follows `/claude-chat/attach` after any cut and gets
+  a replay of the turn so far, never a second turn. A page reloaded during a turn
+  resumes it. A question re-sent before the screen learned its turn id carries
+  the same `client_token` and finds that turn.
+- **One turn per conversation.** A question sent while a turn is pending follows
+  that turn (`busy` event) instead of starting a second CLI on the same Claude
+  session.
+- **Automatic resume.** When the bridge ends a turn cleanly (wall limit, step
+  limit, API overload, turn lost by the bridge), the thread resumes it on the
+  same Claude session, `bf_claude_chat.auto_continue_max` times at most
+  (default 2), with an instruction not to redo any action already done. Never
+  after Stop or on a subscription limit.
+- **Odoo restarts.** The bridge keeps a turn keyed by `turn_key` alive and
+  attachable for an hour. A pending message whose heartbeat is older than 45 s
+  is taken over (conditional UPDATE, one taker) by the next screen that attaches
+  or by the `Gen: resume turns left without a worker` cron.
+- **Stop** goes through `/claude-chat/stop`, which cancels the turn at the
+  bridge. The proactive brief is still stopped when its page is left.
+
+`bf_claude_chat.turn_wall_seconds` sets the bridge wall limit of a turn (default
+1200).
+
 ### Proactive brief
 
 The first time the panel opens on a record with no conversation yet, a directive
@@ -151,7 +182,11 @@ modules the mobile routes simply answer 401.
 | role | Selection (user/assistant) | Message role |
 | content | Text | Content (markdown for the assistant, plain text for the user) |
 | internal | Boolean | Directive posted on the user's behalf; never rendered |
-| state | Selection (pending/done/error) | Asynchronous mobile turns; defaults to done |
+| state | Selection (pending/done/error) | Pending while a turn is written; defaults to done |
+| turn_key, client_token | Char | The turn at the bridge; the token the screen drew when asking |
+| runner_heartbeat | Datetime | Last sign of life of the thread writing the turn |
+| auto_continue_count, prefix_len | Integer | Automatic resumes so far; length of the text they wrote |
+| end_reason | Char | Why a turn did not end normally (timeout, stopped, ...) |
 | tool_log | Text (JSON) | Tools used during the turn, in order |
 | input/output/cache tokens | Integer | Usage reported by the CLI |
 | total_tokens | Integer (stored compute) | Sum of the four counters |
@@ -184,7 +219,9 @@ Every endpoint is `type="json"`, `auth="user"`, `methods=["POST"]`.
 | `/claude-chat/share-to-task` | Posts the conversation into the chatter |
 
 `/claude-chat/stream` is the streaming counterpart of `/send`: `type="http"`,
-`auth="user"`, CSRF replaced by the `X-Claude-Stream: 1` header.
+`auth="user"`, CSRF replaced by the `X-Claude-Stream: 1` header. `/claude-chat/attach`
+(same gate) streams a turn that already exists, by `turn_id` or `client_token`,
+and `/claude-chat/stop` (JSON) stops one.
 
 The mobile surface is `type="http"`, `auth="public"`, authenticated by a device
 bearer token (no session cookie, `save_session=False`):

@@ -19,6 +19,8 @@ from odoo.addons.bf_claude_chat.models.res_config_settings import (
 from odoo.http import request, Response
 from odoo.modules.registry import Registry
 
+from . import turns
+
 _logger = logging.getLogger(__name__)
 
 # Per-user rate limiting for /chat endpoint
@@ -165,15 +167,20 @@ def _markdown_to_html(md):
 _DEFAULT_TIMEOUT = 660
 
 
-def _get_settings():
-    """Read Claude settings from ir.config_parameter."""
-    ICP = request.env["ir.config_parameter"].sudo()
-    # Decrypt API key via the settings model helper
-    encrypted_key = ICP.get_param("bf_claude_chat.api_key_encrypted", "")
+def _get_api_key(env):
+    """The tenant's decrypted API key, or '' (Max plan). Usable without request."""
+    encrypted_key = env["ir.config_parameter"].sudo().get_param(
+        "bf_claude_chat.api_key_encrypted", "")
     from odoo.addons.bf_claude_chat.models.res_config_settings import (
         ResConfigSettings,
     )
-    api_key = ResConfigSettings._decrypt_api_key(request.env, encrypted_key)
+    return ResConfigSettings._decrypt_api_key(env, encrypted_key)
+
+
+def _get_settings():
+    """Read Claude settings from ir.config_parameter."""
+    ICP = request.env["ir.config_parameter"].sudo()
+    api_key = _get_api_key(request.env)
     return {
         "enabled": ICP.get_param("bf_claude_chat.enabled", "True") == "True",
         "streaming": ICP.get_param("bf_claude_chat.streaming", "True") == "True",
@@ -199,6 +206,12 @@ _SSE_HEADERS = [
     # Tell nginx / NPM not to buffer, so tokens reach the browser live.
     ("X-Accel-Buffering", "no"),
 ]
+
+
+# A read-only follower waits this many half-seconds for the owning thread to
+# save a turn the bridge has finished, over at most this many resumes.
+_WATCH_POLLS = 20
+_WATCH_ROUNDS = 12
 
 
 def _sse_line(event, data):
@@ -532,13 +545,15 @@ class ClaudeChatController(http.Controller):
     @http.route("/claude-chat/stream", type="http", auth="user", methods=["POST"],
                 csrf=False)
     def stream_message(self, **kw):
-        """Streaming counterpart of /claude-chat/send.
+        """Start a turn and stream it live.
 
-        Relays the bridge's Server-Sent Events so the browser shows tokens,
-        tool activity and thinking progress live — and keeps partial output on
-        timeout instead of returning nothing. Uses type=http because json routes
-        cannot stream. CSRF is off but a custom header (set by our fetch, which
-        a cross-site form cannot set) is required on top of auth=user.
+        The turn is owned by a worker thread (``controllers/turns.py``) that
+        writes the answer into a pending message as it comes. This response is
+        only its first viewer: if the browser leaves, the thread carries on and
+        saves, and the screen comes back through ``/claude-chat/attach``.
+        Uses type=http because json routes cannot stream. CSRF is off but a
+        custom header (set by our fetch, which a cross-site form cannot set) is
+        required on top of auth=user.
         """
         # CSRF-equivalent gate.
         if request.httprequest.headers.get("X-Claude-Stream") != "1":
@@ -555,6 +570,7 @@ class ClaudeChatController(http.Controller):
         message = (data_in.get("message") or "").strip()
         internal = bool(data_in.get("internal"))
         context = data_in.get("context")
+        client_token = turns.valid_client_token(data_in.get("client_token"))
         user = request.env.user
 
         def _err(msg, reason="cli_error"):
@@ -567,12 +583,22 @@ class ClaudeChatController(http.Controller):
             return _err("Le mode streaming est désactivé.", "disabled")
         if not message:
             return _err("Message vide.")
-        if not _check_rate_limit(user.id):
-            return _err("Trop de requêtes. Veuillez patienter avant de réessayer.",
-                        "rate_limit")
 
         Session = request.env["claude.chat.session"]
         Message = request.env["claude.chat.message"]
+
+        # The same question sent again after a cut (the screen never learned
+        # its turn id) finds its turn instead of starting a second one.
+        if client_token:
+            known = Message.search([
+                ("client_token", "=", client_token), ("user_id", "=", user.id),
+            ], limit=1)
+            if known:
+                return _sse_response(self._follow(known))
+
+        if not _check_rate_limit(user.id):
+            return _err("Trop de requêtes. Veuillez patienter avant de réessayer.",
+                        "rate_limit")
 
         # Contexte de page résolu UNE fois, contrôle d'accès inclus, pour
         # l'enregistrement de session ET la charge utile passerelle plus bas.
@@ -583,6 +609,20 @@ class ClaudeChatController(http.Controller):
             session = Session.browse(int(session_id))
             if not session.exists() or session.user_id != user:
                 return _err("Session introuvable.")
+            # One turn at a time per conversation. On 2026-09-14 two
+            # « Continue » typed while the first turn was still running each
+            # started a second CLI on the same Claude session, and both saved
+            # « (No response) ». The new question follows the running turn.
+            running = Message.search([
+                ("session_id", "=", session.id), ("role", "=", "assistant"),
+                ("state", "=", "pending"),
+            ], order="id desc", limit=1)
+            if running and not running.sudo().turn_key:
+                # A turn from before detached turns can never be re-attached.
+                running.sudo().write({"state": "error", "end_reason": "orphan"})
+                running = Message.browse()
+            if running:
+                return _sse_response(self._follow(running, busy=True))
         else:
             vals = {"name": "New Chat", "user_id": user.id}
             if ctx_model and ctx_res_id:
@@ -590,7 +630,6 @@ class ClaudeChatController(http.Controller):
                 vals["res_id"] = ctx_res_id
             session = Session.create(vals)
 
-        # Persist the user message now (committed when the handler returns).
         Message.create({
             "session_id": session.id, "role": "user", "content": message,
             "internal": bool(internal),
@@ -613,8 +652,6 @@ class ClaudeChatController(http.Controller):
             "max_turns": settings["max_turns"],
             "tenant": settings["tenant"],
         }
-        if settings["api_key"]:
-            bridge_payload["api_key"] = settings["api_key"]
         # model/res_id ne partent QUE si _validated_context_ref les a validés
         # pour cet appelant ; les champs cosmétiques sont toujours sûrs.
         if context and isinstance(context, dict):
@@ -638,100 +675,236 @@ class ClaudeChatController(http.Controller):
             bridge_payload.get("context", {}).get("model"),
         )
 
-        # Capture everything the generator needs — request.env is gone once we
-        # return the streamed Response (its cursor is committed and closed).
-        db_name = request.env.cr.dbname
-        uid = user.id
+        # sudo: turn fields are written by the server only (TURN_FIELDS), and
+        # the session was checked against this user above.
+        pending = Message.sudo().create({
+            # `content` is required: a placeholder, replaced as the turn streams.
+            "session_id": session.id, "role": "assistant", "content": "…",
+            "state": "pending", "client_token": client_token or False,
+        })
+        reglages = turns.turn_settings(request.env)
+        pending.sudo().write({
+            "turn_key": turns.new_turn_key(request.env.cr.dbname, pending.id),
+            "turn_payload": json.dumps(bridge_payload),
+            "runner_heartbeat": odoo.fields.Datetime.now(),
+        })
+        # The thread must start AFTER the commit, or it looks for a message
+        # nobody can see yet.
+        request.env.cr.commit()
+
+        listener = turns.Listener()
+        turns.start_runner(
+            request.env.cr.dbname, pending.id, settings["socket"], settings["timeout"],
+            listener=listener, max_continue=reglages["auto_continue"],
+            wall_seconds=reglages["wall_seconds"], session_was_new=not session_id,
+        )
         odoo_session_id = session.id
-        session_was_new = not session_id
-        socket_path = settings["socket"]
-        timeout = settings["timeout"]
-        api_key = settings.get("api_key", "")
+        turn_id = pending.id
 
         def _stream():
-            # Tell the client its Odoo session id right away.
             yield _sse_line("session", {"odoo_session_id": odoo_session_id})
+            yield _sse_line("gen_turn", {"turn_id": turn_id})
             if forked:
                 yield _sse_line("notice", {
                     "text": "Nouvelle conversation démarrée : le fil précédent restait bloqué.",
                 })
-
-            final = {}
-            cur_event = None
-            line_buf = b""
-            try:
-                for data in transport.stream(
-                        socket_path, "/chat-stream", bridge_payload, timeout):
-                    yield data  # forward raw bridge SSE bytes to the browser
-                    line_buf += data
-                    while b"\n" in line_buf:
-                        raw, line_buf = line_buf.split(b"\n", 1)
-                        ln = raw.strip()
-                        if ln.startswith(b"event:"):
-                            cur_event = ln[6:].strip()
-                        elif ln.startswith(b"data:") and cur_event in (b"done", b"error"):
-                            try:
-                                final = json.loads(ln[5:])
-                                final["_event"] = cur_event.decode()
-                            except Exception:
-                                pass
-            except Exception:
-                _logger.exception("Bridge stream error")
-                yield _sse_line("error", {
-                    "response": "Le service Claude est momentanément indisponible.",
-                    "reason": "cli_error", "interrupted": False,
-                })
-
-            # Persist the assistant message via a fresh cursor (the request
-            # cursor is gone while the response streams).
-            msg_id = None
-            try:
-                registry = Registry(db_name)
-                with registry.cursor() as cr:
-                    env = odoo.api.Environment(cr, uid, {})
-                    sess = env["claude.chat.session"].browse(odoo_session_id)
-                    if sess.exists():
-                        vals = {}
-                        new_sid = final.get("session_id")
-                        if new_sid and new_sid != sess.claude_session_id:
-                            vals["claude_session_id"] = new_sid
-                        if final.get("_event") == "error":
-                            vals["stream_fail_count"] = (sess.stream_fail_count or 0) + 1
-                            vals["last_stream_error"] = (final.get("reason") or "error")[:64]
-                        else:
-                            if sess.stream_fail_count:
-                                vals["stream_fail_count"] = 0
-                            vals["last_stream_error"] = False
-                        resp_text = final.get("response") or "(No response)"
-                        amsg = env["claude.chat.message"].create({
-                            "session_id": sess.id, "role": "assistant",
-                            "content": resp_text,
-                            **usage_vals(final),
-                        })
-                        msg_id = amsg.id
-                        if sess.name == "New Chat" and final.get("response"):
-                            fallback = message[:60] + ("..." if len(message) > 60 else "")
-                            vals["name"] = fallback
-                        if vals:
-                            sess.write(vals)
-            except Exception:
-                _logger.exception("Persisting streamed assistant message failed")
-
-            # Smart title in the background for a brand-new session.
-            if session_was_new and final.get("response"):
-                fallback = message[:60] + ("..." if len(message) > 60 else "")
-                threading.Thread(
-                    target=_generate_smart_title,
-                    args=(db_name, odoo_session_id, fallback, message,
-                          final.get("response", ""), api_key, socket_path),
-                    daemon=True,
-                ).start()
-
-            yield _sse_line("saved", {
-                "message_id": msg_id, "session_id": odoo_session_id,
-            })
+            yield from listener.iterate()
 
         return _sse_response(_stream())
+
+    def _follow(self, message, busy=False):
+        """Stream a turn that is already running, or its saved result.
+
+        Three cases. The turn is over: its saved content, in one ``final``
+        event. Its thread is alive (fresh heartbeat): what the bridge still
+        holds for it, replayed from the start, after a ``snapshot`` of what
+        earlier automatic resumes wrote. Its thread is dead (worker recycled,
+        Odoo restarted): this worker takes it over and streams its own thread.
+        """
+        env = request.env
+        message = message.sudo()
+        db_name = env.cr.dbname
+        socket_path = env["bf.ai.bridge"].socket_path()
+        try:
+            timeout = int(env["ir.config_parameter"].sudo().get_param(
+                "bf_claude_chat.timeout", str(_DEFAULT_TIMEOUT)))
+        except (TypeError, ValueError):
+            timeout = _DEFAULT_TIMEOUT
+        tenant = env["ir.config_parameter"].sudo().get_param("bf_claude_chat.tenant", "pme")
+        message_id = message.id
+        session_id = message.session_id.id
+        head = [_sse_line("session", {"odoo_session_id": session_id}),
+                _sse_line("gen_turn", {"turn_id": message_id})]
+        if busy:
+            head.append(_sse_line("busy", {"turn_id": message_id}))
+
+        def _final_line(msg):
+            return _sse_line("final", {
+                "message_id": msg.id,
+                "content": msg.content if msg.content != "…" else "",
+                "state": msg.state,
+                "end_reason": msg.end_reason or "",
+                "usage": usage_vals({"usage": {
+                    "input_tokens": msg.input_tokens,
+                    "output_tokens": msg.output_tokens,
+                    "cache_read_tokens": msg.cache_read_tokens,
+                    "cache_write_tokens": msg.cache_write_tokens,
+                    "cost_usd": msg.cost_usd,
+                    "duration_ms": msg.duration_ms,
+                }}),
+            })
+
+        def _snapshot_line(msg):
+            try:
+                tools = json.loads(msg.tool_log or "[]")
+            except ValueError:
+                tools = []
+            attempt = msg.auto_continue_count or 0
+            content = msg.content if msg.content != "…" else ""
+            return _sse_line("snapshot", {
+                "text": (content or "")[:msg.prefix_len or 0],
+                "tools": [t for t in tools if isinstance(t, dict)
+                          and t.get("attempt", 0) < attempt],
+                "attempt": attempt,
+            })
+
+        if message.state != "pending":
+            return iter(head + [_final_line(message)])
+
+        STALE = message.STALE_SECONDS
+        reglages = turns.turn_settings(env)
+        turn_key = message.turn_key
+        snapshot = _snapshot_line(message)
+
+        def _take_over():
+            # Nobody writes this turn any more: this worker becomes its owner.
+            listener = turns.Listener()
+            turns.start_runner(
+                db_name, message_id, socket_path, timeout, attach=True,
+                listener=listener, max_continue=reglages["auto_continue"],
+                wall_seconds=reglages["wall_seconds"],
+            )
+            with Registry(db_name).cursor() as cr:
+                fresh = odoo.api.Environment(cr, odoo.SUPERUSER_ID, {})[
+                    "claude.chat.message"].browse(message_id)
+                line = _snapshot_line(fresh)
+            yield line
+            yield from listener.iterate()
+
+        if turns.claim(db_name, message_id, STALE):
+            def _owned():
+                yield from head
+                yield from _take_over()
+            return _owned()
+
+        def _watch():
+            # Read-only follower while the owning thread lives: it saves, we
+            # show. The moment it stops giving signs of life, we take over.
+            yield from head
+            yield snapshot
+            key = turn_key
+            for _round in range(_WATCH_ROUNDS):
+                try:
+                    chunks = transport.stream(socket_path, "/chat-attach", {
+                        "turn_key": key, "tenant": tenant, "offset": 0}, timeout)
+                    for frame, _events in turns.relay_frames(chunks):
+                        yield frame
+                except Exception:
+                    _logger.info("Gen : rattachement au pont interrompu", exc_info=True)
+                # The bridge turn is over (or gone): wait for the owner to save
+                # it, or to start the automatic resume under a new key.
+                for _i in range(_WATCH_POLLS):
+                    time.sleep(0.5)
+                    with Registry(db_name).cursor() as cr:
+                        fresh = odoo.api.Environment(cr, odoo.SUPERUSER_ID, {})[
+                            "claude.chat.message"].browse(message_id)
+                        final = _final_line(fresh) if fresh.state != "pending" else None
+                        fresh_key = fresh.turn_key
+                        resume = _sse_line("resume", {
+                            "attempt": fresh.auto_continue_count,
+                            "reason": fresh.end_reason or ""})
+                    if final:
+                        yield final
+                        return
+                    if fresh_key != key:
+                        key = fresh_key
+                        yield resume
+                        break
+                    if turns.claim(db_name, message_id, STALE):
+                        yield from _take_over()
+                        return
+                else:
+                    return  # still pending, same key: let the screen come back
+
+        return _watch()
+
+    @http.route("/claude-chat/attach", type="http", auth="user", methods=["POST"],
+                csrf=False)
+    def attach_turn(self, **kw):
+        """Come back to a turn: after a cut, a page reload, or on another screen."""
+        if request.httprequest.headers.get("X-Claude-Stream") != "1":
+            return _sse_response([_sse_line("error", {
+                "response": "Bad request.", "reason": "cli_error", "interrupted": False,
+            })])
+        settings = _get_settings()
+        if not settings["enabled"]:
+            return _sse_response([_sse_line("error", {
+                "response": "", "reason": "disabled", "interrupted": False,
+            })])
+        # Its own bucket: a screen coming back after a cut must not use up the
+        # questions of the minute, nor hammer the server while Odoo restarts.
+        if not _check_rate_limit(f"attach:{request.env.user.id}"):
+            return _sse_response([_sse_line("error", {
+                "response": "", "reason": "rate_limit", "interrupted": False,
+            })])
+        try:
+            data_in = json.loads(request.httprequest.get_data() or b"{}")
+        except Exception:
+            data_in = {}
+        Message = request.env["claude.chat.message"]
+        message = Message.browse()
+        try:
+            turn_id = int(data_in.get("turn_id") or 0)
+        except (TypeError, ValueError):
+            turn_id = 0
+        if turn_id:
+            message = Message.browse(turn_id).exists()
+        elif turns.valid_client_token(data_in.get("client_token")):
+            message = Message.search([
+                ("client_token", "=", data_in["client_token"]),
+                ("user_id", "=", request.env.user.id),
+            ], limit=1)
+        # sudo: a turn of someone else is invisible to the caller, and reading
+        # its session would raise instead of answering « not found ».
+        if (not message or message.sudo().role != "assistant"
+                or message.sudo().session_id.user_id != request.env.user):
+            return _sse_response([_sse_line("error", {
+                "response": "", "reason": "not_found", "interrupted": False,
+            })])
+        return _sse_response(self._follow(message))
+
+    @http.route("/claude-chat/stop", type="json", auth="user", methods=["POST"])
+    def stop_turn(self, turn_id):
+        """The Stop button. Leaving no longer stops a turn: this does."""
+        try:
+            turn_id = int(turn_id or 0)
+        except (TypeError, ValueError):
+            return {"error": "not_found"}
+        message = request.env["claude.chat.message"].browse(turn_id).exists()
+        if not message or message.sudo().session_id.user_id != request.env.user:
+            return {"error": "not_found"}
+        if message.state != "pending":
+            return {"status": "over"}
+        message.sudo().write({"stop_requested": True})
+        settings = _get_settings()
+        try:
+            transport.post(settings["socket"], "/chat-cancel", {
+                "turn_key": message.sudo().turn_key, "tenant": settings["tenant"],
+            }, 10)
+        except Exception:
+            # The thread still reads the flag after the bridge's next event.
+            _logger.info("Gen : arrêt non transmis au pont", exc_info=True)
+        return {"status": "ok"}
 
     @http.route("/claude-chat/sessions", type="json", auth="user", methods=["POST"])
     def list_sessions(self, res_model=None, res_id=None):
@@ -773,7 +946,7 @@ class ClaudeChatController(http.Controller):
 
         messages = request.env["claude.chat.message"].search_read(
             [("session_id", "=", session.id), ("internal", "=", False)],
-            ["role", "content", "create_date"],
+            ["role", "content", "create_date", "state", "end_reason"],
             order="create_date asc, id asc",
         )
         return {"messages": messages, "session_name": session.name}

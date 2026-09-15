@@ -21,8 +21,8 @@ const STREAM_URL = "/claude-chat/stream";
  * @param {AbortSignal} opts.signal AbortController signal (Stop button)
  * @param {Function} opts.onEvent  (eventName, dataObject) => void
  */
-export async function streamChat({ body, signal, onEvent }) {
-    const resp = await fetch(STREAM_URL, {
+export async function streamChat({ url = STREAM_URL, body, signal, onEvent }) {
+    const resp = await fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

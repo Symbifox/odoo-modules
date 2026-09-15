@@ -23,19 +23,13 @@ moitiés de l'app, le contrôleur reconnaît celle qui est là.
 
 import json
 import logging
-import threading
-import time
 
-import odoo
 from odoo import fields, http
 from odoo.http import request
-from odoo.modules.registry import Registry
 
-from odoo.addons.bf_ai_bridge.tools import transport
-
+from . import turns
 from .main import (
-    _attach_identity, _attach_steering, _check_rate_limit, _generate_smart_title,
-    _get_settings, usage_vals,
+    _attach_identity, _attach_steering, _check_rate_limit, _get_settings,
 )
 
 _logger = logging.getLogger(__name__)
@@ -43,14 +37,6 @@ _logger = logging.getLogger(__name__)
 BASE = "/bf_claude_chat/mobile/v1"
 
 _DEVICE_MODELS = ("sms.archive.mobile.device", "bf.email.mobile.device")
-
-# Cadence d'écriture de l'avancement. Un jeton par écriture noierait Postgres ;
-# une écriture par seconde ne « pousserait » pas à l'œil. 400 ms tient les deux.
-_FLUSH_SECONDS = 0.4
-
-# Au-delà, on considère le tour perdu plutôt que de laisser « en cours » à vie.
-_TURN_TIMEOUT = 900
-
 
 def _json(data, status=200):
     return request.make_response(
@@ -109,152 +95,6 @@ def _push(env, user, session, text):
         })
     except Exception:  # noqa: BLE001
         _logger.warning("GenFox mobile : poussée impossible", exc_info=True)
-
-
-class _Avancement:
-    """Accumule le flux et l'écrit dans le message, sans marteler la base."""
-
-    def __init__(self, db_name, uid, message_id):
-        self.db_name = db_name
-        self.uid = uid
-        self.message_id = message_id
-        self.texte = ""
-        self.outils = []
-        self.dernier = 0.0
-
-    def texte_recu(self, delta):
-        self.texte += delta or ""
-        self.ecrire()
-
-    def outil_recu(self, nom):
-        self.outils.append({"name": nom, "at": len(self.texte)})
-        self.ecrire(force=True)  # un outil qui démarre mérite d'être vu tout de suite
-
-    def detail_recu(self, nom, detail):
-        """La ligne lisible d'un outil, arrivée quand son entrée est complète.
-
-        Le pont ne connaît la description d'une commande qu'à la
-        fin de son écriture. On la pose sur le dernier outil de ce nom qui n'en
-        a pas encore, pour que l'app dise « Lecture des tâches du projet » au
-        lieu de « Bash ».
-        """
-        detail = (detail or "").strip()[:120]
-        if not detail:
-            return
-        for outil in reversed(self.outils):
-            if outil.get("name") == nom and not outil.get("detail"):
-                outil["detail"] = detail
-                self.ecrire(force=True)
-                return
-
-    def ecrire(self, force=False, **extra):
-        maintenant = time.monotonic()
-        if not force and maintenant - self.dernier < _FLUSH_SECONDS:
-            return
-        self.dernier = maintenant
-        vals = {"tool_log": json.dumps(self.outils)}
-        if self.texte:
-            vals["content"] = self.texte
-        vals.update(extra)
-        try:
-            registry = Registry(self.db_name)
-            with registry.cursor() as cr:
-                env = odoo.api.Environment(cr, odoo.SUPERUSER_ID, {})
-                message = env["claude.chat.message"].browse(self.message_id)
-                if message.exists():
-                    message.write(vals)
-        except Exception:  # noqa: BLE001
-            # L'avancement est un confort : son échec ne doit pas casser le tour.
-            _logger.warning("GenFox mobile : écriture d'avancement échouée", exc_info=True)
-
-
-def _run_turn(db_name, uid, session_id, message_id, question, payload,
-              socket_path, timeout, api_key, session_was_new):
-    """Fil d'exécution : consomme le flux du bridge et persiste au fil de l'eau."""
-    avancement = _Avancement(db_name, uid, message_id)
-    final, evenement_courant, tampon = {}, None, b""
-    debut = time.monotonic()
-
-    try:
-        for morceau in transport.stream(socket_path, "/chat-stream", payload, timeout):
-            if time.monotonic() - debut > _TURN_TIMEOUT:
-                raise TimeoutError("tour trop long")
-            tampon += morceau
-            while b"\n" in tampon:
-                brut, tampon = tampon.split(b"\n", 1)
-                ligne = brut.strip()
-                if ligne.startswith(b"event:"):
-                    evenement_courant = ligne[6:].strip()
-                elif ligne.startswith(b"data:"):
-                    try:
-                        charge = json.loads(ligne[5:])
-                    except Exception:  # noqa: BLE001
-                        continue
-                    if evenement_courant == b"text":
-                        avancement.texte_recu(charge.get("delta"))
-                    elif evenement_courant == b"tool":
-                        avancement.outil_recu(charge.get("name") or "outil")
-                    elif evenement_courant == b"tool_detail":
-                        avancement.detail_recu(charge.get("name") or "outil",
-                                               charge.get("detail"))
-                    elif evenement_courant in (b"done", b"error"):
-                        final = charge
-                        final["_event"] = evenement_courant.decode()
-    except Exception as exc:  # noqa: BLE001
-        _logger.exception("GenFox mobile : flux interrompu")
-        final = final or {
-            "response": avancement.texte or "L'assistant a été interrompu (%s)." % (
-                type(exc).__name__),
-            "_event": "error", "reason": "stream",
-        }
-
-    reponse = (final.get("response") or avancement.texte or "").strip()
-    en_erreur = final.get("_event") == "error" or not reponse
-
-    try:
-        registry = Registry(db_name)
-        with registry.cursor() as cr:
-            env = odoo.api.Environment(cr, odoo.SUPERUSER_ID, {})
-            message = env["claude.chat.message"].browse(message_id)
-            if not message.exists():
-                return
-            message.write({
-                "content": reponse or "L'assistant n'a rien répondu.",
-                "state": "error" if en_erreur else "done",
-                "tool_log": json.dumps(avancement.outils),
-                **usage_vals(final),
-            })
-            session = message.session_id
-            vals = {}
-            nouveau_sid = final.get("session_id")
-            if nouveau_sid and nouveau_sid != session.claude_session_id:
-                vals["claude_session_id"] = nouveau_sid
-            # Même anti-poison que le panneau web : un fil qui échoue en série
-            # sera forké au tour suivant plutôt que repris.
-            if en_erreur:
-                vals["stream_fail_count"] = (session.stream_fail_count or 0) + 1
-                vals["last_stream_error"] = (final.get("reason") or "error")[:64]
-            elif session.stream_fail_count:
-                vals["stream_fail_count"] = 0
-                vals["last_stream_error"] = False
-            if session.name in ("New Chat", False):
-                vals["name"] = (question[:57] + "…") if len(question) > 60 else question
-            if vals:
-                session.write(vals)
-            if not en_erreur:
-                _push(env, env["res.users"].browse(uid), session, reponse)
-    except Exception:  # noqa: BLE001
-        _logger.exception("GenFox mobile : écriture de la réponse en échec")
-        return
-
-    # Titre « intelligent », comme au bureau, sur une conversation neuve.
-    if session_was_new and not en_erreur:
-        secours = question[:60] + ("..." if len(question) > 60 else "")
-        threading.Thread(
-            target=_generate_smart_title,
-            args=(db_name, session_id, secours, question, reponse, api_key, socket_path),
-            daemon=True,
-        ).start()
 
 
 class BfClaudeChatMobileApi(http.Controller):
@@ -361,7 +201,9 @@ class BfClaudeChatMobileApi(http.Controller):
         Message.create({
             "session_id": session.id, "role": "user", "content": question,
         })
-        pending = Message.create({
+        # sudo : les champs du tour ne s'écrivent que côté serveur
+        # (`TURN_FIELDS`), et la session vient d'être vérifiée à cet usager.
+        pending = Message.sudo().create({
             # `content` est requis : un point d'attente, remplacé au fil du flux.
             "session_id": session.id, "role": "assistant", "content": "…",
             "state": "pending",
@@ -383,21 +225,27 @@ class BfClaudeChatMobileApi(http.Controller):
             "max_turns": settings["max_turns"],
             "tenant": settings["tenant"],
         }
-        if settings["api_key"]:
-            payload["api_key"] = settings["api_key"]
         _attach_identity(request.env, payload)
         _attach_steering(request.env, payload, None)
 
+        # Le même fil que le bureau (`controllers/turns.py`) : il écrit
+        # l'avancement dans le message, survit au processus qui l'a lancé
+        # (le cron s'y rattache), et reprend seul une fin propre du pont.
+        # La clé d'API n'est pas stockée : le fil la relit au départ.
+        reglages = turns.turn_settings(request.env)
+        pending.sudo().write({
+            "turn_key": turns.new_turn_key(request.env.cr.dbname, pending.id),
+            "turn_payload": json.dumps(payload),
+            "runner_heartbeat": fields.Datetime.now(),
+        })
         # Le fil doit démarrer APRÈS l'écriture, sinon il cherche un message que
         # personne ne voit encore.
         request.env.cr.commit()
-        threading.Thread(
-            target=_run_turn,
-            args=(request.env.cr.dbname, user.id, session.id, pending.id, question,
-                  payload, settings["socket"], settings["timeout"],
-                  settings.get("api_key", ""), session_was_new),
-            daemon=True,
-        ).start()
+        turns.start_runner(
+            request.env.cr.dbname, pending.id, settings["socket"], settings["timeout"],
+            max_continue=reglages["auto_continue"],
+            wall_seconds=reglages["wall_seconds"], session_was_new=session_was_new,
+        )
 
         return _json({
             "ok": True,

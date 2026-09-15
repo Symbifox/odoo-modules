@@ -6,8 +6,10 @@ import { useService } from "@web/core/utils/hooks";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 import { router } from "@web/core/browser/router";
-import { streamChat } from "@bf_claude_chat/js/claude_stream";
-import { GenSteps, GenWaitLine, trackWait } from "@bf_claude_chat/js/gen_wait";
+import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
+import {
+    followTurn, newClientToken, pendingToStreaming, stopTurn, streamingFields,
+} from "@bf_claude_chat/js/gen_turn";
 
 /**
  * Étiquette de consommation d'un tour, dans le vocabulaire commun au Cockpit
@@ -382,6 +384,21 @@ export class ClaudeSystrayItem extends Component {
         };
         onMounted(() => window.addEventListener("bf-claude-chat-open", this._onExternalOpen));
         onWillUnmount(() => window.removeEventListener("bf-claude-chat-open", this._onExternalOpen));
+
+        // A turn now survives the page that started it, which is the point for
+        // a question. The proactive brief is different: it goes out on its own
+        // when the panel opens, and most abandoned ones are left within seconds
+        // by a reload. Leaving the page stops that one, as before.
+        this._onPageHide = () => {
+            const assistant = this._streamAssistant;
+            if (!assistant || !assistant.internalBrief || !assistant.turnId || assistant.finalized) return;
+            const body = JSON.stringify({
+                jsonrpc: "2.0", method: "call", params: { turn_id: assistant.turnId },
+            });
+            navigator.sendBeacon("/claude-chat/stop", new Blob([body], { type: "application/json" }));
+        };
+        onMounted(() => window.addEventListener("pagehide", this._onPageHide));
+        onWillUnmount(() => window.removeEventListener("pagehide", this._onPageHide));
     }
 
     // ── Panel toggle ─────────────────────────────────────────
@@ -465,11 +482,14 @@ export class ClaudeSystrayItem extends Component {
             const result = await rpc("/claude-chat/messages", {
                 session_id: sessionId,
             });
-            this.state.messages = result.messages || [];
+            this.state.messages = (result.messages || []).map((m) => (
+                m.state === "error" ? { ...m, interrupted: true } : m));
             this.scrollToBottom();
         } catch {
             this.notification.add(_t("Failed to load messages"), { type: "danger" });
+            return;
         }
+        this._resumePending();
     }
 
     // ── Chat actions ────────────────────────────────────────
@@ -547,103 +567,78 @@ export class ClaudeSystrayItem extends Component {
             return;
         }
 
-        // Streaming path — live tokens, tool activity, thinking progress.
+        // Streaming path. The server owns the turn and saves it; the panel
+        // only follows, and comes back to it after any cut (gen_turn.js).
+        const userMsg = internal ? null : this.state.messages[this.state.messages.length - 1];
         const idx = this.state.messages.push({
             id: `a-${Date.now()}`,
             role: "assistant",
-            content: "",
-            streaming: true,
-            tools: [],
-            thinkingTokens: 0,
-            // Ligne d'état : l'étape en cours et le chrono du tour.
-            phase: "start",
-            foxIndex: Math.floor(Math.random() * 13),
-            startedAt: Date.now(),
-            interrupted: false,
-            notice: "",
+            ...streamingFields(),
         }) - 1;
         const assistant = this.state.messages[idx]; // reactive proxy
+        // A brief nobody asked for does not outlive the page that sent it.
+        assistant.internalBrief = internal;
 
-        this.state.isThinking = true;
-        this.state.streamingActive = true;
-        this.scrollToBottom();
-
-        const controller = new AbortController();
-        this._streamAbort = controller;
-
-        const payload = { session_id: sessionId, message };
+        const payload = { session_id: sessionId, message, client_token: newClientToken() };
         if (context) payload.context = context;
         if (internal) payload.internal = true;
 
-        let gotText = false;
-        let disabled = false;
+        const outcome = await this._followTurn(assistant, {
+            start: payload,
+            onBusy: () => {
+                // The question was not sent: give it back.
+                if (!userMsg) return;
+                this.state.messages = this.state.messages.filter((m) => m.id !== userMsg.id);
+                if (this.inputRef.el && !this.inputRef.el.value) {
+                    this.inputRef.el.value = message;
+                }
+            },
+        });
+        if (outcome === "disabled") {
+            // Server turned streaming off: fall back cleanly.
+            this.state.streaming = false;
+            this.state.messages.splice(this.state.messages.indexOf(assistant), 1);
+            await this._sendBuffered(message, sessionId, context, internal);
+        }
+        await this._refreshSessions(wasNewSession);
+        this.scrollToBottom();
+        this.focusInput();
+    }
+
+    async _followTurn(assistant, { start = null, turnId = null, onBusy = null }) {
+        this.state.isThinking = true;
+        this.state.streamingActive = true;
+        this.scrollToBottom();
+        const controller = new AbortController();
+        this._streamAbort = controller;
+        this._streamAssistant = assistant;
+        let outcome;
         try {
-            await streamChat({
-                body: payload,
-                signal: controller.signal,
-                onEvent: (event, data) => {
-                    trackWait(assistant, event, data);
-                    switch (event) {
-                        case "session":
-                            if (data.odoo_session_id) this.state.activeSessionId = data.odoo_session_id;
-                            break;
-                        case "notice":
-                            assistant.notice = data.text || "";
-                            break;
-                        case "tool":
-                            this.scrollToBottom();
-                            break;
-                        case "text":
-                            gotText = true;
-                            assistant.content += data.delta || "";
-                            this.scrollToBottom();
-                            break;
-                        case "done":
-                            if (data.response) assistant.content = data.response;
-                            assistant.streaming = false;
-                            // Le pont envoie l'usage sur « done » et le
-                            // contrôleur relaie les octets bruts : il suffisait
-                            // de le lire.
-                            assistant.usageLabel = usageLabel(data.usage);
-                            assistant.usageTitle = usageTitle(data.usage);
-                            break;
-                        case "error":
-                            if (data.reason === "disabled") { disabled = true; break; }
-                            if (data.response) assistant.content = data.response;
-                            assistant.interrupted = !!data.interrupted;
-                            assistant.streaming = false;
-                            break;
-                        case "saved":
-                            if (data.message_id) assistant.id = data.message_id;
-                            break;
-                    }
-                },
-            });
-            if (disabled) {
-                // Server turned streaming off mid-flight — fall back cleanly.
-                this.state.streaming = false;
-                this.state.messages.splice(idx, 1);
-                await this._sendBuffered(message, sessionId, context, internal);
-            }
-        } catch (err) {
-            if (controller.signal.aborted) {
-                assistant.interrupted = true;
-            } else if (!gotText) {
-                // Streaming failed before any output → fall back to buffered.
-                this.state.messages.splice(idx, 1);
-                await this._sendBuffered(message, sessionId, context, internal);
-            } else {
-                assistant.content += "\n\n_(connexion interrompue)_";
-            }
+            outcome = await followTurn({
+                onSessionId: (id) => { this.state.activeSessionId = id; },
+                scrollToBottom: () => this.scrollToBottom(),
+                onBusy,
+            }, assistant, { start, turnId, signal: controller.signal, labels: { usageLabel, usageTitle } });
         } finally {
+            if (outcome === "stopped") assistant.interrupted = true;
             assistant.streaming = false;
+            assistant.reconnecting = false;
             this.state.isThinking = false;
             this.state.streamingActive = false;
             this._streamAbort = null;
-            await this._refreshSessions(wasNewSession);
-            this.scrollToBottom();
-            this.focusInput();
+            this._streamAssistant = null;
         }
+        return outcome;
+    }
+
+    /** A turn still running when the conversation is opened (page reloaded). */
+    async _resumePending() {
+        const last = this.state.messages[this.state.messages.length - 1];
+        if (!last || last.role !== "assistant" || this.state.isThinking) return;
+        if (last.state !== "pending") return;
+        pendingToStreaming(last);
+        await this._followTurn(last, { turnId: last.id });
+        await this._refreshSessions(false);
     }
 
     async _sendBuffered(message, sessionId, context, internal = false) {
@@ -683,6 +678,7 @@ export class ClaudeSystrayItem extends Component {
     }
 
     onStop() {
+        stopTurn(this._streamAssistant);
         if (this._streamAbort) this._streamAbort.abort();
     }
 

@@ -1,5 +1,75 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.22.1 - 2026-09-15
+
+### Les champs d'un tour ne s'écrivent plus que côté serveur
+
+Une relecture adverse de la 18.0.1.22.0 a trouvé qu'un employé pouvait, par
+RPC, créer ou remettre « en cours » l'un de ses propres messages avec une clé
+de tour choisie : `readonly` ne garde que l'écran. Le cron ou un écran qui
+revenait reprenait alors ce tour en superutilisateur, sans identité, sur le
+locataire par défaut du pont.
+
+- `state`, `turn_key`, `client_token`, `runner_heartbeat`,
+  `auto_continue_count`, `prefix_len`, `stop_requested`, `turn_payload` et
+  `end_reason` ne s'écrivent plus hors `sudo` ; `turn_key` ne se lit plus hors
+  administration.
+- Le fil refuse et clôt un tour dont la charge ne nomme pas le propriétaire de
+  la conversation et un locataire.
+- La trame `turn` du pont, qui porte la clé, n'est plus relayée à l'écran.
+- Le fil garde son signe de vie pendant qu'il attend le pont, et ne relance une
+  reprise que s'il détient encore la clé du tour : deux fils ne peuvent plus
+  envoyer la consigne de reprise en même temps.
+- La charge du tour (adresse, résumé de persona, consignes) est effacée à
+  l'enregistrement. `/claude-chat/attach` respecte l'activation de Gen et une
+  limite de fréquence qui lui est propre.
+
+## 18.0.1.22.0 - 2026-09-15
+
+### Une réponse de Gen ne se perd plus en route
+
+Au bureau, près d'une question sur trois restait sans réponse enregistrée
+depuis la fin août. Le tour vivait aussi longtemps que la connexion du
+navigateur : un rechargement de page, un délai de proxy ou un redémarrage
+d'Odoo coupait le flux, l'écran écrivait « (connexion interrompue) », et le
+contrôleur, qui n'enregistrait la réponse qu'à la fin du flux, n'enregistrait
+rien, même quand le pont l'avait produite.
+
+Le bureau suit maintenant le modèle du téléphone :
+
+- **Le serveur possède le tour.** Un fil d'exécution consomme le pont et écrit
+  la réponse dans la base au fil de l'eau (`controllers/turns.py`). L'écran
+  qui a posé la question n'en est que le premier spectateur : s'il part, le
+  tour continue et s'enregistre.
+- **L'écran se rattache.** Après une coupure, il revient au tour
+  (`/claude-chat/attach`) et relit ce qui a déjà été écrit, sans rien
+  relancer. Une page rechargée pendant un tour reprend là où il en est.
+- **Une question à la fois par conversation.** Une question envoyée pendant
+  qu'un tour tourne encore se rattache à ce tour au lieu de lancer un second
+  CLI sur la même conversation, et la question revient dans la zone de saisie.
+- **Les fins propres reprennent seules.** Délai dépassé, limite d'étapes,
+  surcharge de l'API, tour perdu par le pont : Gen repart sur la même
+  conversation, deux fois au plus (« Gen reprend là où il s'était arrêté »),
+  avec une consigne qui lui interdit de refaire une action déjà faite. Jamais
+  après le bouton Arrêter, ni sur une limite d'abonnement.
+- **Un tour survit à un redémarrage d'Odoo.** Le pont le garde vivant une
+  heure ; un cron (toutes les 2 minutes) ou le premier écran qui revient s'y
+  rattache et l'enregistre. Un tour d'avant ce mécanisme resté « en cours »
+  plus de 30 minutes est clos.
+- **Le bouton Arrêter arrête vraiment** (`/claude-chat/stop`) : quitter le
+  flux ne suffit plus. Le résumé automatique d'une fiche, lui, s'arrête encore
+  quand on quitte la page.
+- Le repli qui renvoyait la question par `/claude-chat/send` après une coupure
+  avant le premier mot est retiré : il rejouait un tour entier.
+
+Réglages sans écran : `bf_claude_chat.turn_wall_seconds` (plafond d'un tour
+chez le pont, 1200 par défaut) et `bf_claude_chat.auto_continue_max`
+(reprises automatiques, 2 par défaut, 0 pour les couper).
+
+⚠️ Demande le pont du 2026-09-15 ou plus récent (`/chat-attach`,
+`/chat-cancel`, `turn_key`). Avec un pont plus ancien, les tours marchent
+comme avant, sans rattachement ni arrêt côté pont.
+
 ## 18.0.1.21.0 - 2026-09-14
 
 ### Pendant que Gen travaille, l'écran dit ce qu'il fait

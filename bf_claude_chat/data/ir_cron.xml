@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Un tour dont le fil est mort avec son processus (travailleur recyclé,
+         conteneur redémarré) reste vivant chez le pont une heure : ce cron s'y
+         rattache quand aucun écran ne l'a fait, et clôt les tours d'avant ce
+         mécanisme restés « en cours ». -->
+    <record id="ir_cron_recover_stale_turns" model="ir.cron">
+        <field name="name">Gen: resume turns left without a worker</field>
+        <field name="model_id" ref="model_claude_chat_message"/>
+        <field name="state">code</field>
+        <field name="code">model._recover_stale_turns()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">2</field>
+        <field name="interval_type">minutes</field>
+        <field name="priority">5</field>
+    </record>
+</odoo>

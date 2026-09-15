@@ -1,6 +1,7 @@
 import logging
 
 from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -48,6 +49,139 @@ class ClaudeChatMessage(models.Model):
         help="Un tour mobile reste « en cours » le temps que l'assistant "
              "réponde ; le téléphone n'a plus à tenir la connexion ouverte.",
     )
+    # ------------------------------------------------------------------
+    # Un tour qui survit à son écran
+    # ------------------------------------------------------------------
+    # 🔴 Relevé 2026-09-14 : au bureau, près d'une question sur trois restait
+    # sans réponse enregistrée. Le tour vivait aussi longtemps que la chaîne
+    # HTTP navigateur, proxy, travailleur Odoo, pont : un rechargement, un
+    # délai de proxy ou un redémarrage d'Odoo perdait la réponse, que le
+    # contrôleur n'écrivait qu'à la fin du flux. Le bureau fait maintenant
+    # comme le téléphone : la réponse s'écrit ici au fil de l'eau, par un fil
+    # d'exécution (`controllers/turns.py`), et l'écran se rattache au tour.
+    turn_key = fields.Char(
+        string="Turn Key", index=True, copy=False, readonly=True,
+        groups="base.group_system",
+        help="Identifies the turn at the bridge, to re-attach to it.",
+    )
+    client_token = fields.Char(
+        string="Client Token", index=True, copy=False, readonly=True,
+        help="Token drawn by the screen when asking: a question sent again "
+             "after a cut finds its turn instead of starting a second one.",
+    )
+    runner_heartbeat = fields.Datetime(
+        string="Runner Heartbeat", copy=False, readonly=True,
+        help="Last sign of life of the thread writing this turn. A pending "
+             "turn without a recent one is taken over by another thread.",
+    )
+    auto_continue_count = fields.Integer(
+        string="Automatic Resumes", copy=False, readonly=True,
+        help="Automatic resumes after the bridge ended the turn cleanly (wall "
+             "limit, step limit, overload).",
+    )
+    prefix_len = fields.Integer(
+        string="Resumed Text Length", copy=False, readonly=True,
+        help="Length of the text written by earlier resumes: what a screen "
+             "that re-attaches shows before replaying the current part.",
+    )
+    stop_requested = fields.Boolean(string="Stop Requested", copy=False, readonly=True)
+    turn_payload = fields.Text(
+        string="Turn Payload", copy=False, readonly=True, groups="base.group_system",
+        help="What the turn sent to the bridge, without the API key: an "
+             "automatic resume starts again from it, even when the cron runs it.",
+    )
+    end_reason = fields.Char(
+        string="End Reason", copy=False, readonly=True,
+        help="Why the turn did not end normally, as the bridge said it "
+             "(timeout, max_turns, stopped, unknown_turn...).",
+    )
+
+    # 🔴 Ces champs pilotent un fil qui tourne en superutilisateur et parle au
+    # pont. `readonly=True` ne garde que l'écran : la règle d'accès laisse tout
+    # employé créer et écrire ses propres messages par RPC. Une relecture
+    # adverse (2026-09-14) a montré qu'un message « en cours » fabriqué ainsi,
+    # avec une clé choisie, était repris par le cron et relancé sans identité,
+    # sur le locataire par défaut du pont. Seul le serveur (sudo) les écrit.
+    TURN_FIELDS = frozenset({
+        "state", "turn_key", "client_token", "runner_heartbeat",
+        "auto_continue_count", "prefix_len", "stop_requested", "turn_payload",
+        "end_reason",
+    })
+
+    def _check_turn_fields(self, vals_list):
+        if self.env.su:
+            return
+        touched = {k for vals in vals_list for k in vals} & self.TURN_FIELDS
+        if touched:
+            raise AccessError(_(
+                "Only the server may set these fields on a Gen message: %s",
+                ", ".join(sorted(touched))))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        if self.env.su:
+            return super().create(vals_list)
+        self._check_turn_fields(vals_list)
+        # 🔴 Seconde relecture adverse : les valeurs par défaut s'ajoutent APRÈS
+        # ce contrôle, dans super().create(), et `default_get` prend les clés
+        # `default_*` du contexte sans regarder les groupes du champ. Un tour
+        # « en cours » se fabriquait donc par le contexte, ou par un
+        # `ir.default` personnel. On retire ces clés, puis on vérifie ce qui a
+        # réellement été créé.
+        propre = {k: v for k, v in self.env.context.items()
+                  if not (k.startswith("default_") and k[8:] in self.TURN_FIELDS)}
+        records = super(ClaudeChatMessage, self.with_context(propre)).create(vals_list)
+        for rec in records.sudo():
+            if (rec.state != "done" or rec.turn_key or rec.client_token
+                    or rec.runner_heartbeat or rec.auto_continue_count
+                    or rec.prefix_len or rec.stop_requested or rec.turn_payload
+                    or rec.end_reason):
+                raise AccessError(_(
+                    "Only the server may set these fields on a Gen message: %s",
+                    "state"))
+        return records
+
+    def write(self, vals):
+        self._check_turn_fields([vals])
+        return super().write(vals)
+
+    # Au-delà, un tour « en cours » dont le fil ne donne plus signe de vie est
+    # tenu pour orphelin. Le fil écrit au moins toutes les 15 s (signe de vie
+    # du pont) : 45 s laisse passer une écriture ratée sans reprendre à tort.
+    STALE_SECONDS = 45
+
+    @api.model
+    def _recover_stale_turns(self):
+        """Cron : reprendre les tours dont le fil est mort avec son processus.
+
+        Un travailleur Odoo recyclé ou un conteneur redémarré emporte le fil,
+        pas le tour : le pont le garde vivant et lisible une heure. On s'y
+        rattache ici, faute d'écran pour le faire. Un tour d'avant ce mécanisme
+        (sans `turn_key`) resté en cours depuis longtemps est clos en erreur,
+        sinon il reste « en cours » à vie.
+        """
+        from ..controllers import turns
+        now = fields.Datetime.now()
+        stale = self.sudo().search([
+            ("state", "=", "pending"), ("turn_key", "!=", False),
+            "|", ("runner_heartbeat", "=", False),
+            ("runner_heartbeat", "<", fields.Datetime.subtract(
+                now, seconds=self.STALE_SECONDS)),
+        ], limit=10)
+        for message in stale:
+            turns.resume_detached(self.env, message)
+        orphans = self.sudo().search([
+            ("state", "=", "pending"), ("turn_key", "=", False),
+            ("write_date", "<", fields.Datetime.subtract(now, minutes=30)),
+        ])
+        for message in orphans:
+            text = message.content if message.content not in ("…", False) else ""
+            message.write({
+                "state": "error",
+                "end_reason": "orphan",
+                "content": text or _("Gen was interrupted before answering."),
+            })
+
     # ------------------------------------------------------------------
     # Consommation — trois grandeurs, et une seule dit la vérité
     # ------------------------------------------------------------------

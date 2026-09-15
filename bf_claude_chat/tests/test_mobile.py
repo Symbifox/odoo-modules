@@ -68,33 +68,28 @@ class TestGenfoxMobile(TransactionCase):
     def test_progress_writes_text_and_tools_onto_the_pending_message(self):
         """Ce qui donne l'écriture progressive au téléphone : le fil écrit dans
         le message, et /turn le relit. Sans base d'écriture, pas de progression."""
-        from ..controllers.mobile_api import _Avancement
-        session = self.env["claude.chat.session"].create({"name": "Essai"})
-        message = self.env["claude.chat.message"].create({
-            "session_id": session.id, "role": "assistant", "content": "…",
-            "state": "pending",
-        })
-        avancement = _Avancement(self.env.cr.dbname, self.env.uid, message.id)
-        avancement.texte_recu("Bon")
-        avancement.texte_recu("jour")
-        avancement.outil_recu("odoo_list_project_tasks")
-        self.assertEqual(avancement.texte, "Bonjour")
-        self.assertEqual([t["name"] for t in avancement.outils],
+        from ..controllers.turns import TurnProgress
+        avancement = TurnProgress(self.env.cr.dbname, 0)
+        avancement.on_text("Bon")
+        avancement.on_text("jour")
+        avancement.on_tool("odoo_list_project_tasks")
+        self.assertEqual(avancement.content, "Bonjour")
+        self.assertEqual([t["name"] for t in avancement.tools],
                          ["odoo_list_project_tasks"])
 
     def test_a_tool_detail_lands_on_the_last_call_of_that_tool(self):
         """La description d'une commande n'arrive qu'à la fin de
         son écriture. Elle doit se poser sur le DERNIER appel de ce nom qui n'en
         a pas encore, sans toucher aux autres outils ni aux appels déjà décrits."""
-        from ..controllers.mobile_api import _Avancement
-        avancement = _Avancement(self.env.cr.dbname, self.env.uid, 0)
-        avancement.outil_recu("Bash")
-        avancement.detail_recu("Bash", "Lecture des tâches du projet")
-        avancement.outil_recu("odoo_get_task")
-        avancement.outil_recu("Bash")
-        avancement.detail_recu("Bash", "Compte des tâches fermées")
+        from ..controllers.turns import TurnProgress
+        avancement = TurnProgress(self.env.cr.dbname, 0)
+        avancement.on_tool("Bash")
+        avancement.on_detail("Bash", "Lecture des tâches du projet")
+        avancement.on_tool("odoo_get_task")
+        avancement.on_tool("Bash")
+        avancement.on_detail("Bash", "Compte des tâches fermées")
         self.assertEqual(
-            [(t["name"], t.get("detail")) for t in avancement.outils],
+            [(t["name"], t.get("detail")) for t in avancement.tools],
             [("Bash", "Lecture des tâches du projet"), ("odoo_get_task", None),
              ("Bash", "Compte des tâches fermées")],
         )
@@ -102,30 +97,35 @@ class TestGenfoxMobile(TransactionCase):
     def test_an_empty_or_orphan_tool_detail_changes_nothing(self):
         """Un détail vide, ou qui ne trouve aucun appel de ce nom à décrire,
         ne crée rien et ne remplace rien ; un détail trop long est borné."""
-        from ..controllers.mobile_api import _Avancement
-        avancement = _Avancement(self.env.cr.dbname, self.env.uid, 0)
-        avancement.outil_recu("Bash")
-        avancement.detail_recu("Bash", "   ")
-        avancement.detail_recu("WebSearch", "loi 25")
-        self.assertEqual(avancement.outils, [{"name": "Bash", "at": 0}])
-        avancement.detail_recu("Bash", "x" * 300)
-        self.assertEqual(len(avancement.outils[0]["detail"]), 120)
-        avancement.detail_recu("Bash", "autre")
-        self.assertEqual(len(avancement.outils[0]["detail"]), 120)
+        from ..controllers.turns import TurnProgress
+        avancement = TurnProgress(self.env.cr.dbname, 0)
+        avancement.on_tool("Bash")
+        avancement.on_detail("Bash", "   ")
+        avancement.on_detail("WebSearch", "loi 25")
+        self.assertEqual(avancement.tools, [{"name": "Bash", "at": 0, "attempt": 0}])
+        avancement.on_detail("Bash", "x" * 300)
+        self.assertEqual(len(avancement.tools[0]["detail"]), 120)
+        avancement.on_detail("Bash", "autre")
+        self.assertEqual(len(avancement.tools[0]["detail"]), 120)
 
     def test_the_turn_relays_the_bridge_tool_detail_to_the_progress(self):
-        """Le fil mobile trie les événements du pont lui-même : sans son aiguillage
-        vers `detail_recu`, le détail n'atteint jamais `tool_log` et l'app garde
-        « Bash ». Mutation qui a survécu aux deux essais précédents, d'où celui-ci."""
+        """Le fil trie les événements du pont lui-même : sans son aiguillage
+        vers `on_detail`, le détail n'atteint jamais `tool_log` et l'app garde
+        « Bash ». Mutation qui avait survécu aux deux essais précédents."""
         from unittest.mock import patch
-        from ..controllers import mobile_api
+        from ..controllers import turns
         trames = [
             b'event: tool\ndata: {"name": "Bash", "status": "start"}\n\n',
             'event: tool_detail\ndata: {"name": "Bash", "detail": "Lecture des tâches"}\n\n'.encode(),
             b'event: done\ndata: {"response": "ok"}\n\n',
         ]
-        with patch.object(mobile_api.transport, "stream", return_value=iter(trames)):
-            with patch.object(mobile_api._Avancement, "detail_recu") as detail:
-                mobile_api._run_turn(self.env.cr.dbname, self.env.uid, 0, 0, "question",
-                                     {}, "/nulle/part.sock", 5, "", False)
+        etat = {"turn_key": "k" * 20, "payload": {"message": "question", "tenant": "bf"}, "api_key": "",
+                "prefix": "", "tools": [], "attempt": 0, "stop_requested": False,
+                "claude_sid": "", "session_id": 0, "session_name": "", "origin": "mobile",
+                "user_id": self.env.uid}
+        with patch.object(turns, "_load", return_value=etat), \
+                patch.object(turns, "_finalize", return_value=None), \
+                patch.object(turns.transport, "stream", return_value=iter(trames)), \
+                patch.object(turns.TurnProgress, "on_detail") as detail:
+            turns.run_turn(self.env.cr.dbname, 0, "/nulle/part.sock", 5)
         detail.assert_called_once_with("Bash", "Lecture des tâches")

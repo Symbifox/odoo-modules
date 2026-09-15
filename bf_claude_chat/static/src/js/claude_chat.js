@@ -5,8 +5,10 @@ import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
-import { streamChat } from "@bf_claude_chat/js/claude_stream";
-import { GenSteps, GenWaitLine, trackWait } from "@bf_claude_chat/js/gen_wait";
+import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
+import {
+    followTurn, newClientToken, pendingToStreaming, stopTurn, streamingFields,
+} from "@bf_claude_chat/js/gen_turn";
 
 /**
  * Étiquette de consommation d'un tour, dans le vocabulaire commun au Cockpit
@@ -222,11 +224,14 @@ class ClaudeChatAction extends Component {
             const result = await rpc("/claude-chat/messages", {
                 session_id: sessionId,
             });
-            this.state.messages = result.messages || [];
+            this.state.messages = (result.messages || []).map((m) => (
+                m.state === "error" ? { ...m, interrupted: true } : m));
             this.scrollToBottom();
         } catch (e) {
             this.notification.add(_t("Failed to load messages"), { type: "danger" });
+            return;
         }
+        this._resumePending();
     }
 
     // ── Actions ────────────────────────────────────────────────
@@ -331,99 +336,73 @@ class ClaudeChatAction extends Component {
             return;
         }
 
-        // Streaming path — live tokens, tool activity, thinking progress.
+        // Streaming path. The server owns the turn and saves it; this screen
+        // only follows, and comes back to it after any cut (gen_turn.js).
+        const userMsg = this.state.messages[this.state.messages.length - 1];
         const idx = this.state.messages.push({
             id: `a-${Date.now()}`,
             role: "assistant",
-            content: "",
-            streaming: true,
-            tools: [],
-            thinkingTokens: 0,
-            // Ligne d'état : l'étape en cours et le chrono du tour.
-            phase: "start",
-            foxIndex: Math.floor(Math.random() * 13),
-            startedAt: Date.now(),
-            interrupted: false,
-            notice: "",
+            ...streamingFields(),
             create_date: new Date().toISOString(),
         }) - 1;
         const assistant = this.state.messages[idx];
+        const outcome = await this._followTurn(assistant, {
+            start: { session_id: sessionId, message, client_token: newClientToken() },
+            onBusy: () => {
+                // The question was not sent: give it back.
+                this.state.messages = this.state.messages.filter((m) => m.id !== userMsg.id);
+                if (this.inputRef.el && !this.inputRef.el.value) {
+                    this.inputRef.el.value = message;
+                    this.autoResize(this.inputRef.el);
+                }
+            },
+        });
+        if (outcome === "disabled") {
+            this.state.streaming = false;
+            this.state.messages.splice(this.state.messages.indexOf(assistant), 1);
+            await this._sendBuffered(message, sessionId);
+        }
+        await this.loadSessions();
+        if (wasNewSession) setTimeout(() => this.loadSessions(), 4000);
+        this.scrollToBottom();
+        this.focusInput();
+    }
 
+    async _followTurn(assistant, { start = null, turnId = null, onBusy = null }) {
         this.state.isThinking = true;
         this.state.streamingActive = true;
         this.scrollToBottom();
-
         const controller = new AbortController();
         this._streamAbort = controller;
-
-        let gotText = false;
-        let disabled = false;
+        this._streamAssistant = assistant;
+        let outcome;
         try {
-            await streamChat({
-                body: { session_id: sessionId, message },
-                signal: controller.signal,
-                onEvent: (event, data) => {
-                    trackWait(assistant, event, data);
-                    switch (event) {
-                        case "session":
-                            if (data.odoo_session_id) this.state.activeSessionId = data.odoo_session_id;
-                            break;
-                        case "notice":
-                            assistant.notice = data.text || "";
-                            break;
-                        case "tool":
-                            this.scrollToBottom();
-                            break;
-                        case "text":
-                            gotText = true;
-                            assistant.content += data.delta || "";
-                            this.scrollToBottom();
-                            break;
-                        case "done":
-                            if (data.response) assistant.content = data.response;
-                            assistant.streaming = false;
-                            // Le pont envoie l'usage sur « done » et le
-                            // contrôleur relaie les octets bruts : il suffisait
-                            // de le lire.
-                            assistant.usageLabel = usageLabel(data.usage);
-                            assistant.usageTitle = usageTitle(data.usage);
-                            break;
-                        case "error":
-                            if (data.reason === "disabled") { disabled = true; break; }
-                            if (data.response) assistant.content = data.response;
-                            assistant.interrupted = !!data.interrupted;
-                            assistant.streaming = false;
-                            break;
-                        case "saved":
-                            if (data.message_id) assistant.id = data.message_id;
-                            break;
-                    }
-                },
-            });
-            if (disabled) {
-                this.state.streaming = false;
-                this.state.messages.splice(idx, 1);
-                await this._sendBuffered(message, sessionId);
-            }
-        } catch (err) {
-            if (controller.signal.aborted) {
-                assistant.interrupted = true;
-            } else if (!gotText) {
-                this.state.messages.splice(idx, 1);
-                await this._sendBuffered(message, sessionId);
-            } else {
-                assistant.content += "\n\n_(connexion interrompue)_";
-            }
+            outcome = await followTurn({
+                onSessionId: (id) => { this.state.activeSessionId = id; },
+                scrollToBottom: () => this.scrollToBottom(),
+                onBusy,
+            }, assistant, { start, turnId, signal: controller.signal, labels: { usageLabel, usageTitle } });
         } finally {
+            if (outcome === "stopped") assistant.interrupted = true;
             assistant.streaming = false;
+            assistant.reconnecting = false;
             this.state.isThinking = false;
             this.state.streamingActive = false;
             this._streamAbort = null;
-            await this.loadSessions();
-            if (wasNewSession) setTimeout(() => this.loadSessions(), 4000);
-            this.scrollToBottom();
-            this.focusInput();
+            this._streamAssistant = null;
         }
+        return outcome;
+    }
+
+    /** A turn still running when the conversation is opened (page reloaded). */
+    async _resumePending() {
+        const last = this.state.messages[this.state.messages.length - 1];
+        if (!last || last.role !== "assistant" || this.state.isThinking) return;
+        if (last.state === "error") last.interrupted = true;
+        if (last.state !== "pending") return;
+        pendingToStreaming(last);
+        await this._followTurn(last, { turnId: last.id });
+        await this.loadSessions();
     }
 
     async _sendBuffered(message, sessionId) {
@@ -449,6 +428,7 @@ class ClaudeChatAction extends Component {
     }
 
     onStop() {
+        stopTurn(this._streamAssistant);
         if (this._streamAbort) this._streamAbort.abort();
     }
 

@@ -117,8 +117,11 @@
                                              t-att-class="'bf-chat-content' + (msg.streaming ? ' bf-streaming' : '')"
                                              t-out="renderMarkdown(msg.content)"/>
                                         <GenWaitLine t-if="msg.streaming" msg="msg"/>
+                                        <div t-if="msg.reconnecting" class="bf-stream-notice">
+                                            <i class="fa fa-plug me-1"/>Connection lost. Picking the thread back up…
+                                        </div>
                                         <div t-if="msg.interrupted" class="bf-stream-interrupted">
-                                            <i class="fa fa-exclamation-circle me-1"/>Réponse interrompue — demande-moi de continuer.
+                                            <i class="fa fa-exclamation-circle me-1"/>Answer interrupted. Ask me to continue.
                                         </div>
                                         <!-- Même vocabulaire que le Cockpit et que Comms : jetons NEUFS
                                              en tête, contexte relu à part. Le total additionne la
@@ -329,8 +332,11 @@
                                                          t-att-class="'bf-chat-content' + (msg.streaming ? ' bf-streaming' : '')"
                                                          t-out="renderMarkdown(msg.content)"/>
                                                     <GenWaitLine t-if="msg.streaming" msg="msg"/>
+                                                    <div t-if="msg.reconnecting" class="bf-stream-notice">
+                                                        <i class="fa fa-plug me-1"/>Connection lost. Picking the thread back up…
+                                                    </div>
                                                     <div t-if="msg.interrupted" class="bf-stream-interrupted">
-                                                        <i class="fa fa-exclamation-circle me-1"/>Réponse interrompue.
+                                                        <i class="fa fa-exclamation-circle me-1"/>Answer interrupted.
                                                     </div>
                                                     <!-- Même vocabulaire que le Cockpit et que Comms : jetons NEUFS
                                                          en tête, contexte relu à part. Le total additionne la
