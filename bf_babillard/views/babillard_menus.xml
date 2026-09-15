@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_babillard_root" name="Babillard"
+              web_icon="bf_babillard,static/description/icon.png" sequence="46"/>
+
+    <menuitem id="menu_babillard_fil" name="Le fil" parent="menu_babillard_root"
+              action="action_babillard_fil" sequence="10"/>
+
+    <menuitem id="menu_babillard_publications" name="Publications"
+              parent="menu_babillard_root" action="action_babillard_publications"
+              groups="bf_babillard.group_babillard_redacteur" sequence="20"/>
+
+    <menuitem id="menu_babillard_signalements" name="Signalements"
+              parent="menu_babillard_root" action="action_babillard_signalement"
+              groups="bf_babillard.group_babillard_moderation" sequence="30"/>
+</odoo>

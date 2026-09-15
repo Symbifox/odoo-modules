@@ -75,6 +75,12 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.0.2 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
+| `bf_babillard` | Babillard | 18.0.1.2.0 | BUSL-1.1 | Announcements with an audience, an expiry date and named read receipts, with a confidential reporting path |
+| `bf_babillard_celebrations` | Babillard : célébrations | 18.0.1.0.2 | BUSL-1.1 | A delivered group greeting card appears on the noticeboard |
+| `bf_babillard_event` | Babillard : événements | 18.0.1.1.0 | BUSL-1.1 | Upcoming events appear on the noticeboard and follow their changes |
+| `bf_babillard_gamification` | Babillard : reconnaissance | 18.0.1.0.3 | BUSL-1.1 | A badge given by a colleague appears on the noticeboard |
+| `bf_babillard_home` | Babillard : accueil | 18.0.1.0.2 | BUSL-1.1 | What you still have to read, on the dashboard |
+| `bf_babillard_pulse` | Babillard : pulse | 18.0.1.0.3 | BUSL-1.1 | The displayable results of a closed pulse wave appear on the noticeboard |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.2.10.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_budget` | Budgets opérationnels | 18.0.1.0.2 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.1.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |

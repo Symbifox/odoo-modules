@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_babillard" model="ir.module.category">
+        <field name="name">Babillard</field>
+        <field name="description">Les annonces de la maison et leur diffusion.</field>
+        <field name="sequence">42</field>
+    </record>
+
+    <record id="group_babillard_redacteur" model="res.groups">
+        <field name="name">Rédaction</field>
+        <field name="category_id" ref="module_category_babillard"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Rédige, publie et retire les publications, et voit qui a confirmé sa lecture.</field>
+    </record>
+
+    <record id="group_babillard_moderation" model="res.groups">
+        <field name="name">Modération</field>
+        <field name="category_id" ref="module_category_babillard"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Reçoit les signalements et peut retirer un contenu. C'est le groupe de la personne désignée par la politique de prévention du harcèlement.</field>
+    </record>
+</odoo>

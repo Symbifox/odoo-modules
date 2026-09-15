@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_babillard_post_user,bf.babillard.post utilisateur,model_bf_babillard_post,base.group_user,1,0,0,0
+access_babillard_post_redacteur,bf.babillard.post rédaction,model_bf_babillard_post,group_babillard_redacteur,1,1,1,1
+access_babillard_post_moderation,bf.babillard.post modération,model_bf_babillard_post,group_babillard_moderation,1,1,0,0
+access_babillard_lecture_user,bf.babillard.lecture utilisateur,model_bf_babillard_lecture,base.group_user,1,0,0,0
+access_babillard_lecture_redacteur,bf.babillard.lecture rédaction,model_bf_babillard_lecture,group_babillard_redacteur,1,0,0,0
+access_babillard_signalement_moderation,bf.babillard.signalement modération,model_bf_babillard_signalement,group_babillard_moderation,1,1,1,0
+access_babillard_signalement_admin,bf.babillard.signalement administration,model_bf_babillard_signalement,base.group_system,1,0,0,0
+access_babillard_signalement_assistant_user,bf.babillard.signalement.assistant utilisateur,model_bf_babillard_signalement_assistant,base.group_user,1,1,1,0

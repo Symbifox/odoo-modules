@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+          Le corps seulement : le bandeau, l'accent, la police et le pied de marque
+          viennent de la mise en page passée à l'envoi (`bluefox_branding` quand il
+          est installé, la mise en page légère d'Odoo sinon).
+
+          Le bouton prend l'accent de marque de la société, comme la relance de
+          `bf_training` : l'accent brut sous du texte blanc est un arbitrage du
+          propriétaire de la marque, pas un défaut à corriger ici.
+        -->
+
+        <record id="mail_template_annonce_a_lire" model="mail.template">
+            <field name="name">Babillard : annonce à lire</field>
+            <field name="model_id" ref="model_bf_babillard_post"/>
+            <field name="subject">À lire : {{ object.name }}</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ object.company_id.partner_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <t t-set="societe" t-value="object.company_id"/>
+    <t t-set="accent" t-value="('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'"/>
+    <p style="margin:0 0 12px 0;">Bonjour,</p>
+    <p style="margin:0 0 12px 0;">
+        Une annonce vous demande de confirmer sa lecture :
+        <strong t-out="object.name or ''"/>
+    </p>
+    <div t-if="not is_html_empty(object.corps_html)" style="margin:0 0 16px 0;" t-out="object.corps_html"/>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/mail/view?model=bf.babillard.post&amp;res_id={{ object.id }}"
+           t-attf-style="background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            Lire et confirmer
+        </a>
+    </p>
+    <p style="margin:0;font-size:13px;color:#6B7280;">
+        La confirmation se fait dans l'application, après la connexion : ouvrir ce
+        courriel ou suivre son lien ne compte pas comme une lecture.
+    </p>
+</div>
+            </field>
+        </record>
+
+        <!--
+          🔴 Ce courriel ne dit RIEN du signalement : ni le motif, ni la personne qui
+          signale, ni la publication visée. Il annonce qu'un signalement attend et
+          donne le lien. Le reste se lit dans l'application, derrière le droit
+          d'accès de la modération.
+        -->
+        <record id="mail_template_signalement_recu" model="mail.template">
+            <field name="name">Babillard : signalement reçu</field>
+            <field name="model_id" ref="model_bf_babillard_signalement"/>
+            <field name="subject">Un signalement attend au babillard</field>
+            <!-- 🔴 Jamais l'adresse de l'utilisateur courant : à l'envoi, c'est la
+                 personne qui signale. Le code impose de toute façon l'adresse de la
+                 société (`_expediteur`), y compris sur une base qui garde un ancien
+                 gabarit. -->
+            <field name="email_from">{{ object.company_id.email_formatted }}</field>
+            <field name="lang">{{ object.post_id.company_id.partner_id.lang }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <t t-set="societe" t-value="object.post_id.company_id"/>
+    <t t-set="accent" t-value="('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'"/>
+    <p style="margin:0 0 12px 0;">Bonjour,</p>
+    <p style="margin:0 0 12px 0;">Un signalement attend votre attention au babillard.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/mail/view?model=bf.babillard.signalement&amp;res_id={{ object.id }}"
+           t-attf-style="background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            Ouvrir le signalement
+        </a>
+    </p>
+    <p style="margin:0;font-size:13px;color:#6B7280;">
+        Pour préserver la confidentialité, ce courriel ne dit ni ce qui est signalé,
+        ni qui le signale.
+    </p>
+</div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

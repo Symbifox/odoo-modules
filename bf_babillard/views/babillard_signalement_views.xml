@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_babillard_signalement_form" model="ir.ui.view">
+        <field name="name">bf.babillard.signalement.form</field>
+        <field name="model">bf.babillard.signalement</field>
+        <field name="arch" type="xml">
+            <form string="Signalement">
+                <header>
+                    <button name="action_prendre_en_charge" type="object"
+                            string="Prendre en charge" class="btn-primary"
+                            invisible="state != 'nouveau'"
+                            groups="bf_babillard.group_babillard_moderation"/>
+                    <button name="action_retirer_la_publication" type="object"
+                            string="Retirer la publication"
+                            invisible="state == 'traite'"
+                            groups="bf_babillard.group_babillard_moderation"
+                            confirm="La publication quitte le fil tout de suite. Rien n'est détruit."/>
+                    <button name="action_clore" type="object" string="Clore"
+                            invisible="state == 'traite'"
+                            groups="bf_babillard.group_babillard_moderation"/>
+                    <field name="state" widget="statusbar"
+                           groups="bf_babillard.group_babillard_moderation"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="status">
+                        Ce signalement est lu par la personne désignée, et par elle seule.
+                        Conservez le dossier au moins deux ans.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="post_id" readonly="1"/>
+                            <field name="message_id" readonly="1"
+                                   invisible="not message_id"/>
+                            <field name="auteur_signalement_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="responsable_id"
+                                   groups="bf_babillard.group_babillard_moderation"/>
+                        </group>
+                    </group>
+                    <group string="Motif">
+                        <field name="motif" nolabel="1"
+                               placeholder="Ce qui pose problème, en vos mots."/>
+                    </group>
+                    <group string="Contenu signalé, tel qu'il était"
+                           invisible="not extrait">
+                        <field name="extrait" nolabel="1" readonly="1"/>
+                    </group>
+                    <group string="Suite donnée"
+                           groups="bf_babillard.group_babillard_moderation">
+                        <field name="suite" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_babillard_signalement_list" model="ir.ui.view">
+        <field name="name">bf.babillard.signalement.list</field>
+        <field name="model">bf.babillard.signalement</field>
+        <field name="arch" type="xml">
+            <list string="Signalements" decoration-danger="state == 'nouveau'">
+                <field name="create_date" string="Reçu le"/>
+                <field name="post_id"/>
+                <field name="auteur_signalement_id"/>
+                <field name="responsable_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_babillard_signalement" model="ir.actions.act_window">
+        <field name="name">Signalements</field>
+        <field name="res_model">bf.babillard.signalement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Le dialogue de la personne qui signale. Il crée le signalement en son nom
+         puis se ferme : elle ne lit ni la suite ni les échanges de la modération. -->
+    <record id="view_babillard_signalement_assistant_form" model="ir.ui.view">
+        <field name="name">bf.babillard.signalement.assistant.form</field>
+        <field name="model">bf.babillard.signalement.assistant</field>
+        <field name="arch" type="xml">
+            <form string="Signaler ce contenu">
+                <div class="alert alert-info" role="status">
+                    Ce signalement est lu par la personne désignée, et par elle seule.
+                    Ni la rédaction ni vos collègues n'y ont accès.
+                </div>
+                <group>
+                    <field name="post_ref" invisible="1"/>
+                    <field name="message_ref" invisible="1"/>
+                    <field name="post_titre" readonly="1"/>
+                    <field name="auteur_nom" readonly="1"/>
+                </group>
+                <group string="Motif">
+                    <field name="motif" nolabel="1"
+                           placeholder="Ce qui pose problème, en vos mots."/>
+                </group>
+                <footer>
+                    <button name="action_envoyer" type="object"
+                            string="Envoyer le signalement" class="btn-primary"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_babillard_signalement_nouveau" model="ir.actions.act_window">
+        <field name="name">Signaler ce contenu</field>
+        <field name="res_model">bf.babillard.signalement.assistant</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_babillard_signalement_assistant_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

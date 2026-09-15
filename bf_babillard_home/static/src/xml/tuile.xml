@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_babillard_home.Tuile" t-inherit="bf_dashboard.Dashboard" t-inherit-mode="extension">
+        <xpath expr="//t[@t-if='state.data.overdue_activities']" position="after">
+            <!-- Babillard : ce qui reste à lire -->
+            <t t-if="state.data.babillard">
+                <div class="col-lg col-md-6 mb-3">
+                    <div class="card h-100 border-warning">
+                        <div class="card-body text-center">
+                            <h2 class="mb-0 text-warning" t-esc="state.data.babillard.count"/>
+                            <small class="text-muted">
+                                <i class="fa fa-thumb-tack me-1"/>à lire au babillard
+                            </small>
+                            <div class="mt-1">
+                                <small class="text-muted d-block text-truncate"
+                                       t-foreach="state.data.babillard.titles" t-as="titre" t-key="titre_index"
+                                       t-esc="titre"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </t>
+
+</templates>
