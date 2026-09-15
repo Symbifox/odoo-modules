@@ -4,6 +4,40 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.35.2] — 2026-09-14
+
+Répondre à un courriel qui cite une image d'un autre domaine faisait tomber
+l'envoi.
+
+### Fixed
+
+- 🔴 **« Tainted canvases may not be exported » à l'envoi.** Avant qu'un
+  courriel quitte le composeur, Odoo redessine chaque image `.svg` et `.webp`
+  sur un canevas et la remplace par le PNG qu'il en relit (`convertToPng`,
+  `mail/.../html_mail_field/convert_inline.js`). Le navigateur refuse de
+  relire un canevas qui a reçu une image d'un autre domaine servie sans
+  en-tête CORS : `toDataURL` lève `SecurityError`, toute la passe s'arrête et
+  le courriel ne part pas. Il suffisait de répondre à une annonce du site de
+  l'instance quand le site est servi sous `www.` et le poste sur le domaine
+  nu. Le code est le même dans Odoo 18.0 en amont.
+- `convertToPng` est privée à son module et ne se patche pas.
+  `static/src/js/bf_email_inline_cross_origin.js` enveloppe donc
+  `HtmlMailField.getInlinedEditorContent` et, le temps de la passe seulement,
+  fait noter à `drawImage` l'adresse de l'image reçue par chaque canevas ; un
+  `toDataURL` que le navigateur refuse rend cette adresse au lieu de lever.
+  L'image repart comme elle est arrivée, distante, avec sa taille fixée en
+  attributs. Une image du même domaine est convertie en PNG comme avant.
+  Aucun changement Python, aucune colonne.
+
+### Tests
+
+- Éprouvé dans Chromium avec le code d'Odoo recopié tel quel : sans la garde,
+  l'erreur est reproduite ; avec la garde, 13 vérifications sur 13 (`.webp`
+  et `.svg` d'une autre origine, fond `.webp`, conversion PNG conservée pour
+  le même domaine, prototypes rendus après la passe, après deux passes
+  simultanées et après une passe en erreur). Deux mutations du code en font
+  tomber 4 chacune.
+
 ## [18.0.11.35.1] — 2026-09-13
 
 Le téléphone montrait une boîte de réception vide depuis l'arrivée de la

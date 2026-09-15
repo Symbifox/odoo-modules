@@ -552,6 +552,10 @@ The 8 heuristic signals are based on empirical email-overload research:
 - Chatter cron promotes any pre-existing `imap` orphan to `gateway`/`chatter` instead of creating a duplicate (UNIQUE constraint would reject otherwise).
 - Migration `18.0.1.5.1` retroactively promoted historical orphans whose Message-IDs already existed in `mail.message`.
 
+### Cross-origin images in the composer (11.35.2+)
+- Before an email leaves any composer, Odoo redraws every `.svg` and `.webp` image on a canvas to inline it as PNG. A browser refuses to read back a canvas that received an image from another origin without CORS headers, so replying to an email that quotes such an image used to fail with `Tainted canvases may not be exported` — including an announcement from the instance's own website, when the site is served from `www.` and the backend from the bare domain.
+- `static/src/js/bf_email_inline_cross_origin.js` wraps `HtmlMailField.getInlinedEditorContent`. For the duration of the pass only, `drawImage` records each canvas's source image and a refused `toDataURL` returns that image's URL instead of throwing: the image leaves as it arrived, remote, with its rendered size pinned. Same-origin images are still converted to PNG.
+
 ### Re-routing
 - The wizard reads the stored RFC 2822 (kept in `raw_rfc822` Binary attachment), parses it, and posts to the target via `record.message_post(...)` preserving Message-ID, original date, author, and attachments.
 - After posting, the `bf.email` row is promoted (linked to the new `mail.message`, `source` becomes `gateway`).

@@ -1,7 +1,7 @@
 {
     "name": "Gestion des courriels",
     "summary": "Inbox unifiée IMAP + chatters Odoo, avec re-routage UI",
-    "version": "18.0.11.35.1",
+    "version": "18.0.11.35.2",
     "category": "Productivity",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -67,6 +67,9 @@
             # chargé avant elles.
             "bf_email_management/static/src/scss/bf_email_ui.scss",
             "bf_email_management/static/src/js/bf_email_ui_common.js",
+            # Composer guard: an image from another origin no longer aborts the
+            # send (18.0.11.35.2).
+            "bf_email_management/static/src/js/bf_email_inline_cross_origin.js",
             "bf_email_management/static/src/js/bf_email_dashboard.js",
             "bf_email_management/static/src/js/bf_email_chatter_action.js",
             "bf_email_management/static/src/js/bf_email_preview_list.js",
