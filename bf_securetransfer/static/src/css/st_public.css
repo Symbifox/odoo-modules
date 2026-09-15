@@ -8,11 +8,11 @@
  */
 
 :root {
-    --st-primary: #29ABE2;
-    --st-dark: #2E3132;
+    --st-primary: var(--brand-primary, #29ABE2);
+    --st-dark: var(--brand-dark, #2E3132);
     --st-bg: #f4f6f8;
     --st-card-bg: #ffffff;
-    --st-text: #2E3132;
+    --st-text: var(--brand-dark, #2E3132);
     --st-muted: #6b7280;
     --st-border: #d9dee3;
     --st-danger: #b3261e;
@@ -86,7 +86,7 @@ a {
     background: var(--st-card-bg);
     border: 1px solid var(--st-border);
     border-radius: var(--st-radius);
-    box-shadow: 0 10px 30px rgba(45, 48, 49, 0.08);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--brand-dark, #2E3132) 8%, transparent);
     padding: 2rem;
 }
 

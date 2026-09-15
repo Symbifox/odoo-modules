@@ -1670,6 +1670,7 @@ class SecureTransfer(models.Model):
             self.id, force_send=False,
             email_values={"subject": subject} if subject else None,
         )
+        self._wake_mail_queue()
         self._log("notified", actor="system",
                   note=_("Avis de téléchargement envoyé à l'expéditeur"))
 
@@ -1916,6 +1917,30 @@ class SecureTransfer(models.Model):
                  % (rec.recipient_emails or _("(aucun — mode lien seul)"),
                     rec.sender_email)),
             )
+        self._wake_mail_queue()
+
+    def _wake_mail_queue(self):
+        """Run the mail queue now rather than at its next tick.
+
+        Every branded e-mail above is queued (``force_send=False``), and a
+        queued mail.mail waits for « Mail: Email Queue Manager », which ticks
+        every five minutes on a single cron worker. Measured on a production
+        tenant: a median of 107 s between finalize and delivery, up to 327 s,
+        while bf_sign, which force-sends, delivered in under a second.
+
+        Queuing itself is kept on purpose. ``force_send=True`` would talk SMTP
+        inside the current transaction, before the commit: the public finalize
+        would wait on the mail server for every recipient, and a rollback after
+        the send would leave a recipient holding a link to a transfer that was
+        never saved. ``_trigger()`` only writes an ir.cron.trigger row and
+        notifies the cron worker AFTER the commit (postcommit hook), so the mail
+        still leaves once the transfer exists, a few seconds later instead of
+        minutes. Same pattern as bf_meeting's direct report send.
+        """
+        cron = self.env.ref("mail.ir_cron_mail_scheduler_action",
+                            raise_if_not_found=False)
+        if cron:
+            cron.sudo()._trigger()
 
     # ------------------------------------------------------------------ operator buttons
     def action_expire_now(self):
