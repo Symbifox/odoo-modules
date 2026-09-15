@@ -7,11 +7,13 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button name="action_refresh_facts"
+                            type="object" string="Mesurer maintenant"
+                            help="Relit les courriels échangés avec ce contact et recalcule la relation."/>
                     <button name="action_launch_persona_skill"
                             type="object" string="Lancer Claude /persona refresh"
-                            class="btn-primary"
                             context="{'default_mode': 'refresh'}"
-                            help="Ouvre le panneau Claude avec /persona refresh pré-rempli pour recalculer les KPIs."/>
+                            help="Ouvre le panneau Claude avec /persona refresh pré-rempli."/>
                     <button name="action_link_knowledge_items"
                             type="object" string="Lier les éléments de matrice"
                             help="Cherche les éléments de matrice où ce contact apparaît (décideur, consulté, informé) et les ajoute aux connaissances partagées."/>
@@ -19,36 +21,63 @@
                 <sheet>
                     <widget name="web_ribbon" title="Relation dégradée" bg_color="text-bg-danger" invisible="relationship_health != 'degraded'"/>
                     <widget name="web_ribbon" title="À surveiller" bg_color="text-bg-warning" invisible="relationship_health != 'watch'"/>
-                    <widget name="web_ribbon" title="Ton à rafraîchir" bg_color="text-bg-warning" invisible="not tone_is_stale or relationship_health in ('degraded', 'watch')"/>
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="1"/>
                         </h1>
                     </div>
+                    <div class="alert alert-warning py-2" role="status"
+                         invisible="not health_reason or relationship_health not in ('watch', 'degraded')">
+                        <field name="health_reason" nolabel="1"/>
+                    </div>
+                    <div class="alert alert-info py-2" role="status" invisible="not suggested_rule_count">
+                        <field name="suggested_rule_count" invisible="1"/>
+                        Des règles de copie ont été suggérées d'après les courriels envoyés :
+                        les confirmer ou les rejeter dans l'onglet « Copies ».
+                    </div>
                     <group>
                         <group>
                             <field name="partner_id" options="{'no_create': True}"/>
+                            <field name="addressing_style"/>
+                            <field name="preferred_salutation"/>
+                            <field name="closing_formula"/>
                             <field name="preferred_language"/>
-                            <field name="last_interaction_date" readonly="1"/>
                         </group>
-                        <group>
-                            <field name="relationship_health"/>
-                            <field name="tone_drift_score" readonly="1" widget="float" digits="[8,2]"/>
+                        <group string="Relation, mesurée sur les courriels">
+                            <field name="relationship_health" readonly="1"/>
+                            <field name="last_inbound_date"/>
+                            <field name="last_outbound_date"/>
+                            <field name="inbound_count_90d"/>
+                            <field name="outbound_count_90d"/>
+                            <field name="unanswered_count" decoration-warning="unanswered_count &gt;= 2"/>
+                            <field name="unanswered_since" invisible="not unanswered_count"/>
+                            <field name="our_words_median" decoration-warning="our_words_median &gt;= 120"/>
+                            <field name="facts_refreshed_at" string="Mesuré le"/>
                             <field name="active" invisible="1"/>
                         </group>
                     </group>
+                    <group>
+                        <field name="custom_appellations" placeholder="Ex. : écrire à info@ pour la documentation ; pièces jointes plutôt que liens ; tutoiement (ancien collègue)."/>
+                    </group>
                     <notebook>
-                        <page string="Communication" name="communication">
-                            <group>
-                                <group>
-                                    <field name="addressing_style"/>
-                                    <field name="preferred_salutation"/>
-                                    <field name="closing_formula"/>
-                                </group>
-                                <group>
-                                    <field name="custom_appellations"/>
-                                </group>
-                            </group>
+                        <page string="Copies" name="cc">
+                            <field name="cc_rule_ids" context="{'default_state': 'active'}">
+                                <list editable="bottom" decoration-muted="state == 'suggested'">
+                                    <field name="rule_type"/>
+                                    <field name="cc_partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                    <field name="mandatory" widget="boolean_toggle" invisible="rule_type == 'never'"/>
+                                    <field name="state" readonly="1" widget="badge"
+                                           decoration-info="state == 'suggested'"
+                                           decoration-success="state == 'active'"/>
+                                    <field name="evidence" optional="show"/>
+                                    <field name="category_id" optional="hide"/>
+                                    <field name="notes" optional="hide"/>
+                                    <button name="action_confirm" type="object" string="Confirmer"
+                                            icon="fa-check" invisible="state != 'suggested'"/>
+                                    <button name="action_reject" type="object" string="Rejeter"
+                                            icon="fa-times" invisible="state != 'suggested'"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Ton" name="tone">
                             <group>
@@ -63,7 +92,6 @@
                             </group>
                             <group>
                                 <field name="tone_last_assessed"/>
-                                <field name="tone_is_stale" readonly="1"/>
                             </group>
                         </page>
                         <page string="Payeur" name="payer">
@@ -75,16 +103,6 @@
                             </group>
                             <separator string="Notes"/>
                             <field name="payer_notes"/>
-                        </page>
-                        <page string="Règles c.c." name="cc">
-                            <field name="cc_rule_ids">
-                                <list editable="bottom">
-                                    <field name="category_id"/>
-                                    <field name="cc_partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
-                                    <field name="mandatory" widget="boolean_toggle"/>
-                                    <field name="notes"/>
-                                </list>
-                            </field>
                         </page>
                         <page string="Détails personnels" name="personal" groups="bf_persona.group_persona_manager">
                             <field name="personal_details"/>
@@ -105,7 +123,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Résumé Claude" name="claude">
+                        <page string="Ce que Gen reçoit" name="claude">
                             <field name="claude_context_summary" readonly="1"/>
                         </page>
                     </notebook>
@@ -119,19 +137,20 @@
         <field name="name">contact.persona.list</field>
         <field name="model">contact.persona</field>
         <field name="arch" type="xml">
-            <list decoration-warning="tone_is_stale or relationship_health == 'watch'"
+            <list decoration-warning="relationship_health == 'watch'"
                   decoration-danger="relationship_health == 'degraded'">
                 <field name="partner_id"/>
                 <field name="addressing_style"/>
                 <field name="relationship_health"/>
+                <field name="health_reason" optional="show"/>
                 <field name="last_interaction_date" optional="show"/>
-                <field name="tone_summary"/>
-                <field name="our_tone_summary" optional="show"/>
-                <field name="payer_quality"/>
-                <field name="avg_payment_delay_days"/>
+                <field name="unanswered_count" optional="show"/>
+                <field name="our_words_median" optional="hide"/>
+                <field name="tone_summary" optional="hide"/>
+                <field name="our_tone_summary" optional="hide"/>
+                <field name="payer_quality" optional="show"/>
+                <field name="avg_payment_delay_days" optional="hide"/>
                 <field name="tone_last_assessed" optional="hide"/>
-                <field name="tone_is_stale" optional="hide"/>
-                <field name="tone_drift_score" optional="hide"/>
             </list>
         </field>
     </record>
@@ -156,16 +175,22 @@
                 <filter string="Saine" name="filter_health_healthy"
                         domain="[('relationship_health','=','healthy')]"/>
                 <separator/>
+                <filter string="Courriels sans réponse" name="filter_unanswered"
+                        domain="[('unanswered_count','&gt;=',2)]"/>
+                <filter string="Nos courriels trop longs" name="filter_long"
+                        domain="[('our_words_median','&gt;=',120)]"/>
+                <filter string="Règles de copie suggérées" name="filter_suggested_rules"
+                        domain="[('cc_rule_ids.state','=','suggested')]"/>
+                <separator/>
                 <filter string="Ton tendu" name="filter_tense"
                         domain="[('tone_summary','=','tense')]"/>
-                <filter string="Notre ton tendu" name="filter_our_tense"
-                        domain="[('our_tone_summary','=','tense')]"/>
-                <filter string="Ton à rafraîchir" name="filter_tone_stale"
-                        domain="[('tone_is_stale','=',True)]"/>
                 <filter string="Payeur lent ou mauvais" name="filter_slow_payer"
                         domain="[('payer_quality','in',('slow','poor'))]"/>
                 <filter string="Style à compléter (auto)" name="filter_addressing_auto"
                         domain="[('addressing_style','=','auto')]"/>
+                <separator/>
+                <filter string="Archivés" name="filter_archived"
+                        domain="[('active','=',False)]"/>
                 <group expand="0" string="Regrouper par">
                     <filter string="Santé relationnelle"
                             name="group_health" context="{'group_by': 'relationship_health'}"/>
@@ -173,12 +198,8 @@
                             name="group_style" context="{'group_by': 'addressing_style'}"/>
                     <filter string="Leur ton"
                             name="group_tone" context="{'group_by': 'tone_summary'}"/>
-                    <filter string="Notre ton"
-                            name="group_our_tone" context="{'group_by': 'our_tone_summary'}"/>
                     <filter string="Payeur"
                             name="group_payer" context="{'group_by': 'payer_quality'}"/>
-                    <filter string="À rafraîchir"
-                            name="group_stale" context="{'group_by': 'tone_is_stale'}"/>
                 </group>
             </search>
         </field>

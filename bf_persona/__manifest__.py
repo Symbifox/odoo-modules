@@ -1,7 +1,7 @@
 {
     "name": "Persona des contacts",
-    "summary": "Préférences relationnelles, ton, payeur, KPIs et règles c.c. par contact",
-    "version": "18.0.2.2.0",
+    "summary": "Ce qu'il faut savoir avant d'écrire à un contact : registre, copies, relation mesurée",
+    "version": "18.0.3.0.0",
     "category": "Sales/CRM",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -14,6 +14,7 @@
         "account",
         "project_knowledge_matrix",
         "bf_onboarding_base",
+        "mail_composer_cc_bcc",
     ],
     "data": [
         "security/persona_security.xml",

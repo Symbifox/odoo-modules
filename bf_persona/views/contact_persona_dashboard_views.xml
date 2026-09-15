@@ -16,8 +16,9 @@
                 <field name="payer_quality"/>
                 <field name="avg_payment_delay_days"/>
                 <field name="last_interaction_date"/>
-                <field name="tone_drift_score"/>
-                <field name="tone_is_stale"/>
+                <field name="health_reason"/>
+                <field name="unanswered_count"/>
+                <field name="our_words_median"/>
                 <templates>
                     <t t-name="card">
                         <div class="d-flex justify-content-between align-items-start mb-1">
@@ -32,25 +33,25 @@
                                   class="badge text-bg-success">Saine</span>
                         </div>
                         <div class="text-muted small">
-                            <span>Style: <field name="addressing_style"/></span>
-                            <span class="ms-2">Leur ton: <field name="tone_summary"/></span>
+                            <span>Style : <field name="addressing_style"/></span>
+                            <span class="ms-2" t-if="record.unanswered_count.raw_value">Sans réponse : <field name="unanswered_count"/></span>
                         </div>
                         <div class="text-muted small">
-                            <span>Payeur: <field name="payer_quality"/></span>
+                            <span>Payeur : <field name="payer_quality"/></span>
                             <span t-if="record.avg_payment_delay_days.raw_value" class="ms-2">
                                 (<field name="avg_payment_delay_days" widget="float" digits="[8,0]"/>j)
                             </span>
                         </div>
                         <div class="text-muted small mt-1" t-if="record.last_interaction_date.raw_value">
-                            Dernière: <field name="last_interaction_date" widget="date"/>
+                            Dernier échange : <field name="last_interaction_date" widget="date"/>
                         </div>
-                        <div t-if="record.tone_drift_score.raw_value > 0.25" class="small mt-1">
+                        <div t-if="record.health_reason.raw_value" class="small mt-1 text-warning-emphasis">
+                            <field name="health_reason"/>
+                        </div>
+                        <div t-if="record.our_words_median.raw_value >= 120" class="small mt-1">
                             <span class="badge text-bg-warning">
-                                Dérive <field name="tone_drift_score" widget="float" digits="[4,2]"/>
+                                Nos courriels : <field name="our_words_median"/> mots
                             </span>
-                        </div>
-                        <div t-if="record.tone_is_stale.raw_value" class="small mt-1">
-                            <span class="badge text-bg-info">Ton à rafraîchir</span>
                         </div>
                     </t>
                 </templates>
@@ -59,14 +60,14 @@
     </record>
 
     <record id="action_contact_persona_dashboard" model="ir.actions.act_window">
-        <field name="name">Personas — Tableau de bord</field>
+        <field name="name">Personas : tableau de bord</field>
         <field name="res_model">contact.persona</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_contact_persona_search"/>
         <field name="context">{'search_default_group_health': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Aucun persona — lancer le cron de seed ou créer manuellement.
+                Aucun persona : le semis automatique en crée chaque mois pour les contacts actifs, ou créez-en un depuis une fiche contact.
             </p>
         </field>
     </record>

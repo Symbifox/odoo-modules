@@ -19,6 +19,12 @@
               action="action_contact_persona"
               sequence="10"/>
 
+    <menuitem id="menu_personas_cc_rules"
+              name="Règles de copie"
+              parent="menu_personas_root"
+              action="action_contact_cc_rule"
+              sequence="15"/>
+
     <menuitem id="menu_personas_categories"
               name="Catégories"
               parent="menu_personas_root"
