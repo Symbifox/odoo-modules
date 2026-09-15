@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**128 modules are BUSL-1.1.** The source is published and auditable, and **you
+**140 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -195,7 +195,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.0.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.0.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.0.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
-| `bf_persona` | Persona des contacts | 18.0.2.2.0 | BUSL-1.1 | Active relationship intelligence: composer hint with auto-cc, monthly auto-seed from email signals, weekly degradation detector with optional ntfy alert, kanban dashboard |
+| `bf_persona` | Persona des contacts | 18.0.3.0.0 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
+| `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.0.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
 | `bf_process` | Cartographie de processus | 18.0.5.0.2 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.5 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |

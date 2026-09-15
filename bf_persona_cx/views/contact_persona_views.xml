@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_contact_persona_form_cx" model="ir.ui.view">
+        <field name="name">contact.persona.form.cx</field>
+        <field name="model">contact.persona</field>
+        <field name="inherit_id" ref="bf_persona.view_contact_persona_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='cc']" position="before">
+                <page string="Expérience client" name="cx" groups="bf_cx.group_bf_cx_user">
+                    <group>
+                        <group>
+                            <field name="cx_last_feedback_id" string="Dernier retour (12 mois)"/>
+                            <field name="cx_open_complaint_count" decoration-danger="cx_open_complaint_count &gt; 0"/>
+                            <field name="cx_excluded"/>
+                        </group>
+                    </group>
+                    <separator string="Retours"/>
+                    <field name="cx_feedback_ids" nolabel="1" readonly="1">
+                        <list decoration-danger="nps_bucket == 'detractor'" decoration-success="nps_bucket == 'promoter'">
+                            <field name="date"/>
+                            <field name="partner_id" optional="hide"/>
+                            <field name="kind"/>
+                            <field name="score"/>
+                            <field name="score_max"/>
+                            <field name="nps_bucket"/>
+                            <field name="comment"/>
+                            <field name="state" optional="show"/>
+                        </list>
+                    </field>
+                    <separator string="Plaintes"/>
+                    <field name="cx_complaint_ids" nolabel="1" readonly="1">
+                        <list>
+                            <field name="number"/>
+                            <field name="date_received"/>
+                            <field name="name"/>
+                            <field name="severity"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
