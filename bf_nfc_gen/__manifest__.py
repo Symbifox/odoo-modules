@@ -1,6 +1,6 @@
 {
     "name": "Pastilles NFC : les skills de Gen",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Productivity",
     "summary": "Une pastille qui demande à Gen de préparer l'ordre du jour ou de raffiner le compte rendu",
     "description": """

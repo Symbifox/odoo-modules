@@ -329,6 +329,7 @@ msgstr ""
 
 #. module: bf_nfc
 #. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
 #: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
 msgid "Ce geste est réservé à la gestion des pastilles."
 msgstr "This gesture is reserved for tag managers."
@@ -957,7 +958,6 @@ msgstr "Record opened."
 #. module: bf_nfc
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__cible
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_template_apply__cible
-#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_list
 msgid "Fiche visée"
 msgstr "Target record"
 
@@ -978,6 +978,7 @@ msgstr "Target records"
 
 #. module: bf_nfc
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_sdm_key__file_key_enc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_sdm_key_wizard__file_key_enc
 msgid "File Key Enc"
 msgstr "File Key Enc"
 
@@ -1440,6 +1441,16 @@ msgstr ""
 "tags” in the app."
 
 #. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_sdm_key.py:0
+msgid ""
+"Les clés saisies ne se relisent pas : la clé de chiffrement a changé entre "
+"la saisie et l'enregistrement. Ressaisissez-les."
+msgstr ""
+"The keys entered cannot be read back: the encryption key changed between "
+"entry and save. Enter them again."
+
+#. module: bf_nfc
 #: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_sdm_key_wizard_form
 msgid ""
 "Les deux clés sont chiffrées dès l'enregistrement et ne se réafficheront\n"
@@ -1474,6 +1485,7 @@ msgstr "This tag's parameters are not valid JSON."
 
 #. module: bf_nfc
 #. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
 #: code:addons/bf_nfc/wizard/bf_nfc_tag_lot.py:0
 msgid "Les paramètres doivent être un objet JSON."
 msgstr "The parameters must be a JSON object."
@@ -1483,6 +1495,18 @@ msgstr "The parameters must be a JSON object."
 #: code:addons/bf_nfc/models/bf_nfc_tag_choice.py:0
 msgid "Les paramètres du choix « %s » ne sont pas du JSON valide."
 msgstr "The parameters of the choice “%s” are not valid JSON."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_template.py:0
+msgid "Les paramètres du gabarit « %s » doivent être un objet JSON."
+msgstr "The parameters of template “%s” must be a JSON object."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_template.py:0
+msgid "Les paramètres du gabarit « %s » ne sont pas du JSON valide."
+msgstr "The parameters of template “%s” are not valid JSON."
 
 #. module: bf_nfc
 #: model:ir.model.fields,help:bf_nfc.field_bf_nfc_template__signee_recommandee
@@ -1582,6 +1606,7 @@ msgstr "Messages"
 
 #. module: bf_nfc
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_sdm_key__meta_key_enc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_sdm_key_wizard__meta_key_enc
 msgid "Meta Key Enc"
 msgstr "Meta Key Enc"
 
@@ -2157,6 +2182,12 @@ msgid "Saisie"
 msgstr "Input"
 
 #. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/wizard/bf_nfc_config.py:0
+msgid "Saisissez les deux clés."
+msgstr "Enter both keys."
+
+#. module: bf_nfc
 #: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_template__secteur__sst
 msgid "Santé et sécurité du travail"
 msgstr "Occupational health and safety"
@@ -2324,6 +2355,7 @@ msgstr "Type Count"
 #. odoo-python
 #: code:addons/bf_nfc/models/bf_nfc_tag.py:0
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_target_type__model
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_list
 #: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_search
 msgid "Type de fiche"
 msgstr "Record type"
@@ -2539,12 +2571,14 @@ msgstr "Website communication history"
 #. module: bf_nfc
 #. odoo-python
 #: code:addons/bf_nfc/models/bf_nfc_sdm_key.py:0
+#: code:addons/bf_nfc/wizard/bf_nfc_config.py:0
 msgid "de fichier"
 msgstr "file"
 
 #. module: bf_nfc
 #. odoo-python
 #: code:addons/bf_nfc/models/bf_nfc_sdm_key.py:0
+#: code:addons/bf_nfc/wizard/bf_nfc_config.py:0
 msgid "de métadonnées"
 msgstr "metadata"
 

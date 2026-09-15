@@ -1,6 +1,6 @@
 {
     "name": "Pastilles NFC : relevés et registres",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Productivity",
     "summary": "Une grille remplie à chaque tapotement, les anomalies suivies jusqu'à leur correction, et le registre qui en sort",
     "description": """

@@ -332,6 +332,7 @@ msgstr ""
 
 #. module: bf_nfc
 #. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
 #: code:addons/bf_nfc/models/bf_nfc_gesture.py:0
 msgid "Ce geste est réservé à la gestion des pastilles."
 msgstr "Ce geste est réservé à la gestion des pastilles."
@@ -962,7 +963,6 @@ msgstr "Fiche ouverte."
 #. module: bf_nfc
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_tag__cible
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_template_apply__cible
-#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_list
 msgid "Fiche visée"
 msgstr "Fiche visée"
 
@@ -983,6 +983,7 @@ msgstr "Fiches visées"
 
 #. module: bf_nfc
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_sdm_key__file_key_enc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_sdm_key_wizard__file_key_enc
 msgid "File Key Enc"
 msgstr "File Key Enc"
 
@@ -1451,6 +1452,16 @@ msgstr ""
 "                                dans l'application."
 
 #. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_sdm_key.py:0
+msgid ""
+"Les clés saisies ne se relisent pas : la clé de chiffrement a changé entre "
+"la saisie et l'enregistrement. Ressaisissez-les."
+msgstr ""
+"Les clés saisies ne se relisent pas : la clé de chiffrement a changé entre "
+"la saisie et l'enregistrement. Ressaisissez-les."
+
+#. module: bf_nfc
 #: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_sdm_key_wizard_form
 msgid ""
 "Les deux clés sont chiffrées dès l'enregistrement et ne se réafficheront\n"
@@ -1485,6 +1496,7 @@ msgstr "Les paramètres de cette pastille ne sont pas du JSON valide."
 
 #. module: bf_nfc
 #. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
 #: code:addons/bf_nfc/wizard/bf_nfc_tag_lot.py:0
 msgid "Les paramètres doivent être un objet JSON."
 msgstr "Les paramètres doivent être un objet JSON."
@@ -1494,6 +1506,18 @@ msgstr "Les paramètres doivent être un objet JSON."
 #: code:addons/bf_nfc/models/bf_nfc_tag_choice.py:0
 msgid "Les paramètres du choix « %s » ne sont pas du JSON valide."
 msgstr "Les paramètres du choix « %s » ne sont pas du JSON valide."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_template.py:0
+msgid "Les paramètres du gabarit « %s » doivent être un objet JSON."
+msgstr "Les paramètres du gabarit « %s » doivent être un objet JSON."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_template.py:0
+msgid "Les paramètres du gabarit « %s » ne sont pas du JSON valide."
+msgstr "Les paramètres du gabarit « %s » ne sont pas du JSON valide."
 
 #. module: bf_nfc
 #: model:ir.model.fields,help:bf_nfc.field_bf_nfc_template__signee_recommandee
@@ -1594,6 +1618,7 @@ msgstr "Messages"
 
 #. module: bf_nfc
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_sdm_key__meta_key_enc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_sdm_key_wizard__meta_key_enc
 msgid "Meta Key Enc"
 msgstr "Meta Key Enc"
 
@@ -2169,6 +2194,12 @@ msgid "Saisie"
 msgstr "Saisie"
 
 #. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/wizard/bf_nfc_config.py:0
+msgid "Saisissez les deux clés."
+msgstr "Saisissez les deux clés."
+
+#. module: bf_nfc
 #: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_template__secteur__sst
 msgid "Santé et sécurité du travail"
 msgstr "Santé et sécurité du travail"
@@ -2336,6 +2367,7 @@ msgstr "Type Count"
 #. odoo-python
 #: code:addons/bf_nfc/models/bf_nfc_tag.py:0
 #: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_target_type__model
+#: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_list
 #: model_terms:ir.ui.view,arch_db:bf_nfc.view_bf_nfc_tag_search
 msgid "Type de fiche"
 msgstr "Type de fiche"
@@ -2554,12 +2586,14 @@ msgstr "Website communication history"
 #. module: bf_nfc
 #. odoo-python
 #: code:addons/bf_nfc/models/bf_nfc_sdm_key.py:0
+#: code:addons/bf_nfc/wizard/bf_nfc_config.py:0
 msgid "de fichier"
 msgstr "de fichier"
 
 #. module: bf_nfc
 #. odoo-python
 #: code:addons/bf_nfc/models/bf_nfc_sdm_key.py:0
+#: code:addons/bf_nfc/wizard/bf_nfc_config.py:0
 msgid "de métadonnées"
 msgstr "de métadonnées"
 

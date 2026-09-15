@@ -310,6 +310,16 @@ msgid "Le pont n'a pas rendu la liste des skills (%s)."
 msgstr "The bridge did not return the skill list (%s)."
 
 #. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid ""
+"Le pont ne publie aucun skill lançable par pastille pour le locataire « %s "
+"». Rien n'a été changé : vérifiez le paramètre système bf_ai_bridge.tenant."
+msgstr ""
+"The bridge publishes no tag-launchable skill for tenant “%s”. Nothing was "
+"changed: check the bf_ai_bridge.tenant system parameter."
+
+#. module: bf_nfc_gen
 #: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_skill__modeles
 msgid "Les modèles que ce skill accepte, séparés par des virgules."
 msgstr "The models this skill accepts, separated by commas."
@@ -395,6 +405,11 @@ msgid "Pastille NFC"
 msgstr "NFC tag"
 
 #. module: bf_nfc_gen
+#: model:ir.actions.server,name:bf_nfc_gen.cron_perimer_demandes_ir_actions_server
+msgid "Pastilles : demandes à Gen sans nouvelle"
+msgstr "Tags: Gen requests with no news"
+
+#. module: bf_nfc_gen
 #: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__allowed
 msgid "Permis sur cette instance"
 msgstr "Allowed on this instance"
@@ -434,6 +449,16 @@ msgstr "Responsible User"
 #: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_has_sms_error
 msgid "SMS Delivery error"
 msgstr "SMS Delivery error"
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid ""
+"Sans nouvelle du pont depuis %s minutes. Regardez les journaux du service "
+"d'assistance IA ; rien ne dit si la passe a tourné."
+msgstr ""
+"No news from the bridge for %s minutes. Check the AI assistant service logs;"
+" nothing says whether the pass ran."
 
 #. module: bf_nfc_gen
 #. odoo-python

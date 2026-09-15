@@ -217,6 +217,12 @@ msgstr ""
 #. module: bf_nfc_inspection
 #. odoo-python
 #: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "Ce relevé est vide : répondez à au moins un élément de la grille."
+msgstr "Ce relevé est vide : répondez à au moins un élément de la grille."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
 msgid "Cette pastille ne porte aucune grille de relevé."
 msgstr "Cette pastille ne porte aucune grille de relevé."
 
@@ -403,6 +409,12 @@ msgid "Défibrillateur : voyant prêt"
 msgstr "Défibrillateur : voyant prêt"
 
 #. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__place
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_search
+msgid "Endroit"
+msgstr "Endroit"
+
+#. module: bf_nfc_inspection
 #. odoo-python
 #: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
 msgid "Enregistrer le relevé"
@@ -577,12 +589,6 @@ msgid "Kind"
 msgstr "Kind"
 
 #. module: bf_nfc_inspection
-#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__place
-msgid "L'endroit ou l'équipement, recopié de la pastille au moment du relevé."
-msgstr ""
-"L'endroit ou l'équipement, recopié de la pastille au moment du relevé."
-
-#. module: bf_nfc_inspection
 #: model:bf.nfc.checklist,description:bf_nfc_inspection.grille_eclairage
 msgid "L'essai de durée annuel se consigne à part."
 msgstr "L'essai de durée annuel se consigne à part."
@@ -749,6 +755,15 @@ msgid "Nom donné"
 msgstr "Nom donné"
 
 #. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_form
+msgid ""
+"Nom déclaré par la personne qui a tapé une pastille signée :\n"
+"                                l'identité n'est pas prouvée par un compte."
+msgstr ""
+"Nom déclaré par la personne qui a tapé une pastille signée :\n"
+"                                l'identité n'est pas prouvée par un compte."
+
+#. module: bf_nfc_inspection
 #: model:bf.nfc.checklist.item,anomaly_options:bf_nfc_inspection.grille_extincteur_03
 #: model:bf.nfc.checklist.item,anomaly_options:bf_nfc_inspection.grille_premiers_secours_03
 #: model:bf.nfc.checklist.item,anomaly_options:bf_nfc_inspection.grille_premiers_secours_04
@@ -804,6 +819,11 @@ msgstr "Oui;Non;Sans manomètre"
 #: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_form
 msgid "Où et quand"
 msgstr "Où et quand"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__place
+msgid "Où la pastille est posée, recopié au moment du relevé."
+msgstr "Où la pastille est posée, recopié au moment du relevé."
 
 #. module: bf_nfc_inspection
 #: model:bf.nfc.template,exemple:bf_nfc_inspection.gabarit_alarme
@@ -1343,6 +1363,11 @@ msgstr "le"
 
 #. module: bf_nfc_inspection
 #: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "nom déclaré (pastille signée)"
+msgstr "nom déclaré (pastille signée)"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
 msgid "par"
 msgstr "par"
 
@@ -1407,7 +1432,7 @@ msgid "Élément de la grille"
 msgstr "Élément de la grille"
 
 #. module: bf_nfc_inspection
-#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__place
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__tag_name
 #: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
 #: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_search
 msgid "Élément vérifié"
