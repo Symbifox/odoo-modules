@@ -8,12 +8,13 @@ class ContactPersonaKpi(models.Model):
 
     persona_id = fields.Many2one(
         "contact.persona", required=True, ondelete="cascade", index=True,
+        string="Persona",
     )
-    name = fields.Char(required=True)
-    value_text = fields.Char()
-    value_float = fields.Float()
-    unit = fields.Char()
-    date_measured = fields.Date(default=fields.Date.context_today)
+    name = fields.Char(required=True, string="Indicateur")
+    value_text = fields.Char(string="Valeur")
+    value_float = fields.Float(string="Valeur numérique")
+    unit = fields.Char(string="Unité")
+    date_measured = fields.Date(default=fields.Date.context_today, string="Mesuré le")
     source = fields.Selection(
         [
             ("manual", "Manuel"),
@@ -23,5 +24,6 @@ class ContactPersonaKpi(models.Model):
         ],
         default="manual",
         required=True,
+        string="Source",
     )
-    notes = fields.Text()
+    notes = fields.Text(string="Notes")

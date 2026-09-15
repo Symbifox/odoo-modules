@@ -103,6 +103,12 @@ a few lines.
 
 ## Changelog
 
+### 18.0.3.0.1
+- Every field carries an explicit label. Half the form used to render in
+  English on a French screen ("Partner", "Addressing Style",
+  "Relationship Health"), because Odoo derives a label from the field name
+  when none is given.
+
 ### 18.0.3.0.0
 - The composer banner reads every recipient (To and Cc) and their company's
   persona, instead of the contact of the record it was opened on.

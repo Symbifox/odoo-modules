@@ -160,26 +160,31 @@ class ContactPersona(models.Model):
     partner_id = fields.Many2one(
         "res.partner", required=True, ondelete="cascade", index=True,
         tracking=True,
+        string="Contact",
     )
-    name = fields.Char(compute="_compute_name", store=True, index=True)
-    active = fields.Boolean(default=True)
+    name = fields.Char(compute="_compute_name", store=True, index=True, string="Persona")
+    active = fields.Boolean(default=True, string="Actif")
 
     # --- Communication preferences ---------------------------------------
     addressing_style = fields.Selection(
         [("tu", "Tutoiement"), ("vous", "Vouvoiement"), ("auto", "Auto")],
         default="auto", required=True, tracking=True,
+        string="Style d'adresse",
     )
     preferred_salutation = fields.Char(
         help="Ex.: 'Bonjour Jean', 'Cher Maître Tremblay'.",
         tracking=True,
+        string="Salutation",
     )
     closing_formula = fields.Char(
         help="Ex.: 'Cordialement', 'Bien à vous'.",
         tracking=True,
+        string="Formule de clôture",
     )
     preferred_language = fields.Selection(
         selection="_selection_preferred_language",
         help="Par défaut, la langue du contact.",
+        string="Langue",
     )
     custom_appellations = fields.Text(
         string="À savoir avant d'écrire",
@@ -191,6 +196,7 @@ class ContactPersona(models.Model):
     personal_details = fields.Html(
         help="Famille, hobbies, jalons. Visible aux gestionnaires de personas seulement.",
         groups="bf_persona.group_persona_manager",
+        string="Détails personnels",
     )
     shared_knowledge_item_ids = fields.Many2many(
         "project.knowledge.item",
@@ -211,11 +217,13 @@ class ContactPersona(models.Model):
             ("na", "N/D"),
         ],
         default="na", tracking=True,
+        string="Payeur",
     )
-    payer_notes = fields.Text()
+    payer_notes = fields.Text(string="Notes sur le paiement")
     avg_payment_delay_days = fields.Float(
         compute="_compute_avg_payment_delay_days", store=True,
         help="Délai moyen entre la date de facture et la date de paiement (jours).",
+        string="Délai moyen de paiement (jours)",
     )
 
     # --- Tone -------------------------------------------------------------
@@ -229,9 +237,11 @@ class ContactPersona(models.Model):
         ],
         default="na", tracking=True,
         help="Ton du contact envers nous, observé dans ses courriels reçus.",
+        string="Leur ton envers nous",
     )
     tone_notes = fields.Html(
         help="Notes sur le ton du contact envers nous.",
+        string="Notes sur leur ton",
     )
     our_tone_summary = fields.Selection(
         [
@@ -243,20 +253,24 @@ class ContactPersona(models.Model):
         ],
         default="na", tracking=True,
         help="Notre ton envers le contact, observé dans les courriels sortants.",
+        string="Notre ton envers eux",
     )
     our_tone_notes = fields.Html(
         help="Notes sur notre ton/posture envers le contact.",
+        string="Notes sur notre ton",
     )
-    tone_last_assessed = fields.Date()
+    tone_last_assessed = fields.Date(string="Ton évalué le")
     tone_is_stale = fields.Boolean(
         default=False, copy=False, index=True,
         help="Mis à True par le cron quand tone_last_assessed est vide ou > 6 mois.",
+        string="Ton à rafraîchir",
     )
 
     # --- Relationship, measured on the messages themselves ----------------
     last_interaction_date = fields.Date(
         index=True, copy=False,
         help="Dernier courriel échangé avec ce contact, dans un sens ou dans l'autre.",
+        string="Dernier échange",
     )
     last_inbound_date = fields.Date(
         string="Dernier courriel reçu", copy=False, readonly=True,
@@ -291,20 +305,22 @@ class ContactPersona(models.Model):
         default="na", tracking=True, index=True, copy=False,
         help="Calculée chaque jour à partir de faits : courriels sans réponse, et "
              "signaux des modules liés (expérience client).",
+        string="Relation",
     )
     health_reason = fields.Char(
         string="Pourquoi", copy=False, readonly=True,
     )
-    facts_refreshed_at = fields.Datetime(copy=False, readonly=True)
+    facts_refreshed_at = fields.Datetime(copy=False, readonly=True, string="Mesuré le")
     # Kept for existing data and reports; no longer written since 18.0.3.0.0.
-    tone_drift_score = fields.Float(default=0.0, copy=False)
+    tone_drift_score = fields.Float(default=0.0, copy=False, string="Score de dérive (déprécié)")
 
     # --- Sub-records -----------------------------------------------------
     cc_rule_ids = fields.One2many(
         "contact.cc.rule", "persona_id", domain=[("state", "!=", "rejected")],
+        string="Règles de copie",
     )
-    suggested_rule_count = fields.Integer(compute="_compute_suggested_rule_count")
-    kpi_ids = fields.One2many("contact.persona.kpi", "persona_id")
+    suggested_rule_count = fields.Integer(compute="_compute_suggested_rule_count", string="Règles suggérées")
+    kpi_ids = fields.One2many("contact.persona.kpi", "persona_id", string="Indicateurs")
 
     # --- Claude bridge ---------------------------------------------------
     # Computed on read: it quotes facts refreshed daily and signals from other
@@ -312,6 +328,7 @@ class ContactPersona(models.Model):
     claude_context_summary = fields.Text(
         compute="_compute_claude_context_summary",
         help="Bloc texte injecté dans le contexte de Gen pour guider le ton.",
+        string="Ce que Gen reçoit",
     )
 
     _sql_constraints = [

@@ -19,6 +19,7 @@ class ContactCcRule(models.Model):
 
     persona_id = fields.Many2one(
         "contact.persona", required=True, ondelete="cascade", index=True,
+        string="Persona",
     )
     rule_type = fields.Selection(
         [("cc", "Mettre en copie"), ("never", "Ne jamais mettre en copie")],
@@ -27,6 +28,7 @@ class ContactCcRule(models.Model):
     category_id = fields.Many2one(
         "contact.persona.category", ondelete="restrict",
         help="Étiquette seulement : la règle s'applique quel que soit le sujet.",
+        string="Catégorie",
     )
     cc_partner_ids = fields.Many2many(
         "res.partner",
@@ -51,7 +53,7 @@ class ContactCcRule(models.Model):
         readonly=True,
         help="Ce qui a fait suggérer la règle, relevé dans les courriels envoyés.",
     )
-    notes = fields.Text()
+    notes = fields.Text(string="Notes")
 
     @api.depends("rule_type", "cc_partner_ids", "persona_id")
     def _compute_display_name(self):

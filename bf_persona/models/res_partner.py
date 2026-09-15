@@ -12,6 +12,7 @@ class ResPartner(models.Model):
     )
     has_persona = fields.Boolean(
         compute="_compute_persona_id", compute_sudo=True, store=False,
+        string="A un persona",
     )
     persona_summary = fields.Text(
         related="persona_id.claude_context_summary",
