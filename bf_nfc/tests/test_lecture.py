@@ -137,3 +137,48 @@ class TestLecture(HttpCase):
         modeles = [m["modele"] for m in self._get("/catalogue", entetes).json()["modeles_cibles"]]
         self.assertIn("res.partner", modeles)
         self.assertNotIn("res.users", modeles)
+
+
+@tagged("post_install", "-at_install")
+class TestGravureBornee(HttpCase):
+    """🔴 La route qui crée une pastille rejoue les filtres du catalogue.
+
+    Sans ça, ils n'étaient que décoratifs : le catalogue cachait les gestes réservés
+    et bornait les types de fiche, mais cette route acceptait n'importe lequel.
+    """
+
+    def _apparier(self, login, groupes="base.group_user"):
+        personne = new_test_user(self.env, login=login, groups=groupes)
+        verif = "verificateur-gravure-assez-long-pour-etre-serieux"
+        defi = base64.urlsafe_b64encode(hashlib.sha256(verif.encode()).digest()).decode().rstrip("=")
+        Device = self.env["bf.nfc.device"]
+        code = Device._issue_pending(personne.id, challenge=defi)
+        _appareil, jeton = Device._exchange(code, verif)
+        return {"Authorization": "Bearer %s" % jeton, "Content-Type": "application/json"}
+
+    def _creer(self, entetes, **charge):
+        return self.url_open(API + "/pastille", data=json.dumps(charge), headers=entetes)
+
+    def test_un_geste_reserve_a_la_gestion_est_refuse(self):
+        entetes = self._apparier("gravure-interne", "base.group_user,bf_nfc.group_nfc_manager")
+        # Gestionnaire des pastilles, mais le geste « cron » reste réservé : il l'est
+        # pour la gestion, donc accepté ici. On éprouve l'inverse avec un interne.
+        self.assertEqual(self._creer(entetes, geste="cron", nom="Sauvegarde").status_code, 200)
+        entetes = self._apparier("gravure-ordinaire")
+        reponse = self._creer(entetes, geste="cron", nom="Sauvegarde")
+        self.assertEqual(reponse.status_code, 403)
+        self.assertIn("réservé", reponse.json()["message"])
+
+    def test_un_type_de_fiche_hors_liste_est_refuse(self):
+        entetes = self._apparier("gravure-modele", "base.group_user,bf_nfc.group_nfc_manager")
+        reponse = self._creer(entetes, geste="open", nom="Fuite", modele="res.users", fiche=2)
+        self.assertEqual(reponse.status_code, 400)
+        self.assertEqual(reponse.json()["error"], "model_not_allowed")
+
+    def test_des_parametres_qui_ne_sont_pas_un_objet_json_sont_refuses(self):
+        """Une pastille ainsi gravée lèverait au premier tapotement, sur le terrain."""
+        entetes = self._apparier("gravure-params", "base.group_user,bf_nfc.group_nfc_manager")
+        for mauvais in ("pas du json", "[1, 2]", '"texte"'):
+            reponse = self._creer(entetes, geste="open", nom="Mauvaise", params=mauvais)
+            self.assertEqual(reponse.status_code, 400, mauvais)
+            self.assertEqual(reponse.json()["error"], "bad_params")

@@ -29,6 +29,8 @@ class BfNfcGesture(models.Model):
         moi = self.env.user
         moment = self._moment(params)
         differe = bool(params.get("differe"))
+        if equipement.sudo().registre_externe:
+            return self._pret_externe(equipement.sudo(), moi, moment, differe, params)
         sens = params.get("sens")
         detenteur = equipement.sudo().holder_id
         depuis = equipement.sudo().since
@@ -64,3 +66,46 @@ class BfNfcGesture(models.Model):
                     "message": _("Vous l'avez repris à %s.", precedent.user_id.name)}
         return {"titre": equipement.name, "url": None,
                 "message": _("Il est à vous. Approchez de nouveau le téléphone pour le rendre.")}
+
+    def _pret_externe(self, equipement, moi, moment, differe, params):
+        """Le registre des cadenas : on remet à quelqu'un qui se nomme, on reprend d'un tapotement.
+
+        ⚠️ Deux questions, jamais d'écriture sans réponse : remettre demande l'identité
+        de qui reçoit, reprendre demande de confirmer. Un cadenas qu'on croit repris et
+        qui est encore posé sur une machine est exactement l'accident que ce registre
+        existe pour éviter.
+        """
+        pret = equipement.current_loan_id
+        choix = params.get("choix")
+        if pret:
+            if choix != "reprendre":
+                return {
+                    "titre": equipement.name,
+                    "message": _("Remis à %(qui)s le %(quand)s.", qui=pret.holder_label,
+                                 quand=self._heure(pret.date_start, "%Y-%m-%d %H:%M")),
+                    "choix": [{"cle": "reprendre", "libelle": _("Il est rendu"),
+                               "style": "principal", "saisie": None}],
+                }
+            equipement._rendre(moi, moment)
+            return {"titre": equipement.name, "url": None,
+                    "message": _("Retour noté au registre : %s.", pret.holder_label)}
+        formulaire = [
+            {"cle": "nom", "libelle": _("Remis à (nom)"), "type": "texte", "requis": True,
+             "unite": None, "min": None, "max": None, "options": None, "aide": None},
+            {"cle": "telephone", "libelle": _("Téléphone"), "type": "texte", "requis": True,
+             "unite": None, "min": None, "max": None, "options": None, "aide": None},
+            {"cle": "employeur", "libelle": _("Employeur"), "type": "texte", "requis": False,
+             "unite": None, "min": None, "max": None, "options": None,
+             "aide": _("S'il travaille pour une autre entreprise.")},
+        ]
+        if choix != "remettre":
+            return {
+                "titre": equipement.name,
+                "message": _("À qui le remettez-vous ?"),
+                "formulaire": formulaire,
+                "choix": [{"cle": "remettre", "libelle": _("Remettre"), "style": "principal", "saisie": None}],
+            }
+        lues = self._lire_formulaire(formulaire, params)
+        equipement._prendre(moi, moment, differe, externe=lues)
+        return {"titre": equipement.name, "url": None,
+                "message": _("Remis à %s : noté au registre.", lues["nom"])}

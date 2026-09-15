@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_template_list" model="ir.ui.view">
+        <field name="name">bf.nfc.template.list</field>
+        <field name="model">bf.nfc.template</field>
+        <field name="arch" type="xml">
+            <list string="Gabarits">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="secteur"/>
+                <field name="recette"/>
+                <field name="reference" optional="show"/>
+                <button name="action_utiliser" type="object" string="Poser" class="btn-link"
+                        icon="fa-magic"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_template_form" model="ir.ui.view">
+        <field name="name">bf.nfc.template.form</field>
+        <field name="model">bf.nfc.template</field>
+        <field name="arch" type="xml">
+            <form string="Gabarit">
+                <header>
+                    <button name="action_utiliser" type="object" string="Poser ce gabarit" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Retiré" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ce qu'il est">
+                            <field name="secteur"/>
+                            <field name="reference"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group string="Ce qu'il crée" name="cree">
+                            <field name="recette"/>
+                            <field name="gesture_id"/>
+                            <field name="gesture_kind" invisible="1"/>
+                            <field name="confirm_required"/>
+                            <field name="cible_requise"/>
+                            <field name="signee_recommandee"/>
+                            <field name="params" groups="base.group_no_one"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Exemple de lignes" name="exemple">
+                            <field name="exemple" placeholder="Extincteur 1 ; Hall d'entrée"/>
+                        </page>
+                        <page string="Menu" name="menu">
+                            <field name="choice_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="gesture_id"/>
+                                    <field name="style"/>
+                                    <field name="params" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_template_search" model="ir.ui.view">
+        <field name="name">bf.nfc.template.search</field>
+        <field name="model">bf.nfc.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <group expand="1" string="Regrouper par">
+                    <filter name="par_secteur" string="Secteur" context="{'group_by': 'secteur'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_template" model="ir.actions.act_window">
+        <field name="name">Gabarits</field>
+        <field name="res_model">bf.nfc.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_par_secteur': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun gabarit</p>
+            <p>Un gabarit crée d'un coup ce qu'on pose d'habitude : une ronde et ses points, des
+            équipements et leur pastille, une pastille par ligne.</p>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_template_apply_form" model="ir.ui.view">
+        <field name="name">bf.nfc.template.apply.form</field>
+        <field name="model">bf.nfc.template.apply</field>
+        <field name="arch" type="xml">
+            <form string="Poser un gabarit">
+                <field name="template_id" invisible="1"/>
+                <field name="recette" invisible="1"/>
+                <field name="cible_requise" invisible="1"/>
+                <field name="signee_recommandee" invisible="1"/>
+                <field name="demande_adresse" invisible="1"/>
+                <div class="text-muted mb-2"><field name="description" readonly="1"/></div>
+                <div class="small text-muted mb-2" invisible="not reference">
+                    Référence : <field name="reference" readonly="1" class="oe_inline"/>
+                </div>
+                <div class="alert alert-info" role="status" invisible="not signee_recommandee">
+                    Les personnes qui taperont ces pastilles n'ont pas de compte : gravez-les sur des
+                    puces NTAG 424 DNA, posez les clés dans Réglages, puis saisissez l'identifiant de
+                    chaque puce sur sa pastille.
+                </div>
+                <group>
+                    <field name="lignes" placeholder="Extincteur 1 ; Hall d'entrée&#10;Extincteur 2 ; Sous-sol"/>
+                    <field name="prefixe"/>
+                    <field name="cible" invisible="not cible_requise" required="cible_requise"
+                           options="{'no_create': True}"/>
+                    <field name="adresse" invisible="not demande_adresse" required="demande_adresse"/>
+                    <field name="responsible_id" widget="many2one_avatar_user"
+                           invisible="recette == 'pastilles'"/>
+                </group>
+                <footer>
+                    <button name="action_appliquer" type="object" string="Créer" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_nfc_templates" name="Gabarits" parent="menu_nfc_root"
+              action="action_bf_nfc_template" sequence="15" groups="bf_nfc.group_nfc_manager"/>
+</odoo>

@@ -19,7 +19,7 @@ DUREE_SANS_HORAIRE = timedelta(hours=3)
 class BfNfcRound(models.Model):
     _name = "bf.nfc.round"
     _description = "Tournée de pastilles"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "bf.nfc.target.mixin"]
     _order = "name"
 
     name = fields.Char(string="Tournée", required=True, tracking=True)
@@ -38,6 +38,26 @@ class BfNfcRound(models.Model):
     duration_minutes = fields.Integer(string="Durée maximale (min)", default=60)
     last_missed_alert = fields.Date(string="Dernière alerte d'oubli", readonly=True, copy=False)
     run_ids = fields.One2many("bf.nfc.round.run", "round_id", string="Passages de tournée")
+
+    def _nfc_domaine_pastilles(self):
+        """Une tournée ne porte pas de pastille : ses POINTS en portent une chacun."""
+        return [("res_model", "=", "bf.nfc.round.checkpoint"),
+                ("res_id", "in", self.checkpoint_ids.ids)]
+
+    def _nfc_comptes(self):
+        """Les pastilles des POINTS, ramenées à leur tournée, en une requête."""
+        points = {p.id: p.round_id.id for p in self.checkpoint_ids}
+        groupes = self.env["bf.nfc.tag"].sudo()._read_group(
+            [("res_model", "=", "bf.nfc.round.checkpoint"), ("res_id", "in", list(points))],
+            ["res_id"], ["__count"])
+        comptes = {}
+        for res_id, nombre in groupes:
+            tournee = points.get(res_id)
+            comptes[tournee] = comptes.get(tournee, 0) + nombre
+        return comptes
+
+    def _nfc_fiches_a_etiqueter(self):
+        return self.checkpoint_ids
 
     @api.depends("checkpoint_ids")
     def _compute_checkpoint_count(self):

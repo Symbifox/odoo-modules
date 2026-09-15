@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="gabarit_signalement_bris" model="bf.nfc.template">
+        <field name="name">Signalement de bris par les occupants</field>
+        <field name="secteur">immeuble</field>
+        <field name="sequence">10</field>
+        <field name="recette">pastilles</field>
+        <field name="gesture_id" ref="gesture_ticket"/>
+        <field name="cible_requise" eval="True"/>
+        <field name="signee_recommandee" eval="True"/>
+        <field name="description">Une pastille sur la laveuse, la porte du garage, l'interphone. L'occupant la tape, décrit le problème en une phrase, et un billet rempli (l'endroit, l'heure, la fiche de l'immeuble) arrive à l'équipe de soutien. Les occupants n'ont pas de compte : gravez ces pastilles sur des puces signées.</field>
+        <field name="exemple">Laveuse 1 ; buanderie du sous-sol
+Porte du garage ; stationnement
+Interphone ; hall</field>
+    </record>
+
+    <record id="gabarit_imprimante" model="bf.nfc.template">
+        <field name="name">Imprimante ou photocopieur en panne</field>
+        <field name="secteur">bureau</field>
+        <field name="sequence">20</field>
+        <field name="recette">pastilles</field>
+        <field name="gesture_id" ref="gesture_ticket"/>
+        <field name="cible_requise" eval="True"/>
+        <field name="description">Une pastille sur chaque appareil. Bourrage, toner, écran d'erreur : une phrase, et le billet part avec l'appareil et l'endroit déjà remplis.</field>
+        <field name="exemple">Photocopieur ; 2e étage
+Imprimante couleur ; accueil</field>
+    </record>
+</odoo>

@@ -15,6 +15,7 @@ faire elle-même, et rien de plus, puisque chaque geste s'exécute avec SES
 droits. Le perdre ne donne pas plus que perdre son mot de passe, et ça se
 révoque d'un clic.
 """
+import json
 import logging
 import re
 import urllib.parse
@@ -110,42 +111,13 @@ def _marque():
     }
 
 
-PARAM_MODELES = "bf_nfc.modeles_cibles"
-# Des modèles qu'une pastille peut viser, mais qu'on ne propose qu'à la gestion :
-# ils déclenchent des traitements. Un interne ordinaire ne les verrait pas dans la
-# liste ; même s'il les demandait, ses droits Odoo refuseraient la lecture.
-MODELES_GESTION = {"ir.cron", "ir.actions.server"}
-MODELES_DEFAUT = "res.partner,project.task,project.project"
-
-
 def _modeles_cibles():
-    """Les modèles qu'une pastille peut viser, et donc qu'on peut CHERCHER.
+    """La liste blanche partagée avec le site : cf. ``bf.nfc.tag._modeles_cibles``.
 
-    🔴 Une liste blanche, pas « n'importe quel modèle ». Une route de recherche
-    ouverte à tous les modèles serait une API de lecture générale posée à côté
-    des pastilles : le jeton d'un téléphone pourrait interroger la comptabilité
-    ou les salaires par `name_search`, même si chaque lecture reste soumise aux
-    droits de la personne. On n'élargit pas une surface pour un besoin qui tient
-    en trois modèles.
-
-    La liste réunit les modèles exigés par un geste du catalogue et ceux du
-    paramètre `bf_nfc.modeles_cibles`. Un modèle absent de cette base est écarté
-    plutôt que de faire tomber la route.
+    🔴 Elle borne aussi la route de recherche : sans elle, le jeton d'un téléphone
+    interrogerait n'importe quel modèle par ``name_search``.
     """
-    icp = request.env["ir.config_parameter"].sudo()
-    noms = [n.strip() for n in (icp.get_param(PARAM_MODELES) or MODELES_DEFAUT).split(",")]
-    gestes = request.env["bf.nfc.gesture"].sudo().search([("target_model_id", "!=", False)])
-    noms += gestes.mapped("target_model_id.model")
-    noms += request.env["bf.nfc.gesture"].sudo()._modeles_supplementaires()
-    gestion = request.env.user.has_group("bf_nfc.group_nfc_manager")
-    vus, rendu = set(), []
-    for nom in noms:
-        if nom in MODELES_GESTION and not gestion:
-            continue
-        if nom and nom not in vus and nom in request.env:
-            vus.add(nom)
-            rendu.append(nom)
-    return rendu
+    return request.env["bf.nfc.tag"]._modeles_cibles()
 
 
 def _date(valeur):
@@ -175,7 +147,9 @@ class MobileNfc(http.Controller):
             # api 1 : lire une pastille et en graver une. Ce qui viendra
             # ensuite (la provision d'une puce signée) montera ce numéro, et
             # une app plus ancienne ignorera simplement ce qu'elle ne connaît pas.
-            "api": 1,
+            # api 2 : une question peut porter un formulaire (relevé, identité
+            # d'une personne sans compte), rempli dans ``reponses``.
+            "api": 2,
             "version": module.installed_version or "",
             # La marque voyage dès le ping : l'application se peint AVANT
             # l'appariement, sinon elle affiche du bleu Symbifox le temps d'un
@@ -260,7 +234,7 @@ class MobileNfc(http.Controller):
     def tap(self, **kw):
         """Un tapotement lu par l'application.
 
-        Corps JSON : ``{code, params, choix, texte, quand, nonce}``. Seul ``code``
+        Corps JSON : ``{code, choix, texte, quand, nonce}``. Seul ``code``
         est obligatoire. ``choix`` et ``texte`` répondent à une question que le
         geste a posée ; ``quand`` et ``nonce`` viennent de la file hors ligne du
         téléphone, qui peut renvoyer le même tapotement plusieurs fois.
@@ -290,7 +264,8 @@ class MobileNfc(http.Controller):
             appareil._touch_last_seen()
         _agir_en_tant_que(appareil)
         tag_acteur = request.env["bf.nfc.tag"].sudo().browse(tag.id)
-        params = charge.get("params")
+        # 🔴 Un éventuel ``params`` du corps est IGNORÉ : ce qu'une pastille fait
+        # se décide à sa création, pas au tapotement (cf. ``bf.nfc.tag._params``).
 
         def texte_ou_rien(cle, borne):
             valeur = charge.get(cle)
@@ -298,13 +273,13 @@ class MobileNfc(http.Controller):
 
         resultat = tag_acteur.taper(
             "app",
-            params=params if isinstance(params, dict) else None,
             appareil=appareil.display_name,
             appareil_id=appareil.id,
             choix=texte_ou_rien("choix", 64),
             texte=texte_ou_rien("texte", 2000),
             quand=texte_ou_rien("quand", 40),
             nonce=texte_ou_rien("nonce", 64),
+            reponses=charge.get("reponses") if isinstance(charge.get("reponses"), dict) else None,
         )
         statut = 200 if resultat["statut"] in ("ok", "duplicate", "choice", "info") else 409
         return _json(resultat, statut)
@@ -531,7 +506,9 @@ class MobileNfc(http.Controller):
             # Ce que l'écran de gravure peut proposer comme fiche à viser, avec
             # le libellé du modèle dans la langue de la personne.
             "modeles_cibles": [
-                {"modele": nom, "libelle": request.env["ir.model"]._get(nom).name or nom}
+                # ⚠️ `ir.model` en sudo pour le NOM TRADUIT : `_description` ne se
+                # traduit jamais, et la personne n'a pas le droit de lire `ir.model`.
+                {"modele": nom, "libelle": request.env["ir.model"].sudo()._get(nom).name or nom}
                 for nom in modeles
             ],
             "gestes": [{
@@ -540,7 +517,7 @@ class MobileNfc(http.Controller):
                 "description": g.description or "",
                 "ecrit": g.writes,
                 "exige_cible": g.needs_target,
-                "modele": g.target_model_id.model or None,
+                "modele": g.target_model or None,
                 "saisie": g.saisie,
                 "reserve_gestion": g.reserve_gestion,
                 "accepte_differe": g.accepte_differe,
@@ -564,10 +541,30 @@ class MobileNfc(http.Controller):
         charge = _corps()
         geste_code = (charge.get("geste") or "").strip()
         geste = request.env["bf.nfc.gesture"].sudo().search(
-            [("code", "=", geste_code)], limit=1)
+            [("code", "=", geste_code), ("kind", "!=", "menu")], limit=1)
         if not geste:
             return _json({"error": "unknown_gesture",
                           "message": _("Ce geste n'existe pas ici.")}, 404)
+        # 🔴 Les filtres du catalogue se rejouent ICI. Sans eux, ils n'étaient que
+        # décoratifs : le catalogue cachait les gestes réservés et bornait les types
+        # de fiche, mais cette route acceptait n'importe lequel des deux.
+        if geste.reserve_gestion and not request.env.user.has_group("bf_nfc.group_nfc_manager"):
+            return _json({"error": "forbidden",
+                          "message": _("Ce geste est réservé à la gestion des pastilles.")}, 403)
+        modele = (charge.get("modele") or "").strip()
+        if modele and modele not in _modeles_cibles():
+            return _json({"error": "model_not_allowed",
+                          "message": _("On ne peut pas viser ce type de fiche.")}, 400)
+        params = charge.get("params")
+        if params:
+            try:
+                if not isinstance(json.loads(params), dict):
+                    raise ValueError
+            except (TypeError, ValueError):
+                # Une pastille dont les paramètres ne sont pas un objet JSON est morte
+                # au premier tapotement : elle lève au lieu de jouer son geste.
+                return _json({"error": "bad_params",
+                              "message": _("Les paramètres doivent être un objet JSON.")}, 400)
 
         valeurs = {
             "name": (charge.get("nom") or geste.name)[:120],

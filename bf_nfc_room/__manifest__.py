@@ -1,6 +1,6 @@
 {
     "name": "Pastilles NFC : la salle de réunion",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.0",
     "category": "Productivity/Calendar",
     "summary": "La pastille de la porte : libre ou occupée, la prendre, confirmer, la libérer",
     "description": """
@@ -32,6 +32,7 @@ une salle se prend sur place et maintenant.
         "security/bf_nfc_room_rules.xml",
         "data/bf_nfc_room_data.xml",
         "views/bf_nfc_room_views.xml",
+        "data/bf_nfc_room_gabarits.xml",
     ],
     "installable": True,
     "application": False,

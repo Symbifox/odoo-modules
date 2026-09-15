@@ -1,0 +1,224 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-15 05:26+0000\n"
+"PO-Revision-Date: 2026-09-15 05:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,name:bf_nfc_round_inspection.gabarit_aire_jeu_mensuelle
+msgid "Aire de jeu : inspection détaillée mensuelle"
+msgstr "Play area: detailed monthly inspection"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,name:bf_nfc_round_inspection.gabarit_aire_jeu_quotidienne
+msgid "Aire de jeu : inspection visuelle quotidienne"
+msgstr "Play area: daily visual inspection"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,reference:bf_nfc_round_inspection.gabarit_portes_coupe_feu
+msgid "Code de sécurité du Québec, chapitre Bâtiment (CNPI, 2.2.2.4)"
+msgstr "Québec Safety Code, Building chapter (National Fire Code, 2.2.2.4)"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,reference:bf_nfc_round_inspection.gabarit_extincteurs
+msgid ""
+"Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.2.1.1 et NFPA 10)"
+msgstr ""
+"Québec Safety Code, Building chapter (National Fire Code, 6.2.1.1 and NFPA "
+"10)"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,reference:bf_nfc_round_inspection.gabarit_eclairage
+msgid "Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.6)"
+msgstr "Québec Safety Code, Building chapter (National Fire Code, 6.5.1.6)"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,reference:bf_nfc_round_inspection.gabarit_sorties
+msgid "Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.8)"
+msgstr "Québec Safety Code, Building chapter (National Fire Code, 6.5.1.8)"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,name:bf_nfc_round_inspection.gabarit_sorties
+msgid "Enseignes de sortie : vérification mensuelle"
+msgstr "Exit signs: monthly check"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,exemple:bf_nfc_round_inspection.gabarit_extincteurs
+msgid ""
+"Extincteur 1 ; hall d'entrée\n"
+"Extincteur 2 ; corridor du 2e\n"
+"Extincteur 3 ; salle mécanique"
+msgstr ""
+"Extinguisher 1 ; front lobby\n"
+"Extinguisher 2 ; 2nd floor hallway\n"
+"Extinguisher 3 ; mechanical room"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,name:bf_nfc_round_inspection.gabarit_extincteurs
+msgid "Extincteurs : vérification mensuelle"
+msgstr "Fire extinguishers: monthly check"
+
+#. module: bf_nfc_round_inspection
+#: model:ir.model,name:bf_nfc_round_inspection.model_bf_nfc_template
+msgid "Gabarit de pastilles"
+msgstr "Tag template"
+
+#. module: bf_nfc_round_inspection
+#: model:ir.model,name:bf_nfc_round_inspection.model_bf_nfc_gesture
+msgid "Geste déclenché par une pastille NFC"
+msgstr "Gesture triggered by an NFC tag"
+
+#. module: bf_nfc_round_inspection
+#: model:ir.model.fields,field_description:bf_nfc_round_inspection.field_bf_nfc_round_checkpoint__checklist_id
+msgid "Grille"
+msgstr "Checklist"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,description:bf_nfc_round_inspection.gabarit_aire_jeu_mensuelle
+msgid ""
+"La même tournée que l'inspection quotidienne, avec la grille détaillée du "
+"mois. Grille livrée comme point de départ : à valider avant usage."
+msgstr ""
+"The same round as the daily inspection, with the detailed monthly checklist."
+" Checklist delivered as a starting point: to be validated before use."
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,exemple:bf_nfc_round_inspection.gabarit_aire_jeu_mensuelle
+msgid ""
+"Module d'escalade ; cour avant\n"
+"Balançoires ; cour arrière"
+msgstr ""
+"Climbing structure ; front yard\n"
+"Swings ; back yard"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,exemple:bf_nfc_round_inspection.gabarit_aire_jeu_quotidienne
+msgid ""
+"Module d'escalade ; cour avant\n"
+"Balançoires ; cour arrière\n"
+"Carré de sable ; cour arrière"
+msgstr ""
+"Climbing structure ; front yard\n"
+"Swings ; back yard\n"
+"Sandbox ; back yard"
+
+#. module: bf_nfc_round_inspection
+#: model:ir.model,name:bf_nfc_round_inspection.model_bf_nfc_tag
+msgid "Pastille NFC"
+msgstr "NFC tag"
+
+#. module: bf_nfc_round_inspection
+#: model:ir.model,name:bf_nfc_round_inspection.model_bf_nfc_round_checkpoint
+msgid "Point de tournée"
+msgstr "Round checkpoint"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,exemple:bf_nfc_round_inspection.gabarit_portes_coupe_feu
+msgid ""
+"Porte coupe-feu ; escalier nord, 1er\n"
+"Porte coupe-feu ; escalier nord, 2e"
+msgstr ""
+"Fire door ; north stairwell, 1st floor\n"
+"Fire door ; north stairwell, 2nd floor"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,name:bf_nfc_round_inspection.gabarit_portes_coupe_feu
+msgid "Portes coupe-feu : ronde quotidienne"
+msgstr "Fire doors: daily round"
+
+#. module: bf_nfc_round_inspection
+#: model:ir.model.fields,help:bf_nfc_round_inspection.field_bf_nfc_round_checkpoint__checklist_id
+msgid "Remplie à chaque passage : le point devient une ligne de registre."
+msgstr "Filled in at each visit: the checkpoint becomes a register line."
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,reference:bf_nfc_round_inspection.gabarit_aire_jeu_mensuelle
+#: model:bf.nfc.template,reference:bf_nfc_round_inspection.gabarit_aire_jeu_quotidienne
+msgid ""
+"Règlement sur les services de garde éducatifs à l'enfance (S-4.1.1, r. 2, "
+"art. 40) et CSA Z614"
+msgstr "Educational Childcare Regulation (S-4.1.1, r. 2, s. 40) and CSA Z614"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,exemple:bf_nfc_round_inspection.gabarit_sorties
+msgid ""
+"Sortie ; porte principale\n"
+"Sortie ; porte arrière"
+msgstr ""
+"Exit ; main door\n"
+"Exit ; back door"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,description:bf_nfc_round_inspection.gabarit_extincteurs
+msgid ""
+"Une pastille au support de chaque extincteur, pas sur l'extincteur lui-même,"
+" qui change à l'entretien. Chaque point de la ronde remplit la grille de la "
+"RBQ ; le registre s'imprime depuis les relevés. Un extincteur pas relevé "
+"dans le mois crée une activité. Le chapitre Bâtiment exempte certains petits"
+" bâtiments (art. 340 et 341) : vérifiez s'il s'applique au vôtre."
+msgstr ""
+"A tag on the bracket of each extinguisher, not on the extinguisher itself, "
+"which is swapped out during maintenance. Each checkpoint of the round fills "
+"in the RBQ checklist; the register is printed from the readings. An "
+"extinguisher not read within the month creates an activity. The Building "
+"chapter exempts some small buildings (ss. 340 and 341): check whether it "
+"applies to yours."
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,description:bf_nfc_round_inspection.gabarit_sorties
+msgid "Une pastille par enseigne de sortie sur batterie."
+msgstr "One tag per battery-powered exit sign."
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,description:bf_nfc_round_inspection.gabarit_aire_jeu_quotidienne
+msgid ""
+"Une pastille par module de jeu, tapée avant la première sortie des enfants. "
+"La grille livrée est un point de départ tiré d'un résumé de la norme : à "
+"valider avant usage. Pastilles extérieures IP68, à éprouver au froid."
+msgstr ""
+"One tag per play structure, tapped before the children first go outside. The"
+" checklist provided is a starting point taken from a summary of the "
+"standard: to be validated before use. Outdoor IP68 tags, to be tested in the"
+" cold."
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,description:bf_nfc_round_inspection.gabarit_eclairage
+msgid ""
+"Une pastille par unité d'éclairage de sécurité. L'essai mensuel se consigne "
+"point par point ; l'essai de durée annuel reste à part."
+msgstr ""
+"One tag per emergency lighting unit. The monthly test is logged checkpoint "
+"by checkpoint; the annual duration test stays separate."
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,description:bf_nfc_round_inspection.gabarit_portes_coupe_feu
+msgid ""
+"Une pastille près de chaque porte coupe-feu à fermeture automatique. La "
+"ronde du matin la trouve fermée ou non ; une ronde pas faite dans sa fenêtre"
+" crée une activité."
+msgstr ""
+"A tag near each self-closing fire door. The morning round finds it closed or"
+" not; a round not done within its window creates an activity."
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,exemple:bf_nfc_round_inspection.gabarit_eclairage
+msgid ""
+"Unité 1 ; escalier nord\n"
+"Unité 2 ; escalier sud"
+msgstr ""
+"Unit 1 ; north stairwell\n"
+"Unit 2 ; south stairwell"
+
+#. module: bf_nfc_round_inspection
+#: model:bf.nfc.template,name:bf_nfc_round_inspection.gabarit_eclairage
+msgid "Éclairage de sécurité : essai mensuel"
+msgstr "Emergency lighting: monthly test"

@@ -22,32 +22,32 @@ msgstr "%(qui)s started at %(debut)s and did not tap: %(points)s."
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_needaction
 msgid "Action Needed"
-msgstr ""
+msgstr "Action Needed"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__active
 msgid "Active"
-msgstr ""
+msgstr "Active"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_ids
 msgid "Activities"
-msgstr ""
+msgstr "Activities"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr ""
+msgstr "Activity Exception Decoration"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_state
 msgid "Activity State"
-msgstr ""
+msgstr "Activity State"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_type_icon
 msgid "Activity Type Icon"
-msgstr ""
+msgstr "Activity Type Icon"
 
 #. module: bf_nfc_round
 #: model_terms:ir.ui.view,arch_db:bf_nfc_round.view_bf_nfc_round_form
@@ -57,12 +57,17 @@ msgstr "Archived"
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_attachment_count
 msgid "Attachment Count"
-msgstr ""
+msgstr "Attachment Count"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_run__progress
 msgid "Avancement"
 msgstr "Progress"
+
+#. module: bf_nfc_round
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__recette
+msgid "Ce qu'il crée"
+msgstr "What it creates"
 
 #. module: bf_nfc_round
 #. odoo-python
@@ -72,6 +77,7 @@ msgstr "This tag does not point to a round checkpoint."
 
 #. module: bf_nfc_round
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round__schedule__daily
+#: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_template__round_schedule__daily
 msgid "Chaque jour"
 msgstr "Every day"
 
@@ -89,24 +95,26 @@ msgstr ""
 #. module: bf_nfc_round
 #: model_terms:ir.ui.view,arch_db:bf_nfc_round.view_bf_nfc_round_form
 msgid ""
-"Chaque point reçoit une pastille « Point de tournée » qui le vise, gravée\n"
-"                                depuis « Mes pastilles » dans l'application."
+"Chaque point reçoit une pastille « Point de tournée » : enregistrez les\n"
+"                                points, puis « Créer les pastilles des points ». Un point qui a déjà la\n"
+"                                sienne est sauté."
 msgstr ""
-"Each checkpoint gets a “Round checkpoint” tag pointing to it, engraved from "
-"“My tags” in the app."
+"Each checkpoint gets a “Round checkpoint” tag: save the checkpoints, then "
+"“Create checkpoint tags”. A checkpoint that already has its own is skipped."
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__checkpoint_id
 msgid "Checkpoint"
-msgstr ""
+msgstr "Checkpoint"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__checkpoint_count
 msgid "Checkpoint Count"
-msgstr ""
+msgstr "Checkpoint Count"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__start_hour
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__round_start_hour
 msgid "Commence à"
 msgstr "Starts at"
 
@@ -118,7 +126,7 @@ msgstr "Started"
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__company_id
 msgid "Company"
-msgstr ""
+msgstr "Company"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round_run__state__done
@@ -131,7 +139,7 @@ msgstr "Complete"
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__create_uid
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_run__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Created by"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__create_date
@@ -139,10 +147,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__create_date
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_run__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Created on"
+
+#. module: bf_nfc_round
+#: model_terms:ir.ui.view,arch_db:bf_nfc_round.view_bf_nfc_round_form
+msgid "Créer les pastilles des points"
+msgstr "Create checkpoint tags"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__strict_order
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__round_strict_order
 msgid "Dans l'ordre"
 msgstr "In order"
 
@@ -157,15 +171,17 @@ msgstr "Last missed-round alert"
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__display_name
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_run__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Display Name"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round__schedule__weekdays
+#: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_template__round_schedule__weekdays
 msgid "Du lundi au vendredi"
 msgstr "Monday to Friday"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__duration_minutes
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__round_duration
 msgid "Durée maximale (min)"
 msgstr "Maximum duration (min)"
 
@@ -173,6 +189,19 @@ msgstr "Maximum duration (min)"
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round_run__state__running
 msgid "En cours"
 msgstr "In progress"
+
+#. module: bf_nfc_round
+#: model:bf.nfc.template,exemple:bf_nfc_round.gabarit_ronde_surveillance
+msgid ""
+"Entrée principale\n"
+"Stationnement ; niveau P1\n"
+"Salle mécanique ; sous-sol\n"
+"Toit ; accès par l'escalier est"
+msgstr ""
+"Main entrance\n"
+"Parking ; level P1\n"
+"Mechanical room ; basement\n"
+"Roof ; access by the east stairs"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__offline
@@ -187,17 +216,22 @@ msgstr "Finished"
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_follower_ids
 msgid "Followers"
-msgstr ""
+msgstr "Followers"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_partner_ids
 msgid "Followers (Partners)"
-msgstr ""
+msgstr "Followers (Partners)"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr ""
+msgstr "Font awesome icon e.g. fa-tasks"
+
+#. module: bf_nfc_round
+#: model:ir.model,name:bf_nfc_round.model_bf_nfc_template
+msgid "Gabarit de pastilles"
+msgstr "Tag template"
 
 #. module: bf_nfc_round
 #: model:ir.model,name:bf_nfc_round.model_bf_nfc_gesture
@@ -207,7 +241,7 @@ msgstr "Gesture triggered by an NFC tag"
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__has_message
 msgid "Has Message"
-msgstr ""
+msgstr "Has Message"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__start_hour
@@ -218,6 +252,11 @@ msgstr "Local time of the person in charge."
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__schedule
 msgid "Horaire"
 msgstr "Schedule"
+
+#. module: bf_nfc_round
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__round_schedule
+msgid "Horaire de la tournée"
+msgstr "Round schedule"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__out_of_order
@@ -236,28 +275,28 @@ msgstr "Out of order: a previous checkpoint was not tapped. "
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__id
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_run__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_exception_icon
 msgid "Icon"
-msgstr ""
+msgstr "Icon"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr ""
+msgstr "Icon to indicate an exception activity."
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr ""
+msgstr "If checked, new messages require your attention."
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__message_has_error
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr ""
+msgstr "If checked, some messages have a delivery error."
 
 #. module: bf_nfc_round
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round_run__state__incomplete
@@ -267,7 +306,7 @@ msgstr "Incomplete"
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_is_follower
 msgid "Is Follower"
-msgstr ""
+msgstr "Is Follower"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__write_uid
@@ -275,7 +314,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__write_uid
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_run__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Last Updated by"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__write_date
@@ -283,22 +322,22 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__write_date
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_run__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Last Updated on"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_has_error
 msgid "Message Delivery error"
-msgstr ""
+msgstr "Message Delivery error"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_ids
 msgid "Messages"
-msgstr ""
+msgstr "Messages"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr ""
+msgstr "My Activity Deadline"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_gesture__kind
@@ -308,42 +347,42 @@ msgstr "Kind"
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr ""
+msgstr "Next Activity Calendar Event"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr ""
+msgstr "Next Activity Deadline"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_summary
 msgid "Next Activity Summary"
-msgstr ""
+msgstr "Next Activity Summary"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_type_id
 msgid "Next Activity Type"
-msgstr ""
+msgstr "Next Activity Type"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_needaction_counter
 msgid "Number of Actions"
-msgstr ""
+msgstr "Number of Actions"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_has_error_counter
 msgid "Number of errors"
-msgstr ""
+msgstr "Number of errors"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__message_needaction_counter
 msgid "Number of messages requiring action"
-msgstr ""
+msgstr "Number of messages requiring action"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr ""
+msgstr "Number of messages with delivery error"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_checkpoint__place
@@ -365,6 +404,12 @@ msgstr "Round run"
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__run_ids
 msgid "Passages de tournée"
 msgstr "Round runs"
+
+#. module: bf_nfc_round
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__nfc_tag_count
+#: model_terms:ir.ui.view,arch_db:bf_nfc_round.view_bf_nfc_round_form
+msgid "Pastilles"
+msgstr "Tags"
 
 #. module: bf_nfc_round
 #: model:ir.actions.server,name:bf_nfc_round.cron_round_watch_ir_actions_server
@@ -425,7 +470,7 @@ msgstr "Who and how"
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__rating_ids
 msgid "Ratings"
-msgstr ""
+msgstr "Ratings"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__responsible_id
@@ -435,12 +480,17 @@ msgstr "Person in charge"
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__activity_user_id
 msgid "Responsible User"
-msgstr ""
+msgstr "Responsible User"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__responsible_id
 msgid "Reçoit les alertes, et donne le fuseau de l'horaire."
 msgstr "Receives the alerts, and sets the schedule's time zone."
+
+#. module: bf_nfc_round
+#: model:bf.nfc.template,name:bf_nfc_round.gabarit_ronde_surveillance
+msgid "Ronde de surveillance"
+msgstr "Security patrol"
 
 #. module: bf_nfc_round
 #: model_terms:ir.ui.view,arch_db:bf_nfc_round.view_bf_nfc_round_form
@@ -451,32 +501,33 @@ msgstr "Evening patrol, maintenance round…"
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_checkpoint__round_id
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_run__round_id
 msgid "Round"
-msgstr ""
+msgstr "Round"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__run_id
 msgid "Run"
-msgstr ""
+msgstr "Run"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
+msgstr "SMS Delivery error"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round__schedule__none
+#: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_template__round_schedule__none
 msgid "Sans horaire"
 msgstr "No schedule"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_checkpoint__sequence
 msgid "Sequence"
-msgstr ""
+msgstr "Sequence"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_run__state
 msgid "State"
-msgstr ""
+msgstr "State"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__activity_state
@@ -486,6 +537,10 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__tapped_at
@@ -541,7 +596,7 @@ msgstr "Completed rounds"
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr ""
+msgstr "Type of the exception activity on record."
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__strict_order
@@ -549,14 +604,30 @@ msgid "Un point tapé avant le précédent est marqué."
 msgstr "A checkpoint tapped before the previous one is flagged."
 
 #. module: bf_nfc_round
+#: model:bf.nfc.template,description:bf_nfc_round.gabarit_ronde_surveillance
+msgid ""
+"Une pastille à chaque point de passage. La tournée dit « point 3 sur 7 », et"
+" une ronde commencée et pas finie, ou pas faite du tout, crée une activité "
+"pour la personne responsable."
+msgstr ""
+"A tag at each checkpoint. The round shows “checkpoint 3 of 7”, and a round "
+"started but not finished, or not done at all, creates an activity for the "
+"person in charge."
+
+#. module: bf_nfc_round
+#: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_template__recette__tournee
+msgid "Une tournée et ses points"
+msgstr "A round and its checkpoints"
+
+#. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__website_message_ids
 msgid "Website Messages"
-msgstr ""
+msgstr "Website Messages"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__website_message_ids
 msgid "Website communication history"
-msgstr ""
+msgstr "Website communication history"
 
 #. module: bf_nfc_round
 #. odoo-python

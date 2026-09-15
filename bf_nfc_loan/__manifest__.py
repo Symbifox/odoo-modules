@@ -1,6 +1,6 @@
 {
     "name": "Pastilles NFC : le prêt d'équipement",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.2.0",
     "category": "Productivity",
     "summary": "Une pastille sur le portable ou le projecteur : on sait qui l'a, depuis quand",
     "description": """
@@ -36,6 +36,8 @@ Ce que le module refuse
         "security/bf_nfc_loan_rules.xml",
         "data/bf_nfc_loan_data.xml",
         "views/bf_nfc_loan_views.xml",
+        "views/bf_nfc_template_views.xml",
+        "data/bf_nfc_loan_gabarits.xml",
     ],
     "installable": True,
     "application": False,

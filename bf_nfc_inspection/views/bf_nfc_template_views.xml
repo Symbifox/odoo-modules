@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_template_form_releve" model="ir.ui.view">
+        <field name="name">bf.nfc.template.form.releve</field>
+        <field name="model">bf.nfc.template</field>
+        <field name="inherit_id" ref="bf_nfc.view_bf_nfc_template_form"/>
+        <field name="arch" type="xml">
+            <group name="cree" position="inside">
+                <field name="checklist_id" invisible="gesture_kind != 'reading'"/>
+            </group>
+        </field>
+    </record>
+</odoo>

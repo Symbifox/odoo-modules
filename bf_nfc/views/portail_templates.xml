@@ -38,7 +38,53 @@
                 <div class="container py-5" style="max-width: 32rem;">
                     <h1 class="h3 mb-1"><t t-esc="resultat.get('titre')"/></h1>
                     <p class="text-muted mb-4"><t t-esc="resultat.get('message')"/></p>
-                    <t t-foreach="resultat.get('choix')" t-as="option">
+                    <!-- Un formulaire : UN seul POST pour tous les champs, un bouton par choix. -->
+                    <form t-if="resultat.get('formulaire')" t-att-action="action" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="picc_data" t-att-value="picc_data"/>
+                        <input type="hidden" name="cmac" t-att-value="cmac"/>
+                        <t t-foreach="resultat.get('formulaire')" t-as="champ">
+                            <t t-set="nom" t-value="'r.%s' % champ.get('cle')"/>
+                            <fieldset class="mb-3">
+                                <legend class="fs-6 fw-semibold mb-1">
+                                    <t t-esc="champ.get('libelle')"/>
+                                    <span t-if="champ.get('requis')" class="text-danger">*</span>
+                                </legend>
+                                <div t-if="champ.get('aide')" class="form-text mt-0 mb-1"><t t-esc="champ.get('aide')"/></div>
+                                <t t-if="champ.get('type') == 'conforme'">
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" t-att-name="nom" value="oui"
+                                               t-att-id="'%s-oui' % nom" t-att-required="champ.get('requis') and 'required'"/>
+                                        <label class="btn btn-outline-success" t-att-for="'%s-oui' % nom">Conforme</label>
+                                        <input type="radio" class="btn-check" t-att-name="nom" value="non"
+                                               t-att-id="'%s-non' % nom"/>
+                                        <label class="btn btn-outline-danger" t-att-for="'%s-non' % nom">Non conforme</label>
+                                    </div>
+                                </t>
+                                <div t-elif="champ.get('type') == 'nombre'" class="input-group">
+                                    <input type="text" inputmode="decimal" class="form-control" t-att-name="nom"
+                                           t-att-required="champ.get('requis') and 'required'"/>
+                                    <span t-if="champ.get('unite')" class="input-group-text"><t t-esc="champ.get('unite')"/></span>
+                                </div>
+                                <select t-elif="champ.get('type') == 'choix'" class="form-select" t-att-name="nom"
+                                        t-att-required="champ.get('requis') and 'required'">
+                                    <option value=""/>
+                                    <t t-foreach="champ.get('options') or []" t-as="valeur">
+                                        <option t-att-value="valeur"><t t-esc="valeur"/></option>
+                                    </t>
+                                </select>
+                                <textarea t-else="" class="form-control" rows="2" t-att-name="nom"
+                                          t-att-required="champ.get('requis') and 'required'"/>
+                            </fieldset>
+                        </t>
+                        <t t-foreach="resultat.get('choix')" t-as="option">
+                            <button type="submit" name="choix" t-att-value="option.get('cle')"
+                                    t-attf-class="btn btn-lg w-100 mb-2 #{'btn-primary' if option.get('style') == 'principal' else ('btn-outline-danger' if option.get('style') == 'danger' else 'btn-outline-primary')}">
+                                <t t-esc="option.get('libelle')"/>
+                            </button>
+                        </t>
+                    </form>
+                    <t t-foreach="not resultat.get('formulaire') and resultat.get('choix') or []" t-as="option">
                         <form t-att-action="action" method="post" class="mb-2">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <input type="hidden" name="picc_data" t-att-value="picc_data"/>

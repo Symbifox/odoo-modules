@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_gen_skill_list" model="ir.ui.view">
+        <field name="name">bf.nfc.gen.skill.list</field>
+        <field name="model">bf.nfc.gen.skill</field>
+        <field name="arch" type="xml">
+            <list string="Skills de Gen" create="false" editable="bottom">
+                <header>
+                    <button name="action_actualiser" type="object" string="Actualiser depuis Gen"
+                            class="btn-secondary" display="always"/>
+                </header>
+                <field name="name"/>
+                <field name="skill" optional="hide"/>
+                <field name="modeles"/>
+                <field name="description" optional="show"/>
+                <field name="published" widget="boolean" readonly="1"/>
+                <field name="allowed" widget="boolean_toggle" readonly="not published"/>
+                <field name="last_sync" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_gen_skill" model="ir.actions.act_window">
+        <field name="name">Skills de Gen</field>
+        <field name="res_model">bf.nfc.gen.skill</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun skill</p>
+            <p>« Actualiser depuis Gen » relit les skills que le pont accepte de lancer par
+            pastille pour cette instance. Cochez ensuite ceux que vous permettez.</p>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_gen_request_list" model="ir.ui.view">
+        <field name="name">bf.nfc.gen.request.list</field>
+        <field name="model">bf.nfc.gen.request</field>
+        <field name="arch" type="xml">
+            <list string="Demandes à Gen" create="false" decoration-danger="state == 'error'"
+                  decoration-success="state == 'done'" decoration-info="state in ('queued', 'running')">
+                <field name="create_date" string="Demandée le"/>
+                <field name="skill_id"/>
+                <field name="target_name"/>
+                <field name="user_id"/>
+                <field name="state" widget="badge"/>
+                <field name="message"/>
+                <field name="date_end" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_gen_request" model="ir.actions.act_window">
+        <field name="name">Demandes à Gen</field>
+        <field name="res_model">bf.nfc.gen.request</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="view_bf_nfc_tag_form_gen" model="ir.ui.view">
+        <field name="name">bf.nfc.tag.form.gen</field>
+        <field name="model">bf.nfc.tag</field>
+        <field name="inherit_id" ref="bf_nfc.view_bf_nfc_tag_form"/>
+        <field name="arch" type="xml">
+            <field name="cible" position="before">
+                <field name="gen_skill_id" invisible="gesture_kind != 'gen_skill'"
+                       required="gesture_kind == 'gen_skill'" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <menuitem id="menu_nfc_gen_skills" name="Skills de Gen" parent="bf_nfc.menu_nfc_config"
+              action="action_bf_nfc_gen_skill" sequence="30"/>
+    <menuitem id="menu_nfc_gen_requests" name="Demandes à Gen" parent="bf_nfc.menu_nfc_config"
+              action="action_bf_nfc_gen_request" sequence="35"/>
+</odoo>

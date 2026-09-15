@@ -1,6 +1,6 @@
 {
     "name": "Gestes par pastille NFC",
-    "version": "18.0.2.2.0",
+    "version": "18.0.2.3.0",
     "category": "Productivity",
     "summary": "Une pastille, un geste, et le nom de la personne qui a tape",
     "description": """
@@ -55,9 +55,13 @@ Ce que le module refuse de faire
         "views/bf_nfc_tap_views.xml",
         "views/bf_nfc_menus.xml",
         "views/bf_nfc_device_views.xml",
+        "views/bf_nfc_admin_views.xml",
+        "views/bf_nfc_template_views.xml",
+        "data/bf_nfc_template_data.xml",
         "views/portail_templates.xml",
         "report/bf_nfc_tag_label.xml",
     ],
+    "post_init_hook": "post_init_hook",
     "installable": True,
     "application": True,
     "auto_install": False,

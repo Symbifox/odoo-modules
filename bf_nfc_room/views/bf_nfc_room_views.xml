@@ -19,7 +19,17 @@
         <field name="model">bf.nfc.room</field>
         <field name="arch" type="xml">
             <form string="Salle">
+                <header>
+                    <button name="action_creer_pastilles" type="object" string="Créer la pastille de la porte"
+                            groups="bf_nfc.group_nfc_manager"/>
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_voir_pastilles" type="object" class="oe_stat_button"
+                                icon="fa-wifi" invisible="not nfc_tag_count">
+                            <field name="nfc_tag_count" widget="statinfo" string="Pastilles"/>
+                        </button>
+                    </div>
                     <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger" invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
@@ -39,9 +49,7 @@
                         </group>
                     </group>
                     <div class="text-muted">
-                        Créez ensuite une pastille « Salle de réunion » qui vise cette salle, et
-                        gravez-la depuis l'application. Dans l'agenda, un événement réserve la
-                        salle par son champ « Salle ».
+                        Dans l'agenda, un événement réserve la salle par son champ « Salle ».
                     </div>
                     <notebook>
                         <page string="Réservations" name="reservations">

@@ -1,0 +1,542 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_nfc_gen
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-15 05:26+0000\n"
+"PO-Revision-Date: 2026-09-15 05:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "%(fiche)s. %(message)s"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model_terms:ir.ui.view,arch_db:bf_nfc_gen.view_bf_nfc_gen_skill_list
+msgid "Actualiser depuis Gen"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Actualiser les skills de Gen est réservé à la gestion."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__last_sync
+msgid "Actualisé le"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:bf.nfc.gesture,description:bf_nfc_gen.gesture_gen_skill
+msgid ""
+"Approcher le téléphone propose de lancer le skill de Gen choisi sur la "
+"pastille, sur la fiche qu'elle vise : préparer un ordre du jour, raffiner un"
+" compte rendu. Gen travaille ensuite seul, et une activité prévient quand il"
+" a fini. Réservé à la gestion tant qu'on ne l'ouvre pas plus largement."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model_terms:ir.actions.act_window,help:bf_nfc_gen.action_bf_nfc_gen_skill
+msgid "Aucun skill"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.constraint,message:bf_nfc_gen.constraint_bf_nfc_gen_skill_skill_unique
+msgid "Ce skill est déjà dans la liste."
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Cette pastille ne désigne aucun skill de Gen."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_skill__allowed
+msgid ""
+"Coché : une pastille « Demander à Gen » peut lancer ce skill. Le pont reste "
+"seul juge de ce qu'il accepte."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__create_uid
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__create_date
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Demande transmise à Gen, sur « %s »."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model,name:bf_nfc_gen.model_bf_nfc_gen_request
+msgid "Demande à Gen par pastille"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:bf.nfc.gesture,name:bf_nfc_gen.gesture_gen_skill
+#: model:ir.model.fields.selection,name:bf_nfc_gen.selection__bf_nfc_gesture__kind__gen_skill
+msgid "Demander à Gen"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.actions.act_window,name:bf_nfc_gen.action_bf_nfc_gen_request
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_tag__gen_request_ids
+#: model:ir.ui.menu,name:bf_nfc_gen.menu_nfc_gen_requests
+#: model_terms:ir.ui.view,arch_db:bf_nfc_gen.view_bf_nfc_gen_request_list
+msgid "Demandes à Gen"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__user_id
+msgid "Demandé par"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model_terms:ir.ui.view,arch_db:bf_nfc_gen.view_bf_nfc_gen_request_list
+msgid "Demandée le"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__description
+msgid "Description"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__display_name
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_skill__published
+msgid "Décoché : le pont ne le publie plus ; il ne se lance plus."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields.selection,name:bf_nfc_gen.selection__bf_nfc_gen_request__state__running
+msgid "En cours"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__target_name
+msgid "Fiche"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__date_end
+msgid "Finie le"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Gen a terminé : %s"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Gen n'a pas abouti : %s"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Gen n'est pas joignable pour le moment."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields.selection,name:bf_nfc_gen.selection__bf_nfc_gen_request__state__busy
+msgid "Gen occupé"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Gen y travaille déjà depuis %(heure)s, demandé par %(qui)s."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model,name:bf_nfc_gen.model_bf_nfc_gesture
+msgid "Geste déclenché par une pastille NFC"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__id
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__message_has_error
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "La fiche de cette pastille n'existe plus."
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "La liste des skills ne peut pas être actualisée."
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Lancer"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__write_uid
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__write_date
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Le pont n'a pas rendu la liste des skills (%s)."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_skill__modeles
+msgid "Les modèles que ce skill accepte, séparés par des virgules."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__name
+msgid "Libellé"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message
+msgid "Message"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gesture__kind
+msgid "Nature"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__tag_id
+msgid "Pastille"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model,name:bf_nfc_gen.model_bf_nfc_tag
+msgid "Pastille NFC"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__allowed
+msgid "Permis sur cette instance"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Pont injoignable (%s)."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__published
+msgid "Publié par le pont"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__res_id
+msgid "Res"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__res_model
+msgid "Res Model"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "Seul le pont écrit l'état d'une demande à Gen."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__skill_id
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__skill
+msgid "Skill"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_tag__gen_skill_id
+msgid "Skill de Gen"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model,name:bf_nfc_gen.model_bf_nfc_gen_skill
+msgid "Skill de Gen lançable par pastille"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.actions.act_window,name:bf_nfc_gen.action_bf_nfc_gen_skill
+#: model:ir.ui.menu,name:bf_nfc_gen.menu_nfc_gen_skills
+#: model_terms:ir.ui.view,arch_db:bf_nfc_gen.view_bf_nfc_gen_skill_list
+msgid "Skills de Gen"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid ""
+"Sur « %s ». Gen travaillera seul ; une activité vous préviendra quand il "
+"aura fini."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields.selection,name:bf_nfc_gen.selection__bf_nfc_gen_request__state__done
+msgid "Terminée"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields.selection,name:bf_nfc_gen.selection__bf_nfc_gen_request__state__queued
+msgid "Transmise"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_skill__modeles
+msgid "Types de fiche"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,help:bf_nfc_gen.field_bf_nfc_gen_request__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "« %(skill)s » ne vise pas ce type de fiche."
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "« %s » n'est pas permis sur cette instance."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model_terms:ir.actions.act_window,help:bf_nfc_gen.action_bf_nfc_gen_skill
+msgid ""
+"« Actualiser depuis Gen » relit les skills que le pont accepte de lancer par\n"
+"            pastille pour cette instance. Cochez ensuite ceux que vous permettez."
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields.selection,name:bf_nfc_gen.selection__bf_nfc_gen_request__state__error
+msgid "Échec"
+msgstr ""
+
+#. module: bf_nfc_gen
+#: model:ir.model.fields,field_description:bf_nfc_gen.field_bf_nfc_gen_request__state
+msgid "État"
+msgstr ""
+
+#. module: bf_nfc_gen
+#. odoo-python
+#: code:addons/bf_nfc_gen/models/bf_nfc_gen.py:0
+msgid "État inconnu : %s"
+msgstr ""

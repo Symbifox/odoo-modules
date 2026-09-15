@@ -32,6 +32,21 @@
         <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
 
+    <record id="regle_cles_societe" model="ir.rule">
+        <field name="name">Clés des pastilles signées : cloison des sociétés</field>
+        <field name="model_id" ref="model_bf_nfc_sdm_key"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Le journal se cloisonne par la société de sa pastille. Une ligne dont la
+         pastille a été supprimée reste lisible : elle ne porte plus rien de la
+         société, et on veut encore savoir ce qu'une pastille retirée a fait. -->
+    <record id="regle_journal_societe" model="ir.rule">
+        <field name="name">Journal : cloison des sociétés</field>
+        <field name="model_id" ref="model_bf_nfc_tap"/>
+        <field name="domain_force">['|', ('tag_id', '=', False), ('tag_id.company_id', 'in', company_ids)]</field>
+    </record>
+
     <record id="regle_journal_les_miens" model="ir.rule">
         <field name="name">Journal : mes tapotements</field>
         <field name="model_id" ref="model_bf_nfc_tap"/>

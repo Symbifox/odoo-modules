@@ -20,6 +20,13 @@ reprise. Le choix revient dans ``params["choix"]``, le texte saisi dans
 ``params["texte"]``. Une liste de choix vide est une information (« la salle
 est occupée jusqu'à 15 h ») : rien n'est fait, rien n'est journalisé.
 
+⚠️ **Une question peut demander des champs.** En plus de ``choix``, elle rend
+``"formulaire": [{"cle", "libelle", "type", "requis", "unite", "min", "max",
+"options", "aide"}]`` où ``type`` vaut ``conforme``, ``nombre``, ``texte`` ou
+``choix``. Les réponses reviennent dans ``params["reponses"]``, et
+``_lire_formulaire`` les valide. C'est ce qui fait d'une ronde un registre : une
+grille remplie, pas seulement un passage horodaté.
+
 ⚠️ ``params["quand"]`` est l'heure du tapotement et ``params["differe"]`` dit s'il
 a été fait sans réseau. Un geste qui date quelque chose lit ``quand``, jamais
 l'horloge du serveur. Un geste qui n'a de sens que sur place laisse
@@ -36,15 +43,16 @@ from odoo.exceptions import AccessError, UserError, ValidationError
 class BfNfcGesture(models.Model):
     _name = "bf.nfc.gesture"
     _description = "Geste déclenché par une pastille NFC"
+    _inherit = ["mail.thread"]
     _order = "sequence, name"
 
-    name = fields.Char(required=True, translate=True)
+    name = fields.Char(required=True, translate=True, tracking=True)
     code = fields.Char(
         required=True, copy=False,
         help="Identifiant stable du geste. Les pastilles s'y rattachent.",
     )
     sequence = fields.Integer(default=10)
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(default=True, tracking=True)
     kind = fields.Selection(
         selection=[
             ("open", "Ouvrir une fiche"),
@@ -58,7 +66,7 @@ class BfNfcGesture(models.Model):
         string="Nature", required=True, default="open",
     )
     writes = fields.Boolean(
-        string="Ce geste écrit",
+        string="Ce geste écrit", tracking=True,
         help="Coché dès que le geste modifie quoi que ce soit. Un geste qui "
              "écrit demande une confirmation quand il arrive par le navigateur.",
     )
@@ -69,6 +77,13 @@ class BfNfcGesture(models.Model):
     target_model_id = fields.Many2one(
         "ir.model", string="Modèle attendu", ondelete="cascade",
         help="Laisser vide si le geste accepte n'importe quel modèle.",
+    )
+    # 🔴 Le nom du modèle attendu, STOCKÉ sur le geste. Un gestionnaire des
+    # pastilles qui n'est pas administrateur n'a aucun droit sur ``ir.model`` :
+    # un filtre ou une vue qui passe par ``target_model_id.model`` tombe sur une
+    # erreur d'accès pour lui, et seulement pour lui.
+    target_model = fields.Char(
+        string="Modèle attendu (nom technique)", related="target_model_id.model", store=True,
     )
     server_action_id = fields.Many2one(
         "ir.actions.server", string="Action serveur", ondelete="restrict",
@@ -82,14 +97,14 @@ class BfNfcGesture(models.Model):
              "l'application le lit dans le catalogue au lieu de le deviner.",
     )
     accepte_differe = fields.Boolean(
-        string="Se joue en différé",
+        string="Se joue en différé", tracking=True,
         help="Un tapotement fait sans réseau et envoyé plus tard est accepté, "
              "avec l'heure notée par le téléphone. À laisser décoché pour ce qui "
              "n'a de sens que sur place et tout de suite : ouvrir une fiche, "
              "lancer un chrono, prendre une salle.",
     )
     reserve_gestion = fields.Boolean(
-        string="Réservé à la gestion",
+        string="Réservé à la gestion", tracking=True,
         help="Seul un gestionnaire des pastilles peut jouer ce geste. Pour ce qui "
              "déclenche un traitement ou une action serveur.",
     )
@@ -317,6 +332,46 @@ class BfNfcGesture(models.Model):
             raise UserError(_("Ce geste engage la personne qui tape : il se joue avec "
                               "l'application ou une session, pas avec une pastille signée."))
 
+    def _lire_formulaire(self, formulaire, params):
+        """Valide les réponses d'un formulaire et rend ``{cle: valeur typée}``.
+
+        ``conforme`` rend un booléen, ``nombre`` un flottant (la virgule décimale
+        est acceptée), ``choix`` une des options, ``texte`` un texte. Un champ requis
+        vide ou une valeur illisible lève, avec une phrase qui nomme TOUS les champs
+        en cause d'un coup : debout devant un extincteur, on ne veut pas découvrir
+        les erreurs une par une.
+        """
+        reponses = (params or {}).get("reponses") or {}
+        lues, fautes = {}, []
+        for champ in formulaire:
+            brut = (reponses.get(champ["cle"]) or "").strip()
+            if not brut:
+                if champ.get("requis"):
+                    fautes.append(_("« %s » est requis", champ["libelle"]))
+                lues[champ["cle"]] = None
+                continue
+            genre = champ.get("type")
+            if genre == "conforme":
+                if brut.lower() not in ("oui", "non"):
+                    fautes.append(_("« %s » attend conforme ou non conforme", champ["libelle"]))
+                    continue
+                lues[champ["cle"]] = brut.lower() == "oui"
+            elif genre == "nombre":
+                try:
+                    lues[champ["cle"]] = float(brut.replace(",", ".").replace("\u00a0", "").replace(" ", ""))
+                except ValueError:
+                    fautes.append(_("« %s » attend un nombre", champ["libelle"]))
+            elif genre == "choix":
+                if brut not in (champ.get("options") or []):
+                    fautes.append(_("« %s » n'accepte pas « %s »", champ["libelle"], brut))
+                    continue
+                lues[champ["cle"]] = brut
+            else:
+                lues[champ["cle"]] = brut
+        if fautes:
+            raise UserError(_("Le relevé n'est pas enregistré : %s.", " ; ".join(fautes)))
+        return lues
+
     def _moment(self, params):
         """L'heure du tapotement (UTC naïf), celle du téléphone quand il était hors ligne."""
         return (params or {}).get("quand") or fields.Datetime.now()
@@ -368,7 +423,7 @@ class BfNfcGesture(models.Model):
             raise AccessError(_("Ce geste est réservé à la gestion des pastilles."))
         if meta.needs_target and not (tag.res_model and tag.res_id):
             raise UserError(_("Cette pastille ne désigne aucune fiche."))
-        if meta.target_model_id and tag.res_model != meta.target_model_id.model:
+        if meta.target_model and tag.res_model != meta.target_model:
             raise UserError(_("Le choix « %s » vise un autre type de fiche que cette pastille.",
                               ligne.name))
         if params.get("differe") and not meta.accepte_differe:

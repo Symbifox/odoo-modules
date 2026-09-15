@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="regle_grille_societe" model="ir.rule">
+        <field name="name">Grilles de relevé : cloison des sociétés</field>
+        <field name="model_id" ref="model_bf_nfc_checklist"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="regle_releve_societe" model="ir.rule">
+        <field name="name">Relevés : cloison des sociétés</field>
+        <field name="model_id" ref="model_bf_nfc_reading"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- ⚠️ Un agent relit ses propres relevés ; la gestion lit tout le registre. -->
+    <record id="regle_releve_les_miens" model="ir.rule">
+        <field name="name">Relevés : les miens</field>
+        <field name="model_id" ref="model_bf_nfc_reading"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('bf_nfc.group_nfc_user'))]"/>
+    </record>
+    <record id="regle_releve_gestion" model="ir.rule">
+        <field name="name">Relevés : tout, pour la gestion</field>
+        <field name="model_id" ref="model_bf_nfc_reading"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('bf_nfc.group_nfc_manager'))]"/>
+    </record>
+    <!-- 🔴 L'enfant se cloisonne comme son parent : sans cette règle, un
+         gestionnaire lisait ligne par ligne les résultats d'une autre société,
+         alors que le relevé lui-même était cloisonné. -->
+    <record id="regle_resultat_societe" model="ir.rule">
+        <field name="name">Résultats de relevé : cloison des sociétés</field>
+        <field name="model_id" ref="model_bf_nfc_reading_line"/>
+        <field name="domain_force">[('reading_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="regle_resultat_les_miens" model="ir.rule">
+        <field name="name">Résultats de relevé : les miens</field>
+        <field name="model_id" ref="model_bf_nfc_reading_line"/>
+        <field name="domain_force">[('reading_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('bf_nfc.group_nfc_user'))]"/>
+    </record>
+    <record id="regle_resultat_gestion" model="ir.rule">
+        <field name="name">Résultats de relevé : tout, pour la gestion</field>
+        <field name="model_id" ref="model_bf_nfc_reading_line"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('bf_nfc.group_nfc_manager'))]"/>
+    </record>
+</odoo>

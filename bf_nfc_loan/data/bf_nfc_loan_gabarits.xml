@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="gabarit_cadenas" model="bf.nfc.template">
+        <field name="name">Registre des cadenas</field>
+        <field name="secteur">sst</field>
+        <field name="sequence">20</field>
+        <field name="recette">equipements</field>
+        <field name="registre_externe" eval="True"/>
+        <field name="reference">Règlement sur la santé et la sécurité du travail (S-2.1, r. 13, art. 205)</field>
+        <field name="description">Une pastille par cadenas à cléage unique sans nom. La personne qui remet le cadenas tape sa pastille et nomme qui le reçoit (nom, téléphone, employeur) ; le retour se confirme d'un second tapotement. Le registre des remises s'imprime depuis les équipements et porte les colonnes du règlement.</field>
+        <field name="exemple">Cadenas 01 ; armoire de cadenassage
+Cadenas 02 ; armoire de cadenassage
+Cadenas 03 ; armoire de cadenassage</field>
+    </record>
+
+    <record id="gabarit_pret_materiel" model="bf.nfc.template">
+        <field name="name">Prêt de matériel</field>
+        <field name="secteur">bureau</field>
+        <field name="sequence">10</field>
+        <field name="recette">equipements</field>
+        <field name="max_days">7</field>
+        <field name="description">Portables de prêt, projecteurs, caméras, clés. Libre, on le prend d'un tapotement ; à soi, on le rend. Au-delà de sept jours, la personne qui le garde reçoit un rappel.</field>
+        <field name="exemple">Portable de prêt 1 ; armoire de l'accueil
+Projecteur ; salle A
+Clé de la remise ; accueil</field>
+    </record>
+</odoo>

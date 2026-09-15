@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_round_form_releve" model="ir.ui.view">
+        <field name="name">bf.nfc.round.form.releve</field>
+        <field name="model">bf.nfc.round</field>
+        <field name="inherit_id" ref="bf_nfc_round.view_bf_nfc_round_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='checkpoint_ids']/list/field[@name='place']" position="after">
+                <field name="checklist_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_bf_nfc_template_form_tournee_releve" model="ir.ui.view">
+        <field name="name">bf.nfc.template.form.tournee_releve</field>
+        <field name="model">bf.nfc.template</field>
+        <field name="inherit_id" ref="bf_nfc.view_bf_nfc_template_form"/>
+        <field name="arch" type="xml">
+            <group name="cree" position="inside">
+                <field name="checklist_id" invisible="recette != 'tournee'"/>
+            </group>
+        </field>
+    </record>
+</odoo>

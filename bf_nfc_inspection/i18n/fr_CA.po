@@ -1,0 +1,1437 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-15 05:26+0000\n"
+"PO-Revision-Date: 2026-09-15 05:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_nfc_inspection
+#: model:ir.actions.report,print_report_name:bf_nfc_inspection.action_report_registre
+msgid "'Registre des relevés'"
+msgstr "'Registre des relevés'"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_needaction
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_needaction
+msgid "Action Needed"
+msgstr "Action Needed"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__active
+msgid "Active"
+msgstr "Active"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_ids
+msgid "Activities"
+msgstr "Activities"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Activity Exception Decoration"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_state
+msgid "Activity State"
+msgstr "Activity State"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Activity Type Icon"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__help
+msgid "Aide"
+msgstr "Aide"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,name:bf_nfc_inspection.grille_aire_jeu_mensuelle
+msgid "Aire de jeu extérieure : inspection détaillée mensuelle"
+msgstr "Aire de jeu extérieure : inspection détaillée mensuelle"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,name:bf_nfc_inspection.grille_aire_jeu_quotidienne
+msgid "Aire de jeu extérieure : inspection visuelle"
+msgstr "Aire de jeu extérieure : inspection visuelle"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__anomaly
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_reading__state__anomalie
+msgid "Anomalie"
+msgstr "Anomalie"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "Anomalie : %s"
+msgstr "Anomalie : %s"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_reading__state__corrige
+msgid "Anomalie corrigée"
+msgstr "Anomalie corrigée"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "Anomalie relevée par %(qui)s : %(quoi)s."
+msgstr "Anomalie relevée par %(qui)s : %(quoi)s."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__anomaly_count
+msgid "Anomalies"
+msgstr "Anomalies"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_search
+msgid "Anomalies corrigées"
+msgstr "Anomalies corrigées"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_search
+msgid "Anomalies à corriger"
+msgstr "Anomalies à corriger"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_fermeture_bureau_04
+msgid "Appareils de cuisine éteints"
+msgstr "Appareils de cuisine éteints"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.gesture,description:bf_nfc_inspection.gesture_reading
+msgid ""
+"Approcher le téléphone affiche la grille de la pastille : conforme ou non, "
+"une valeur mesurée, un choix. Enregistrer écrit le relevé au registre, et "
+"chaque anomalie va à la personne responsable. Sans réseau, le relevé garde "
+"l'heure du téléphone."
+msgstr ""
+"Approcher le téléphone affiche la grille de la pastille : conforme ou non, "
+"une valeur mesurée, un choix. Enregistrer écrit le relevé au registre, et "
+"chaque anomalie va à la personne responsable. Sans réseau, le relevé garde "
+"l'heure du téléphone."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_attachment_count
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_attachment_count
+msgid "Attachment Count"
+msgstr "Attachment Count"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_extincteur_05
+msgid "Aucun dommage ni corrosion"
+msgstr "Aucun dommage ni corrosion"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_quotidienne_01
+msgid "Aucun débris ni objet dangereux"
+msgstr "Aucun débris ni objet dangereux"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_premiers_secours_02
+msgid "Aucun produit périmé"
+msgstr "Aucun produit périmé"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.actions.act_window,help:bf_nfc_inspection.action_bf_nfc_reading
+msgid "Aucun relevé"
+msgstr "Aucun relevé"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_alarme_02
+msgid "Aucun voyant de trouble ni d'alarme"
+msgstr "Aucun voyant de trouble ni d'alarme"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_quotidienne_04
+msgid "Aucune arête vive ni point de coincement apparent"
+msgstr "Aucune arête vive ni point de coincement apparent"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_mensuelle_05
+msgid "Aucune ouverture où une tête ou un doigt se coince"
+msgstr "Aucune ouverture où une tête ou un doigt se coince"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_quotidienne_03
+msgid "Aucune pièce brisée, lâche ou manquante"
+msgstr "Aucune pièce brisée, lâche ou manquante"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_eclairage_04
+msgid "Batteries propres et sèches"
+msgstr "Batteries propres et sèches"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_eclairage_03
+msgid "Bornes et cosses propres"
+msgstr "Bornes et cosses propres"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_mensuelle_02
+msgid "Boulonnerie serrée, capuchons en place"
+msgstr "Boulonnerie serrée, capuchons en place"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,description:bf_nfc_inspection.grille_fermeture_bureau
+msgid ""
+"Ce qu'on vérifie en partant le dernier. Aucune obligation derrière : une "
+"habitude qui se prouve."
+msgstr ""
+"Ce qu'on vérifie en partant le dernier. Aucune obligation derrière : une "
+"habitude qui se prouve."
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_form
+msgid ""
+"Ce qui a été fait : pièce remplacée, entreprise appelée, date de "
+"l'intervention."
+msgstr ""
+"Ce qui a été fait : pièce remplacée, entreprise appelée, date de "
+"l'intervention."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__correction
+msgid "Ce qui a été fait pour corriger l'anomalie."
+msgstr "Ce qui a été fait pour corriger l'anomalie."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid ""
+"Ce relevé demande de remplir la grille : mettez à jour l'application, ou "
+"ouvrez la pastille par son code QR."
+msgstr ""
+"Ce relevé demande de remplir la grille : mettez à jour l'application, ou "
+"ouvrez la pastille par son code QR."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "Cette pastille ne porte aucune grille de relevé."
+msgstr "Cette pastille ne porte aucune grille de relevé."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_checklist__periode__an
+msgid "Chaque année"
+msgstr "Chaque année"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_checklist__periode__jour
+msgid "Chaque jour"
+msgstr "Chaque jour"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_checklist__periode__mois
+msgid "Chaque mois"
+msgstr "Chaque mois"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_checklist__periode__semaine
+msgid "Chaque semaine"
+msgstr "Chaque semaine"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__checklist_id
+msgid "Checklist"
+msgstr "Checklist"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_checklist_item__kind__choix
+msgid "Choix"
+msgstr "Choix"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_quotidienne_05
+msgid "Clôture et barrière en bon état"
+msgstr "Clôture et barrière en bon état"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,reference:bf_nfc_inspection.grille_porte_coupe_feu
+msgid ""
+"Code de sécurité du Québec, chapitre Bâtiment (CNPI, 2.2.2.4) ; fiche "
+"quotidienne de la RBQ"
+msgstr ""
+"Code de sécurité du Québec, chapitre Bâtiment (CNPI, 2.2.2.4) ; fiche "
+"quotidienne de la RBQ"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,reference:bf_nfc_inspection.grille_extincteur
+msgid ""
+"Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.2.1.1 et NFPA 10) ; "
+"fiche de vérification de la RBQ"
+msgstr ""
+"Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.2.1.1 et NFPA 10) ; "
+"fiche de vérification de la RBQ"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,reference:bf_nfc_inspection.grille_alarme
+msgid ""
+"Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.3.1.2 et "
+"CAN/ULC-S536)"
+msgstr ""
+"Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.3.1.2 et "
+"CAN/ULC-S536)"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.template,reference:bf_nfc_inspection.gabarit_alarme
+msgid "Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.3.1.2)"
+msgstr "Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.3.1.2)"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,reference:bf_nfc_inspection.grille_eclairage
+msgid "Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.6)"
+msgstr "Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.6)"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,reference:bf_nfc_inspection.grille_sortie
+msgid "Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.8)"
+msgstr "Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.8)"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__company_id
+msgid "Company"
+msgstr "Company"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__value_bool
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_reading__state__conforme
+msgid "Conforme"
+msgstr "Conforme"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_checklist_item__kind__conforme
+msgid "Conforme / non conforme"
+msgstr "Conforme / non conforme"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_form
+msgid "Consigner la correction"
+msgstr "Consigner la correction"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_reading.py:0
+msgid "Consigner une correction est réservé à la gestion des pastilles."
+msgstr "Consigner une correction est réservé à la gestion des pastilles."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__correction
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_form
+msgid "Correction"
+msgstr "Correction"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__correction_date
+msgid "Corrigé le"
+msgstr "Corrigé le"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__corrected_by_id
+msgid "Corrigé par"
+msgstr "Corrigé par"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__create_uid
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__create_uid
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__create_uid
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__create_date
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__create_date
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__create_date
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_search
+msgid "Date du relevé"
+msgstr "Date du relevé"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "Date et heure"
+msgstr "Date et heure"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_tag__last_reading_date
+msgid "Dernier relevé"
+msgstr "Dernier relevé"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_tag__last_missed_alert
+msgid "Dernière alerte de relevé manqué"
+msgstr "Dernière alerte de relevé manqué"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__description
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_checklist_form
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__display_name
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__display_name
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__display_name
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_reading.py:0
+msgid "Décrivez la correction avant de la consigner."
+msgstr "Décrivez la correction avant de la consigner."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_premiers_secours_03
+msgid "Défibrillateur : voyant prêt"
+msgstr "Défibrillateur : voyant prêt"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "Enregistrer le relevé"
+msgstr "Enregistrer le relevé"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_sortie_01
+msgid "Enseigne allumée et lisible"
+msgstr "Enseigne allumée et lisible"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,name:bf_nfc_inspection.grille_sortie
+msgid "Enseigne de sortie sur batterie : vérification mensuelle"
+msgstr "Enseigne de sortie sur batterie : vérification mensuelle"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__offline
+msgid "Envoyé en différé"
+msgstr "Envoyé en différé"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,name:bf_nfc_inspection.grille_extincteur
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_checklist_form
+msgid "Extincteur portatif : vérification mensuelle"
+msgstr "Extincteur portatif : vérification mensuelle"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.gesture,name:bf_nfc_inspection.gesture_reading
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_gesture__kind__reading
+msgid "Faire un relevé"
+msgstr "Faire un relevé"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_fermeture_bureau_02
+msgid "Fenêtres fermées"
+msgstr "Fenêtres fermées"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.template,exemple:bf_nfc_inspection.gabarit_fermeture_bureau
+msgid "Fermeture ; porte principale"
+msgstr "Fermeture ; porte principale"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_follower_ids
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_follower_ids
+msgid "Followers"
+msgstr "Followers"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_partner_ids
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partners)"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome icon e.g. fa-tasks"
+
+#. module: bf_nfc_inspection
+#: model:ir.model,name:bf_nfc_inspection.model_bf_nfc_template
+msgid "Gabarit de pastilles"
+msgstr "Gabarit de pastilles"
+
+#. module: bf_nfc_inspection
+#: model:ir.model,name:bf_nfc_inspection.model_bf_nfc_gesture
+msgid "Geste déclenché par une pastille NFC"
+msgstr "Geste déclenché par une pastille NFC"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__name
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__checklist_id
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_search
+msgid "Grille"
+msgstr "Grille"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,description:bf_nfc_inspection.grille_aire_jeu_mensuelle
+#: model:bf.nfc.checklist,description:bf_nfc_inspection.grille_aire_jeu_quotidienne
+msgid ""
+"Grille de départ tirée d'un résumé de la norme CSA Z614 par un fabricant : "
+"la norme elle-même n'a pas été consultée. À valider avant usage."
+msgstr ""
+"Grille de départ tirée d'un résumé de la norme CSA Z614 par un fabricant : "
+"la norme elle-même n'a pas été consultée. À valider avant usage."
+
+#. module: bf_nfc_inspection
+#: model:ir.model,name:bf_nfc_inspection.model_bf_nfc_checklist
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_tag__checklist_id
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_template__checklist_id
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_checklist_form
+msgid "Grille de relevé"
+msgstr "Grille de relevé"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_checklist_form
+msgid ""
+"Grille livrée comme point de départ : confirmez ses éléments et son rythme\n"
+"                        contre la norme et l'équipement réels, puis décochez « À valider »."
+msgstr ""
+"Grille livrée comme point de départ : confirmez ses éléments et son rythme\n"
+"                        contre la norme et l'équipement réels, puis décochez « À valider »."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__a_valider
+msgid ""
+"Grille livrée comme point de départ : ses éléments et ses fréquences doivent"
+" être confirmés contre la norme et l'équipement réels avant de s'en servir."
+msgstr ""
+"Grille livrée comme point de départ : ses éléments et ses fréquences doivent"
+" être confirmés contre la norme et l'équipement réels avant de s'en servir."
+
+#. module: bf_nfc_inspection
+#: model:ir.actions.act_window,name:bf_nfc_inspection.action_bf_nfc_checklist
+#: model:ir.ui.menu,name:bf_nfc_inspection.menu_nfc_checklists
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_checklist_list
+msgid "Grilles de relevé"
+msgstr "Grilles de relevé"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__has_message
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__has_message
+msgid "Has Message"
+msgstr "Has Message"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__id
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__id
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__id
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_exception_icon
+msgid "Icon"
+msgstr "Icon"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icon to indicate an exception activity."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__message_needaction
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "If checked, new messages require your attention."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__message_has_error
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__message_has_sms_error
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__message_has_error
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "If checked, some messages have a delivery error."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_is_follower
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_is_follower
+msgid "Is Follower"
+msgstr "Is Follower"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__item_count
+msgid "Item Count"
+msgstr "Item Count"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__kind
+msgid "Kind"
+msgstr "Kind"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__place
+msgid "L'endroit ou l'équipement, recopié de la pastille au moment du relevé."
+msgstr ""
+"L'endroit ou l'équipement, recopié de la pastille au moment du relevé."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,description:bf_nfc_inspection.grille_eclairage
+msgid "L'essai de durée annuel se consigne à part."
+msgstr "L'essai de durée annuel se consigne à part."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_tag.py:0
+msgid ""
+"La grille « %(grille)s » est à relever %(rythme)s, et le dernier relevé de "
+"cette pastille date du %(quand)s."
+msgstr ""
+"La grille « %(grille)s » est à relever %(rythme)s, et le dernier relevé de "
+"cette pastille date du %(quand)s."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "La grille « %s » a été retirée."
+msgstr "La grille « %s » a été retirée."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "La grille « %s » n'a aucun élément."
+msgstr "La grille « %s » n'a aucun élément."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__reference
+msgid ""
+"La règle ou la norme que ce relevé sert à prouver, telle qu'on la citerait à"
+" une inspection."
+msgstr ""
+"La règle ou la norme que ce relevé sert à prouver, telle qu'on la citerait à"
+" une inspection."
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_checklist_form
+msgid "La règle que ce relevé prouve"
+msgstr "La règle que ce relevé prouve"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,description:bf_nfc_inspection.grille_extincteur
+msgid ""
+"La vérification mensuelle par le propriétaire ou la personne qu'il désigne. "
+"L'inspection annuelle et l'entretien aux 5 ou 6 ans restent l'affaire d'une "
+"entreprise spécialisée."
+msgstr ""
+"La vérification mensuelle par le propriétaire ou la personne qu'il désigne. "
+"L'inspection annuelle et l'entretien aux 5 ou 6 ans restent l'affaire d'une "
+"entreprise spécialisée."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__write_uid
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__write_uid
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__write_uid
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__write_date
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__write_date
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__write_date
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_checklist.py:0
+msgid "Le registre dit qui a vérifié."
+msgstr "Le registre dit qui a vérifié."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,description:bf_nfc_inspection.grille_premiers_secours
+msgid ""
+"Le règlement ne fixe pas de fréquence : le rythme mensuel est un choix de "
+"prudence, à ajuster."
+msgstr ""
+"Le règlement ne fixe pas de fréquence : le rythme mensuel est un choix de "
+"prudence, à ajuster."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist_item__options
+msgid "Les choix proposés, séparés par des points-virgules."
+msgstr "Les choix proposés, séparés par des points-virgules."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_eclairage_02
+msgid "Les lampes s'allument au bouton d'essai"
+msgstr "Les lampes s'allument au bouton d'essai"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_fermeture_bureau_05
+msgid "Lumières éteintes"
+msgstr "Lumières éteintes"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__max_value
+msgid "Maximum"
+msgstr "Maximum"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_has_error
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_has_error
+msgid "Message Delivery error"
+msgstr "Message Delivery error"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_ids
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__min_value
+msgid "Minimum"
+msgstr "Minimum"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_search
+msgid "Mois"
+msgstr "Mois"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "My Activity Deadline"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_reading.py:0
+msgid "NON conforme"
+msgstr "NON conforme"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_gesture__kind
+msgid "Nature"
+msgstr "Nature"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Next Activity Calendar Event"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Next Activity Deadline"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_summary
+msgid "Next Activity Summary"
+msgstr "Next Activity Summary"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_type_id
+msgid "Next Activity Type"
+msgstr "Next Activity Type"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__signed_name
+msgid "Nom donné"
+msgstr "Nom donné"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,anomaly_options:bf_nfc_inspection.grille_extincteur_03
+#: model:bf.nfc.checklist.item,anomaly_options:bf_nfc_inspection.grille_premiers_secours_03
+#: model:bf.nfc.checklist.item,anomaly_options:bf_nfc_inspection.grille_premiers_secours_04
+msgid "Non"
+msgstr "Non"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Number of Actions"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_has_error_counter
+msgid "Number of errors"
+msgstr "Number of errors"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__message_needaction_counter
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Number of messages requiring action"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__message_has_error_counter
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Number of messages with delivery error"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__options
+msgid "Options"
+msgstr "Options"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__anomaly_options
+msgid "Options en anomalie"
+msgstr "Options en anomalie"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,options:bf_nfc_inspection.grille_premiers_secours_03
+#: model:bf.nfc.checklist.item,options:bf_nfc_inspection.grille_premiers_secours_04
+msgid "Oui;Non;Pas de défibrillateur"
+msgstr "Oui;Non;Pas de défibrillateur"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,options:bf_nfc_inspection.grille_extincteur_03
+msgid "Oui;Non;Sans manomètre"
+msgstr "Oui;Non;Sans manomètre"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_form
+msgid "Où et quand"
+msgstr "Où et quand"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.template,exemple:bf_nfc_inspection.gabarit_alarme
+msgid "Panneau d'alarme ; local technique"
+msgstr "Panneau d'alarme ; local technique"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,name:bf_nfc_inspection.grille_alarme
+#: model:bf.nfc.template,name:bf_nfc_inspection.gabarit_alarme
+msgid "Panneau d'alarme incendie : vérification quotidienne"
+msgstr "Panneau d'alarme incendie : vérification quotidienne"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__user_id
+msgid "Par"
+msgstr "Par"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__signed_name
+msgid ""
+"Par une pastille signée, la personne qui tape n'a pas de compte : c'est le "
+"nom qu'elle a donné."
+msgstr ""
+"Par une pastille signée, la personne qui tape n'a pas de compte : c'est le "
+"nom qu'elle a donné."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist_item__anomaly_options
+msgid "Parmi les options, celles qui signalent une anomalie."
+msgstr "Parmi les options, celles qui signalent une anomalie."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__tag_id
+msgid "Pastille"
+msgstr "Pastille"
+
+#. module: bf_nfc_inspection
+#: model:ir.model,name:bf_nfc_inspection.model_bf_nfc_tag
+msgid "Pastille NFC"
+msgstr "Pastille NFC"
+
+#. module: bf_nfc_inspection
+#: model:ir.actions.server,name:bf_nfc_inspection.cron_guetter_releves_ir_actions_server
+msgid "Pastilles : guetter les relevés manqués"
+msgstr "Pastilles : guetter les relevés manqués"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_mensuelle_03
+msgid "Pièces mobiles sans usure excessive"
+msgstr "Pièces mobiles sans usure excessive"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__has_range
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__range_text
+msgid "Plage"
+msgstr "Plage"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__door
+msgid "Porte"
+msgstr "Porte"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,name:bf_nfc_inspection.grille_porte_coupe_feu
+msgid "Porte coupe-feu : vérification quotidienne"
+msgstr "Porte coupe-feu : vérification quotidienne"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_porte_coupe_feu_01
+msgid "Porte fermée"
+msgstr "Porte fermée"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_fermeture_bureau_01
+msgid "Portes extérieures verrouillées"
+msgstr "Portes extérieures verrouillées"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_extincteur_03
+msgid "Pression dans la zone normale"
+msgstr "Pression dans la zone normale"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_extincteur_01
+msgid "Présent à son emplacement et accessible"
+msgstr "Présent à son emplacement et accessible"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_form
+msgid "Qui"
+msgstr "Qui"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__rating_ids
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__rating_ids
+msgid "Ratings"
+msgstr "Ratings"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__reading_id
+msgid "Reading"
+msgstr "Reading"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "Registre :"
+msgstr "Registre :"
+
+#. module: bf_nfc_inspection
+#: model:ir.actions.report,name:bf_nfc_inspection.action_report_registre
+msgid "Registre des relevés"
+msgstr "Registre des relevés"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_search
+msgid "Regrouper par"
+msgstr "Regrouper par"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__name
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_form
+msgid "Relevé"
+msgstr "Relevé"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "Relevé %(nom)s enregistré : %(n)s anomalie(s) signalée(s) à %(qui)s."
+msgstr "Relevé %(nom)s enregistré : %(n)s anomalie(s) signalée(s) à %(qui)s."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "Relevé %(nom)s enregistré : %(n)s anomalie(s) à corriger."
+msgstr "Relevé %(nom)s enregistré : %(n)s anomalie(s) à corriger."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_gesture.py:0
+msgid "Relevé %s enregistré : tout est conforme."
+msgstr "Relevé %s enregistré : tout est conforme."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__tapped_at
+msgid "Relevé le"
+msgstr "Relevé le"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_tag.py:0
+msgid "Relevé manqué : %s"
+msgstr "Relevé manqué : %s"
+
+#. module: bf_nfc_inspection
+#: model:ir.model,name:bf_nfc_inspection.model_bf_nfc_reading
+msgid "Relevé par pastille"
+msgstr "Relevé par pastille"
+
+#. module: bf_nfc_inspection
+#: model:ir.actions.act_window,name:bf_nfc_inspection.action_bf_nfc_reading
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_tag__reading_ids
+#: model:ir.ui.menu,name:bf_nfc_inspection.menu_nfc_readings
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_list
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_tag_form_releve
+msgid "Relevés"
+msgstr "Relevés"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_mensuelle_06
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_quotidienne_06
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_alarme_03
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_eclairage_05
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_extincteur_07
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_fermeture_bureau_06
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_porte_coupe_feu_04
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_premiers_secours_05
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_sortie_03
+msgid "Remarque"
+msgstr "Remarque"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__required
+msgid "Requis"
+msgstr "Requis"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__res_id
+msgid "Res"
+msgstr "Res"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__res_model
+msgid "Res Model"
+msgstr "Res Model"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__responsible_id
+msgid "Responsable"
+msgstr "Responsable"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__activity_user_id
+msgid "Responsible User"
+msgstr "Responsible User"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_checklist_form
+msgid "Retirée"
+msgstr "Retirée"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__responsible_id
+msgid "Reçoit les anomalies et les relevés manqués."
+msgstr "Reçoit les anomalies et les relevés manqués."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_porte_coupe_feu_02
+msgid "Rien ne la retient ouverte (cale, crochet, objet)"
+msgstr "Rien ne la retient ouverte (cale, crochet, objet)"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,name:bf_nfc_inspection.grille_fermeture_bureau
+#: model:bf.nfc.template,name:bf_nfc_inspection.gabarit_fermeture_bureau
+msgid "Ronde de fermeture du bureau"
+msgstr "Ronde de fermeture du bureau"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__periode
+msgid "Rythme"
+msgstr "Rythme"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.template,reference:bf_nfc_inspection.gabarit_premiers_secours
+msgid ""
+"Règlement sur les normes minimales de premiers secours et de premiers soins "
+"(A-3.001, r. 10)"
+msgstr ""
+"Règlement sur les normes minimales de premiers secours et de premiers soins "
+"(A-3.001, r. 10)"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,reference:bf_nfc_inspection.grille_premiers_secours
+msgid ""
+"Règlement sur les normes minimales de premiers secours et de premiers soins "
+"(A-3.001, r. 10, art. 6) : trousse tenue propre, complète et en bon état"
+msgstr ""
+"Règlement sur les normes minimales de premiers secours et de premiers soins "
+"(A-3.001, r. 10, art. 6) : trousse tenue propre, complète et en bon état"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,reference:bf_nfc_inspection.grille_aire_jeu_mensuelle
+#: model:bf.nfc.checklist,reference:bf_nfc_inspection.grille_aire_jeu_quotidienne
+msgid ""
+"Règlement sur les services de garde éducatifs à l'enfance (S-4.1.1, r. 2, "
+"art. 40) et CSA Z614"
+msgstr ""
+"Règlement sur les services de garde éducatifs à l'enfance (S-4.1.1, r. 2, "
+"art. 40) et CSA Z614"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__reference
+msgid "Référence"
+msgstr "Référence"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__answered
+msgid "Répondu"
+msgstr "Répondu"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__kind
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__value_text
+msgid "Réponse"
+msgstr "Réponse"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__resume
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "Résultat"
+msgstr "Résultat"
+
+#. module: bf_nfc_inspection
+#: model:ir.model,name:bf_nfc_inspection.model_bf_nfc_reading_line
+msgid "Résultat d'un élément de relevé"
+msgstr "Résultat d'un élément de relevé"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__line_ids
+msgid "Résultats"
+msgstr "Résultats"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_sortie_02
+msgid "S'allume sur batterie à l'essai"
+msgstr "S'allume sur batterie à l'essai"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Delivery error"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_checklist__periode__aucune
+msgid "Sans rythme"
+msgstr "Sans rythme"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_extincteur_04
+msgid "Sceaux et goupille intacts"
+msgstr "Sceaux et goupille intacts"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_porte_coupe_feu_03
+msgid "Se referme et se verrouille seule"
+msgstr "Se referme et se verrouille seule"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__sequence
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__sequence
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__sequence
+msgid "Sequence"
+msgstr "Sequence"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_extincteur_02
+msgid "Signalisation visible"
+msgstr "Signalisation visible"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__company_id
+msgid "Société"
+msgstr "Société"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_mensuelle_01
+msgid "Structures solides et bien ancrées"
+msgstr "Structures solides et bien ancrées"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_quotidienne_02
+msgid "Surface de protection en place, sans creux"
+msgstr "Surface de protection en place, sans creux"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_fermeture_bureau_03
+msgid "Système d'alarme armé"
+msgstr "Système d'alarme armé"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_checklist_item__kind__texte
+msgid "Texte"
+msgstr "Texte"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.template,exemple:bf_nfc_inspection.gabarit_premiers_secours
+msgid ""
+"Trousse ; cuisine du 2e\n"
+"Défibrillateur ; accueil"
+msgstr ""
+"Trousse ; cuisine du 2e\n"
+"Défibrillateur ; accueil"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_premiers_secours_01
+msgid "Trousse complète"
+msgstr "Trousse complète"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.template,name:bf_nfc_inspection.gabarit_premiers_secours
+msgid "Trousse de premiers secours et défibrillateur"
+msgstr "Trousse de premiers secours et défibrillateur"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,name:bf_nfc_inspection.grille_premiers_secours
+msgid "Trousse de premiers secours et défibrillateur : vérification mensuelle"
+msgstr ""
+"Trousse de premiers secours et défibrillateur : vérification mensuelle"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type of the exception activity on record."
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.actions.act_window,help:bf_nfc_inspection.action_bf_nfc_reading
+msgid ""
+"Un relevé naît d'un tapotement sur une pastille « Faire un relevé ». Le registre\n"
+"            s'imprime depuis cette liste : sélectionnez les relevés, puis Imprimer."
+msgstr ""
+"Un relevé naît d'un tapotement sur une pastille « Faire un relevé ». Le registre\n"
+"            s'imprime depuis cette liste : sélectionnez les relevés, puis Imprimer."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_reading.py:0
+msgid "Un relevé ne se modifie pas : seule sa correction se consigne."
+msgstr "Un relevé ne se modifie pas : seule sa correction se consigne."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.template,description:bf_nfc_inspection.gabarit_fermeture_bureau
+msgid ""
+"Une pastille près de la sortie. La dernière personne à partir la tape : "
+"portes, fenêtres, alarme, appareils, lumières. Ce qui manque va à la "
+"personne responsable dès le soir même."
+msgstr ""
+"Une pastille près de la sortie. La dernière personne à partir la tape : "
+"portes, fenêtres, alarme, appareils, lumières. Ce qui manque va à la "
+"personne responsable dès le soir même."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__periode
+msgid ""
+"Une pastille qui porte cette grille et qui n'a pas été relevée dans la "
+"période crée une activité pour la personne responsable."
+msgstr ""
+"Une pastille qui porte cette grille et qui n'a pas été relevée dans la "
+"période crée une activité pour la personne responsable."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.template,description:bf_nfc_inspection.gabarit_premiers_secours
+msgid ""
+"Une pastille sur chaque trousse et chaque défibrillateur. Le relevé mensuel "
+"dit si la trousse est complète et si le défibrillateur est prêt ; un produit"
+" périmé devient une anomalie à corriger."
+msgstr ""
+"Une pastille sur chaque trousse et chaque défibrillateur. Le relevé mensuel "
+"dit si la trousse est complète et si le défibrillateur est prêt ; un produit"
+" périmé devient une anomalie à corriger."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.template,description:bf_nfc_inspection.gabarit_alarme
+msgid ""
+"Une pastille sur le panneau : le relevé quotidien note l'alimentation et "
+"l'absence de trouble. Le guet signale un jour sans relevé."
+msgstr ""
+"Une pastille sur le panneau : le relevé quotidien note l'alimentation et "
+"l'absence de trouble. Le guet signale un jour sans relevé."
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,description:bf_nfc_inspection.grille_porte_coupe_feu
+msgid ""
+"Une porte à fermeture automatique doit être trouvée fermée : rien ne doit la"
+" retenir ouverte."
+msgstr ""
+"Une porte à fermeture automatique doit être trouvée fermée : rien ne doit la"
+" retenir ouverte."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist_item__has_range
+msgid "Une valeur hors de la plage est une anomalie."
+msgstr "Une valeur hors de la plage est une anomalie."
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__unit
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__unit
+msgid "Unité"
+msgstr "Unité"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__value_float
+msgid "Valeur"
+msgstr "Valeur"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields.selection,name:bf_nfc_inspection.selection__bf_nfc_checklist_item__kind__nombre
+msgid "Valeur mesurée"
+msgstr "Valeur mesurée"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__company_id
+msgid "Vide : partagée par toutes les sociétés."
+msgstr "Vide : partagée par toutes les sociétés."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_checklist.py:0
+msgid "Votre nom"
+msgstr "Votre nom"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_alarme_01
+msgid "Voyant d'alimentation allumé"
+msgstr "Voyant d'alimentation allumé"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_eclairage_01
+msgid "Voyant de charge allumé"
+msgstr "Voyant de charge allumé"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__verifier
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "Vérifié par"
+msgstr "Vérifié par"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__website_message_ids
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__website_message_ids
+msgid "Website Messages"
+msgstr "Website Messages"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_checklist__website_message_ids
+#: model:ir.model.fields,help:bf_nfc_inspection.field_bf_nfc_reading__website_message_ids
+msgid "Website communication history"
+msgstr "Website communication history"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_reading.py:0
+msgid "conforme"
+msgstr "conforme"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "en différé"
+msgstr "en différé"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "le"
+msgstr "le"
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "par"
+msgstr "par"
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_checklist.py:0
+msgid "« %s » : le minimum dépasse le maximum."
+msgstr "« %s » : le minimum dépasse le maximum."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_checklist.py:0
+msgid "« %s » : un choix propose au moins deux options."
+msgstr "« %s » : un choix propose au moins deux options."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_template.py:0
+msgid "« %s » : un gabarit de relevé porte sa grille."
+msgstr "« %s » : un gabarit de relevé porte sa grille."
+
+#. module: bf_nfc_inspection
+#. odoo-python
+#: code:addons/bf_nfc_inspection/models/bf_nfc_reading.py:0
+msgid "« %s » n'a pas d'anomalie ouverte."
+msgstr "« %s » n'a pas d'anomalie ouverte."
+
+#. module: bf_nfc_inspection
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "· imprimé le"
+msgstr "· imprimé le"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__a_valider
+msgid "À valider"
+msgstr "À valider"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist,name:bf_nfc_inspection.grille_eclairage
+msgid "Éclairage de sécurité autonome : essai mensuel"
+msgstr "Éclairage de sécurité autonome : essai mensuel"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_premiers_secours_04
+msgid "Électrodes et pile dans leur date"
+msgstr "Électrodes et pile dans leur date"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist_item__name
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__name
+msgid "Élément"
+msgstr "Élément"
+
+#. module: bf_nfc_inspection
+#: model:ir.model,name:bf_nfc_inspection.model_bf_nfc_checklist_item
+msgid "Élément d'une grille de relevé"
+msgstr "Élément d'une grille de relevé"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading_line__item_id
+msgid "Élément de la grille"
+msgstr "Élément de la grille"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__place
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_reading_search
+msgid "Élément vérifié"
+msgstr "Élément vérifié"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_checklist__item_ids
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_checklist_form
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.view_bf_nfc_checklist_list
+msgid "Éléments"
+msgstr "Éléments"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_aire_jeu_mensuelle_04
+msgid "Épaisseur du revêtement de protection suffisante"
+msgstr "Épaisseur du revêtement de protection suffisante"
+
+#. module: bf_nfc_inspection
+#: model:ir.model.fields,field_description:bf_nfc_inspection.field_bf_nfc_reading__state
+#: model_terms:ir.ui.view,arch_db:bf_nfc_inspection.report_registre
+msgid "État"
+msgstr "État"
+
+#. module: bf_nfc_inspection
+#: model:bf.nfc.checklist.item,name:bf_nfc_inspection.grille_extincteur_06
+msgid "Étiquette d'inspection annuelle à jour"
+msgstr "Étiquette d'inspection annuelle à jour"

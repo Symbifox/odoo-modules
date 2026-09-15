@@ -7,9 +7,10 @@
             <list string="Équipements">
                 <field name="name"/>
                 <field name="reference" optional="show"/>
-                <field name="holder_id" widget="many2one_avatar_user"/>
+                <field name="holder_label"/>
                 <field name="since"/>
                 <field name="place" optional="show"/>
+                <field name="registre_externe" optional="hide"/>
                 <field name="company_id" groups="base.group_multi_company" optional="hide"/>
             </list>
         </field>
@@ -20,7 +21,17 @@
         <field name="model">bf.nfc.equipment</field>
         <field name="arch" type="xml">
             <form string="Équipement">
+                <header>
+                    <button name="action_creer_pastilles" type="object" string="Créer la pastille"
+                            groups="bf_nfc.group_nfc_manager"/>
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_voir_pastilles" type="object" class="oe_stat_button"
+                                icon="fa-wifi" invisible="not nfc_tag_count">
+                            <field name="nfc_tag_count" widget="statinfo" string="Pastilles"/>
+                        </button>
+                    </div>
                     <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
@@ -28,26 +39,26 @@
                     </div>
                     <group>
                         <group string="Qui l'a">
-                            <field name="holder_id" widget="many2one_avatar_user"/>
+                            <field name="holder_id" widget="many2one_avatar_user" invisible="registre_externe"/>
+                            <field name="holder_label" invisible="not registre_externe"/>
                             <field name="since"/>
                         </group>
                         <group string="Ce que c'est">
                             <field name="reference"/>
                             <field name="place"/>
                             <field name="max_days"/>
+                            <field name="registre_externe"/>
                             <field name="active" invisible="1"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
-                    <div class="text-muted">
-                        Créez ensuite une pastille « Prendre ou rendre un équipement » qui vise
-                        cette fiche, et gravez-la depuis l'application.
-                    </div>
                     <notebook>
                         <page string="Prêts" name="prets">
                             <field name="loan_ids" readonly="1">
                                 <list>
-                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="holder_label"/>
+                                    <field name="borrower_phone" optional="show"/>
+                                    <field name="user_id" widget="many2one_avatar_user" string="Remis par / détenteur" optional="hide"/>
                                     <field name="date_start"/>
                                     <field name="date_end"/>
                                     <field name="duration_hours" widget="float_time"/>
@@ -91,6 +102,118 @@
         </field>
     </record>
 
+    <record id="action_equipment_creer_pastilles" model="ir.actions.server">
+        <field name="name">Créer des pastilles</field>
+        <field name="model_id" ref="model_bf_nfc_equipment"/>
+        <field name="binding_model_id" ref="model_bf_nfc_equipment"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('bf_nfc.group_nfc_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_creer_pastilles()</field>
+    </record>
+
     <menuitem id="menu_nfc_equipment" name="Équipements" parent="bf_nfc.menu_nfc_root"
               action="action_bf_nfc_equipment" sequence="30"/>
+
+    <!-- Tous les prêts, pour répondre à « qui avait le cadenas 7 mardi » sans ouvrir
+         chaque équipement. -->
+    <record id="view_bf_nfc_equipment_loan_list" model="ir.ui.view">
+        <field name="name">bf.nfc.equipment.loan.list</field>
+        <field name="model">bf.nfc.equipment.loan</field>
+        <field name="arch" type="xml">
+            <list string="Prêts" create="false" edit="false" decoration-info="not date_end">
+                <field name="equipment_id"/>
+                <field name="holder_label"/>
+                <field name="borrower_phone" optional="show"/>
+                <field name="borrower_employer" optional="show"/>
+                <field name="user_id" string="Remis par / détenteur" optional="show"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="duration_hours" widget="float_time" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_equipment_loan_search" model="ir.ui.view">
+        <field name="name">bf.nfc.equipment.loan.search</field>
+        <field name="model">bf.nfc.equipment.loan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="equipment_id"/>
+                <field name="borrower_name"/>
+                <field name="borrower_employer"/>
+                <field name="user_id"/>
+                <filter name="en_cours" string="En cours" domain="[('date_end', '=', False)]"/>
+                <filter name="externes" string="Remis sans compte" domain="[('borrower_name', '!=', False)]"/>
+                <filter name="date_start" string="Date de remise" date="date_start"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_equipement" string="Équipement" context="{'group_by': 'equipment_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_equipment_loan" model="ir.actions.act_window">
+        <field name="name">Prêts</field>
+        <field name="res_model">bf.nfc.equipment.loan</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <menuitem id="menu_nfc_loans" name="Prêts" parent="bf_nfc.menu_nfc_root"
+              action="action_bf_nfc_equipment_loan" sequence="31"/>
+
+    <record id="action_report_registre_cadenas" model="ir.actions.report">
+        <field name="name">Registre des remises</field>
+        <field name="model">bf.nfc.equipment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_nfc_loan.report_registre_cadenas</field>
+        <field name="report_file">bf_nfc_loan.report_registre_cadenas</field>
+        <field name="print_report_name">'Registre des remises'</field>
+        <field name="binding_model_id" ref="model_bf_nfc_equipment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Les colonnes de l'article 205 du RSST, dans l'ordre du règlement. -->
+    <template id="report_registre_cadenas">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="page" style="font-size: 10px;">
+                    <h2 style="font-size: 16px; margin-bottom: 2px;">Registre des remises</h2>
+                    <div class="text-muted" style="margin-bottom: 8px;">
+                        <t t-esc="res_company.name"/> · imprimé le
+                        <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                    </div>
+                    <table class="table table-sm table-bordered" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Identification</th>
+                                <th>Remis à</th>
+                                <th>Téléphone</th>
+                                <th>Employeur</th>
+                                <th>Remis le</th>
+                                <th>Rendu le</th>
+                                <th>Remis par</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="o">
+                                <t t-foreach="o.loan_ids.sorted('date_start')" t-as="l">
+                                    <t t-set="ligne" t-value="l._registre()"/>
+                                    <tr>
+                                        <td><t t-esc="o.name"/><div t-if="o.reference" class="text-muted"><t t-esc="o.reference"/></div></td>
+                                        <td><t t-esc="ligne[0]"/></td>
+                                        <td><t t-esc="ligne[1]"/></td>
+                                        <td><t t-esc="ligne[2]"/></td>
+                                        <td><t t-esc="context_timestamp(l.date_start).strftime('%Y-%m-%d %H:%M')"/></td>
+                                        <td><t t-if="l.date_end" t-esc="context_timestamp(l.date_end).strftime('%Y-%m-%d %H:%M')"/></td>
+                                        <td><t t-esc="ligne[3]"/></td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
 </odoo>

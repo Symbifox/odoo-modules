@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_checklist_list" model="ir.ui.view">
+        <field name="name">bf.nfc.checklist.list</field>
+        <field name="model">bf.nfc.checklist</field>
+        <field name="arch" type="xml">
+            <list string="Grilles de relevé">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="periode"/>
+                <field name="responsible_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="item_count" string="Éléments"/>
+                <field name="a_valider" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_checklist_form" model="ir.ui.view">
+        <field name="name">bf.nfc.checklist.form</field>
+        <field name="model">bf.nfc.checklist</field>
+        <field name="arch" type="xml">
+            <form string="Grille de relevé">
+                <sheet>
+                    <widget name="web_ribbon" title="Retirée" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="alert alert-warning" role="status" invisible="not a_valider">
+                        Grille livrée comme point de départ : confirmez ses éléments et son rythme
+                        contre la norme et l'équipement réels, puis décochez « À valider ».
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Extincteur portatif : vérification mensuelle"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="periode"/>
+                            <field name="responsible_id" widget="many2one_avatar_user"/>
+                            <field name="a_valider"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="reference" placeholder="La règle que ce relevé prouve"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Éléments" name="elements">
+                            <field name="item_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="kind"/>
+                                    <field name="required"/>
+                                    <field name="unit" optional="show" invisible="kind != 'nombre'"/>
+                                    <field name="has_range" optional="show" invisible="kind != 'nombre'"/>
+                                    <field name="min_value" optional="show" invisible="not has_range"/>
+                                    <field name="max_value" optional="show" invisible="not has_range"/>
+                                    <field name="options" optional="show" invisible="kind != 'choix'"/>
+                                    <field name="anomaly_options" optional="show" invisible="kind != 'choix'"/>
+                                    <field name="help" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_checklist" model="ir.actions.act_window">
+        <field name="name">Grilles de relevé</field>
+        <field name="res_model">bf.nfc.checklist</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- La grille se choisit sur la pastille, comme un champ : jamais dans les paramètres. -->
+    <record id="view_bf_nfc_tag_form_releve" model="ir.ui.view">
+        <field name="name">bf.nfc.tag.form.releve</field>
+        <field name="model">bf.nfc.tag</field>
+        <field name="inherit_id" ref="bf_nfc.view_bf_nfc_tag_form"/>
+        <field name="arch" type="xml">
+            <field name="cible" position="before">
+                <field name="checklist_id" invisible="gesture_kind != 'reading'"
+                       required="gesture_kind == 'reading'"/>
+            </field>
+            <xpath expr="//notebook/page[@name='journal']" position="before">
+                <page string="Relevés" name="releves" invisible="gesture_kind != 'reading'">
+                    <field name="reading_ids" readonly="1">
+                        <list decoration-danger="state == 'anomalie'" decoration-muted="state == 'corrige'">
+                            <field name="tapped_at"/>
+                            <field name="verifier"/>
+                            <field name="state" widget="badge"/>
+                            <field name="resume"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_nfc_checklists" name="Grilles de relevé" parent="bf_nfc.menu_nfc_config"
+              action="action_bf_nfc_checklist" sequence="12"/>
+</odoo>

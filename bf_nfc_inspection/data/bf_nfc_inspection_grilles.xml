@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- 🔴 noupdate : une grille livrée est un point de départ que le client adapte.
+         Un -u ne doit pas écraser ses changements. -->
+    <record id="grille_extincteur" model="bf.nfc.checklist">
+        <field name="name">Extincteur portatif : vérification mensuelle</field>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.2.1.1 et NFPA 10) ; fiche de vérification de la RBQ</field>
+        <field name="periode">mois</field>
+        <field name="a_valider" eval="False"/>
+        <field name="description">La vérification mensuelle par le propriétaire ou la personne qu'il désigne. L'inspection annuelle et l'entretien aux 5 ou 6 ans restent l'affaire d'une entreprise spécialisée.</field>
+    </record>
+    <record id="grille_extincteur_01" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_extincteur"/>
+        <field name="sequence">10</field>
+        <field name="name">Présent à son emplacement et accessible</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_extincteur_02" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_extincteur"/>
+        <field name="sequence">20</field>
+        <field name="name">Signalisation visible</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_extincteur_03" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_extincteur"/>
+        <field name="sequence">30</field>
+        <field name="name">Pression dans la zone normale</field>
+        <field name="kind">choix</field>
+        <field name="options">Oui;Non;Sans manomètre</field>
+        <field name="anomaly_options">Non</field>
+    </record>
+    <record id="grille_extincteur_04" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_extincteur"/>
+        <field name="sequence">40</field>
+        <field name="name">Sceaux et goupille intacts</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_extincteur_05" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_extincteur"/>
+        <field name="sequence">50</field>
+        <field name="name">Aucun dommage ni corrosion</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_extincteur_06" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_extincteur"/>
+        <field name="sequence">60</field>
+        <field name="name">Étiquette d'inspection annuelle à jour</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_extincteur_07" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_extincteur"/>
+        <field name="sequence">70</field>
+        <field name="name">Remarque</field>
+        <field name="kind">texte</field>
+        <field name="required" eval="False"/>
+    </record>
+    <record id="grille_eclairage" model="bf.nfc.checklist">
+        <field name="name">Éclairage de sécurité autonome : essai mensuel</field>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.6)</field>
+        <field name="periode">mois</field>
+        <field name="a_valider" eval="False"/>
+        <field name="description">L'essai de durée annuel se consigne à part.</field>
+    </record>
+    <record id="grille_eclairage_01" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_eclairage"/>
+        <field name="sequence">10</field>
+        <field name="name">Voyant de charge allumé</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_eclairage_02" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_eclairage"/>
+        <field name="sequence">20</field>
+        <field name="name">Les lampes s'allument au bouton d'essai</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_eclairage_03" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_eclairage"/>
+        <field name="sequence">30</field>
+        <field name="name">Bornes et cosses propres</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_eclairage_04" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_eclairage"/>
+        <field name="sequence">40</field>
+        <field name="name">Batteries propres et sèches</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_eclairage_05" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_eclairage"/>
+        <field name="sequence">50</field>
+        <field name="name">Remarque</field>
+        <field name="kind">texte</field>
+        <field name="required" eval="False"/>
+    </record>
+    <record id="grille_sortie" model="bf.nfc.checklist">
+        <field name="name">Enseigne de sortie sur batterie : vérification mensuelle</field>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.8)</field>
+        <field name="periode">mois</field>
+        <field name="a_valider" eval="False"/>
+    </record>
+    <record id="grille_sortie_01" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_sortie"/>
+        <field name="sequence">10</field>
+        <field name="name">Enseigne allumée et lisible</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_sortie_02" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_sortie"/>
+        <field name="sequence">20</field>
+        <field name="name">S'allume sur batterie à l'essai</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_sortie_03" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_sortie"/>
+        <field name="sequence">30</field>
+        <field name="name">Remarque</field>
+        <field name="kind">texte</field>
+        <field name="required" eval="False"/>
+    </record>
+    <record id="grille_porte_coupe_feu" model="bf.nfc.checklist">
+        <field name="name">Porte coupe-feu : vérification quotidienne</field>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 2.2.2.4) ; fiche quotidienne de la RBQ</field>
+        <field name="periode">jour</field>
+        <field name="a_valider" eval="False"/>
+        <field name="description">Une porte à fermeture automatique doit être trouvée fermée : rien ne doit la retenir ouverte.</field>
+    </record>
+    <record id="grille_porte_coupe_feu_01" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_porte_coupe_feu"/>
+        <field name="sequence">10</field>
+        <field name="name">Porte fermée</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_porte_coupe_feu_02" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_porte_coupe_feu"/>
+        <field name="sequence">20</field>
+        <field name="name">Rien ne la retient ouverte (cale, crochet, objet)</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_porte_coupe_feu_03" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_porte_coupe_feu"/>
+        <field name="sequence">30</field>
+        <field name="name">Se referme et se verrouille seule</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_porte_coupe_feu_04" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_porte_coupe_feu"/>
+        <field name="sequence">40</field>
+        <field name="name">Remarque</field>
+        <field name="kind">texte</field>
+        <field name="required" eval="False"/>
+    </record>
+    <record id="grille_alarme" model="bf.nfc.checklist">
+        <field name="name">Panneau d'alarme incendie : vérification quotidienne</field>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.3.1.2 et CAN/ULC-S536)</field>
+        <field name="periode">jour</field>
+        <field name="a_valider" eval="False"/>
+    </record>
+    <record id="grille_alarme_01" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_alarme"/>
+        <field name="sequence">10</field>
+        <field name="name">Voyant d'alimentation allumé</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_alarme_02" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_alarme"/>
+        <field name="sequence">20</field>
+        <field name="name">Aucun voyant de trouble ni d'alarme</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_alarme_03" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_alarme"/>
+        <field name="sequence">30</field>
+        <field name="name">Remarque</field>
+        <field name="kind">texte</field>
+        <field name="required" eval="False"/>
+    </record>
+    <record id="grille_premiers_secours" model="bf.nfc.checklist">
+        <field name="name">Trousse de premiers secours et défibrillateur : vérification mensuelle</field>
+        <field name="reference">Règlement sur les normes minimales de premiers secours et de premiers soins (A-3.001, r. 10, art. 6) : trousse tenue propre, complète et en bon état</field>
+        <field name="periode">mois</field>
+        <field name="a_valider" eval="False"/>
+        <field name="description">Le règlement ne fixe pas de fréquence : le rythme mensuel est un choix de prudence, à ajuster.</field>
+    </record>
+    <record id="grille_premiers_secours_01" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_premiers_secours"/>
+        <field name="sequence">10</field>
+        <field name="name">Trousse complète</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_premiers_secours_02" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_premiers_secours"/>
+        <field name="sequence">20</field>
+        <field name="name">Aucun produit périmé</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_premiers_secours_03" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_premiers_secours"/>
+        <field name="sequence">30</field>
+        <field name="name">Défibrillateur : voyant prêt</field>
+        <field name="kind">choix</field>
+        <field name="options">Oui;Non;Pas de défibrillateur</field>
+        <field name="anomaly_options">Non</field>
+    </record>
+    <record id="grille_premiers_secours_04" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_premiers_secours"/>
+        <field name="sequence">40</field>
+        <field name="name">Électrodes et pile dans leur date</field>
+        <field name="kind">choix</field>
+        <field name="options">Oui;Non;Pas de défibrillateur</field>
+        <field name="anomaly_options">Non</field>
+    </record>
+    <record id="grille_premiers_secours_05" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_premiers_secours"/>
+        <field name="sequence">50</field>
+        <field name="name">Remarque</field>
+        <field name="kind">texte</field>
+        <field name="required" eval="False"/>
+    </record>
+    <record id="grille_aire_jeu_quotidienne" model="bf.nfc.checklist">
+        <field name="name">Aire de jeu extérieure : inspection visuelle</field>
+        <field name="reference">Règlement sur les services de garde éducatifs à l'enfance (S-4.1.1, r. 2, art. 40) et CSA Z614</field>
+        <field name="periode">jour</field>
+        <field name="a_valider" eval="True"/>
+        <field name="description">Grille de départ tirée d'un résumé de la norme CSA Z614 par un fabricant : la norme elle-même n'a pas été consultée. À valider avant usage.</field>
+    </record>
+    <record id="grille_aire_jeu_quotidienne_01" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_quotidienne"/>
+        <field name="sequence">10</field>
+        <field name="name">Aucun débris ni objet dangereux</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_quotidienne_02" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_quotidienne"/>
+        <field name="sequence">20</field>
+        <field name="name">Surface de protection en place, sans creux</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_quotidienne_03" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_quotidienne"/>
+        <field name="sequence">30</field>
+        <field name="name">Aucune pièce brisée, lâche ou manquante</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_quotidienne_04" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_quotidienne"/>
+        <field name="sequence">40</field>
+        <field name="name">Aucune arête vive ni point de coincement apparent</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_quotidienne_05" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_quotidienne"/>
+        <field name="sequence">50</field>
+        <field name="name">Clôture et barrière en bon état</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_quotidienne_06" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_quotidienne"/>
+        <field name="sequence">60</field>
+        <field name="name">Remarque</field>
+        <field name="kind">texte</field>
+        <field name="required" eval="False"/>
+    </record>
+    <record id="grille_aire_jeu_mensuelle" model="bf.nfc.checklist">
+        <field name="name">Aire de jeu extérieure : inspection détaillée mensuelle</field>
+        <field name="reference">Règlement sur les services de garde éducatifs à l'enfance (S-4.1.1, r. 2, art. 40) et CSA Z614</field>
+        <field name="periode">mois</field>
+        <field name="a_valider" eval="True"/>
+        <field name="description">Grille de départ tirée d'un résumé de la norme CSA Z614 par un fabricant : la norme elle-même n'a pas été consultée. À valider avant usage.</field>
+    </record>
+    <record id="grille_aire_jeu_mensuelle_01" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_mensuelle"/>
+        <field name="sequence">10</field>
+        <field name="name">Structures solides et bien ancrées</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_mensuelle_02" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_mensuelle"/>
+        <field name="sequence">20</field>
+        <field name="name">Boulonnerie serrée, capuchons en place</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_mensuelle_03" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_mensuelle"/>
+        <field name="sequence">30</field>
+        <field name="name">Pièces mobiles sans usure excessive</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_mensuelle_04" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_mensuelle"/>
+        <field name="sequence">40</field>
+        <field name="name">Épaisseur du revêtement de protection suffisante</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_mensuelle_05" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_mensuelle"/>
+        <field name="sequence">50</field>
+        <field name="name">Aucune ouverture où une tête ou un doigt se coince</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_aire_jeu_mensuelle_06" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_aire_jeu_mensuelle"/>
+        <field name="sequence">60</field>
+        <field name="name">Remarque</field>
+        <field name="kind">texte</field>
+        <field name="required" eval="False"/>
+    </record>
+    <record id="grille_fermeture_bureau" model="bf.nfc.checklist">
+        <field name="name">Ronde de fermeture du bureau</field>
+        <field name="periode">jour</field>
+        <field name="a_valider" eval="False"/>
+        <field name="description">Ce qu'on vérifie en partant le dernier. Aucune obligation derrière : une habitude qui se prouve.</field>
+    </record>
+    <record id="grille_fermeture_bureau_01" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_fermeture_bureau"/>
+        <field name="sequence">10</field>
+        <field name="name">Portes extérieures verrouillées</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_fermeture_bureau_02" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_fermeture_bureau"/>
+        <field name="sequence">20</field>
+        <field name="name">Fenêtres fermées</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_fermeture_bureau_03" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_fermeture_bureau"/>
+        <field name="sequence">30</field>
+        <field name="name">Système d'alarme armé</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_fermeture_bureau_04" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_fermeture_bureau"/>
+        <field name="sequence">40</field>
+        <field name="name">Appareils de cuisine éteints</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_fermeture_bureau_05" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_fermeture_bureau"/>
+        <field name="sequence">50</field>
+        <field name="name">Lumières éteintes</field>
+        <field name="kind">conforme</field>
+    </record>
+    <record id="grille_fermeture_bureau_06" model="bf.nfc.checklist.item">
+        <field name="checklist_id" ref="grille_fermeture_bureau"/>
+        <field name="sequence">60</field>
+        <field name="name">Remarque</field>
+        <field name="kind">texte</field>
+        <field name="required" eval="False"/>
+    </record>
+</odoo>

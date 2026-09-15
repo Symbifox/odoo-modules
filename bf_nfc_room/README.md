@@ -28,8 +28,10 @@ from a tag or from the calendar.
 ## Setup
 
 *Tags → Rooms*: create the room, set the offered durations and the confirmation
-delay, then create a "Meeting room" tag pointing to it and engrave it from the
-app. In the calendar, an event books a room through its **Room** field.
+delay, then *Create the door tag* and engrave it from the app. In the calendar,
+an event books a room through its **Room** field.
+
+The *Meeting room* template creates rooms and their door tags from a list of lines.
 
 ## License
 

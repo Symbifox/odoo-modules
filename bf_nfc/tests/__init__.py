@@ -7,3 +7,6 @@ from . import test_gestes_neufs
 from . import test_liens
 from . import test_socle_menu_differe
 from . import test_appareil_securite
+from . import test_parametres_verrouilles
+from . import test_administration
+from . import test_gabarits

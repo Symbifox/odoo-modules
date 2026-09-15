@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="gabarit_salle_reunion" model="bf.nfc.template">
+        <field name="name">Salle de réunion</field>
+        <field name="secteur">bureau</field>
+        <field name="sequence">5</field>
+        <field name="recette">salles</field>
+        <field name="description">Une pastille sur la porte de chaque salle. On la tape pour savoir si elle est libre, la prendre pour 30 ou 60 minutes, ou confirmer sa réservation ; une réservation que personne ne confirme libère la salle. Ce qui se prend à la porte se voit dans l'agenda de tout le monde.</field>
+        <field name="exemple">Salle A ; 2e étage
+Salle B ; 2e étage
+Bureau d'appoint ; accueil</field>
+    </record>
+</odoo>

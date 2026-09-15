@@ -24,8 +24,13 @@ server room".
 
 *Tags → Rounds*: create the round, its checkpoints in order, the person in charge
 and, if needed, a schedule (every day or weekdays, start time, maximum
-duration). Each checkpoint gets a "Round checkpoint" tag pointing to it,
-engraved from *My tags* in the app. A watcher runs every 15 minutes.
+duration), then *Create the checkpoint tags*: one "Round checkpoint" tag per
+checkpoint, skipping those that already have one. Engrave them from *My tags* in
+the app. A watcher runs every 15 minutes.
+
+The *A round and its checkpoints* template recipe creates the round, its
+checkpoints and their tags from a list of lines. With `bf_nfc_inspection`
+installed, a checkpoint can also carry a checklist (see `bf_nfc_round_inspection`).
 
 ## License
 

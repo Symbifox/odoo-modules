@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_nfc_gen_skill_user,Skill de Gen (lecture),model_bf_nfc_gen_skill,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_gen_skill_manager,Skill de Gen (gestion),model_bf_nfc_gen_skill,bf_nfc.group_nfc_manager,1,1,0,0
+access_bf_nfc_gen_request_user,Demande à Gen (lecture),model_bf_nfc_gen_request,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_gen_request_manager,Demande à Gen (gestion),model_bf_nfc_gen_request,bf_nfc.group_nfc_manager,1,0,0,1

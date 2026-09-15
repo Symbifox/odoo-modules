@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_nfc_checklist_user,Grille (lecture),model_bf_nfc_checklist,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_checklist_manager,Grille (gestion),model_bf_nfc_checklist,bf_nfc.group_nfc_manager,1,1,1,1
+access_bf_nfc_checklist_item_user,Élément de grille (lecture),model_bf_nfc_checklist_item,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_checklist_item_manager,Élément de grille (gestion),model_bf_nfc_checklist_item,bf_nfc.group_nfc_manager,1,1,1,1
+access_bf_nfc_reading_user,Relevé (lecture),model_bf_nfc_reading,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_reading_manager,Relevé (gestion),model_bf_nfc_reading,bf_nfc.group_nfc_manager,1,1,0,0
+access_bf_nfc_reading_line_user,Résultat de relevé (lecture),model_bf_nfc_reading_line,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_nfc_reading_line_manager,Résultat de relevé (gestion),model_bf_nfc_reading_line,bf_nfc.group_nfc_manager,1,0,0,0

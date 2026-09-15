@@ -74,3 +74,72 @@ class TestPret(TransactionCase):
             ("res_model", "=", "bf.nfc.equipment"), ("res_id", "=", self.portable.id)])
         self.assertEqual(len(activites), 1)
         self.assertEqual(activites.user_id, self.alice)
+
+
+@tagged("post_install", "-at_install")
+class TestPretEnLot(TransactionCase):
+
+    def test_les_equipements_recoivent_leur_pastille_de_pret(self):
+        chef = new_test_user(self.env, login="pret-lot-chef", groups="base.group_user,bf_nfc.group_nfc_manager")
+        portables = self.env["bf.nfc.equipment"].with_user(chef).create(
+            [{"name": "Portable 1", "place": "Armoire"}, {"name": "Portable 2"}])
+        lot = self.env["bf.nfc.tag.lot"].with_user(chef).with_context(
+            portables.action_creer_pastilles()["context"]).create({})
+        self.assertEqual(lot.gesture_id.kind, "loan")
+        lot.action_creer()
+        self.assertEqual(portables.mapped("nfc_tag_count"), [1, 1])
+
+
+@tagged("post_install", "-at_install")
+class TestRegistreDesCadenas(TransactionCase):
+    """RSST, art. 205 : cadenas sans nom remis à une personne qui se nomme."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env["ir.config_parameter"].sudo().set_param("bf_nfc.fenetre_doublon_secondes", "0")
+        cls.coordination = new_test_user(cls.env, login="cadenas-coord", groups="base.group_user")
+        cls.cadenas = cls.env["bf.nfc.equipment"].create(
+            {"name": "Cadenas 7", "reference": "CAD-007", "registre_externe": True})
+        cls.pastille = cls.env["bf.nfc.tag"].create({
+            "name": "Cadenas 7", "gesture_id": cls.env.ref("bf_nfc_loan.gesture_loan").id,
+            "res_model": "bf.nfc.equipment", "res_id": cls.cadenas.id,
+        })
+
+    def _taper(self, **kw):
+        return self.pastille.with_user(self.coordination).taper("app", **kw)
+
+    def test_remettre_demande_l_identite_puis_la_note(self):
+        r = self._taper()
+        self.assertEqual([c["cle"] for c in r["formulaire"]], ["nom", "telephone", "employeur"])
+        self.assertFalse(self.cadenas.loan_ids)
+        refus = self._taper(choix="remettre", reponses={"nom": "Luc Tremblay"})
+        self.assertEqual(refus["statut"], "refused")
+        self.assertIn("Téléphone", refus["message"])
+        r = self._taper(choix="remettre", reponses={
+            "nom": "Luc Tremblay", "telephone": "514-555-0101", "employeur": "Électro Sud"})
+        self.assertEqual(r["statut"], "ok", r.get("message"))
+        pret = self.cadenas.loan_ids
+        self.assertEqual((pret.borrower_name, pret.borrower_phone, pret.borrower_employer, pret.user_id),
+                         ("Luc Tremblay", "514-555-0101", "Électro Sud", self.coordination))
+        self.assertEqual(self.cadenas.holder_label, "Luc Tremblay · Électro Sud")
+
+    def test_reprendre_demande_de_confirmer(self):
+        self._taper(choix="remettre", reponses={"nom": "Luc", "telephone": "514-555-0101"})
+        r = self._taper()
+        self.assertEqual(r["statut"], "choice")
+        self.assertFalse(self.cadenas.loan_ids.date_end, "Un simple tapotement ne reprend pas un cadenas.")
+        r = self._taper(choix="reprendre")
+        self.assertEqual(r["statut"], "ok", r.get("message"))
+        self.assertTrue(self.cadenas.loan_ids.date_end)
+
+    def test_le_registre_porte_les_colonnes_du_reglement(self):
+        self._taper(choix="remettre", reponses={
+            "nom": "Luc Tremblay", "telephone": "514-555-0101", "employeur": "Électro Sud"})
+        self._taper(choix="reprendre")
+        html, _format = self.env["ir.actions.report"]._render_qweb_html(
+            "bf_nfc_loan.report_registre_cadenas", self.cadenas.ids)
+        texte = html.decode()
+        for attendu in ("Cadenas 7", "CAD-007", "Luc Tremblay", "514-555-0101", "Électro Sud",
+                        self.coordination.name):
+            self.assertIn(attendu, texte)

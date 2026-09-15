@@ -79,6 +79,22 @@ msgid "Geste déclenché par une pastille NFC"
 msgstr "Gesture triggered by an NFC tag"
 
 #. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,name:bf_nfc_helpdesk.gabarit_imprimante
+msgid "Imprimante ou photocopieur en panne"
+msgstr "Printer or photocopier out of order"
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,exemple:bf_nfc_helpdesk.gabarit_signalement_bris
+msgid ""
+"Laveuse 1 ; buanderie du sous-sol\n"
+"Porte du garage ; stationnement\n"
+"Interphone ; hall"
+msgstr ""
+"Washer 1 ; basement laundry room\n"
+"Garage door ; parking\n"
+"Intercom ; lobby"
+
+#. module: bf_nfc_helpdesk
 #: model:ir.model.fields,field_description:bf_nfc_helpdesk.field_bf_nfc_gesture__kind
 msgid "Nature"
 msgstr "Kind"
@@ -87,6 +103,20 @@ msgstr "Kind"
 #: model:helpdesk.ticket.channel,name:bf_nfc_helpdesk.channel_pastille
 msgid "Pastille"
 msgstr "Tag"
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,exemple:bf_nfc_helpdesk.gabarit_imprimante
+msgid ""
+"Photocopieur ; 2e étage\n"
+"Imprimante couleur ; accueil"
+msgstr ""
+"Photocopier ; 2nd floor\n"
+"Colour printer ; reception"
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,name:bf_nfc_helpdesk.gabarit_signalement_bris
+msgid "Signalement de bris par les occupants"
+msgstr "Breakdown reports from occupants"
 
 #. module: bf_nfc_helpdesk
 #. odoo-python
@@ -101,3 +131,25 @@ msgstr "Report a problem"
 #: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
 msgid "Signalé par %(qui)s le %(quand)s, par la pastille « %(pastille)s »."
 msgstr "Reported by %(qui)s on %(quand)s, with the tag “%(pastille)s”."
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,description:bf_nfc_helpdesk.gabarit_imprimante
+msgid ""
+"Une pastille sur chaque appareil. Bourrage, toner, écran d'erreur : une "
+"phrase, et le billet part avec l'appareil et l'endroit déjà remplis."
+msgstr ""
+"A tag on each device. Paper jam, toner, error screen: one sentence, and the "
+"ticket goes out with the device and the place already filled in."
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,description:bf_nfc_helpdesk.gabarit_signalement_bris
+msgid ""
+"Une pastille sur la laveuse, la porte du garage, l'interphone. L'occupant la"
+" tape, décrit le problème en une phrase, et un billet rempli (l'endroit, "
+"l'heure, la fiche de l'immeuble) arrive à l'équipe de soutien. Les occupants"
+" n'ont pas de compte : gravez ces pastilles sur des puces signées."
+msgstr ""
+"A tag on the washer, the garage door, the intercom. The occupant taps it, "
+"describes the problem in one sentence, and a filled-in ticket (the place, "
+"the time, the building record) reaches the support team. Occupants have no "
+"account: engrave these tags on signed chips."

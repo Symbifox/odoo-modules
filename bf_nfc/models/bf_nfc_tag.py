@@ -54,44 +54,60 @@ class _Question(Exception):
 class BfNfcTag(models.Model):
     _name = "bf.nfc.tag"
     _description = "Pastille NFC"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
 
-    name = fields.Char(string="Libellé", required=True, translate=False)
+    # ⚠️ Suivi sur tout ce qui change ce que la pastille FAIT ou au nom de qui elle
+    # agit : sans lui, personne ne pouvait dire qui avait changé la cible ou le
+    # compte d'une pastille signée. Pas sur les compteurs, qui bougent à chaque
+    # tapotement et noieraient le fil.
+    name = fields.Char(string="Libellé", required=True, translate=False, tracking=True)
     code = fields.Char(
         required=True, copy=False, index=True, readonly=True,
         default=lambda self: self._generer_code(),
         help="Ce que porte la pastille. Public : il sert à la retrouver, pas à "
              "prouver quoi que ce soit.",
     )
-    active = fields.Boolean(default=True)
+    active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one(
         "res.company", string="Société", required=True,
         default=lambda self: self.env.company,
     )
     gesture_id = fields.Many2one(
-        "bf.nfc.gesture", string="Geste", required=True, ondelete="restrict",
+        "bf.nfc.gesture", string="Geste", required=True, ondelete="restrict", tracking=True,
     )
     gesture_writes = fields.Boolean(related="gesture_id.writes", readonly=True)
-    res_model = fields.Char(string="Modèle cible")
+    res_model = fields.Char(string="Modèle cible", tracking=True)
     res_id = fields.Many2oneReference(
-        string="Fiche cible", model_field="res_model",
+        string="Fiche cible", model_field="res_model", tracking=True,
+    )
+    # 🔴 Ce que l'écran montre, à la place du nom technique tapé à la main
+    # (« project.task ») et d'une « Fiche cible » bloquée tant qu'il était vide.
+    # Calculé depuis ``res_model``/``res_id``, qui restent la vérité en base : les
+    # satellites, l'application et le journal les lisent déjà.
+    cible = fields.Reference(
+        selection="_selection_cible", string="Fiche visée",
+        compute="_compute_cible", inverse="_inverse_cible",
+        help="Le type de fiche, puis la fiche. Les types proposés sont ceux de la liste "
+             "« Types de fiche » et ceux qu'un geste exige.",
     )
     params = fields.Char(
-        string="Paramètres",
-        help="JSON facultatif passé au geste, par exemple {\"minutes\": 15}.",
+        string="Paramètres", tracking=True,
+        help="JSON facultatif passé au geste, par exemple {\"minutes\": 15}. Fixé ici, "
+             "par la gestion : la personne qui tape ne peut pas le remplacer.",
     )
     place = fields.Char(
-        string="Posée sur",
+        string="Posée sur", tracking=True,
         help="Où la pastille est collée. C'est ce qu'on lit quand on cherche "
              "laquelle retirer.",
     )
     date_expiry = fields.Date(
-        string="Expire le",
+        string="Expire le", tracking=True,
         help="Après cette date, la pastille refuse poliment. Elle n'est pas "
              "supprimée : on veut encore savoir ce qu'elle a fait.",
     )
     confirm_required = fields.Boolean(
-        string="Confirmer avant d'agir", default=True,
+        string="Confirmer avant d'agir", default=True, tracking=True,
         help="S'applique aux tapotements venus d'un navigateur. Un geste qui "
              "n'écrit rien passe toujours sans confirmation.",
     )
@@ -99,9 +115,9 @@ class BfNfcTag(models.Model):
     # Porte signée (NTAG 424 DNA). Une pastille remise à quelqu'un qui n'a pas
     # de compte agit au nom de user_id, et seule la signature de la puce
     # autorise le geste.
-    sdm_enabled = fields.Boolean(string="Pastille signée (SDM)")
+    sdm_enabled = fields.Boolean(string="Pastille signée (SDM)", tracking=True)
     sdm_uid = fields.Char(
-        string="UID de la puce", copy=False, index=True,
+        string="UID de la puce", copy=False, index=True, tracking=True,
         help="Les 7 octets gravés en usine, en hexadécimal. C'est par lui "
              "qu'une pastille signée se reconnaît : son adresse ne porte aucun "
              "code, seulement le bloc chiffré que la puce fabrique.",
@@ -112,7 +128,7 @@ class BfNfcTag(models.Model):
              "tapotement rejoué porte un compteur déjà vu, et se fait refuser.",
     )
     user_id = fields.Many2one(
-        "res.users", string="Agit au nom de",
+        "res.users", string="Agit au nom de", tracking=True,
         help="Obligatoire pour une pastille signée, ignoré ailleurs : par les "
              "deux autres portes, c'est la personne qui tape qui agit.",
     )
@@ -133,6 +149,78 @@ class BfNfcTag(models.Model):
     _sql_constraints = [
         ("code_unique", "unique(code)", "Ce code de pastille existe déjà."),
     ]
+
+    # ------------------------------------------------------------------
+    # La fiche visée, lisible
+    # ------------------------------------------------------------------
+    @api.model
+    def _modeles_cibles(self, gestion=None):
+        """Les modèles qu'une pastille peut viser, pour le site ET l'application.
+
+        La liste « Types de fiche », plus les modèles qu'un geste du catalogue exige
+        et ceux qu'un satellite déclare. Un modèle absent de cette base est écarté
+        plutôt que de faire tomber l'écran.
+        """
+        if gestion is None:
+            gestion = self.env.user.has_group("bf_nfc.group_nfc_manager")
+        noms = self.env["bf.nfc.target.type"]._noms(gestion)
+        Geste = self.env["bf.nfc.gesture"].sudo()
+        gestes = Geste.search([("target_model_id", "!=", False)])
+        if not gestion:
+            gestes = gestes.filtered(lambda g: not g.reserve_gestion)
+        noms += gestes.mapped("target_model")
+        noms += Geste._modeles_supplementaires()
+        vus, rendu = set(), []
+        for nom in noms:
+            if nom and nom not in vus and nom in self.env:
+                vus.add(nom)
+                rendu.append(nom)
+        return rendu
+
+    @api.model
+    def _selection_cible(self):
+        # ⚠️ Toujours la liste de la GESTION : c'est elle qui crée et modifie les
+        # pastilles, et un interne qui ouvre la fiche en lecture doit voir le type
+        # d'une pastille de tâche planifiée plutôt qu'un champ vide. Plus les types
+        # déjà portés par des pastilles existantes, pour qu'une pastille créée avant
+        # un retrait de la liste s'affiche encore.
+        noms = self._modeles_cibles(gestion=True)
+        for groupe in self.sudo()._read_group([("res_model", "!=", False)], ["res_model"]):
+            if groupe[0] not in noms and groupe[0] in self.env:
+                noms.append(groupe[0])
+        IrModel = self.env["ir.model"].sudo()
+        return [(nom, IrModel._get(nom).name or nom) for nom in noms]
+
+    @api.depends("res_model", "res_id")
+    def _compute_cible(self):
+        for tag in self:
+            # ⚠️ ``exists()`` en sudo : une fiche supprimée depuis la pose rendrait
+            # une référence vers rien, et le formulaire tomberait en l'affichant.
+            if tag.res_model and tag.res_id and tag.res_model in self.env \
+                    and self.env[tag.res_model].sudo().browse(tag.res_id).exists():
+                tag.cible = "%s,%s" % (tag.res_model, tag.res_id)
+            else:
+                tag.cible = False
+
+    def _inverse_cible(self):
+        for tag in self:
+            if tag.cible:
+                tag.write({"res_model": tag.cible._name, "res_id": tag.cible.id})
+            else:
+                tag.write({"res_model": False, "res_id": False})
+
+    @api.onchange("gesture_id")
+    def _onchange_gesture_cible(self):
+        """Prévient tout de suite quand la fiche ne convient pas au geste choisi."""
+        attendu = self.gesture_id.sudo().target_model
+        if attendu and self.cible and self.cible._name != attendu:
+            return {"warning": {
+                "title": _("Type de fiche"),
+                "message": _("Le geste « %(geste)s » vise une fiche de type « %(type)s ». "
+                             "Choisissez-en une de ce type.",
+                             geste=self.gesture_id.name,
+                             type=self.env["ir.model"].sudo()._get(attendu).name),
+            }}
 
     @api.depends("code", "sdm_enabled")
     def _compute_url(self):
@@ -234,21 +322,28 @@ class BfNfcTag(models.Model):
         cible.check_access("read")
         return cible
 
-    def _params(self, supplement=None):
-        """Les paramètres de la pastille, plus ceux du tapotement."""
+    def _params(self):
+        """Les paramètres de la pastille, et eux seuls.
+
+        🔴 **Rien de ce que la personne qui tape envoie n'entre ici.** Jusqu'à la
+        2.2.0, la chaîne de requête du navigateur et le dict ``params`` de
+        l'application s'ajoutaient PAR-DESSUS ceux de la pastille : un
+        ``?url=`` remplaçait l'adresse gravée, un ``?equipe=`` envoyait le billet
+        (créé en sudo) dans l'équipe de son choix, y compris par la porte signée,
+        qui est publique. Ce qu'une pastille fait se décide à sa création, par la
+        gestion. Ce que qui tape apporte a ses propres canaux, bornés : ``choix``
+        et ``texte``.
+        """
         self.ensure_one()
-        valeurs = {}
-        if self.params:
-            try:
-                charge = json.loads(self.params)
-            except ValueError:
-                raise UserError(_("Les paramètres de cette pastille ne sont pas du JSON valide."))
-            if not isinstance(charge, dict):
-                raise UserError(_("Les paramètres d'une pastille doivent être un objet JSON."))
-            valeurs.update(charge)
-        if supplement:
-            valeurs.update(supplement)
-        return valeurs
+        if not self.params:
+            return {}
+        try:
+            charge = json.loads(self.params)
+        except ValueError:
+            raise UserError(_("Les paramètres de cette pastille ne sont pas du JSON valide."))
+        if not isinstance(charge, dict):
+            raise UserError(_("Les paramètres d'une pastille doivent être un objet JSON."))
+        return charge
 
     # ------------------------------------------------------------------
     # Le tapotement
@@ -260,8 +355,9 @@ class BfNfcTag(models.Model):
     # les contrôleurs, qui établissent l'identité et vérifient la signature,
     # appellent cette méthode.
     @api.private
-    def taper(self, porte, params=None, appareil=None, compteur=None,
-              choix=None, texte=None, quand=None, nonce=None, appareil_id=None):
+    def taper(self, porte, appareil=None, compteur=None,
+              choix=None, texte=None, quand=None, nonce=None, appareil_id=None,
+              reponses=None):
         """Exécute le geste et journalise, que ça passe ou non.
 
         Rend un dictionnaire ``{statut, titre, message, url, tap_id}``, plus
@@ -282,6 +378,10 @@ class BfNfcTag(models.Model):
         ⚠️ ``nonce`` rend un envoi rejoué idempotent : la file hors ligne du
         téléphone peut renvoyer trois fois le même tapotement, le geste n'est
         fait qu'une fois. ``quand`` est l'heure notée par le téléphone.
+
+        ``reponses`` remplit le ``formulaire`` qu'un geste a demandé (un relevé,
+        l'identité d'une personne sans compte) : un dict de textes courts, borné
+        ici, que seul le geste interprète.
         """
         self.ensure_one()
         tag = self.sudo()
@@ -311,12 +411,13 @@ class BfNfcTag(models.Model):
             return dict(tag._rendu(double), statut="duplicate")
 
         geste = tag.gesture_id.sudo(False)
-        valeurs = tag._params(params)
+        valeurs = tag._params()
         valeurs.update({"choix": choix, "quand": moment, "differe": differe, "porte": porte})
         # ⚠️ Seulement quand quelqu'un a écrit : un `texte` absent ne doit pas
         # effacer celui que la pastille porte dans ses paramètres (« Ronde du soir »).
         if texte:
             valeurs["texte"] = texte
+        valeurs["reponses"] = self._nettoyer_reponses(reponses)
         try:
             with self.env.cr.savepoint():
                 resultat = geste.executer(tag, None, valeurs)
@@ -335,6 +436,7 @@ class BfNfcTag(models.Model):
                 "titre": q.get("titre") or tag.name,
                 "message": q.get("message") or "",
                 "choix": q["choix"],
+                "formulaire": q.get("formulaire") or None,
                 "url": None,
                 "tap_id": None,
             }
@@ -357,6 +459,28 @@ class BfNfcTag(models.Model):
         if compteur is not None:
             tag.sdm_counter = compteur
         return ecrit
+
+    @api.model
+    def _nettoyer_reponses(self, reponses):
+        """Les réponses d'un formulaire, bornées : 60 champs, des textes de 1 000 caractères.
+
+        ⚠️ Rien n'est interprété ici. Le geste qui a posé le formulaire sait ce que
+        chaque champ doit contenir ; le socle ne fait que refuser ce qui ne
+        ressemble pas à des réponses (une liste, un objet imbriqué, un roman).
+        """
+        if not isinstance(reponses, dict):
+            return {}
+        propres = {}
+        for cle, valeur in list(reponses.items())[:60]:
+            if not isinstance(cle, str) or not cle or len(cle) > 64:
+                continue
+            if isinstance(valeur, bool):
+                valeur = "oui" if valeur else "non"
+            if isinstance(valeur, (int, float)):
+                valeur = str(valeur)
+            if isinstance(valeur, str):
+                propres[cle] = valeur.strip()[:1000]
+        return propres
 
     def _moment(self, quand):
         """L'heure du tapotement : (moment, différé, phrase de refus ou None).
@@ -409,7 +533,7 @@ class BfNfcTag(models.Model):
         if self.gesture_id.needs_target and not (self.res_model and self.res_id):
             return _("Cette pastille ne désigne aucune fiche.")
         if self.gesture_id.target_model_id \
-                and self.res_model != self.gesture_id.target_model_id.model:
+                and self.res_model != self.gesture_id.target_model:
             return _("Cette pastille désigne un type de fiche que le geste n'accepte pas.")
         if porte == "signed":
             if not self.sdm_enabled:
@@ -483,4 +607,14 @@ class BfNfcTag(models.Model):
             "view_mode": "list,form",
             "domain": [("tag_id", "=", self.id)],
             "context": {"default_tag_id": self.id},
+        }
+
+    def action_ouvrir_cible(self):
+        self.ensure_one()
+        cible = self._cible()
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": cible._name,
+            "res_id": cible.id,
+            "view_mode": "form",
         }

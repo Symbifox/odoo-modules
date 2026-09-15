@@ -103,3 +103,33 @@ class TestTournee(TransactionCase):
         r = self.pastilles["Entrée"].with_user(self.agent).taper("signed")
         self.assertEqual(r["statut"], "refused")
         self.assertFalse(self.tournee.run_ids)
+
+
+@tagged("post_install", "-at_install")
+class TestTourneeEnLot(TransactionCase):
+    """Les pastilles d'une tournée se créent depuis la tournée, une par point."""
+
+    def test_un_bouton_une_pastille_par_point_et_rien_en_double(self):
+        chef = new_test_user(self.env, login="lot-chef", groups="base.group_user,bf_nfc.group_nfc_manager")
+        tournee = self.env["bf.nfc.round"].with_user(chef).create({
+            "name": "Ronde incendie", "responsible_id": chef.id,
+            "checkpoint_ids": [(0, 0, {"name": "Extincteur 1", "place": "Hall"}),
+                               (0, 0, {"name": "Extincteur 2"})],
+        })
+        action = tournee.action_creer_pastilles()
+        lot = self.env[action["res_model"]].with_user(chef).with_context(action["context"]).create({})
+        self.assertEqual(lot.gesture_id, self.env.ref("bf_nfc_round.gesture_round_checkpoint"),
+                         "Le geste du point de tournée doit être proposé d'office.")
+        lot.action_creer()
+        self.assertEqual(tournee.nfc_tag_count, 2)
+        pastilles = self.env["bf.nfc.tag"].search(tournee.action_voir_pastilles()["domain"])
+        self.assertEqual(pastilles.filtered(lambda t: t.res_id == tournee.checkpoint_ids[0].id).place, "Hall")
+        tournee.with_user(chef).write({"checkpoint_ids": [(0, 0, {"name": "Extincteur 3"})]})
+        lot = self.env["bf.nfc.tag.lot"].with_user(chef).with_context(
+            tournee.action_creer_pastilles()["context"]).create({})
+        self.assertEqual((lot.fiche_count, lot.deja_count), (3, 2))
+        lot.action_creer()
+        # ⚠️ Compte non stocké : l'essai garde en cache le 2 d'avant. Le formulaire, lui,
+        # se recharge après l'assistant et recalcule.
+        tournee.invalidate_recordset(["nfc_tag_count"])
+        self.assertEqual(tournee.nfc_tag_count, 3)

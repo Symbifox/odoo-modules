@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="gabarit_extincteurs" model="bf.nfc.template">
+        <field name="name">Extincteurs : vérification mensuelle</field>
+        <field name="secteur">incendie</field>
+        <field name="sequence">10</field>
+        <field name="recette">tournee</field>
+        <field name="checklist_id" ref="bf_nfc_inspection.grille_extincteur"/>
+        <field name="round_schedule">none</field>
+        <field name="round_start_hour">8.0</field>
+        <field name="round_duration">90</field>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.2.1.1 et NFPA 10)</field>
+        <field name="description">Une pastille au support de chaque extincteur, pas sur l'extincteur lui-même, qui change à l'entretien. Chaque point de la ronde remplit la grille de la RBQ ; le registre s'imprime depuis les relevés. Un extincteur pas relevé dans le mois crée une activité. Le chapitre Bâtiment exempte certains petits bâtiments (art. 340 et 341) : vérifiez s'il s'applique au vôtre.</field>
+        <field name="exemple">Extincteur 1 ; hall d'entrée
+Extincteur 2 ; corridor du 2e
+Extincteur 3 ; salle mécanique</field>
+    </record>
+
+    <record id="gabarit_eclairage" model="bf.nfc.template">
+        <field name="name">Éclairage de sécurité : essai mensuel</field>
+        <field name="secteur">incendie</field>
+        <field name="sequence">20</field>
+        <field name="recette">tournee</field>
+        <field name="checklist_id" ref="bf_nfc_inspection.grille_eclairage"/>
+        <field name="round_schedule">none</field>
+        <field name="round_start_hour">8.0</field>
+        <field name="round_duration">90</field>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.6)</field>
+        <field name="description">Une pastille par unité d'éclairage de sécurité. L'essai mensuel se consigne point par point ; l'essai de durée annuel reste à part.</field>
+        <field name="exemple">Unité 1 ; escalier nord
+Unité 2 ; escalier sud</field>
+    </record>
+
+    <record id="gabarit_sorties" model="bf.nfc.template">
+        <field name="name">Enseignes de sortie : vérification mensuelle</field>
+        <field name="secteur">incendie</field>
+        <field name="sequence">25</field>
+        <field name="recette">tournee</field>
+        <field name="checklist_id" ref="bf_nfc_inspection.grille_sortie"/>
+        <field name="round_schedule">none</field>
+        <field name="round_start_hour">8.0</field>
+        <field name="round_duration">90</field>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.5.1.8)</field>
+        <field name="description">Une pastille par enseigne de sortie sur batterie.</field>
+        <field name="exemple">Sortie ; porte principale
+Sortie ; porte arrière</field>
+    </record>
+
+    <record id="gabarit_portes_coupe_feu" model="bf.nfc.template">
+        <field name="name">Portes coupe-feu : ronde quotidienne</field>
+        <field name="secteur">incendie</field>
+        <field name="sequence">30</field>
+        <field name="recette">tournee</field>
+        <field name="checklist_id" ref="bf_nfc_inspection.grille_porte_coupe_feu"/>
+        <field name="round_schedule">daily</field>
+        <field name="round_start_hour">8.0</field>
+        <field name="round_duration">90</field>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 2.2.2.4)</field>
+        <field name="description">Une pastille près de chaque porte coupe-feu à fermeture automatique. La ronde du matin la trouve fermée ou non ; une ronde pas faite dans sa fenêtre crée une activité.</field>
+        <field name="exemple">Porte coupe-feu ; escalier nord, 1er
+Porte coupe-feu ; escalier nord, 2e</field>
+    </record>
+
+    <record id="gabarit_aire_jeu_quotidienne" model="bf.nfc.template">
+        <field name="name">Aire de jeu : inspection visuelle quotidienne</field>
+        <field name="secteur">garde</field>
+        <field name="sequence">10</field>
+        <field name="recette">tournee</field>
+        <field name="checklist_id" ref="bf_nfc_inspection.grille_aire_jeu_quotidienne"/>
+        <field name="round_schedule">weekdays</field>
+        <field name="round_start_hour">7.5</field>
+        <field name="round_duration">90</field>
+        <field name="reference">Règlement sur les services de garde éducatifs à l'enfance (S-4.1.1, r. 2, art. 40) et CSA Z614</field>
+        <field name="description">Une pastille par module de jeu, tapée avant la première sortie des enfants. La grille livrée est un point de départ tiré d'un résumé de la norme : à valider avant usage. Pastilles extérieures IP68, à éprouver au froid.</field>
+        <field name="exemple">Module d'escalade ; cour avant
+Balançoires ; cour arrière
+Carré de sable ; cour arrière</field>
+    </record>
+
+    <record id="gabarit_aire_jeu_mensuelle" model="bf.nfc.template">
+        <field name="name">Aire de jeu : inspection détaillée mensuelle</field>
+        <field name="secteur">garde</field>
+        <field name="sequence">20</field>
+        <field name="recette">tournee</field>
+        <field name="checklist_id" ref="bf_nfc_inspection.grille_aire_jeu_mensuelle"/>
+        <field name="round_schedule">none</field>
+        <field name="round_start_hour">7.5</field>
+        <field name="round_duration">90</field>
+        <field name="reference">Règlement sur les services de garde éducatifs à l'enfance (S-4.1.1, r. 2, art. 40) et CSA Z614</field>
+        <field name="description">La même tournée que l'inspection quotidienne, avec la grille détaillée du mois. Grille livrée comme point de départ : à valider avant usage.</field>
+        <field name="exemple">Module d'escalade ; cour avant
+Balançoires ; cour arrière</field>
+    </record>
+</odoo>

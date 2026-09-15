@@ -1,6 +1,6 @@
 {
     "name": "Pastilles NFC : signaler un problème",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.0",
     "category": "Services/Helpdesk",
     "summary": "Une pastille sur l'imprimante ou le serveur d'un client ouvre un billet déjà rempli",
     "description": """
@@ -28,6 +28,7 @@ compte qu'elle désigne : c'est le cas du client qui n'a pas de compte.
     "depends": ["bf_nfc", "helpdesk_mgmt"],
     "data": [
         "data/bf_nfc_helpdesk_data.xml",
+        "data/bf_nfc_helpdesk_gabarits.xml",
     ],
     "installable": True,
     "application": False,

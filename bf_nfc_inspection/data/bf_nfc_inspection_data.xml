@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sequence_releve" model="ir.sequence">
+        <field name="name">Relevés par pastille</field>
+        <field name="code">bf.nfc.reading</field>
+        <field name="prefix">REL-%(year)s-</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="gesture_reading" model="bf.nfc.gesture">
+        <field name="name">Faire un relevé</field>
+        <field name="code">reading</field>
+        <field name="kind">reading</field>
+        <field name="sequence">44</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="False"/>
+        <field name="accepte_differe" eval="True"/>
+        <field name="description">Approcher le téléphone affiche la grille de la pastille : conforme ou non, une valeur mesurée, un choix. Enregistrer écrit le relevé au registre, et chaque anomalie va à la personne responsable. Sans réseau, le relevé garde l'heure du téléphone.</field>
+    </record>
+
+    <record id="cron_guetter_releves" model="ir.cron">
+        <field name="name">Pastilles : guetter les relevés manqués</field>
+        <field name="model_id" ref="bf_nfc.model_bf_nfc_tag"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_guetter_releves()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

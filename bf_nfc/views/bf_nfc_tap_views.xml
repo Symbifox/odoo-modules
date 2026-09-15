@@ -25,6 +25,45 @@
         </field>
     </record>
 
+    <record id="view_bf_nfc_tap_form" model="ir.ui.view">
+        <field name="name">bf.nfc.tap.form</field>
+        <field name="model">bf.nfc.tap</field>
+        <field name="arch" type="xml">
+            <form string="Tapotement" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="titre" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Qui et quand">
+                            <field name="user_id"/>
+                            <field name="tapped_at"/>
+                            <field name="create_date" string="Reçu le"/>
+                            <field name="offline"/>
+                        </group>
+                        <group string="Quoi">
+                            <field name="tag_id"/>
+                            <field name="tag_code"/>
+                            <field name="gesture_code"/>
+                            <field name="door"/>
+                            <field name="status" widget="badge"/>
+                            <field name="choice_key"/>
+                        </group>
+                    </group>
+                    <group string="Réponse montrée">
+                        <field name="message" nolabel="1" colspan="2"/>
+                        <field name="url" widget="url" invisible="not url"/>
+                    </group>
+                    <group string="Appareil" invisible="door != 'app' and door != 'signed'">
+                        <field name="device_label"/>
+                        <field name="device_id"/>
+                        <field name="counter" invisible="door != 'signed'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
     <record id="view_bf_nfc_tap_search" model="ir.ui.view">
         <field name="name">bf.nfc.tap.search</field>
         <field name="model">bf.nfc.tap</field>
@@ -37,10 +76,17 @@
                 <filter name="rates" string="Refusés ou en erreur"
                         domain="[('status', 'in', ('refused', 'error'))]"/>
                 <filter name="differes" string="Envoyés en différé" domain="[('offline', '=', True)]"/>
+                <separator/>
+                <filter name="aujourd_hui" string="Aujourd'hui"
+                        domain="[('tapped_at', '&gt;=', (context_today()).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter name="sept_jours" string="7 derniers jours"
+                        domain="[('tapped_at', '&gt;=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="tapped_at" string="Date" date="tapped_at"/>
                 <group expand="0" string="Regrouper par">
                     <filter name="par_pastille" string="Pastille" context="{'group_by': 'tag_id'}"/>
                     <filter name="par_personne" string="Personne" context="{'group_by': 'user_id'}"/>
                     <filter name="par_porte" string="Porte" context="{'group_by': 'door'}"/>
+                    <filter name="par_jour" string="Jour" context="{'group_by': 'tapped_at:day'}"/>
                 </group>
             </search>
         </field>
@@ -49,6 +95,6 @@
     <record id="action_bf_nfc_tap" model="ir.actions.act_window">
         <field name="name">Journal</field>
         <field name="res_model">bf.nfc.tap</field>
-        <field name="view_mode">list</field>
+        <field name="view_mode">list,form</field>
     </record>
 </odoo>

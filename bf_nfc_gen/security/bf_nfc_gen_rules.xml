@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔴 Sans ces règles, tout interne lisait « Fiche » de toutes les demandes :
+         le nom des rencontres et des ordres du jour de toutes les sociétés. -->
+    <record id="regle_demande_societe" model="ir.rule">
+        <field name="name">Demandes à Gen : cloison des sociétés</field>
+        <field name="model_id" ref="model_bf_nfc_gen_request"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="regle_demande_les_miennes" model="ir.rule">
+        <field name="name">Demandes à Gen : les miennes</field>
+        <field name="model_id" ref="model_bf_nfc_gen_request"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('bf_nfc.group_nfc_user'))]"/>
+    </record>
+    <record id="regle_demande_gestion" model="ir.rule">
+        <field name="name">Demandes à Gen : toutes, pour la gestion</field>
+        <field name="model_id" ref="model_bf_nfc_gen_request"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('bf_nfc.group_nfc_manager'))]"/>
+    </record>
+</odoo>

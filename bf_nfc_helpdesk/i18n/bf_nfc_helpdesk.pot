@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 04:56+0000\n"
-"PO-Revision-Date: 2026-09-14 04:56+0000\n"
+"POT-Creation-Date: 2026-09-15 05:25+0000\n"
+"PO-Revision-Date: 2026-09-15 05:25+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -77,6 +77,19 @@ msgid "Geste déclenché par une pastille NFC"
 msgstr ""
 
 #. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,name:bf_nfc_helpdesk.gabarit_imprimante
+msgid "Imprimante ou photocopieur en panne"
+msgstr ""
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,exemple:bf_nfc_helpdesk.gabarit_signalement_bris
+msgid ""
+"Laveuse 1 ; buanderie du sous-sol\n"
+"Porte du garage ; stationnement\n"
+"Interphone ; hall"
+msgstr ""
+
+#. module: bf_nfc_helpdesk
 #: model:ir.model.fields,field_description:bf_nfc_helpdesk.field_bf_nfc_gesture__kind
 msgid "Nature"
 msgstr ""
@@ -84,6 +97,18 @@ msgstr ""
 #. module: bf_nfc_helpdesk
 #: model:helpdesk.ticket.channel,name:bf_nfc_helpdesk.channel_pastille
 msgid "Pastille"
+msgstr ""
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,exemple:bf_nfc_helpdesk.gabarit_imprimante
+msgid ""
+"Photocopieur ; 2e étage\n"
+"Imprimante couleur ; accueil"
+msgstr ""
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,name:bf_nfc_helpdesk.gabarit_signalement_bris
+msgid "Signalement de bris par les occupants"
 msgstr ""
 
 #. module: bf_nfc_helpdesk
@@ -98,4 +123,20 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_nfc_helpdesk/models/bf_nfc_gesture.py:0
 msgid "Signalé par %(qui)s le %(quand)s, par la pastille « %(pastille)s »."
+msgstr ""
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,description:bf_nfc_helpdesk.gabarit_imprimante
+msgid ""
+"Une pastille sur chaque appareil. Bourrage, toner, écran d'erreur : une "
+"phrase, et le billet part avec l'appareil et l'endroit déjà remplis."
+msgstr ""
+
+#. module: bf_nfc_helpdesk
+#: model:bf.nfc.template,description:bf_nfc_helpdesk.gabarit_signalement_bris
+msgid ""
+"Une pastille sur la laveuse, la porte du garage, l'interphone. L'occupant la"
+" tape, décrit le problème en une phrase, et un billet rempli (l'endroit, "
+"l'heure, la fiche de l'immeuble) arrive à l'équipe de soutien. Les occupants"
+" n'ont pas de compte : gravez ces pastilles sur des puces signées."
 msgstr ""

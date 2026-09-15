@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 04:56+0000\n"
-"PO-Revision-Date: 2026-09-14 04:56+0000\n"
+"POT-Creation-Date: 2026-09-15 05:25+0000\n"
+"PO-Revision-Date: 2026-09-15 05:25+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -45,6 +45,11 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
 msgid "Ce choix n'existe pas."
+msgstr ""
+
+#. module: bf_nfc_room
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_template__recette
+msgid "Ce qu'il crée"
 msgstr ""
 
 #. module: bf_nfc_room
@@ -93,10 +98,17 @@ msgstr ""
 
 #. module: bf_nfc_room
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid ""
-"Créez ensuite une pastille « Salle de réunion » qui vise cette salle, et\n"
-"                        gravez-la depuis l'application. Dans l'agenda, un événement réserve la\n"
-"                        salle par son champ « Salle »."
+msgid "Créer la pastille de la porte"
+msgstr ""
+
+#. module: bf_nfc_room
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
+msgid "Dans l'agenda, un événement réserve la salle par son champ « Salle »."
+msgstr ""
+
+#. module: bf_nfc_room
+#: model:ir.model.fields.selection,name:bf_nfc_room.selection__bf_nfc_template__recette__salles
+msgid "Des salles et la pastille de leur porte"
 msgstr ""
 
 #. module: bf_nfc_room
@@ -117,6 +129,11 @@ msgstr ""
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__checkin_delay
 msgid "Délai de confirmation (min)"
+msgstr ""
+
+#. module: bf_nfc_room
+#: model:ir.model,name:bf_nfc_room.model_bf_nfc_template
+msgid "Gabarit de pastilles"
 msgstr ""
 
 #. module: bf_nfc_room
@@ -230,6 +247,12 @@ msgid "Où"
 msgstr ""
 
 #. module: bf_nfc_room
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__nfc_tag_count
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
+msgid "Pastilles"
+msgstr ""
+
+#. module: bf_nfc_room
 #: model:ir.actions.server,name:bf_nfc_room.cron_room_release_ir_actions_server
 msgid "Pastilles : libérer les salles non confirmées"
 msgstr ""
@@ -271,12 +294,21 @@ msgid "Salle"
 msgstr ""
 
 #. module: bf_nfc_room
+#: model:bf.nfc.template,exemple:bf_nfc_room.gabarit_salle_reunion
+msgid ""
+"Salle A ; 2e étage\n"
+"Salle B ; 2e étage\n"
+"Bureau d'appoint ; accueil"
+msgstr ""
+
+#. module: bf_nfc_room
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
 msgid "Salle A, bureau d'appoint…"
 msgstr ""
 
 #. module: bf_nfc_room
 #: model:bf.nfc.gesture,name:bf_nfc_room.gesture_room
+#: model:bf.nfc.template,name:bf_nfc_room.gabarit_salle_reunion
 #: model:ir.model.fields.selection,name:bf_nfc_room.selection__bf_nfc_gesture__kind__room
 msgid "Salle de réunion"
 msgstr ""
@@ -318,6 +350,15 @@ msgstr ""
 msgid ""
 "Sur la porte : dit si la salle est libre ou occupée, propose de la prendre, "
 "de confirmer sa réservation ou de la libérer. N'agit jamais sans un bouton."
+msgstr ""
+
+#. module: bf_nfc_room
+#: model:bf.nfc.template,description:bf_nfc_room.gabarit_salle_reunion
+msgid ""
+"Une pastille sur la porte de chaque salle. On la tape pour savoir si elle "
+"est libre, la prendre pour 30 ou 60 minutes, ou confirmer sa réservation ; "
+"une réservation que personne ne confirme libère la salle. Ce qui se prend à "
+"la porte se voit dans l'agenda de tout le monde."
 msgstr ""
 
 #. module: bf_nfc_room

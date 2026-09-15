@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gesture_gen_skill" model="bf.nfc.gesture">
+        <field name="name">Demander à Gen</field>
+        <field name="code">gen_skill</field>
+        <field name="kind">gen_skill</field>
+        <field name="sequence">30</field>
+        <field name="writes" eval="True"/>
+        <field name="needs_target" eval="True"/>
+        <field name="reserve_gestion" eval="True"/>
+        <field name="accepte_differe" eval="False"/>
+        <field name="description">Approcher le téléphone propose de lancer le skill de Gen choisi sur la pastille, sur la fiche qu'elle vise : préparer un ordre du jour, raffiner un compte rendu. Gen travaille ensuite seul, et une activité prévient quand il a fini. Réservé à la gestion tant qu'on ne l'ouvre pas plus largement.</field>
+    </record>
+    <!-- ⚠️ Le pont écrit l'état d'une demande par XML-RPC. S'il n'y arrive pas
+         (compte sans droit, pont tué, conteneur redémarré), la demande resterait
+         « Transmise » pour toujours et personne ne serait prévenu. Ce guet la
+         déclasse, et l'activité dit quoi regarder. -->
+    <record id="cron_perimer_demandes" model="ir.cron">
+        <field name="name">Pastilles : demandes à Gen sans nouvelle</field>
+        <field name="model_id" ref="model_bf_nfc_gen_request"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_perimer()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

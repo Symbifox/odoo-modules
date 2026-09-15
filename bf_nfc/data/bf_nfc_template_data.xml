@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="gabarit_procedure" model="bf.nfc.template">
+        <field name="name">Procédure affichée</field>
+        <field name="secteur">bureau</field>
+        <field name="sequence">50</field>
+        <field name="recette">pastilles</field>
+        <field name="gesture_id" ref="gesture_url"/>
+        <field name="description">Une pastille près d'une machine, d'une porte ou d'un poste ouvre la procédure qui s'y rapporte : consignes d'évacuation, mode d'emploi du photocopieur, marche à suivre à l'ouverture. N'écrit rien.</field>
+        <field name="exemple">Évacuation ; porte de l'escalier
+Photocopieur ; salle de repos</field>
+    </record>
+</odoo>

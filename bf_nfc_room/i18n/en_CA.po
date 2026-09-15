@@ -22,7 +22,7 @@ msgstr "%(salle)s · %(qui)s"
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__active
 msgid "Active"
-msgstr ""
+msgstr "Active"
 
 #. module: bf_nfc_room
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
@@ -37,13 +37,18 @@ msgstr "With a room"
 #. module: bf_nfc_room
 #: model:ir.model,name:bf_nfc_room.model_calendar_event
 msgid "Calendar Event"
-msgstr ""
+msgstr "Calendar Event"
 
 #. module: bf_nfc_room
 #. odoo-python
 #: code:addons/bf_nfc_room/models/bf_nfc_gesture.py:0
 msgid "Ce choix n'existe pas."
 msgstr "This choice does not exist."
+
+#. module: bf_nfc_room
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_template__recette
+msgid "Ce qu'il crée"
+msgstr "What it creates"
 
 #. module: bf_nfc_room
 #. odoo-python
@@ -66,7 +71,7 @@ msgstr "This booking no longer needs confirming."
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__company_id
 msgid "Company"
-msgstr ""
+msgstr "Company"
 
 #. module: bf_nfc_room
 #. odoo-python
@@ -82,28 +87,32 @@ msgstr "Confirmed at the door"
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Created by"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Created on"
 
 #. module: bf_nfc_room
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
-msgid ""
-"Créez ensuite une pastille « Salle de réunion » qui vise cette salle, et\n"
-"                        gravez-la depuis l'application. Dans l'agenda, un événement réserve la\n"
-"                        salle par son champ « Salle »."
-msgstr ""
-"Then create a “Meeting room” tag that points to this room, and engrave it "
-"from the app. In the calendar, an event books the room through its “Room” "
-"field."
+msgid "Créer la pastille de la porte"
+msgstr "Create the door tag"
+
+#. module: bf_nfc_room
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
+msgid "Dans l'agenda, un événement réserve la salle par son champ « Salle »."
+msgstr "In the calendar, an event books the room through its “Room” field."
+
+#. module: bf_nfc_room
+#: model:ir.model.fields.selection,name:bf_nfc_room.selection__bf_nfc_template__recette__salles
+msgid "Des salles et la pastille de leur porte"
+msgstr "Rooms and their door tags"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Display Name"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__durations
@@ -121,6 +130,11 @@ msgid "Délai de confirmation (min)"
 msgstr "Confirmation delay (min)"
 
 #. module: bf_nfc_room
+#: model:ir.model,name:bf_nfc_room.model_bf_nfc_template
+msgid "Gabarit de pastilles"
+msgstr "Tag template"
+
+#. module: bf_nfc_room
 #: model:ir.model,name:bf_nfc_room.model_bf_nfc_gesture
 msgid "Geste déclenché par une pastille NFC"
 msgstr "Gesture triggered by an NFC tag"
@@ -128,7 +142,7 @@ msgstr "Gesture triggered by an NFC tag"
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: bf_nfc_room
 #. odoo-python
@@ -168,12 +182,12 @@ msgstr "The room “%(salle)s” is already booked from %(debut)s to %(fin)s."
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Last Updated by"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Last Updated on"
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__durations
@@ -231,6 +245,12 @@ msgid "Où"
 msgstr "Where"
 
 #. module: bf_nfc_room
+#: model:ir.model.fields,field_description:bf_nfc_room.field_bf_nfc_room__nfc_tag_count
+#: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
+msgid "Pastilles"
+msgstr "Tags"
+
+#. module: bf_nfc_room
 #: model:ir.actions.server,name:bf_nfc_room.cron_room_release_ir_actions_server
 msgid "Pastilles : libérer les salles non confirmées"
 msgstr "Tags: release unconfirmed rooms"
@@ -272,12 +292,24 @@ msgid "Salle"
 msgstr "Room"
 
 #. module: bf_nfc_room
+#: model:bf.nfc.template,exemple:bf_nfc_room.gabarit_salle_reunion
+msgid ""
+"Salle A ; 2e étage\n"
+"Salle B ; 2e étage\n"
+"Bureau d'appoint ; accueil"
+msgstr ""
+"Room A ; 2nd floor\n"
+"Room B ; 2nd floor\n"
+"Spare office ; reception"
+
+#. module: bf_nfc_room
 #: model_terms:ir.ui.view,arch_db:bf_nfc_room.view_bf_nfc_room_form
 msgid "Salle A, bureau d'appoint…"
 msgstr "Room A, spare office…"
 
 #. module: bf_nfc_room
 #: model:bf.nfc.gesture,name:bf_nfc_room.gesture_room
+#: model:bf.nfc.template,name:bf_nfc_room.gabarit_salle_reunion
 #: model:ir.model.fields.selection,name:bf_nfc_room.selection__bf_nfc_gesture__kind__room
 msgid "Salle de réunion"
 msgstr "Meeting room"
@@ -324,6 +356,19 @@ msgid ""
 msgstr ""
 "On the door: tells whether the room is free or taken, offers to take it, "
 "confirm a booking or release it. Never acts without a button."
+
+#. module: bf_nfc_room
+#: model:bf.nfc.template,description:bf_nfc_room.gabarit_salle_reunion
+msgid ""
+"Une pastille sur la porte de chaque salle. On la tape pour savoir si elle "
+"est libre, la prendre pour 30 ou 60 minutes, ou confirmer sa réservation ; "
+"une réservation que personne ne confirme libère la salle. Ce qui se prend à "
+"la porte se voit dans l'agenda de tout le monde."
+msgstr ""
+"A tag on the door of each room. You tap it to see whether the room is free, "
+"take it for 30 or 60 minutes, or confirm your booking; a booking nobody "
+"confirms releases the room. What is taken at the door shows in everyone's "
+"calendar."
 
 #. module: bf_nfc_room
 #: model:ir.model.fields,help:bf_nfc_room.field_bf_nfc_room__checkin_delay

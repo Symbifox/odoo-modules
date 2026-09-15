@@ -29,10 +29,24 @@ the person keeping it beyond the delay you set.
 In a menu, the parameter `{"sens": "prendre"}` or `{"sens": "rendre"}` fixes the
 direction ("I'm taking it" and "I'm bringing it back" buttons).
 
+## Handing out to people without an account (padlock register)
+
+Tick *Handed out to people without an account* on the equipment. The person who
+hands it out taps its tag and names who receives it (name, phone, employer); the
+return is confirmed with a second tap. This is the register the RSST (Quebec
+Regulation respecting occupational health and safety, s. 205) requires for
+single-key padlocks that do not carry a name. *Print → Hand-out register* on the
+equipment gives its columns in the regulation's order: identification, handed
+to, phone, employer, handed out, returned, handed out by. A cross-equipment
+*Loans* list answers "who had padlock 7 on Tuesday".
+
+The recipe *Equipment and their tag* creates equipment and tags from a list of
+lines; the *Padlock register* and *Equipment loan* templates ship with it.
+
 ## Setup
 
-*Tags → Equipment*: create the equipment, then a "Take or return equipment" tag
-pointing to it, and engrave it from the app.
+*Tags → Equipment*: create the equipment, then *Create the tag* (or select several
+in the list and *Create tags*), and engrave it from the app.
 
 ## License
 

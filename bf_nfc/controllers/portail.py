@@ -11,6 +11,7 @@ Une pastille déjà gravée qui atterrit ailleurs ne se corrige plus : mieux vau
 qu'elle dise clairement qu'elle ne mène nulle part.
 """
 import logging
+from urllib.parse import urlparse
 
 from werkzeug.exceptions import NotFound
 
@@ -26,18 +27,6 @@ _logger = logging.getLogger(__name__)
 # (``frontend_languages``, ``url_for``). Sans lui, ``portal.frontend_layout``
 # rend un 500 sur ``len(None)`` dans le sélecteur de langue du pied de page,
 # et l'erreur ne nomme jamais la route fautive.
-
-
-def _cle_societe(company, suffixe):
-    """La clé de pastille signée d'une société, ou celle par défaut.
-
-    ⚠️ Rangée dans ``ir.config_parameter``, que seul l'administrateur système
-    peut lire. Sur ``res.company`` elle serait lisible par n'importe quel
-    interne en XML-RPC, ce qui reviendrait à publier la clé.
-    """
-    icp = request.env["ir.config_parameter"].sudo()
-    return icp.get_param("bf_nfc.%s.%s" % (suffixe, company.id)) \
-        or icp.get_param("bf_nfc.%s" % suffixe)
 
 
 class PortailNfc(http.Controller):
@@ -100,9 +89,13 @@ class PortailNfc(http.Controller):
         if not (picc and cmac):
             return None, 0, _("Cette adresse ne porte pas de signature de puce.")
         Tag = request.env["bf.nfc.tag"].sudo()
+        Cles = request.env["bf.nfc.sdm.key"].sudo()
         societes = request.env["res.company"].sudo().search([])
         for company in societes:
-            cle_meta = _cle_societe(company, "sdm_meta_key")
+            # ⚠️ Déchiffrées ici, le temps de la vérification, et jamais rendues :
+            # cf. ``bf.nfc.sdm.key``. Une paire illisible (clé de chiffrement
+            # changée) se comporte comme une paire absente.
+            cle_meta, _fichier = Cles._cles_de(company)
             if not cle_meta:
                 continue
             try:
@@ -112,7 +105,7 @@ class PortailNfc(http.Controller):
             tag = Tag._resoudre_signee(uid)
             if not tag:
                 continue
-            cle_fichier = _cle_societe(tag.company_id, "sdm_file_key")
+            _meta, cle_fichier = Cles._cles_de(tag.company_id)
             try:
                 valide = verifier_cmac(cle_fichier, uid, compteur, cmac)
             except SdmInvalide as exc:
@@ -146,8 +139,7 @@ class PortailNfc(http.Controller):
         # ⚠️ La langue reste celle du NAVIGATEUR de la personne qui tape (celle de
         # la page) : le compte désigné n'est pas la personne devant l'écran.
         tag_acteur = request.env["bf.nfc.tag"].sudo().browse(tag.id)
-        resultat = tag_acteur.taper("signed", params=self._params_utiles(kw),
-                                    compteur=compteur, **self._reponse(kw))
+        resultat = tag_acteur.taper("signed", compteur=compteur, **self._reponse(kw))
         if resultat["statut"] == "choice":
             # 🔴 Le compteur n'a pas été consommé : une question n'est pas une
             # exécution. La page renvoie la même signature avec le choix.
@@ -157,24 +149,44 @@ class PortailNfc(http.Controller):
     # ------------------------------------------------------------------
     # Commun
     # ------------------------------------------------------------------
-    def _params_utiles(self, kw):
-        """Les paramètres de l'adresse, moins ceux qui appartiennent au transport."""
-        reserves = {"picc_data", "cmac", "p", "c", "csrf_token", "choix", "texte"}
-        return {k: v for k, v in (kw or {}).items() if k not in reserves}
-
     def _reponse(self, kw):
-        """Le choix et le texte d'une réponse à la question d'un geste."""
+        """Le choix, le texte et les champs d'une réponse à la question d'un geste.
+
+        Les champs d'un formulaire arrivent préfixés ``r.`` : rien d'autre de la
+        requête n'entre dans les réponses.
+        """
         choix = (kw.get("choix") or "").strip()[:64] or None
         texte = (kw.get("texte") or "").strip()[:2000] or None
-        return {"choix": choix, "texte": texte}
+        reponses = {cle[2:]: valeur for cle, valeur in (kw or {}).items()
+                    if cle.startswith("r.") and isinstance(valeur, str)}
+        return {"choix": choix, "texte": texte, "reponses": reponses or None}
 
     def _agir_et_rendre(self, tag, porte, kw, action):
-        resultat = tag.taper(porte, params=self._params_utiles(kw), **self._reponse(kw))
+        resultat = tag.taper(porte, **self._reponse(kw))
         if resultat["statut"] == "choice":
             return self._page_choix(tag, resultat, action)
         if resultat["statut"] in ("ok", "duplicate") and resultat.get("url"):
-            return request.redirect(resultat["url"])
+            return self._rediriger(resultat["url"])
         return self._page_resultat(tag, resultat)
+
+    def _rediriger(self, adresse):
+        """Suit l'adresse que le geste rend, y compris hors de l'instance.
+
+        🔴 ``request.redirect`` d'Odoo 18 est LOCAL par défaut : il retire le
+        schéma et l'hôte. ``https://symbifox.com/procedure`` devenait
+        ``/procedure`` sur le domaine du locataire, et une pastille « Ouvrir une
+        adresse » tapée sans l'application atterrissait sur la mauvaise page. Le
+        parcours de l'application, qui ouvre l'adresse lui-même, ne le montrait
+        pas.
+
+        ⚠️ Ce n'est pas une redirection ouverte : l'adresse vient de la pastille,
+        posée par la gestion (``_params`` n'accepte plus rien de qui tape), et le
+        geste n'admet que ``https`` et ``http``.
+        """
+        morceaux = urlparse(adresse)
+        if morceaux.scheme in ("https", "http") and morceaux.netloc:
+            return request.redirect(adresse, local=False)
+        return request.redirect(adresse)
 
     def _page_choix(self, tag, resultat, action, cache=None):
         return request.render("bf_nfc.page_choix", {

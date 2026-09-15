@@ -65,6 +65,11 @@ msgid "Avancement"
 msgstr "Avancement"
 
 #. module: bf_nfc_round
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__recette
+msgid "Ce qu'il crée"
+msgstr "Ce qu'il crée"
+
+#. module: bf_nfc_round
 #. odoo-python
 #: code:addons/bf_nfc_round/models/bf_nfc_gesture.py:0
 msgid "Cette pastille ne désigne pas un point de tournée."
@@ -72,6 +77,7 @@ msgstr "Cette pastille ne désigne pas un point de tournée."
 
 #. module: bf_nfc_round
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round__schedule__daily
+#: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_template__round_schedule__daily
 msgid "Chaque jour"
 msgstr "Chaque jour"
 
@@ -89,11 +95,13 @@ msgstr ""
 #. module: bf_nfc_round
 #: model_terms:ir.ui.view,arch_db:bf_nfc_round.view_bf_nfc_round_form
 msgid ""
-"Chaque point reçoit une pastille « Point de tournée » qui le vise, gravée\n"
-"                                depuis « Mes pastilles » dans l'application."
+"Chaque point reçoit une pastille « Point de tournée » : enregistrez les\n"
+"                                points, puis « Créer les pastilles des points ». Un point qui a déjà la\n"
+"                                sienne est sauté."
 msgstr ""
-"Chaque point reçoit une pastille « Point de tournée » qui le vise, gravée\n"
-"                                depuis « Mes pastilles » dans l'application."
+"Chaque point reçoit une pastille « Point de tournée » : enregistrez les\n"
+"                                points, puis « Créer les pastilles des points ». Un point qui a déjà la\n"
+"                                sienne est sauté."
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__checkpoint_id
@@ -107,6 +115,7 @@ msgstr "Nombre de points"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__start_hour
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__round_start_hour
 msgid "Commence à"
 msgstr "Commence à"
 
@@ -142,7 +151,13 @@ msgid "Created on"
 msgstr "Créé le"
 
 #. module: bf_nfc_round
+#: model_terms:ir.ui.view,arch_db:bf_nfc_round.view_bf_nfc_round_form
+msgid "Créer les pastilles des points"
+msgstr "Créer les pastilles des points"
+
+#. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__strict_order
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__round_strict_order
 msgid "Dans l'ordre"
 msgstr "Dans l'ordre"
 
@@ -161,11 +176,13 @@ msgstr "Nom d'affichage"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round__schedule__weekdays
+#: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_template__round_schedule__weekdays
 msgid "Du lundi au vendredi"
 msgstr "Du lundi au vendredi"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__duration_minutes
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__round_duration
 msgid "Durée maximale (min)"
 msgstr "Durée maximale (min)"
 
@@ -173,6 +190,19 @@ msgstr "Durée maximale (min)"
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round_run__state__running
 msgid "En cours"
 msgstr "En cours"
+
+#. module: bf_nfc_round
+#: model:bf.nfc.template,exemple:bf_nfc_round.gabarit_ronde_surveillance
+msgid ""
+"Entrée principale\n"
+"Stationnement ; niveau P1\n"
+"Salle mécanique ; sous-sol\n"
+"Toit ; accès par l'escalier est"
+msgstr ""
+"Entrée principale\n"
+"Stationnement ; niveau P1\n"
+"Salle mécanique ; sous-sol\n"
+"Toit ; accès par l'escalier est"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__offline
@@ -200,6 +230,11 @@ msgid "Font awesome icon e.g. fa-tasks"
 msgstr "Icône Font Awesome, par exemple fa-tasks"
 
 #. module: bf_nfc_round
+#: model:ir.model,name:bf_nfc_round.model_bf_nfc_template
+msgid "Gabarit de pastilles"
+msgstr "Gabarit de pastilles"
+
+#. module: bf_nfc_round
 #: model:ir.model,name:bf_nfc_round.model_bf_nfc_gesture
 msgid "Geste déclenché par une pastille NFC"
 msgstr "Geste déclenché par une pastille NFC"
@@ -218,6 +253,11 @@ msgstr "Heure locale de la personne responsable."
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__schedule
 msgid "Horaire"
 msgstr "Horaire"
+
+#. module: bf_nfc_round
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_template__round_schedule
+msgid "Horaire de la tournée"
+msgstr "Horaire de la tournée"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round_passage__out_of_order
@@ -367,6 +407,12 @@ msgid "Passages de tournée"
 msgstr "Passages de tournée"
 
 #. module: bf_nfc_round
+#: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__nfc_tag_count
+#: model_terms:ir.ui.view,arch_db:bf_nfc_round.view_bf_nfc_round_form
+msgid "Pastilles"
+msgstr "Pastilles"
+
+#. module: bf_nfc_round
 #: model:ir.actions.server,name:bf_nfc_round.cron_round_watch_ir_actions_server
 msgid "Pastilles : guetter les tournées manquées"
 msgstr "Pastilles : guetter les tournées manquées"
@@ -443,6 +489,11 @@ msgid "Reçoit les alertes, et donne le fuseau de l'horaire."
 msgstr "Reçoit les alertes, et donne le fuseau de l'horaire."
 
 #. module: bf_nfc_round
+#: model:bf.nfc.template,name:bf_nfc_round.gabarit_ronde_surveillance
+msgid "Ronde de surveillance"
+msgstr "Ronde de surveillance"
+
+#. module: bf_nfc_round
 #: model_terms:ir.ui.view,arch_db:bf_nfc_round.view_bf_nfc_round_form
 msgid "Ronde du soir, tournée d'entretien…"
 msgstr "Ronde du soir, tournée d'entretien…"
@@ -465,6 +516,7 @@ msgstr "Erreur d'envoi du SMS"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_round__schedule__none
+#: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_template__round_schedule__none
 msgid "Sans horaire"
 msgstr "Sans horaire"
 
@@ -551,6 +603,22 @@ msgstr "Type de l'activité d'exception sur la fiche."
 #: model:ir.model.fields,help:bf_nfc_round.field_bf_nfc_round__strict_order
 msgid "Un point tapé avant le précédent est marqué."
 msgstr "Un point tapé avant le précédent est marqué."
+
+#. module: bf_nfc_round
+#: model:bf.nfc.template,description:bf_nfc_round.gabarit_ronde_surveillance
+msgid ""
+"Une pastille à chaque point de passage. La tournée dit « point 3 sur 7 », et"
+" une ronde commencée et pas finie, ou pas faite du tout, crée une activité "
+"pour la personne responsable."
+msgstr ""
+"Une pastille à chaque point de passage. La tournée dit « point 3 sur 7 », et"
+" une ronde commencée et pas finie, ou pas faite du tout, crée une activité "
+"pour la personne responsable."
+
+#. module: bf_nfc_round
+#: model:ir.model.fields.selection,name:bf_nfc_round.selection__bf_nfc_template__recette__tournee
+msgid "Une tournée et ses points"
+msgstr "Une tournée et ses points"
 
 #. module: bf_nfc_round
 #: model:ir.model.fields,field_description:bf_nfc_round.field_bf_nfc_round__website_message_ids

@@ -275,3 +275,15 @@ class TestPortes(HttpCase):
         tag.user_id = False
         reponse = self.url_open("/nfc/s?picc_data=%s&cmac=%s" % (PICC, CMAC))
         self.assertIn("aucun compte", reponse.text)
+
+    def test_signature_valide_avec_les_cles_posees_par_la_gestion(self):
+        """Le chemin de la 2.3.0 : la paire chiffrée de ``bf.nfc.sdm.key``, sans paramètre système."""
+        tag = self._preparer_signee()
+        icp = self.env["ir.config_parameter"].sudo()
+        icp.search([("key", "in", ("bf_nfc.sdm_meta_key", "bf_nfc.sdm_file_key"))]).unlink()
+        self.env["bf.nfc.sdm.key"]._poser(self.env.company, CLE_USINE, CLE_USINE)
+        reponse = self.url_open(
+            "/nfc/s?picc_data=%s&cmac=%s" % (PICC, CMAC), allow_redirects=False)
+        self.assertEqual(reponse.status_code, 200)
+        tag.invalidate_recordset(["sdm_counter"])
+        self.assertEqual(tag.sdm_counter, 61)

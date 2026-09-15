@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="gabarit_premiers_secours" model="bf.nfc.template">
+        <field name="name">Trousse de premiers secours et défibrillateur</field>
+        <field name="secteur">sst</field>
+        <field name="sequence">10</field>
+        <field name="recette">pastilles</field>
+        <field name="gesture_id" ref="gesture_reading"/>
+        <field name="checklist_id" ref="grille_premiers_secours"/>
+        <field name="reference">Règlement sur les normes minimales de premiers secours et de premiers soins (A-3.001, r. 10)</field>
+        <field name="description">Une pastille sur chaque trousse et chaque défibrillateur. Le relevé mensuel dit si la trousse est complète et si le défibrillateur est prêt ; un produit périmé devient une anomalie à corriger.</field>
+        <field name="exemple">Trousse ; cuisine du 2e
+Défibrillateur ; accueil</field>
+    </record>
+
+    <record id="gabarit_alarme" model="bf.nfc.template">
+        <field name="name">Panneau d'alarme incendie : vérification quotidienne</field>
+        <field name="secteur">incendie</field>
+        <field name="sequence">40</field>
+        <field name="recette">pastilles</field>
+        <field name="gesture_id" ref="gesture_reading"/>
+        <field name="checklist_id" ref="grille_alarme"/>
+        <field name="reference">Code de sécurité du Québec, chapitre Bâtiment (CNPI, 6.3.1.2)</field>
+        <field name="description">Une pastille sur le panneau : le relevé quotidien note l'alimentation et l'absence de trouble. Le guet signale un jour sans relevé.</field>
+        <field name="exemple">Panneau d'alarme ; local technique</field>
+    </record>
+
+    <record id="gabarit_fermeture_bureau" model="bf.nfc.template">
+        <field name="name">Ronde de fermeture du bureau</field>
+        <field name="secteur">bureau</field>
+        <field name="sequence">30</field>
+        <field name="recette">pastilles</field>
+        <field name="gesture_id" ref="gesture_reading"/>
+        <field name="checklist_id" ref="grille_fermeture_bureau"/>
+        <field name="description">Une pastille près de la sortie. La dernière personne à partir la tape : portes, fenêtres, alarme, appareils, lumières. Ce qui manque va à la personne responsable dès le soir même.</field>
+        <field name="exemple">Fermeture ; porte principale</field>
+    </record>
+</odoo>

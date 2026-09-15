@@ -1,5 +1,7 @@
 """Signaler un problème : une phrase, un billet rempli, et rien de plus."""
-from odoo.tests import TransactionCase, new_test_user, tagged
+import re
+
+from odoo.tests import HttpCase, TransactionCase, new_test_user, tagged
 
 
 @tagged("post_install", "-at_install")
@@ -88,3 +90,37 @@ class TestBillet(TransactionCase):
     def test_le_texte_est_echappe(self):
         self.pastille.with_user(self.technicien).taper("app", choix="signaler", texte="<script>x</script>")
         self.assertNotIn("<script>", self._billets().description)
+
+
+@tagged("post_install", "-at_install")
+class TestBilletParametresVerrouilles(HttpCase):
+    """🔴 Le texte fixe et l'équipe d'un billet ne se choisissent pas au tapotement.
+
+    Jusqu'à la 2.2.0 du socle, un champ ``equipe`` glissé dans le formulaire de
+    confirmation envoyait le billet, créé en sudo, dans l'équipe de son choix, et
+    ``texte_fixe`` remplaçait le texte posé par la gestion.
+    """
+
+    def test_le_formulaire_ne_choisit_ni_l_equipe_ni_le_texte(self):
+        self.env["ir.config_parameter"].sudo().set_param("bf_nfc.fenetre_doublon_secondes", "0")
+        client = self.env["res.partner"].create({"name": "Client du papier", "is_company": True})
+        autre_equipe = self.env["helpdesk.ticket.team"].create({"name": "Équipe à ne pas viser"})
+        pastille = self.env["bf.nfc.tag"].create({
+            "name": "Papier", "gesture_id": self.env.ref("bf_nfc_helpdesk.gesture_ticket").id,
+            "res_model": "res.partner", "res_id": client.id,
+            "params": '{"texte_fixe": "Plus de papier"}',
+        })
+        self.authenticate("admin", "admin")
+        page = self.url_open("/nfc/%s" % pastille.code).text
+        jeton = re.search(r'<input[^>]*name="csrf_token"[^>]*value="([^"]+)"', page)
+        self.assertTrue(jeton, "Page de confirmation sans jeton CSRF")
+        self.url_open("/nfc/%s/agir" % pastille.code, data={
+            "csrf_token": jeton.group(1),
+            "equipe": str(autre_equipe.id),
+            "texte_fixe": "Texte glissé",
+        }, allow_redirects=False)
+        billet = self.env["helpdesk.ticket"].search([("partner_id", "=", client.id)])
+        self.assertEqual(len(billet), 1)
+        self.assertIn("Plus de papier", billet.name)
+        self.assertNotIn("Texte glissé", billet.name)
+        self.assertNotEqual(billet.team_id, autre_equipe)

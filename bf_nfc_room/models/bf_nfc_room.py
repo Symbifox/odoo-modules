@@ -15,6 +15,7 @@ from odoo.exceptions import ValidationError
 class BfNfcRoom(models.Model):
     _name = "bf.nfc.room"
     _description = "Salle réservable par pastille"
+    _inherit = ["bf.nfc.target.mixin"]
     _order = "name"
 
     name = fields.Char(string="Salle", required=True)

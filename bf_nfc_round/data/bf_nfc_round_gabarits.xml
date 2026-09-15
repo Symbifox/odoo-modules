@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="gabarit_ronde_surveillance" model="bf.nfc.template">
+        <field name="name">Ronde de surveillance</field>
+        <field name="secteur">immeuble</field>
+        <field name="sequence">20</field>
+        <field name="recette">tournee</field>
+        <field name="round_schedule">daily</field>
+        <field name="round_start_hour">22.0</field>
+        <field name="round_duration">60</field>
+        <field name="description">Une pastille à chaque point de passage. La tournée dit « point 3 sur 7 », et une ronde commencée et pas finie, ou pas faite du tout, crée une activité pour la personne responsable.</field>
+        <field name="exemple">Entrée principale
+Stationnement ; niveau P1
+Salle mécanique ; sous-sol
+Toit ; accès par l'escalier est</field>
+    </record>
+</odoo>

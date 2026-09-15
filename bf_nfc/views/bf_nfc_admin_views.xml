@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ─── Types de fiche ─────────────────────────────────────────────── -->
+    <record id="view_bf_nfc_target_type_list" model="ir.ui.view">
+        <field name="name">bf.nfc.target.type.list</field>
+        <field name="model">bf.nfc.target.type</field>
+        <field name="arch" type="xml">
+            <list string="Types de fiche" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="model"/>
+                <field name="name"/>
+                <field name="gestion_seulement"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_target_type" model="ir.actions.act_window">
+        <field name="name">Types de fiche</field>
+        <field name="res_model">bf.nfc.target.type</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun type de fiche</p>
+            <p>Les types de fiche qu'une pastille peut viser, en plus de ceux qu'un geste
+            exige de lui-même (l'équipement d'un prêt, le point d'une tournée). La même
+            liste sert au site et à l'application.</p>
+        </field>
+    </record>
+
+    <!-- ─── Clés des pastilles signées ─────────────────────────────────── -->
+    <record id="view_bf_nfc_sdm_key_list" model="ir.ui.view">
+        <field name="name">bf.nfc.sdm.key.list</field>
+        <field name="model">bf.nfc.sdm.key</field>
+        <field name="arch" type="xml">
+            <!-- Aucune colonne de clé : une clé posée ne se relit jamais. -->
+            <list string="Clés des pastilles signées" create="false" edit="false">
+                <field name="company_id"/>
+                <field name="set_date"/>
+                <field name="set_by_id"/>
+                <field name="state" widget="badge" decoration-success="state == 'ok'"
+                       decoration-danger="state == 'illisibles'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_sdm_key" model="ir.actions.act_window">
+        <field name="name">Clés des pastilles signées</field>
+        <field name="res_model">bf.nfc.sdm.key</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune clé posée</p>
+            <p>Une pastille signée (NTAG 424 DNA) prouve chaque tapotement avec deux clés
+            AES de 16 octets, gravées dans la puce. Posez-les depuis Réglages : elles sont
+            chiffrées aussitôt et ne se réaffichent jamais.</p>
+        </field>
+    </record>
+
+    <!-- ─── Réglages ───────────────────────────────────────────────────── -->
+    <record id="view_bf_nfc_config_form" model="ir.ui.view">
+        <field name="name">bf.nfc.config.form</field>
+        <field name="model">bf.nfc.config</field>
+        <field name="arch" type="xml">
+            <form string="Réglages des pastilles">
+                <sheet>
+                    <group string="Tapotements">
+                        <field name="fenetre_doublon"/>
+                        <field name="differe_max_heures"/>
+                    </group>
+                    <group string="Fiches visées">
+                        <div colspan="2" class="text-muted">
+                            Les types de fiche que la gravure propose, dans le site comme
+                            dans l'application.
+                        </div>
+                        <field name="type_count" string="Types dans la liste"/>
+                        <button name="action_types_de_fiche" type="object" string="Gérer les types de fiche"
+                                class="btn-link" colspan="2"/>
+                    </group>
+                    <group string="Pastilles signées (NTAG 424 DNA)">
+                        <field name="origine_cle"/>
+                        <div colspan="2" class="alert alert-warning" role="status"
+                             invisible="not avertissement_cle">
+                            <field name="avertissement_cle" nolabel="1"/>
+                        </div>
+                        <field name="cles_ids" nolabel="1" colspan="2" readonly="1">
+                            <list>
+                                <field name="company_id"/>
+                                <field name="set_date"/>
+                                <field name="set_by_id"/>
+                                <field name="state" widget="badge" decoration-success="state == 'ok'"
+                                       decoration-danger="state == 'illisibles'"/>
+                            </list>
+                        </field>
+                        <button name="action_poser_cles" type="object" string="Poser ou remplacer des clés"
+                                class="btn-secondary" colspan="2"/>
+                    </group>
+                    <group string="Application" groups="base.group_system">
+                        <field name="schemas_appariement"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_enregistrer" type="object" string="Enregistrer" class="btn-primary"/>
+                    <button special="cancel" string="Fermer"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_nfc_config" model="ir.actions.act_window">
+        <field name="name">Réglages des pastilles</field>
+        <field name="res_model">bf.nfc.config</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="view_bf_nfc_sdm_key_wizard_form" model="ir.ui.view">
+        <field name="name">bf.nfc.sdm.key.wizard.form</field>
+        <field name="model">bf.nfc.sdm.key.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Poser les clés">
+                <div class="alert alert-warning" role="status" invisible="not remplace">
+                    Cette société a déjà ses clés. Les remplacer rend inertes toutes les
+                    pastilles signées gravées avec les anciennes, jusqu'à ce qu'elles soient
+                    reprogrammées.
+                </div>
+                <group>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="company_id" invisible="1"/>
+                    <field name="meta_key" password="True" placeholder="32 caractères hexadécimaux"/>
+                    <field name="file_key" password="True" placeholder="32 caractères hexadécimaux"/>
+                    <field name="remplace" invisible="1"/>
+                </group>
+                <p class="text-muted small">
+                    Les deux clés sont chiffrées dès l'enregistrement et ne se réafficheront
+                    jamais, ni ici ni ailleurs.
+                </p>
+                <footer>
+                    <button name="action_poser" type="object" string="Poser les clés" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ─── Création en lot ────────────────────────────────────────────── -->
+    <record id="view_bf_nfc_tag_lot_form" model="ir.ui.view">
+        <field name="name">bf.nfc.tag.lot.form</field>
+        <field name="model">bf.nfc.tag.lot</field>
+        <field name="arch" type="xml">
+            <form string="Créer des pastilles">
+                <field name="res_model" invisible="1"/>
+                <field name="res_ids" invisible="1"/>
+                <p>
+                    Une pastille par fiche : <field name="fiche_count" class="oe_inline" readonly="1"/> fiche(s).
+                    <span invisible="not deja_count">
+                        <field name="deja_count" class="oe_inline" readonly="1"/> en ont déjà une pour ce
+                        geste et seront sautées.
+                    </span>
+                </p>
+                <group>
+                    <field name="gesture_id" options="{'no_create': True}"/>
+                    <field name="prefixe" placeholder="Ronde du soir"/>
+                    <field name="confirm_required"/>
+                    <field name="params" groups="base.group_no_one"/>
+                </group>
+                <p class="text-muted small">
+                    Les étiquettes QR s'impriment ensuite depuis la liste des pastilles créées ;
+                    la gravure se fait depuis « Mes pastilles » dans l'application.
+                </p>
+                <footer>
+                    <button name="action_creer" type="object" string="Créer" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_partner_creer_pastilles" model="ir.actions.server">
+        <field name="name">Créer des pastilles</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="groups_id" eval="[(4, ref('bf_nfc.group_nfc_manager'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_creer_pastilles()</field>
+    </record>
+
+    <!-- ─── Lien retour sur le contact ─────────────────────────────────── -->
+    <record id="view_partner_form_pastilles" model="ir.ui.view">
+        <field name="name">res.partner.form.pastilles</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_voir_pastilles" type="object" class="oe_stat_button"
+                        icon="fa-wifi" groups="bf_nfc.group_nfc_manager" invisible="not nfc_tag_count">
+                    <field name="nfc_tag_count" widget="statinfo" string="Pastilles"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ─── Menus ──────────────────────────────────────────────────────── -->
+    <menuitem id="menu_nfc_settings" name="Réglages" parent="menu_nfc_config"
+              action="action_bf_nfc_config" sequence="5"/>
+    <menuitem id="menu_nfc_target_types" name="Types de fiche" parent="menu_nfc_config"
+              action="action_bf_nfc_target_type" sequence="15"/>
+    <menuitem id="menu_nfc_sdm_keys" name="Clés des pastilles signées" parent="menu_nfc_config"
+              action="action_bf_nfc_sdm_key" sequence="25"/>
+</odoo>

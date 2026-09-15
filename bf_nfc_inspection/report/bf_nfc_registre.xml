@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le registre : les colonnes d'un registre papier. Date, élément, personne,
+         résultat, et pour une anomalie, ce qui a été fait et quand. Une page par
+         grille, dans l'ordre des relevés. -->
+    <record id="action_report_registre" model="ir.actions.report">
+        <field name="name">Registre des relevés</field>
+        <field name="model">bf.nfc.reading</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_nfc_inspection.report_registre</field>
+        <field name="report_file">bf_nfc_inspection.report_registre</field>
+        <field name="print_report_name">'Registre des relevés'</field>
+        <field name="binding_model_id" ref="model_bf_nfc_reading"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_registre">
+        <t t-call="web.html_container">
+            <t t-foreach="docs.mapped('checklist_id')" t-as="grille">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="font-size: 10px;">
+                        <h2 style="font-size: 16px; margin-bottom: 2px;">Registre : <t t-esc="grille.name"/></h2>
+                        <div t-if="grille.reference" class="text-muted" style="margin-bottom: 2px;">
+                            <t t-esc="grille.reference"/>
+                        </div>
+                        <div class="text-muted" style="margin-bottom: 8px;">
+                            <t t-esc="res_company.name"/> · imprimé le
+                            <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                        </div>
+                        <table class="table table-sm table-bordered" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 11%;">Date et heure</th>
+                                    <th style="width: 15%;">Élément vérifié</th>
+                                    <th style="width: 12%;">Vérifié par</th>
+                                    <th>Résultat</th>
+                                    <th style="width: 9%;">État</th>
+                                    <th style="width: 20%;">Correction</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="docs.filtered(lambda r: r.checklist_id == grille).sorted('tapped_at')" t-as="r">
+                                    <tr t-att-style="'background-color: #fdecea;' if r.state == 'anomalie' else ''">
+                                        <td>
+                                            <t t-esc="context_timestamp(r.tapped_at).strftime('%Y-%m-%d %H:%M')"/>
+                                            <div t-if="r.offline" class="text-muted">en différé</div>
+                                            <div class="text-muted"><t t-esc="r.name"/></div>
+                                        </td>
+                                        <td>
+                                            <t t-esc="r.tag_name"/>
+                                            <div t-if="r.place" class="text-muted"><t t-esc="r.place"/></div>
+                                        </td>
+                                        <td>
+                                            <t t-esc="r.verifier"/>
+                                            <!-- ⚠️ Par la porte signée, la personne n'a pas de
+                                                 compte : ce nom est ce qu'elle a écrit. Le
+                                                 registre doit le dire, sinon il laisse croire
+                                                 à une identité prouvée. -->
+                                            <div t-if="r.door == 'signed'" class="text-muted">
+                                                nom déclaré (pastille signée)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <t t-foreach="r.line_ids" t-as="l">
+                                                <div t-att-style="'font-weight: bold;' if l.anomaly else ''">
+                                                    <t t-esc="l._texte_court()"/>
+                                                </div>
+                                            </t>
+                                        </td>
+                                        <td><t t-esc="dict(r._fields['state']._description_selection(r.env)).get(r.state)"/></td>
+                                        <td>
+                                            <t t-if="r.correction"><t t-esc="r.correction"/></t>
+                                            <div t-if="r.correction_date" class="text-muted">
+                                                le <t t-esc="r.correction_date"/>
+                                                <t t-if="r.corrected_by_id">par <t t-esc="r.corrected_by_id.name"/></t>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

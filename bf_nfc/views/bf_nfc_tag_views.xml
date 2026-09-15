@@ -9,7 +9,10 @@
                 <field name="code"/>
                 <field name="gesture_id"/>
                 <field name="place" optional="show"/>
-                <field name="res_model" optional="hide"/>
+                <!-- ⚠️ PAS « cible » ici : une référence non stockée recalcule sa
+                     sélection (deux recherches et un regroupement) à chaque LIGNE.
+                     Le nom technique suffit en liste ; la fiche se lit au formulaire. -->
+                <field name="res_model" optional="hide" string="Type de fiche"/>
                 <field name="sdm_enabled" optional="hide" string="Signée"/>
                 <field name="tap_count" optional="show"/>
                 <field name="last_tap_date" optional="show"/>
@@ -30,6 +33,8 @@
                             confirm="La pastille physique deviendra inerte et devra être regravée. Continuer ?"
                             groups="bf_nfc.group_nfc_manager"/>
                     <button name="action_voir_journal" type="object" string="Journal"/>
+                    <button name="action_ouvrir_cible" type="object" string="Ouvrir la fiche visée"
+                            invisible="not cible"/>
                 </header>
                 <sheet>
                     <widget name="web_ribbon" title="Retirée" bg_color="text-bg-danger"
@@ -43,8 +48,9 @@
                             <field name="gesture_id"/>
                             <field name="gesture_writes" invisible="1"/>
                             <field name="gesture_kind" invisible="1"/>
-                            <field name="res_model" placeholder="project.task"/>
-                            <field name="res_id"/>
+                            <field name="cible" options="{'no_create': True}"/>
+                            <field name="res_model" groups="base.group_no_one" readonly="1"/>
+                            <field name="res_id" groups="base.group_no_one" readonly="1"/>
                             <field name="params" placeholder="{&quot;minutes&quot;: 15}"/>
                             <field name="confirm_required" invisible="not gesture_writes"/>
                         </group>
@@ -106,6 +112,7 @@
                         </page>
                     </notebook>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>
@@ -122,10 +129,13 @@
                 <filter name="en_service" string="En service" domain="[('active', '=', True)]"/>
                 <filter name="signees" string="Signées" domain="[('sdm_enabled', '=', True)]"/>
                 <filter name="jamais_tapee" string="Jamais tapée" domain="[('tap_count', '=', 0)]"/>
+                <filter name="expirees" string="Expirées"
+                        domain="[('date_expiry', '!=', False), ('date_expiry', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
                 <separator/>
                 <filter name="retirees" string="Retirées" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Regrouper par">
                     <filter name="par_geste" string="Geste" context="{'group_by': 'gesture_id'}"/>
+                    <filter name="par_type" string="Type de fiche" context="{'group_by': 'res_model'}"/>
                 </group>
             </search>
         </field>
