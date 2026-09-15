@@ -1,10 +1,14 @@
 import logging
 import os
 
-from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
+
+# Ceiling on the personality text composed into the prompt. The bridge cuts at
+# the same length; refusing here is what keeps that cut from being silent.
+PERSONALITY_MAX_CHARS = 2000
 
 try:
     from cryptography.fernet import Fernet, InvalidToken
@@ -89,6 +93,35 @@ class ResConfigSettings(models.TransientModel):
         default=660,
         help="Maximum time to wait for a Claude response.",
     )
+    # A Char, not a Text: res.config.settings only binds config_parameter to
+    # char/boolean/integer/float/selection/many2one/datetime fields. The view
+    # renders it as a textarea (widget="text"); a Char has no length limit.
+    claude_personality = fields.Char(
+        string="Gen's personality",
+        config_parameter="bf_claude_chat.personality",
+        help="How Gen speaks on this instance: the name it goes by, tu or vous, "
+             "the default language, how long its answers run, how it presents "
+             "itself. Composed into every conversation, before the steering "
+             "instructions. It shapes the tone, never what Gen may do: tool "
+             "access and safety rules are set on the bridge, not here. "
+             "2,000 characters at most.",
+    )
+
+    # A constraint rather than a set_values() override: the settings form saves
+    # the record before it runs set_values(), so the refusal lands on the save
+    # itself, and set_values() on a full instance reaches every module's
+    # override, some of which call out to the network (onlyoffice_odoo checks
+    # its document server), which no test should trigger.
+    @api.constrains("claude_personality")
+    def _check_personality_size(self):
+        for rec in self:
+            size = len((rec.claude_personality or "").strip())
+            if size > PERSONALITY_MAX_CHARS:
+                raise ValidationError(_(
+                    "Gen's personality is limited to %(max)s characters; this "
+                    "text has %(size)s. Shorten it: the bridge cuts at the same "
+                    "length, and a cut would be silent.",
+                    max=PERSONALITY_MAX_CHARS, size=size))
     # --- Encryption helpers ---
 
     @staticmethod

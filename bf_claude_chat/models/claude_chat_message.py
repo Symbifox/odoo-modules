@@ -123,6 +123,12 @@ class ClaudeChatMessage(models.Model):
         index=True,
         string="Record Type",
     )
+    account_id = fields.Many2one(
+        related="session_id.account_id",
+        store=True,
+        index=True,
+        string="Compte",
+    )
 
     # ------------------------------------------------------------------
     # Les passes sans personne au clavier
@@ -153,11 +159,17 @@ class ClaudeChatMessage(models.Model):
 
     @api.model
     def journaliser_passe(self, origin, usage, resume="",
-                          res_model=False, res_id=False, user_id=False):
+                          res_model=False, res_id=False, user_id=False,
+                          compte=False):
         """Inscrire au registre ce qu'une passe hors clavardage a consommé.
 
         Point d'entrée unique du pont. Rend l'identifiant de la ligne écrite,
         ou ``False`` si rien n'a pu l'être.
+
+        `compte` est le répertoire de configuration sur lequel la passe a tiré
+        (ce que CLAUDE_CONFIG_DIR pointait). Facultatif : un appelant qui ne le
+        sait pas laisse le fil non attribué, ce qui est une réponse honnête et
+        pas une perte.
 
         **Jamais bloquant.** Une passe qui a fait son travail ne doit pas être
         signalée en échec parce que la comptabilité a raté : l'appelant, côté
@@ -166,6 +178,9 @@ class ClaudeChatMessage(models.Model):
         try:
             session = self.env["claude.chat.session"].sudo()._fil_de_passe(
                 origin, res_model=res_model, res_id=res_id, user_id=user_id)
+            if compte and not session.account_id:
+                session.account_id = self.env["claude.account"].sudo(
+                ).compte_par_repertoire(compte)
             valeurs = {k: v for k, v in (usage or {}).items()
                        if k in self.CHAMPS_USAGE}
             valeurs.update({

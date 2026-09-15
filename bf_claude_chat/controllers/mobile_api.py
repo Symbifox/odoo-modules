@@ -34,7 +34,7 @@ from odoo.modules.registry import Registry
 from odoo.addons.bf_ai_bridge.tools import transport
 
 from .main import (
-    _attach_steering, _check_rate_limit, _generate_smart_title,
+    _attach_identity, _attach_steering, _check_rate_limit, _generate_smart_title,
     _get_settings, usage_vals,
 )
 
@@ -130,6 +130,23 @@ class _Avancement:
         self.outils.append({"name": nom, "at": len(self.texte)})
         self.ecrire(force=True)  # un outil qui démarre mérite d'être vu tout de suite
 
+    def detail_recu(self, nom, detail):
+        """La ligne lisible d'un outil, arrivée quand son entrée est complète.
+
+        Le pont ne connaît la description d'une commande qu'à la
+        fin de son écriture. On la pose sur le dernier outil de ce nom qui n'en
+        a pas encore, pour que l'app dise « Lecture des tâches du projet » au
+        lieu de « Bash ».
+        """
+        detail = (detail or "").strip()[:120]
+        if not detail:
+            return
+        for outil in reversed(self.outils):
+            if outil.get("name") == nom and not outil.get("detail"):
+                outil["detail"] = detail
+                self.ecrire(force=True)
+                return
+
     def ecrire(self, force=False, **extra):
         maintenant = time.monotonic()
         if not force and maintenant - self.dernier < _FLUSH_SECONDS:
@@ -177,6 +194,9 @@ def _run_turn(db_name, uid, session_id, message_id, question, payload,
                         avancement.texte_recu(charge.get("delta"))
                     elif evenement_courant == b"tool":
                         avancement.outil_recu(charge.get("name") or "outil")
+                    elif evenement_courant == b"tool_detail":
+                        avancement.detail_recu(charge.get("name") or "outil",
+                                               charge.get("detail"))
                     elif evenement_courant in (b"done", b"error"):
                         final = charge
                         final["_event"] = evenement_courant.decode()
@@ -365,6 +385,7 @@ class BfClaudeChatMobileApi(http.Controller):
         }
         if settings["api_key"]:
             payload["api_key"] = settings["api_key"]
+        _attach_identity(request.env, payload)
         _attach_steering(request.env, payload, None)
 
         # Le fil doit démarrer APRÈS l'écriture, sinon il cherche un message que

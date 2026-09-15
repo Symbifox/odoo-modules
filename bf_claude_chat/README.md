@@ -259,6 +259,7 @@ the text of `result` is not.
 | API Key | (empty) | Optional Anthropic key (otherwise the Max plan) |
 | Tenant Slug | pme | Selects the bridge's tools and system prompt |
 | Bridge Socket | /run/claude-bridge/bridge.sock | Unix socket path (parameter `bf_ai_bridge.socket`, shared by every module calling the bridge) |
+| Gen's personality | (empty) | How Gen speaks here (name, tu/vous, language, length, self-presentation), composed before the steering instructions as `context.identity`. Tone only, 2,000 characters at most; what Gen may do stays on the bridge |
 
 ## Security
 

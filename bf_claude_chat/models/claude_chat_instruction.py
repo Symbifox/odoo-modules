@@ -10,10 +10,18 @@ payload, alongside the page context.
 """
 
 import difflib
+import logging
 import re
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+
+_logger = logging.getLogger(__name__)
+
+# Ceiling on the composed steering block. The controller and the bridge both
+# cut at this length, so the block is fitted here, on a line boundary, and the
+# cut is logged and shown rather than silent.
+STEERING_MAX_CHARS = 4000
 
 # Two bodies whose normalized forms are at least this similar are reported as
 # near-duplicates. Tuned so that a reworded copy trips it but two genuinely
@@ -85,6 +93,16 @@ class ClaudeChatInstruction(models.Model):
         help="Leave empty to apply the instruction to everyone. Set it to keep "
              "the instruction private to that user.",
     )
+    block_chars = fields.Integer(
+        compute="_compute_block_usage",
+        string="Composed block (characters)",
+        help="Size of the block Gen receives for this instruction's audience, "
+             "this instruction included, against the ceiling.",
+    )
+    block_usage = fields.Char(
+        compute="_compute_block_usage",
+        string="Block usage",
+    )
 
     @api.constrains("scope", "model_id")
     def _check_scope_model(self):
@@ -121,20 +139,112 @@ class ClaudeChatInstruction(models.Model):
                         ("user_id", "=", self.env.uid)]
         return self.search(owner_domain + scope_domain)
 
+    @staticmethod
+    def _line(body):
+        """One prompt line for an instruction body, or an empty string."""
+        body = _SPACE_RE.sub(" ", (body or "").strip())
+        return f"- {body}" if body else ""
+
     @api.model
-    def _build_prompt_block(self, res_model=None):
-        """Compose the steering block, or an empty string when there is none."""
-        instructions = self._applicable(res_model)
-        if not instructions:
-            return ""
-        lines = []
-        for instruction in instructions:
-            body = _SPACE_RE.sub(" ", (instruction.body or "").strip())
-            if body:
-                lines.append(f"- {body}")
-        if not lines:
-            return ""
-        return "\n".join(lines)
+    def _compose_lines(self, res_model=None):
+        """One line per applicable instruction, in sequence order, no ceiling."""
+        lines = (self._line(instruction.body)
+                 for instruction in self._applicable(res_model))
+        return [line for line in lines if line]
+
+    @staticmethod
+    def _fit_lines(lines, max_chars=STEERING_MAX_CHARS):
+        """Keep whole lines, in order, until the next one would not fit.
+
+        Cutting on a line boundary is the point: a block sliced mid-sentence
+        hands Claude half a directive, which reads as a whole one. Returns
+        ``(kept, dropped)``.
+        """
+        kept, total = [], 0
+        for line in lines:
+            extra = len(line) + (1 if kept else 0)
+            if total + extra > max_chars:
+                break
+            kept.append(line)
+            total += extra
+        return kept, len(lines) - len(kept)
+
+    @staticmethod
+    def _block_size(lines):
+        return sum(len(line) for line in lines) + max(len(lines) - 1, 0)
+
+    @api.model
+    def _build_prompt_block(self, res_model=None, max_chars=STEERING_MAX_CHARS):
+        """Compose the steering block, or an empty string when there is none.
+
+        Bounded to ``max_chars`` on a line boundary; what does not fit is left
+        out, last in sequence first, and said in the log.
+        """
+        kept, dropped = self._fit_lines(self._compose_lines(res_model), max_chars)
+        if dropped:
+            _logger.warning(
+                "bf_claude_chat: steering block for uid %s exceeds %s characters; "
+                "%s instruction(s) left out, last in sequence first.",
+                self.env.uid, max_chars, dropped,
+            )
+        return "\n".join(kept)
+
+    # ------------------------------------------------------------------
+    # Ceiling gauge
+    # ------------------------------------------------------------------
+    def _projected_lines(self):
+        """The lines this record's audience would receive, with the record as
+        it stands in the form, saved or not, in place of its database row."""
+        self.ensure_one()
+        res_model = self.res_model if self.scope == "model" else None
+        origin_id = self._origin.id
+        rows = []
+        for instruction in self._applicable(res_model):
+            if origin_id and instruction.id == origin_id:
+                continue
+            line = self._line(instruction.body)
+            if line:
+                rows.append((instruction.sequence, instruction.id, line))
+        mine = self._line(self.body)
+        applies = self.active and (
+            not self.user_id or self.user_id.id == self.env.uid)
+        if mine and applies:
+            rows.append((self.sequence or 0, origin_id or 0, mine))
+        rows.sort(key=lambda row: (row[0], row[1]))
+        return [row[2] for row in rows]
+
+    @api.depends("body", "active", "scope", "model_id", "user_id", "sequence")
+    def _compute_block_usage(self):
+        for rec in self:
+            lines = rec._projected_lines()
+            size = self._block_size(lines)
+            _kept, dropped = self._fit_lines(lines)
+            rec.block_chars = size
+            if dropped:
+                rec.block_usage = _(
+                    "%(size)s / %(max)s characters: %(dropped)s instruction(s) "
+                    "would be left out",
+                    size=size, max=STEERING_MAX_CHARS, dropped=dropped)
+            else:
+                rec.block_usage = _("%(size)s / %(max)s characters",
+                                    size=size, max=STEERING_MAX_CHARS)
+
+    @api.onchange("body", "active", "scope", "model_id", "user_id", "sequence")
+    def _onchange_block_ceiling(self):
+        lines = self._projected_lines()
+        size = self._block_size(lines)
+        if size <= STEERING_MAX_CHARS:
+            return None
+        _kept, dropped = self._fit_lines(lines)
+        return {"warning": {
+            "title": _("Over the steering ceiling"),
+            "message": _(
+                "With this instruction, the block Gen receives would be "
+                "%(size)s characters for a ceiling of %(max)s. The last "
+                "%(dropped)s instruction(s) in sequence order would be left "
+                "out. Shorten, reorder or archive.",
+                size=size, max=STEERING_MAX_CHARS, dropped=dropped),
+        }}
 
     # ------------------------------------------------------------------
     # Coherence
@@ -228,6 +338,15 @@ class ClaudeChatInstruction(models.Model):
                 )
             body = "\n\n".join(chunks)
 
+        lines = self._compose_lines(None)
+        size = self._block_size(lines)
+        _kept, dropped = self._fit_lines(lines)
+        gauge = _("Global block for you: %(size)s / %(max)s characters.",
+                  size=size, max=STEERING_MAX_CHARS)
+        if dropped:
+            gauge += " " + _("%(dropped)s instruction(s) are left out.",
+                             dropped=dropped)
+        body = gauge + "\n\n" + body
         report = self.env["claude.chat.coherence.report"].create({"body": body})
         return {
             "type": "ir.actions.act_window",

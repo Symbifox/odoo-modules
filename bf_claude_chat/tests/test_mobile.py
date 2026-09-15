@@ -81,3 +81,51 @@ class TestGenfoxMobile(TransactionCase):
         self.assertEqual(avancement.texte, "Bonjour")
         self.assertEqual([t["name"] for t in avancement.outils],
                          ["odoo_list_project_tasks"])
+
+    def test_a_tool_detail_lands_on_the_last_call_of_that_tool(self):
+        """La description d'une commande n'arrive qu'à la fin de
+        son écriture. Elle doit se poser sur le DERNIER appel de ce nom qui n'en
+        a pas encore, sans toucher aux autres outils ni aux appels déjà décrits."""
+        from ..controllers.mobile_api import _Avancement
+        avancement = _Avancement(self.env.cr.dbname, self.env.uid, 0)
+        avancement.outil_recu("Bash")
+        avancement.detail_recu("Bash", "Lecture des tâches du projet")
+        avancement.outil_recu("odoo_get_task")
+        avancement.outil_recu("Bash")
+        avancement.detail_recu("Bash", "Compte des tâches fermées")
+        self.assertEqual(
+            [(t["name"], t.get("detail")) for t in avancement.outils],
+            [("Bash", "Lecture des tâches du projet"), ("odoo_get_task", None),
+             ("Bash", "Compte des tâches fermées")],
+        )
+
+    def test_an_empty_or_orphan_tool_detail_changes_nothing(self):
+        """Un détail vide, ou qui ne trouve aucun appel de ce nom à décrire,
+        ne crée rien et ne remplace rien ; un détail trop long est borné."""
+        from ..controllers.mobile_api import _Avancement
+        avancement = _Avancement(self.env.cr.dbname, self.env.uid, 0)
+        avancement.outil_recu("Bash")
+        avancement.detail_recu("Bash", "   ")
+        avancement.detail_recu("WebSearch", "loi 25")
+        self.assertEqual(avancement.outils, [{"name": "Bash", "at": 0}])
+        avancement.detail_recu("Bash", "x" * 300)
+        self.assertEqual(len(avancement.outils[0]["detail"]), 120)
+        avancement.detail_recu("Bash", "autre")
+        self.assertEqual(len(avancement.outils[0]["detail"]), 120)
+
+    def test_the_turn_relays_the_bridge_tool_detail_to_the_progress(self):
+        """Le fil mobile trie les événements du pont lui-même : sans son aiguillage
+        vers `detail_recu`, le détail n'atteint jamais `tool_log` et l'app garde
+        « Bash ». Mutation qui a survécu aux deux essais précédents, d'où celui-ci."""
+        from unittest.mock import patch
+        from ..controllers import mobile_api
+        trames = [
+            b'event: tool\ndata: {"name": "Bash", "status": "start"}\n\n',
+            'event: tool_detail\ndata: {"name": "Bash", "detail": "Lecture des tâches"}\n\n'.encode(),
+            b'event: done\ndata: {"response": "ok"}\n\n',
+        ]
+        with patch.object(mobile_api.transport, "stream", return_value=iter(trames)):
+            with patch.object(mobile_api._Avancement, "detail_recu") as detail:
+                mobile_api._run_turn(self.env.cr.dbname, self.env.uid, 0, 0, "question",
+                                     {}, "/nulle/part.sock", 5, "", False)
+        detail.assert_called_once_with("Bash", "Lecture des tâches")

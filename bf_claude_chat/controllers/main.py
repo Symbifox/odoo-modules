@@ -10,6 +10,12 @@ from collections import defaultdict
 import odoo
 from odoo import http
 from odoo.addons.bf_ai_bridge.tools import transport
+from odoo.addons.bf_claude_chat.models.claude_chat_instruction import (
+    STEERING_MAX_CHARS,
+)
+from odoo.addons.bf_claude_chat.models.res_config_settings import (
+    PERSONALITY_MAX_CHARS,
+)
 from odoo.http import request, Response
 from odoo.modules.registry import Registry
 
@@ -323,7 +329,28 @@ def _attach_steering(env, bridge_payload, ctx_model=None):
         return
     if not block:
         return
-    bridge_payload.setdefault("context", {})["steering"] = block[:4000]
+    bridge_payload.setdefault("context", {})["steering"] = block[:STEERING_MAX_CHARS]
+
+
+def _attach_identity(env, bridge_payload):
+    """Compose the personality of Gen on this instance into the bridge payload.
+
+    An administrator writes it once in Settings > Gen; it travels as
+    ``identity`` in the context and the bridge renders it before the steering
+    block. Tone only: nothing in it can widen what Gen may do, the tenant
+    prompt on the bridge keeps that. Silent on failure, like the steering: a
+    broken setting must never cost the user their message.
+    """
+    try:
+        text = env["ir.config_parameter"].sudo().get_param(
+            "bf_claude_chat.personality", "")
+    except Exception:
+        _logger.debug("Personality lookup failed", exc_info=True)
+        return
+    text = (text or "").strip()
+    if not text:
+        return
+    bridge_payload.setdefault("context", {})["identity"] = text[:PERSONALITY_MAX_CHARS]
 
 
 # Directive sent on the user's behalf the first time the panel opens on a
@@ -440,6 +467,7 @@ class ClaudeChatController(http.Controller):
                 if persona_summary:
                     bridge_payload["context"]["persona_summary"] = persona_summary[:2000]
 
+        _attach_identity(request.env, bridge_payload)
         _attach_steering(
             request.env, bridge_payload,
             bridge_payload.get("context", {}).get("model"),
@@ -604,6 +632,7 @@ class ClaudeChatController(http.Controller):
                 if persona_summary:
                     bridge_payload["context"]["persona_summary"] = persona_summary[:2000]
 
+        _attach_identity(request.env, bridge_payload)
         _attach_steering(
             request.env, bridge_payload,
             bridge_payload.get("context", {}).get("model"),

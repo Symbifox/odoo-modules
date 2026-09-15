@@ -10,23 +10,62 @@ $bf-accent-light: color-mix(in srgb, var(--brand-primary, #714bea) 8%, transpare
 $bf-accent-focus: color-mix(in srgb, var(--brand-primary, #714bea) 25%, transparent);
 $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transparent);
 
+// ── Jetons de surface ────────────────────────────────────────
+// Gen peint ses propres surfaces : elles ne viennent ni d'une `.card` Bootstrap
+// ni d'une vue Odoo, donc RIEN dans le thème ne les repeint. Tant qu'elles
+// étaient écrites en dur, `bf_dark_mode` teintait le TEXTE (il force `p`,
+// `h1..h6`, `strong`, `.text-muted` sur tout le client) sans toucher au FOND :
+// du #d1d5d8 sur du blanc, à 1,4:1. On passe donc par des jetons, redéfinis
+// d'un seul bloc plus bas — la couleur se pose sur la SURFACE, et ce qu'on
+// ajoutera plus tard dans la carte hérite du bon ton.
+//
+// Le mode clair garde EXACTEMENT les valeurs d'avant : les défauts ci-dessous
+// sont les anciennes constantes, déplacées, pas retouchées.
+:root {
+    --bf-gen-bg:            #f8f9fa;                 // page, panneau, zone de saisie
+    --bf-gen-surface:       #ffffff;                 // barre latérale, en-tête pleine page
+    --bf-gen-raised:        #fafafa;                 // en-tête du panneau, rail, partage
+    --bf-gen-border:        rgba(0, 0, 0, 0.08);     // filet des bulles
+    --bf-gen-separator:     #f0f0f0;                 // séparateur d'une conversation
+    --bf-gen-hover:         rgba(0, 0, 0, 0.04);
+    --bf-gen-strong:        #333;                    // icônes d'en-tête
+    --bf-gen-strong-hover:  #000;
+    --bf-gen-code-bg:       #f4f4f5;                 // `code`, `pre`, `th`
+    --bf-gen-table-border:  #ddd;
+    --bf-gen-dots:          #aaa;                    // points « réfléchit… »
+    --bf-gen-meta:          #999;                    // compteur de jetons, consommation
+    --bf-gen-warn-fg:       #b45309;                 // réponse interrompue
+    --bf-gen-warn-bg:       rgba(245, 158, 11, 0.12);
+    --bf-gen-overlay:       rgba(0, 0, 0, 0.15);
+
+    // Bulle de l'assistant et avatar : la marque diluée dans la surface.
+    // ⚠️ Le repli historique de ces deux-là est #3367d6, pas #714bea.
+    --bf-gen-bubble-bg:     color-mix(in srgb, var(--brand-primary, #3367d6) 8%, white);
+    --bf-gen-bubble-fg:     #333;
+    --bf-gen-avatar-bg:     color-mix(in srgb, var(--brand-primary, #3367d6) 22%, white);
+    --bf-gen-avatar-fg:     var(--brand-primary, #3367d6);
+
+    // L'accent quand il sert de TEXTE (liens, pastilles, jetons d'outil).
+    --bf-gen-accent-fg:     var(--brand-primary, #714bea);
+}
+
 // ── Layout ───────────────────────────────────────────────────
 .bf-chat-container {
     height: calc(100vh - 46px); // full height minus Odoo navbar
-    background: #f8f9fa;
+    background: var(--bf-gen-bg);
 }
 
 // ── Sidebar ──────────────────────────────────────────────────
 .bf-chat-sidebar {
     width: 280px;
     min-width: 280px;
-    background: white;
+    background: var(--bf-gen-surface);
 
     .bf-chat-session-item {
         transition: background-color 0.15s;
 
         &:hover {
-            background-color: rgba(0, 0, 0, 0.04);
+            background-color: var(--bf-gen-hover);
         }
 
         &.active {
@@ -56,7 +95,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 
 // ── Chat panel ───────────────────────────────────────────────
 .bf-chat-panel {
-    background: #f8f9fa;
+    background: var(--bf-gen-bg);
 }
 
 .bf-chat-messages {
@@ -80,13 +119,13 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 }
 
 .bf-chat-avatar-assistant {
-    background: color-mix(in srgb, var(--brand-primary, #3367d6) 22%, white);
-    color: var(--brand-primary, #3367d6);
+    background: var(--bf-gen-avatar-bg);
+    color: var(--bf-gen-avatar-fg);
 }
 
 .bf-chat-avatar-user {
     background: color-mix(in srgb, var(--brand-primary, #714bea) 15%, transparent);
-    color: $bf-accent;
+    color: var(--bf-gen-accent-fg);
 }
 
 // Side panel avatars (compact)
@@ -122,9 +161,9 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 }
 
 .bf-chat-bubble-assistant {
-    background-color: color-mix(in srgb, var(--brand-primary, #3367d6) 8%, white);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    color: #333;
+    background-color: var(--bf-gen-bubble-bg);
+    border: 1px solid var(--bf-gen-border);
+    color: var(--bf-gen-bubble-fg);
     border-radius: 1rem 1rem 1rem 0.25rem;
     padding: 12px 16px;
 }
@@ -149,7 +188,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     }
 
     pre {
-        background: #f4f4f5;
+        background: var(--bf-gen-code-bg);
         border-radius: 6px;
         padding: 12px;
         overflow-x: auto;
@@ -159,7 +198,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 
     code {
         font-size: 0.85em;
-        background: #f4f4f5;
+        background: var(--bf-gen-code-bg);
         padding: 1px 4px;
         border-radius: 3px;
     }
@@ -180,17 +219,17 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
         font-size: 0.9rem;
 
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid var(--bf-gen-table-border);
             padding: 4px 8px;
         }
 
         th {
-            background: #f4f4f5;
+            background: var(--bf-gen-code-bg);
         }
     }
 
     a {
-        color: $bf-accent;
+        color: var(--bf-gen-accent-fg);
     }
 }
 
@@ -204,7 +243,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     span {
         width: 8px;
         height: 8px;
-        background-color: #aaa;
+        background-color: var(--bf-gen-dots);
         border-radius: 50%;
         animation: bf-thinking-bounce 1.4s infinite ease-in-out;
 
@@ -238,7 +277,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
-    background: #f8f9fa;
+    background: var(--bf-gen-bg);
 }
 
 .bf-chat-input {
@@ -267,31 +306,31 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     }
 }
 
-// Side panel header action buttons — force black icons
+// Side panel header action buttons — force readable icons
 .bf-side-panel-header .btn,
 .bf-side-panel-header .btn-link,
 .bf-side-panel-header .btn-sm {
-    color: #333 !important;
-    i, .fa { color: #333 !important; }
+    color: var(--bf-gen-strong) !important;
+    i, .fa { color: var(--bf-gen-strong) !important; }
     &:hover, &:focus {
-        color: #000 !important;
-        i, .fa { color: #000 !important; }
+        color: var(--bf-gen-strong-hover) !important;
+        i, .fa { color: var(--bf-gen-strong-hover) !important; }
     }
 }
 
 // Header brand icon
 .bf-side-panel-header .text-primary {
-    color: $bf-accent !important;
+    color: var(--bf-gen-accent-fg) !important;
 }
 
 // Full-page header buttons
 .bf-chat-panel-header .btn,
 .bf-chat-panel-header .btn-link {
-    color: #333 !important;
-    i, .fa { color: #333 !important; }
+    color: var(--bf-gen-strong) !important;
+    i, .fa { color: var(--bf-gen-strong) !important; }
     &:hover, &:focus {
-        color: #000 !important;
-        i, .fa { color: #000 !important; }
+        color: var(--bf-gen-strong-hover) !important;
+        i, .fa { color: var(--bf-gen-strong-hover) !important; }
     }
 }
 
@@ -322,7 +361,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.15);
+    background: var(--bf-gen-overlay);
     z-index: 2147483647;
     display: flex;
     justify-content: flex-end;
@@ -333,7 +372,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     min-width: 420px;
     max-width: 800px;
     height: 100vh;
-    background: white;
+    background: var(--bf-gen-surface);
     display: flex;
     flex-direction: column;
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.12);
@@ -350,7 +389,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 }
 
 .bf-side-panel-header {
-    background: #fafafa;
+    background: var(--bf-gen-raised);
     flex-shrink: 0;
 }
 
@@ -363,15 +402,15 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     width: 160px;
     min-width: 160px;
     overflow-y: auto;
-    background: #fafafa;
+    background: var(--bf-gen-raised);
 
     .bf-side-panel-session-item {
         font-size: 0.85rem;
         transition: background-color 0.15s;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--bf-gen-separator);
 
         &:hover {
-            background-color: rgba(0, 0, 0, 0.04);
+            background-color: var(--bf-gen-hover);
         }
 
         &.active {
@@ -413,13 +452,13 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
         max-width: 100%;
 
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid var(--bf-gen-table-border);
             padding: 2px 6px;
             white-space: nowrap;
         }
 
         th {
-            background: #f4f4f5;
+            background: var(--bf-gen-code-bg);
         }
     }
 }
@@ -466,7 +505,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 .bf-context-badge {
     font-size: 0.8rem;
     background: $bf-accent-badge;
-    color: $bf-accent;
+    color: var(--bf-gen-accent-fg);
     border-radius: 6px;
     padding: 4px 10px;
     max-width: 100%;
@@ -489,7 +528,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 
 // ── Share panel ─────────────────────────────────────────────
 .bf-share-panel {
-    background: #fafafa;
+    background: var(--bf-gen-raised);
     flex-shrink: 0;
 
     .bf-share-search-input {
@@ -514,7 +553,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 
 // ── Full-page chat header ───────────────────────────────────
 .bf-chat-panel-header {
-    background: white;
+    background: var(--bf-gen-surface);
     flex-shrink: 0;
 }
 
@@ -524,7 +563,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     content: "▋";
     display: inline;
     margin-left: 1px;
-    color: $bf-accent;
+    color: var(--bf-gen-accent-fg);
     animation: bf-stream-caret 1s steps(2, start) infinite;
 }
 
@@ -533,36 +572,86 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     50%      { opacity: 0; }
 }
 
-// Tool-activity chips ("odoo get task", "Read", …) shown as Claude works.
-.bf-stream-tools {
+// Ce que Gen montre pendant qu'il travaille : l'étape en cours et
+// le chrono du tour sous la bulle, les étapes repliées au-dessus. Remplace les
+// pastilles une-par-outil (12 par tour en médiane, 70 % de « Bash ») et le
+// compteur de jetons, qui repartait à zéro à chaque bloc de réflexion.
+//
+// ⚠️ Texte en `--bf-gen-bubble-fg`, jamais en couleur de marque : le bleu Blue
+// Fox en avant-plan ne passe le contraste ni sur clair ni sur sombre.
+.bf-gen-wait {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
-    margin-bottom: 6px;
-}
-
-.bf-stream-tool-chip {
-    display: inline-flex;
     align-items: center;
-    font-size: 0.72rem;
-    line-height: 1.2;
-    padding: 2px 8px;
-    border-radius: 10px;
-    background: $bf-accent-badge;
-    color: $bf-accent;
-    white-space: nowrap;
+    column-gap: 8px;
+    row-gap: 2px;
+    margin-top: 4px;
+    font-size: 0.78rem;
+    line-height: 1.3;
+    color: var(--bf-gen-bubble-fg);
 
-    .fa {
-        font-size: 0.66rem;
-        opacity: 0.8;
+    .bf-gen-wait-dots {
+        padding: 0;
+        gap: 3px;
+
+        span {
+            width: 6px;
+            height: 6px;
+        }
+    }
+
+    .bf-gen-wait-label {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .bf-gen-wait-time {
+        opacity: 0.75;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
     }
 }
 
-// Running thinking-token counter next to the bouncing dots.
-.bf-stream-tokens {
-    margin-left: 8px;
-    color: #999;
-    font-size: 0.7rem;
+.bf-gen-steps {
+    margin-bottom: 6px;
+    font-size: 0.75rem;
+    color: var(--bf-gen-bubble-fg);
+
+    summary {
+        display: block;
+        cursor: pointer;
+        opacity: 0.75;
+        list-style: none;
+        user-select: none;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &[open] summary {
+        opacity: 1;
+    }
+
+    .bf-gen-steps-latest {
+        margin-left: 0.25em;
+        overflow-wrap: anywhere;
+    }
+
+    ol {
+        margin: 4px 0 0;
+        padding-left: 1.4em;
+        max-height: 14em;
+        overflow-y: auto;
+    }
+
+    li {
+        overflow-wrap: anywhere;
+    }
 }
 
 // Consommation du tour, sous la réponse. Discrète par choix : c'est une
@@ -571,7 +660,7 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 .bf-chat-usage {
     margin-top: 6px;
     font-size: 0.7rem;
-    color: #999;
+    color: var(--bf-gen-meta);
     cursor: help;
 }
 
@@ -579,8 +668,8 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 .bf-stream-interrupted {
     margin-top: 6px;
     font-size: 0.75rem;
-    color: #b45309;
-    background: rgba(#f59e0b, 0.12);
+    color: var(--bf-gen-warn-fg);
+    background: var(--bf-gen-warn-bg);
     border-radius: 6px;
     padding: 4px 8px;
 }
@@ -589,8 +678,100 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
 .bf-stream-notice {
     margin-bottom: 6px;
     font-size: 0.75rem;
-    color: $bf-accent;
+    color: var(--bf-gen-accent-fg);
     background: $bf-accent-light;
     border-radius: 6px;
     padding: 4px 8px;
+}
+
+// =============================================================
+// Mode sombre — `bf_dark_mode` pose `bf_dark_mode` sur <body>
+// =============================================================
+// Le sélecteur ne mord que si le module de thème est installé ET allumé :
+// aucune dépendance de manifeste à ajouter, et rien ne change ailleurs.
+//
+// Palette reprise de `bf_dark_mode/static/src/scss/dark_mode.scss` (gris de
+// marque BF). Elle y est recopiée plutôt qu'importée : Gen doit tourner sur un
+// locataire qui n'a pas le module de thème, et un `@import` inter-modules
+// casserait le paquet d'actifs là où le fichier n'existe pas.
+//
+// ⚠️ On ne remet PAS de couleur de texte à la main sur les surfaces : une fois
+// le fond sombre, le `p` / `h1..h6` / `strong` que `bf_dark_mode` force sur tout
+// le client tombe juste. Ce qu'on corrige ici, ce sont les endroits où Gen
+// écrivait une couleur CLAIRE en dur, plus l'accent employé comme texte.
+body.bf_dark_mode {
+    --bf-gen-bg:            #1a1d1e;                     // = $dk-bg, comme .o_content
+    --bf-gen-surface:       var(--brand-dark, #2E3132);                     // = $dk-surface (gris de marque)
+    --bf-gen-raised:        #3d4344;                     // = $dk-raised
+    --bf-gen-border:        #4a5153;                     // = $dk-border
+    --bf-gen-separator:     #4a5153;
+    --bf-gen-hover:         rgba(255, 255, 255, 0.06);
+    --bf-gen-strong:        #e8eaec;                     // = $dk-text-bright
+    --bf-gen-strong-hover:  #ffffff;
+    --bf-gen-code-bg:       #3d4344;
+    --bf-gen-table-border:  #4a5153;
+    --bf-gen-dots:          #8e9496;                     // = $dk-text-muted
+    --bf-gen-meta:          #b0b6b8;
+    --bf-gen-warn-fg:       #fbbf24;
+    --bf-gen-warn-bg:       rgba(245, 158, 11, 0.15);
+    --bf-gen-overlay:       rgba(0, 0, 0, 0.45);
+
+    --bf-gen-bubble-bg:     color-mix(in srgb, var(--brand-primary, #3367d6) 12%, var(--brand-dark, #2E3132));
+    --bf-gen-bubble-fg:     #d1d5d8;                     // = $dk-text
+    --bf-gen-avatar-bg:     color-mix(in srgb, var(--brand-primary, #3367d6) 25%, var(--brand-dark, #2E3132));
+
+    // 🔴 L'accent de marque ne sert JAMAIS de texte sur fond sombre : #29ABE2
+    // sur #2E3132 tombe à ~3,4:1. On l'éclaircit pour le premier plan et on
+    // garde l'accent brut pour les fonds, filets et anneaux de focus.
+    // 45 % de marque dans du blanc : 8,5:1 sur la surface, 6,6:1 sur le relevé.
+    --bf-gen-accent-fg:     color-mix(in srgb, var(--brand-primary, #714bea) 45%, white);
+    --bf-gen-avatar-fg:     color-mix(in srgb, var(--brand-primary, #3367d6) 45%, white);
+
+    // 🔴 La couleur de texte se pose sur la SURFACE, pas enfant par enfant.
+    // Gen s'affiche dans `.o_action_manager`, PAS dans `.o_content` : la seule
+    // règle du thème qui éclaircit le texte hérité ne l'atteint donc jamais, et
+    // `<body>` reste à #495057 même en sombre. Sans cette ligne, les titres de
+    // conversation de la barre latérale s'écrivent en gris foncé sur #2E3132.
+    .bf-chat-container,
+    .bf-side-panel {
+        color: #d1d5d8;
+    }
+
+    // Le gris secondaire du thème (#8e9496) tombe à 4,26:1 sur #2E3132 et
+    // 3,27:1 sur #3d4344 : sous la norme pour du petit texte, et les dates de
+    // conversation sont du 0,75 rem. On l'éclaircit DANS Gen seulement.
+    .bf-chat-container,
+    .bf-side-panel {
+        .text-muted,
+        small.text-muted {
+            color: var(--bf-gen-meta) !important;
+        }
+    }
+
+    // Les champs de saisie sont déjà repeints par le thème ; il ne leur manque
+    // que le filet, qui restait clair au milieu du sombre.
+    .bf-chat-input,
+    .bf-side-panel-textarea,
+    .bf-share-search-input,
+    .bf-chat-rename-input,
+    .bf-side-panel-rename-input {
+        border-color: var(--bf-gen-border);
+    }
+
+    // Le lien dans une réponse : le thème le peint en #47b8e5 pour le fond de
+    // page, ici la bulle est plus claire — on garde l'accent éclairci de Gen.
+    .bf-chat-bubble-assistant .bf-chat-content a {
+        color: var(--bf-gen-accent-fg);
+    }
+
+    // `pre`/`code`/`th` : le fond passe au relevé, le texte doit suivre.
+    // `--bs-code-color` du thème (#e685b5) reste lisible sur #3d4344 (5,4:1),
+    // on ne touche qu'au corps du bloc.
+    .bf-chat-content pre,
+    .bf-chat-content pre code {
+        color: #e8eaec;
+    }
+
+    // Le lien d'une bulle d'usager est posé sur l'accent plein : il garde son
+    // gris clair d'origine, qui ne dépend pas du thème.
 }

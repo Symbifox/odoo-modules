@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- Comptes Claude : le solde, et ce qu'on en dit     -->
+    <!--                                                              -->
+    <!-- Admins seulement. Ce que ces écrans montrent, c'est ce qu'un  -->
+    <!-- abonnement a encore sous le pied : ça ne regarde pas les      -->
+    <!-- usagers, et sur un locataire client ça regarde encore moins   -->
+    <!-- le client.                                                    -->
+    <!-- ============================================================ -->
+
+    <record id="view_claude_account_list" model="ir.ui.view">
+        <field name="name">claude.account.list</field>
+        <field name="model">claude.account</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="etat == 'plafond'"
+                  decoration-warning="etat == 'dormant'"
+                  decoration-muted="etat == 'muet'">
+                <field name="name"/>
+                <field name="config_dir" optional="hide"/>
+                <field name="subscription_type"/>
+                <field name="etat"/>
+                <field name="etat_sonde"/>
+                <field name="dernier_releve"/>
+                <field name="message_sonde" optional="hide"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_claude_account_form" model="ir.ui.view">
+        <field name="name">claude.account.form</field>
+        <field name="model">claude.account</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Blue Fox"/></h1>
+                    </div>
+                    <group>
+                        <group string="Le compte">
+                            <field name="config_dir" placeholder="/home/livv/.claude"/>
+                            <field name="subscription_type"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Le dernier relevé">
+                            <field name="etat"/>
+                            <field name="etat_sonde"/>
+                            <field name="dernier_releve"/>
+                            <field name="message_sonde"/>
+                        </group>
+                    </group>
+                    <group string="Seuils">
+                        <group>
+                            <field name="seuil_haut"/>
+                            <field name="seuil_session"/>
+                        </group>
+                        <group>
+                            <field name="seuil_bas"/>
+                            <field name="preavis_h"/>
+                        </group>
+                    </group>
+                    <group string="Crédits achetés en surplus" invisible="not credits_actifs">
+                        <field name="credits_actifs" invisible="1"/>
+                        <field name="credits_utilisation"/>
+                        <field name="credits_plafond"/>
+                    </group>
+                    <notebook>
+                        <page string="Fenêtres">
+                            <!-- Une fenêtre absente n'est pas une fenêtre à
+                                 zéro : elle n'a pas de ligne, parce que le
+                                 relevé ne l'a pas portée. -->
+                            <field name="window_ids" readonly="1">
+                                <list>
+                                    <field name="fenetre"/>
+                                    <!-- ⚠️ Pas de widget="percentage" ici : il
+                                         MULTIPLIE par cent, et le serveur rend
+                                         déjà des pourcentages. 28 devenait
+                                         2800 %. -->
+                                    <field name="utilization"/>
+                                    <field name="bascule_montreal"/>
+                                    <field name="heures_restantes"/>
+                                    <field name="resets_at" optional="hide"
+                                           string="Bascule (UTC brut)"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Note">
+                            <field name="note" placeholder="À quoi ce compte sert, et qui le paie."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_claude_account_search" model="ir.ui.view">
+        <field name="name">claude.account.search</field>
+        <field name="model">claude.account</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="config_dir"/>
+                <filter name="plafond" string="Plafond en vue"
+                        domain="[('etat', '=', 'plafond')]"/>
+                <filter name="dormant" string="Solde qui va se perdre"
+                        domain="[('etat', '=', 'dormant')]"/>
+                <separator/>
+                <filter name="muet" string="Sans relevé utilisable"
+                        domain="[('etat', '=', 'muet')]"/>
+                <separator/>
+                <filter name="archives" string="Archivés"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_etat" string="État"
+                            context="{'group_by': 'etat_sonde'}"/>
+                    <filter name="par_forfait" string="Forfait"
+                            context="{'group_by': 'subscription_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_claude_account" model="ir.actions.act_window">
+        <field name="name">Comptes Claude</field>
+        <field name="res_model">claude.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_claude_account_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun compte relevé.</p>
+            <p>Les comptes s'inscrivent tout seuls au premier relevé de
+               <code>scripts/check_claude_token_budget.py</code>, qui tourne sur
+               l'hôte : la mesure ne peut pas vivre ici, les identifiants et les
+               transcripts n'y sont pas.</p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_claude_account"
+        name="Comptes Claude"
+        parent="menu_claude_admin"
+        action="action_claude_account"
+        sequence="20"
+        groups="base.group_system"
+    />
+</odoo>

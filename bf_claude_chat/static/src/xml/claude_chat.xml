@@ -112,20 +112,11 @@
                                         <div t-if="msg.notice" class="bf-stream-notice">
                                             <i class="fa fa-refresh me-1"/><t t-esc="msg.notice"/>
                                         </div>
-                                        <div t-if="msg.tools and msg.tools.length" class="bf-stream-tools">
-                                            <span t-foreach="msg.tools" t-as="tool" t-key="tool_index"
-                                                  class="bf-stream-tool-chip">
-                                                <i class="fa fa-wrench me-1"/><t t-esc="tool"/>
-                                            </span>
-                                        </div>
+                                        <GenSteps t-if="msg.tools and msg.tools.length" steps="msg.tools" live="!!msg.streaming and msg.phase !== 'tool'"/>
                                         <div t-if="msg.content"
                                              t-att-class="'bf-chat-content' + (msg.streaming ? ' bf-streaming' : '')"
                                              t-out="renderMarkdown(msg.content)"/>
-                                        <div t-elif="msg.streaming" class="bf-chat-thinking">
-                                            <span/><span/><span/>
-                                            <small t-if="msg.thinkingTokens" class="bf-stream-tokens"
-                                                   t-esc="msg.thinkingTokens + ' tokens'"/>
-                                        </div>
+                                        <GenWaitLine t-if="msg.streaming" msg="msg"/>
                                         <div t-if="msg.interrupted" class="bf-stream-interrupted">
                                             <i class="fa fa-exclamation-circle me-1"/>Réponse interrompue — demande-moi de continuer.
                                         </div>
@@ -333,20 +324,11 @@
                                                     <div t-if="msg.notice" class="bf-stream-notice">
                                                         <i class="fa fa-refresh me-1"/><t t-esc="msg.notice"/>
                                                     </div>
-                                                    <div t-if="msg.tools and msg.tools.length" class="bf-stream-tools">
-                                                        <span t-foreach="msg.tools" t-as="tool" t-key="tool_index"
-                                                              class="bf-stream-tool-chip">
-                                                            <i class="fa fa-wrench me-1"/><t t-esc="tool"/>
-                                                        </span>
-                                                    </div>
+                                                    <GenSteps t-if="msg.tools and msg.tools.length" steps="msg.tools" live="!!msg.streaming and msg.phase !== 'tool'"/>
                                                     <div t-if="msg.content"
                                                          t-att-class="'bf-chat-content' + (msg.streaming ? ' bf-streaming' : '')"
                                                          t-out="renderMarkdown(msg.content)"/>
-                                                    <div t-elif="msg.streaming" class="bf-chat-thinking">
-                                                        <span/><span/><span/>
-                                                        <small t-if="msg.thinkingTokens" class="bf-stream-tokens"
-                                                               t-esc="msg.thinkingTokens + ' tokens'"/>
-                                                    </div>
+                                                    <GenWaitLine t-if="msg.streaming" msg="msg"/>
                                                     <div t-if="msg.interrupted" class="bf-stream-interrupted">
                                                         <i class="fa fa-exclamation-circle me-1"/>Réponse interrompue.
                                                     </div>
@@ -423,6 +405,26 @@
                 </div>
             </div>
         </t>
+    </t>
+
+    <!-- Ce que Gen montre pendant qu'il travaille. -->
+    <t t-name="bf_claude_chat.GenWaitLine">
+        <div class="bf-gen-wait" role="status" aria-live="polite">
+            <span class="bf-chat-thinking bf-gen-wait-dots"><span/><span/><span/></span>
+            <span class="bf-gen-wait-label" t-esc="label"/>
+            <span class="bf-gen-wait-time" t-esc="elapsed"/>
+        </div>
+    </t>
+
+    <t t-name="bf_claude_chat.GenSteps">
+        <details class="bf-gen-steps">
+            <summary><i class="fa fa-list-ul me-1"/><t t-esc="summary"/><span t-if="latest" class="bf-gen-steps-latest"> · <t t-esc="latest"/></span></summary>
+            <ol>
+                <li t-foreach="props.steps" t-as="step" t-key="step_index"
+                    t-att-title="step.detail ? step.label : ''"
+                    t-esc="step.detail or step.label"/>
+            </ol>
+        </details>
     </t>
 
 </templates>

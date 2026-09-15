@@ -955,3 +955,308 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_message_usage_tree
 msgid "ms"
 msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_personality
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Gen's personality"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid "Personality"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_res_config_settings__claude_personality
+msgid ""
+"How Gen speaks on this instance: the name it goes by, tu or vous, the "
+"default language, how long its answers run, how it presents itself. Composed"
+" into every conversation, before the steering instructions. It shapes the "
+"tone, never what Gen may do: tool access and safety rules are set on the "
+"bridge, not here. 2,000 characters at most."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
+msgid ""
+"How Gen speaks here: the name it goes by, tu or vous, default language, "
+"length, how it presents itself. Tone only: what Gen may do is set on the "
+"bridge, not in this box."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/res_config_settings.py:0
+msgid ""
+"Gen's personality is limited to %(max)s characters; this text has %(size)s. "
+"Shorten it: the bridge cuts at the same length, and a cut would be silent."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__block_chars
+msgid "Composed block (characters)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__block_chars
+msgid ""
+"Size of the block Gen receives for this instruction's audience, this "
+"instruction included, against the ceiling."
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__block_usage
+msgid "Block usage"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid ""
+"%(size)s / %(max)s characters: %(dropped)s instruction(s) would be left out"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid "%(size)s / %(max)s characters"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid "Over the steering ceiling"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid ""
+"With this instruction, the block Gen receives would be %(size)s characters "
+"for a ceiling of %(max)s. The last %(dropped)s instruction(s) in sequence "
+"order would be left out. Shorten, reorder or archive."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid "Global block for you: %(size)s / %(max)s characters."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-python
+#: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
+msgid "%(dropped)s instruction(s) are left out."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is sniffing out the trail"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is on the scent"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is prowling through the records"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is pricking up its ears"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is digging through the den"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is outfoxing the question"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is creeping up on the answer"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is thinking like a fox"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is nosing around"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is keeping watch"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is tracking it down"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is sharpening its nose"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen, deep in vulpine thought"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Running a check"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Searching the web"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Reading a web page"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Reading files"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Writing a file"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Picking the right tools"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Following a procedure"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Reading the task"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Looking through the tasks"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Writing a note on the task"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Reading an email"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Drafting an email"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Searching the mailbox"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Writing to Nextcloud"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Looking in Nextcloud"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Preparing a secure link"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Reading in Odoo"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Searching Odoo"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Writing in Odoo"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "Gen is writing"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+msgid "1 step"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+#, python-format
+msgid "%s steps"
+msgstr ""

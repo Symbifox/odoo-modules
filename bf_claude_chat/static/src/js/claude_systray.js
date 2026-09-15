@@ -6,7 +6,8 @@ import { useService } from "@web/core/utils/hooks";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 import { router } from "@web/core/browser/router";
-import { streamChat, prettyToolName } from "@bf_claude_chat/js/claude_stream";
+import { streamChat } from "@bf_claude_chat/js/claude_stream";
+import { GenSteps, GenWaitLine, trackWait } from "@bf_claude_chat/js/gen_wait";
 
 /**
  * Étiquette de consommation d'un tour, dans le vocabulaire commun au Cockpit
@@ -269,6 +270,7 @@ function prettyContextLabel(ctx) {
 
 export class ClaudeSystrayItem extends Component {
     static template = "bf_claude_chat.SystrayItem";
+    static components = { GenSteps, GenWaitLine };
     static props = [];
 
     setup() {
@@ -553,6 +555,10 @@ export class ClaudeSystrayItem extends Component {
             streaming: true,
             tools: [],
             thinkingTokens: 0,
+            // Ligne d'état : l'étape en cours et le chrono du tour.
+            phase: "start",
+            foxIndex: Math.floor(Math.random() * 13),
+            startedAt: Date.now(),
             interrupted: false,
             notice: "",
         }) - 1;
@@ -576,6 +582,7 @@ export class ClaudeSystrayItem extends Component {
                 body: payload,
                 signal: controller.signal,
                 onEvent: (event, data) => {
+                    trackWait(assistant, event, data);
                     switch (event) {
                         case "session":
                             if (data.odoo_session_id) this.state.activeSessionId = data.odoo_session_id;
@@ -583,11 +590,7 @@ export class ClaudeSystrayItem extends Component {
                         case "notice":
                             assistant.notice = data.text || "";
                             break;
-                        case "thinking":
-                            assistant.thinkingTokens = data.tokens || 0;
-                            break;
                         case "tool":
-                            if (data.name) assistant.tools.push(prettyToolName(data.name));
                             this.scrollToBottom();
                             break;
                         case "text":

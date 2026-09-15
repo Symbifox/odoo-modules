@@ -82,6 +82,21 @@ class ClaudeChatSession(models.Model):
              "(raffinage, éditorial, carto, OCR, enrichissement) tiennent ici "
              "leur propre fil, un par enregistrement travaillé.",
     )
+    # Quel COMPTE a payé la passe. `origin` dit quelle fonction a dépensé,
+    # jamais sur quel abonnement : un même locataire peut tirer sur celui de
+    # Blue Fox, un autre sur le sien.
+    #
+    # ⚠️ Un fil d'avant ce champ le porte à vide, et c'est voulu : le seau
+    # « non attribué » doit rester VISIBLE. Le remplir d'office par le compte
+    # le plus probable inventerait une attribution que personne n'a mesurée,
+    # et un seau caché se lit comme zéro.
+    account_id = fields.Many2one(
+        "claude.account",
+        string="Compte",
+        index=True,
+        ondelete="set null",
+        help="L'abonnement Claude sur lequel cette passe a été prise.",
+    )
     mobile_conversation_id = fields.Char(
         string="Mobile Conversation ID",
         copy=False,

@@ -35,6 +35,15 @@
                             <field name="claude_timeout"/>
                         </setting>
                     </block>
+                    <block title="Personality">
+                        <setting id="bf_claude_chat_personality" string="Gen's personality"
+                                 help="How Gen speaks here: the name it goes by, tu or vous, default language, length, how it presents itself. Tone only: what Gen may do is set on the bridge, not in this box.">
+                            <div class="content-group mt16">
+                                <field name="claude_personality" widget="text" class="w-100" nolabel="1"
+                                       placeholder="Tu t'appelles Gen. Tu tutoies. Tu réponds en français, court et concret : la réponse d'abord, sans superlatifs. Quand un outil échoue ou qu'une chose n'est pas branchée, tu le dis franchement."/>
+                            </div>
+                        </setting>
+                    </block>
                     <block title="Authentication">
                         <setting string="API Key (optional)"
                                  help="Leave empty to use the server's Max plan. Set an Anthropic API key to bill this tenant independently.">
