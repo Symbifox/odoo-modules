@@ -6,8 +6,10 @@ issued exclusively through the web-login capture flow:
   1. The app opens ``/mobile/v1/auth/start`` in a browser tab. ``auth="user"``
      means Odoo shows /web/login when needed, so password, Authentik SSO and
      TOTP all apply untouched.
-  2. That route issues a short-lived, single-use ``pending_code`` and redirects
-     to the app's deep link. The bearer token itself never travels in a URL.
+  2. That route shows a consent page; its « Allow » POST (``/auth/consent``,
+     CSRF-protected) issues a short-lived, single-use ``pending_code`` and
+     redirects to the app's deep link. The bearer token itself never travels
+     in a URL.
   3. The app exchanges the code over HTTPS for ``device_token``.
 
 There is deliberately NO password route on this API. ``bf_sms_archive`` still
@@ -78,6 +80,19 @@ class BfEmailMobileDevice(models.Model):
         help="URL d'endpoint UnifiedPush (ntfy) vers laquelle pousser les "
              "notifications de cet appareil.",
     )
+    # WebPush subscription keys (RFC 8291), base64url: the device's
+    # uncompressed P-256 point (65 bytes) and its auth secret (16 bytes).
+    # Present, pushes leave encrypted; absent (app ≤ 2.41.0), in the clear.
+    # They belong to the ENDPOINT: ``write`` clears them as soon as the
+    # endpoint changes without them. Audit 2026-09-08 (C-M3).
+    push_p256dh = fields.Char(
+        string="Clé publique WebPush", copy=False,
+        groups="bf_email_management.group_email_admin",
+    )
+    push_auth = fields.Char(
+        string="Secret WebPush", copy=False,
+        groups="bf_email_management.group_email_admin",
+    )
     platform = fields.Char(default="android")
     # Sliding window for the send quota (see _check_send_quota).
     send_window_start = fields.Datetime(string="Début de fenêtre d'envoi")
@@ -114,14 +129,26 @@ class BfEmailMobileDevice(models.Model):
 
     # Fields no non-sudo write may set: otherwise anyone with write access
     # could mint a token, or move a device to another user. Audit 2026-09-08.
+    # The WebPush keys too: planting your own on someone else's device would
+    # encrypt their notifications for you alone to read.
     _PROTECTED_FIELDS = ("device_token", "token_hash", "pending_code",
-                         "pending_code_expiry", "pkce_challenge", "user_id")
+                         "pending_code_expiry", "pkce_challenge", "user_id",
+                         "push_p256dh", "push_auth")
+    _PUSH_KEY_FIELDS = ("push_p256dh", "push_auth")
 
     def write(self, vals):
         if not self.env.su and any(f in vals for f in self._PROTECTED_FIELDS):
             raise AccessError(
                 _("Le jeton et l'usager d'un appareil ne se modifient pas à la main."))
-        return super().write(vals)
+        res = super().write(vals)
+        # The keys go with the endpoint. Cleared (logout, dead or non-public
+        # endpoint, « Mes appareils ») or replaced without them, the endpoint
+        # takes them along: orphan keys would encrypt for a subscription that
+        # no longer exists. Sudo, because the clearing often comes from a
+        # gesture that has no right on the keys themselves.
+        if "push_endpoint" in vals and not any(f in vals for f in self._PUSH_KEY_FIELDS):
+            self.sudo().write({"push_p256dh": False, "push_auth": False})
+        return res
 
     @staticmethod
     def _hash_token(raw):

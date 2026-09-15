@@ -25,6 +25,77 @@ class MailThread(models.AbstractModel):
     _inherit = "mail.thread"
 
     # ------------------------------------------------------------------
+    # Envois du téléphone : les destinataires saisis, et personne d'autre
+    # ------------------------------------------------------------------
+    def _get_notify_valid_parameters(self):
+        """Déclarer la portée de la garde comme paramètre de notification.
+
+        🔴 Le noyau refuse tout paramètre inconnu
+        (``_raise_for_invalid_parameters``, appelé en tête de
+        ``_notify_thread``) : sans cette déclaration, faire voyager la portée
+        fait lever ``ValueError`` sur TOUT envoi gardé, y compris ceux qui
+        marchaient avant. Mesuré au banc le 2026-09-15 : cinq essais en erreur.
+        """
+        return super()._get_notify_valid_parameters() | {"bf_notify_explicit_only"}
+
+    def _notify_thread(self, message, msg_vals=False, **kwargs):
+        """Faire suivre la portée de la garde jusqu'au RENVOI différé.
+
+        🔴 Quand l'envoi est différé — ``mail_post_defer`` le fait par défaut
+        sur tout ce qui ne force pas l'envoi — Odoo JETTE la liste de
+        destinataires qu'on vient de filtrer : il ne garde que
+        ``notification_parameters``, et le cron rappelle ``_notify_thread``
+        depuis SON environnement, sans notre contexte et avec
+        ``msg_vals=False``. La garde ressortait donc sans rien filtrer, et les
+        abonnés recevaient trente secondes plus tard ce que l'envoi immédiat
+        leur avait refusé. Mesuré au banc le 2026-09-15 : deux abonnés notifiés
+        après le cron, zéro avant.
+
+        Les ``kwargs``, eux, sont sérialisés avec la programmation et rendus au
+        cron : la portée voyage là, et ``_notify_get_recipients`` la relit des
+        deux côtés. Les deux chemins du téléphone forcent l'envoi aujourd'hui
+        (le composeur pose ``force_send`` en fiche unique), donc rien ne change
+        pour eux — c'est la garantie qui devient inconditionnelle.
+        """
+        scope = self.env.context.get("bf_notify_explicit_only")
+        if scope and "bf_notify_explicit_only" not in kwargs:
+            kwargs["bf_notify_explicit_only"] = list(scope)
+        return super()._notify_thread(message, msg_vals=msg_vals, **kwargs)
+
+    def _notify_get_recipients(self, message, msg_vals, **kwargs):
+        """Sous ``bf_notify_explicit_only``, ne garder que les destinataires
+        EXPLICITES du message : ses ``partner_ids`` (le « À ») et le Cc / Cci
+        du composeur.
+
+        🔴 Posé par ``bf.email._mobile_post`` et ``bf.email.mobile_draft_send``,
+        et par eux seuls. Une réponse, un brouillon ou
+        un nouveau courriel écrit au téléphone sur une fiche partait aussi à
+        ses abonnés, portail compris : le client qui suit une tâche recevait
+        la réponse destinée à un fournisseur, et le fournisseur voyait
+        l'adresse du client dans le « À », puisque ``mail_composer_cc_bcc``
+        regroupe tous les destinataires en un seul courriel. Le poste montre
+        ces abonnés avant l'envoi ; le téléphone, non. Audit du 2026-09-08
+        (S-M6).
+
+        ⚠️ La portée nomme la fiche visée ``(modèle, id)`` : un autre
+        message posté pendant l'envoi, ailleurs, garde ses destinataires.
+        """
+        recipients = super()._notify_get_recipients(message, msg_vals, **kwargs)
+        scope = (self.env.context.get("bf_notify_explicit_only")
+                 or kwargs.get("bf_notify_explicit_only"))
+        if not scope or not self or len(self) != 1 \
+                or (self._name, self.id) != tuple(scope):
+            return recipients
+        if msg_vals and "partner_ids" in msg_vals:
+            explicit = set(msg_vals.get("partner_ids") or [])
+        else:
+            explicit = set(message.sudo().partner_ids.ids)
+        Partner = self.env["res.partner"]
+        for key in ("partner_cc_ids", "partner_bcc_ids"):
+            explicit |= set(self.env.context.get(key, Partner).ids)
+        return [r for r in recipients if r.get("id") in explicit]
+
+    # ------------------------------------------------------------------
     # Signature : posée ici, jamais dans le corps
     # ------------------------------------------------------------------
     def _notify_by_email_prepare_rendering_context(

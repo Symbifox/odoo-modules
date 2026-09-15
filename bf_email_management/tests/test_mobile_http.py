@@ -154,7 +154,10 @@ class TestMobileHttp(HttpCase):
         self.assertEqual(response.status_code, 400)
         self.assertNotIn("code=", response.text)
 
-    def test_auth_start_bounces_to_an_allowed_scheme(self):
+    def test_auth_start_with_an_allowed_scheme_shows_consent(self):
+        """⚠️ Since S-M1 (audit 2026-09-08) the GET no longer bounces with a
+        code: it renders the consent page, and only « Allow » issues one. See
+        ``test_mobile_consent``."""
         self.env["ir.config_parameter"].sudo().set_param(
             "bf_email_management.mobile_redirect_schemes", "odooinbox://")
         self.authenticate("mobile.http@test.invalid", "mobile.http@test.invalid")
@@ -162,11 +165,9 @@ class TestMobileHttp(HttpCase):
             BASE + "/auth/start?redirect=odooinbox://auth&state=abc"
                    "&code_challenge=" + DEFI + "&code_challenge_method=S256",
             timeout=30, allow_redirects=False)
-        self.assertEqual(response.status_code, 302)
-        location = response.headers.get("Location", "")
-        self.assertTrue(location.startswith("odooinbox://auth"))
-        self.assertIn("code=", location)
-        self.assertIn("state=abc", location)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.headers.get("Location"))
+        self.assertNotIn("code=", response.text)
 
     # ------------------------------------------------------------- PKCE
     def test_auth_start_refuses_a_pairing_without_a_challenge(self):
@@ -222,7 +223,7 @@ class TestMobileHttp(HttpCase):
     def test_a_write_conflict_is_replayed_not_reported(self):
         """Un conflit d'écriture ne sort jamais en 500 : Odoo rejoue.
 
-        C'est le défaut de la: deux archivages rapprochés
+        C'est le défaut corrigé ici : deux archivages rapprochés
         depuis le téléphone, le second refusé par PostgreSQL au ``flush``,
         attrapé par le décorateur en « unexpected error », rendu en 500 — et
         l'app remettait le courriel en boîte. L'exception doit remonter à

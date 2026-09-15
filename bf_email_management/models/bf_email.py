@@ -467,10 +467,17 @@ class BfEmail(models.Model):
         illisible ne doit pas emp\u00eacher la fiche de s'ouvrir.
         """
         self.ensure_one()
-        if not self.raw_rfc822:
+        # ⚠️ Le client web lit la fiche avec ``bin_size=True`` : ``raw_rfc822``
+        # y vaut alors sa TAILLE (« 156.46 Kb »), pas le base64. Décodée telle
+        # quelle, elle levait ; l'encadré restait vide et le bouton « Extraire »
+        # disparaissait avec lui, sur toute ligne IMAP, dans le navigateur
+        # seulement. Le cache d'un Binary dépend de ``bin_size`` : relire sans
+        # lui rend bien les octets.
+        raw_b64 = self.with_context(bin_size=False).raw_rfc822
+        if not raw_b64:
             return []
         try:
-            raw = base64.b64decode(self.raw_rfc822)
+            raw = base64.b64decode(raw_b64)
             parsed = email_mod.message_from_bytes(raw, policy=email.policy.default)
         except Exception:  # noqa: BLE001
             _logger.warning(
@@ -3356,10 +3363,17 @@ class BfEmail(models.Model):
                 )
         return ids
 
-    def _import_into_chatter(self, target, force_file=False):
+    def _import_into_chatter(self, target, force_file=False,
+                             subtype_xmlid="mail.mt_comment"):
         """Post this email into ``target``'s chatter as an email-type message
         (rendered body + original attachments + the full .eml) and file the
         bf.email row under ``target``.
+
+        ``subtype_xmlid`` : « Discussion » par défaut, ce que le poste fait
+        depuis toujours — les abonnés de la fiche, portail compris, en
+        reçoivent une copie. Le téléphone passe ``mail.mt_note`` : classer un
+        courriel reçu n'en fait pas un envoi, et personne n'est notifié
+        (audit du 2026-09-08, S-M6).
 
         Single source of truth for "import an email into a chatter": used by
         both "Nouveau ▾" (``_spawn_from_email``) and "Lier à un dossier"
@@ -3386,7 +3400,7 @@ class BfEmail(models.Model):
             "body": self.body_html or "",
             "subject": self.subject or "",
             "message_type": "email",
-            "subtype_xmlid": "mail.mt_comment",
+            "subtype_xmlid": subtype_xmlid,
             "email_from": self.email_from or "",
             "author_id": self.author_id.id if self.author_id else False,
             "body_is_html": True,

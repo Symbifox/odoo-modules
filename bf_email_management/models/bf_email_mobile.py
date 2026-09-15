@@ -115,6 +115,20 @@ SPAWN_KINDS = {
 }
 
 
+# Les six teintes de `popup_color`, en hexadécimal, pour le téléphone.
+# ⚠️ Recopiées de `$o-bf-email-popup-colors` (`static/src/scss/bf_email_popup.scss`) :
+# si l'une change là-bas, elle change ici, sinon la même boîte porte deux
+# couleurs selon l'écran.
+ACCOUNT_COLOR_HEX = {
+    "blue": "#29ABE2",
+    "slate": "#64748B",
+    "green": "#16A34A",
+    "violet": "#7C3AED",
+    "amber": "#D97706",
+    "rose": "#E11D48",
+}
+
+
 class BfEmailMobile(models.Model):
     _inherit = "bf.email"
 
@@ -395,22 +409,30 @@ class BfEmailMobile(models.Model):
         still be in the INBOX, and chatter/gateway rows always count.
         """
         now = fields.Datetime.now()
+        # ⚠️ Transcription SQL de `bf.email._inbox_domain` : un test
+        # compare les deux sur un jeu de lignes, pas sur leur texte.
+        #
+        # 🔴 Transcrire ce que l'ORM ÉCRIT en SQL, pas ce que le domaine a
+        # l'air de dire. `('is_muted', '=', False)` devient
+        # `is_muted IS NULL OR is_muted = false`, et un Char à False
+        # devient `IS NULL OR = ''`. Or Odoo ne remplit pas un booléen neuf
+        # dans les lignes existantes : `is_muted = false` écartait toutes
+        # les lignes d'avant la sourdine, et le téléphone montrait une
+        # boîte vide au-dessus de celle du poste.
+        inbox = ("is_handled IS NOT TRUE AND is_muted IS NOT TRUE "
+                 "AND (imap_in_inbox IS TRUE "
+                 "OR source IN ('chatter','gateway') "
+                 "OR imap_folder IS NULL OR imap_folder = '')")
         clauses = {
-            # ⚠️ Transcription SQL de `bf.email._inbox_domain` : un test
-            # compare les deux sur un jeu de lignes, pas sur leur texte.
-            #
-            # 🔴 Transcrire ce que l'ORM ÉCRIT en SQL, pas ce que le domaine a
-            # l'air de dire. `('is_muted', '=', False)` devient
-            # `is_muted IS NULL OR is_muted = false`, et un Char à False
-            # devient `IS NULL OR = ''`. Or Odoo ne remplit pas un booléen neuf
-            # dans les lignes existantes : `is_muted = false` écartait toutes
-            # les lignes d'avant la sourdine, et le téléphone montrait une
-            # boîte vide au-dessus de celle du poste.
-            "inbox": ("is_handled IS NOT TRUE AND is_muted IS NOT TRUE "
-                      "AND (imap_in_inbox IS TRUE "
-                      "OR source IN ('chatter','gateway') "
-                      "OR imap_folder IS NULL OR imap_folder = '')", []),
+            "inbox": (inbox, []),
             "unread": ("status = 'new' AND is_handled IS NOT TRUE", []),
+            # La pastille de l'onglet Courriel : les non-lus DE LA
+            # BOÎTE. « unread » compte aussi la sourdine et ce qui est rangé
+            # hors de l'INBOX du serveur, d'où une pastille bien plus haute que
+            # ce que la boîte montre. Même règle que l'app pour « non
+            # lu » : `status == "new"` et pas sortant (`direction` est requis,
+            # « pas sortant » veut donc dire « in »).
+            "inbox_unread": ("(%s) AND status = 'new' AND direction = 'in'" % inbox, []),
             "snoozed": ("is_handled = true AND snoozed_until IS NOT NULL "
                         "AND snoozed_until > %s", [now]),
             "handled": ("is_handled = true AND (snoozed_until IS NULL "
@@ -592,6 +614,10 @@ class BfEmailMobile(models.Model):
                 "login": acc.login or "",
                 "aliases": acc.email_aliases or "",
                 "state": acc.state,
+                # La couleur de l'avis au bureau, pour que le téléphone peigne
+                # la boîte de la même teinte. Vide : l'app en choisit
+                # une elle-même.
+                "color": ACCOUNT_COLOR_HEX.get(acc.popup_color or "", ""),
             } for acc in accounts],
             "counts": self._mobile_counts(),
             "snooze_presets": self._mobile_snooze_presets(),
@@ -665,8 +691,10 @@ class BfEmailMobile(models.Model):
         self.env.flush_all()
         what = ("COUNT(DISTINCT COALESCE(NULLIF(thread_root_id, ''), "
                 "'id:' || id::text))" if grouped else "COUNT(*)")
+        names = ("inbox", "unread", "inbox_unread", "snoozed", "unrouted")
         counts = {}
-        for name in ("inbox", "unread", "snoozed", "unrouted"):
+        by_account = {}
+        for name in names:
             where, params = self._mobile_filter_sql(name)
             self.env.cr.execute(
                 "SELECT %s FROM bf_email "
@@ -674,6 +702,19 @@ class BfEmailMobile(models.Model):
                 [self.env.uid] + list(params),
             )
             counts[name] = self.env.cr.fetchone()[0]
+            # Les mêmes totaux boîte par boîte, pour les sections d'une liste
+            # filtrée sur un compte. ⚠️ Pas la somme des boîtes pour
+            # le total : un fil qui a touché deux boîtes compte une fois dans
+            # chacune, mais une seule fois en tout.
+            self.env.cr.execute(
+                "SELECT account_id, %s FROM bf_email "
+                "WHERE user_id = %%s AND active = true AND account_id IS NOT NULL "
+                "AND %s GROUP BY account_id" % (what, where),
+                [self.env.uid] + list(params),
+            )
+            for account_id, total in self.env.cr.fetchall():
+                by_account.setdefault(str(account_id), dict.fromkeys(names, 0))[name] = total
+        counts["by_account"] = by_account
         return counts
 
     @api.model
@@ -972,6 +1013,13 @@ class BfEmailMobile(models.Model):
         Same wizard the desktop uses, so Cc/Bcc plumbing, outgoing server
         selection and chatter logging all behave identically — only the UI
         step is skipped.
+
+        🔴 One deliberate difference: the email goes to the recipients the
+        person TYPED (To and Cc), and to no one else. The desktop composer
+        also notifies the record's followers, portal included, but it shows
+        them before sending; the phone does not, so a customer following a
+        task received replies nobody on the phone knew were going to them
+        (audit 2026-09-08, S-M6). See ``mail.thread._notify_get_recipients``.
         """
         # Cc travels through the *context*, not just the create values:
         # mail_composer_cc_bcc recomputes partner_cc_ids whenever model/res_ids
@@ -982,6 +1030,9 @@ class BfEmailMobile(models.Model):
             force_email=True,
             default_partner_cc_ids=[(6, 0, cc_partner_ids)],
             default_partner_bcc_ids=[(6, 0, [])],
+            # Scoped to THIS record: any other post the send may trigger on
+            # the way keeps its ordinary recipients.
+            bf_notify_explicit_only=(target_model, target_res_id),
         ).create({
             "model": target_model,
             "res_ids": repr([target_res_id]),
@@ -1261,7 +1312,13 @@ class BfEmailMobile(models.Model):
         # check_access_rights covers the model, which a record rule never does.
         self.env[res_model].check_access_rights("write")
         target.check_access_rule("write")
-        self._import_into_chatter(target)
+        # 🔴 En NOTE, pas en Discussion (S-M6). Classer un courriel reçu dans un
+        # dossier le range, il ne l'envoie à personne. En « Discussion », les
+        # abonnés du dossier, portail compris, recevaient une copie du courriel
+        # d'un tiers, et rien sur le téléphone ne le laissait voir.
+        # ⚠️ Écart assumé avec le poste : l'assistant « Lier à un dossier » y
+        # importe toujours en Discussion (voir l'audit du 2026-09-08).
+        self._import_into_chatter(target, subtype_xmlid="mail.mt_note")
         return {
             "ok": True,
             "record": {"model": res_model, "id": target.id,
@@ -1593,7 +1650,14 @@ class BfEmailMobile(models.Model):
             raise UserError(_("Ce brouillon n'a aucun destinataire."))
         if not (draft.body or "").strip():
             raise UserError(_("Le message est vide."))
-        draft.post_message()
+        # 🔴 Même règle qu'une réponse ou un courriel neuf écrits au téléphone
+        # (S-M6) : le brouillon part aux destinataires qu'il porte, pas aux
+        # abonnés de la fiche. Sans ce contexte, le client portail qui suit
+        # une tâche recevait le brouillon destiné à un fournisseur. Le
+        # ``_post_message`` du noyau poste dans l'environnement du brouillon :
+        # le contexte lui parvient.
+        draft.with_context(
+            bf_notify_explicit_only=(draft.model, draft.res_id)).post_message()
         return {"ok": True}
 
     @api.model

@@ -38,3 +38,8 @@ from . import test_desabonnement
 from . import test_petits_gestes
 from . import test_conversations_et_gen
 from . import test_paquet_actifs
+from . import test_webpush
+from . import test_mobile_consent
+from . import test_mobile_notifications
+from . import test_pastille_boite
+from . import test_pieces_brutes_bin_size

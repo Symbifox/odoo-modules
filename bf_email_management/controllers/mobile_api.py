@@ -8,10 +8,11 @@ Authentication is bearer-token, and the token can only be obtained by
 completing a real Odoo web login:
 
   1. ``GET  /auth/start``   — opened in a browser tab (``auth="user"``, so
-     password / Authentik SSO / TOTP all apply), redirects to the app's deep
-     link with a single-use code.
-  2. ``POST /auth/exchange`` — swaps the code for the durable bearer token.
-  3. Every later call carries ``Authorization: Bearer <token>``.
+     password / Authentik SSO / TOTP all apply), shows the consent page.
+  2. ``POST /auth/consent`` — « Allow » redirects to the app's deep link with
+     a single-use code.
+  3. ``POST /auth/exchange`` — swaps the code for the durable bearer token.
+  4. Every later call carries ``Authorization: Bearer <token>``.
 
 There is no password route here — see bf_email_mobile_device.py for why.
 
@@ -29,6 +30,7 @@ import json
 import logging
 import urllib.parse
 
+from markupsafe import Markup
 from werkzeug.utils import redirect as wz_redirect
 
 from odoo import fields, http
@@ -37,7 +39,9 @@ from odoo.http import request
 from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 
 from ..models.bf_email_mobile import TOO_LARGE, UPLOAD_SINGLE_MAX
-from ..models.push_transport import safe_push_endpoint
+from ..models.push_transport import (
+    parse_push_keys, safe_push_endpoint, webpush_available,
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -106,6 +110,108 @@ def _allowed_redirect(redirect):
     return bool(redirect) and bool(allowed) and redirect.startswith(allowed)
 
 
+# ── Pairing consent page (S-M1) ───────────────────────────────────────────────
+# Duplicated in ``bf_sms_archive`` rather than shared: the two modules install
+# independently of each other.
+_CONSENT_HEADERS = [
+    ("Content-Type", "text/html; charset=utf-8"),
+    # Never inside a frame: a third-party page framing it transparently would
+    # get « Allow » tapped blind (clickjacking).
+    ("X-Frame-Options", "DENY"),
+    # ⚠️ No `form-action`: Chrome also applies it to the REDIRECT that follows
+    # the form submission, and the bounce to the app scheme would be blocked
+    # without a word.
+    ("Content-Security-Policy",
+     "frame-ancestors 'none'; default-src 'none'; style-src 'unsafe-inline'"),
+    # The page carries the session's CSRF token.
+    ("Cache-Control", "no-store"),
+    ("Referrer-Policy", "no-referrer"),
+]
+
+_CONSENT_STYLE = Markup(
+    "body{margin:0;background:#f4f5f7;color:#1f2328;"
+    "font:16px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}"
+    "main{max-width:26rem;margin:0 auto;padding:2rem 1.25rem}"
+    "h1{font-size:1.35rem;line-height:1.3;margin:0 0 1.25rem}"
+    "dl{background:#fff;border:1px solid #d8dce1;border-radius:.5rem;"
+    "padding:.25rem 1rem;margin:0 0 1.25rem}"
+    "dt{font-size:.8rem;color:#57606a;margin-top:.75rem}"
+    "dd{margin:0 0 .75rem;overflow-wrap:anywhere}"
+    "small{color:#57606a}"
+    "p{margin:0 0 1.5rem;color:#3d444d}"
+    "button{display:block;width:100%;font:inherit;font-weight:600;"
+    "padding:.8rem;border-radius:.5rem;margin-bottom:.75rem;cursor:pointer}"
+    ".yes{background:#1f2328;color:#fff;border:1px solid #1f2328}"
+    ".no{background:#fff;color:#1f2328;border:1px solid #8c959f}"
+)
+
+
+def _bounce(ask, **params):
+    """Back to the app's deep link, ``state`` always attached.
+
+    303 after the consent page's POST, so the browser does not resubmit the
+    form.
+    """
+    redirect = ask["redirect"]
+    sep = "&" if "?" in redirect else "?"
+    query = urllib.parse.urlencode({**params, "state": ask["state"]})
+    code = 303 if request.httprequest.method == "POST" else 302
+    return wz_redirect(f"{redirect}{sep}{query}", code=code)
+
+
+def _consent_page(ask):
+    """The page telling the person what they are about to allow.
+
+    No JavaScript, readable on a phone, in the user's language. Nothing secret
+    on it: no token, no code. Every value that came from the URL is escaped
+    (``Markup`` escapes what it interpolates).
+    """
+    env = request.env
+    user = env.user
+    hidden = Markup("").join(
+        Markup('<input type="hidden" name="%s" value="%s"/>') % (name, ask[name])
+        for name in ("redirect", "state", "code_challenge",
+                     "code_challenge_method", "device_name"))
+    device = Markup("")
+    if ask["device_name"]:
+        device = Markup("<dt>%s</dt><dd>%s</dd>") % (
+            env._("Device"), ask["device_name"])
+    page = Markup(
+        '<!DOCTYPE html><html lang="%(lang)s"><head><meta charset="utf-8"/>'
+        '<meta name="viewport" content="width=device-width, initial-scale=1"/>'
+        '<meta name="robots" content="noindex"/>'
+        "<title>Symbifox Mobile</title><style>%(style)s</style></head>"
+        "<body><main><h1>%(title)s</h1>"
+        "<dl><dt>%(l_account)s</dt><dd>%(name)s<br/><small>%(login)s</small></dd>"
+        "%(device)s"
+        "<dt>%(l_access)s</dt><dd>%(access)s</dd></dl>"
+        "<p>%(notice)s</p>"
+        '<form method="post" action="%(action)s">'
+        '<input type="hidden" name="csrf_token" value="%(csrf)s"/>%(hidden)s'
+        '<button class="yes" type="submit" name="decision" value="allow">%(allow)s</button>'
+        '<button class="no" type="submit" name="decision" value="deny">%(deny)s</button>'
+        "</form></main></body></html>"
+    ) % {
+        "lang": (env.lang or "en_US").split("_")[0],
+        "style": _CONSENT_STYLE,
+        "title": env._("Symbifox Mobile wants to access your account"),
+        "l_account": env._("Account"),
+        "name": user.name or "",
+        "login": user.login or "",
+        "device": device,
+        "l_access": env._("Access requested"),
+        "access": env._("Your email"),
+        "notice": env._("Only allow this if you just started signing in from the "
+                        "app on your phone."),
+        "action": f"{BASE}/auth/consent",
+        "csrf": request.csrf_token(),
+        "hidden": hidden,
+        "allow": env._("Allow"),
+        "deny": env._("Deny"),
+    }
+    return request.make_response(page, headers=_CONSENT_HEADERS)
+
+
 def _authed(fn):
     """Resolve the bearer token, switch the env to its user, or 401."""
     @functools.wraps(fn)
@@ -163,39 +269,78 @@ class BfEmailMobileApi(http.Controller):
         })
 
     # ── Auth (web-login capture) ──────────────────────────────────────
+    #
+    # 🔴 Two steps since the audit of 2026-09-08 (S-M1). The GET used to issue
+    # the pairing code and bounce straight to the app scheme: a third-party app
+    # on the phone declaring that scheme could open the URL in the browser where
+    # the person is already signed in and pair a device without them seeing
+    # anything. PKCE cannot help, since that very app made the challenge. The
+    # GET now shows what is being asked; only an « Allow » POST, CSRF token
+    # included, issues the code.
     @http.route(f"{BASE}/auth/start", type="http", auth="user", methods=["GET"],
                 csrf=False)
     def auth_start(self, **kw):
-        """Issue a single-use code and bounce back into the app.
+        """Validate the pairing request and render the consent page.
 
-        Failures come back through the deep link as ``?error=…`` rather than
-        as an HTML page. The app chains this against both module APIs in one
-        browser session; a dead-end error page on the first leg would strand
-        the whole login instead of just disabling one tab.
+        No code is issued here. Failures come back through the deep link as
+        ``?error=…`` rather than as an HTML page. The app chains this against
+        both module APIs in one browser session; a dead-end error page on the
+        first leg would strand the whole login instead of just disabling one
+        tab.
         """
+        error, ask = self._pairing_request(kw)
+        if error is not None:
+            return error
+        return _consent_page(ask)
+
+    @http.route(f"{BASE}/auth/consent", type="http", auth="user",
+                methods=["POST"], csrf=True)
+    def auth_consent(self, **kw):
+        """The consent page's answer. ``csrf=True``: without the session's
+        token, Odoo refuses the POST before calling us.
+
+        ⚠️ Everything is RE-VALIDATED: hidden fields come from the browser, so
+        from anyone. The user comes from the session, never from the form.
+        """
+        error, ask = self._pairing_request(kw)
+        if error is not None:
+            return error
+        if kw.get("decision") != "allow":
+            _logger.info("Mobile mail API: pairing denied by %s on the consent "
+                         "page", request.env.user.login)
+            return _bounce(ask, error="access_denied")
+        code = request.env["bf.email.mobile.device"]._issue_pending(
+            request.env.user.id, name=ask["device_name"],
+            challenge=ask["code_challenge"])
+        return _bounce(ask, code=code)
+
+    def _pairing_request(self, kw):
+        """Validate a pairing request: ``(error response, None)`` or
+        ``(None, request)``. ONE definition for the GET and the POST, or the
+        consent page would end up accepting what the start page refuses."""
         redirect = kw.get("redirect") or ""
-        state = kw.get("state") or ""
         if not _allowed_redirect(redirect):
             return request.make_response(
                 "Redirection non autorisée.", status=400,
-                headers=[("Content-Type", "text/plain; charset=utf-8")])
-
-        sep = "&" if "?" in redirect else "?"
-
-        def bounce(**params):
-            query = urllib.parse.urlencode({**params, "state": state})
-            return wz_redirect(f"{redirect}{sep}{query}", code=302)
+                headers=[("Content-Type", "text/plain; charset=utf-8")]), None
+        ask = {
+            "redirect": redirect,
+            "state": kw.get("state") or "",
+            "code_challenge": (kw.get("code_challenge") or "").strip(),
+            "code_challenge_method": (kw.get("code_challenge_method") or "S256").upper(),
+            "device_name": (kw.get("device_name") or "").strip()[:80],
+        }
 
         user = request.env.user
         # No dedicated group on this module: bf.email is owner-scoped and open
         # to every internal user. What actually decides whether the app is
         # useful is owning a mailbox.
         if not user.has_group("base.group_user"):
-            return bounce(error="no_access")
+            return _bounce(ask, error="no_access"), None
         has_account = request.env["bf.email.account"].sudo().search_count([
             ("user_id", "=", user.id), ("active", "=", True)])
         if not has_account:
-            return bounce(error="no_mailbox")
+            return _bounce(ask, error="no_mailbox"), None
 
         # PKCE is mandatory. A custom app scheme is not exclusive on Android:
         # without a challenge, a code intercepted by another app would be
@@ -205,17 +350,12 @@ class BfEmailMobileApi(http.Controller):
         # keep their token and never come back through the exchange. Only a NEW
         # login started from a pre-lot APK breaks, and it breaks loudly, here,
         # with a readable reason.
-        defi = (kw.get("code_challenge") or "").strip()
-        methode = (kw.get("code_challenge_method") or "S256").upper()
-        if not defi or methode != "S256":
+        if not ask["code_challenge"] or ask["code_challenge_method"] != "S256":
             _logger.info(
                 "Mobile mail API: pairing refused, PKCE challenge missing or "
-                "method %s not accepted", methode)
-            return bounce(error="pkce_required")
-
-        code = request.env["bf.email.mobile.device"]._issue_pending(
-            user.id, name=kw.get("device_name"), challenge=defi)
-        return bounce(code=code)
+                "method %s not accepted", ask["code_challenge_method"])
+            return _bounce(ask, error="pkce_required"), None
+        return None, ask
 
     @http.route(f"{BASE}/auth/exchange", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
@@ -559,13 +699,43 @@ class BfEmailMobileApi(http.Controller):
 
         The server POSTs to this URL on every inbound message, so an endpoint
         resolving to a private address would make the cron a blind-SSRF sink.
+
+        Body: ``{endpoint, app_version, p256dh, auth}``. The two WebPush
+        subscription keys are OPTIONAL: absent (app ≤ 2.41.0), any stored keys
+        are cleared and the device is served in the clear; present but invalid,
+        400 ``invalid_push_keys`` rather than a subscription that would never
+        receive anything readable.
+
+        The answer says what the server will do: ``webpush`` (keys stored) and
+        ``webpush_types``, the message types it will from now on always
+        encrypt for this device. The app rejects an unencrypted message of
+        those types and accepts the others as they come.
         """
         data = _body(**kw)
         endpoint = (data.get("endpoint") or "").strip()
         if not safe_push_endpoint(endpoint):
             return _json({"error": "invalid_endpoint"}, 400)
+        try:
+            p256dh, auth = parse_push_keys(data.get("p256dh"), data.get("auth"))
+        except ValueError:
+            return _json({"error": "invalid_push_keys"}, 400)
+        if p256dh and not webpush_available():
+            # Valid keys, a server that cannot encrypt: say so rather than
+            # promise an encryption that will not happen.
+            _logger.warning(
+                "Mobile mail API: WebPush keys ignored (device %s), http_ece or "
+                "cryptography missing from the image.", device.id)
+            p256dh = auth = False
         device.sudo().write({
             "push_endpoint": endpoint,
+            "push_p256dh": p256dh,
+            "push_auth": auth,
             "app_version": data.get("app_version") or device.app_version,
         })
-        return _json({"ok": True})
+        webpush = bool(p256dh and auth)
+        return _json({
+            "ok": True,
+            "webpush": webpush,
+            "webpush_types": (request.env["bf.email.unifiedpush"]._webpush_types()
+                              if webpush else []),
+        })

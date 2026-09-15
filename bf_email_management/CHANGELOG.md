@@ -4,6 +4,126 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.36.4] — 2026-09-15
+
+La garde des destinataires survit au report des notifications.
+
+### Fixed
+
+- 🔴 Un envoi différé recalculait ses destinataires SANS la garde. Odoo jette
+  la liste filtrée dès qu'une `scheduled_date` est posée, ne garde que
+  `notification_parameters`, et le cron rappelle `_notify_thread` depuis son
+  propre environnement, avec `msg_vals=False` : la garde (S-M6) ressortait
+  sans rien filtrer, et les abonnés recevaient trente secondes plus tard ce
+  que l'envoi immédiat leur avait refusé. La portée voyage désormais dans les
+  `kwargs`, que le noyau sérialise avec la programmation et rend au cron.
+- ⚠️ Elle se DÉCLARE : le noyau refuse tout paramètre de notification inconnu
+  (`_raise_for_invalid_parameters`), donc `_get_notify_valid_parameters`
+  l'ajoute à la liste. Sans cette déclaration, la faire voyager lève
+  `ValueError` sur tout envoi gardé.
+- Les deux chemins du téléphone forcent l'envoi — le composeur pose
+  `force_send` en fiche unique — donc rien ne change pour eux. C'est la
+  garantie qui devient inconditionnelle, quel que soit le module de report
+  installé.
+
+### Tests
+
+- Un envoi gardé, différé pour de bon, puis le cron joué : le destinataire
+  saisi est notifié, les abonnés non. Sans la portée dans les `kwargs`, les
+  deux abonnés le sont.
+- Le témoin du poste qui lisait zéro est réparé : il posait le contexte sur le
+  courriel et jamais sur la fiche visée, alors que c'est la fiche qui poste.
+
+## [18.0.11.36.3] — 2026-09-15
+
+Un brouillon envoyé du téléphone ne va qu'à ses destinataires.
+
+### Fixed
+
+- 🔴 `mobile_draft_send` (`/draft/send`) postait le brouillon sans la garde de
+  la 11.36.0 : les abonnés de la fiche, portail compris, en recevaient une
+  copie. Le brouillon suit maintenant la même règle que la réponse et le
+  courriel neuf écrits au téléphone (S-M6).
+
+### Tests
+
+- Deux essais neufs dans `test_mobile_notifications` : le brouillon du
+  téléphone et, en contrôle, le même brouillon envoyé par le poste. Sans le
+  correctif, l'essai du téléphone tombe. Les essais témoins posent
+  `mail_defer_seconds=0` : là où `mail_post_defer` est installé, la
+  notification est différée et un essai lirait zéro.
+
+## [18.0.11.36.2] — 2026-09-15
+
+L'onglet « Pièces jointes » d'un courriel reçu par IMAP ne montrait jamais ses
+pièces dans le navigateur.
+
+### Fixed
+
+- 🔴 **L'encadré des pièces du message brut, et son bouton « Extraire les
+  pièces jointes », ne s'affichaient pas dans le client web.** La fiche y est
+  lue avec `bin_size=True`, et `raw_rfc822` y vaut alors sa taille
+  (« 156.46 Kb »), pas le message : le décodage levait, le listing rendait une
+  liste vide et l'encadré restait caché. Le listing relit désormais le brut
+  sans ce contexte ; le cache d'un `Binary` dépend de `bin_size`, la relecture
+  rend donc bien les octets. Le défaut datait de la 11.22.0, qui avait posé
+  l'encadré, et touchait toute ligne IMAP avec pièces. Les essais d'alors
+  lisaient sans `bin_size`, et passaient. Aucune colonne, aucune migration.
+
+### Tests
+
+- `test_pieces_brutes_bin_size` lit la fiche comme la lit le navigateur, avant
+  et après « Extraire ». Sans le correctif, l'essai de l'encadré tombe avec le
+  message attendu.
+
+## [18.0.11.36.1] — 2026-09-15
+
+Chaque boîte porte sa couleur jusqu'au téléphone.
+
+### Added
+
+- `config.accounts[].color` : la couleur de l'avis du compte (`popup_color`)
+  en `#RRGGBB`, vide quand aucune n'est choisie. L'app en peint la boîte dans
+  la liste et dans le filtre par compte ; une app plus ancienne ignore la clé.
+- `counts.by_account` : les mêmes totaux, boîte par boîte, dans toute réponse
+  qui porte `counts`. Les sections d'une liste filtrée sur une boîte comptent
+  cette boîte ; la pastille de l'onglet garde le total, qui n'est pas la somme
+  des boîtes (un fil passé par deux boîtes compte une fois).
+
+## [18.0.11.36.0] — 2026-09-14
+
+L'app mobile : accord à l'appariement, push chiffré, envois du téléphone
+bornés. Suite de l'audit de l'API mobile du 2026-09-08 ; une app plus ancienne
+continue de fonctionner.
+
+### Security
+
+- 🔴 **Page d'accord à l'appariement (S-M1).** `GET auth/start` émettait le
+  code et repartait aussitôt vers le schéma de l'app : une app tierce du
+  téléphone qui déclare ce schéma pouvait ouvrir l'URL dans le navigateur où la
+  personne est connectée et apparier un appareil sans qu'elle voie rien. Le GET
+  valide la demande puis montre ce qui est demandé (compte, appareil, accès) ;
+  seul le POST « Autoriser » de `auth/consent`, jeton CSRF compris, émet le
+  code, après avoir tout revalidé. « Refuser » revient à l'app en
+  `error=access_denied`. Page sans JavaScript, jamais dans un cadre.
+- **Push chiffré (C-M3).** `register_push` accepte `p256dh` et `auth` ; un
+  appareil qui les a remis reçoit ses poussées chiffrées en RFC 8291
+  (`aes128gcm`, clé éphémère par message) et ne reçoit plus jamais de clair.
+  La réponse dit ce que le serveur chiffre (`webpush`, `webpush_types`). Deux
+  champs neufs sur `bf.email.mobile.device`, protégés comme le jeton et
+  effacés avec l'endpoint. Sans clés, le JSON part en clair comme avant.
+- **Les envois du téléphone ne vont qu'à qui on les adresse (S-M6).** Classer
+  un courriel depuis le téléphone l'importe en note interne, et une réponse ou
+  un courriel neuf écrit au téléphone part aux destinataires saisis (À, Cc)
+  sans les abonnés de la fiche, portail compris. Le poste ne change pas : il
+  montre ces abonnés avant l'envoi.
+
+### Added
+
+- **Pastille de la boîte.** `_mobile_counts` rend `inbox_unread`, les non-lus
+  de la boîte de réception seulement ; `unread` comptait aussi la sourdine et
+  ce qui est rangé hors de l'INBOX du serveur.
+
 ## [18.0.11.35.2] — 2026-09-14
 
 Répondre à un courriel qui cite une image d'un autre domaine faisait tomber

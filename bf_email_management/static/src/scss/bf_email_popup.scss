@@ -147,8 +147,14 @@
 // Des couleurs pleines et sombres, pas des teintes de marque en avant-plan :
 // la barre est un fond de 4 px, et le bleu Blue Fox n'est jamais du texte.
 // Elles tiennent sur les deux thèmes sans se dédoubler.
+// ⚠️ Palette CATÉGORIELLE, pas des teintes de marque — ne pas y mettre de
+// `var(--brand-*)`. Les six entrées doivent se comporter pareil : ce sont six
+// couleurs pleines et fixes qui distinguent des catégories de notification. Le
+// 2026-09-13 j'ai converti la seule entrée « blue » en variable de marque au
+// cours d'un balayage : elle s'est mise à suivre le locataire pendant que les
+// cinq autres restaient fixes, et la barre bleue est sortie décalée du reste.
 $o-bf-email-popup-colors: (
-    "blue":   #29abe2,
+    "blue":   #29ABE2,
     "slate":  #64748b,
     "green":  #16a34a,
     "violet": #7c3aed,

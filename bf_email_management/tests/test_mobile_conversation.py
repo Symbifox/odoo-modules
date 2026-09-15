@@ -97,6 +97,52 @@ class TestMobileConversation(MobileApiCase):
         self.assertTrue(config["accounts"])
         self.assertEqual(config["accounts"][0]["login"], "owner@test.invalid")
 
+    def test_config_gives_each_account_its_desk_colour(self):
+        """Le téléphone peint la boîte de la couleur de l'avis au bureau ;
+        sans couleur choisie, il n'en reçoit aucune et choisit."""
+        self.account.sudo().popup_color = "amber"
+        comptes = {a["id"]: a for a in self.as_owner().get_mobile_config()["accounts"]}
+        self.assertEqual(comptes[self.account.id]["color"], "#D97706")
+        self.account.sudo().popup_color = False
+        comptes = {a["id"]: a for a in self.as_owner().get_mobile_config()["accounts"]}
+        self.assertEqual(comptes[self.account.id]["color"], "")
+
+    def test_counts_come_per_account_too_and_the_total_is_not_their_sum(self):
+        """Les sections d'une liste filtrée sur une boîte comptent CETTE boîte.
+        Un fil qui a touché deux boîtes compte dans chacune, mais une
+        seule fois au total : additionner les boîtes le compterait deux fois."""
+        autre = self.env["bf.email.account"].create({
+            "name": "Seconde boîte — owner@second.test", "user_id": self.owner.id,
+            "host": "imap.test.invalid", "port": 993,
+            "login": "owner@second.test", "password": "x", "state": "connected",
+        })
+        vals = self._vals(
+            subject="Re: Question sur la facture", sender="client@acme.test",
+            direction="in", status="new", root="<racine-1@test.invalid>",
+            body="Même fil, autre boîte.", uid="104")
+        vals["account_id"] = autre.id
+        self.as_owner().create(vals)
+
+        counts = self.as_owner()._mobile_counts()
+        par_boite = counts["by_account"]
+        self.assertEqual(par_boite[str(autre.id)]["inbox"], 1)
+        self.assertEqual(par_boite[str(autre.id)]["unread"], 1)
+        self.assertEqual(par_boite[str(self.account.id)]["inbox"], counts["inbox"])
+        self.assertGreater(
+            sum(b["inbox"] for b in par_boite.values()), counts["inbox"],
+            "le fil commun doit compter une fois au total, une fois par boîte")
+        # Une boîte sans rien à compter rend des zéros, pas une clé absente
+        # pour un filtre et présente pour l'autre.
+        self.assertEqual(set(par_boite[str(autre.id)]),
+                         {"inbox", "unread", "inbox_unread", "snoozed", "unrouted"})
+
+    def test_the_colour_table_follows_the_desk_palette(self):
+        """Une teinte ajoutée au champ sans entrée ici rendrait une boîte sans
+        couleur au téléphone et colorée au bureau, sans que rien ne casse."""
+        from ..models.bf_email_mobile import ACCOUNT_COLOR_HEX
+        choix = dict(self.env["bf.email.account"]._fields["popup_color"].selection)
+        self.assertEqual(set(ACCOUNT_COLOR_HEX), set(choix))
+
     def test_snooze_presets_land_in_the_users_timezone(self):
         """« Ce soir (18 h) » doit être 18 h à Montréal, pas 18 h UTC."""
         import pytz

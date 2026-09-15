@@ -91,15 +91,26 @@ Deactivates the device and clears its push endpoint. → `{"ok": true}`
   "tz": "America/Montreal",
   "signature": "",          // follows the server setting — see below
   "accounts": [{"id": 1, "name": "Work", "login": "jane@example.com",
-                "aliases": "", "state": "connected"}],
-  "counts": {"inbox": 12, "unread": 3, "snoozed": 2, "unrouted": 5},
+                "aliases": "", "state": "connected",
+                "color": "#29ABE2"}],   // "" when none is chosen (18.0.11.36.1)
+  "counts": {"inbox": 12, "unread": 3, "snoozed": 2, "unrouted": 5,
+             "by_account": {"1": {"inbox": 9, "unread": 2, "inbox_unread": 2,
+                                  "snoozed": 2, "unrouted": 4}}},  // 18.0.11.36.1
   "snooze_presets": [{"key": "tonight", "label": "Ce soir (18 h)",
                       "until_ms": 1786831200000}],
   "routable_models": [{"model": "project.task", "label": "Tâche"}],
   "spawn_kinds": ["task", "ticket", "lead", "bill", "invoice", "expense"]
 }
 ```
-`accounts` carries addressing only — never host/login/password.
+`counts.by_account` repeats the totals per mailbox (key: account id as text), for
+the sections above a list filtered with `account_id`; the tab badge keeps the
+overall totals, which are NOT the sum of the mailboxes (a thread that reached two
+mailboxes counts once in each, once overall). Every response that carries
+`counts` carries it.
+`accounts` carries addressing only — never host/login/password. `color` is the
+account's desk notification colour (`popup_color`) as `#RRGGBB`, so the phone
+paints a mailbox the same colour as its desk notice; empty when none is set,
+and the app picks one.
 `routable_models` and `spawn_kinds` are filtered to what this instance actually
 has installed and the user may read, so the app can build its menus from the
 response instead of hardcoding Odoo apps.

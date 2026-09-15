@@ -15,16 +15,34 @@ one app registration, two independent publishers. Payloads are told apart by
 
 Every send is defensive: a dead endpoint or an unreachable ntfy must never
 break the IMAP sync cron that triggered it.
+
+Encryption (C-M3, audit 2026-09-08): once the device has handed over its
+WebPush subscription keys (``/register_push``), the body leaves encrypted per
+RFC 8291 (``aes128gcm``). Without keys (app ≤ 2.41.0) the JSON goes out in the
+clear, exactly as before. See ``push_request``.
 """
+import base64
+import binascii
 import ipaddress
 import json
 import logging
+import re
 import socket
 from urllib.parse import urlparse
 
 import requests
 
 from odoo import _, api, models
+
+# ⚠️ Tolerant import. `http_ece` and `cryptography` are in every tenant image
+# today, but this module does not declare them: an image that lost them must
+# not take the whole registry down over a notification. Without them the server
+# answers `webpush: false` and keeps pushing in the clear.
+try:
+    import http_ece
+    from cryptography.hazmat.primitives.asymmetric import ec
+except ImportError:  # pragma: no cover
+    http_ece = ec = None
 
 _logger = logging.getLogger(__name__)
 
@@ -111,6 +129,132 @@ def safe_push_endpoint(url):
     return _host_is_public(parsed.hostname)
 
 
+# ── WebPush (RFC 8291) ────────────────────────────────────────────────────────
+# Until now the subject and preview of every email crossed ntfy in the clear
+# (S-I3), and anyone who knew a device's endpoint could post a forged
+# notification to it (C-M3). End-to-end encryption settles both: ntfy only sees
+# an opaque blob, and the app drops what it cannot decrypt.
+#
+# Kept apart from bf_sms_archive's identical helper on purpose: the two modules
+# install independently, and this one must not require the other.
+
+# How long ntfy keeps a message the device has not collected yet.
+WEBPUSH_TTL = 86400
+# RFC 8188 record size: http_ece's default, and pywebpush's. Every message fits
+# in ONE record; each record costs 17 bytes (delimiter and tag).
+WEBPUSH_RS = 4096
+# ⚠️ Not `WEBPUSH_RS - 17`: the app's decrypter (Tink `WebPushHybridDecrypt`,
+# the one inside UnifiedPush connector 3.x) refuses a WHOLE message, header
+# included, past 4096 bytes. That leaves 4096 - 86 - 17 = 3993 bytes of
+# plaintext. Past it the push would leave, ntfy would relay it, and the app
+# would drop it silently (found with app 2.42.0, 2026-09-14); better it fails
+# here, in the server log.
+WEBPUSH_MAX_PLAINTEXT = WEBPUSH_RS - 86 - 17
+
+_B64URL_RE = re.compile(r"^[A-Za-z0-9_-]+={0,2}$")
+
+
+def webpush_available():
+    """True when this image can encrypt (``http_ece`` and ``cryptography``)."""
+    return http_ece is not None and ec is not None
+
+
+def _b64url_bytes(value):
+    """Bytes of a base64url string (padding optional), or None.
+
+    ⚠️ The alphabet is checked BEFORE decoding: ``urlsafe_b64decode`` silently
+    drops characters it does not know, so a mangled key would pass for a
+    different, valid-looking one.
+    """
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    if not value or not _B64URL_RE.match(value):
+        return None
+    try:
+        return base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
+    except (ValueError, binascii.Error):
+        return None
+
+
+def _b64url(raw):
+    return base64.urlsafe_b64encode(raw).decode("ascii").rstrip("=")
+
+
+def parse_push_keys(p256dh, auth):
+    """Subscription keys from the app → normalized ``(p256dh, auth)``.
+
+    ``(False, False)`` when BOTH are absent: a pre-encryption app, still served
+    in the clear. ``ValueError`` for anything else that is not a valid pair:
+    one key alone, a key that does not decode, a point off the P-256 curve, an
+    auth secret that is not 16 bytes. Pure: the bench drives it.
+
+    ⚠️ The point is checked on the curve, not just by length: an invalid point
+    would only raise at send time, inside the IMAP cron, far from the app that
+    sent it and that would believe its notifications encrypted.
+    """
+    if not p256dh and not auth:
+        return False, False
+    key, secret = _b64url_bytes(p256dh), _b64url_bytes(auth)
+    if key is None or secret is None:
+        raise ValueError("unreadable subscription key")
+    if len(key) != 65 or key[0] != 0x04:
+        raise ValueError("p256dh must be an uncompressed P-256 point")
+    if len(secret) != 16:
+        raise ValueError("auth must be 16 bytes")
+    if webpush_available():
+        # Raises ValueError when the point is not on the curve. Without the
+        # library the caller stores nothing anyway.
+        ec.EllipticCurvePublicKey.from_encoded_point(ec.SECP256R1(), key)
+    return _b64url(key), _b64url(secret)
+
+
+def webpush_encrypt(plaintext, p256dh, auth, private_key=None, salt=None):
+    """Encrypt ``plaintext`` (bytes) for the ``(p256dh, auth)`` subscription.
+
+    RFC 8291 ``aes128gcm``: a FRESH ephemeral P-256 key per message, a random
+    salt, a single record, and the ephemeral public key as the header
+    ``keyid``, which is exactly what ``pywebpush.WebPusher.encode`` does.
+    ``private_key`` and ``salt`` exist only so the bench can replay the RFC's
+    Appendix A vector.
+    """
+    if not webpush_available():
+        raise ValueError("WebPush encryption unavailable on this server")
+    if len(plaintext) > WEBPUSH_MAX_PLAINTEXT:
+        # A second record is valid RFC 8188, but ntfy and UnifiedPush cap a
+        # message at 4 KB: it would never arrive.
+        raise ValueError("message too long for a single record")
+    key, secret = _b64url_bytes(p256dh), _b64url_bytes(auth)
+    if key is None or secret is None:
+        raise ValueError("unreadable subscription key")
+    return http_ece.encrypt(
+        plaintext,
+        salt=salt,
+        private_key=private_key or ec.generate_private_key(ec.SECP256R1()),
+        dh=key,
+        auth_secret=secret,
+        rs=WEBPUSH_RS,
+        version="aes128gcm",
+    )
+
+
+def push_request(payload, p256dh=None, auth=None, ttl=WEBPUSH_TTL):
+    """``(body, headers)`` for one push, without ``Authorization``.
+
+    With both keys: encrypted body, ``Content-Encoding: aes128gcm`` and
+    ``TTL``. Without: the clear JSON and the headers of old, byte for byte, so
+    a pre-encryption app sees no difference.
+    """
+    if p256dh and auth:
+        plaintext = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        return webpush_encrypt(plaintext, p256dh, auth), {
+            "Content-Type": "application/octet-stream",
+            "Content-Encoding": "aes128gcm",
+            "TTL": str(int(ttl)),
+        }
+    return json.dumps(payload), {"Content-Type": "application/json"}
+
+
 class BfEmailUnifiedPush(models.AbstractModel):
     _name = "bf.email.unifiedpush"
     _description = "Envoi push UnifiedPush/ntfy (app native, sans Google)"
@@ -142,9 +286,24 @@ class BfEmailUnifiedPush(models.AbstractModel):
         return headers
 
     @api.model
-    def _post(self, endpoint, payload):
+    def _webpush_types(self):
+        """Message types THIS server always encrypts for a device that handed
+        over its keys.
+
+        ⚠️ The app rejects an undecrypted message of a listed type, so a type
+        only belongs here once it really goes through ``_send``.
+        """
+        return ["mail", "mail_clear", "mail_clear_all"]
+
+    @api.model
+    def _post(self, endpoint, payload, p256dh=None, auth=None):
+        body, headers = push_request(payload, p256dh, auth)
+        # The ntfy token follows the same rule as before, encrypted or not.
+        token = self._auth_headers(endpoint).get("Authorization")
+        if token:
+            headers["Authorization"] = token
         return requests.post(
-            endpoint, data=json.dumps(payload), headers=self._auth_headers(endpoint),
+            endpoint, data=body, headers=headers,
             timeout=POST_TIMEOUT,
             # The endpoint was vetted as public; a 30x would send this POST —
             # bearer token included — somewhere that never was. Redirects are
@@ -158,6 +317,9 @@ class BfEmailUnifiedPush(models.AbstractModel):
 
         Dead endpoints (403/404/410) are purged so a reinstalled app doesn't
         leave the cron POSTing into the void forever.
+
+        Encrypted for each device that carries both keys, clear for the others:
+        one person's two phones may run two versions of the app.
         """
         for dev in self._devices(owner):
             # Re-checked at send time, not only at registration: DNS can be
@@ -170,7 +332,11 @@ class BfEmailUnifiedPush(models.AbstractModel):
                 dev.write({"push_endpoint": False})
                 continue
             try:
-                resp = self._post(dev.push_endpoint, payload)
+                # ⚠️ A device that handed over its keys NEVER gets clear text:
+                # if encryption fails, `push_request` raises and the message is
+                # lost, which the app would have done with it anyway.
+                resp = self._post(dev.push_endpoint, payload,
+                                  dev.push_p256dh, dev.push_auth)
                 if resp.status_code in (403, 404, 410):
                     dev.write({"push_endpoint": False})
                     _logger.info(
