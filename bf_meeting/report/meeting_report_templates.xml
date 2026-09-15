@@ -335,6 +335,34 @@
                                 </table>
                             </t>
 
+                            <!-- Existing tasks the meeting discussed -->
+                            <t t-set="discussed_tasks" t-value="doc._discussed_tasks_for_report()"/>
+                            <t t-if="discussed_tasks">
+                                <div class="mr-section-title">T&#226;ches existantes discut&#233;es</div>
+                                <table class="mr-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 55%;">T&#226;che</th>
+                                            <th style="width: 25%;">Assign&#233;</th>
+                                            <th style="width: 20%;">&#201;ch&#233;ance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="discussed_tasks" t-as="task">
+                                            <tr>
+                                                <td><t t-out="task.name"/></td>
+                                                <td>
+                                                    <t t-foreach="task.user_ids" t-as="u">
+                                                        <t t-out="u.name"/><t t-if="not u_last">, </t>
+                                                    </t>
+                                                </td>
+                                                <td><t t-out="str(task.date_deadline) if task.date_deadline else ''"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+
                             <!-- Open questions -->
                             <t t-if="data['open_questions']">
                                 <div class="mr-section-title">Questions ouvertes</div>

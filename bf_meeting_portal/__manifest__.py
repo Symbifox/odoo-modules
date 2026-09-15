@@ -4,7 +4,11 @@
     #   tâches annulées et la tâche du compte rendu lui-même, marquent « fait » les
     #   tâches terminées, et affichent l'échéance en date lisible plutôt qu'en
     #   datetime brut. Vu à l'aperçu du portail d'un client le 2026-09-04.
-    'version': '18.0.2.0.2',
+    # 18.0.2.1.0 (2026-09-15) : section « Tâches existantes discutées » sous les éléments
+    #   d'action, alimentée par bf_meeting 18.0.3.59.0 (même filtre que le PDF et le
+    #   courriel). Le meeting-processor verse une action dans une tâche ouverte au lieu
+    #   d'en créer une neuve.
+    'version': '18.0.2.1.0',
     'category': 'Services/Project',
     'summary': "Accès portail aux comptes rendus de rencontre déjà envoyés",
     'description': """

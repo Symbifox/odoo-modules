@@ -308,6 +308,21 @@
                                     <field name="stage_id"/>
                                 </list>
                             </field>
+                            <separator string="Tâches existantes discutées"/>
+                            <p class="text-muted">
+                                Tâches déjà ouvertes avant la rencontre, dont la rencontre a parlé.
+                                Elles gardent leur rencontre d'origine et figurent au compte rendu
+                                à côté des éléments d'action.
+                            </p>
+                            <field name="discussed_task_ids" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="project_id" optional="show"/>
+                                    <field name="user_ids" widget="many2many_tags"/>
+                                    <field name="date_deadline"/>
+                                    <field name="stage_id"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Matrice" name="knowledge">
                             <p class="text-muted">

@@ -144,6 +144,24 @@
                                 </ul>
                                 </t>
 
+                                <t t-set="discussed_tasks" t-value="object._discussed_tasks_for_report()"/>
+                                <t t-if="discussed_tasks">
+                                <h3 t-attf-style="color:{{ brand_dark }}; font-size:16px; font-weight:600; margin:24px 0 10px 0; padding-left:10px; border-left:4px solid {{ brand_primary }};">Tâches existantes discutées</h3>
+                                <ul style="margin:0 0 20px 0; padding-left:24px; color:#374151;">
+                                    <t t-foreach="discussed_tasks" t-as="task">
+                                        <li style="margin-bottom:6px;">
+                                            <t t-out="task.name"/>
+                                            <t t-if="task.user_ids">
+                                                <span style="color:#6B7280; font-size:13px;"> — <t t-foreach="task.user_ids" t-as="u"><t t-if="not u_first" t-out="', '"/><t t-out="u.name"/></t></span>
+                                            </t>
+                                            <t t-if="task.date_deadline">
+                                                <span style="color:#6B7280; font-size:13px;"> (échéance <t t-out="task.date_deadline.strftime('%Y-%m-%d')"/>)</span>
+                                            </t>
+                                        </li>
+                                    </t>
+                                </ul>
+                                </t>
+
                                 <p style="font-size:14px; line-height:22px; color:#6B7280; margin:28px 0 0 0;">
                                     N'hésitez pas à répondre à ce courriel pour toute correction ou précision.
                                 </p>

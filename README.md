@@ -172,9 +172,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.3.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.0 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
-| `bf_meeting` | Rencontres | 18.0.3.58.1 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
+| `bf_meeting` | Rencontres | 18.0.3.59.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
-| `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.0.2 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
+| `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.1.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.2.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.4.0.4 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks, each person on their own Nextcloud account (Login Flow v2, SSO-friendly): folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_nfc` | Gestes par pastille NFC | 18.0.2.3.0 | BUSL-1.1 | NFC tags that play a gesture in Odoo: three doors (app token, browser session, NTAG 424 signed tag), menus and questions, bounded offline taps, QR label twin, tag templates and a setup wizard |

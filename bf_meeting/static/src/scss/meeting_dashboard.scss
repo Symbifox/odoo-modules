@@ -33,9 +33,9 @@
 
     .bf_stepper_current {
         background-color: #fff;
-        color: #29ABE2;
-        border-color: #29ABE2;
-        box-shadow: 0 0 0 3px rgba(41, 171, 225, 0.18);
+        color: var(--brand-primary, #29ABE2);
+        border-color: var(--brand-primary, #29ABE2);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary, #29ABE2) 18%, transparent);
     }
 
     .bf_stepper_pending {
@@ -60,8 +60,8 @@
     }
 
     .bf_card_selected {
-        background-color: rgba(41, 171, 225, 0.05);
-        border-color: #29ABE2 !important;
+        background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 5%, transparent);
+        border-color: var(--brand-primary, #29ABE2) !important;
     }
 
     .bf_stepper_label {

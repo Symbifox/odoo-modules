@@ -74,7 +74,12 @@ They will return once `bf_meeting` carries a reliable sent marker.
 Displayed: summary, topics and their points, decisions (with decision-maker and
 linked item), action items (assignee, deadline shown as a date; cancelled tasks
 and the report's own task are left out, completed ones are marked *done*, since
-v18.0.2.0.2), open questions, deliverables, attendance. The page draws these sections from
+v18.0.2.0.2), open questions, deliverables, attendance. Since v18.0.2.1.0 the
+page also carries **Existing tasks discussed** — tasks that were already open
+before the meeting and that it talked about — under the action items, with the
+same exclusions and the same filter (`meeting.record._discussed_tasks_for_report()`,
+bf_meeting 18.0.3.59.0) as the PDF and the email, so the three surfaces cannot
+drift apart. The page draws these sections from
 `meeting.record._get_report_data()`, the method feeding the client report, so it
 stays at parity with it.
 

@@ -228,6 +228,23 @@ class MeetingRecord(models.Model):
         'meeting_id',
         string="Éléments d'action",
     )
+    # Les tâches qui existaient AVANT la rencontre et dont elle a parlé.
+    # `task_ids` ne peut pas les porter : c'est l'inverse de
+    # `project.task.meeting_id`, un champ unique, et l'écrire arracherait la
+    # tâche au compte rendu de la rencontre qui l'a créée (mesuré : un appel a
+    # « volé » une tâche de mars au compte rendu qui l'avait créée). Le
+    # meeting-processor les pose quand il verse une action dans une tâche
+    # ouverte au lieu d'en créer une neuve.
+    discussed_task_ids = fields.Many2many(
+        'project.task',
+        'meeting_record_discussed_task_rel',
+        'meeting_id',
+        'task_id',
+        string="Tâches existantes discutées",
+        help="Tâches déjà ouvertes avant la rencontre, dont la rencontre a parlé. "
+             "Elles figurent au compte rendu (PDF, courriel, portail) à côté des "
+             "éléments d'action créés par la rencontre.",
+    )
     task_count = fields.Integer(
         string='Nombre de tâches',
         compute='_compute_task_count',
@@ -571,6 +588,19 @@ class MeetingRecord(models.Model):
     def _compute_task_count(self):
         for rec in self:
             rec.task_count = len(rec.task_ids)
+
+    def _discussed_tasks_for_report(self):
+        """Les tâches existantes discutées, telles que le compte rendu les montre.
+
+        Une seule définition pour le PDF, le courriel, le portail et la copie
+        d'échange : quatre filtres écrits séparément finissent par diverger, et
+        le client lirait deux listes différentes du même compte rendu.
+        - une tâche déjà listée parmi les éléments d'action n'est pas répétée ;
+        - une tâche annulée n'est plus un engagement (même règle que le portail).
+        """
+        self.ensure_one()
+        return (self.discussed_task_ids - self.task_ids).filtered(
+            lambda t: t.state != '1_canceled')
 
     @api.depends('knowledge_item_ids')
     def _compute_knowledge_item_count(self):

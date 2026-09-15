@@ -188,14 +188,26 @@ class PortalMeeting(CustomerPortal):
             'open_questions': _flatten(data.get('open_questions'), 'question'),
             'deliverables': _flatten(data.get('deliverables'), 'description'),
             'actions': [
-                {
-                    'name': t.name or '',
-                    'who': ', '.join(u.name for u in t.user_ids),
-                    'deadline': _fmt_date(t.date_deadline),
-                    'done': t.state == '1_done',
-                }
+                self._action_ctx(t)
                 for t in rec.task_ids if self._is_action_item(rec, t)
             ],
+            # Les tâches ouvertes avant la rencontre dont elle a parlé : le PDF
+            # et le courriel les montrent, la page aussi. Le filtre vient de
+            # bf_meeting, le même pour les quatre surfaces.
+            'discussed': [
+                self._action_ctx(t)
+                for t in rec._discussed_tasks_for_report()
+                if self._is_action_item(rec, t)
+            ],
+        }
+
+    @staticmethod
+    def _action_ctx(task):
+        return {
+            'name': task.name or '',
+            'who': ', '.join(u.name for u in task.user_ids),
+            'deadline': _fmt_date(task.date_deadline),
+            'done': task.state == '1_done',
         }
 
     @staticmethod

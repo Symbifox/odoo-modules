@@ -15,6 +15,7 @@ tracking decisions as knowledge matrix lines.
 
 - **Agendas (`meeting.agenda`)** — title, date, project, participants, planned topics, email delivery to recipients
 - **Reports (`meeting.record`)** — topics covered, decisions, structured JSON notes rendered as safe HTML, PDF report, send tracking
+- **Existing tasks discussed (`discussed_task_ids`, v18.0.3.59.0)** — tasks that were already open before the meeting and that the meeting talked about. They keep the report that created them (`meeting_id` is never rewritten) and appear in the PDF, the email and the client portal next to the action items the meeting produced. A single filter, `_discussed_tasks_for_report()`, feeds all four surfaces: it drops cancelled tasks and never repeats a task already listed as an action item
 - **Decisions (`meeting.decision`)** — decision-makers, context, optional transfer into the knowledge matrices
 - **Attendance (`meeting.attendance`)** — status (present / absent / excused) and role per participant
 - **Tasks to discuss** — four ways of attaching a `project.task` to an upcoming meeting:
@@ -68,6 +69,7 @@ tracking decisions as knowledge matrix lines.
 | `meeting.topic` | A topic covered in a report (key points, verbatim) |
 | `meeting.decision` | A decision taken in a meeting (context, decision-maker) |
 | `meeting.attendance` | A participant's attendance (status, role) |
+| `project.task` ↔ `meeting.record` | `discussed_task_ids`, a many-to-many kept separate from `task_ids`: the latter is the inverse of a single field, so writing it would tear an existing task away from the report that created it |
 | `project.task` (inherited) | Meeting attachment fields (`meeting_id`, `bf_meeting_agenda_id`, `bf_discuss_tag`, `bf_next_agenda_id`) |
 | `project.project` (inherited) | "Reports" smart button |
 | `calendar.event` (inherited) | "Reports" and "Agenda" smart buttons, `meeting_agenda_ids/id/count` fields, `bf_skip_agenda` (opt-out), `bf_needs_agenda` (computed), creation of an agenda or a report from the event |
@@ -152,6 +154,27 @@ The file is untrusted input: it is refused above 512 kB (a real report weighs
 around 5 kB), refused outright on a structural mismatch rather than repaired
 silently, capped on every list and string, and the import itself is restricted to
 the manager group.
+
+### Existing tasks a meeting discussed
+
+`task_ids` is the inverse of `project.task.meeting_id`, a single field: a task
+can belong to one report only. When a meeting talks about work that is already
+under way, filing it under `task_ids` would tear that task away from the report
+that created it. `discussed_task_ids` is a separate many-to-many, so the task
+keeps its own history and the new report still lists it.
+
+`_discussed_tasks_for_report()` is the one filter behind the four surfaces — PDF,
+email, portal, tenant-to-tenant copy. It drops cancelled tasks, which are no
+longer commitments, and never repeats a task already shown as an action item.
+Four filters written separately drift, and the client would read two different
+lists of the same meeting.
+
+⚠️ The email template translates **as a whole**, not term by term: every language
+key other than `en_US` is a complete template that a module upgrade leaves
+untouched. The migration for 18.0.3.59.0 therefore inserts the new section into
+each existing translation rather than relying on the upgrade, and translates its
+heading for the English ones. The PDF report, an `ir.ui.view`, translates term by
+term and only needs its new heading translated.
 
 ### Public contributions — security
 

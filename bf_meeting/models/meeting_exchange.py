@@ -183,8 +183,11 @@ class MeetingExchange(models.AbstractModel):
                 'knowledge_item': (dec.knowledge_item_id.name or '')[:MAX_LINE],
             })
 
+        # Les tâches existantes discutées voyagent parmi les éléments d'action :
+        # la copie ne porte que ce que le PDF montre, et un destinataire d'une
+        # version antérieure ignorerait une clé qu'il ne connaît pas.
         actions = []
-        for task in record.task_ids:
+        for task in record.task_ids | record._discussed_tasks_for_report():
             actions.append({
                 'name': (task.name or '')[:MAX_LINE],
                 'assignees': ', '.join(task.user_ids.mapped('name'))[:MAX_LINE],
