@@ -36,7 +36,7 @@ class TestMobileSendMedia(HttpCase):
         super().setUpClass()
         cls.user = new_test_user(
             cls.env, login="sms_mms_sender",
-            groups="bf_sms_archive.group_sms_user",
+            groups="base.group_user,bf_sms_archive.group_sms_user",
         )
         cls.line = cls.env["sms.archive.line"].create({
             "label": "Ligne MMS",

@@ -21,6 +21,7 @@ import time
 import urllib.parse
 from collections import defaultdict
 
+from markupsafe import Markup
 from werkzeug.utils import redirect as wz_redirect
 
 from odoo import fields, http
@@ -28,6 +29,7 @@ from odoo.exceptions import AccessDenied, UserError
 from odoo.http import request
 from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 
+from ..models.push_transport import parse_push_keys, webpush_available
 from .voipms_webhook import _safe_media_url
 
 _logger = logging.getLogger(__name__)
@@ -108,6 +110,114 @@ def _json(data, status=200):
         headers=[("Content-Type", "application/json; charset=utf-8")],
         status=status,
     )
+
+
+# ── Page d'accord à l'appariement (S-M1) ─────────────────────────────────────
+# Dupliquée dans ``bf_email_management`` plutôt que partagée, comme
+# ``_branding`` : les deux modules s'installent l'un sans l'autre.
+_ENTETES_ACCORD = [
+    ("Content-Type", "text/html; charset=utf-8"),
+    # Jamais dans un cadre : une page tierce qui l'encadrerait en transparence
+    # ferait toucher « Autoriser » à l'aveugle (détournement de clic).
+    ("X-Frame-Options", "DENY"),
+    # ⚠️ Pas de `form-action` : Chrome l'applique aussi à la REDIRECTION qui
+    # suit l'envoi du formulaire, et le retour vers le schéma de l'app serait
+    # bloqué sans un mot.
+    ("Content-Security-Policy",
+     "frame-ancestors 'none'; default-src 'none'; style-src 'unsafe-inline'"),
+    # La page porte le jeton CSRF de la session.
+    ("Cache-Control", "no-store"),
+    ("Referrer-Policy", "no-referrer"),
+]
+
+_STYLE_ACCORD = Markup(
+    "body{margin:0;background:#f4f5f7;color:#1f2328;"
+    "font:16px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}"
+    "main{max-width:26rem;margin:0 auto;padding:2rem 1.25rem}"
+    "h1{font-size:1.35rem;line-height:1.3;margin:0 0 1.25rem}"
+    "dl{background:#fff;border:1px solid #d8dce1;border-radius:.5rem;"
+    "padding:.25rem 1rem;margin:0 0 1.25rem}"
+    "dt{font-size:.8rem;color:#57606a;margin-top:.75rem}"
+    "dd{margin:0 0 .75rem;overflow-wrap:anywhere}"
+    "small{color:#57606a}"
+    "p{margin:0 0 1.5rem;color:#3d444d}"
+    "button{display:block;width:100%;font:inherit;font-weight:600;"
+    "padding:.8rem;border-radius:.5rem;margin-bottom:.75rem;cursor:pointer}"
+    ".oui{background:#1f2328;color:#fff;border:1px solid #1f2328}"
+    ".non{background:#fff;color:#1f2328;border:1px solid #8c959f}"
+)
+
+
+def _rebondir(demande, **params):
+    """Retour vers le lien profond de l'app, ``state`` toujours joint.
+
+    Le refus et le défi manquant reviennent par ce chemin plutôt que par une
+    page : l'app enchaîne les deux modules dans une même session de
+    navigateur, et une page sans issue sur la première étape bloquerait toute
+    la connexion. (Restent des pages : la redirection non autorisée, qu'on ne
+    peut pas suivre, et le compte hors du groupe SMS, comme avant.) 303 après
+    le POST de la page d'accord, pour que le navigateur ne renvoie pas le
+    formulaire.
+    """
+    redirect = demande["redirect"]
+    sep = "&" if "?" in redirect else "?"
+    query = urllib.parse.urlencode({**params, "state": demande["state"]})
+    code = 303 if request.httprequest.method == "POST" else 302
+    return wz_redirect(f"{redirect}{sep}{query}", code=code)
+
+
+def _page_accord(demande):
+    """La page qui dit à la personne ce qu'elle s'apprête à autoriser.
+
+    Sans JavaScript, lisible sur un téléphone, dans la langue de l'usager.
+    Rien de secret n'y figure : ni jeton, ni code, ni mot de passe SIP. Toute
+    valeur venue de l'URL est échappée (``Markup`` échappe ce qu'on lui
+    interpole).
+    """
+    env = request.env
+    user = env.user
+    champs = Markup("").join(
+        Markup('<input type="hidden" name="%s" value="%s"/>') % (nom, demande[nom])
+        for nom in ("redirect", "state", "code_challenge",
+                    "code_challenge_method", "device_name"))
+    appareil = Markup("")
+    if demande["device_name"]:
+        appareil = Markup("<dt>%s</dt><dd>%s</dd>") % (
+            env._("Device"), demande["device_name"])
+    page = Markup(
+        '<!DOCTYPE html><html lang="%(lang)s"><head><meta charset="utf-8"/>'
+        '<meta name="viewport" content="width=device-width, initial-scale=1"/>'
+        '<meta name="robots" content="noindex"/>'
+        "<title>Symbifox Mobile</title><style>%(style)s</style></head>"
+        "<body><main><h1>%(titre)s</h1>"
+        "<dl><dt>%(l_compte)s</dt><dd>%(nom)s<br/><small>%(login)s</small></dd>"
+        "%(appareil)s"
+        "<dt>%(l_acces)s</dt><dd>%(acces)s</dd></dl>"
+        "<p>%(avis)s</p>"
+        '<form method="post" action="%(action)s">'
+        '<input type="hidden" name="csrf_token" value="%(csrf)s"/>%(champs)s'
+        '<button class="oui" type="submit" name="decision" value="allow">%(oui)s</button>'
+        '<button class="non" type="submit" name="decision" value="deny">%(non)s</button>'
+        "</form></main></body></html>"
+    ) % {
+        "lang": (env.lang or "en_US").split("_")[0],
+        "style": _STYLE_ACCORD,
+        "titre": env._("Symbifox Mobile wants to access your account"),
+        "l_compte": env._("Account"),
+        "nom": user.name or "",
+        "login": user.login or "",
+        "appareil": appareil,
+        "l_acces": env._("Access requested"),
+        "acces": env._("Your SMS messages and calls"),
+        "avis": env._("Only allow this if you just started signing in from the "
+                      "app on your phone."),
+        "action": f"{BASE}/auth/consent",
+        "csrf": request.csrf_token(),
+        "champs": champs,
+        "oui": env._("Allow"),
+        "non": env._("Deny"),
+    }
+    return request.make_response(page, headers=_ENTETES_ACCORD)
 
 
 def _body():
@@ -323,9 +433,12 @@ class BfSmsMobileApi(http.Controller):
             return _json({"error": "invalid_credentials"}, 401)
         device = request.env["sms.archive.mobile.device"]._issue(
             uid, name=data.get("device_name"), platform=data.get("platform", "android"))
+        # Remis une fois, puis scellé : seule l'empreinte reste en base.
+        jeton = device.device_token
+        device._seal()
         request.update_env(user=uid)
         return _json({
-            "token": device.device_token,
+            "token": jeton,
             "user_id": uid,
             "user_name": user.name,
             "lines": request.env["sms.archive.thread"].get_lines(),
@@ -334,30 +447,70 @@ class BfSmsMobileApi(http.Controller):
 
     # ── Auth par connexion web (capture le login Odoo : mot de passe, SSO
     #    Authentik « les sessions SSO », MFA — tout ce que la page /web/login offre) ──
+    #
+    # 🔴 Deux temps depuis l'audit du 2026-09-08 (S-M1). Le GET émettait le code
+    # d'appariement et repartait aussitôt vers le schéma de l'app : une app
+    # tierce du téléphone qui déclare ce schéma pouvait ouvrir l'URL dans le
+    # navigateur où la personne est déjà connectée et apparier un appareil sans
+    # qu'elle voie quoi que ce soit. PKCE n'y peut rien, puisque c'est cette
+    # app-là qui a fabriqué le défi. Le GET montre donc ce qui est demandé ; seul
+    # un POST « Autoriser », jeton CSRF compris, émet le code.
     @http.route(f"{BASE}/auth/start", type="http", auth="user", methods=["GET"],
                 csrf=False)
     def auth_start(self, **kw):
         """Ouverte dans un onglet du navigateur. ``auth='user'`` → si non
         connecté, Odoo redirige vers /web/login (mot de passe OU boutons SSO),
-        puis revient ici authentifié. On émet alors un CODE unique et on
-        redirige vers le deep-link de l'app. Le vrai jeton n'apparaît jamais ici."""
+        puis revient ici authentifié. On valide la demande, puis on REND la page
+        d'accord : aucun code n'est émis ici. Le vrai jeton n'apparaît jamais."""
+        erreur, demande = self._appariement(kw)
+        if erreur is not None:
+            return erreur
+        return _page_accord(demande)
+
+    @http.route(f"{BASE}/auth/consent", type="http", auth="user",
+                methods=["POST"], csrf=True)
+    def auth_consent(self, **kw):
+        """Réponse de la page d'accord. ``csrf=True`` : sans le jeton de la
+        session, Odoo refuse le POST avant de nous appeler.
+
+        ⚠️ Tout est REVALIDÉ : les champs cachés viennent du navigateur, donc de
+        n'importe qui. L'usager, lui, vient de la session, jamais du formulaire.
+        """
+        erreur, demande = self._appariement(kw)
+        if erreur is not None:
+            return erreur
+        if kw.get("decision") != "allow":
+            _logger.info("Mobile API : appariement refusé par %s sur la page "
+                         "d'accord", request.env.user.login)
+            return _rebondir(demande, error="access_denied")
+        code = request.env["sms.archive.mobile.device"]._issue_pending(
+            request.env.user.id, name=demande["device_name"],
+            challenge=demande["code_challenge"])
+        return _rebondir(demande, code=code)
+
+    def _appariement(self, kw):
+        """Valide une demande d'appariement : ``(réponse d'erreur, None)`` ou
+        ``(None, demande)``. UNE définition pour le GET et le POST, sans quoi
+        la page d'accord finirait par accepter ce que la page d'ouverture
+        refuse."""
         redirect = kw.get("redirect") or ""
         state = kw.get("state") or ""
         if not _allowed_redirect(redirect):
             return request.make_response(
                 "Redirection non autorisée.", status=400,
-                headers=[("Content-Type", "text/plain; charset=utf-8")])
+                headers=[("Content-Type", "text/plain; charset=utf-8")]), None
         user = request.env.user
         if not user.has_group(SMS_USER_GROUP):
             return request.make_response(
                 "Ce compte n'a pas accès à la messagerie SMS.", status=403,
-                headers=[("Content-Type", "text/plain; charset=utf-8")])
-
-        sep = "&" if "?" in redirect else "?"
-
-        def rebondir(**params):
-            query = urllib.parse.urlencode({**params, "state": state})
-            return wz_redirect(f"{redirect}{sep}{query}", code=302)
+                headers=[("Content-Type", "text/plain; charset=utf-8")]), None
+        demande = {
+            "redirect": redirect,
+            "state": state,
+            "code_challenge": (kw.get("code_challenge") or "").strip(),
+            "code_challenge_method": (kw.get("code_challenge_method") or "S256").upper(),
+            "device_name": (kw.get("device_name") or "").strip()[:80],
+        }
 
         # 🔴 PKCE obligatoire. Un schéma d'application personnalisé n'est pas
         # exclusif sur Android : sans défi, un code intercepté par une autre
@@ -368,17 +521,12 @@ class BfSmsMobileApi(http.Controller):
         # appareils déjà appariés gardent leur jeton et ne repassent jamais par
         # l'échange. Seule une NOUVELLE connexion lancée depuis un APK d'avant
         # le lot casse, et elle casse bruyamment, ici, avec un motif lisible.
-        defi = (kw.get("code_challenge") or "").strip()
-        methode = (kw.get("code_challenge_method") or "S256").upper()
-        if not defi or methode != "S256":
+        if not demande["code_challenge"] or demande["code_challenge_method"] != "S256":
             _logger.info(
                 "Mobile API : appariement refusé, défi PKCE absent ou méthode "
-                "%s non acceptée", methode)
-            return rebondir(error="pkce_required")
-
-        code = request.env["sms.archive.mobile.device"]._issue_pending(
-            user.id, name=kw.get("device_name"), challenge=defi)
-        return rebondir(code=code)
+                "%s non acceptée", demande["code_challenge_method"])
+            return _rebondir(demande, error="pkce_required"), None
+        return None, demande
 
     @http.route(f"{BASE}/auth/exchange", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
@@ -393,9 +541,12 @@ class BfSmsMobileApi(http.Controller):
             return _json({"error": "invalid_or_expired_code"}, 401)
         if data.get("fcm_token"):
             device.sudo().write({"fcm_token": data["fcm_token"].strip()})
+        # Remis une fois, puis scellé : seule l'empreinte reste en base.
+        jeton = device.device_token
+        device._seal()
         request.update_env(user=device.user_id.id)
         return _json({
-            "token": device.device_token,
+            "token": jeton,
             "user_id": device.user_id.id,
             "user_name": device.user_id.name,
             "lines": request.env["sms.archive.thread"].get_lines(),
@@ -407,7 +558,10 @@ class BfSmsMobileApi(http.Controller):
                 csrf=False, save_session=False)
     @_authed
     def logout(self, device, **kw):
-        device.sudo().write({"active": False, "fcm_token": False})
+        # L'endpoint part aussi, et ses clés WebPush avec lui (voir ``write``
+        # du modèle) : un appareil déconnecté n'a plus rien à recevoir.
+        device.sudo().write({"active": False, "fcm_token": False,
+                             "push_endpoint": False})
         return _json({"ok": True})
 
     # ── Bootstrap ─────────────────────────────────────────────────────
@@ -553,7 +707,19 @@ class BfSmsMobileApi(http.Controller):
                 csrf=False, save_session=False)
     @_authed
     def register_push(self, device, **kw):
-        """Enregistre l'endpoint UnifiedPush (ntfy) de l'app pour cet appareil."""
+        """Enregistre l'endpoint UnifiedPush (ntfy) de l'app pour cet appareil.
+
+        Corps : ``{endpoint, app_version, p256dh, auth}``. Les deux clés de
+        l'abonnement WebPush sont FACULTATIVES : absentes (app ≤ 2.41.0), les
+        clés déjà stockées sont effacées et l'appareil est servi en clair ;
+        présentes mais invalides, 400 ``invalid_push_keys`` plutôt qu'un
+        abonnement qui ne recevrait jamais rien de lisible.
+
+        La réponse dit ce que le serveur fera : ``webpush`` (clés stockées) et
+        ``webpush_types``, les types de messages qu'il chiffrera désormais
+        toujours pour cet appareil. L'app refuse un message de ces types qui
+        n'arrive pas chiffré ; elle accepte les autres tels quels.
+        """
         data = _body()
         endpoint = (data.get("endpoint") or "").strip()
         # The server POSTs to this endpoint on every inbound message
@@ -562,11 +728,30 @@ class BfSmsMobileApi(http.Controller):
         if not endpoint.startswith(("http://", "https://")) \
                 or not _safe_media_url(endpoint):
             return _json({"error": "invalid_endpoint"}, 400)
+        try:
+            p256dh, auth = parse_push_keys(data.get("p256dh"), data.get("auth"))
+        except ValueError:
+            return _json({"error": "invalid_push_keys"}, 400)
+        if p256dh and not webpush_available():
+            # Des clés valides, un serveur qui ne sait pas chiffrer : on le dit
+            # plutôt que de promettre un chiffrement qui n'aura pas lieu.
+            _logger.warning(
+                "Mobile API : clés WebPush ignorées (appareil %s), http_ece ou "
+                "cryptography absent de l'image.", device.id)
+            p256dh = auth = False
         device.sudo().write({
             "push_endpoint": endpoint,
+            "push_p256dh": p256dh,
+            "push_auth": auth,
             "app_version": data.get("app_version") or device.app_version,
         })
-        return _json({"ok": True})
+        webpush = bool(p256dh and auth)
+        return _json({
+            "ok": True,
+            "webpush": webpush,
+            "webpush_types": (request.env["sms.archive.unifiedpush"]._webpush_types()
+                              if webpush else []),
+        })
 
     @http.route(f"{BASE}/register_fcm", type="http", auth="public", methods=["POST"],
                 csrf=False, save_session=False)

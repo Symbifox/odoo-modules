@@ -79,7 +79,7 @@ class TestGsm7Normalize(TransactionCase):
             self.assertEqual(self._norm(once, flatten=True), once)
 
     def test_default_flatten_off(self):
-        """Le réglage runtime par défaut conserve les accents (choix par défaut)."""
+        """Le réglage runtime par défaut conserve les accents."""
         self.assertFalse(self.M._gsm7_flatten_accents_enabled())
 
     # ── Segments bornés en OCTETS UTF-8 (contrôle VOIP.ms) ─────────

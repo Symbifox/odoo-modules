@@ -7,3 +7,7 @@ from . import test_mms_upload_guard
 from . import test_mobile_send_media
 from . import test_mobile_pkce
 from . import test_mobile_heartbeat
+from . import test_mobile_tokens
+from . import test_appels_sans_conversation
+from . import test_webpush
+from . import test_mobile_consent

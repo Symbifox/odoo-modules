@@ -577,8 +577,8 @@ class SmsArchiveMessage(models.Model):
     def _gsm7_flatten_accents_enabled(self):
         """Aplatir les lettres à accent circonflexe/tréma hors GSM-7 (ê→e…) ?
 
-        ICP ``bf_sms_archive.gsm7_flatten_accents``, **défaut OFF** (choix
-        choix par défaut : garder les accents exacts). À ``1``, ces lettres
+        ICP ``bf_sms_archive.gsm7_flatten_accents``, **défaut OFF** (choix par
+        défaut : garder les accents exacts). À ``1``, ces lettres
         sont aplaties pour éviter la bascule UCS-2 (donc la fragmentation) des
         messages qui en contiennent. Les accents déjà GSM-7 (é è à ç ä ö ñ ü…)
         sont préservés dans tous les cas, quel que soit ce réglage.

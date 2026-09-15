@@ -728,13 +728,19 @@ class SmsArchiveThread(models.Model):
 
     @api.model
     def _get_or_create(self, phone_normalized, owner_id, phone_raw=None,
-                       contact_name=None, line_id=None):
+                       contact_name=None, line_id=None, for_call=False):
         """Idempotent thread upsert by (phone_normalized, owner_id).
 
         ``line_id`` marque la ligne d'origine du fil (partage). Il n'est posé qu'à
         la création ou pour compléter un fil qui n'en portait pas : la ligne
         d'origine ne bascule jamais d'elle-même, sinon le partage d'un fil
-        changerait au gré des réponses."""
+        changerait au gré des réponses.
+
+        ``for_call`` dit que le fil n'est demandé que pour porter le NUMÉRO d'un
+        appel : ``call.archive.call`` n'a pas de champ téléphone à lui, et son
+        ``thread_id`` est obligatoire. Un appel n'est pas une conversation. Il ne
+        ramène donc pas dans la boîte un fil qu'on a archivé, et le fil qu'il
+        doit ouvrir naît archivé. Seul un message désarchive."""
         # active_test=False : retrouver aussi les fils archivés (sinon la contrainte
         # d'unicité (phone, owner) bloquerait la recréation).
         thread = self.sudo().with_context(active_test=False).search([
@@ -745,7 +751,7 @@ class SmsArchiveThread(models.Model):
             vals = {}
             if contact_name and not thread.contact_name:
                 vals["contact_name"] = contact_name
-            if not thread.active:
+            if not thread.active and not for_call:
                 vals["active"] = True  # un nouveau message désarchive le fil
             if line_id and not thread.line_id:
                 vals["line_id"] = line_id
@@ -758,6 +764,7 @@ class SmsArchiveThread(models.Model):
             "contact_name": contact_name or "",
             "owner_id": owner_id,
             "line_id": line_id or False,
+            "active": not for_call,
         })
         # Best-effort: auto-match an Odoo contact by phone so names/avatars populate.
         if not thread.partner_id and phone_normalized:
@@ -995,6 +1002,12 @@ class SmsArchiveThread(models.Model):
     def get_messenger_threads(self, archived=False, search=None, line_id=None, limit=200):
         """Liste des fils (volet gauche) : épinglés d'abord, puis par dernier message."""
         domain = self._accessible_thread_domain() + [("active", "=", not archived)]
+        # Un appel n'est pas une conversation. Comme le journal
+        # d'appels n'a pas de champ téléphone, tout appel réserve un fil pour
+        # porter le numéro ; ces fils-là n'ont rien à montrer ici, la Messagerie
+        # n'affichant que des messages, et ils s'ouvraient vides. Un fil qu'on
+        # vient d'ouvrir pour composer (0 message, 0 appel) reste visible, lui.
+        domain += ["|", ("message_count", ">", 0), ("call_count", "=", 0)]
         if search:
             term = search.strip()
             domain += [

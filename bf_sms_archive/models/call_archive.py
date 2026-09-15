@@ -266,7 +266,10 @@ class CallArchiveCall(models.Model):
         if existing:
             return existing, False
 
-        thread = Thread._get_or_create(phone_norm, owner_id, phone_raw, contact_name)
+        # for_call=True : le fil n'est ici qu'un porteur de numéro. Il ne sort pas
+        # de l'archive pour un appel, et s'il doit naître, il naît archivé.
+        thread = Thread._get_or_create(phone_norm, owner_id, phone_raw, contact_name,
+                                       for_call=True)
         rec = self.sudo().create({
             "thread_id": thread.id,
             "call_hash": call_hash,

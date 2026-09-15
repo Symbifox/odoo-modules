@@ -38,7 +38,11 @@ class TestMobilePkce(HttpCase):
         super().setUpClass()
         cls.user = new_test_user(
             cls.env, login="sms_pkce_user",
-            groups="bf_sms_archive.group_sms_user",
+            # ⚠️ Interne ET usager SMS : depuis la 5.14.0, `_resolve` refuse un
+            # compte de partage (share), comme le module courriel. Un usager
+            # créé avec le seul groupe SMS est un compte de partage aux yeux
+            # d'Odoo, et le jeton lui serait refusé.
+            groups="base.group_user,bf_sms_archive.group_sms_user",
         )
         cls.Device = cls.env["sms.archive.mobile.device"]
         # ⚠️ Le schéma par défaut est `odoosms://` ; celui de Comms est ajouté
@@ -137,7 +141,10 @@ class TestMobilePkce(HttpCase):
         self.assertIn("error=pkce_required",
                       reponse.headers.get("Location", ""))
 
-    def test_auth_start_hands_a_code_back_with_a_challenge(self):
+    def test_auth_start_with_a_challenge_shows_consent_not_a_code(self):
+        """⚠️ Depuis S-M1 (audit du 2026-09-08), le GET ne rend PLUS de code :
+        il montre la page d'accord. Le code ne part que sur « Autoriser » ;
+        voir ``test_mobile_consent``."""
         _, defi = _pkce()
         self.authenticate("sms_pkce_user", "sms_pkce_user")
         reponse = self.url_open(
@@ -145,8 +152,6 @@ class TestMobilePkce(HttpCase):
                    "&state=abc&code_challenge=" + defi
             + "&code_challenge_method=S256",
             timeout=30, allow_redirects=False)
-        self.assertEqual(reponse.status_code, 302)
-        emplacement = reponse.headers.get("Location", "")
-        self.assertTrue(emplacement.startswith("com.bluefoxconsultant.sms://auth"))
-        self.assertIn("code=", emplacement)
-        self.assertIn("state=abc", emplacement)
+        self.assertEqual(reponse.status_code, 200)
+        self.assertFalse(reponse.headers.get("Location"))
+        self.assertNotIn("code=", reponse.text)

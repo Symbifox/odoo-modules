@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Le battement « vu la dernière fois » ne dispute plus rien à personne (internal report).
+"""Le battement « vu la dernière fois » ne dispute plus rien à personne.
 
 Ce qui cassait : chaque appel authentifié réécrivait ``last_seen`` dans la
 transaction de la requête, et deux appels simultanés du même téléphone
@@ -42,7 +42,7 @@ class TestMobileHeartbeatHttp(HttpCase):
         super().setUpClass()
         cls.user = new_test_user(
             cls.env, login="sms_heartbeat_http",
-            groups="bf_sms_archive.group_sms_user",
+            groups="base.group_user,bf_sms_archive.group_sms_user",
         )
         cls.device = cls.env["sms.archive.mobile.device"]._issue(
             cls.user.id, name="Appareil HTTP")

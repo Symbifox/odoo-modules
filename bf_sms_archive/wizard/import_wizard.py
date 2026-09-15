@@ -271,8 +271,14 @@ class SmsArchiveImportWizard(models.TransientModel):
         )
 
         # Pre-load existing threads
+        # ⚠️ active_test=False : la contrainte UNIQUE(phone_normalized, owner_id)
+        # n'a pas de clause partielle, un fil ARCHIVÉ garde donc la case. Une
+        # recherche active seulement le rate, le `create` plus bas viole la
+        # contrainte et l'import entier tombe. Même panne que celle corrigée
+        # dans le cron CDR le 2026-06-29.
         existing_threads = {}
-        for t in Thread.search([("owner_id", "=", owner_id)]):
+        for t in Thread.with_context(active_test=False).search(
+                [("owner_id", "=", owner_id)]):
             existing_threads[t.phone_normalized] = t.id
 
         stats = {
@@ -467,7 +473,10 @@ class SmsArchiveImportWizard(models.TransientModel):
         Partner = self.env["res.partner"]
         matched = 0
 
-        unmatched = Thread.search([
+        # active_test=False : un fil né d'un appel naît désormais archivé, et
+        # la plupart des fils existants le sont. Une recherche active seulement
+        # n'apparierait plus personne.
+        unmatched = Thread.with_context(active_test=False).search([
             ("owner_id", "=", owner_id),
             ("partner_id", "=", False),
         ])
@@ -507,8 +516,14 @@ class SmsArchiveImportWizard(models.TransientModel):
         )
 
         # Pre-load existing threads
+        # ⚠️ active_test=False : la contrainte UNIQUE(phone_normalized, owner_id)
+        # n'a pas de clause partielle, un fil ARCHIVÉ garde donc la case. Une
+        # recherche active seulement le rate, le `create` plus bas viole la
+        # contrainte et l'import entier tombe. Même panne que celle corrigée
+        # dans le cron CDR le 2026-06-29.
         existing_threads = {}
-        for t in Thread.search([("owner_id", "=", owner_id)]):
+        for t in Thread.with_context(active_test=False).search(
+                [("owner_id", "=", owner_id)]):
             existing_threads[t.phone_normalized] = t.id
 
         stats = {
@@ -634,6 +649,9 @@ class SmsArchiveImportWizard(models.TransientModel):
                 "phone_raw": info.get("phone_raw", phone),
                 "contact_name": info.get("contact_name", ""),
                 "owner_id": owner_id,
+                # Un journal d'appels importé n'ouvre pas de conversations : le
+                # fil ne sert qu'à porter le numéro, il naît archivé.
+                "active": False,
             })
             existing_threads[phone] = thread.id
 

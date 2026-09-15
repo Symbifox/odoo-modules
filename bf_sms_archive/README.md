@@ -301,8 +301,8 @@ Message access is deliberately scoped by the **message's** line rather than the 
 
 ### Public HTTP endpoints
 
-Everything the phone talks to is declared `auth="public"` — bar `…/auth/start`,
-which is `auth="user"` on purpose — because none of it rides an Odoo session.
+Everything the phone talks to is declared `auth="public"` — bar `…/auth/start` and
+`…/auth/consent`, which are `auth="user"` on purpose — because none of it rides an Odoo session.
 That is the routing declaration, not the access model: each request carries its
 own secret and is refused without it.
 
@@ -494,6 +494,48 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 `bf-sms-relay` (LGPL-3, F-Droid-friendly): foreground service when charging (30s tick), WorkManager when on battery (15 min tick), BroadcastReceiver for incoming SMS (real-time). Distribution: signed APK direct, not Play Store (READ_SMS / READ_CALL_LOG are blocked by Play policy).
 
 ## Changelog
+
+### Version 18.0.5.17.0 (catch-up entry covering 18.0.5.14.0 – 18.0.5.17.0)
+
+Follow-up of the 2026-09-08 audit of the mobile app; pairs with Symbifox Mobile
+2.42.0, older apps keep working.
+
+- **SECURITY:** pairing goes through a consent page. `GET /auth/start` used to issue the
+  pairing code and bounce straight back to the app's scheme, so a third-party app on
+  the phone declaring that scheme could pair a device in a browser where the person is
+  already signed in, without them seeing anything. The GET now validates the request
+  and shows what is asked (account, device, access); only the "Allow" POST of
+  `/auth/consent`, CSRF token included, issues the code, after revalidating everything.
+  "Deny" returns `error=access_denied` to the app.
+- **SECURITY:** device tokens are kept as SHA-256 fingerprints only. The clear token is
+  handed to the app once and then sealed, so a database dump no longer yields a usable
+  token; a migration fingerprints existing tokens without any re-pairing. Tokens expire
+  after a long idle period, an archived user's phone is refused, a manager can no
+  longer create a device or set a token for someone else, and the ntfy publishing
+  token is only attached to endpoints on the configured ntfy host. `_resolve`
+  also refuses a **share (portal) account**: a phone paired by someone who is
+  not an internal user stops working after this upgrade, leaving only a line in
+  the log.
+- **SECURITY:** the push endpoint is checked against the anti-SSRF guard at
+  every send, not only at registration, and the POST no longer follows
+  redirects — a 30x could otherwise carry it, publishing token included, to a
+  host that was never checked.
+- **NEW:** encrypted push. `/register_push` accepts the WebPush subscription keys
+  (`p256dh`, `auth`); a device that sent them gets its pushes encrypted (RFC 8291,
+  `aes128gcm`, one ephemeral key per message) and never plaintext again. The answer
+  states what the server encrypts (`webpush`, `webpush_types`), which `bf_softphone`
+  extends with `call`. Two new fields on `sms.archive.mobile.device`, protected like
+  the token and cleared with the endpoint. Without keys, the JSON leaves in clear as
+  before.
+- **CHANGED:** a call is not a conversation. A thread that only exists to carry a
+  call's number is created archived, a call never brings an archived thread back to
+  the inbox (only a message does), and the messenger no longer lists call-only
+  threads. The call-log import now also matches archived threads, which the
+  `UNIQUE(phone_normalized, owner_id)` constraint covers.
+- **FIX:** `push_enabled` is read leniently (`1`, `true`, `yes`…). Saving the
+  settings form writes `True`/`False`, which an exact comparison against `"1"`
+  read as off, so push stopped without a word.
+- **FIX:** `/logout` now clears the push endpoint too.
 
 ### Version 18.0.5.13.0
 
