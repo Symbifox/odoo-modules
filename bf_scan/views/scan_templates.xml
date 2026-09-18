@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- La coquille commune aux trois pages. Elle reprend celle des cartes :
+         même feuille de style, même fond sombre, même fiche d'application, et
+         surtout la même largeur de pouce. Ce qui change d'une page à l'autre
+         tient dans le titre, le script et le corps. -->
+    <template id="coque" name="Coquille des pages de numérisation">
+        <html lang="fr-CA">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport"
+                      content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+                <meta name="theme-color" content="#12161a"/>
+                <meta name="mobile-web-app-capable" content="yes"/>
+                <meta name="apple-mobile-web-app-capable" content="yes"/>
+                <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+                <meta name="apple-mobile-web-app-title" content="Numériser"/>
+                <title><t t-esc="titre"/></title>
+                <link rel="manifest" href="/scan/manifest.webmanifest"/>
+                <link rel="apple-touch-icon"
+                      href="/bf_scan/static/src/scan/icon-192.png"/>
+                <link rel="icon" type="image/png"
+                      href="/bf_scan/static/src/scan/icon-192.png"/>
+                <link rel="stylesheet"
+                      href="/bf_contact_enrichment/static/src/scan/scan.css"/>
+                <link rel="stylesheet"
+                      href="/bf_scan/static/src/scan/scan_plus.css"/>
+                <style t-if="accent">:root { --accent: <t t-esc="accent"/>; --accent-ink: <t t-esc="accent_ink"/>; }</style>
+            </head>
+            <body>
+                <main class="shell">
+                    <t t-out="0"/>
+                    <div id="error" class="error hidden" role="alert"></div>
+                </main>
+                <t t-if="script">
+                    <script type="text/javascript"
+                            src="/bf_scan/static/src/scan/commun.js"></script>
+                    <script type="text/javascript" t-att-src="script"></script>
+                </t>
+            </body>
+        </html>
+    </template>
+
+    <!-- L'accueil : trois tuiles, et rien d'autre. -->
+    <template id="page_menu" name="Numériser">
+        <t t-call="bf_scan.coque">
+            <t t-set="titre">Numériser</t>
+            <h1>Numériser</h1>
+            <p class="lede" t-if="tuiles">Prenez la photo, le reste se range
+                tout seul.</p>
+
+            <t t-if="not tuiles">
+                <div class="card denied">
+                    <h2>Rien à numériser ici</h2>
+                    <p>Aucun des trois gestes n'est ouvert à votre compte :
+                        la carte d'affaires demande l'enrichissement de
+                        contacts, la facture demande la facturation, et le
+                        document demande un compte interne.</p>
+                    <p>Demandez le droit qui vous manque à un administrateur.</p>
+                </div>
+            </t>
+
+            <nav class="tuiles">
+                <a t-foreach="tuiles" t-as="tuile" class="tuile"
+                   t-att-href="tuile['url']">
+                    <span class="tuile-ico" t-esc="tuile['ico']"/>
+                    <span class="tuile-texte">
+                        <strong t-esc="tuile['titre']"/>
+                        <small t-esc="tuile['detail']"/>
+                    </span>
+                    <span class="tuile-fleche">›</span>
+                </a>
+            </nav>
+
+            <p class="signed-in">Connecté comme <strong t-esc="user_name"/></p>
+        </t>
+    </template>
+
+    <!-- La facture : une photo, un brouillon. -->
+    <template id="page_facture" name="Numériser une facture">
+        <t t-call="bf_scan.coque">
+            <t t-set="titre">Numériser une facture</t>
+            <t t-set="script" t-value="'/bf_scan/static/src/scan/facture.js'"/>
+
+            <t t-if="not has_access">
+                <div class="card denied">
+                    <h1>Accès requis</h1>
+                    <p>Déposer une facture demande le droit de
+                        <strong>facturation</strong> et celui de créer une
+                        facture fournisseur. Demandez-les à un
+                        administrateur.</p>
+                    <p><a class="btn btn-ghost" href="/scan">Retour</a></p>
+                </div>
+            </t>
+
+            <t t-else="">
+                <section id="step-capture" class="step">
+                    <a class="retour" href="/scan">‹ Numériser</a>
+                    <h1>Numériser une facture</h1>
+                    <p class="lede">La photo crée un brouillon de facture
+                        fournisseur dans <strong t-esc="societe"/>. Rien n'est
+                        comptabilisé : le brouillon vous attend dans Odoo.</p>
+
+                    <label class="btn btn-primary" for="shot">
+                        <span class="ico">📷</span> Prendre en photo
+                    </label>
+                    <input id="shot" type="file" accept="image/*"
+                           capture="environment" hidden="hidden"/>
+
+                    <label class="btn btn-ghost" for="pick">
+                        Choisir un fichier existant
+                    </label>
+                    <input id="pick" type="file" accept="image/*,application/pdf"
+                           hidden="hidden"/>
+
+                    <p class="signed-in">Connecté comme
+                        <strong t-esc="user_name"/></p>
+                </section>
+
+                <section id="step-working" class="step hidden">
+                    <div class="spinner"></div>
+                    <h2>Dépôt de la facture…</h2>
+                    <img id="preview" alt="Facture photographiée" class="preview"/>
+                </section>
+
+                <section id="step-done" class="step hidden">
+                    <div class="tick">✓</div>
+                    <h2>Brouillon créé</h2>
+                    <p class="lede" id="done-name"></p>
+                    <p class="lede" id="done-lecture"></p>
+                    <a id="done-link" class="btn btn-primary" href="#">
+                        Ouvrir dans Odoo
+                    </a>
+                    <button id="again" class="btn btn-ghost" type="button">
+                        Numériser une autre facture
+                    </button>
+                </section>
+            </t>
+        </t>
+    </template>
+
+    <!-- Le document : au tampon, ou au fil d'une fiche. -->
+    <template id="page_document" name="Numériser un document">
+        <t t-call="bf_scan.coque">
+            <t t-set="titre">Numériser un document</t>
+            <t t-set="script" t-value="'/bf_scan/static/src/scan/document.js'"/>
+
+            <t t-if="not has_access">
+                <div class="card denied">
+                    <h1>Accès requis</h1>
+                    <p>Déposer un document demande un <strong>compte
+                        interne</strong> et le droit de créer une note.</p>
+                    <p><a class="btn btn-ghost" href="/scan">Retour</a></p>
+                </div>
+            </t>
+
+            <t t-else="">
+                <section id="step-capture" class="step">
+                    <a class="retour" href="/scan">‹ Numériser</a>
+                    <h1>Numériser un document</h1>
+                    <p class="lede">Au bloc-notes avec un rappel, ou
+                        directement dans le fil d'une fiche.</p>
+
+                    <label class="btn btn-primary" for="shot">
+                        <span class="ico">📷</span> Prendre en photo
+                    </label>
+                    <input id="shot" type="file" accept="image/*"
+                           capture="environment" hidden="hidden"/>
+
+                    <label class="btn btn-ghost" for="pick">
+                        Choisir un fichier existant
+                    </label>
+                    <input id="pick" type="file" accept="image/*,application/pdf"
+                           hidden="hidden"/>
+
+                    <p class="signed-in">Connecté comme
+                        <strong t-esc="user_name"/></p>
+                </section>
+
+                <section id="step-review" class="step hidden">
+                    <h2>Où va ce document ?</h2>
+                    <img id="preview" alt="Document photographié" class="preview"/>
+
+                    <label>Titre
+                        <input id="titre" type="text"
+                               placeholder="Document numérisé"/></label>
+
+                    <div class="choice">
+                        <label>
+                            <input type="radio" name="destination" value="tampon"
+                                   checked="checked"/>
+                            Au bloc-notes, pour classer plus tard
+                        </label>
+                        <label>
+                            <input type="radio" name="destination" value="fiche"/>
+                            Dans le fil d'une fiche
+                        </label>
+                    </div>
+
+                    <label>Fiche
+                        <input id="recherche" type="text" autocomplete="off"
+                               placeholder="Tâche, contact, facture, ou un lien collé"/></label>
+                    <div id="resultats" class="resultats"></div>
+                    <p id="cible-choisie" class="cible hidden"></p>
+
+                    <div id="bloc-rappel">
+                        <label>Rappel
+                            <select id="rappel">
+                                <option value="aucun">Aucun</option>
+                                <option value="aujourdhui">Aujourd'hui</option>
+                                <option value="demain">Demain</option>
+                                <option value="semaine">Dans une semaine</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <button id="save" class="btn btn-primary" type="button">
+                        Déposer
+                    </button>
+                    <button id="restart" class="btn btn-ghost" type="button">
+                        Reprendre la photo
+                    </button>
+                </section>
+
+                <section id="step-working" class="step hidden">
+                    <div class="spinner"></div>
+                    <h2>Dépôt du document…</h2>
+                </section>
+
+                <section id="step-done" class="step hidden">
+                    <div class="tick">✓</div>
+                    <h2 id="done-title">Document déposé</h2>
+                    <p class="lede" id="done-name"></p>
+                    <a id="done-link" class="btn btn-primary" href="#">
+                        Ouvrir dans Odoo
+                    </a>
+                    <button id="again" class="btn btn-ghost" type="button">
+                        Numériser un autre document
+                    </button>
+                </section>
+            </t>
+        </t>
+    </template>
+
+</odoo>
