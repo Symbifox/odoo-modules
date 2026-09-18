@@ -4,6 +4,138 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.38.0] - 2026-09-18
+
+Les abonnés de la fiche, au poste : classer ne notifie plus, et le composeur
+les montre en pastilles retirables.
+
+### Changed
+
+- **Classer un courriel pose une note interne.** `bf.email._import_into_chatter`
+  pose `mail.mt_note` par défaut, là où il posait « Discussion ». Les deux
+  chemins du poste en héritent, l'assistant « Lier à un dossier » et la
+  création d'une fiche depuis un courriel. Classer un courriel reçu n'en fait
+  pas un envoi : le geste range une trace, il n'écrit à personne. Le téléphone
+  se comporte ainsi depuis la 18.0.11.36.0. Un appelant qui veut vraiment
+  prévenir les abonnés passe `mail.mt_comment` en le sachant.
+- **Le composeur montre les abonnés de la fiche, et ils sont retirables.** Deux
+  champs neufs sur `mail.compose.message` : `bf_abonnes_ids`, des pastilles
+  **cochées** à l'ouverture, et `bf_abonnes_initiaux_ids`, la même liste telle
+  qu'elle était. C'est leur différence qui fait le retrait. Sans geste, l'envoi
+  part exactement comme avant. Le noyau affichait déjà ces abonnés, en gris,
+  cinq au maximum, la partie gauche de l'adresse seulement, et rien à retirer.
+- Retirer quelqu'un le sort de l'envoi **et** de l'en-tête « À ». L'ajouter en
+  fait un destinataire à part entière, dans le « À » du courriel.
+
+### Fixed
+
+- Un message écrit depuis une fiche partait aussi à ses abonnés, portail
+  compris, et ce n'est pas seulement une copie de plus : le composeur regroupe
+  tout le monde dans un seul courriel, et chaque copie sort avec le même
+  « À ». Le fournisseur y lisait l'adresse du client, et l'inverse. Prouvé par
+  un envoi SMTP réel au banc, avec le code de la production : une réponse
+  adressée à un seul fournisseur, sur une fiche suivie par deux clients, part
+  en trois copies dont l'en-tête porte les trois adresses.
+
+### Notes
+
+- 🔴 **Liste noire, pas liste blanche.** On ne coupe que ce qui a été retiré à
+  l'écran. Une liste blanche couperait quiconque s'abonne ENTRE l'ouverture du
+  composeur et l'envoi, et un destinataire perdu s'écrit exactement comme un
+  envoi réussi. Un essai mesure ce cas.
+- Un abonné retiré puis saisi dans le « À », le Cc ou le Cci reste
+  destinataire : le geste explicite gagne sur le retrait.
+- La garde voyage jusqu'au bout : dans les `kwargs` de `_notify_thread`, pour
+  survivre au report des notifications, et dans `notification_parameters`, pour
+  survivre à un envoi programmé.
+- 🔴 Le retrait du poste et la garde du téléphone vivent dans **une seule**
+  `_notify_get_recipients` : deux `def` du même nom dans une classe, et Python
+  garde la dernière sans un mot.
+
+### Tests
+
+- Seize essais : le pré-remplissage (qui écrit est exclu, un interne qui lit
+  ses avis dans Odoo aussi, un abonné sans adresse aussi), la parité quand rien
+  n'est retiré, le retrait, le retrait contredit par une saisie explicite, un
+  abonné arrivé après l'ouverture qui reçoit quand même, la survie au report et
+  au programmé, la portée bornée à la fiche visée, et la non-régression de la
+  garde du téléphone.
+- Sept mutations, sept attrapées : chaque garde retirée fait tomber son essai.
+
+## [18.0.11.37.1] - 2026-09-18
+
+Rédaction épicène : le point médian disparaît des textes affichés.
+
+### Changed
+
+- Trois aides de champ écrivaient « ce·tte utilisateur·trice » au point médian.
+  C'est le seul procédé que l'Office québécois de la langue française
+  déconseille explicitement, et le seul qui nuit vraiment à l'accessibilité :
+  trois lecteurs d'écran en donnent trois résultats différents. Remplacé par
+  « cette personne », sans doublet.
+
+## [18.0.11.37.0] - 2026-09-16
+
+Le composeur du téléphone, deuxième version.
+
+### Added
+
+- `/config` annonce `compose_api: 2`, les adresses d'envoi vérifiées
+  (`identities`, avec la signature que l'envoi posera) et `recipient_groups`.
+- `GET /reply/prepare` : les destinataires, l'objet et l'adresse d'une réponse,
+  calculés comme à l'envoi mais AVANT d'écrire, et sans créer de fiche contact.
+  Le téléphone les montre et renvoie la liste retouchée.
+- `/reply` et `/compose` acceptent `bcc`, `subject` (en réponse), `identity_id`
+  et `scheduled_ms`.
+- Envoi programmé depuis le téléphone, par le même `action_schedule_message`
+  que le poste ; `GET /scheduled` et `POST /scheduled/unschedule`, qui remet
+  l'envoi en brouillon du poste sans rien effacer. Une réponse programmée ne
+  marque pas le courriel « répondu ».
+
+### Fixed
+
+- 🔴 **L'adresse en copie cachée partait chez les autres destinataires.**
+  `mail_composer_cc_bcc` ajoutait `X-Odoo-Bcc: <adresse cachée>` au
+  dictionnaire d'en-têtes que le noyau PARTAGE entre toutes les copies : chaque
+  copie, celles des « À » et des « Cc » comprises, sortait avec l'adresse du
+  destinataire caché dans sa source. Prouvé par un envoi SMTP réel au banc avec
+  le code de la production, quatre copies sur quatre.
+- Le même module retirait la DERNIÈRE copie quand un Cc doublait une copie
+  personnelle, souvent celle du destinataire caché, et choisissait le
+  destinataire SMTP de chaque copie en dépilant une file rangée dans un `set`,
+  donc au hasard du germe de hachage.
+- 🔴 Une majuscule dans une adresse faisait refuser une copie AVANT qu'elle
+  dépile la file, et chaque copie suivante partait chez le destinataire de la
+  précédente, copie cachée comprise.
+- `models/mail_mail.py` ne se sert plus de la file : il demande au noyau sa
+  liste sans la réécriture du module, donne à toutes les copies le même « À »
+  et le même « Cc » écrits avec les adresses NORMALISÉES, une copie par
+  destinataire, des en-têtes propres à chacune et `X-Odoo-Bcc` à la seule copie
+  cachée, puis laisse le noyau choisir le destinataire SMTP de chaque copie.
+  Une copie refusée n'a plus d'effet sur ses voisines.
+- 🔴 **Un envoi programmé partait sans sa copie conforme, et aux abonnés.**
+  `mail.scheduled.message` ne relisait de son composeur que les clés de sa
+  liste blanche : ni le Cc, ni le Cci, ni la portée « destinataires saisis
+  seulement » du téléphone. Le cron postait donc sans copie, au poste aussi, et
+  pour un programmé du téléphone, aux abonnés de la fiche, portail compris.
+- Une réponse sans `identity_id` part désormais de la boîte qui a reçu, comme
+  au poste : le téléphone répondait toujours depuis l'adresse principale, y
+  compris à un courriel reçu sur une autre boîte.
+- Un refus de l'API mobile ANNULE la transaction. Rendre un 400 était un retour
+  normal pour Odoo, qui validait le jeton anti-doublon réservé avant les
+  gardes : le téléphone corrigeait, renvoyait, lisait « doublon » et affichait
+  « envoyé » alors que rien n'était parti.
+- Le jeton est réservé AVANT l'heure programmée et l'adresse, donc un programmé
+  rejoué après son heure ne part pas deux fois.
+- L'avis « A scheduled message could not be sent » ne va plus qu'à son auteur :
+  il héritait du Cc et du Cci du programmé, corps compris.
+- « Envoyer maintenant » un programmé ou un brouillon à copies force l'envoi,
+  au lieu d'être reporté puis rejoué sans la copie.
+- La citation d'une réponse du téléphone est signée de l'adresse choisie, et
+  non de la boîte qui a reçu.
+- Les pièces d'un programmé du téléphone attendent sur le programmé, comme au
+  poste : elles n'apparaissent sur la fiche qu'à l'envoi.
+
 ## [18.0.11.36.4] — 2026-09-15
 
 La garde des destinataires survit au report des notifications.

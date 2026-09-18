@@ -27,28 +27,28 @@ Sept niveaux de réglage, du plus large au plus fin :
 - ``bf.email.account.popup_snooze_minutes`` — le report du bouton « Reporter ».
 - ``bf.email.account.popup_skip_bulk`` — le genre. Un courriel portant
   ``List-Unsubscribe`` ou venu d'un domaine d'envoi connu (``is_bulk``) reste
-  dans la boîte et ne fait pas surface. Mesuré sur une boîte réelle : un peu
-  plus d'un entrant sur cinq porte ce signal. Le critère est l'en-tête et non
-  la catégorie ``marketing``, qui se corrige à la main et se tromperait sur un
-  vrai client.
+  dans la boîte et ne fait pas surface. Mesuré le 2026-09-09 : 947 des 4 230
+  entrants des deux semaines précédentes, soit 22,4 % des avis. Le critère est
+  l'en-tête et non la catégorie ``marketing``, qui se corrige à la main et se
+  tromperait sur un vrai client.
 - ``bf.email.account.popup_color`` — la teinte de la barre, pour reconnaître la
   boîte d'arrivée sans lire le nom du compte.
 - ``bf.email.bf_no_popup`` — la ligne. Posé par une règle qui a reconnu un
   émetteur dont les avis n'ont jamais rien à dire.
 
-Et par-dessus tous, le mode « ne pas déranger » (``bf.dnd``),
+Et par-dessus tous, le mode « ne pas déranger » (``bf.dnd``, /),
 qui ne fait pas taire mais RETIENT : ce qui n'a pas fait surface est noté dans
 ``bf.dnd.held`` et rendu en un seul résumé à la fin du mode.
 
-LE PLAFOND DE TRENTE SECONDES, ET SON RENVERSEMENT
---------------------------------------------------
+LE PLAFOND DE TRENTE SECONDES, REVU EN
+------------------------------------------------------------
 
 ⚠️ Le contrat a changé, et ce qui suit décrit ce qui reste vrai côté serveur.
 La règle d'origine était « un avis n'occupe pas l'écran plus de trente
 secondes, toutes fenêtres confondues » ; elle interdisait donc au survol de
-geler le décompte, puisque geler c'est allonger. Arbitré depuis : **pointer
-un avis est un geste délibéré**, il gèle et remet le décompte à neuf sans
-limite, et le minuteur ne court que sur la tête de file.
+geler le décompte, puisque geler c'est allonger. Arbitré le 2026-09-09 :
+**pointer un avis est un geste délibéré**, il gèle et remet le
+décompte à neuf sans limite, et le minuteur ne court que sur la tête de file.
 Le plafond est désormais « ``ttl_ms`` par avis, quand c'est son tour », et il
 est tenu par le client.
 

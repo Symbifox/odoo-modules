@@ -1,5 +1,7 @@
 """Mode « ne pas déranger » — un service consulté avant chaque avis à l'écran.
 
+Instruit et arbitré le 2026-09-01, relancé le 2026-09-09.
+
 CE QU'IL FAIT TAIRE, ET CE QU'IL NE FAIT PAS
 --------------------------------------------
 Deux sources, décidées le 09-01 : la popup d'arrivée de courriel
@@ -10,7 +12,7 @@ vivent dans d'autres modules, et le lot n'en touche qu'un.
 
 L'avis n'est ni jeté ni poussé vers le téléphone. Il est RETENU, et un résumé
 sort à la fin du mode. ``bf_email.push_enabled`` reste donc à 0 et rien ne
-rouvre la question de la poussée vers le téléphone.
+rouvre la
 
 TROIS ENTRÉES QUI S'ADDITIONNENT
 --------------------------------
@@ -18,26 +20,26 @@ TROIS ENTRÉES QUI S'ADDITIONNENT
 2. l'interrupteur manuel, avec une durée, qui force dans les DEUX sens ;
 3. les heures calmes.
 
-⚠️ « Occupé » ne veut pas dire « en rencontre ». Mesuré sur trente jours d'un
-agenda réel : ``show_as = busy`` seul vaut trois fois plus d'heures, parce
-qu'il avale les plages qu'on se réserve pour soi. La règle retenue est
-**occupé + plus d'un participant + hors journée entière**, et elle ne garde
-que de vraies rencontres. Deux filtres qui paraissent évidents ont été écartés
-à la mesure et ne doivent pas revenir :
+⚠️ « Occupé » ne veut pas dire « en rencontre ». Mesuré sur 30 jours d'agenda
+le 2026-09-01 : ``show_as = busy`` seul vaut 83,4 h et avale « Prod and quiet
+morning please », « Dark Entries Show », « Sleep in? ». La règle retenue est
+**occupé + plus d'un participant + hors journée entière** : 29 événements,
+27,5 h, toutes de vraies rencontres. Deux filtres qui paraissent évidents ont
+été écartés à la mesure et ne doivent pas revenir :
 
-- ``calendar.attendee.state = accepted`` : la grande majorité des lignes sont
-  à ``needsAction``, les événements venus d'un agenda CalDAV n'apportant aucun
-  RSVP. Ce filtre ramènerait le mode à une rencontre sur sept.
-- ``videocall_location`` : présent sur moins de la moitié des rencontres.
+- ``calendar.attendee.state = accepted`` : 57 des 64 lignes sont à
+  ``needsAction``, les événements venus de Nextcloud n'apportant aucun RSVP.
+  Ce filtre ramènerait le mode à 4 rencontres sur 29.
+- ``videocall_location`` : présent sur 12 des 29 rencontres seulement.
 
 🔴 LE GARDE SERVEUR NE SUFFIT PAS POUR L'AGENDA
 -----------------------------------------------
 ``calendar.alarm_manager.get_next_notif`` rend les alarmes des **24 prochaines
 heures** (``time_limit = 3600 * 24``) et le client arme chaque rappel avec un
-``setTimeout(..., notif.timer * 1000)``. Mesuré : des poussées portant un
-``timer`` de plus de 72 000 secondes, pour un rappel du lendemain
-après-midi. Un mode qui s'arme au moment de la rencontre n'est jamais
-consulté : le minuteur a été posé la veille.
+``setTimeout(..., notif.timer * 1000)``. Mesuré le 2026-09-09 : trois poussées
+à 18h01 et 18h34 portant un ``timer`` de 74 632, 74 625 et 72 616 secondes,
+pour un rappel du lendemain 14h45. Un mode qui s'arme au moment de la
+rencontre n'est jamais consulté : le minuteur a été posé la veille.
 
 D'où le canal ``bf_dnd/state``. À CHAQUE bascule, dans les deux sens, le
 client rejoue ``/calendar/notify`` :
@@ -59,7 +61,7 @@ l'heure d'occurrence.
 DÉFAUT ÉTEINT À L'INSTANCE
 --------------------------
 ``bf_email.dnd_enabled`` est absent à l'installation, et une clé absente vaut
-« non ». Le module est installé chez plusieurs locataires : un ``-u``
+« non ». ``bf_email_management`` est présent chez onze locataires : un ``-u``
 ne doit changer le comportement de personne.
 """
 
@@ -229,11 +231,10 @@ class BfDnd(models.AbstractModel):
         lit telle quelle.
 
         ⚠️ La fenêtre est lue dans le fuseau DU RÉGLAGE, jamais dans
-        ``res.partner.tz``. Ce champ-là suit souvent le lieu de RÉSIDENCE : sur
-        un compte réglé à ``Pacific/Auckland``, une fenêtre de 22 h à 8 h lue
-        là vaut 6 h à 16 h en Amérique de l'Est, soit une journée de travail
-        entière passée sous silence. Le mode a son propre fuseau explicite
-        pour cette raison.
+        ``res.partner.tz``. Sur le compte de l'opérateur, ce champ porte
+        ``Pacific/Auckland`` : une fenêtre de 22 h à 8 h lue là vaut 6 h à
+        16 h à Montréal, soit une journée de travail entière passée sous
+        silence. Le mode a son propre fuseau explicite pour cette raison.
         """
         now = now or fields.Datetime.now()
         user = user.sudo()

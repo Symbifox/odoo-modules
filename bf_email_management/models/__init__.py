@@ -40,6 +40,7 @@ from . import bf_dnd
 # référence le modèle dans un Many2many.
 from . import bf_recipient_group
 from . import mail_compose_message
+from . import mail_mail
 from . import mail_message
 # Garde de routage : une réponse qui vise une rangée de la boîte est
 # redirigée vers le dossier du fil. Voir mail_thread.py.

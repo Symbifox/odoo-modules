@@ -108,8 +108,8 @@ class TestMobileConversation(MobileApiCase):
         self.assertEqual(comptes[self.account.id]["color"], "")
 
     def test_counts_come_per_account_too_and_the_total_is_not_their_sum(self):
-        """Les sections d'une liste filtrée sur une boîte comptent CETTE boîte.
-        Un fil qui a touché deux boîtes compte dans chacune, mais une
+        """Les sections d'une liste filtrée sur une boîte comptent CETTE boîte
+. Un fil qui a touché deux boîtes compte dans chacune, mais une
         seule fois au total : additionner les boîtes le compterait deux fois."""
         autre = self.env["bf.email.account"].create({
             "name": "Seconde boîte — owner@second.test", "user_id": self.owner.id,

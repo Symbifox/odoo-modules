@@ -43,3 +43,6 @@ from . import test_mobile_consent
 from . import test_mobile_notifications
 from . import test_pastille_boite
 from . import test_pieces_brutes_bin_size
+from . import test_mobile_compositeur
+from . import test_mobile_compositeur_http
+from . import test_poste_abonnes

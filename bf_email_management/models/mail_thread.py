@@ -36,7 +36,29 @@ class MailThread(models.AbstractModel):
         fait lever ``ValueError`` sur TOUT envoi gardé, y compris ceux qui
         marchaient avant. Mesuré au banc le 2026-09-15 : cinq essais en erreur.
         """
-        return super()._get_notify_valid_parameters() | {"bf_notify_explicit_only"}
+        return super()._get_notify_valid_parameters() | {
+            "bf_notify_explicit_only", "bf_abonnes_retires"}
+
+    def message_notify(self, **kwargs):
+        """L'avis d'échec d'un envoi programmé ne va qu'à son auteur.
+
+        🔴 Quand un programmé ne peut pas partir (fiche supprimée, accès
+        retiré…), le noyau prévient son auteur par ``message_notify`` DEPUIS
+        l'environnement du programmé. Celui-ci porte le contexte Cc/Cci que
+        ``mail.scheduled.message._post_message`` repose pour l'envoi, et
+        ``mail_composer_cc_bcc`` ajoutait alors la copie conforme et la copie
+        cachée aux destinataires de l'avis — corps du message compris, le Cci
+        en « À ». Mesuré au banc (relecture adverse du 2026-09-16).
+        """
+        if self.env.context.get("bf_copies_programmees"):
+            vide = self.env["res.partner"]
+            self = self.with_context(
+                is_from_composer=False,
+                partner_cc_ids=vide,
+                partner_bcc_ids=vide,
+                bf_copies_programmees=False,
+            )
+        return super(MailThread, self).message_notify(**kwargs)
 
     def _notify_thread(self, message, msg_vals=False, **kwargs):
         """Faire suivre la portée de la garde jusqu'au RENVOI différé.
@@ -60,6 +82,12 @@ class MailThread(models.AbstractModel):
         scope = self.env.context.get("bf_notify_explicit_only")
         if scope and "bf_notify_explicit_only" not in kwargs:
             kwargs["bf_notify_explicit_only"] = list(scope)
+        # Même voyage pour le retrait d'abonnés du poste : sans lui,
+        # `mail_post_defer` rendrait trente secondes plus tard ce que l'envoi
+        # venait de retirer.
+        retrait = self.env.context.get("bf_abonnes_retires")
+        if retrait and "bf_abonnes_retires" not in kwargs:
+            kwargs["bf_abonnes_retires"] = list(retrait)
         return super()._notify_thread(message, msg_vals=msg_vals, **kwargs)
 
     def _notify_get_recipients(self, message, msg_vals, **kwargs):
@@ -81,11 +109,31 @@ class MailThread(models.AbstractModel):
         message posté pendant l'envoi, ailleurs, garde ses destinataires.
         """
         recipients = super()._notify_get_recipients(message, msg_vals, **kwargs)
+        explicit = self._bf_destinataires_explicites(message, msg_vals)
         scope = (self.env.context.get("bf_notify_explicit_only")
                  or kwargs.get("bf_notify_explicit_only"))
-        if not scope or not self or len(self) != 1 \
-                or (self._name, self.id) != tuple(scope):
-            return recipients
+        if scope and self and len(self) == 1 \
+                and (self._name, self.id) == tuple(scope):
+            return [r for r in recipients if r.get("id") in explicit]
+        # 🔴 Le retrait d'abonnés du poste vit DANS la même méthode, pas dans
+        # une seconde surcharge : deux ``def`` du même nom dans une classe, et
+        # Python garde la dernière sans un mot, la garde du téléphone
+        # disparaîtrait, et rien ne le dirait.
+        # Le ``- explicit`` n'est PAS la même garde que celle du composeur :
+        # celui-ci a déjà purgé sa liste avant d'écrire la portée, si bien que
+        # le retrait qui arrive ici ne contient jamais un destinataire saisi.
+        # Mesuré par mutation le 2026-09-18 : retirer cette soustraction ne
+        # fait tomber aucun essai passant par le composeur. Elle tient pour
+        # tout AUTRE appelant, la portée est un simple contexte, n'importe
+        # quel code peut la poser, et ``test_la_garde_posee_a_la_main_...``
+        # est l'essai qui la mesure pour elle-même.
+        retires = self._bf_abonnes_retires(**kwargs) - explicit
+        if retires:
+            return [r for r in recipients if r.get("id") not in retires]
+        return recipients
+
+    def _bf_destinataires_explicites(self, message, msg_vals):
+        """Les destinataires SAISIS : le « À » du message, son Cc et son Cci."""
         if msg_vals and "partner_ids" in msg_vals:
             explicit = set(msg_vals.get("partner_ids") or [])
         else:
@@ -93,7 +141,32 @@ class MailThread(models.AbstractModel):
         Partner = self.env["res.partner"]
         for key in ("partner_cc_ids", "partner_bcc_ids"):
             explicit |= set(self.env.context.get(key, Partner).ids)
-        return [r for r in recipients if r.get("id") in explicit]
+        return explicit
+
+    def _bf_abonnes_retires(self, **kwargs):
+        """Les abonnés que le composeur du poste a retirés pour CETTE fiche.
+
+        La garde voyage en trois morceaux, modèle, identifiant, abonnés, et
+        elle passe par le JSON de ``notification_parameters`` quand l'envoi est
+        programmé : le tuple en ressort en liste, d'où la normalisation.
+
+        ⚠️ La fiche est nommée pour que le retrait ne déborde pas. Sans elle,
+        un message posté ailleurs pendant l'envoi, un journal d'activité, une
+        note automatique, perdrait les mêmes destinataires.
+        """
+        brut = (self.env.context.get("bf_abonnes_retires")
+                or kwargs.get("bf_abonnes_retires"))
+        if not brut or len(brut) != 3 or not self or len(self) != 1:
+            return set()
+        modele, res_id, ids = brut
+        try:
+            if (self._name, self.id) != (modele, int(res_id)):
+                return set()
+        except (TypeError, ValueError):
+            return set()
+        return {int(i) for i in (ids or [])}
+
+
 
     # ------------------------------------------------------------------
     # Signature : posée ici, jamais dans le corps

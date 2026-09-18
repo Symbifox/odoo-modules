@@ -1,6 +1,6 @@
 """Les images distantes se parquent aussi au POSTE.
 
-Le téléphone les parque depuis Le poste les chargeait : ouvrir un
+Le téléphone les parque depuis. Le poste les chargeait : ouvrir un
 courriel au bureau annonçait la lecture à l'expéditeur, avec l'heure et
 l'adresse IP. Mesuré sur une base réelle le 2026-09-13 : 7 189 reçus portent une
 image distante, et 172 des 250 plus récents portent une image de 1 pixel.

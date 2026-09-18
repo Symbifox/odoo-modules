@@ -559,6 +559,33 @@ The 8 heuristic signals are based on empirical email-overload research:
 ### Re-routing
 - The wizard reads the stored RFC 2822 (kept in `raw_rfc822` Binary attachment), parses it, and posts to the target via `record.message_post(...)` preserving Message-ID, original date, author, and attachments.
 - After posting, the `bf.email` row is promoted (linked to the new `mail.message`, `source` becomes `gateway`).
+- **Filing posts an internal note (11.38+).** Filing a received email is not a
+  send: nobody is notified. Before 11.38 the wizard posted a "Discussion" and
+  the record's followers, portal included, received the whole inbound email
+  thirty seconds later through the deferred cron. The phone has behaved this
+  way since 11.36. Callers that genuinely want to notify pass
+  `subtype_xmlid="mail.mt_comment"`.
+
+### Record followers in the desk composer (11.38+)
+- A message written from a record also goes to its followers. That is not just
+  one more copy: the composer groups everyone into a single email, so every
+  copy carries the same `To:` header. The supplier reads the client's address,
+  and the other way around.
+- The composer now lists those followers as **removable tags**, ticked by
+  default (`bf_abonnes_ids`). Untouched, an email goes out exactly as before;
+  whoever you remove does not receive it and drops out of the `To:` header.
+  They stay subscribed to the record. Adding someone there makes them a real
+  recipient, in the `To:`.
+- 🔴 It is a **blocklist**, not an allowlist. Only what was removed on screen is
+  cut. An allowlist would cut anyone who subscribes BETWEEN opening the
+  composer and sending, and a lost recipient looks exactly like a successful
+  send. `bf_abonnes_initiaux_ids` holds the list as it was at opening; the
+  difference between the two is the removal.
+- A follower removed but also typed into To / Cc / Bcc still receives: the
+  explicit gesture wins.
+- The guard travels: `kwargs` of `_notify_thread`, so the deferred cron cannot
+  hand back what was just removed, and `notification_parameters`, so a
+  scheduled send keeps it.
 
 ### IMAP Browser RPC surface (3.5+)
 The OWL client action calls these `@api.model` methods on `bf.email`. Each opens a fresh IMAP4_SSL session, performs the operation, and logs out — no long-lived connections.
@@ -649,7 +676,17 @@ A REST/JSON surface under `/bf_email_management/mobile/v1/`, consumed by the **O
 - **Full client.** Read, search, reply / reply-all / forward, compose, archive (with the real IMAP write-back), snooze, plus the Odoo-side verbs: route into a record's chatter, spawn a task / ticket / lead / bill / invoice / expense.
 - **Remote content blocked by default.** Bodies are the sanitized `body_html_display` with remote `<img src>` parked in `data-blocked-src` until the reader asks. `cid:` and `data:` sources are untouched.
 - **Push over UnifiedPush (ntfy), no Google dependency.** One endpoint per device, registered against this module and `bf_sms_archive` independently; payloads are told apart by `type`. **Encrypted end to end since 11.36:** a device that hands its WebPush keys (`p256dh`, `auth`) to `register_push` receives RFC 8291 `aes128gcm` messages only, never clear text, so ntfy relays an opaque blob; a device without keys keeps the clear JSON.
-- **What the phone sends goes to whom it is addressed (11.36+).** Filing a received email into a record from the phone imports it as an internal note, and a reply or new email written on the phone reaches the typed recipients (To, Cc) only, not the record's followers. The desktop composer is unchanged: it shows those followers before sending.
+- **What the phone sends goes to whom it is addressed (11.36+).** Filing a received email into a record from the phone imports it as an internal note, and a reply or new email written on the phone reaches the typed recipients (To, Cc) only, not the record's followers. Since 11.38 the desk composer files as an internal note too, and shows the record's followers as removable tags: ticked by default, so nothing changes unless you remove one.
+- **Composer, second version (11.37+).** `/config` advertises `compose_api: 2`,
+  the verified sending identities (`identities`, with the signature the send
+  will add) and the recipient groups. `GET /reply/prepare` returns the
+  recipients, subject and sending address of a reply, computed as they would be
+  at send time but BEFORE writing anything, and without creating a contact
+  record. `/reply` and `/compose` accept `bcc`, `subject` on a reply,
+  `identity_id` and `scheduled_ms`; `GET /scheduled` lists what is queued and
+  `POST /scheduled/unschedule` puts it back in drafts without losing anything.
+  A reply sent without `identity_id` now leaves from the mailbox that received
+  the message, as the desk does.
 - **Badges have their own cheap route (11.7+).** `GET /counts?grouped=` returns the mailbox counters alone, light enough to be re-read on every refresh; `grouped` (default true) also rides on `/mark_read`, `/handle` and `/snooze`. Without it the totals only came down when the screen opened, or inside the answer to a mutation made from the phone. `inbox_unread` (11.36) counts the unread of the inbox alone, which is what the tab badge shows; `counts.by_account` (11.36.1) repeats the totals per mailbox, and `config.accounts[].color` gives each mailbox its desk notification colour.
 - **Push has an instance kill switch** — `ir.config_parameter` `bf_email.push_enabled`, default `"1"`. Clearing a device's `push_endpoint` does stop the push, but the app re-registers on its next launch and it all comes back; the parameter is the durable off. The in-Odoo notice has its own, separate switch — see *Arrival notice*.
 

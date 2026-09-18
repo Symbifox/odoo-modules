@@ -277,7 +277,7 @@ class BfEmailRule(models.Model):
         required=True,
         default="user",
         help="« Toute l'organisation » applique la règle aux courriels de "
-             "chaque utilisateur·trice de la société. Réservé aux "
+             "chaque personne de la société. Réservé aux "
              "administrateurs.",
     )
     user_id = fields.Many2one(

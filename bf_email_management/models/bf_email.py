@@ -42,7 +42,7 @@ _INVITATION_SUBJECT_RE = re.compile(
 # heure et depuis quelle adresse IP. Le téléphone parque ces images depuis
 # ; le poste les chargeait encore. Mesuré sur BF le 2026-09-13 : 7 189
 # reçus portent une image distante et 172 des 250 plus récents portent une
-# image de 1 pixel
+# image de 1 pixel.
 _REMOTE_IMG_RE = re.compile(
     r"""(<img\b[^>]*?\s)src\s*=\s*(["\'])(\s*https?://[^"\']*)\2""",
     re.IGNORECASE,
@@ -725,7 +725,7 @@ class BfEmail(models.Model):
         (
             "message_id_header_uniq",
             "UNIQUE(message_id_header, company_id, user_id)",
-            "Ce courriel existe d\u00e9j\u00e0 (Message-ID dupliqu\u00e9 pour ce\u00b7tte utilisateur\u00b7trice).",
+            "Ce courriel existe d\u00e9j\u00e0 (Message-ID dupliqu\u00e9 pour cette personne).",
         ),
     ]
 
@@ -1238,7 +1238,7 @@ class BfEmail(models.Model):
     # ⚠️ ``user_id`` fait partie des dépendances, et il y manquait : la moitié
     # de ces signaux se lisent du point de vue du PROPRIÉTAIRE — ses adresses
     # pour « à moi » et « en copie », son fuseau pour « hors heures » depuis
-    # Re-router une ligne vers quelqu'un d'autre doit donc les
+    #. Re-router une ligne vers quelqu'un d'autre doit donc les
     # recalculer, sinon la ligne garde les réponses de l'ancien propriétaire.
     @api.depends(
         "subject", "body_preview", "email_to", "email_cc", "date",
@@ -1306,7 +1306,7 @@ class BfEmail(models.Model):
                 # BF le 2026-09-13 : 10 570 lignes sur 16 178 portaient le
                 # drapeau, parce que le fuseau Odoo du propriétaire est
                 # `Pacific/Auckland` et que les heures de bureau du Québec y
-                # tombent la nuit
+                # tombent la nuit.
                 offset = rec._sender_utc_offset()
                 if offset is not None:
                     local = rec.date + offset
@@ -1344,7 +1344,7 @@ class BfEmail(models.Model):
             # un Content-Type, 7 383 disent multipart, ZÉRO dit text/calendar.
             # C'est le miroir de la garde « une règle sans condition ne se
             # déclenche jamais » : ici la condition existe et ne rencontre
-            # rien
+            # rien.
             rec.is_invitation = bool(
                 rec.has_calendar_part
                 or "text/calendar" in headers
@@ -2144,7 +2144,7 @@ class BfEmail(models.Model):
         and leaves the observed copy in the INBOX **for ever** — silently,
         once an hour. Measured on BF 2026-08-26: three mails handled since
         the day before, still in the other mailbox's INBOX, replayed hourly
-        with no effect and no warning.
+        with no effect and no warning. Task.
 
         ⚠️ When acting on a foreign mailbox the row is **not** rewritten:
         its ``imap_uid`` / ``imap_folder`` describe *its own* copy, in *its
@@ -2203,7 +2203,7 @@ class BfEmail(models.Model):
                         # copier (RFC 3501), `STORE \Deleted` ne marque rien,
                         # et la ligne enregistre un archivage qui n'a pas eu
                         # lieu : le message reste en INBOX pendant qu'Odoo le
-                        # dit traité. C'est la dérive rapportée en
+                        # dit traité. C'est la dérive rapportée en.
                         verdict = bf_email_imap.uid_carries_message_id(
                             conn, rec.imap_uid, rec.message_id_header,
                         )
@@ -2910,17 +2910,22 @@ class BfEmail(models.Model):
             return ""
         return f'<div class="{self.SIGNATURE_MARKER}">{signature}</div>'
 
-    def _compose_lead_in(self):
+    def _compose_lead_in(self, identity=None):
         """Ce qui ouvre un brouillon, au-dessus de la citation.
 
         La ligne vide reste indispensable dans les deux modes : sans elle le
         composeur s'ouvre avec le curseur piégé À L'INTÉRIEUR de la citation,
         et on écrit sa réponse dans le texte de quelqu'un d'autre.
+
+        ``identity`` : l'adresse sous laquelle on écrit, quand l'appelant la
+        connaît (le téléphone,). À défaut, celle de la boîte qui a reçu.
         """
         self.ensure_one()
         ligne = self._compose_landing_line()
         if self._signature_placement() != "brouillon":
             return ligne
+        if identity:
+            return f'{ligne}{self._compose_signature_block_for_user(identity=identity)}'
         return f'{ligne}{self._compose_signature_block()}'
 
     def _compose_identity(self):
@@ -2943,8 +2948,11 @@ class BfEmail(models.Model):
     def _build_reply_quote_body(self, identity=None):
         """Build the quoted-reply HTML for the composer.
 
-        ``identity`` n'est plus lue : elle menait la signature, et la
-        signature a quitté le corps. Le paramètre reste pour les appelants.
+        ``identity`` mène le bloc signature qui ouvre la citation en mode
+        « brouillon » (voir ``_compose_lead_in``) ; à défaut, celle de la boîte
+        qui a reçu. ⚠️ Ce commentaire disait « n'est plus lue » : c'était vrai
+        tant que personne n'écrivait sous une autre adresse que celle-là, et le
+        téléphone l'a fait.
         """
         self.ensure_one()
         if self.mail_message_id:
@@ -2962,7 +2970,7 @@ class BfEmail(models.Model):
         sender = self.email_from or ""
         return (
             '<div>'
-            f'{self._compose_lead_in()}'
+            f'{self._compose_lead_in(identity=identity)}'
             '<br/><br/>'
             '<blockquote style="border-left:3px solid #ccc;padding-left:8px;'
             'margin:8px 0;color:#666;">'
@@ -2975,7 +2983,7 @@ class BfEmail(models.Model):
     def _build_forward_body(self, identity=None):
         """Build the standard 'Forwarded message' wrapper for the composer.
 
-        ``identity`` n'est plus lue : voir ``_build_reply_quote_body``.
+        ``identity`` : voir ``_build_reply_quote_body``.
         """
         self.ensure_one()
         date = fields.Datetime.to_string(self.date) if self.date else ""
@@ -2988,7 +2996,7 @@ class BfEmail(models.Model):
         )
         return (
             '<div>'
-            f'{self._compose_lead_in()}'
+            f'{self._compose_lead_in(identity=identity)}'
             '<br/><br/>'
             '<p>---------- Forwarded message ---------- </p>'
             f'<p><strong>De&nbsp;:</strong> {self.email_from or ""}<br/>'
@@ -3364,16 +3372,24 @@ class BfEmail(models.Model):
         return ids
 
     def _import_into_chatter(self, target, force_file=False,
-                             subtype_xmlid="mail.mt_comment"):
+                             subtype_xmlid="mail.mt_note"):
         """Post this email into ``target``'s chatter as an email-type message
         (rendered body + original attachments + the full .eml) and file the
         bf.email row under ``target``.
 
-        ``subtype_xmlid`` : « Discussion » par défaut, ce que le poste fait
-        depuis toujours — les abonnés de la fiche, portail compris, en
-        reçoivent une copie. Le téléphone passe ``mail.mt_note`` : classer un
-        courriel reçu n'en fait pas un envoi, et personne n'est notifié
-        (audit du 2026-09-08, S-M6).
+        ``subtype_xmlid`` : **note interne** par défaut. Classer un courriel
+        reçu n'en fait pas un envoi : le geste range une trace, il n'écrit à
+        personne. Le téléphone le fait depuis le lot 18.0.11.36.0 (audit du
+        2026-09-08, S-M6) ; le poste suivait « Discussion » depuis toujours, et
+        les abonnés de la fiche, portail compris, recevaient le courriel
+        entrant au complet, trente secondes plus tard par le cron différé.
+        Mesuré sur une base réelle : 483 courriels
+        classés à la main, 68 ont notifié quelqu'un, 165 avis en tout, dont une
+        vingtaine vers de vraies personnes du dehors. Arbitrage de l'opérateur au
+        questionnaire du 2026-09-18.
+
+        Le paramètre reste : un appelant qui veut vraiment prévenir les
+        abonnés passe ``mail.mt_comment`` en le sachant.
 
         Single source of truth for "import an email into a chatter": used by
         both "Nouveau ▾" (``_spawn_from_email``) and "Lier à un dossier"
@@ -3697,7 +3713,7 @@ class BfEmail(models.Model):
         # insert a whole thread at one identical timestamp; with strict ``>``,
         # once the watermark lands on that exact second every sibling message
         # is skipped *permanently* (never retried) — the cause of the missing
-        #cluster. ``>=`` re-scans the boundary timestamp each run;
+        # cluster. ``>=`` re-scans the boundary timestamp each run;
         # _should_sync dedups by (message_id, user) so no duplicate is created,
         # and the cluster size is always far below batch_size in practice.
         messages = self.env["mail.message"].sudo().search(
@@ -4680,7 +4696,7 @@ class BfEmail(models.Model):
 
         # La partie text/calendar se voit ICI et nulle part ailleurs : une fois
         # la ligne créée, `raw_headers` ne garde que le premier niveau. Même
-        # raison d'être que `has_attachments`
+        # raison d'être que `has_attachments`.
         #
         # ⚠️ On réutilise le détecteur d'`imip`, qui existait déjà pour décider
         # s'il vaut la peine d'analyser l'iCalendar. En écrire un deuxième,

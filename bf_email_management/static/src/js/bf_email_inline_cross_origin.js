@@ -13,10 +13,12 @@ import { HtmlMailField } from "@mail/views/web/fields/html_mail_field/html_mail_
  * (« Tainted canvases may not be exported »), toute la passe s'arrête, et
  * le courriel ne part pas.
  *
- * Il suffit de répondre à un courriel qui contient une telle image, y compris
- * une annonce de son propre site : un site servi sous « www. » alors que le
- * poste tourne sur le domaine nu, ce sont deux domaines pour le navigateur.
- * Le code est le même dans Odoo 18.0 en amont.
+ * Il suffit de répondre à un courriel qui contient une telle image. Vécu le
+ * 2026-09-14 : l'annonce d'un article du blogue sert sa couverture depuis
+ * www.exemple.com, alors que le poste tourne sur
+ * exemple.com, sans www. C'est un autre domaine pour le navigateur,
+ * et répondre à l'annonce était impossible. Le code est le même dans
+ * Odoo 18.0 en amont.
  *
  * `convertToPng` est privée à son module : on ne peut pas la patcher. La
  * garde se place donc un cran plus bas, et seulement le temps de la passe :

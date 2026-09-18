@@ -295,26 +295,26 @@ class MailMessage(models.Model):
         les ``partner_ids`` que ``_mail_find_partner_from_emails`` a su
         reconnaître, et il écarte les adresses de l'instance : un
         courriel adressé au seul catchall repart avec une liste vide. Mesuré
-        sur une base réelle : la grande majorité des messages de type
-        ``email`` n'y portent ni ``To:`` ni ``Cc:``.
+        le 2026-09-09 sur une base réelle : sur les 25 derniers messages
+        de type ``email``, 19 n'avaient aucun ``To:`` et 23 aucun ``Cc:``.
 
         Trois sources, et on les **additionne** au lieu d'en élire une :
 
         1. **le miroir ``bf.email``** : la projection de la passerelle garde
-           les en-têtes tels quels, et tout courriel routé par la passerelle
-           en a un ;
+           les en-têtes tels quels. Les 80 derniers messages de type ``email``
+           en avaient un, tous ;
         2. **``mail.message.email_to`` / ``email_cc``** (ajoutés par
            ``mail_tracking``), remplis de façon irrégulière ;
         3. **``partner_ids`` et ``recipient_cc_ids``**, fidèles pour ce que
            NOUS avons envoyé, puisque c'est Odoo qui a composé la liste.
 
         ⚠️ Élire une seule source perd des gens, et le premier essai le
-        faisait : un message sortant porte des partenaires en
-        ``recipient_cc_ids`` que son miroir, projeté depuis le chatter, ne
-        connaît pas, parce que ``_prepare_email_vals`` ne lit pas ce champ.
-        Préférer le miroir « parce qu'il a des en-têtes » supprimait donc des
-        destinataires sans rien dire. Le dédoublonnage se fait plus loin, par
-        partenaire, ce qui rend l'union sans danger.
+        faisait : le message 100564 d'une base réelle porte deux
+        partenaires en ``recipient_cc_ids`` que son miroir, projeté depuis le
+        chatter, ne connaît pas, parce que ``_prepare_email_vals`` ne lit pas ce
+        champ. Préférer le miroir « parce qu'il a des en-têtes » supprimait
+        donc deux destinataires sans rien dire. Le dédoublonnage se fait plus
+        loin, par partenaire, ce qui rend l'union sans danger.
 
         Le miroir est cherché en ``sudo`` et sans filtre d'usager : ce qu'on y
         lit, ce sont les en-têtes d'un message que l'usager a déjà sous les
@@ -331,9 +331,9 @@ class MailMessage(models.Model):
 
         # ⚠️ ``email_to`` / ``email_cc`` sur mail.message viennent de
         # ``mail_tracking`` (OCA), qui n'est PAS une dépendance de ce module :
-        # ils existent sur certaines instances et manquent ailleurs. Y toucher
-        # sans garde lève un AttributeError là où le module n'est pas installé.
-        # C'est une base neuve, sans mail_tracking, qui l'a attrapé.
+        # ils existent sur certaines instances et manquent ailleurs. Y toucher sans garde
+        # lève un AttributeError chez le locataire qui ne l'a pas. C'est une
+        # base neuve, sans mail_tracking, qui l'a attrapé.
         to_addrs = (split_address_list(self.email_to)
                     if "email_to" in self._fields else [])
         cc_addrs = (split_address_list(self.email_cc)

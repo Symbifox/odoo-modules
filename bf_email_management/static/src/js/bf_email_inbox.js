@@ -497,7 +497,7 @@ export class BfEmailInbox extends Component {
      * Demande au serveur de rendre le corps avec ses images distantes.
      * Un geste par message : rien n'est retenu, parce que « j'ai fait
      * confiance à celui-là » ne veut pas dire « je fais confiance aux
-     * suivants ».
+     * suivants »..
      */
     /**
      * Défait la dernière action défaisable (`z`, comme Gmail).

@@ -64,7 +64,7 @@ function tomorrow8AmIso() {
 // `browser` n'expose PAS `prompt` : la liste de @web/core/browser/browser est
 // explicite et s'arrête aux méthodes qu'un test a besoin de remplacer. Le
 // bouton « Autre… » levait donc un TypeError à chaque clic depuis sa mise en
-// service — il n'a jamais fonctionné. `window.prompt` réparerait
+// service — il n'a jamais fonctionné, `window.prompt` réparerait
 // l'appel, mais il gèle le fil d'exécution — donc le bus — tant que la boîte
 // native est ouverte, et il ignore le thème.
 //
@@ -169,8 +169,8 @@ export const bfCalendarNotificationService = {
         // ---------------------------------------------------------------
         // `get_next_notif` rend les alarmes des 24 PROCHAINES HEURES et on
         // les arme ci-dessous avec un `setTimeout` de la durée restante.
-        // Mesuré : des poussées portant un `timer` de plus de 72 000
-        // secondes, soit un rappel armé vingt heures à l'avance. Un
+        // Mesuré le 2026-09-09 : trois poussées portant un `timer` de plus de
+        // 72 000 secondes, soit un rappel armé vingt heures à l'avance. Un
         // garde posé côté serveur filtre donc ce qui est DISTRIBUÉ, jamais ce
         // qui est déjà ARMÉ : sans ce qui suit, le mode ne ferait pas taire le
         // rappel de la rencontre suivante, qui est précisément celui qui
@@ -239,7 +239,7 @@ export const bfCalendarNotificationService = {
                         // plus à un gestionnaire d'événement, donc la retenir
                         // ici — le toast rouge l'a dite — plutôt que de laisser
                         // une promesse non traitée rouvrir la boîte de
-                        // plantage, celle-là même qui a fait signaler le défaut.
+                        // plantage, celle-là même qui a ouvert.
                         onConfirm: (minutes) =>
                             snooze(
                                 notif.event_id,

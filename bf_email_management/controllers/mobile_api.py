@@ -233,15 +233,25 @@ def _authed(fn):
             # « unexpected error » changeait un conflit d'une milliseconde en
             # 500 définitif, et l'app annulait le geste.
             raise
+        # 🔴 Un refus ANNULE la transaction. Rendre une réponse ici
+        # est un retour normal pour Odoo, qui valide alors ce qui a été écrit
+        # avant l'erreur : le jeton anti-doublon de l'envoi (réservé avant les
+        # gardes), les fiches contact créées pour les destinataires, les pièces
+        # jointes déjà rattachées. Le téléphone, qui rejouait avec le même
+        # jeton après avoir corrigé, recevait « doublon » et affichait « envoyé »
+        # alors que rien n'était parti.
         except (UserError, AccessError) as exc:
+            request.env.cr.rollback()
             return _json({"error": str(exc)}, 400)
         except (TypeError, ValueError) as exc:
             # Almost always a malformed parameter (a string where an int was
             # expected, a bad thread key). That is the caller's mistake, so it
             # gets a 400 — a 500 would tell the app to retry forever.
+            request.env.cr.rollback()
             _logger.info("Mobile mail API: bad request — %s", exc)
             return _json({"error": "bad_request"}, 400)
         except Exception:  # noqa: BLE001
+            request.env.cr.rollback()
             _logger.exception("Mobile mail API: unexpected error")
             return _json({"error": "server_error"}, 500)
     return wrapper
@@ -553,7 +563,31 @@ class BfEmailMobileApi(http.Controller):
             attachment_ids=data.get("attachment_ids"),
             client_token=data.get("client_token"),
             body_is_html=bool(data.get("body_is_html")),
+            bcc=data.get("bcc"),
+            subject=data.get("subject"),
+            identity_id=data.get("identity_id"),
+            scheduled_ms=data.get("scheduled_ms"),
         ))
+
+    @http.route(f"{BASE}/reply/prepare", type="http", auth="public",
+                methods=["GET"], csrf=False, save_session=False)
+    @_authed
+    def reply_prepare(self, device, **kw):
+        """Ce qu'une réponse enverrait : destinataires, objet, adresse.
+
+        En lecture seule, et sans créer de fiche contact : ouvrir un composeur
+        n'est pas envoyer.
+        """
+        try:
+            email_id = int(kw.get("email_id") or 0)
+        except (TypeError, ValueError):
+            email_id = 0
+        if not email_id:
+            return _json({"error": "missing_email_id"}, 400)
+        record = request.env["bf.email"].browse(email_id).exists()
+        if not record or record.user_id.id != request.env.uid:
+            return _json({"error": "not_found"}, 404)
+        return _json(record.mobile_reply_prepare(mode=kw.get("mode") or "reply"))
 
     @http.route(f"{BASE}/compose", type="http", auth="public", methods=["POST"],
                 csrf=False, save_session=False)
@@ -571,9 +605,29 @@ class BfEmailMobileApi(http.Controller):
             attachment_ids=data.get("attachment_ids"),
             client_token=data.get("client_token"),
             body_is_html=bool(data.get("body_is_html")),
+            bcc=data.get("bcc"),
+            identity_id=data.get("identity_id"),
+            scheduled_ms=data.get("scheduled_ms"),
         ))
 
-    # ── Brouillons du poste──────────────────────────────────
+    # ── Envois programmés ────────────────────────────────────
+    @http.route(f"{BASE}/scheduled", type="http", auth="public",
+                methods=["GET"], csrf=False, save_session=False)
+    @_authed
+    def scheduled(self, device, **kw):
+        return _json(request.env["bf.email"].mobile_scheduled(
+            offset=int(kw.get("offset") or 0),
+            limit=int(kw.get("limit") or 25),
+        ))
+
+    @http.route(f"{BASE}/scheduled/unschedule", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    @_authed
+    def scheduled_unschedule(self, device, **kw):
+        data = _body(**kw)
+        return _json(request.env["bf.email"].mobile_unschedule(data.get("id")))
+
+    # ── Brouillons du poste ──────────────────────────────────
     # Le téléphone garde les siens dans un fichier local ; ces routes servent
     # l'AUTRE pile, celle qu'« Enregistrer comme brouillon » pose au poste.
     # Seuls les vrais brouillons remontent : un envoi différé part de lui-même

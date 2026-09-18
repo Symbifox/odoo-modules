@@ -18,8 +18,8 @@ colonne.
 ⚠️ Un `UPDATE` par fuseau distinct, avec le nom du fuseau passé en paramètre
 plutôt que collé dans la requête : `AT TIME ZONE <chaîne inconnue>` lève une
 erreur Postgres qui ferait échouer la mise à jour du module au complet. Les
-fuseaux sont donc validés en Python d'abord, et un fuseau illisible retombe
-sur le défaut du module au lieu d'arrêter le `-u`.
+fuseaux sont donc validés en Python d'abord, et un fuseau illisible retombe sur
+celui de l'instance au lieu d'arrêter le `-u`.
 """
 
 import logging

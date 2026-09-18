@@ -1,15 +1,16 @@
-"""Le téléphone affichait une boîte vide au-dessus de celle du poste.
+"""Le téléphone affichait une boîte vide au-dessus de trois courriels.
 
-`is_muted` est arrivé avec la sourdine. Odoo n'écrit PAS la valeur par défaut
-d'un booléen neuf dans les lignes qui existent déjà : pour l'ORM, NULL et faux
-disent la même chose, et remplir la colonne coûterait une réécriture de la
-table. Sur une base réelle, toutes les lignes d'avant la montée portaient donc
+`is_muted` est arrivé avec la sourdine. Odoo n'écrit PAS la valeur
+par défaut d'un booléen neuf dans les lignes qui existent déjà : pour l'ORM,
+NULL et faux disent la même chose, et remplir la colonne coûterait une
+réécriture de la table. Sur une base réelle, toutes les lignes d'avant la montée portaient donc
 `is_muted` à NULL.
 
 Le domaine Python (`('is_muted', '=', False)`) se traduit en
-`is_muted IS NULL OR is_muted = false` : le poste voyait ses courriels. Le
-filtre du téléphone est du SQL écrit à la main, `is_muted = false`, qui écarte
-NULL : l'app répondait « Boîte de réception · 0 », pour tout le monde.
+`is_muted IS NULL OR is_muted = false` : le poste voyait ses trois courriels.
+Le filtre du téléphone est du SQL écrit à la main, `is_muted = false`, qui
+écarte NULL : l'app répondait « Boîte de réception · 0 », pour tout le monde,
+sur chaque locataire.
 
 L'essai de parité de `test_dossier_disparu` comparait déjà les deux
 transcriptions sur les mêmes lignes, et passait : ses lignes naissent par

@@ -99,7 +99,10 @@ Deactivates the device and clears its push endpoint. → `{"ok": true}`
   "snooze_presets": [{"key": "tonight", "label": "Ce soir (18 h)",
                       "until_ms": 1786831200000}],
   "routable_models": [{"model": "project.task", "label": "Tâche"}],
-  "spawn_kinds": ["task", "ticket", "lead", "bill", "invoice", "expense"]
+  "spawn_kinds": ["task", "ticket", "lead", "bill", "invoice", "expense"],
+  "compose_api": 2,         // 11.37+; absent or 1 on older servers
+  "identities": [...],      // 11.37+; verified sending addresses
+  "recipient_groups": [...] // 11.37+
 }
 ```
 `counts.by_account` repeats the totals per mailbox (key: account id as text), for
@@ -222,9 +225,61 @@ fail the request — the Odoo-side state still moved.
  "to": ["a@b.c"],            // optional; REQUIRED for forward
  "cc": ["d@e.f"],            // optional
  "attachment_ids": [509],    // optional; from /attachment/upload
- "client_token": "uuid"}     // optional; see "Sending twice" below
+ "client_token": "uuid",     // optional; see "Sending twice" below
+ // 18.0.11.37.0, all optional:
+ "bcc": ["g@h.i"],
+ "subject": "Reworded subject",    // empty ⇒ "Re: …" / "Fwd: …"
+ "identity_id": 5,                 // absent ⇒ the mailbox that received it
+ "scheduled_ms": 1789646400000}    // schedule instead of sending
 ```
-→ `{"ok": true, "email_id": 12, "thread_key": "…"}`
+→ `{"ok": true, "email_id": 12, "thread_key": "…"}`, plus
+`"scheduled": true, "scheduled_id": 88, "scheduled_ms": …` when the send is
+scheduled.
+
+**Sending address (11.37+).** `identity_id` must be a verified, active identity
+of the caller, otherwise 400. Without it, a reply now leaves from the mailbox
+that received the message, as the desk does; up to 18.0.11.36.x the phone always
+replied from the main address, even to mail received on another mailbox.
+
+**Scheduling (11.37+).** `scheduled_ms` goes through the same
+`action_schedule_message` as the desk. Refused under a minute and beyond a year.
+A scheduled reply does not flag the email as `replied`: nothing has left yet.
+🔴 The "typed recipients only" scope and the Cc / Bcc travel in
+`notification_parameters` and are read back when the message is posted: the
+core dropped them, and the cron posted to the record's followers without the
+carbon copy.
+
+**Ceiling.** To + Cc + Bcc ≤ 50, counted before a single contact record is
+created.
+
+### `GET /reply/prepare?email_id=&mode=` (auth), 11.37+
+What a reply would send, to show BEFORE writing:
+```jsonc
+{"mode": "reply_all",
+ "to": [{"name": "Jane Doe", "email": "jane@example.com"}],
+ "cc": [{"name": "", "email": "accounting@example.com"}],
+ "subject": "Re: Question",
+ "identity_id": 5,                 // the mailbox that received it; false otherwise
+ "record": {"model": "project.task", "id": 42, "name": "…"}}   // or false
+```
+Same computation as the send (`_build_reply_recipients`, reply-all exclusions),
+**without creating a contact record**: opening a composer is not sending. The
+app then sends the edited list back in `to` / `cc`.
+⚠️ Names travel as-is, never RFC 2047 encoded: the app returns them as
+`"Name" <address>`, read back by `parseaddr`: an encoded name would create a
+contact called `=?utf-8?b?…?=`.
+
+### Scheduled sends, 11.37+
+`GET /scheduled?offset=&limit=` lists what is queued for the caller, newest
+first; `POST /scheduled/unschedule` with `{"scheduled_id": 88}` puts one back
+into desk drafts without losing anything: body, recipients, attachments and
+sending address are all preserved.
+
+### Cc and Bcc on send, 11.37+
+`/reply` and `/compose` both accept `bcc`. The hidden address rides on the
+single copy addressed to it and on no other, and the `To:` / `Cc:` headers are
+written with normalised addresses so a refused copy cannot shift its
+neighbours.
 
 Recipients default to what the desktop buttons compute: reply → original
 sender; reply_all → sender in To, other thread participants in Cc minus your

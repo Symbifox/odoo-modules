@@ -1,11 +1,11 @@
-"""« Répondre à tous » depuis le chatter :.
+"""« Répondre à tous » depuis le chatter :
 
 Ce que ces tests tiennent, dans l'ordre où ça coûte :
 
 1. **la passerelle ne se retrouve jamais en copie.** C'est le vrai risque de
-   la fonction : le ``To:`` de tout courriel entrant est le catchall de
-   l'instance. Un « Répondre à tous » qui le garde renvoie le message à Odoo,
-   qui le reposte dans le chatter d'où il vient ;
+   la fonction : sur une base réelle, le ``To:`` de tout courriel entrant est le
+   catchall ``bonjour@``. Un « Répondre à tous » qui le garde renvoie le
+   message à Odoo, qui le reposte dans le chatter d'où il vient ;
 2. **les destinataires sortent du bon endroit.** Le chatter ne garde pas les
    en-têtes ``To:``/``Cc:`` d'un entrant : il faut le miroir ``bf.email``. Un
    message sortant, lui, porte ses propres listes ;

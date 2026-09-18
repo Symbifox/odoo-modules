@@ -1,6 +1,6 @@
 """Groupes de destinataires : la liste de distribution d'Outlook, dans le composeur.
 
-Le relevé fait sur une boîte réelle est net : la plupart des
+ Le relevé fait sur une boîte réelle est net : la plupart des
 courriels partant à deux destinataires ou plus reprennent un jeu d'adresses déjà
 servi. Le geste manquant n'est donc pas « envoyer à beaucoup de monde », c'est
 « ne pas resaisir les six mêmes adresses pour la neuvième fois ».

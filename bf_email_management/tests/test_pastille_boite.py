@@ -5,7 +5,7 @@ qui a été rangé hors de l'INBOX du serveur, y entrent. La pastille de l'ongle
 affichait donc bien plus que ce que la boîte montre. ``inbox_unread`` est la
 clause « boîte » ET non lu ET entrant, comme l'app définit « non lu ».
 
-⚠️ Même piège qu'avec `is_muted` : le SQL doit dire ce que l'ORM écrit, pas ce que le
+⚠️ Même piège que : le SQL doit dire ce que l'ORM écrit, pas ce que le
 domaine a l'air de dire. Les lignes d'essai portent donc des NULL là où la
 production en a (sourdine et « traité » jamais écrits), et la parité se mesure
 contre un ``search`` de l'ORM sur le même jeu, pas contre un texte.

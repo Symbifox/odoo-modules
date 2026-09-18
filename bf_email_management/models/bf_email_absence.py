@@ -447,13 +447,13 @@ class BfEmailAbsence(models.Model):
     def _placeholders(self, record, lang=None):
         """Ce que les marqueurs valent pour CE message.
 
-        🔴 Deux corrections, toutes deux visibles seulement chez le
-        destinataire, c'est-à-dire là où personne ne relit :
+        🔴 Deux corrections du, toutes deux visibles seulement
+        chez le destinataire, c'est-à-dire là où personne ne relit :
 
         - **la date de retour se lit dans le fuseau de la personne absente**,
           pas dans celui du lecteur. `context_timestamp` prend le fuseau de
-          l'utilisateur courant : une absence qui finit à 23 h 59 s'affichait
-          au lendemain pour un lecteur situé plus à l'est ;
+          l'utilisateur courant : une absence qui finit le 18 à 23 h 59 heure
+          de Toronto s'affichait « 19 » pour un lecteur en Nouvelle-Zélande ;
         - **le format court de la locale est ambigu** (« 09/17/2026 »).
           `d MMMM y` rend « 17 septembre 2026 », dans la langue du
           correspondant.
@@ -669,10 +669,10 @@ class BfEmailAbsence(models.Model):
 
         🔴 Trois refus, tous mesurés sur un agenda réel et non imaginés :
 
-        - **une occurrence de récurrence n'arme rien.** Un jour férié annuel
-          est une seule chaîne de récurrence qui court sur des siècles, et le
-          motif attrape « férié ». Un jour férié n'est pas une absence, et une
-          récurrence en fait des centaines ;
+        - **une occurrence de récurrence n'arme rien.** « St-Jean-Baptiste
+          (férié) » est une seule chaîne de 720 occurrences qui court jusqu'au
+          24 juin 2744, et le motif attrape « férié ». Un jour férié n'est pas
+          une absence, et une récurrence en fait sept siècles ;
         - **une invitation déclinée ne dit pas que je suis absent**, elle dit
           le contraire. Elle n'entre dans le champ que depuis qu'on lit les
           participants en plus de l'organisateur ;

@@ -14,11 +14,13 @@ La règle posée :
 - **envoyer un brouillon** (``/draft/send``) : pareil, aux destinataires que
   le brouillon porte (18.0.11.36.3 : il notifiait encore les abonnés).
 
-⚠️ Le poste, lui, notifie les abonnés dans les deux cas (assistant « Lier à un
-dossier » et composeur). Ce n'est pas changé ici ; les essais « du poste »
-ci-dessous le mesurent, et c'est ce qui prouve que le banc voit bien une
-notification quand il y en a une : sans eux, un zéro pourrait venir d'un
-abonné mal posé plutôt que de la garde.
+⚠️ Le poste a rejoint le téléphone sur le CLASSEMENT (, arbitrage du
+2026-09-18) : « Lier à un dossier » pose lui aussi une note interne. Son
+composeur, lui, continue de notifier les abonnés, ils sont désormais montrés
+en pastilles retirables, et seul ce qui est retiré ne part pas. Les essais
+« du poste » ci-dessous mesurent ce qui reste, et c'est ce qui prouve que le
+banc voit bien une notification quand il y en a une : sans eux, un zéro
+pourrait venir d'un abonné mal posé plutôt que de la garde.
 
 On compte des ``mail.notification`` et des ``mail.mail`` (envois gardés en
 file par ``mail_notify_force_send=False`` : un envoi immédiat, au banc, se
@@ -117,25 +119,44 @@ class TestMobileNotifications(MobileApiCase):
             with self.subTest(abonne=abonne.name):
                 self.assertEqual(self._notifies(poste, abonne), (0, 0))
 
-    def test_classer_depuis_le_poste_notifie_les_abonnes(self):
-        """Mesure du poste (assistant « Lier à un dossier ») : il notifie. Écart
-        signalé, pas corrigé ; et le contrôle qui rend le zéro ci-dessus
-        significatif.
+    def _classer_au_poste(self, sentinelle, **kwargs):
+        """« Lier à un dossier », exactement comme l'assistant l'appelle.
 
         ⚠️ Le contexte va sur la FICHE VISÉE autant que sur le courriel : c'est
         la fiche qui poste, et son environnement vient de ``setUpClass``. Posé
         sur le seul courriel, le report s'appliquait et le témoin lisait zéro —
         ce qui se lisait comme une absence de notification.
         """
-        courriel = self._orphelin("302")
+        courriel = self._orphelin(sentinelle)
         avant = self._dernier_id()
         cible = self.tache.with_context(
             mail_notify_force_send=False, mail_defer_seconds=0)
         courriel.with_user(self.owner).with_context(
             mail_notify_force_send=False, mail_defer_seconds=0)._import_into_chatter(
-                cible, force_file=True)
-        poste = self._nouveaux_messages(avant).filtered(
+                cible, force_file=True, **kwargs)
+        return self._nouveaux_messages(avant).filtered(
             lambda m: m.message_type == "email")
+
+    def test_classer_depuis_le_poste_ne_notifie_personne(self):
+        """ : classer au poste pose une note interne, comme au téléphone.
+
+        Le geste range une trace, il n'écrit à personne. Avant l'arbitrage du
+        2026-09-18, l'assistant importait en « Discussion » et les abonnés, 
+        portail compris, recevaient le courriel entrant au complet.
+        """
+        poste = self._classer_au_poste("302")
+        self.assertEqual(len(poste), 1, "le courriel devait être importé")
+        self.assertEqual(poste.subtype_id, self.env.ref("mail.mt_note"))
+        for abonne in (self.portal.partner_id, self.suiveur):
+            with self.subTest(abonne=abonne.name):
+                self.assertEqual(self._notifies(poste, abonne), (0, 0))
+
+    def test_classer_en_discussion_notifie_encore(self):
+        """Le contrôle qui rend le zéro ci-dessus significatif : le paramètre
+        reste, et un appelant qui demande « Discussion » notifie bel et bien.
+        Sans lui, un zéro pourrait venir d'un abonné mal posé."""
+        poste = self._classer_au_poste("304", subtype_xmlid="mail.mt_comment")
+        self.assertEqual(poste.subtype_id, self.env.ref("mail.mt_comment"))
         notifications, _courriels = self._notifies(poste, self.portal.partner_id)
         self.assertGreaterEqual(notifications, 1)
 
@@ -179,9 +200,10 @@ class TestMobileNotifications(MobileApiCase):
                 self.assertEqual(self._notifies(envoi, abonne), (0, 0))
 
     def test_repondre_depuis_le_poste_notifie_les_abonnes(self):
-        """Mesure du poste : le composeur d'Odoo, mêmes valeurs, sans la garde
-        du téléphone, notifie le client portail qui suit la tâche. Écart
-        signalé, pas corrigé."""
+        """Le composeur du poste, sans rien retirer : les abonnés reçoivent,
+        comme avant, c'est l'arbitrage (« cochés, retirables »), et
+        c'est le contrôle qui rend significatifs les zéros des essais de
+        retrait dans ``test_poste_abonnes``."""
         fournisseur = self.env["res.partner"].create({
             "name": "Fournisseur", "email": "fournisseur.poste@acme.test"})
         avant = self._dernier_id()

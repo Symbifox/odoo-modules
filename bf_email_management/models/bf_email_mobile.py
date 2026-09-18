@@ -41,6 +41,7 @@ from odoo import _, api, fields, models, tools
 from odoo.exceptions import AccessError, UserError, ValidationError
 
 from . import bf_email_imap
+from .bf_email import split_address_list
 from .subject_utils import dedup_subject_prefix
 
 _logger = logging.getLogger(__name__)
@@ -59,6 +60,23 @@ PREVIEW_CHARS = 160
 # reply-all to a sixty-person thread — which on a phone is one tap away and
 # cannot be recalled.
 MAX_RECIPIENTS = 50
+
+# Ce que le composeur du téléphone sait faire, annoncé dans `/config`.
+# 2 : réponse préparée (destinataires visibles et modifiables), adresse
+# d'envoi, Cci, objet d'une réponse, envoi programmé, liste des programmés.
+# L'app lit ce nombre plutôt que de sonder chaque route : un 404 ne dit pas si
+# l'instance est trop vieille ou si le réseau vient de tomber.
+COMPOSE_API = 2
+
+# Bornes d'un envoi programmé. La minute d'avance absorbe l'horloge du
+# téléphone et le temps de la requête : une heure « tout de suite » devient un
+# envoi immédiat déguisé, que le cron ne rattraperait qu'à son passage suivant.
+# L'année d'avance attrape la faute de frappe sur l'année, pas un usage réel.
+SCHEDULE_MIN_LEAD = timedelta(minutes=1)
+SCHEDULE_MAX_AHEAD = timedelta(days=366)
+# Années de la date sentinelle d'un envoi programmé remis en brouillon : la
+# même que celle du bouton « Enregistrer comme brouillon » du poste.
+DRAFT_SENTINEL_YEARS = 5
 
 # Rows one triage call may touch. Archiving moves each message on the IMAP
 # server too, so an unbounded list is an unbounded number of mailbox
@@ -412,13 +430,13 @@ class BfEmailMobile(models.Model):
         # ⚠️ Transcription SQL de `bf.email._inbox_domain` : un test
         # compare les deux sur un jeu de lignes, pas sur leur texte.
         #
-        # 🔴 Transcrire ce que l'ORM ÉCRIT en SQL, pas ce que le domaine a
-        # l'air de dire. `('is_muted', '=', False)` devient
+        # 🔴 : transcrire ce que l'ORM ÉCRIT en SQL, pas ce que le
+        # domaine a l'air de dire. `('is_muted', '=', False)` devient
         # `is_muted IS NULL OR is_muted = false`, et un Char à False
         # devient `IS NULL OR = ''`. Or Odoo ne remplit pas un booléen neuf
-        # dans les lignes existantes : `is_muted = false` écartait toutes
-        # les lignes d'avant la sourdine, et le téléphone montrait une
-        # boîte vide au-dessus de celle du poste.
+        # dans les lignes existantes : `is_muted = false` écartait les
+        # 16 161 lignes d'avant la sourdine, et le téléphone montrait une
+        # boîte vide au-dessus des trois courriels du poste.
         inbox = ("is_handled IS NOT TRUE AND is_muted IS NOT TRUE "
                  "AND (imap_in_inbox IS TRUE "
                  "OR source IN ('chatter','gateway') "
@@ -428,8 +446,8 @@ class BfEmailMobile(models.Model):
             "unread": ("status = 'new' AND is_handled IS NOT TRUE", []),
             # La pastille de l'onglet Courriel : les non-lus DE LA
             # BOÎTE. « unread » compte aussi la sourdine et ce qui est rangé
-            # hors de l'INBOX du serveur, d'où une pastille bien plus haute que
-            # ce que la boîte montre. Même règle que l'app pour « non
+            # hors de l'INBOX du serveur, d'où une pastille à 12 au-dessus d'une
+            # boîte qui n'a que 3 non-lus. Même règle que l'app pour « non
             # lu » : `status == "new"` et pas sortant (`direction` est requis,
             # « pas sortant » veut donc dire « in »).
             "inbox_unread": ("(%s) AND status = 'new' AND direction = 'in'" % inbox, []),
@@ -631,6 +649,162 @@ class BfEmailMobile(models.Model):
             # sait pas distinguer « cette instance est trop vieille » d'une
             # panne de réseau, et masquerait la section aux deux.
             "server_drafts": True,
+            # Voir COMPOSE_API. Absent d'une instance plus ancienne : l'app
+            # garde alors le composeur de la 2.43, destinataires calculés
+            # au serveur et adresse d'envoi par défaut.
+            "compose_api": COMPOSE_API,
+            "identities": self._mobile_identities(),
+            "recipient_groups": self.env["bf.recipient.group"]._groups_enabled(),
+        }
+
+    # ------------------------------------------------------------------
+    # Adresses d'envoi
+    # ------------------------------------------------------------------
+    @api.model
+    def _mobile_identities(self):
+        """Les adresses sous lesquelles cette personne peut écrire.
+
+        Les mêmes que le sélecteur « De » du poste : vérifiées, actives, les
+        siennes. ``signature_text`` est la signature que l'envoi posera, en
+        texte, pour que le téléphone montre sous quelle signature le message
+        part — la résolution est celle du rendu (``_signature_for_identity``),
+        pas une copie.
+        """
+        Identity = self.env["bf.email.identity"]
+        usable = Identity._usable_for(self.env.user)
+        default = Identity._default_for(self.env.user)
+        return [{
+            "id": identity.id,
+            "name": identity.name or "",
+            "email": identity.email or "",
+            "is_default": identity == default,
+            "account_id": identity.account_id.id or False,
+            "signature_text": self._mobile_signature_text(identity),
+        } for identity in usable]
+
+    @api.model
+    def _mobile_signature_text(self, identity):
+        """La signature d'une identité, en texte court et lisible."""
+        html_sig = self._signature_for_identity(identity) or ""
+        if not html_sig.strip():
+            return ""
+        text = tools.html2plaintext(html_sig)
+        lines = [line.strip() for line in text.splitlines()]
+        return "\n".join(line for line in lines if line)[:500]
+
+    @api.model
+    def _mobile_identity(self, identity_id):
+        """L'identité choisie au téléphone, ou une erreur.
+
+        Relue parmi les identités UTILISABLES de la personne, pas par
+        ``browse`` : l'identifiant vient de l'appareil. La garde du composeur
+        (``_bf_check_identity``) la revérifie à l'envoi ; celle-ci refuse plus
+        tôt, avec un message que le téléphone peut afficher tel quel, et
+        avant qu'un envoi programmé ne fige une adresse interdite.
+        """
+        try:
+            wanted = int(identity_id)
+        except (TypeError, ValueError):
+            wanted = 0
+        identity = self.env["bf.email.identity"]._usable_for(
+            self.env.user).filtered(lambda i: i.id == wanted)
+        if not identity:
+            raise UserError(_(
+                "Cette adresse d'envoi n'est pas une des vôtres, ou n'est plus "
+                "vérifiée."))
+        return identity
+
+    @api.model
+    def _mobile_schedule_date(self, scheduled_ms):
+        """L'heure d'un envoi programmé, en UTC naïve comme Odoo la stocke.
+
+        ``None`` quand rien n'est programmé. Refuse une heure passée ou trop
+        proche (voir ``SCHEDULE_MIN_LEAD``) et une heure absurde.
+        """
+        if scheduled_ms in (None, False, "", 0, "0"):
+            return None
+        try:
+            when = datetime.utcfromtimestamp(int(scheduled_ms) / 1000.0)
+        except (TypeError, ValueError, OverflowError, OSError):
+            raise UserError(_("L'heure d'envoi programmée est illisible."))
+        now = fields.Datetime.now()
+        if when < now + SCHEDULE_MIN_LEAD:
+            raise UserError(_(
+                "L'heure d'envoi programmée est déjà passée. Choisissez une "
+                "heure plus tard, ou envoyez maintenant."))
+        if when > now + SCHEDULE_MAX_AHEAD:
+            raise UserError(_(
+                "Un envoi ne se programme pas plus d'un an à l'avance."))
+        return when.replace(microsecond=0)
+
+    # ------------------------------------------------------------------
+    # Réponse préparée
+    # ------------------------------------------------------------------
+    def _mobile_reply_to_pairs(self):
+        """Le « À » d'une réponse, en paires ``(nom, adresse)``.
+
+        La même règle que ``_build_reply_recipients``, SANS créer de fiche
+        contact : préparer n'est pas envoyer. Ouvrir un composeur pour voir à
+        qui l'on répondrait ne doit pas semer un ``res.partner`` par
+        expéditeur inconnu ; la fiche naît à l'envoi, comme avant.
+        """
+        self.ensure_one()
+        if self.direction == "in" and self.email_from:
+            return split_address_list(self.email_from)
+        if self.direction == "out" and self.email_to:
+            return split_address_list(self.email_to)
+        if self.partner_id and self.partner_id.email:
+            return [(self.partner_id.name or "", self.partner_id.email)]
+        return []
+
+    def mobile_reply_prepare(self, mode="reply"):
+        """Ce qu'une réponse enverrait, pour le montrer AVANT d'écrire.
+
+        Jusqu'ici le téléphone n'affichait rien : « destinataires repris du
+        message d'origine », et le serveur les calculait à l'envoi. On ne
+        pouvait ni voir qui recevrait la réponse, ni ajouter une copie, ni
+        retirer quelqu'un d'un « répondre à tous ». Le calcul est le même ; il
+        est simplement fait avant, et l'app renvoie la liste retouchée.
+
+        L'adresse d'envoi proposée est celle de la boîte qui a reçu
+        (``_compose_identity``), comme au poste.
+        """
+        self.ensure_one()
+        if mode not in ("reply", "reply_all", "forward"):
+            raise UserError(_("Mode d'envoi inconnu : %s") % mode)
+        to_pairs, cc_pairs = [], []
+        if mode != "forward":
+            to_pairs = self._mobile_reply_to_pairs()
+        if mode == "reply_all":
+            exclude = self._bf_reply_exclusion_set(
+                owner=self.user_id or None, sender=self.email_from)
+            taken = {addr.lower() for _name, addr in to_pairs}
+            for name, addr in (split_address_list(self.email_to)
+                               + split_address_list(self.email_cc)):
+                low = addr.strip().lower()
+                if not low or low in exclude or low in taken:
+                    continue
+                taken.add(low)
+                cc_pairs.append((name, addr.strip()))
+        prefix = "Fwd:" if mode == "forward" else "Re:"
+        identity = self._compose_identity()
+        model, res_id = self._composer_target()
+        record = False
+        if model != "bf.email":
+            target = self.env[model].browse(res_id).exists()
+            try:
+                name = target.display_name if target else ""
+            except AccessError:
+                name = ""
+            if target:
+                record = {"model": model, "id": res_id, "name": name or ""}
+        return {
+            "mode": mode,
+            "to": [{"name": n or "", "email": a} for n, a in to_pairs],
+            "cc": [{"name": n or "", "email": a} for n, a in cc_pairs],
+            "subject": dedup_subject_prefix(self.subject, force=prefix),
+            "identity_id": identity.id or False,
+            "record": record,
         }
 
     @api.model
@@ -1007,7 +1181,9 @@ class BfEmailMobile(models.Model):
         return ids
 
     def _mobile_post(self, target_model, target_res_id, subject, body_html,
-                     partner_ids, cc_partner_ids, attachment_ids=None):
+                     partner_ids, cc_partner_ids, attachment_ids=None,
+                     bcc_partner_ids=None, identity=None,
+                     scheduled_date=None):
         """Create and fire the mail composer headlessly.
 
         Same wizard the desktop uses, so Cc/Bcc plumbing, outgoing server
@@ -1015,25 +1191,29 @@ class BfEmailMobile(models.Model):
         step is skipped.
 
         🔴 One deliberate difference: the email goes to the recipients the
-        person TYPED (To and Cc), and to no one else. The desktop composer
+        person TYPED (To, Cc and Bcc), and to no one else. The desktop composer
         also notifies the record's followers, portal included, but it shows
         them before sending; the phone does not, so a customer following a
         task received replies nobody on the phone knew were going to them
         (audit 2026-09-08, S-M6). See ``mail.thread._notify_get_recipients``.
+
+        ``identity`` fixe le « De » comme le sélecteur du poste
+        (``bf_identity_id`` : garde ``_bf_check_identity``, puis
+        ``_prepare_mail_values`` pose l'adresse et le serveur sortant).
+
+        ``scheduled_date`` programme au lieu d'envoyer : c'est le même
+        ``action_schedule_message`` que le bouton du poste. Rend alors le
+        ``mail.scheduled.message`` créé. 🔴 La portée des destinataires, le Cc
+        et le Cci ne survivent au report QUE parce que
+        ``mail.scheduled.message._post_message`` les relit : le noyau
+        les jetait, et le cron postait aux abonnés sans copie conforme.
         """
+        bcc_partner_ids = list(bcc_partner_ids or [])
         # Cc travels through the *context*, not just the create values:
         # mail_composer_cc_bcc recomputes partner_cc_ids whenever model/res_ids
         # are set, and this module's _compute_partner_cc_bcc_ids override is
         # what makes the recompute stand down — but only for context defaults.
-        composer = self.env["mail.compose.message"].with_context(
-            mail_create_nosubscribe=True,
-            force_email=True,
-            default_partner_cc_ids=[(6, 0, cc_partner_ids)],
-            default_partner_bcc_ids=[(6, 0, [])],
-            # Scoped to THIS record: any other post the send may trigger on
-            # the way keeps its ordinary recipients.
-            bf_notify_explicit_only=(target_model, target_res_id),
-        ).create({
+        values = {
             "model": target_model,
             "res_ids": repr([target_res_id]),
             "composition_mode": "comment",
@@ -1041,19 +1221,92 @@ class BfEmailMobile(models.Model):
             "body": body_html,
             "partner_ids": [(6, 0, partner_ids)],
             "partner_cc_ids": [(6, 0, cc_partner_ids)],
+            "partner_bcc_ids": [(6, 0, bcc_partner_ids)],
             "attachment_ids": [(6, 0, attachment_ids or [])],
-        })
-        composer._action_send_mail()
-        return composer
+        }
+        if identity:
+            values["bf_identity_id"] = identity.id
+        composer = self.env["mail.compose.message"].with_context(
+            mail_create_nosubscribe=True,
+            force_email=True,
+            default_partner_cc_ids=[(6, 0, cc_partner_ids)],
+            default_partner_bcc_ids=[(6, 0, bcc_partner_ids)],
+            # Scoped to THIS record: any other post the send may trigger on
+            # the way keeps its ordinary recipients.
+            bf_notify_explicit_only=(target_model, target_res_id),
+        ).create(values)
+        if not scheduled_date:
+            composer._action_send_mail()
+            return composer
+        Scheduled = self.env["mail.scheduled.message"]
+        self.env.flush_all()
+        self.env.cr.execute(
+            "SELECT COALESCE(MAX(id), 0) FROM mail_scheduled_message")
+        before = self.env.cr.fetchone()[0]
+        # La même garde que l'envoi immédiat : une identité qu'on n'a pas le
+        # droit de porter ne doit pas davantage se figer dans un envoi qui
+        # partira dans trois jours, loin de tout écran pour l'expliquer.
+        composer._bf_check_identity()
+        composer.action_schedule_message(scheduled_date=scheduled_date)
+        scheduled = Scheduled.search([
+            ("id", ">", before),
+            ("model", "=", target_model),
+            ("res_id", "=", target_res_id),
+            ("create_uid", "=", self.env.uid),
+        ], order="id desc", limit=1)
+        # Les pièces jointes attendent sur le programmé, comme au poste, et non
+        # sur la fiche : elles n'y apparaissent qu'à l'envoi, et pas du tout si
+        # l'envoi est retenu puis jeté. `_process_attachments_for_post` les
+        # rattache à la fiche au moment de poster.
+        if scheduled and attachment_ids:
+            self.env["ir.attachment"].sudo().browse(attachment_ids).exists().write({
+                "res_model": "mail.scheduled.message",
+                "res_id": scheduled.id,
+            })
+        return scheduled
+
+    def _mobile_sent_result(self, posted, scheduled_date):
+        """Ce que l'envoi rend en plus quand il a été programmé."""
+        if not scheduled_date or not posted \
+                or posted._name != "mail.scheduled.message":
+            return {}
+        return {
+            "scheduled": True,
+            "scheduled_id": posted.id,
+            "scheduled_ms": self._ms(posted.scheduled_date) or 0,
+        }
+
+    @api.model
+    def _mobile_guard_raw_count(self, *lists):
+        """Compter AVANT de résoudre les adresses.
+
+        Résoudre crée un ``res.partner`` par adresse inconnue : une charge
+        utile de 5 000 adresses remplirait la base même si l'envoi était
+        refusé ensuite.
+        """
+        raw = set()
+        for addresses in lists:
+            raw |= set(addresses or [])
+        if len(raw) > MAX_RECIPIENTS:
+            raise UserError(
+                _("Trop de destinataires (maximum %d depuis le téléphone).")
+                % MAX_RECIPIENTS)
 
     def mobile_reply(self, mode="reply", body="", to=None, cc=None,
                      device=None, attachment_ids=None, client_token=None,
-                     body_is_html=False):
+                     body_is_html=False, bcc=None, subject=None,
+                     identity_id=None, scheduled_ms=None):
         """Send a reply / reply-all / forward without opening the composer.
 
         Recipients default to what the desktop buttons would compute; ``to``
         and ``cc`` (lists of addresses) override them, which is what makes
         Forward usable at all — it has no default recipient by design.
+
+        Quatre clés facultatives : ``bcc`` ajoute un Cci, ``subject`` remplace l'objet
+        « Re: … », ``identity_id`` choisit le « De » et ``scheduled_ms``
+        programme l'envoi. Sans ``identity_id``, la réponse part de la boîte
+        qui a reçu, comme au poste — un téléphone plus ancien répondait
+        toujours depuis l'adresse principale, même à un courriel reçu ailleurs.
         """
         self.ensure_one()
         if mode not in ("reply", "reply_all", "forward"):
@@ -1062,12 +1315,21 @@ class BfEmailMobile(models.Model):
             raise UserError(_("Le message est vide."))
         # Claimed before anything is sent: a replay of a send that already went
         # out must stop here, not produce a second copy for the correspondent.
+        # ⚠️ AVANT l'heure programmée et l'adresse : un programmé rejoué après
+        # son heure, dont la première requête était passée mais la réponse
+        # perdue, doit se lire « doublon » et non « heure passée » — sinon le
+        # téléphone le remet en brouillon, on le renvoie, et il part deux fois.
+        # Un refus plus bas annule la réservation (voir `_authed`).
         if not self.env["bf.email.mobile.send"]._claim(client_token):
             return {"ok": True, "duplicate": True, "email_id": self.id,
                     "thread_key": self._mobile_thread_key()}
+        identity = (self._mobile_identity(identity_id) if identity_id
+                    else self._compose_identity())
+        scheduled_date = self._mobile_schedule_date(scheduled_ms)
         if device:
             device._check_send_quota()
 
+        self._mobile_guard_raw_count(to, cc, bcc)
         if to:
             to_ids = self._mobile_partners_from_addresses(to)
             cc_ids = self._mobile_partners_from_addresses(cc)
@@ -1077,14 +1339,20 @@ class BfEmailMobile(models.Model):
             to_ids, cc_ids = self._build_reply_all_recipients()
         else:
             to_ids, cc_ids = self._build_reply_recipients(), []
+        bcc_ids = [pid for pid in self._mobile_partners_from_addresses(bcc)
+                   if pid not in to_ids and pid not in cc_ids]
         if not to_ids:
             raise UserError(_("Aucun destinataire résolu."))
-        self._guard_recipient_count(to_ids, cc_ids)
+        self._guard_recipient_count(to_ids, cc_ids + bcc_ids)
 
         prefix = "Fwd:" if mode == "forward" else "Re:"
-        subject = dedup_subject_prefix(self.subject, force=prefix)
-        quote = (self._build_forward_body() if mode == "forward"
-                 else self._build_reply_quote_body())
+        subject = ((subject or "").strip()
+                   or dedup_subject_prefix(self.subject, force=prefix))
+        # L'identité choisie, et pas celle de la boîte qui a reçu : en mode
+        # « brouillon », la citation ouvre sur le bloc signature, et son
+        # marqueur empêche le rendu d'en poser une autre.
+        quote = (self._build_forward_body(identity=identity) if mode == "forward"
+                 else self._build_reply_quote_body(identity=identity))
         full_body = self._mobile_compose_body(body, body_is_html) + quote
 
         target_model, target_res_id = self._composer_target()
@@ -1092,21 +1360,28 @@ class BfEmailMobile(models.Model):
             device, attachment_ids, target_model, target_res_id)) if device else []
         if mode == "forward" and not self.mail_message_id and self.raw_rfc822:
             attachments += self._extract_orphan_attachments()
-        self._mobile_post(target_model, target_res_id, subject, full_body,
-                          to_ids, cc_ids, attachments)
+        posted = self._mobile_post(
+            target_model, target_res_id, subject, full_body, to_ids, cc_ids,
+            attachments, bcc_partner_ids=bcc_ids, identity=identity,
+            scheduled_date=scheduled_date)
 
         # Same status transition the desktop composer applies, and for the
         # same reason: only a genuine answer to an inbound message counts.
-        if mode != "forward" and self.direction == "in" \
+        # ⚠️ Pas pour un envoi programmé : rien n'est encore parti, et la
+        # ligne marquée « répondu » sortirait du suivi des courriels en
+        # attente de réponse trois jours avant que la réponse existe.
+        if not scheduled_date and mode != "forward" and self.direction == "in" \
                 and self.status in ("new", "read"):
             self.write({"status": "replied"})
-        return {"ok": True, "email_id": self.id,
-                "thread_key": self._mobile_thread_key()}
+        return dict({"ok": True, "email_id": self.id,
+                     "thread_key": self._mobile_thread_key()},
+                    **self._mobile_sent_result(posted, scheduled_date))
 
     @api.model
     def mobile_compose(self, to, subject, body, cc=None, res_model=None,
                        res_id=None, device=None, attachment_ids=None,
-                       client_token=None, body_is_html=False):
+                       client_token=None, body_is_html=False, bcc=None,
+                       identity_id=None, scheduled_ms=None):
         """Send a brand-new email.
 
         With no source record, the message lands on the first recipient's
@@ -1114,25 +1389,31 @@ class BfEmailMobile(models.Model):
         it dropped orphan threads on the *sender's own* card, where they told
         nobody anything. A message filed on the person it was sent to is where
         Odoo would have put it anyway.
+
+        Trois clés facultatives : ``bcc``, ``identity_id`` (à défaut, l'identité par défaut de
+        la personne, comme « Nouveau courriel » au poste) et ``scheduled_ms``.
         """
         if not (body or "").strip():
             raise UserError(_("Le message est vide."))
+        Identity = self.env["bf.email.identity"]
         if not self.env["bf.email.mobile.send"]._claim(client_token):
             return {"ok": True, "duplicate": True}
+        identity = (self._mobile_identity(identity_id) if identity_id
+                    else Identity._default_for(self.env.user))
+        scheduled_date = self._mobile_schedule_date(scheduled_ms)
         if device:
             device._check_send_quota()
         # Counted BEFORE resolving: resolving creates a res.partner per unknown
         # address, so a 5 000-address payload would litter the database even if
         # the send were refused afterwards.
-        if len(set(to or []) | set(cc or [])) > MAX_RECIPIENTS:
-            raise UserError(
-                _("Trop de destinataires (maximum %d depuis le téléphone).")
-                % MAX_RECIPIENTS)
+        self._mobile_guard_raw_count(to, cc, bcc)
         to_ids = self._mobile_partners_from_addresses(to)
         cc_ids = self._mobile_partners_from_addresses(cc)
+        bcc_ids = [pid for pid in self._mobile_partners_from_addresses(bcc)
+                   if pid not in to_ids and pid not in cc_ids]
         if not to_ids:
             raise UserError(_("Aucun destinataire résolu."))
-        self._guard_recipient_count(to_ids, cc_ids)
+        self._guard_recipient_count(to_ids, cc_ids + bcc_ids)
 
         if res_model and res_id:
             if res_model not in ROUTABLE_MODELS:
@@ -1151,11 +1432,13 @@ class BfEmailMobile(models.Model):
 
         attachments = self._mobile_claim_uploads(
             device, attachment_ids, target_model, target_res_id) if device else []
-        self._mobile_post(target_model, target_res_id,
-                          subject or _("(sans objet)"),
-                          self._mobile_compose_body(body, body_is_html),
-                          to_ids, cc_ids, attachments)
-        return {"ok": True}
+        posted = self._mobile_post(
+            target_model, target_res_id, subject or _("(sans objet)"),
+            self._mobile_compose_body(body, body_is_html), to_ids, cc_ids,
+            attachments, bcc_partner_ids=bcc_ids, identity=identity,
+            scheduled_date=scheduled_date)
+        return dict({"ok": True},
+                    **self._mobile_sent_result(posted, scheduled_date))
 
     @api.model
     def _compose_home(self, recipient_partner_id):
@@ -1317,7 +1600,7 @@ class BfEmailMobile(models.Model):
         # abonnés du dossier, portail compris, recevaient une copie du courriel
         # d'un tiers, et rien sur le téléphone ne le laissait voir.
         # ⚠️ Écart assumé avec le poste : l'assistant « Lier à un dossier » y
-        # importe toujours en Discussion (voir l'audit du 2026-09-08).
+        # importe toujours en Discussion (voir le rapport de).
         self._import_into_chatter(target, subtype_xmlid="mail.mt_note")
         return {
             "ok": True,
@@ -1472,7 +1755,9 @@ class BfEmailMobile(models.Model):
                 "model": draft.model or "",
                 "id": draft.res_id or 0,
                 "name": draft.record_name or "",
-            } if draft.model and draft.res_id else False,
+            # La coquille `bf.email` d'un message neuf n'est pas un dossier :
+            # son nom (« → adresse — (nouveau message) ») n'apprend rien.
+            } if draft.model and draft.res_id and draft.model != "bf.email" else False,
             # ⚠️ `_ms` et non `.timestamp()` : une date Odoo est naïve et en
             # UTC, et `.timestamp()` d'une naïve l'interprète dans le fuseau
             # du SERVEUR. Le brouillon se serait affiché « il y a 4 heures »
@@ -1665,3 +1950,78 @@ class BfEmailMobile(models.Model):
         """Jeter un brouillon du poste depuis le téléphone."""
         self._mobile_draft_browse(draft_id).unlink()
         return {"ok": True}
+
+    # ------------------------------------------------------------------
+    # Envois programmés
+    # ------------------------------------------------------------------
+    # La pile que le téléphone crée désormais lui-même. Montrée à part des
+    # brouillons, et c'est la raison pour laquelle `_mobile_draft_domain`
+    # l'écartait : un envoi programmé part de lui-même à sa date. Le seul geste
+    # offert est de le RETENIR, qui le remet en brouillon du poste : l'effacer
+    # d'un doigt ferait disparaître un texte écrit, et l'envoyer « maintenant »
+    # devancerait une heure que quelqu'un a choisie.
+    @api.model
+    def _mobile_scheduled_domain(self):
+        return [
+            ("author_id", "=", self.env.user.partner_id.id),
+            ("bf_is_draft", "=", False),
+            ("is_note", "=", False),
+        ]
+
+    @api.model
+    def _mobile_scheduled_dict(self, message):
+        params = self._mobile_draft_params(message)
+        cc_partners = self.env["res.partner"].browse(
+            [int(i) for i in params.get("recipient_cc_ids") or []]).exists()
+        body_text = tools.html2plaintext(message.body or "") if message.body else ""
+        return {
+            "id": message.id,
+            "subject": message.subject or "",
+            "to_display": ", ".join(
+                p.display_name for p in message.partner_ids) or "",
+            "cc_display": ", ".join(p.display_name for p in cc_partners) or "",
+            "preview": " ".join(body_text.split())[:PREVIEW_CHARS],
+            "scheduled_ms": self._ms(message.scheduled_date) or 0,
+            "record": {
+                "model": message.model or "",
+                "id": message.res_id or 0,
+                "name": message.record_name or "",
+            } if message.model and message.res_id and message.model != "bf.email" else False,
+        }
+
+    @api.model
+    def mobile_scheduled(self, offset=0, limit=25):
+        """Mes envois programmés, du plus proche au plus lointain."""
+        offset = max(0, int(offset or 0))
+        limit = max(1, min(int(limit or 25), MAX_PAGE))
+        rows = self.env["mail.scheduled.message"].search(
+            self._mobile_scheduled_domain(), offset=offset, limit=limit + 1,
+            order="scheduled_date asc, id asc")
+        return {
+            "scheduled": [self._mobile_scheduled_dict(m) for m in rows[:limit]],
+            "has_more": len(rows) > limit,
+        }
+
+    @api.model
+    def mobile_unschedule(self, scheduled_id):
+        """Retenir un envoi programmé : il redevient un brouillon du poste.
+
+        Relu par ``search`` sur le domaine de la personne, comme un brouillon :
+        l'identifiant vient de l'appareil. Rien n'est effacé — le texte, les
+        destinataires, la copie conforme et l'adresse d'envoi restent sur la
+        ligne, qui réapparaît sous « Commencés au poste ».
+        """
+        try:
+            wanted = int(scheduled_id)
+        except (TypeError, ValueError):
+            wanted = 0
+        message = self.env["mail.scheduled.message"].search(
+            [("id", "=", wanted)] + self._mobile_scheduled_domain())
+        if not message:
+            raise UserError(_("Envoi programmé introuvable, ou déjà parti."))
+        message.write({
+            "bf_is_draft": True,
+            "scheduled_date": fields.Datetime.now() + timedelta(
+                days=365 * DRAFT_SENTINEL_YEARS),
+        })
+        return {"ok": True, "draft_id": message.id}

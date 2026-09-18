@@ -1,3 +1,5 @@
+import json
+
 from odoo import _, api, fields, models
 
 
@@ -50,6 +52,91 @@ class MailScheduledMessage(models.Model):
             mail_notify_force_send=True)._post_message(raise_exception=False)
         if self.search_count(domain, limit=1):
             self.env.ref("mail.ir_cron_post_scheduled_message")._trigger()
+
+    # ------------------------------------------------------------------
+    # Ce qu'un envoi programmé garde de son composeur
+    # ------------------------------------------------------------------
+    # 🔴 Le composeur écrit TOUT ce qu'il enverrait dans
+    # ``notification_parameters`` — la copie conforme et la copie cachée de
+    # ``mail_composer_cc_bcc`` comprises — mais le noyau ne relit que les clés
+    # de sa liste blanche, et ces deux-là n'y sont pas. Un brouillon ou un envoi
+    # programmé partait donc SANS son Cc ni son Cci, au poste comme au
+    # téléphone, sans un mot : le chatter montrait le message, personne ne
+    # voyait qu'une copie manquait. Relevé en, corrigé ici.
+    _BF_EXTRA_PARAMETERS = frozenset({
+        "recipient_cc_ids",
+        "recipient_bcc_ids",
+        # La portée des envois du téléphone (S-M6), écrite par
+        # ``mail.compose.message._prepare_mail_values`` en programmant.
+        "bf_notify_explicit_only",
+        # Les abonnés retirés dans le composeur du poste : sans cette
+        # clé, programmer un envoi rendrait au cron une liste de destinataires
+        # dont le retrait a disparu, et les abonnés décochés recevraient
+        # quand même, le seul signe étant un courriel de plus, chez eux.
+        "bf_abonnes_retires",
+    })
+
+    @api.model
+    def _notification_parameters_whitelist(self):
+        return super()._notification_parameters_whitelist() | self._BF_EXTRA_PARAMETERS
+
+    def _bf_copy_partners(self):
+        """(Cc, Cci) rangés dans les paramètres, en fiches encore vivantes."""
+        self.ensure_one()
+        try:
+            params = json.loads(self.notification_parameters or "{}")
+        except (ValueError, TypeError):
+            params = {}
+        if not isinstance(params, dict):
+            params = {}
+        Partner = self.env["res.partner"].sudo()
+
+        def fiches(key):
+            ids = []
+            for raw in params.get(key) or []:
+                try:
+                    ids.append(int(raw))
+                except (TypeError, ValueError):
+                    continue
+            return Partner.browse(ids).exists()
+
+        return fiches("recipient_cc_ids"), fiches("recipient_bcc_ids")
+
+    def _post_message(self, raise_exception=True):
+        """Poster avec le Cc et le Cci, comme le composeur l'aurait fait.
+
+        Les identifiants passent dans les valeurs du message (liste blanche
+        ci-dessus) ; les ENVOIS, eux, se décident dans le contexte :
+        ``mail_composer_cc_bcc`` lit ``partner_cc_ids`` / ``partner_bcc_ids``
+        pour poser les en-têtes et les destinataires, exactement ce que
+        ``_action_send_mail_comment`` met en place à l'envoi immédiat.
+
+        Un message sans copie passe par le chemin du noyau, inchangé.
+        """
+        simples = self.browse()
+        for message in self:
+            cc, bcc = message._bf_copy_partners()
+            if not (cc or bcc):
+                simples |= message
+                continue
+            super(MailScheduledMessage, message.with_context(
+                is_from_composer=True,
+                partner_cc_ids=cc,
+                partner_bcc_ids=bcc,
+                # 🔴 Envoi FORCÉ : sans lui, `mail_post_defer` reporte la
+                # notification de trente secondes, le cron la rejoue sans ce
+                # contexte, et la copie conforme disparaît de nouveau. Le cron
+                # du noyau force déjà ; « Envoyer maintenant » (poste et
+                # téléphone) ne le faisait pas. Relecture adverse du 2026-09-16.
+                mail_notify_force_send=True,
+                # Voir `mail.thread.message_notify` : l'avis d'ÉCHEC que le
+                # noyau envoie à l'auteur ne doit pas hériter des copies.
+                bf_copies_programmees=True,
+            ))._post_message(raise_exception=raise_exception)
+        if simples:
+            return super(MailScheduledMessage, simples)._post_message(
+                raise_exception=raise_exception)
+        return None
 
     record_name = fields.Char(
         string="Enregistrement",

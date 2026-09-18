@@ -1,8 +1,8 @@
 /** @odoo-module **/
 
 /*
- * Avis à l'arrivée d'un courriel : le socle, puis la file d'attente, le gel
- * au survol, « Vu » et la couleur de boîte.
+ * Avis à l'arrivée d'un courriel —(le socle) et (la
+ * file d'attente, le gel au survol, « Vu », la couleur de boîte).
  *
  * Le serveur pousse un identifiant sur `bf_email/popup` (voir
  * models/popup_transport.py) et c'est ici qu'on décide de l'afficher.
@@ -18,7 +18,7 @@
  * simplement place à côté, dans le même coin de l'écran.
  *
  * UN SEUL MINUTEUR, CELUI DE LA TÊTE DE FILE
- * ------------------------------------------
+ * ---------------------------------------------------
  * Le premier lot faisait courir un minuteur par avis : cinq courriels arrivés
  * dans la même passe s'effaçaient donc tous les cinq huit secondes plus tard,
  * alors qu'on ne peut en traiter qu'un. Depuis ce lot, les avis forment une

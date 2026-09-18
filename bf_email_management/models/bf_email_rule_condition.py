@@ -14,7 +14,7 @@ Two notes on what a clause can honestly see:
 
 - ``raw_headers`` is filled by the IMAP ingestion path. Chatter/gateway rows
   usually have none, so a header clause simply does not match them — it never
-  raises. Same for ``body``: the engine reads ``body_text`` since It
+  raises. Same for ``body``: the engine reads ``body_text`` since. It
   used to read ``body_preview``, the first 300 characters, so a rule written on
   a word that appears in the second paragraph never fired, silently. The
   haystack is still capped below.

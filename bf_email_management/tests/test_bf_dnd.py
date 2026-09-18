@@ -1,20 +1,18 @@
-"""Mode « ne pas déranger ».
+"""Mode « ne pas déranger » —
 
 Ce que ces tests éprouvent, dans l'ordre où ça peut casser :
 
 1. L'interrupteur d'instance ABSENT. C'est l'état de toute installation neuve,
-   donc celui de tout locataire au prochain ``-u``. Un mode qui s'armerait
+   donc celui des onze locataires au prochain ``-u``. Un mode qui s'armerait
    là ferait taire des gens qui n'ont rien demandé.
-2. Ce qui compte pour une rencontre. « Occupé » seul vaut trois fois plus
-   d'heures sur trente jours d'agenda réel, parce qu'il avale les blocages de
-   créneau ; « occupé + plus d'un participant + hors journée entière » ne
-   contient que de vraies rencontres. Les deux filtres écartés à la mesure
-   (RSVP accepté, lien vidéo) ont chacun leur test, pour qu'un ajout
-   « évident » les fasse échouer bruyamment.
-3. Le fuseau des heures calmes. ``res.partner.tz`` suit souvent le lieu de
-   RÉSIDENCE : sur un compte réglé à ``Pacific/Auckland``, une fenêtre de
-   22 h à 8 h lue là vaut 6 h à 16 h en Amérique de l'Est, soit une journée
-   de travail passée sous silence.
+2. Ce qui compte pour une rencontre. « Occupé » seul vaut 83,4 h sur 30 jours
+   et avale les blocages de créneau ; « occupé + plus d'un participant + hors
+   journée entière » vaut 27,5 h et ne contient que de vraies rencontres. Les
+   deux filtres écartés à la mesure (RSVP accepté, lien vidéo) ont chacun leur
+   test, pour qu'un ajout « évident » les fasse échouer bruyamment.
+3. Le fuseau des heures calmes. Sur le compte de l'opérateur, ``res.partner.tz``
+   porte ``Pacific/Auckland`` : une fenêtre de 22 h à 8 h lue là vaut 6 h à
+   16 h à Montréal, soit une journée de travail passée sous silence.
 4. Que ce qui est tu soit NOTÉ. Un avis oublié plutôt que retenu ne se
    remarque jamais : le résumé de sortie serait simplement vide.
 5. Le résumé, une seule fois. Un cron à la minute qui rendrait le même résumé
@@ -255,10 +253,10 @@ class TestBfDnd(MobileApiCase):
             self.owner, now=fields.Datetime.to_datetime("2026-09-09 18:00:00")))
 
     def test_le_fuseau_est_celui_du_reglage_pas_celui_de_la_fiche(self):
-        """🔴 Le piège mesuré sur un compte réel.
+        """🔴 Le piège mesuré le 2026-09-09.
 
-        Une fiche contact réglée à ``Pacific/Auckland`` fait valoir une fenêtre
-        de 22 h à 8 h de 6 h à 16 h en Amérique de l'Est, soit une journée de
+        Le compte de l'opérateur porte ``Pacific/Auckland``. Une fenêtre de 22 h à
+        8 h lue dans CE fuseau vaut 6 h à 16 h à Montréal, soit une journée de
         travail entière. Le réglage a donc son propre fuseau, et c'est lui qui
         décide.
         """
@@ -584,7 +582,7 @@ class TestBfDnd(MobileApiCase):
         self.assertEqual(etat["reason"], "interrupteur manuel")
 
     def test_l_etat_est_cache_quand_l_instance_est_eteinte(self):
-        """Qui n'a rien allumé ne doit pas voir un interrupteur inerte."""
+        """Onze locataires ne doivent pas voir un interrupteur inerte."""
         self.param.set_param("bf_email.dnd_enabled", "0")
         etat = self.env["res.users"].with_user(self.owner).bf_dnd_state()
         self.assertFalse(etat["enabled"])

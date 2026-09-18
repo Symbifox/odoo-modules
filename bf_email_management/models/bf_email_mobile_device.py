@@ -301,8 +301,8 @@ class BfEmailMobileDevice(models.Model):
         APRÈS que ``action_archive`` eut déplacé le message côté IMAP ; la
         transaction Odoo était annulée, pas le déplacement. Le téléphone
         recevait un 500, remettait la ligne en boîte, et le miroir IMAP la
-        marquait traitée cinq minutes plus tard, ce que le rapport interne
-        résumait par « some come back for a time ».
+        marquait traitée cinq minutes plus tard. Tâche BF : « some
+        come back for a time ».
 
         Deux règles règlent le conflit :
 

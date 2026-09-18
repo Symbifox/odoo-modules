@@ -4,7 +4,7 @@
     <!-- Champ « Classer dans » sur le composeur, visible uniquement quand la
          fenêtre vient du bouton « Composer » de la boîte de réception. Ailleurs
          dans l'instance le composeur s'ouvre déjà sur une fiche : la question
-         ne se pose pas, et le champ resterait du bruit -->
+         ne se pose pas, et le champ resterait du bruit. -->
     <record id="mail_compose_message_bf_target_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.chatter.target</field>
         <field name="model">mail.compose.message</field>
@@ -46,7 +46,7 @@
          dans le corps — elle est ajoutée une seule fois au rendu du courriel —
          et rien ne le disait à l'écran : le composeur s'ouvrait nu et donnait
          à croire que le courriel partirait non signé. Ce bloc le dit, en
-         lecture seule -->
+         lecture seule. -->
     <record id="mail_compose_message_bf_signature_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.signature</field>
         <field name="model">mail.compose.message</field>
@@ -70,7 +70,7 @@
     <!-- « Envoyer en tant que » : l'adresse qui portera le « De ». Le champ
          ne s'affiche que si la personne a plus d'une identité vérifiée —
          avec une seule, il n'y a rien à choisir et la ligne serait du bruit
-         sur chaque composeur de l'instance -->
+         sur chaque composeur de l'instance. -->
     <record id="mail_compose_message_bf_identity_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.identity</field>
         <field name="model">mail.compose.message</field>
@@ -92,7 +92,7 @@
          pour garder un courriel inachevé il fallait le PROGRAMMER et saisir une
          date lointaine à la main. Le bouton fait ce geste en un clic. Mêmes
          conditions de visibilité que le menu « Programmer » du noyau, qui est
-         le mécanisme qu'il emprunte -->
+         le mécanisme qu'il emprunte. -->
     <record id="mail_compose_message_bf_draft_form" model="ir.ui.view">
         <field name="name">mail.compose.message.form.bf.save.as.draft</field>
         <field name="model">mail.compose.message</field>
@@ -134,6 +134,32 @@
                        placeholder="Groupes de destinataires…"
                        invisible="composition_mode != 'comment' or subtype_is_log or not bf_recipient_groups_enabled"/>
                 <field name="bf_recipient_groups_enabled" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Abonnés de la fiche, montrés et retirables avant l'envoi.
+
+         Le noyau les affiche déjà, en gris, cinq au maximum, la partie
+         gauche de l'adresse seulement, et rien à retirer. Ici ils sont des
+         pastilles : cochés par défaut, donc rien ne change pour qui n'y
+         touche pas, et ce qu'on retire ne part pas.
+
+         ⚠️ Le champ n'apparaît que s'il y a des abonnés à montrer : une ligne
+         vide sur chaque composeur de l'instance s'apprend à ne plus lire. -->
+    <record id="mail_compose_message_bf_abonnes_form" model="ir.ui.view">
+        <field name="name">mail.compose.message.form.bf.abonnes</field>
+        <field name="model">mail.compose.message</field>
+        <field name="inherit_id" ref="mail.email_compose_message_wizard_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_ids']/.." position="inside">
+                <field name="bf_abonnes_initiaux_ids" invisible="1"/>
+                <field name="bf_abonnes_ids"
+                       widget="many2many_tags_email"
+                       context="{'force_email': True, 'show_email': True}"
+                       options="{'no_quick_create': True, 'no_create_edit': True}"
+                       placeholder="Abonnés de la fiche…"
+                       invisible="composition_mode != 'comment' or subtype_is_log or not bf_abonnes_initiaux_ids"/>
             </xpath>
         </field>
     </record>

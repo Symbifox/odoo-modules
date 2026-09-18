@@ -6,7 +6,7 @@ JSON simples — pour que les deux actions clientes partagent la même mise en
 page, les mêmes préférences et les mêmes raccourcis clavier.
 
 Rien ici n'est en ``sudo`` : la portée est toujours l'usager courant, et les
-règles d'enregistrement restent l'autorité. Voir
+règles d'enregistrement restent l'autorité.
 """
 
 import email.utils
@@ -711,9 +711,9 @@ class BfEmail(models.Model):
         """Corps assaini + pièces jointes, et bascule « lu » au passage.
 
         ``load_images`` est un geste explicite du lecteur : par défaut les
-        images distantes sont parquées, comme sur le téléphone depuis
+        images distantes sont parquées, comme sur le téléphone depuis.
         Le poste, lui, les chargeait encore, donc annonçait chaque lecture à
-        l'expéditeur
+        l'expéditeur.
         """
         rec = self.browse(int(email_id)).exists()
         if not rec:
@@ -1110,7 +1110,7 @@ class BfEmail(models.Model):
         "mute": "action_mute_thread",
         "unmute": "action_unmute_thread",
         "unsubscribe": "action_unsubscribe",
-        # Les petits gestes de
+        # Les petits gestes de.
         "unsnooze": "action_unsnooze",
         "trash": "action_trash",
         "link_partner": "action_link_partner",

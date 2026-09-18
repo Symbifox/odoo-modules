@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 /*
- * « Ne pas déranger » dans le menu de la photo de profil.
+ * « Ne pas déranger » dans le menu de la photo de profil —
  *
  * Les réglages vivent dans les Préférences, mais s'y rendre pour se taire
  * pendant une rencontre qui vient de commencer, c'est trois clics de trop.
@@ -9,8 +9,9 @@
  * menu.
  *
  * ⚠️ L'entrée ne s'affiche PAS chez un locataire qui n'a pas allumé le mode
- * (`bf_email.dnd_enabled`) : montrer un interrupteur inerte à qui n'a rien
- * demandé serait pire que de ne rien montrer.
+ * (`bf_email.dnd_enabled`). `bf_email_management` est présent chez onze
+ * locataires et personne d'autre ne l'a demandé : leur montrer un
+ * interrupteur inerte serait pire que de ne rien montrer.
  *
  * ⚠️ `getElements()` du menu rappelle chaque fonction enregistrée À CHAQUE
  * ouverture, mais de façon SYNCHRONE : impossible d'y lire le serveur. D'où
@@ -124,8 +125,8 @@ items.add("bf_dnd_off", (env) => {
     }
     if (state.until) {
         // ⚠️ Le serveur rend de l'UTC. Découper la chaîne afficherait l'heure
-        // de Greenwich, soit plusieurs heures d'écart selon le fuseau, et le
-        // mode aurait l'air de finir en pleine nuit.
+        // de Greenwich, soit quatre heures d'écart à Montréal, et le mode
+        // aurait l'air de finir en pleine nuit.
         parts.push(_t("jusqu'à %s",
                       deserializeDateTime(state.until).toFormat("HH:mm")));
     } else if (state.active) {

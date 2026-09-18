@@ -42,7 +42,7 @@ class BfEmailAccount(models.Model):
         index=True,
         default=lambda self: self.env.user,
         ondelete="cascade",
-        help="Seul ce·tte utilisateur·trice voit les courriels ingérés "
+        help="Seule cette personne voit les courriels ingérés "
              "par ce compte. Aucun bypass admin.",
     )
     active = fields.Boolean(string="Actif", default=True)
@@ -191,9 +191,9 @@ class BfEmailAccount(models.Model):
         help="Un courriel portant `List-Unsubscribe`, ou venu d'un domaine "
              "d'envoi connu, reste dans la boîte de réception mais ne fait pas "
              "surface à l'écran.\n\n"
-             "Mesuré sur une boîte réelle : un peu plus d'un entrant sur cinq "
-             "porte ce signal. Une infolettre n'a jamais besoin "
-             "d'interrompre.\n\n"
+             "Mesuré sur une base réelle le 2026-09-09 : 947 des 4 230 entrants des "
+             "deux semaines précédentes portaient ce signal, soit 22,4 % des "
+             "avis. Une infolettre n'a jamais besoin d'interrompre.\n\n"
              "Le critère est l'en-tête, pas la catégorie : `Marketing` se "
              "corrige à la main et se tromperait sur un vrai client.",
     )

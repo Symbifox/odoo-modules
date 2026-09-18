@@ -12,6 +12,7 @@ recompute when they are present, so the bf.email Reply-All flow can pre-fill
 Cc with the other thread participants.
 """
 
+import json
 import re
 
 from dateutil.relativedelta import relativedelta
@@ -318,6 +319,24 @@ class MailComposeMessage(models.TransientModel):
         s'imposerait en silence.
         """
         values_all = super()._prepare_mail_values(res_ids)
+        # 🔴 Un envoi PROGRAMMÉ ne garde de son composeur que ces valeurs, en
+        # JSON (``notification_parameters``) : le contexte, lui, meurt avec
+        # l'assistant. La portée « destinataires saisis seulement » du
+        # téléphone doit donc y être écrite, sinon le cron la perd et notifie
+        # les abonnés de la fiche, portail compris (S-M6,). Seulement en
+        # programmant : à l'envoi immédiat, le contexte suffit.
+        scope = self.env.context.get("bf_notify_explicit_only")
+        if scope and self.env.context.get("bf_scheduling"):
+            for values in values_all.values():
+                values["bf_notify_explicit_only"] = list(scope)
+        # Même raison pour le retrait d'abonnés du poste : programmer
+        # tue le contexte, et le cron reposterait aux abonnés qu'on venait de
+        # retirer. Ici le composeur vit encore, donc on relit la liste.
+        if self.env.context.get("bf_scheduling"):
+            garde = self._bf_garde_abonnes()
+            if garde:
+                for values in values_all.values():
+                    values["bf_abonnes_retires"] = garde["bf_abonnes_retires"]
         identity = self.bf_identity_id
         if not identity:
             return values_all
@@ -362,7 +381,15 @@ class MailComposeMessage(models.TransientModel):
         # seule barrière contre l'envoi de masse involontaire.
         self._bf_expand_recipient_groups()
         self._bf_retarget_to_chatter()
-        resultat = super()._action_send_mail(auto_commit=auto_commit)
+        # ⚠️ APRÈS le re-ciblage, jamais avant : celui-ci change la fiche visée,
+        # et la garde nomme cette fiche. Posée trop tôt, elle désignerait
+        # l'ancienne et ne filtrerait rien, un retrait qui s'écrit comme un
+        # succès.
+        self._bf_verser_les_abonnes_ajoutes()
+        garde = self._bf_garde_abonnes()
+        composeur = self.with_context(**garde) if garde else self
+        resultat = super(MailComposeMessage, composeur)._action_send_mail(
+            auto_commit=auto_commit)
         self._bf_handle_source_row()
         return resultat
 
@@ -373,7 +400,7 @@ class MailComposeMessage(models.TransientModel):
         et par personne d'autre : un composeur ordinaire ne doit rien traiter
         derrière le dos de qui écrit. Équivalent du « Send & Archive » de
         Gmail, à ceci près que chez nous « classer » veut dire sortir de la
-        boîte sans rien marquer comme lu
+        boîte sans rien marquer comme lu.
         """
         ids = self.env.context.get("bf_handle_source_ids")
         if not ids:
@@ -412,7 +439,10 @@ class MailComposeMessage(models.TransientModel):
         # destinataires, un groupe non déplié partirait vide dans trois jours.
         self._bf_expand_recipient_groups()
         self._bf_retarget_to_chatter()
-        return super().action_schedule_message(scheduled_date=scheduled_date)
+        self._bf_verser_les_abonnes_ajoutes()
+        return super(MailComposeMessage, self.with_context(
+            bf_scheduling=True)).action_schedule_message(
+                scheduled_date=scheduled_date)
 
     # ------------------------------------------------------------------
     # « Enregistrer comme brouillon »
@@ -630,3 +660,198 @@ class MailComposeMessage(models.TransientModel):
     def _compute_partner_ids(self):
         super()._compute_partner_ids()
         self._bf_restore_groups(("to",))
+
+    # ------------------------------------------------------------------
+    # Les abonnés de la fiche, montrés et retirables avant l'envoi
+    # ------------------------------------------------------------------
+    # 🔴 Un message écrit depuis une fiche part aussi à ses abonnés, portail
+    # compris, et ce n'est pas seulement une copie de plus : le composeur
+    # regroupe tout le monde dans UN courriel, et chaque copie sort avec le
+    # même « À ». Le fournisseur y lit l'adresse du client, et l'inverse.
+    # Mesuré sur une base réelle, sur trois mois : 149 messages sur
+    # 68 fiches ont envoyé une copie à un abonné non saisi, 144 avis à 35
+    # personnes hors de l'organisation. Deux cas : une réponse adressée
+    # à un fournisseur de délivrabilité, copiée à la cliente ; une réponse à un
+    # prestataire sur un ticket, copiée au portail du client.
+    #
+    # Le téléphone, lui, coupe tout (``bf_notify_explicit_only``, S-M6 de
+    # l'audit du 2026-09-08). Arbitrage de l'opérateur au questionnaire du
+    # 2026-09-18 : au poste, les abonnés restent COCHÉS, ils reçoivent comme
+    # avant, mais ils sont montrés en pastilles retirables, et ce qu'on retire
+    # ne part pas.
+    #
+    # ⚠️ C'est une liste NOIRE, pas une liste blanche : on ne coupe que les
+    # abonnés effectivement retirés à l'écran. Une liste blanche couperait par
+    # accident quiconque s'abonne ENTRE l'ouverture du composeur et l'envoi, 
+    # et un destinataire perdu s'écrit exactement comme un envoi réussi.
+    bf_abonnes_ids = fields.Many2many(
+        "res.partner",
+        "bf_compose_abonne_rel", "wizard_id", "partner_id",
+        string="Abonnés de la fiche",
+        default=lambda self: self._bf_defaut_abonnes(),
+        help="Les abonnés de la fiche qui recevront ce message en plus des "
+             "destinataires saisis. Retirez-en un et il ne le recevra pas, "
+             "il reste abonné à la fiche pour autant. Ajoutez quelqu'un et il "
+             "devient destinataire, dans le « À » du courriel.",
+    )
+    # La même liste, telle qu'elle était à l'ouverture. C'est la différence
+    # entre les deux qui fait le retrait ; sans elle, impossible de distinguer
+    # « retiré » de « jamais proposé ».
+    bf_abonnes_initiaux_ids = fields.Many2many(
+        "res.partner",
+        "bf_compose_abonne_initial_rel", "wizard_id", "partner_id",
+        string="Abonnés à l'ouverture",
+        default=lambda self: self._bf_defaut_abonnes(),
+    )
+
+    @api.model
+    def _bf_defaut_abonnes(self):
+        fiche = self._bf_fiche_visee()
+        if not fiche:
+            return [(6, 0, [])]
+        return [(6, 0, self._bf_abonnes_notifiables(fiche).ids)]
+
+    @api.model
+    def _bf_fiche_visee(self):
+        """La fiche unique que ce composeur vise, ou ``False``.
+
+        ⚠️ ``default_res_ids`` voyage tantôt en liste, tantôt en chaîne JSON
+        (le champ du noyau est un ``Text``) : le composeur plein écran du
+        chatter pose la chaîne, ``bf.email._open_composer`` pose la liste.
+        """
+        ctx = self.env.context
+        modele = ctx.get("default_model") or ctx.get("active_model")
+        if not modele or modele not in self.env:
+            return False
+        brut = ctx.get("default_res_ids")
+        if brut is None:
+            brut = ctx.get("active_ids") or ctx.get("active_id")
+        if isinstance(brut, str):
+            try:
+                brut = json.loads(brut)
+            except (ValueError, TypeError):
+                return False
+        if isinstance(brut, int):
+            brut = [brut]
+        if not isinstance(brut, (list, tuple)) or len(brut) != 1:
+            return False
+        try:
+            res_id = int(brut[0])
+        except (TypeError, ValueError):
+            return False
+        fiche = self.env[modele].browse(res_id)
+        if "message_follower_ids" not in fiche._fields:
+            return False
+        return fiche.exists() or False
+
+    @api.model
+    def _bf_abonnes_notifiables(self, fiche):
+        """Les abonnés de ``fiche`` qui recevraient un COURRIEL de ce message.
+
+        On reproduit le tri du noyau sans lui demander un message qui n'existe
+        pas encore : les abonnés au sous-type « Discussion » (les autres ne
+        sont pas notifiés d'un commentaire), qui ont une adresse, moins la
+        personne qui écrit, qui ne s'écrit pas à elle-même, et moins les
+        internes qui lisent leurs avis dans Odoo plutôt que par courriel.
+        """
+        Partner = self.env["res.partner"]
+        if not fiche or "message_follower_ids" not in fiche._fields:
+            return Partner
+        sous_type = self.env.ref("mail.mt_comment", raise_if_not_found=False)
+        abonnes = fiche.sudo().message_follower_ids
+        if sous_type:
+            abonnes = abonnes.filtered(lambda f: sous_type in f.subtype_ids)
+        moi = self.env.user.partner_id
+        retenus = Partner
+        for partenaire in abonnes.partner_id.sudo():
+            if partenaire == moi or not partenaire.email:
+                continue
+            internes = partenaire.user_ids.filtered(lambda u: not u.share)
+            if internes and all(u.notification_type == "inbox"
+                                for u in internes):
+                continue
+            retenus |= partenaire
+        return retenus.with_env(self.env)
+
+    @api.onchange("target_reference")
+    def _onchange_bf_abonnes_de_la_cible(self):
+        """Composer depuis la boîte : les abonnés arrivent avec la fiche.
+
+        🔴 Le composeur de la boîte s'ouvre sur le brouillon ``bf.email``, pas
+        sur une fiche : à l'ouverture il n'y a aucun abonné à montrer, et la
+        cible est choisie APRÈS, dans « Classer dans ». Sans ce raccord, les
+        pastilles restaient vides alors que la fiche choisie avait des abonnés,
+        et ``_bf_retarget_to_chatter`` repointait ensuite le composeur sur
+        elle, si bien que l'envoi partait à des gens que l'écran n'avait
+        jamais nommés. La promesse « les abonnés sont montrés » ne tenait pas
+        sur ce chemin-là.
+
+        Les deux listes sont réécrites ensemble : recalculer les retenus sans
+        les initiaux ferait lire un retrait là où il n'y a qu'un changement de
+        fiche.
+        """
+        for composeur in self:
+            if not composeur.bf_compose_shell_id:
+                continue
+            try:
+                cible = composeur._get_chatter_target("read")
+            except exceptions.UserError:
+                # Cible vide, supprimée, sans chatter ou hors droits : c'est
+                # l'état normal d'un champ en cours de saisie. On n'attrape
+                # QUE celle-là, un `except Exception` avalerait aussi une
+                # vraie erreur, et le composeur s'ouvrirait sans abonnés sans
+                # que rien ne le dise.
+                cible = False
+            abonnes = self._bf_abonnes_notifiables(cible) if cible \
+                else self.env["res.partner"]
+            composeur.bf_abonnes_initiaux_ids = [(6, 0, abonnes.ids)]
+            composeur.bf_abonnes_ids = [(6, 0, abonnes.ids)]
+
+    def _bf_abonnes_retires(self):
+        """Les abonnés retirés à l'écran, et eux seuls.
+
+        Un abonné retiré puis saisi dans le « À », le Cc ou le Cci reste
+        destinataire : le geste explicite gagne sur le retrait.
+        """
+        self.ensure_one()
+        retires = self.bf_abonnes_initiaux_ids - self.bf_abonnes_ids
+        explicites = self.partner_ids | self.partner_cc_ids | self.partner_bcc_ids
+        return retires - explicites
+
+    def _bf_verser_les_abonnes_ajoutes(self):
+        """Qui est ajouté aux pastilles devient un destinataire pour de vrai.
+
+        🔴 Le champ est modifiable : rien n'empêche d'y déposer quelqu'un qui
+        ne suit pas la fiche. Sans ce versement, l'ajout n'aurait AUCUN effet, 
+        la garde ne sait que retirer, et l'écran promettrait un destinataire
+        que le courriel n'aurait jamais. Un champ qui ment est pire qu'un champ
+        absent : on ne relit pas ce qu'on croit avoir déjà fait.
+
+        Versé dans le « À », donc visible dans l'en-tête du courriel, comme
+        n'importe quelle personne à qui on écrit.
+        """
+        for composeur in self:
+            ajoutes = (composeur.bf_abonnes_ids
+                       - composeur.bf_abonnes_initiaux_ids
+                       - composeur.partner_ids
+                       - composeur.partner_cc_ids
+                       - composeur.partner_bcc_ids)
+            if ajoutes:
+                composeur.partner_ids = [(4, partenaire.id) for partenaire in ajoutes]
+
+    def _bf_garde_abonnes(self):
+        """Le contexte qui porte le retrait jusqu'à la notification.
+
+        Rien à poser quand personne n'est retiré : la garde ne doit rien
+        changer à un envoi où on n'a touché à rien.
+        """
+        if len(self) != 1 or self.composition_mode != "comment" \
+                or self.subtype_is_log:
+            return {}
+        res_ids = self._evaluate_res_ids() or []
+        if len(res_ids) != 1 or not self.model:
+            return {}
+        retires = self._bf_abonnes_retires()
+        if not retires:
+            return {}
+        return {"bf_abonnes_retires": [self.model, res_ids[0], retires.ids]}

@@ -18,15 +18,16 @@ elle-même appelée par le sondage ``/calendar/notify`` et par
 ouvrir son portable à 08h55 pour une rencontre de 09h00 doit encore afficher le
 rappel de 08h45.
 
-3. celles qu'un mode « ne pas déranger » retient (``bf.dnd``).
+3. celles qu'un mode « ne pas déranger » retient (``bf.dnd``, /
+).
 
-   🔴 Ce garde-ci ne suffit PAS à lui seul, et c'est le défaut qui a été
-   relevé à l'arbitrage. Il filtre ce qui est DISTRIBUÉ, pas ce qui est déjà
-   AFFICHÉ : ``get_next_notif`` rend les alarmes des 24 prochaines heures
-   (``time_limit = 3600 * 24``) et le client arme chacune avec un
-   ``setTimeout``. Mesuré : des poussées portant un ``timer`` de plus de
-   72 000 secondes, soit un rappel armé vingt heures à l'avance. Un mode qui
-   s'arme entre-temps n'est jamais consulté.
+   🔴 Ce garde-ci ne suffit PAS à lui seul, et c'est le défaut relevé le
+   2026-09-09 dans l'arbitrage du 09-01. Il filtre ce qui est DISTRIBUÉ, pas
+   ce qui est déjà AFFICHÉ : ``get_next_notif`` rend les alarmes des 24
+   prochaines heures (``time_limit = 3600 * 24``) et le client arme chacune
+   avec un ``setTimeout``. Mesuré le 2026-09-09, trois poussées portant un
+   ``timer`` de plus de 72 000 secondes, soit un rappel armé vingt heures à
+   l'avance. Un mode qui s'arme entre-temps n'est jamais consulté.
 
    C'est le canal ``bf_dnd/state`` qui ferme le trou : à chaque bascule, le
    client rejoue ``/calendar/notify``, ce qui efface ses minuteurs à l'entrée

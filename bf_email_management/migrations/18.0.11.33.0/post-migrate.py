@@ -1,6 +1,6 @@
 """18.0.11.33.0 — recalcul des signaux après le changement de fuseau.
 
-``is_late_night`` se lisait dans le fuseau du PROPRIÉTAIREet se lit
+``is_late_night`` se lisait dans le fuseau du PROPRIÉTAIRE et se lit
 désormais dans celui de l'EXPÉDITEUR. ``is_invitation`` naît avec
 cette version. ``is_bulk`` et la catégorie profitent du motif de robots élargi.
 
