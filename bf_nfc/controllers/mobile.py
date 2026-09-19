@@ -597,3 +597,66 @@ class MobileNfc(http.Controller):
             "nom": tag.name,
             "geste": geste.name,
         }, 200)
+
+    # ------------------------------------------------------------------
+    # La gravure d'une pastille signée : le serveur pilote, l'application relaie
+    # ------------------------------------------------------------------
+
+    @http.route("%s/gravure/debut" % BASE, type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def gravure_debut(self, **kw):
+        """Ouvre une gravure et rend la première commande à envoyer à la puce.
+
+        Corps JSON : ``{code, uid}``. L'UID est celui qu'Android lit sur la puce
+        avant tout dialogue. ⚠️ Il est pris sur parole : une application qui
+        mentirait enregistrerait une pastille qui ne répond à personne, ce qui la
+        punit elle-même, mais une version ultérieure devrait le confirmer auprès
+        de la puce (``GetCardUID``).
+        """
+        appareil = _appareil_du_jeton()
+        if not appareil:
+            return _json({"error": "unauthorized"}, 401)
+        _agir_en_tant_que(appareil)
+
+        charge = _corps()
+        tag = request.env["bf.nfc.tag"]._resoudre((charge.get("code") or "").strip())
+        if not tag:
+            return _json({"error": "unknown_tag",
+                          "message": _("Cette pastille n'est pas enregistrée ici.")}, 404)
+        try:
+            gravure = request.env["bf.nfc.enrolement"]._ouvrir(
+                tag, charge.get("uid"), appareil=appareil)
+        except AccessError as exc:
+            return _json({"error": "forbidden", "message": str(exc)}, 403)
+        except UserError as exc:
+            return _json({"error": "refused", "message": str(exc)}, 400)
+
+        suite = gravure.suivante()
+        return _json(dict(suite, session=gravure.name), 200)
+
+    @http.route("%s/gravure/suite" % BASE, type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def gravure_suite(self, **kw):
+        """Reçoit la réponse de la puce et rend la commande suivante.
+
+        Corps JSON : ``{session, reponse}``, la réponse en hexadécimal, statut
+        compris, exactement telle que la puce l'a rendue.
+        """
+        appareil = _appareil_du_jeton()
+        if not appareil:
+            return _json({"error": "unauthorized"}, 401)
+        _agir_en_tant_que(appareil)
+
+        charge = _corps()
+        gravure = request.env["bf.nfc.enrolement"].sudo().search(
+            [("name", "=", (charge.get("session") or "").strip())], limit=1)
+        if not gravure:
+            return _json({"error": "unknown_session"}, 404)
+        # 🔴 Une gravure appartient à l'appareil qui l'a ouverte : sinon un second
+        # téléphone reprend une session en cours et fait poser NOS clés sur SA puce.
+        if gravure.device_id and gravure.device_id != appareil:
+            return _json({"error": "forbidden",
+                          "message": _("Cette gravure a été ouverte par un autre "
+                                       "appareil.")}, 403)
+        suite = gravure.suivante((charge.get("reponse") or "").strip())
+        return _json(dict(suite, session=gravure.name), 200)

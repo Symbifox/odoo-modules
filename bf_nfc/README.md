@@ -117,8 +117,40 @@ read.
 `/bf_nfc/mobile/v1` (api 2): `ping` (public, returns the company's branding), pairing
 (`auth/start`, `auth/exchange`, `logout`), `tap`, `pastille/infos`, `pastilles`,
 `journal`, `cibles` (target search on a whitelist of models), `catalogue`,
-`pastille` (create), `liens` (link pages, when `bf_linkpage` is installed).
+`pastille` (create), `liens` (link pages, when `bf_linkpage` is installed),
+and `gravure/debut` + `gravure/suite`, which write a signed chip (below).
 Every route runs as the device's person, in their language.
+
+## Writing a signed chip
+
+An ordinary tag is written by the app itself: it carries a public code, and
+writing it is one NDEF message. A signed chip is different, because writing it
+means putting **keys** into it, and a key in a phone is a key that has left the
+server.
+
+So the server drives and the app relays. The app holds the chip against the
+phone and asks for the first command; the server builds it, the app passes it to
+the chip over `IsoDep`, and hands the answer back. The AES keys never leave
+Odoo, and the app learns one verb.
+
+🔴 **The order is chosen so an interruption costs nothing.** The address and the
+SDM settings are written first, the keys last. A chip let go halfway keeps its
+factory keys, so anyone can pick it up again, including you. The other order
+would leave a mute chip that only its key can recover.
+
+What the server refuses: a person who is not a tag manager, a tag already
+written (resetting its read counter would let every previously captured address
+be replayed), a company with no keys posted, an expired session, and a second
+device trying to resume the first one's session.
+
+⚠️ The chip's UID is taken from the app on trust. Lying about it registers a tag
+that answers to nobody, which punishes the liar, but a later version should
+confirm it with `GetCardUID`.
+
+⛔ **This has never run against real silicon.** The command builder is checked
+against the vectors published by NXP in AN12196, and the whole conversation is
+played end to end against a simulated chip that answers like one — but nobody
+has yet held an NTAG 424 DNA against a phone.
 
 ## Configuration
 

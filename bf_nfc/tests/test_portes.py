@@ -228,6 +228,13 @@ class TestPortes(HttpCase):
         icp = self.env["ir.config_parameter"].sudo()
         icp.set_param("bf_nfc.sdm_meta_key", CLE_USINE)
         icp.set_param("bf_nfc.sdm_file_key", CLE_USINE)
+        # 🔴 Et la paire RANGÉE, pas seulement les vieux paramètres. Une base qui
+        # porte déjà une paire (toute instance où la gestion a posé ses clés)
+        # l'emporte sur eux : `_cles_de` lit la ligne d'abord. Sans cette pose,
+        # ces essais tombaient sur une base semée, avec un « 0 != 61 » qui se lit
+        # comme un compteur non retenu alors que c'est la clé qui n'est pas la
+        # bonne. Mesuré le 2026-09-18 en jouant la montée 2.3.1 → 2.4.0.
+        self.env["bf.nfc.sdm.key"]._poser(self.env.company, CLE_USINE, CLE_USINE)
         return self.env["bf.nfc.tag"].create({
             "name": "Pastille signée",
             "gesture_id": (geste or self.geste_open).id,

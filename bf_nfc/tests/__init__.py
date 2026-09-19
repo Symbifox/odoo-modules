@@ -10,3 +10,5 @@ from . import test_appareil_securite
 from . import test_parametres_verrouilles
 from . import test_administration
 from . import test_gabarits
+from . import test_ev2
+from . import test_gravure

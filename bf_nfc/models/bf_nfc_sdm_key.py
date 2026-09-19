@@ -34,6 +34,10 @@ class BfNfcSdmKey(models.Model):
                                  ondelete="cascade", index=True)
     meta_key_enc = fields.Char(groups="base.group_system", copy=False)
     file_key_enc = fields.Char(groups="base.group_system", copy=False)
+    # ⚠️ Facultative, et son absence se paie à la gravure : une puce dont la clé
+    # d'usine n'a pas été remplacée se regrave par n'importe qui. Personne ne peut
+    # pour autant forger sa signature, qui dépend des deux autres clés.
+    master_key_enc = fields.Char(groups="base.group_system", copy=False)
     set_date = fields.Datetime(string="Posées le", readonly=True)
     set_by_id = fields.Many2one("res.users", string="Posées par", readonly=True)
     state = fields.Selection(
@@ -71,6 +75,29 @@ class BfNfcSdmKey(models.Model):
             return icp.get_param("bf_nfc.%s.%s" % (suffixe, company.id)) \
                 or icp.get_param("bf_nfc.%s" % suffixe)
         return ancien("sdm_meta_key"), ancien("sdm_file_key")
+
+    @api.model
+    def _cle_maitresse_de(self, company):
+        """La clé 0 d'une société, en clair, ou rien si elle n'a pas été posée."""
+        ligne = self.sudo().search([("company_id", "=", company.id)], limit=1)
+        if not ligne:
+            return None
+        return chiffrement.dechiffrer(self.env, ligne.master_key_enc)
+
+    @api.model
+    def _poser_la_maitresse(self, company, valeur):
+        """Pose la clé 0. Réservé à la gestion, comme les deux autres."""
+        if not self.env.user.has_group("bf_nfc.group_nfc_manager"):
+            raise AccessError(_("Poser la clé maîtresse est réservé à la gestion."))
+        valeur = (valeur or "").strip()
+        if not HEX_32.match(valeur):
+            raise UserError(_("La clé maîtresse doit compter 32 caractères "
+                              "hexadécimaux (16 octets AES)."))
+        ligne = self.sudo().search([("company_id", "=", company.id)], limit=1)
+        if not ligne:
+            raise UserError(_("Posez d'abord la paire de clés de cette société."))
+        ligne.master_key_enc = chiffrement.chiffrer(self.env, valeur.upper())
+        return ligne
 
     @api.model
     def _chiffrer_une_cle(self, valeur, nom):

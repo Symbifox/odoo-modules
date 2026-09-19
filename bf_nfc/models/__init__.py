@@ -6,5 +6,6 @@ from . import bf_nfc_tag
 from . import bf_nfc_tap
 from . import bf_nfc_tag_choice
 from . import bf_nfc_sdm_key
+from . import bf_nfc_enrolement
 from . import bf_nfc_target_mixin
 from . import bf_nfc_template
