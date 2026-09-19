@@ -7,13 +7,13 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**49 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**50 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**150 modules are BUSL-1.1.** The source is published and auditable, and **you
+**153 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -89,6 +89,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.0.1 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.5.0.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
+| `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.2.0 | LGPL-3 | Calendar and deadlines for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
 | `bf_celebrations` | Célébrations | 18.0.2.1.3 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_celebrations_email` | Célébrations : groupes de destinataires | 18.0.1.0.0 | LGPL-3 | Tend une carte de fête aux groupes de destinataires du composeur de courriels |
@@ -169,6 +170,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.1.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.2 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
 | `bf_invoice_ocr` | Symbifox — Invoice OCR Scanner | 18.0.1.0.1 | BUSL-1.1 | Extract vendor bill data from PDF attachments via the bf_llm gateway |
+| `bf_labour_relations` | Relations de travail | 18.0.1.0.0 | BUSL-1.1 | Certification, collective agreement, seniority, grievances and union dues, from the employer's side as much as the union's |
+| `bf_labour_relations_employer` | Relations de travail : côté employeur | 18.0.1.0.0 | BUSL-1.1 | Obligations and reminders, the posted seniority list, job postings and movements, dues remittance preparation, the joint committee |
+| `bf_labour_relations_union` | Relations de travail : côté syndical | 18.0.1.0.0 | BUSL-1.1 | Memberships, dues collected and reconciled, meetings and votes, stewards and release time, the grievance seen from the complainant |
 | `bf_letter_writer` | Letter Writer | 18.0.2.0.0 | BUSL-1.1 | Branded official-letter editor: 5 letterhead modes, field merge (`{{ }}`), reusable templates and quick-text blocks, email + PDF send |
 | `bf_lexend` | Lexend Typeface | 18.0.3.0.0 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
 | `bf_linkpage` | Pages de liens | 18.0.10.0.2 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
@@ -289,11 +293,11 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **150 modules: BUSL-1.1.** Production use for your own internal business
+- **153 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **49 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **50 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising
