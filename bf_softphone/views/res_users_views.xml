@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_users_form_softphone" model="ir.ui.view">
+        <field name="name">res.users.form.softphone</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Téléphone" name="bf_softphone"
+                      groups="bf_softphone.group_softphone_user">
+                    <group>
+                        <field name="sip_enabled"/>
+                        <field name="sip_extension"
+                               placeholder="1001"/>
+                        <!-- sip_password : rendu uniquement pour un gestionnaire
+                             (le champ est groups=manager ; Odoo l'omet sinon). -->
+                        <field name="sip_password" password="True"
+                               groups="bf_softphone.group_softphone_manager"/>
+                        <field name="sip_missed_call_activity"/>
+                        <field name="sip_callback_number"
+                               placeholder="514 555-0142"/>
+                    </group>
+                    <div class="text-muted">
+                        Le poste et le mot de passe SIP proviennent du PBX (voir la
+                        fiche du poste). Le mot de passe n'est visible que par un
+                        gestionnaire du téléphone.
+                    </div>
+                    <div class="text-muted mt8">
+                        Le numéro de rappel sert aux appels demandés depuis
+                        l'application mobile : le PBX le fait sonner, puis compose le
+                        correspondant avec l'afficheur de la ligne d'affaires. Vide,
+                        c'est le mobile de la fiche contact qui est utilisé.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

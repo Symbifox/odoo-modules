@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**50 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**51 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -50,6 +50,21 @@ Five modules self-host fonts rather than calling a font CDN, so no visitor IP ev
 `bf_process` bundles Lexend for a stricter reason than rendering: its glyph
 advances are frozen into a width table the module measures text with, so the
 files are the reference its geometry was calibrated against.
+
+### Bundled JavaScript libraries
+
+One module vendors a JavaScript library rather than calling a CDN, for the same
+reason: no visitor IP reaches a third party, and the version cannot change
+under the module's feet. It is under its own licence, **not** the one covering
+the module around it, and carries a `THIRD-PARTY.md` and the full licence text
+beside the file:
+
+| Module | Library | Version | Licence |
+|---|---|---|---|
+| `bf_softphone` | JsSIP | 3.11.1 | The MIT License |
+
+`bf_softphone` loads it lazily, only for a member of the phone group who opens
+the panel, so its 240 KB never enter the back-end bundle served to everyone.
 
 ## Bundles (recommended starting point)
 
@@ -236,6 +251,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.1.0 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
 | `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.1.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
 | `bf_sms_archive` | SMS & Calls | 18.0.5.17.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
+| `bf_softphone` | Symbifox — Téléphone SIP | 18.0.2.10.0 | LGPL-3 | WebRTC softphone (JsSIP) in the web client, backed by an Asterisk PBX, with PBX-dialled calls for clients without a SIP stack and a push wake for a phone whose app is closed |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.2.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.5.2 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
@@ -297,7 +313,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **50 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **51 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

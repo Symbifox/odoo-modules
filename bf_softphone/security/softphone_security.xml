@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data noupdate="0">
+        <record id="module_category_softphone" model="ir.module.category">
+            <field name="name">Téléphone</field>
+            <field name="sequence">61</field>
+        </record>
+
+        <!-- Utilisateur : possède un poste, peut téléphoner depuis Odoo. -->
+        <record id="group_softphone_user" model="res.groups">
+            <field name="name">Utilisateur du téléphone</field>
+            <field name="category_id" ref="module_category_softphone"/>
+        </record>
+
+        <!-- Gestionnaire : provisionne les postes, voit les secrets SIP des autres.
+             ⚠️ C'est ce groupe qui ouvre le champ sip_password (groups= sur le champ) :
+             un simple utilisateur ne voit QUE le sien, via get_softphone_config(). -->
+        <record id="group_softphone_manager" model="res.groups">
+            <field name="name">Gestionnaire du téléphone</field>
+            <field name="category_id" ref="module_category_softphone"/>
+            <field name="implied_ids" eval="[(4, ref('group_softphone_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+    </data>
+</odoo>

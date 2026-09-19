@@ -1,0 +1,228 @@
+// Bulle flottante du téléphone — même idée qu'un bouton d'aide de site web.
+//
+// ⚠️ Le composant vit à la RACINE du client web (main_components), plus dans la
+// barre de navigation : il n'hérite donc plus des couleurs que la marque impose
+// à la barre. Les règles défensives plus bas restent, au cas où il retournerait
+// un jour dans un conteneur coloré.
+//
+// La couleur vient de --brand-primary, injectée par bluefox_branding depuis la
+// fiche société. Sans ce module la variable n'existe pas et le repli prend le
+// violet d'Odoo : aucune dépendance, la marque s'applique si elle est là.
+.o_bf_softphone {
+    --bf-sp-brand: var(--brand-primary, #29ABE2);
+    --bf-sp-ring: #d9534f;
+    --bf-sp-incall: #2e9e5b;
+    --bf-sp-size: 3.5rem;
+    --bf-sp-gap: 1.25rem;
+
+    .o_bf_sp_bubble {
+        position: fixed;
+        right: var(--bf-sp-gap);
+        bottom: var(--bf-sp-gap);
+        width: var(--bf-sp-size);
+        height: var(--bf-sp-size);
+        border: 0;
+        border-radius: 50%;
+        background: var(--bf-sp-brand);
+        color: #fff !important;
+        font-size: 1.15rem;
+        box-shadow: 0 .35rem 1rem rgba(0, 0, 0, .3);
+        z-index: 1045;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform .15s ease, background-color .2s ease;
+
+        &:hover { transform: scale(1.06); }
+        &:active { transform: scale(.97); }
+        i { color: #fff !important; }
+
+        // Pastille d'état, en bas à droite de la bulle.
+        .o_bf_sp_bubble_dot {
+            position: absolute;
+            right: .18rem;
+            bottom: .18rem;
+            width: .7rem;
+            height: .7rem;
+            border-radius: 50%;
+            background: var(--bf-sp-ring);
+            border: 2px solid #fff;
+
+            &--off { background: #adb5bd; }
+        }
+    }
+
+    // Appel entrant : rouge, secousse, et un halo qui bat.
+    .o_bf_sp_bubble--ringing {
+        background: var(--bf-sp-ring);
+        animation: bf-sp-shake .55s ease-in-out infinite;
+
+        &::after {
+            content: "";
+            position: absolute;
+            inset: -.35rem;
+            border-radius: 50%;
+            border: 2px solid var(--bf-sp-ring);
+            animation: bf-sp-halo 1.2s ease-out infinite;
+        }
+    }
+
+    // En communication : vert franc, sans secousse.
+    .o_bf_sp_bubble--incall {
+        background: var(--bf-sp-incall);
+    }
+}
+
+// La secousse est une INFORMATION (« ça sonne »), pas une décoration : on la
+// retire pour qui demande moins d'animations, mais la couleur et le halo, eux,
+// portent encore le message.
+@keyframes bf-sp-shake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-13deg); }
+    40% { transform: rotate(11deg); }
+    60% { transform: rotate(-8deg); }
+    80% { transform: rotate(6deg); }
+}
+
+@keyframes bf-sp-halo {
+    0% { opacity: .85; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.55); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .o_bf_softphone .o_bf_sp_bubble--ringing {
+        animation: none;
+        &::after { animation: none; opacity: .6; }
+    }
+}
+
+.o_bf_softphone {
+    .o_bf_softphone_panel {
+        // Ancré JUSTE AU-DESSUS de la bulle, coin inférieur droit.
+        position: fixed;
+        right: var(--bf-sp-gap);
+        bottom: calc(var(--bf-sp-gap) + var(--bf-sp-size) + .6rem);
+        width: 320px;
+        max-width: calc(100vw - 2 * var(--bf-sp-gap));
+        // Un long historique défile dans le panneau, il ne déborde pas de l'écran.
+        max-height: calc(100vh - var(--bf-sp-size) - 4 * var(--bf-sp-gap));
+        overflow-y: auto;
+        // Fond + texte pris sur les variables de thème Bootstrap d'Odoo 18 : ils
+        // basculent clair/sombre ensemble. ⚠️ On force `color`, sinon le texte hérite
+        // de la couleur claire de la barre de navigation et devient blanc sur blanc en
+        // mode clair.
+        background: var(--bs-body-bg, #fff);
+        color: var(--bs-body-color, #212529);
+        border: 1px solid var(--bs-border-color, rgba(0, 0, 0, .15));
+        border-radius: .5rem;
+        // Au-dessus de la barre (qui monte à 1000+) et des voiles Bootstrap.
+        z-index: 1055;
+
+        // Tout ce qui n'a pas de classe de couleur explicite hérite du texte lisible.
+        .o_bf_sp_header,
+        .o_bf_sp_incall,
+        .o_bf_sp_dial,
+        .o_bf_sp_history {
+            color: var(--bs-body-color, #212529);
+        }
+
+        // ⚠️ LA cause du « blanc sur gris pâle ». La marque Blue Fox impose
+        // `a, button, span { color: #ffffff !important }` à TOUTE la barre de
+        // navigation (bluefox_branding/static/src/scss/branding.scss) — ce qui
+        // est juste pour ses entrées, et faux pour un panneau qui vit dedans
+        // sur fond clair. On ne touche pas à la marque : on redit la couleur
+        // À L'INTÉRIEUR du panneau, avec une spécificité supérieure.
+        // `inherit` plutôt qu'une couleur en dur : chaque élément reprend celle
+        // de son conteneur, qui bascule déjà clair/sombre avec le thème.
+        span,
+        small,
+        strong,
+        label,
+        li {
+            color: inherit !important;
+        }
+
+        // Les utilitaires de couleur, eux, gardent la main : trois classes
+        // l'emportent sur « deux classes + un élément ». Sans ces lignes, la
+        // règle ci-dessus éteindrait le vert « En ligne » et le rouge d'un
+        // appel manqué.
+        .text-muted {
+            color: var(--bs-secondary-color, #6c757d) !important;
+        }
+        .text-success {
+            color: var(--bs-success, #198754) !important;
+        }
+        .text-warning {
+            color: var(--bs-warning, #997404) !important;
+        }
+        .text-danger {
+            color: var(--bs-danger, #dc3545) !important;
+        }
+        .text-primary {
+            color: var(--bs-primary, #0d6efd) !important;
+        }
+
+        .o_bf_sp_header {
+            border-bottom: 1px solid var(--bs-border-color, rgba(0, 0, 0, .1));
+            font-size: .85rem;
+        }
+        .o_bf_sp_input {
+            // Champ de saisie explicitement contrasté dans les deux thèmes.
+            background: var(--bs-body-bg, #fff);
+            color: var(--bs-body-color, #212529);
+        }
+        .o_bf_sp_pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: .35rem;
+        }
+        // ⚠️ La barre de navigation impose une couleur de texte à ses entrées
+        // (--NavBar-entry-color, blanche sur le thème BF) et le panneau en
+        // hérite : les chiffres du clavier sortaient BLANC SUR BLANC
+        // (signalé à l'usage). Un panneau n'est pas une entrée de barre :
+        // il redit donc ses propres couleurs, et le !important est là pour
+        // gagner contre une cascade qui ne le concerne pas.
+        .btn-light,
+        .btn-secondary,
+        .o_bf_sp_key {
+            background-color: var(--bs-tertiary-bg, #f8f9fa) !important;
+            border-color: var(--bs-border-color, rgba(0, 0, 0, .15)) !important;
+            color: var(--bs-body-color, #212529) !important;
+
+            &:hover,
+            &:focus {
+                background-color: var(--bs-secondary-bg, #e9ecef) !important;
+                color: var(--bs-body-color, #212529) !important;
+            }
+        }
+        // Le bouton vert d'appel garde SON texte blanc : lui est bien contrasté.
+        // Les deux boutons pleins gardent leur texte blanc : eux sont
+        // contrastés. `> *` parce que l'icône interne est un <i>, et le libellé
+        // un nœud de texte du bouton.
+        .btn-success,
+        .btn-danger,
+        .btn-success > *,
+        .btn-danger > * {
+            color: #fff !important;
+        }
+        .o_bf_sp_key {
+            font-size: 1.1rem;
+            padding: .5rem 0;
+        }
+        .o_bf_sp_peer[role="button"] {
+            cursor: pointer;
+            text-decoration: underline dotted;
+        }
+        // ⚠️ !important OBLIGATOIRE : ce sont des <button>, et la règle de marque
+        // `button { color:#fff !important }` bat n'importe quelle spécificité
+        // tant qu'on ne met pas soi-même !important. Une règle plus spécifique
+        // mais « normale » perd contre une règle importante.
+        .o_bf_sp_results .list-group-item {
+            background: var(--bs-body-bg, #fff) !important;
+            color: var(--bs-body-color, #212529) !important;
+        }
+        .o_bf_sp_history .o_bf_sp_hrow {
+            text-align: left;
+        }
+    }
+}

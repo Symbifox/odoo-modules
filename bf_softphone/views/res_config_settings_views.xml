@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_softphone" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf_softphone</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Téléphone" string="Téléphone"
+                     name="bf_softphone" groups="base.group_system">
+                    <block title="PBX">
+                        <setting string="Hôte du PBX"
+                                 help="Nom d'hôte servant le WebSocket SIP (wss://&lt;hôte&gt;/ws)">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="bf_softphone_pbx_host" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_pbx_host" class="col-lg-6"
+                                           placeholder="pbx.example.com"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Relais média TURN (Cloudflare)"
+                           help="Clé TURN Cloudflare — utilisée côté serveur pour forger des identifiants ICE à durée de vie courte. Ces secrets ne quittent jamais le serveur.">
+                        <setting string="ID de clé TURN">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="bf_softphone_turn_key_id" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_turn_key_id" class="col-lg-6"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="bf_softphone_turn_key_token" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_turn_key_token" class="col-lg-6" password="True"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Composition par le PBX"
+                           help="Permet à un client sans pile SIP (l'application mobile) de demander un appel : le PBX fait sonner l'appareil de l'utilisateur, puis compose le correspondant avec l'afficheur du trunk.">
+                        <setting string="Lien AMI">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="bf_softphone_ami_host" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_ami_host" class="col-lg-6"
+                                           placeholder="ami.example.internal"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="bf_softphone_ami_port" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_ami_port" class="col-lg-6"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="bf_softphone_ami_user" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_ami_user" class="col-lg-6"
+                                           placeholder="clicktocall"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="bf_softphone_ami_password" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_ami_password" class="col-lg-6"
+                                           password="True"/>
+                                </div>
+                                <div class="mt8">
+                                    <button name="action_softphone_test_ami" type="object"
+                                            string="Tester le lien" class="btn-link"
+                                            icon="fa-plug"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Plan de numérotation">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="bf_softphone_trunk" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_trunk" class="col-lg-6"
+                                           placeholder="mon-trunk"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="bf_softphone_originate_context" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_originate_context" class="col-lg-6"
+                                           placeholder="from-clicktocall"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="bf_softphone_outbound_cid" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_outbound_cid" class="col-lg-6"
+                                           placeholder="514 555-0100"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="Réveil par push"
+                           help="Fait sonner l'application mobile même fermée : le PBX prévient Odoo avant de composer, Odoo pousse une notification, l'app se réenregistre et le plan de numérotation compose le contact qui vient d'apparaître.">
+                        <setting string="Activer le réveil"
+                                 help="Couper les notifications de textos ne coupe pas la sonnerie : ce sont deux interrupteurs.">
+                            <field name="bf_softphone_wake_enabled"/>
+                        </setting>
+                        <setting string="Jeton partagé avec le PBX">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="bf_softphone_pbx_wake_token" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_softphone_pbx_wake_token" class="col-lg-6"
+                                           password="True"/>
+                                </div>
+                                <div class="text-muted mt8">
+                                    Le même secret doit vivre côté PBX, là où le plan de
+                                    numérotation le lit (par exemple <code>WAKE_TOKEN</code> dans
+                                    son environnement). Vide : le réveil est refusé.
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
