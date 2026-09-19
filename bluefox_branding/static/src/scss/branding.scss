@@ -418,6 +418,56 @@ body.bg-dark,
 }
 
 // ---------------------------------------------------------------------------
+// Ce qui est POSÉ sur la barre du site — 2026-09-18.
+//
+// La règle juste au-dessus peint l'en-tête de tout site avec la couleur sombre
+// de la marque. Odoo, lui, laisse cet en-tête en thème CLAIR : `navbar-light`,
+// liens à `rgba(0, 0, 0, .65)` et logo en couleur. Peindre le fond sans
+// repeindre ce qu'il porte donne un menu noir sur fond sombre, donc illisible,
+// et un logo foncé qui disparaît.
+//
+// 🔴 Mesuré le 2026-09-18 sur la démonstration publique : sept liens en
+// `rgb(0, 0, 0)` sur le marine #071B4A, et aucun filtre sur le logo. Le défaut
+// a été corrigé deux fois dans des modules de locataire le même jour avant
+// d'être ramené ici, où il naît : c'est ce module qui peint la barre, donc
+// c'est lui qui doit peindre ce qui est dessus.
+//
+// ⚠️ Sélecteurs en enfants directs de `.o_main_nav` : le tiroir du menu mobile
+// (`.offcanvas`) vit DANS la barre mobile, sur fond blanc, et doit garder son
+// texte foncé.
+// ⚠️ Le logo est blanchi par filtre plutôt que remplacé : un logo changé depuis
+// le site suit sans retouche. Suppose un logo à fond transparent (un JPEG à fond
+// blanc sortirait en rectangle blanc).
+// ⚠️ Suppose que `report_brand_dark` reste une couleur SOMBRE, ce que la règle
+// du dessus suppose déjà.
+// ⚠️ Ces sélecteurs n'existent que sur le site : `branding.scss` est chargé dans
+// les deux paquets, et rien ici ne touche le client web.
+// ---------------------------------------------------------------------------
+
+#wrapwrap > header .navbar > .o_main_nav {
+    > .navbar-brand img { filter: brightness(0) invert(1); }
+
+    > .navbar-nav {
+        color: #fff;  // la loupe est en `text-reset` : elle hérite d'ici
+
+        .nav-link { color: rgba(255, 255, 255, .88); }
+        .nav-link:hover,
+        .nav-link:focus,
+        .nav-link.active { color: #fff; }
+
+        .o_navlink_background { background-color: rgba(255, 255, 255, .12); }
+        .o_navlink_background:hover { background-color: rgba(255, 255, 255, .22); }
+
+        .o_nav_link_btn { border-color: rgba(255, 255, 255, .55) !important; }
+        .o_nav_link_btn:hover { background-color: rgba(255, 255, 255, .10); }
+    }
+
+    > .o_header_mobile_buttons_wrap .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Indicateur de chargement (coin inférieur droit) — 2026-09-13.
 //
 // Odoo le peint depuis la variable SCSS `$o-brand-odoo`

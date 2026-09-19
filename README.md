@@ -255,7 +255,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_training_sign` | Registre de formation : accusé signé par module | 18.0.1.0.0 | BUSL-1.1 | Lire une politique et le confirmer par écrit devient une ligne du registre, datée et rattachée à la version lue |
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.1 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
-| `bluefox_branding` | Symbifox Branding | 18.0.3.20.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
+| `bluefox_branding` | Symbifox Branding | 18.0.3.21.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.16.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.2.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |

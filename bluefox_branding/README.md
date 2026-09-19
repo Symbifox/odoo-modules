@@ -201,6 +201,10 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 
 ## Changelog
 
+### 18.0.3.21.0
+
+- Fixed: a site header painted with the brand's dark colour kept Odoo's light theme on everything sitting on it. Since 18.0.3.13.0 this module paints `#wrapwrap > header .navbar` with `--brand-dark` on every website, while Odoo leaves the header as `navbar-light`: menu links stayed at `rgba(0, 0, 0, .65)` and the logo kept its own colours. Measured on a live site: seven links in pure black on a navy bar, unreadable, and an unfiltered logo. The links, the search icon, the pill backgrounds, the outlined button and the mobile toggler now follow the dark bar, and the logo is whitened with a filter rather than swapped, so a logo changed from the website editor follows without a code change. The rules are scoped to direct children of `.o_main_nav`, which leaves the mobile off-canvas drawer, drawn on white, with its dark text.
+
 ### 18.0.3.20.0
 
 - Fixed: the customer portal invitation (`portal.mail_template_data_portal_welcome`) now carries a French subject matching its French body. Since 18.0.3.9.0 the body was overridden in every active language while the subject stayed Odoo's per-language default, so any tenant with an English language active sent "Your account at …" over a French body. The migration replays `post_init_hook`, which is the only path that reaches every language slot of a `noupdate` template.
