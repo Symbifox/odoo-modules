@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_root" name="Relations de travail"
+              web_icon="bf_labour_relations,static/description/icon.png"
+              sequence="96" groups="hr.group_hr_user"/>
+
+    <menuitem id="menu_dossiers" name="Dossiers" parent="menu_root" sequence="10"/>
+    <menuitem id="menu_grievance" name="Griefs" parent="menu_dossiers"
+              action="action_grievance" sequence="10"/>
+    <menuitem id="menu_membership" name="Liste d'ancienneté" parent="menu_dossiers"
+              action="action_membership" sequence="20"/>
+
+    <menuitem id="menu_conventions" name="Conventions" parent="menu_root" sequence="20"/>
+    <menuitem id="menu_agreement" name="Conventions collectives" parent="menu_conventions"
+              action="action_agreement" sequence="10"/>
+    <menuitem id="menu_article" name="Articles" parent="menu_conventions"
+              action="action_article" sequence="20"/>
+    <menuitem id="menu_dues_rule" name="Règles de cotisation" parent="menu_conventions"
+              action="action_dues_rule" sequence="30"/>
+
+    <menuitem id="menu_dues" name="Cotisations" parent="menu_root" sequence="30"/>
+    <menuitem id="menu_remittance" name="Remises" parent="menu_dues"
+              action="action_remittance" sequence="10"/>
+
+    <menuitem id="menu_config" name="Configuration" parent="menu_root" sequence="90"
+              groups="hr.group_hr_manager"/>
+    <menuitem id="menu_union" name="Syndicats" parent="menu_config"
+              action="action_union" sequence="10"/>
+    <menuitem id="menu_unit" name="Unités de négociation" parent="menu_config"
+              action="action_unit" sequence="20"/>
+
+</odoo>

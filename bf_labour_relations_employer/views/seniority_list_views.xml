@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_seniority_list_list" model="ir.ui.view">
+        <field name="name">bf.labour.seniority.list.list</field>
+        <field name="model">bf.labour.seniority.list</field>
+        <field name="arch" type="xml">
+            <list string="Listes d'ancienneté" decoration-muted="state == 'superseded'">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="reference_date"/>
+                <field name="date_posted"/>
+                <field name="date_contest_end"/>
+                <field name="headcount"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_seniority_list_form" model="ir.ui.view">
+        <field name="name">bf.labour.seniority.list.form</field>
+        <field name="model">bf.labour.seniority.list</field>
+        <field name="arch" type="xml">
+            <form string="Liste d'ancienneté">
+                <header>
+                    <button name="action_build" type="object"
+                            string="Composer les rangs" invisible="state != 'draft'"/>
+                    <button name="action_post" type="object" string="Afficher"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert" invisible="state == 'draft'">
+                        Cette liste est affichée : c'est une photo, elle ne se recompose
+                        plus. Une erreur se corrige en affichant une liste corrigée et
+                        datée, ce qui laisse la trace de la correction.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="unit_id" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="reference_date" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="date_posted"/>
+                            <field name="date_contest_end"/>
+                            <field name="headcount"/>
+                            <field name="superseded_by_id" invisible="not superseded_by_id"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" readonly="state != 'draft'">
+                        <list editable="bottom" decoration-warning="contested == True">
+                            <field name="rank"/>
+                            <field name="employee_id"/>
+                            <field name="seniority_date"/>
+                            <field name="seniority_hours" optional="hide"/>
+                            <field name="contested" readonly="0"/>
+                            <field name="membership_id" optional="hide"/>
+                        </list>
+                    </field>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_seniority_list" model="ir.actions.act_window">
+        <field name="name">Listes d'ancienneté affichées</field>
+        <field name="res_model">bf.labour.seniority.list</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune liste affichée</p>
+            <p>Une liste affichée est une photo, pas une vue. Les rangs se contestent
+               contre la liste affichée à une date, pas contre l'état d'aujourd'hui.</p>
+        </field>
+    </record>
+
+</odoo>

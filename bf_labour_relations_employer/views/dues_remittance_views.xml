@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_remittance_form_employer" model="ir.ui.view">
+        <field name="name">bf.labour.dues.remittance.form.employer</field>
+        <field name="model">bf.labour.dues.remittance</field>
+        <field name="inherit_id" ref="bf_labour_relations.view_remittance_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_declare']" position="before">
+                <button name="action_apply_rule" type="object"
+                        string="Appliquer la règle sur l'assiette"
+                        invisible="state != 'draft'"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='amount']" position="before">
+                <field name="base_amount" widget="monetary" sum="Assiette"/>
+                <field name="computed_amount" widget="monetary" readonly="1"
+                       sum="Selon la règle"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list/field[@name='amount']" position="after">
+                <field name="has_gap" column_invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/list" position="attributes">
+                <attribute name="decoration-warning">has_gap == True</attribute>
+            </xpath>
+            <xpath expr="//group[hasclass('oe_subtotal_footer')]/field[@name='amount_total']" position="before">
+                <field name="base_total" widget="monetary"/>
+                <field name="computed_total" widget="monetary"/>
+            </xpath>
+            <xpath expr="//group[hasclass('oe_subtotal_footer')]/field[@name='amount_total']" position="after">
+                <field name="gap_amount" widget="monetary"/>
+                <field name="gap_line_count"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

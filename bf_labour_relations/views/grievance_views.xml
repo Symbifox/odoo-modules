@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_grievance_list" model="ir.ui.view">
+        <field name="name">bf.labour.grievance.list</field>
+        <field name="model">bf.labour.grievance</field>
+        <field name="arch" type="xml">
+            <list string="Griefs" decoration-danger="is_late == True"
+                  decoration-muted="state in ('settled', 'withdrawn', 'rejected')">
+                <field name="name"/>
+                <field name="date_filed"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="subject"/>
+                <field name="kind"/>
+                <field name="next_deadline"/>
+                <field name="days_to_deadline" string="Jours restants"/>
+                <field name="is_late" column_invisible="1"/>
+                <field name="state"/>
+                <field name="activity_ids" widget="list_activity" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_grievance_form" model="ir.ui.view">
+        <field name="name">bf.labour.grievance.form</field>
+        <field name="model">bf.labour.grievance</field>
+        <field name="arch" type="xml">
+            <form string="Grief">
+                <header>
+                    <button name="action_file" type="object" string="Déposer"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_send_to_arbitration" type="object"
+                            string="Renvoyer à l'arbitrage"
+                            invisible="state not in ('filed', 'in_progress')"/>
+                    <button name="action_settle" type="object" string="Régler"
+                            invisible="state in ('settled', 'withdrawn', 'rejected')"/>
+                    <button name="action_withdraw" type="object" string="Retirer"
+                            invisible="state in ('settled', 'withdrawn', 'rejected')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,filed,in_progress,settled"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-danger" role="alert" invisible="not is_late">
+                        Le délai de la prochaine étape est passé. Un grief se perd sur
+                        le calendrier, pas sur le fond.
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="subject" placeholder="Objet du grief"/></h2>
+                    </div>
+                    <group>
+                        <group string="Le dossier">
+                            <field name="unit_id"/>
+                            <field name="union_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="kind"/>
+                            <field name="claimant_side" readonly="1"/>
+                        </group>
+                        <group string="Le texte invoqué">
+                            <field name="agreement_id"/>
+                            <field name="article_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Dates">
+                            <field name="date_event"/>
+                            <field name="date_filed"/>
+                            <field name="date_closed" invisible="not date_closed"/>
+                        </group>
+                        <group string="Échéance">
+                            <field name="next_deadline" readonly="1"/>
+                            <field name="days_to_deadline" readonly="1"/>
+                            <field name="is_late" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Personnes visées"
+                           invisible="kind in ('union', 'employer')">
+                        <field name="employee_ids" nolabel="1" widget="many2many_tags"/>
+                    </group>
+                    <notebook>
+                        <page string="Exposé" name="description">
+                            <field name="description"
+                                   placeholder="Les faits, tels que la partie plaignante les expose."/>
+                            <group string="Correctif demandé">
+                                <field name="remedy_sought" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Étapes et délais" name="steps">
+                            <field name="step_ids">
+                                <list editable="bottom" decoration-danger="is_late == True"
+                                      decoration-muted="state == 'cancelled'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="responsible_id"/>
+                                    <field name="date_start"/>
+                                    <field name="delay_days"/>
+                                    <field name="deadline"/>
+                                    <field name="date_done"/>
+                                    <field name="state"/>
+                                    <field name="is_late" column_invisible="1"/>
+                                    <button name="action_done" type="object"
+                                            string="Faite" icon="fa-check"
+                                            invisible="state != 'pending'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Règlement" name="outcome">
+                            <field name="outcome" nolabel="1"
+                                   placeholder="Ce sur quoi les parties se sont entendues, ou ce que l'arbitre a décidé."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_grievance_search" model="ir.ui.view">
+        <field name="name">bf.labour.grievance.search</field>
+        <field name="model">bf.labour.grievance</field>
+        <field name="arch" type="xml">
+            <search string="Griefs">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="unit_id"/>
+                <field name="employee_ids"/>
+                <filter name="open" string="Ouverts"
+                        domain="[('state', 'in', ['draft', 'filed', 'in_progress', 'arbitration'])]"/>
+                <filter name="late" string="Échéance dépassée"
+                        domain="[('next_deadline', '&lt;', context_today().strftime('%Y-%m-%d')),
+                                 ('state', 'in', ['draft', 'filed', 'in_progress', 'arbitration'])]"/>
+                <separator/>
+                <filter name="arbitration" string="En arbitrage"
+                        domain="[('state', '=', 'arbitration')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_unit" string="Unité" context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_kind" string="Nature" context="{'group_by': 'kind'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Société" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_grievance" model="ir.actions.act_window">
+        <field name="name">Griefs</field>
+        <field name="res_model">bf.labour.grievance</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun grief</p>
+            <p>Chaque étape porte son délai conventionnel et son échéance calculée.
+               C'est le calendrier que ce module surveille, parce que c'est là que
+               les dossiers se perdent.</p>
+        </field>
+    </record>
+
+</odoo>

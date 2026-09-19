@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_obligation_hr,Obligation (administration),model_bf_labour_obligation,hr.group_hr_user,1,1,1,0
+access_obligation_manager,Obligation (contrôle complet),model_bf_labour_obligation,hr.group_hr_manager,1,1,1,1
+access_seniority_list_user,Liste affichée (lecture),model_bf_labour_seniority_list,base.group_user,1,0,0,0
+access_seniority_list_hr,Liste affichée (administration),model_bf_labour_seniority_list,hr.group_hr_user,1,1,1,0
+access_seniority_list_manager,Liste affichée (contrôle complet),model_bf_labour_seniority_list,hr.group_hr_manager,1,1,1,1
+access_seniority_line_user,Rang affiché (lecture),model_bf_labour_seniority_list_line,base.group_user,1,0,0,0
+access_seniority_line_hr,Rang affiché (administration),model_bf_labour_seniority_list_line,hr.group_hr_user,1,1,1,1
+access_posting_user,Affichage de poste (lecture),model_bf_labour_posting,base.group_user,1,0,0,0
+access_posting_hr,Affichage de poste (administration),model_bf_labour_posting,hr.group_hr_user,1,1,1,0
+access_posting_manager,Affichage de poste (contrôle complet),model_bf_labour_posting,hr.group_hr_manager,1,1,1,1
+access_bid_user,Candidature (la mienne),model_bf_labour_posting_bid,base.group_user,1,0,0,0
+access_bid_hr,Candidature (administration),model_bf_labour_posting_bid,hr.group_hr_user,1,1,1,1
+access_committee_hr,Comité (administration),model_bf_labour_committee,hr.group_hr_user,1,1,1,0
+access_committee_manager,Comité (contrôle complet),model_bf_labour_committee,hr.group_hr_manager,1,1,1,1
+access_committee_meeting_hr,Rencontre du comité (administration),model_bf_labour_committee_meeting,hr.group_hr_user,1,1,1,1

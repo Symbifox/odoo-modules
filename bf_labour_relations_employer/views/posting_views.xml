@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_posting_list" model="ir.ui.view">
+        <field name="name">bf.labour.posting.list</field>
+        <field name="model">bf.labour.posting</field>
+        <field name="arch" type="xml">
+            <list string="Affichages" decoration-muted="state == 'cancelled'">
+                <field name="date_posted"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="date_close"/>
+                <field name="bid_count"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_posting_form" model="ir.ui.view">
+        <field name="name">bf.labour.posting.form</field>
+        <field name="model">bf.labour.posting</field>
+        <field name="arch" type="xml">
+            <form string="Affichage de poste">
+                <header>
+                    <button name="action_open" type="object" string="Ouvrir"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_award" type="object" string="Octroyer"
+                            class="btn-primary" invisible="state != 'open'"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="state in ('awarded', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,open,awarded"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert" invisible="not is_closed or state != 'open'">
+                        Les mises en candidature sont fermées depuis la date indiquée.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Titre du poste affiché"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="unit_id"/>
+                            <field name="job_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="date_posted"/>
+                            <field name="date_close"/>
+                            <field name="seniority_list_id"/>
+                            <field name="is_closed" invisible="1"/>
+                            <field name="bid_count" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Candidatures" name="bids">
+                            <field name="bid_ids" context="{'default_posting_id': id}">
+                                <list editable="bottom"
+                                      decoration-muted="state != 'submitted'">
+                                    <field name="seniority_rank"/>
+                                    <field name="employee_id"/>
+                                    <field name="seniority_date"/>
+                                    <field name="date_bid"/>
+                                    <field name="state"/>
+                                    <field name="ineligibility_reason"
+                                           column_invisible="0" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Octroi" name="award">
+                            <group>
+                                <field name="awarded_bid_id" readonly="state == 'awarded'"
+                                       domain="[('posting_id', '=', id)]"/>
+                            </group>
+                            <group string="Motif de l'octroi">
+                                <field name="award_reason" nolabel="1"
+                                       placeholder="Obligatoire quand le poste n'est pas octroyé à la candidature la plus ancienne. C'est ce texte qui se relit en grief."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_posting_search" model="ir.ui.view">
+        <field name="name">bf.labour.posting.search</field>
+        <field name="model">bf.labour.posting</field>
+        <field name="arch" type="xml">
+            <search string="Affichages">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <filter name="open" string="Ouverts" domain="[('state', '=', 'open')]"/>
+                <separator/>
+                <filter name="postings" string="Affichages"
+                        domain="[('kind', '=', 'posting')]"/>
+                <filter name="bumps" string="Supplantations"
+                        domain="[('kind', '=', 'bump')]"/>
+                <filter name="recalls" string="Rappels"
+                        domain="[('kind', '=', 'recall')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_unit" string="Unité" context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_kind" string="Nature" context="{'group_by': 'kind'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_posting" model="ir.actions.act_window">
+        <field name="name">Affichages et mouvements</field>
+        <field name="res_model">bf.labour.posting</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun affichage</p>
+            <p>Affichage ordinaire, supplantation, rappel : trois portes différentes
+               vers le même poste, qui n'obéissent pas aux mêmes règles. Le rang qui
+               décide est celui du jour de l'affichage.</p>
+        </field>
+    </record>
+
+</odoo>

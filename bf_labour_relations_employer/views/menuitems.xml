@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_employer" name="Côté employeur"
+              parent="bf_labour_relations.menu_root" sequence="25"
+              groups="hr.group_hr_user"/>
+
+    <menuitem id="menu_obligation" name="Obligations" parent="menu_employer"
+              action="action_obligation" sequence="10"/>
+    <menuitem id="menu_seniority_list" name="Listes affichées" parent="menu_employer"
+              action="action_seniority_list" sequence="20"/>
+    <menuitem id="menu_posting" name="Affichages et mouvements" parent="menu_employer"
+              action="action_posting" sequence="30"/>
+    <menuitem id="menu_committee_meeting" name="Rencontres du comité" parent="menu_employer"
+              action="action_committee_meeting" sequence="40"/>
+
+    <menuitem id="menu_committee" name="Comités"
+              parent="bf_labour_relations.menu_config"
+              action="action_committee" sequence="30"/>
+
+</odoo>

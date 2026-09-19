@@ -1,0 +1,25 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_union_user,Syndicat (lecture),model_bf_labour_union,base.group_user,1,0,0,0
+access_union_hr,Syndicat (administration),model_bf_labour_union,hr.group_hr_user,1,1,1,0
+access_union_manager,Syndicat (contrôle complet),model_bf_labour_union,hr.group_hr_manager,1,1,1,1
+access_unit_user,Unité (lecture),model_bf_labour_unit,base.group_user,1,0,0,0
+access_unit_hr,Unité (administration),model_bf_labour_unit,hr.group_hr_user,1,1,1,0
+access_unit_manager,Unité (contrôle complet),model_bf_labour_unit,hr.group_hr_manager,1,1,1,1
+access_agreement_user,Convention (lecture),model_bf_labour_agreement,base.group_user,1,0,0,0
+access_agreement_hr,Convention (administration),model_bf_labour_agreement,hr.group_hr_user,1,1,1,0
+access_agreement_manager,Convention (contrôle complet),model_bf_labour_agreement,hr.group_hr_manager,1,1,1,1
+access_article_user,Article (lecture),model_bf_labour_agreement_article,base.group_user,1,0,0,0
+access_article_hr,Article (administration),model_bf_labour_agreement_article,hr.group_hr_user,1,1,1,1
+access_membership_user,Appartenance (la mienne),model_bf_labour_membership,base.group_user,1,0,0,0
+access_membership_hr,Appartenance (administration),model_bf_labour_membership,hr.group_hr_user,1,1,1,0
+access_membership_manager,Appartenance (contrôle complet),model_bf_labour_membership,hr.group_hr_manager,1,1,1,1
+access_grievance_user,Grief (celui qui me vise),model_bf_labour_grievance,base.group_user,1,0,0,0
+access_grievance_hr,Grief (administration),model_bf_labour_grievance,hr.group_hr_user,1,1,1,0
+access_grievance_manager,Grief (contrôle complet),model_bf_labour_grievance,hr.group_hr_manager,1,1,1,1
+access_grievance_step_user,Étape de grief (celle qui me vise),model_bf_labour_grievance_step,base.group_user,1,0,0,0
+access_grievance_step_hr,Étape de grief (administration),model_bf_labour_grievance_step,hr.group_hr_user,1,1,1,1
+access_dues_rule_user,Règle de cotisation (lecture),model_bf_labour_dues_rule,base.group_user,1,0,0,0
+access_dues_rule_hr,Règle de cotisation (administration),model_bf_labour_dues_rule,hr.group_hr_user,1,1,1,1
+access_remittance_hr,Remise (administration),model_bf_labour_dues_remittance,hr.group_hr_user,1,1,1,0
+access_remittance_manager,Remise (contrôle complet),model_bf_labour_dues_remittance,hr.group_hr_manager,1,1,1,1
+access_remittance_line_hr,Ligne de remise (administration),model_bf_labour_dues_remittance_line,hr.group_hr_user,1,1,1,1

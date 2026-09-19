@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_obligation_list" model="ir.ui.view">
+        <field name="name">bf.labour.obligation.list</field>
+        <field name="model">bf.labour.obligation</field>
+        <field name="arch" type="xml">
+            <list string="Obligations" decoration-danger="is_late == True"
+                  decoration-muted="state != 'pending'">
+                <field name="date_due"/>
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="responsible_id"/>
+                <field name="recurrence"/>
+                <field name="days_to_due" string="Jours restants"/>
+                <field name="is_late" column_invisible="1"/>
+                <field name="state"/>
+                <button name="action_done" type="object" string="Faite"
+                        icon="fa-check" invisible="state != 'pending'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_obligation_form" model="ir.ui.view">
+        <field name="name">bf.labour.obligation.form</field>
+        <field name="model">bf.labour.obligation</field>
+        <field name="arch" type="xml">
+            <form string="Obligation">
+                <header>
+                    <button name="action_done" type="object" string="Marquer faite"
+                            class="btn-primary" invisible="state != 'pending'"/>
+                    <button name="action_waive" type="object" string="Sans objet"
+                            invisible="state != 'pending'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-danger" role="alert" invisible="not is_late">
+                        L'échéance est passée.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Transmettre la liste d'ancienneté au syndicat"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ce qui l'impose">
+                            <field name="unit_id"/>
+                            <field name="agreement_id"/>
+                            <field name="article_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Quand, et qui">
+                            <field name="date_due"/>
+                            <field name="recurrence"/>
+                            <field name="reminder_days"/>
+                            <field name="responsible_id"/>
+                            <field name="date_done" invisible="not date_done"/>
+                            <field name="is_late" invisible="1"/>
+                            <field name="reminder_posted" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Ce qu'il faut faire">
+                        <field name="description" nolabel="1"/>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_obligation_search" model="ir.ui.view">
+        <field name="name">bf.labour.obligation.search</field>
+        <field name="model">bf.labour.obligation</field>
+        <field name="arch" type="xml">
+            <search string="Obligations">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="responsible_id"/>
+                <filter name="pending" string="À faire" domain="[('state', '=', 'pending')]"/>
+                <filter name="late" string="En retard"
+                        domain="[('state', '=', 'pending'),
+                                 ('date_due', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="mine" string="Les miennes"
+                        domain="[('responsible_id', '=', uid)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_unit" string="Unité" context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_due" string="Échéance" context="{'group_by': 'date_due'}"/>
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_obligation" model="ir.actions.act_window">
+        <field name="name">Obligations</field>
+        <field name="res_model">bf.labour.obligation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune obligation enregistrée</p>
+            <p>Une obligation dont personne n'est averti est une obligation manquée.
+               Un traitement planifié pose l'activité de rappel avant l'échéance,
+               sur la personne responsable.</p>
+        </field>
+    </record>
+
+</odoo>

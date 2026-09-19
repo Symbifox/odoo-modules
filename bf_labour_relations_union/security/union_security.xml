@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!--
+          ⚠️ Ce greffon décrit la vie interne d'une association. Les adhésions
+          sont nominatives et ne se lisent pas entre collègues ; les assemblées
+          et les délégués, eux, sont publics dans l'unité, parce que savoir qui
+          est délégué et quand l'assemblée a lieu est le minimum pour que le
+          droit d'y participer existe.
+        -->
+
+        <record id="rule_card_company" model="ir.rule">
+            <field name="name">Adhésion : société</field>
+            <field name="model_id" ref="model_bf_labour_card"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_card_own" model="ir.rule">
+            <field name="name">Adhésion : je ne vois que la mienne</field>
+            <field name="model_id" ref="model_bf_labour_card"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_card_hr" model="ir.rule">
+            <field name="name">Adhésion : l'administration voit tout</field>
+            <field name="model_id" ref="model_bf_labour_card"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+        </record>
+
+        <record id="rule_assembly_company" model="ir.rule">
+            <field name="name">Assemblée : société</field>
+            <field name="model_id" ref="model_bf_labour_assembly"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_vote_company" model="ir.rule">
+            <field name="name">Vote : société</field>
+            <field name="model_id" ref="model_bf_labour_assembly_vote"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_delegate_company" model="ir.rule">
+            <field name="name">Délégué : société</field>
+            <field name="model_id" ref="model_bf_labour_delegate"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_release_company" model="ir.rule">
+            <field name="name">Libération : société</field>
+            <field name="model_id" ref="model_bf_labour_delegate_release"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_receipt_company" model="ir.rule">
+            <field name="name">Cotisations perçues : société</field>
+            <field name="model_id" ref="model_bf_labour_dues_receipt"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!--
+          Aucun groupe neuf. `hr` en pose déjà deux qui décrivent les rôles dont
+          ce socle a besoin :
+            * hr.group_hr_user    : l'administration des relations de travail.
+            * hr.group_hr_manager : le contrôle complet, suppression comprise.
+
+          Le délégué syndical n'apparaît pas ici : c'est un rôle du greffon
+          syndical, et il ne sert à rien de poser un groupe que rien ne remplit.
+
+          🔴 La portée passe par des RÈGLES D'ENREGISTREMENT, jamais par les
+          seuls droits de modèle. Un droit de lecture ouvre le modèle entier :
+          sans les règles ci-dessous, donner accès au grief à quelqu'un lui
+          donnerait tous les griefs de toutes les sociétés.
+        -->
+
+        <!-- ================= Société : partout où il y a un company_id ======= -->
+
+        <record id="rule_unit_company" model="ir.rule">
+            <field name="name">Unité : société</field>
+            <field name="model_id" ref="model_bf_labour_unit"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_agreement_company" model="ir.rule">
+            <field name="name">Convention : société</field>
+            <field name="model_id" ref="model_bf_labour_agreement"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_article_company" model="ir.rule">
+            <field name="name">Article : société</field>
+            <field name="model_id" ref="model_bf_labour_agreement_article"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_membership_company" model="ir.rule">
+            <field name="name">Appartenance : société</field>
+            <field name="model_id" ref="model_bf_labour_membership"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_grievance_company" model="ir.rule">
+            <field name="name">Grief : société</field>
+            <field name="model_id" ref="model_bf_labour_grievance"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_grievance_step_company" model="ir.rule">
+            <field name="name">Étape de grief : société</field>
+            <field name="model_id" ref="model_bf_labour_grievance_step"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_dues_rule_company" model="ir.rule">
+            <field name="name">Règle de cotisation : société</field>
+            <field name="model_id" ref="model_bf_labour_dues_rule"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_remittance_company" model="ir.rule">
+            <field name="name">Remise : société</field>
+            <field name="model_id" ref="model_bf_labour_dues_remittance"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_remittance_line_company" model="ir.rule">
+            <field name="name">Ligne de remise : société</field>
+            <field name="model_id" ref="model_bf_labour_dues_remittance_line"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <!-- ================= Appartenance : nominative ======================= -->
+
+        <!--
+          Le rang d'ancienneté d'une personne est à elle. Le parc entier n'a pas
+          à lire la liste, même si l'affichage officiel, lui, est public : c'est
+          le greffon employeur qui le publiera, avec ce qu'il faut publier.
+        -->
+        <record id="rule_membership_own" model="ir.rule">
+            <field name="name">Appartenance : je ne vois que la mienne</field>
+            <field name="model_id" ref="model_bf_labour_membership"/>
+            <field name="domain_force">[('employee_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_membership_hr" model="ir.rule">
+            <field name="name">Appartenance : l'administration voit tout</field>
+            <field name="model_id" ref="model_bf_labour_membership"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+        </record>
+
+        <!-- ================= Grief : la moitié sensible ====================== -->
+
+        <!--
+          ⚠️ Un grief porte de la discipline, parfois de la santé, parfois une
+          plainte de harcèlement. Il se lit par les personnes qu'il vise et par
+          l'administration des relations de travail. Personne d'autre, et
+          surtout pas « tout le personnel » parce que le modèle est ouvert en
+          lecture.
+        -->
+        <record id="rule_grievance_own" model="ir.rule">
+            <field name="name">Grief : celui qui me vise</field>
+            <field name="model_id" ref="model_bf_labour_grievance"/>
+            <field name="domain_force">[('employee_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_grievance_hr" model="ir.rule">
+            <field name="name">Grief : l'administration voit tout</field>
+            <field name="model_id" ref="model_bf_labour_grievance"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+        </record>
+
+        <record id="rule_grievance_step_own" model="ir.rule">
+            <field name="name">Étape de grief : celle qui me vise</field>
+            <field name="model_id" ref="model_bf_labour_grievance_step"/>
+            <field name="domain_force">[('grievance_id.employee_ids.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_grievance_step_hr" model="ir.rule">
+            <field name="name">Étape de grief : l'administration voit tout</field>
+            <field name="model_id" ref="model_bf_labour_grievance_step"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+        </record>
+
+    </data>
+</odoo>

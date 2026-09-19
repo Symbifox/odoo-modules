@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_union_list" model="ir.ui.view">
+        <field name="name">bf.labour.union.list</field>
+        <field name="model">bf.labour.union</field>
+        <field name="arch" type="xml">
+            <list string="Syndicats">
+                <field name="name"/>
+                <field name="central"/>
+                <field name="local_number"/>
+                <field name="unit_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_union_form" model="ir.ui.view">
+        <field name="name">bf.labour.union.form</field>
+        <field name="model">bf.labour.union</field>
+        <field name="arch" type="xml">
+            <form string="Syndicat">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_units" type="object"
+                                class="oe_stat_button" icon="fa-sitemap">
+                            <field name="unit_count" widget="statinfo" string="Unités"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Nom du syndicat"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="central" placeholder="Centrale d'affiliation, s'il y en a une"/>
+                            <field name="local_number"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"/>
+                        </group>
+                    </group>
+                    <group string="Personnes-ressources">
+                        <field name="contact_ids" nolabel="1" widget="many2many_tags"/>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_union" model="ir.actions.act_window">
+        <field name="name">Syndicats</field>
+        <field name="res_model">bf.labour.union</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun syndicat enregistré</p>
+            <p>Un syndicat porte ses unités de négociation. Une même section locale
+               peut en couvrir plusieurs, dans autant de sociétés.</p>
+        </field>
+    </record>
+
+</odoo>

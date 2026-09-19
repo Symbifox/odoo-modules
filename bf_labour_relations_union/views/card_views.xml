@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_card_list" model="ir.ui.view">
+        <field name="name">bf.labour.card.list</field>
+        <field name="model">bf.labour.card</field>
+        <field name="arch" type="xml">
+            <list string="Adhésions" decoration-muted="state == 'withdrawn'">
+                <field name="date_signed"/>
+                <field name="employee_id"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="number"/>
+                <field name="date_withdrawn"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_card_form" model="ir.ui.view">
+        <field name="name">bf.labour.card.form</field>
+        <field name="model">bf.labour.card</field>
+        <field name="arch" type="xml">
+            <form string="Adhésion">
+                <header>
+                    <button name="action_withdraw" type="object" string="Retirer"
+                            invisible="state == 'withdrawn'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        Adhérer ne change pas la couverture. Une personne couverte qui
+                        n'a jamais signé cotise quand même ; ce qui lui manque, c'est
+                        le droit de vote.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="membership_id"/>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="unit_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="number"/>
+                            <field name="date_signed"/>
+                            <field name="date_withdrawn"/>
+                        </group>
+                    </group>
+                    <group string="Motif du retrait" invisible="not date_withdrawn">
+                        <field name="withdrawal_reason" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_card" model="ir.actions.act_window">
+        <field name="name">Adhésions</field>
+        <field name="res_model">bf.labour.card</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune adhésion</p>
+            <p>Une personne adhère, se retire, réadhère. L'historique reste, parce
+               que c'est lui qui répond à « depuis quand est-elle membre ».</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_grievance" model="ir.sequence">
+            <field name="name">Grief</field>
+            <field name="code">bf.labour.grievance</field>
+            <field name="prefix">GR/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

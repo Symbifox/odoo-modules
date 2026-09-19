@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_card_user,Adhésion (la mienne),model_bf_labour_card,base.group_user,1,0,0,0
+access_card_hr,Adhésion (administration),model_bf_labour_card,hr.group_hr_user,1,1,1,0
+access_card_manager,Adhésion (contrôle complet),model_bf_labour_card,hr.group_hr_manager,1,1,1,1
+access_assembly_user,Assemblée (lecture),model_bf_labour_assembly,base.group_user,1,0,0,0
+access_assembly_hr,Assemblée (administration),model_bf_labour_assembly,hr.group_hr_user,1,1,1,0
+access_assembly_manager,Assemblée (contrôle complet),model_bf_labour_assembly,hr.group_hr_manager,1,1,1,1
+access_vote_user,Vote (lecture),model_bf_labour_assembly_vote,base.group_user,1,0,0,0
+access_vote_hr,Vote (administration),model_bf_labour_assembly_vote,hr.group_hr_user,1,1,1,1
+access_delegate_user,Délégué (lecture),model_bf_labour_delegate,base.group_user,1,0,0,0
+access_delegate_hr,Délégué (administration),model_bf_labour_delegate,hr.group_hr_user,1,1,1,0
+access_delegate_manager,Délégué (contrôle complet),model_bf_labour_delegate,hr.group_hr_manager,1,1,1,1
+access_release_hr,Libération (administration),model_bf_labour_delegate_release,hr.group_hr_user,1,1,1,1
+access_receipt_hr,Cotisations perçues (administration),model_bf_labour_dues_receipt,hr.group_hr_user,1,1,1,0
+access_receipt_manager,Cotisations perçues (contrôle complet),model_bf_labour_dues_receipt,hr.group_hr_manager,1,1,1,1

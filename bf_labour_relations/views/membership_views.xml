@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_membership_list" model="ir.ui.view">
+        <field name="name">bf.labour.membership.list</field>
+        <field name="model">bf.labour.membership</field>
+        <field name="arch" type="xml">
+            <list string="Liste d'ancienneté" default_order="seniority_date"
+                  decoration-muted="is_current == False">
+                <field name="seniority_date"/>
+                <field name="employee_id"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="seniority_years" string="Années" digits="[5,2]"/>
+                <field name="seniority_hours" optional="hide"/>
+                <field name="covered" string="Couverte"/>
+                <field name="is_member" string="Membre"/>
+                <field name="date_start" optional="hide"/>
+                <field name="date_end"/>
+                <field name="is_current" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_membership_form" model="ir.ui.view">
+        <field name="name">bf.labour.membership.form</field>
+        <field name="model">bf.labour.membership</field>
+        <field name="arch" type="xml">
+            <form string="Appartenance">
+                <sheet>
+                    <div class="alert alert-info" role="alert"
+                         invisible="covered or not unit_id">
+                        Cette personne n'est pas couverte par l'accréditation : aucune
+                        cotisation ne se retient sur sa paie, même si elle est membre.
+                    </div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="is_member or not covered">
+                        Couverte sans avoir adhéré. La cotisation se retient quand
+                        même : l'article 47 du Code du travail l'impose à tout
+                        salarié de l'unité. Ce qui manque, c'est le droit de vote.
+                    </div>
+                    <group>
+                        <group string="Qui, et où">
+                            <field name="employee_id"/>
+                            <field name="unit_id"/>
+                            <field name="union_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                            <field name="is_current" invisible="1"/>
+                        </group>
+                        <group string="Deux états, pas un">
+                            <field name="covered"/>
+                            <field name="is_member"/>
+                            <field name="card_date" invisible="not is_member"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Dates">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group string="Ancienneté">
+                            <field name="seniority_date"/>
+                            <field name="seniority_years" readonly="1" digits="[5,2]"/>
+                            <field name="seniority_hours"/>
+                        </group>
+                    </group>
+                    <group string="Motif de la date retenue"
+                           invisible="seniority_date == date_start">
+                        <field name="seniority_reason" nolabel="1"
+                               placeholder="Pourquoi cette date plutôt que l'entrée dans l'unité. Une personne qui conteste son rang doit pouvoir s'entendre expliquer pourquoi."/>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_membership_search" model="ir.ui.view">
+        <field name="name">bf.labour.membership.search</field>
+        <field name="model">bf.labour.membership</field>
+        <field name="arch" type="xml">
+            <search string="Appartenances">
+                <field name="employee_id"/>
+                <field name="unit_id"/>
+                <filter name="current" string="En cours"
+                        domain="['|', ('date_end', '=', False), ('date_end', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="covered" string="Couvertes par l'unité"
+                        domain="[('covered', '=', True)]"/>
+                <filter name="members" string="Membres du syndicat"
+                        domain="[('is_member', '=', True)]"/>
+                <filter name="covered_not_member" string="Couvertes sans avoir adhéré"
+                        domain="[('covered', '=', True), ('is_member', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_unit" string="Unité" context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_company" string="Société" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_membership" model="ir.actions.act_window">
+        <field name="name">Liste d'ancienneté</field>
+        <field name="res_model">bf.labour.membership</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_current': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Personne n'est rattaché à une unité</p>
+            <p>L'ancienneté vit ici, pas sur le contrat. Ce n'est pas la même que
+               celle qui ouvre un avantage : l'une donne droit à une assurance,
+               l'autre décide d'une mise à pied.</p>
+        </field>
+    </record>
+
+</odoo>

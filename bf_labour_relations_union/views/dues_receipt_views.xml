@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_receipt_list" model="ir.ui.view">
+        <field name="name">bf.labour.dues.receipt.list</field>
+        <field name="model">bf.labour.dues.receipt</field>
+        <field name="arch" type="xml">
+            <list string="Cotisations perçues" decoration-warning="is_reconciled == False">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="amount_received" widget="monetary" sum="Reçu"/>
+                <field name="amount_declared" widget="monetary" sum="Déclaré"/>
+                <field name="gap_amount" widget="monetary" sum="Écart"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="is_reconciled"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_receipt_form" model="ir.ui.view">
+        <field name="name">bf.labour.dues.receipt.form</field>
+        <field name="model">bf.labour.dues.receipt</field>
+        <field name="arch" type="xml">
+            <form string="Cotisations perçues">
+                <sheet>
+                    <div class="alert alert-info" role="alert"
+                         invisible="is_reconciled or not remittance_id">
+                        Il y a un écart entre le reçu et le déclaré. Ce n'est pas une
+                        accusation : un décalage de période, une personne rattachée en
+                        retard ou un taux changé en cours de période en produisent
+                        aussi.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Ce que le syndicat a reçu">
+                            <field name="unit_id"/>
+                            <field name="union_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="date_received"/>
+                            <field name="amount_received" widget="monetary"/>
+                            <field name="headcount_received"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Ce que l'employeur déclare">
+                            <field name="remittance_id"/>
+                            <field name="amount_declared" widget="monetary" readonly="1"/>
+                            <field name="headcount_declared" readonly="1"/>
+                            <field name="gap_amount" widget="monetary" readonly="1"/>
+                            <field name="headcount_gap" readonly="1"/>
+                            <field name="covered_count" readonly="1"/>
+                            <field name="is_reconciled" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_receipt" model="ir.actions.act_window">
+        <field name="name">Cotisations perçues</field>
+        <field name="res_model">bf.labour.dues.receipt</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun relevé de cotisations</p>
+            <p>L'écart entre le reçu et le déclaré est le seul chiffre qui compte.
+               Enregistrer le reçu sans le rapprocher donnerait un registre comptable
+               de plus.</p>
+        </field>
+    </record>
+
+</odoo>

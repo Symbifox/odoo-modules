@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_committee_list" model="ir.ui.view">
+        <field name="name">bf.labour.committee.list</field>
+        <field name="model">bf.labour.committee</field>
+        <field name="arch" type="xml">
+            <list string="Comités" decoration-warning="is_overdue == True">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="cadence"/>
+                <field name="last_meeting_date"/>
+                <field name="next_expected_date"/>
+                <field name="is_overdue" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_committee_form" model="ir.ui.view">
+        <field name="name">bf.labour.committee.form</field>
+        <field name="model">bf.labour.committee</field>
+        <field name="arch" type="xml">
+            <form string="Comité de relations de travail">
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not is_overdue">
+                        La cadence prévue par la convention n'est plus tenue.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="unit_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="cadence"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="last_meeting_date" readonly="1"/>
+                            <field name="next_expected_date" readonly="1"/>
+                            <field name="is_overdue" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Représentation patronale">
+                            <field name="employer_member_ids" nolabel="1" widget="many2many_tags"/>
+                        </group>
+                        <group string="Représentation syndicale">
+                            <field name="union_member_ids" nolabel="1" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <field name="meeting_ids" context="{'default_committee_id': id}">
+                        <list>
+                            <field name="date"/>
+                            <field name="name"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_committee_meeting_list" model="ir.ui.view">
+        <field name="name">bf.labour.committee.meeting.list</field>
+        <field name="model">bf.labour.committee.meeting</field>
+        <field name="arch" type="xml">
+            <list string="Rencontres du comité">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="committee_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_committee_meeting_form" model="ir.ui.view">
+        <field name="name">bf.labour.committee.meeting.form</field>
+        <field name="model">bf.labour.committee.meeting</field>
+        <field name="arch" type="xml">
+            <form string="Rencontre du comité">
+                <header>
+                    <button name="action_hold" type="object" string="Marquer tenue"
+                            class="btn-primary" invisible="state != 'planned'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="committee_id"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Griefs discutés">
+                        <field name="grievance_ids" nolabel="1" widget="many2many_tags"/>
+                    </group>
+                    <notebook>
+                        <page string="Ordre du jour" name="agenda">
+                            <field name="agenda"/>
+                        </page>
+                        <page string="Compte rendu" name="minutes">
+                            <field name="minutes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_committee" model="ir.actions.act_window">
+        <field name="name">Comités</field>
+        <field name="res_model">bf.labour.committee</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_committee_meeting" model="ir.actions.act_window">
+        <field name="name">Rencontres du comité</field>
+        <field name="res_model">bf.labour.committee.meeting</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

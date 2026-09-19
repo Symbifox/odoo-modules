@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_delegate_list" model="ir.ui.view">
+        <field name="name">bf.labour.delegate.list</field>
+        <field name="model">bf.labour.delegate</field>
+        <field name="arch" type="xml">
+            <list string="Délégués" decoration-warning="is_over == True"
+                  decoration-muted="is_current == False">
+                <field name="employee_id"/>
+                <field name="role"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="hours_granted"/>
+                <field name="hours_taken"/>
+                <field name="hours_left"/>
+                <field name="is_over" column_invisible="1"/>
+                <field name="is_current" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_delegate_form" model="ir.ui.view">
+        <field name="name">bf.labour.delegate.form</field>
+        <field name="model">bf.labour.delegate</field>
+        <field name="arch" type="xml">
+            <form string="Délégué">
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not is_over">
+                        La banque de libérations est dépassée.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="membership_id"/>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="unit_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="role"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="hours_granted"/>
+                            <field name="hours_taken" readonly="1"/>
+                            <field name="hours_left" readonly="1"/>
+                            <field name="is_over" invisible="1"/>
+                            <field name="is_current" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="release_ids">
+                        <list editable="bottom" decoration-danger="state == 'refused'">
+                            <field name="date"/>
+                            <field name="hours"/>
+                            <field name="reason"/>
+                            <field name="grievance_id"/>
+                            <field name="state"/>
+                            <field name="refusal_reason" optional="hide"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_delegate" model="ir.actions.act_window">
+        <field name="name">Délégués et libérations</field>
+        <field name="res_model">bf.labour.delegate</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun délégué</p>
+            <p>Ce qui se conteste n'est pas le principe des libérations, c'est le
+               solde : combien il en restait le jour du refus.</p>
+        </field>
+    </record>
+
+</odoo>

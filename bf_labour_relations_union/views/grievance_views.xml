@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_grievance_form_union" model="ir.ui.view">
+        <field name="name">bf.labour.grievance.form.union</field>
+        <field name="model">bf.labour.grievance</field>
+        <field name="inherit_id" ref="bf_labour_relations.view_grievance_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='outcome']" position="before">
+                <page string="Côté syndical" name="union_side">
+                    <div class="alert alert-info" role="alert">
+                        Ce sont des champs sur le même grief, pas un second dossier.
+                        Les deux côtés lisent le même enregistrement.
+                    </div>
+                    <group>
+                        <group string="Qui porte le dossier">
+                            <field name="union_representative_id"/>
+                            <field name="union_file_number"/>
+                        </group>
+                        <group string="Mandat">
+                            <field name="mandate_state"/>
+                            <field name="arbitration_mandate_date"/>
+                            <field name="arbitrator_id"/>
+                            <field name="estimated_cost"/>
+                        </group>
+                    </group>
+                    <group string="Motif de la décision de mandat"
+                           invisible="mandate_state != 'declined'">
+                        <field name="mandate_reason" nolabel="1"
+                               placeholder="Le devoir de représentation se juge sur ce texte."/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_grievance_list_union" model="ir.ui.view">
+        <field name="name">bf.labour.grievance.list.union</field>
+        <field name="model">bf.labour.grievance</field>
+        <field name="inherit_id" ref="bf_labour_relations.view_grievance_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="before">
+                <field name="mandate_state" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

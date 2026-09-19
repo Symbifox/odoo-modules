@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_agreement_list" model="ir.ui.view">
+        <field name="name">bf.labour.agreement.list</field>
+        <field name="model">bf.labour.agreement</field>
+        <field name="arch" type="xml">
+            <list string="Conventions" decoration-warning="is_expired == True"
+                  decoration-muted="state == 'superseded'">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="days_to_expiry" string="Jours avant échéance"/>
+                <field name="is_expired" column_invisible="1"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_agreement_form" model="ir.ui.view">
+        <field name="name">bf.labour.agreement.form</field>
+        <field name="model">bf.labour.agreement</field>
+        <field name="arch" type="xml">
+            <form string="Convention collective">
+                <header>
+                    <button name="action_put_in_force" type="object"
+                            string="Mettre en vigueur" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,in_force"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert"
+                         invisible="not is_expired or state == 'superseded'">
+                        Cette convention est échue. Ses conditions continuent de
+                        s'appliquer tant qu'elle n'est pas remplacée : l'échéance dit
+                        qu'il faut négocier, pas que le texte a cessé de valoir.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Se compose tout seul si on le laisse vide"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="unit_id"/>
+                            <field name="union_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="signature_date"/>
+                            <field name="is_expired" invisible="1"/>
+                            <field name="superseded_by_id" invisible="not superseded_by_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Articles" name="articles">
+                            <field name="article_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="number"/>
+                                    <field name="name"/>
+                                    <field name="subject"/>
+                                </list>
+                                <form string="Article">
+                                    <group>
+                                        <group>
+                                            <field name="number"/>
+                                            <field name="name"/>
+                                        </group>
+                                        <group>
+                                            <field name="subject"/>
+                                        </group>
+                                    </group>
+                                    <field name="content" placeholder="Le texte de l'article."/>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Cotisations" name="dues">
+                            <field name="dues_rule_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="rate_percent"/>
+                                    <field name="amount_fixed"/>
+                                    <field name="basis"/>
+                                    <field name="period"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_agreement_search" model="ir.ui.view">
+        <field name="name">bf.labour.agreement.search</field>
+        <field name="model">bf.labour.agreement</field>
+        <field name="arch" type="xml">
+            <search string="Conventions">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="union_id"/>
+                <filter name="in_force" string="En vigueur"
+                        domain="[('state', '=', 'in_force')]"/>
+                <filter name="expiring" string="Échéance dans l'année"
+                        domain="[('date_end', '&lt;=', (context_today() + relativedelta(years=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_unit" string="Unité" context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_company" string="Société" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_end" string="Échéance" context="{'group_by': 'date_end'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_agreement" model="ir.actions.act_window">
+        <field name="name">Conventions collectives</field>
+        <field name="res_model">bf.labour.agreement</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune convention</p>
+            <p>Une convention ne se récrit pas, elle est remplacée. L'ancienne reste
+               lisible, parce qu'un grief d'il y a deux ans s'apprécie contre le
+               texte de l'époque.</p>
+        </field>
+    </record>
+
+    <record id="action_article" model="ir.actions.act_window">
+        <field name="name">Articles de convention</field>
+        <field name="res_model">bf.labour.agreement.article</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_article_list" model="ir.ui.view">
+        <field name="name">bf.labour.agreement.article.list</field>
+        <field name="model">bf.labour.agreement.article</field>
+        <field name="arch" type="xml">
+            <list string="Articles">
+                <field name="agreement_id"/>
+                <field name="number"/>
+                <field name="name"/>
+                <field name="subject"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_article_search" model="ir.ui.view">
+        <field name="name">bf.labour.agreement.article.search</field>
+        <field name="model">bf.labour.agreement.article</field>
+        <field name="arch" type="xml">
+            <search string="Articles">
+                <field name="name"/>
+                <field name="number"/>
+                <field name="content"/>
+                <field name="agreement_id"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_subject" string="Sujet" context="{'group_by': 'subject'}"/>
+                    <filter name="group_agreement" string="Convention" context="{'group_by': 'agreement_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>

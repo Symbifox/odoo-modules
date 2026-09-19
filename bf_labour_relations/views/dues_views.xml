@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_dues_rule_list" model="ir.ui.view">
+        <field name="name">bf.labour.dues.rule.list</field>
+        <field name="model">bf.labour.dues.rule</field>
+        <field name="arch" type="xml">
+            <list string="Règles de cotisation">
+                <field name="name"/>
+                <field name="agreement_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="rate_percent"/>
+                <field name="amount_fixed"/>
+                <field name="basis"/>
+                <field name="period"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_dues_rule_form" model="ir.ui.view">
+        <field name="name">bf.labour.dues.rule.form</field>
+        <field name="model">bf.labour.dues.rule</field>
+        <field name="arch" type="xml">
+            <form string="Règle de cotisation">
+                <sheet>
+                    <div class="alert alert-info" role="alert">
+                        La cotisation suit l'unité, pas l'adhésion. L'article 47 du
+                        Code du travail impose la retenue à tout salarié de l'unité
+                        de négociation, membre du syndicat ou non.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Portée">
+                            <field name="agreement_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Les deux formes, cumulables">
+                            <field name="rate_percent"/>
+                            <field name="amount_fixed"/>
+                            <field name="basis"/>
+                            <field name="period"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Bornes">
+                            <field name="floor_amount"/>
+                            <field name="cap_amount"/>
+                        </group>
+                        <group string="Hors cotisation régulière">
+                            <field name="initiation_fee"/>
+                            <field name="special_assessment"/>
+                        </group>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dues_rule" model="ir.actions.act_window">
+        <field name="name">Règles de cotisation</field>
+        <field name="res_model">bf.labour.dues.rule</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_remittance_list" model="ir.ui.view">
+        <field name="name">bf.labour.dues.remittance.list</field>
+        <field name="model">bf.labour.dues.remittance</field>
+        <field name="arch" type="xml">
+            <list string="Remises">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="union_id"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="headcount"/>
+                <field name="amount_total" widget="monetary" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_remittance_form" model="ir.ui.view">
+        <field name="name">bf.labour.dues.remittance.form</field>
+        <field name="model">bf.labour.dues.remittance</field>
+        <field name="arch" type="xml">
+            <form string="Remise de cotisations">
+                <header>
+                    <button name="action_fill_from_unit" type="object"
+                            string="Poser une ligne par personne couverte"
+                            invisible="state != 'draft'"/>
+                    <button name="action_declare" type="object" string="Déclarer"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_mark_remitted" type="object"
+                            string="Marquer remise" invisible="state != 'declared'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="alert" invisible="state != 'draft'">
+                        Les montants se saisissent. Rien ne les calcule : aucune paie
+                        n'est installée, donc le module ne sait pas ce qui a été retenu.
+                        Le bouton pose les lignes pour qu'on n'oublie personne.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="unit_id"/>
+                            <field name="union_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="date_remitted" invisible="not date_remitted"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="membership_id"/>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="amount" widget="monetary" sum="Total"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                    <group class="oe_subtotal_footer">
+                        <field name="headcount"/>
+                        <field name="amount_total" widget="monetary"/>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_remittance" model="ir.actions.act_window">
+        <field name="name">Remises de cotisations</field>
+        <field name="res_model">bf.labour.dues.remittance</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

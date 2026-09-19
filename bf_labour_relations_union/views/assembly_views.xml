@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_assembly_list" model="ir.ui.view">
+        <field name="name">bf.labour.assembly.list</field>
+        <field name="model">bf.labour.assembly</field>
+        <field name="arch" type="xml">
+            <list string="Assemblées" decoration-muted="state == 'cancelled'">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="unit_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="eligible_attendee_count" string="Présents votants"/>
+                <field name="eligible_count" string="Membres"/>
+                <field name="quorum_met"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_assembly_form" model="ir.ui.view">
+        <field name="name">bf.labour.assembly.form</field>
+        <field name="model">bf.labour.assembly</field>
+        <field name="arch" type="xml">
+            <form string="Assemblée">
+                <header>
+                    <button name="action_hold" type="object" string="Marquer tenue"
+                            class="btn-primary" invisible="state != 'planned'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="quorum_met or not quorum_required">
+                        Le quorum n'est pas atteint. Il se mesure sur les MEMBRES
+                        présents, pas sur l'effectif couvert : une personne qui cotise
+                        sans avoir adhéré ne vote pas.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="unit_id"/>
+                            <field name="union_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="kind"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="location"/>
+                            <field name="quorum_required"/>
+                            <field name="quorum_met" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Effectifs">
+                            <field name="eligible_count" readonly="1"/>
+                            <field name="attendee_count" readonly="1"/>
+                            <field name="eligible_attendee_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Présences" name="attendees">
+                            <field name="attendee_ids" widget="many2many">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="is_member"/>
+                                    <field name="covered"/>
+                                    <field name="seniority_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Votes" name="votes">
+                            <field name="vote_ids">
+                                <list editable="bottom" decoration-success="passed == True">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="question"/>
+                                    <field name="method"/>
+                                    <field name="votes_for"/>
+                                    <field name="votes_against"/>
+                                    <field name="votes_abstain"/>
+                                    <field name="total_cast"/>
+                                    <field name="share_for" digits="[5,1]"/>
+                                    <field name="majority_required"/>
+                                    <field name="passed"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Procès-verbal" name="minutes">
+                            <field name="minutes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_assembly" model="ir.actions.act_window">
+        <field name="name">Assemblées</field>
+        <field name="res_model">bf.labour.assembly</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune assemblée</p>
+            <p>Le droit de vote suit l'adhésion, jamais la couverture. C'est le
+               miroir exact de la cotisation, qui suit la couverture et jamais
+               l'adhésion.</p>
+        </field>
+    </record>
+
+</odoo>

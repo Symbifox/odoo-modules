@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_union_side" name="Côté syndical"
+              parent="bf_labour_relations.menu_root" sequence="28"
+              groups="hr.group_hr_user"/>
+
+    <menuitem id="menu_card" name="Adhésions" parent="menu_union_side"
+              action="action_card" sequence="10"/>
+    <menuitem id="menu_assembly" name="Assemblées et votes" parent="menu_union_side"
+              action="action_assembly" sequence="20"/>
+    <menuitem id="menu_delegate" name="Délégués et libérations" parent="menu_union_side"
+              action="action_delegate" sequence="30"/>
+    <menuitem id="menu_receipt" name="Cotisations perçues" parent="menu_union_side"
+              action="action_receipt" sequence="40"/>
+
+</odoo>
