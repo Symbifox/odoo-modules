@@ -117,7 +117,41 @@ class BfOtpToken(models.Model):
     # d'être détruit : le geste qui coûte cher (perdre un deuxième facteur pour
     # de bon) doit demander deux décisions, pas une. La destruction réelle
     # existe, elle s'appelle `purge_token`, et elle le dit.
-    active = fields.Boolean(string='Actif', default=True)
+    #
+    # 🔴 `readonly=True` n'est PAS de la décoration, et ce n'est pas non plus un
+    # verrou côté serveur : les façades ci-dessous écrivent `active` sans peine.
+    # Ce que ce drapeau débranche, c'est l'action « Archiver » GÉNÉRIQUE du
+    # client web. Odoo la propose dès qu'un modèle porte un champ `active`
+    # inscriptible (`list_controller.js` : `archiveEnabled` regarde les champs du
+    # MODÈLE, pas ceux de la vue, donc retirer le champ de l'arbre n'y change
+    # rien). Sans ça, « Archiver » depuis l'Inventaire envoyait le token à la
+    # CORBEILLE, sans même poser `deleted_at`, sous un mot qui promettait le
+    # contraire. L'archivage, le vrai, est le champ `archived` juste en dessous.
+    active = fields.Boolean(string='Actif', default=True, readonly=True)
+
+    # -- l'archive, qui n'est PAS la corbeille --------------------------------
+    # ⚠️ Deux états distincts, parce que ce sont deux gestes qui ne se
+    # rattrapent pas pareil. La corbeille dit « je n'en veux plus », et le
+    # chemin suivant est la destruction. L'archive dit « je m'en sers deux fois
+    # par an », et le chemin suivant est de s'en servir. Un token archivé garde
+    # sa graine, produit encore ses codes depuis le panneau de l'archive, et ne
+    # croise JAMAIS la purge.
+    #
+    # Pourquoi ça existe : au 2026-09-18, 111 des 145 tokens du coffre de
+    # référence n'avaient pas servi depuis l'import, et la corbeille était
+    # restée vide. Le rangement manquant n'était pas « supprimer », c'était
+    # « ranger ».
+    archived = fields.Boolean(
+        string='Archivé', default=False, index=True,
+        help="Sort le token de la liste de tous les jours sans rien détruire. "
+             "Il garde sa graine, produit encore ses codes depuis l'archive, "
+             "et revient d'un geste.",
+    )
+    archived_at = fields.Datetime(
+        string='Archivé le',
+        help="Posé au passage à l'archive. Dit depuis quand, rien de plus : "
+             "rien ici ne purge tout seul.",
+    )
     deleted_at = fields.Datetime(
         string='Mis à la corbeille',
         help="Posé au passage à la corbeille. Sert à dire depuis quand, pas à "
@@ -167,11 +201,27 @@ class BfOtpToken(models.Model):
         'name', 'issuer', 'otp_type', 'algorithm', 'digits', 'period',
         'counter', 'group_name', 'sensitive', 'secret_cipher', 'secret_iv',
         'sequence', 'partner_id', 'project_id', 'favorite', 'last_used',
+        # ⚠️ `archived_at` est LU par le navigateur : le panneau de l'archive
+        # affiche « Rangé le … ». Sans lui ici, la ligne ne s'affichait jamais
+        # et rien ne le disait — ni essai, ni erreur, juste une ligne absente.
+        'archived', 'archived_at',
     )
 
     @api.model
     def load_my_tokens(self):
-        """Rend les jetons de la personne connectée, chiffrés tels quels."""
+        """Rend les jetons de la personne connectée, chiffrés tels quels.
+
+        ⚠️ **Les archivés sont DEDANS**, marqués par leur drapeau, et ce n'est
+        pas un oubli. Trois surfaces lisent cette méthode (le coffre dans Odoo,
+        l'extension, l'application Android) et chacune cache l'archive de la
+        même façon, à partir du même drapeau. Filtrer ici aurait obligé chaque
+        surface à un second appel pour chercher dans son archive, et une
+        recherche qui ne trouve pas ce qu'on a rangé soi-même est la façon la
+        plus sûre de faire regretter l'archivage.
+
+        La corbeille, elle, reste dehors : un token à la corbeille ne doit pas
+        produire de code, et `load_my_trash` existe pour ça.
+        """
         tokens = self.search([('user_id', '=', self.env.uid)])
         return tokens.read(list(self._CHAMPS_LUS))
 
@@ -219,6 +269,10 @@ class BfOtpToken(models.Model):
                 'group_name': e.get('group_name') or False,
                 'sensitive': bool(e.get('sensitive')),
                 'favorite': bool(e.get('favorite')),
+                # Un coffre exporté rangé se réimporte rangé.
+                'archived': bool(e.get('archived')),
+                'archived_at': (
+                    fields.Datetime.now() if e.get('archived') else False),
                 # ⚠️ Les rattachements arrivent déjà RÉSOLUS en identifiants :
                 # c'est la page qui a cherché le nom et n'a retenu qu'une
                 # correspondance exacte et unique. Le serveur ne devine rien
@@ -308,6 +362,51 @@ class BfOtpToken(models.Model):
         token = self._mine(token_id)
         token.counter = int(counter)
         return True
+
+    # -------------------------------------------------------------------------
+    # L'archive
+    #
+    # ⚠️ Rien ici ne touche `active`. Un token archivé est un token VIVANT qu'on
+    # a rangé : il garde sa graine, il produit encore ses codes, et il ne croise
+    # jamais `purge_token`. Confondre les deux gestes dans un seul champ, c'est
+    # ce que faisait l'action « Archiver » générique d'Odoo avant qu'on la
+    # débranche, et le mot promettait alors le contraire de ce qu'il faisait.
+    # -------------------------------------------------------------------------
+
+    @api.model
+    def archive_token(self, token_id):
+        """Range un token hors de la liste de tous les jours."""
+        token = self._mine(token_id)
+        token.write({'archived': True, 'archived_at': fields.Datetime.now()})
+        return True
+
+    @api.model
+    def unarchive_token(self, token_id):
+        """Ressort un token de l'archive."""
+        token = self._mine(token_id)
+        token.write({'archived': False, 'archived_at': False})
+        return True
+
+    @api.model
+    def set_archived(self, token_ids, archive=True):
+        """Archive ou désarchive plusieurs tokens d'un coup.
+
+        ⚠️ La propriété se vérifie par le DOMAINE, jamais en faisant confiance
+        aux identifiants reçus : cette méthode est appelable par RPC, et une
+        liste d'identifiants venue d'ailleurs ne doit pas pouvoir ranger le
+        coffre de quelqu'un d'autre.
+        """
+        ids = [int(i) for i in (token_ids or [])]
+        if not ids:
+            return 0
+        tokens = self.search([
+            ('id', 'in', ids), ('user_id', '=', self.env.uid),
+        ])
+        tokens.write({
+            'archived': bool(archive),
+            'archived_at': fields.Datetime.now() if archive else False,
+        })
+        return len(tokens)
 
     # -------------------------------------------------------------------------
     # La corbeille

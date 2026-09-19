@@ -4,7 +4,7 @@ Le principe, et pourquoi c'est celui-là plutôt qu'un autre
 ----------------------------------------------------------
 La clé du coffre reste **exactement celle qu'elle était** : dérivée de la phrase
 de passe. On n'en change pas, donc **aucune graine n'est ré-encryptée** — ce qui
-serait le vrai risque sur un coffre qui en porte déjà cent quarante-quatre.
+serait le vrai risque sur un coffre qui en porte déjà des centaines.
 
 Ce qu'on range ici est une **copie scellée de cette clé** : ses octets, chiffrés
 par un secret que l'extension PRF de WebAuthn dérive de la clé d'accès. Le

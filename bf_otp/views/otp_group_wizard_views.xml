@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ══════════════════════════════════════════════════════════════════
+         L'assistant de regroupement.
+
+         🔴 Il PROPOSE. Rien n'est écrit tant que le bouton n'a pas été
+         pressé, et ce qui porte déjà une étiquette n'est jamais touché : le
+         rangement de quelqu'un ne se défait pas par une devinette, même
+         meilleure que la sienne.
+         ══════════════════════════════════════════════════════════════════ -->
+
+    <record id="view_otp_group_wizard_form" model="ir.ui.view">
+        <field name="name">bf.otp.group.wizard.form</field>
+        <field name="model">bf.otp.group.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Proposer un regroupement">
+                <div class="alert alert-info" role="status">
+                    Chaque paquet ci-dessous devient une étiquette de
+                    <em>Regroupement</em>. Le nom vient du domaine de l'adresse
+                    du compte quand il y en a une, sinon de l'émetteur quand il
+                    porte plus d'un token. Renommez ce que vous voulez, décochez
+                    ce que vous ne voulez pas.
+                </div>
+                <group>
+                    <group>
+                        <field name="total"/>
+                        <field name="deja_range"/>
+                    </group>
+                    <group>
+                        <field name="sans_proposition"/>
+                    </group>
+                </group>
+                <field name="line_ids" nolabel="1">
+                    <list string="Paquets proposés" editable="bottom"
+                          create="0" delete="0">
+                        <field name="retenu" widget="boolean_toggle"/>
+                        <field name="nom"/>
+                        <field name="nombre" readonly="1"/>
+                        <field name="token_ids" column_invisible="1"/>
+                    </list>
+                </field>
+                <div class="text-muted mt-2">
+                    Les tokens qui portent déjà un regroupement ne sont pas
+                    touchés, même s'ils tombent dans un paquet retenu.
+                </div>
+                <footer>
+                    <button name="action_appliquer" type="object" string="Ranger"
+                            class="btn-primary" data-hotkey="q"/>
+                    <button string="Annuler" class="btn-secondary"
+                            special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ⚠️ `binding_model_id` fait apparaître l'assistant dans le menu Actions
+         de l'Inventaire, sur la sélection. Sans sélection il travaille sur tout
+         le coffre, ce que l'assistant affiche avant d'écrire quoi que ce soit. -->
+    <record id="action_otp_group_wizard" model="ir.actions.act_window">
+        <field name="name">Proposer un regroupement</field>
+        <field name="res_model">bf.otp.group.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_bf_otp_token"/>
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('bf_otp.group_otp_user'))]"/>
+    </record>
+
+    <menuitem id="menu_otp_group_wizard"
+              name="Proposer un regroupement"
+              parent="menu_otp_root"
+              action="action_otp_group_wizard"
+              groups="group_otp_user"
+              sequence="30"/>
+</odoo>

@@ -138,6 +138,12 @@
                         t-att-title="state.compact ? 'Vue cartes' : 'Vue compacte'">
                     <span t-att-class="state.compact ? 'fa fa-th-large' : 'fa fa-bars'"/>
                 </button>
+                <button class="btn btn-sm btn-light" t-on-click="openArchive"
+                        title="Archive : rangé, vivant, et toujours utilisable">
+                    <span class="fa fa-archive"/>
+                    <span t-if="archivedTokens.length" class="badge text-bg-secondary ms-1"
+                          t-esc="archivedTokens.length"/>
+                </button>
                 <button class="btn btn-sm btn-light" t-on-click="openTrash"
                         title="Corbeille">
                     <span class="fa fa-trash-o"/>
@@ -209,6 +215,14 @@
                                             </button>
                                             <button class="btn btn-light" t-on-click="() => this.openForm(tok)"
                                                     title="Modifier"><span class="fa fa-pencil"/></button>
+                                            <!-- ⚠️ Ranger et supprimer côte à côte, mais jamais du
+                                                 même ton : l'archive est grise et réversible, la
+                                                 corbeille est rouge. Le geste qui coûte cher doit
+                                                 se distinguer à l'œil, pas seulement à l'infobulle. -->
+                                            <button class="btn btn-light" t-on-click="() => this.toggleArchive(tok)"
+                                                    t-att-title="tok.archived ? 'Ressortir de l\'archive' : 'Ranger dans l\'archive'">
+                                                <span t-att-class="tok.archived ? 'fa fa-inbox text-primary' : 'fa fa-archive'"/>
+                                            </button>
                                             <button class="btn btn-light text-danger" t-on-click="() => this.removeToken(tok)"
                                                     title="Supprimer"><span class="fa fa-trash"/></button>
                                         </div>
@@ -503,6 +517,58 @@
                             </button>
                         </div>
                     </form>
+
+                    <!-- ══════════════════════════════════════════════════════
+                         L'export EN CLAIR.
+
+                         ⚠️ Hors du formulaire ci-dessus, et pas seulement parce
+                         qu'un formulaire ne s'imbrique pas dans un autre : ce
+                         sont deux gestes qui ne doivent jamais se confondre. Le
+                         chiffré est le défaut et il a un bouton bleu ; le clair
+                         est replié, rouge, et demande à écrire un mot.
+                         ══════════════════════════════════════════════════════ -->
+                    <div class="card-body border-top pt-3">
+                        <button t-if="!state.clairOuvert" class="btn btn-sm btn-outline-danger"
+                                t-on-click="ouvrirPorteClaire">
+                            <span class="fa fa-unlock-alt me-1"/>Exporter en clair, sans chiffrement
+                        </button>
+                        <form t-else="" t-on-submit="onExportClair">
+                            <div class="alert alert-danger py-2 small" role="alert">
+                                <strong>Ce fichier contiendra vos graines lisibles.</strong>
+                                Qui l'ouvre peut produire vos codes, sans mot de passe et sans
+                                limite de temps. Il ne se périme pas, il ne se révoque pas, et
+                                une sauvegarde automatique peut le recopier ailleurs sans vous
+                                le dire. Servez-vous-en pour déménager vers un autre
+                                gestionnaire, puis effacez-le.
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label">Phrase de passe du coffre</label>
+                                    <input type="password" class="form-control" t-model="state.clairPass"
+                                           autocomplete="current-password"/>
+                                    <div class="form-text">
+                                        Celle qui ouvre ce coffre, redemandée ici : un écran resté
+                                        ouvert ne vaut pas une décision.
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        Écrivez <strong t-esc="motDeGarde"/> pour confirmer
+                                    </label>
+                                    <input type="text" class="form-control" t-model="state.clairMot"
+                                           autocomplete="off" t-att-placeholder="motDeGarde"/>
+                                </div>
+                            </div>
+                            <div class="mt-3 text-end">
+                                <button type="button" class="btn btn-secondary me-2"
+                                        t-on-click="() => state.clairOuvert = false">Revenir</button>
+                                <button type="submit" class="btn btn-danger" t-att-disabled="state.busy">
+                                    <span t-if="state.busy" class="fa fa-circle-o-notch fa-spin me-1"/>
+                                    <span t-else="" class="fa fa-exclamation-triangle me-1"/>Télécharger en clair
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -602,6 +668,69 @@
             </div>
 
             <!-- Corbeille -->
+            <!-- ══════════════════════════════════════════════════════════
+                 L'archive.
+
+                 🔴 Elle ressemble à la corbeille et n'en est pas une. Aucun
+                 bouton n'y détruit quoi que ce soit, et le code s'y produit
+                 normalement : un token archivé est un token dont on se sert
+                 deux fois par an, pas un token dont on ne veut plus.
+                 ══════════════════════════════════════════════════════════ -->
+            <div t-if="state.showArchive" class="o_bf_otp_overlay">
+                <div class="o_bf_otp_panel card shadow">
+                    <div class="card-header d-flex align-items-center">
+                        <strong>Archive</strong>
+                        <span class="badge text-bg-secondary ms-2" t-esc="archivedTokens.length"/>
+                        <button class="btn-close ms-auto" t-on-click="() => state.showArchive = false"/>
+                    </div>
+                    <div class="card-body">
+                        <p t-if="!archivedTokens.length" class="text-muted text-center py-4 mb-0">
+                            L'archive est vide. Le bouton
+                            <span class="fa fa-archive"/> d'un token le range ici :
+                            il sort de la liste de tous les jours, garde sa graine,
+                            et continue de produire ses codes depuis cet écran.
+                        </p>
+                        <div t-else="">
+                            <p class="text-muted small">
+                                Ces tokens sont rangés, pas supprimés. Ils produisent leurs
+                                codes ici, et la recherche du coffre les retrouve.
+                            </p>
+                            <div class="list-group">
+                                <div t-foreach="archivedTokens" t-as="t" t-key="t.id"
+                                     class="list-group-item d-flex align-items-center">
+                                    <span class="o_bf_otp_chip me-2" t-att-style="chipStyle(t)">
+                                        <svg t-if="icone(t)" viewBox="0 0 24 24"
+                                             class="o_bf_otp_glyphe" aria-hidden="true"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path t-att-d="icone(t).d" fill="currentColor"/>
+                                        </svg>
+                                        <t t-else="" t-esc="chipText(t)"/>
+                                    </span>
+                                    <div class="min-w-0">
+                                        <div class="text-truncate">
+                                            <t t-if="t.issuer"><strong t-esc="t.issuer"/> · </t>
+                                            <t t-esc="t.name"/>
+                                        </div>
+                                        <div class="text-muted small" t-if="t.archived_at">
+                                            Rangé le <t t-esc="t.archived_at.slice(0, 10)"/>
+                                        </div>
+                                    </div>
+                                    <div class="ms-auto d-flex align-items-center">
+                                        <button t-if="!t.broken" class="o_bf_otp_code btn btn-link p-0 me-3"
+                                                t-on-click="() => this.copyCode(t)"
+                                                t-att-title="isRevealed(t) ? 'Copier' : 'Afficher'">
+                                            <span t-esc="displayCode(t)"/>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary"
+                                                t-on-click="() => this.toggleArchive(t)">Ressortir</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div t-if="state.showTrash" class="o_bf_otp_overlay">
                 <div class="o_bf_otp_panel card shadow">
                     <div class="card-header d-flex align-items-center">

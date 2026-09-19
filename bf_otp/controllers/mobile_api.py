@@ -386,6 +386,36 @@ class BfOtpMobileApi(http.Controller):
         request.env["bf.otp.token"].touch_token(int(donnees.get("token_id") or 0))
         return _json({"ok": True})
 
+    # ── L'archive : le même rangement que sur le site ─────────────────
+    @http.route(f"{BASE}/archive", type="http", auth="public", methods=["POST"],
+                csrf=False, save_session=False)
+    @_authentifie
+    def archive(self, appareil, **kw):
+        """Range un token dans l'archive, ou l'en ressort.
+
+        ⚠️ Le rangement doit franchir les surfaces, sinon il n'en est pas un :
+        archiver sur le site et retrouver la liste intacte sur le téléphone
+        donnerait deux coffres au lieu d'un, et personne n'archiverait plus.
+
+        ⚠️ Rien ici ne touche `active`. Le téléphone n'a AUCUNE route vers la
+        corbeille, et c'est volontaire : le geste irréversible se fait là où
+        l'on peut lire l'avertissement en entier.
+        """
+        donnees = _corps(**kw)
+        token_id = int(donnees.get("token_id") or 0)
+        # 🔴 `bool()` ne suffit pas. Un corps de FORMULAIRE livre des chaînes, et
+        # `bool("false")` vaut True : « désarchiver » aurait archivé. Les autres
+        # routes coercent déjà (`int(...)`), celle-ci doit lire les deux formes.
+        brut = donnees.get("archived")
+        ranger = (brut if isinstance(brut, bool)
+                  else str(brut).strip().lower() in ("1", "true", "yes", "on"))
+        Token = request.env["bf.otp.token"]
+        if ranger:
+            Token.archive_token(token_id)
+        else:
+            Token.unarchive_token(token_id)
+        return _json({"ok": True, "archived": ranger})
+
     @http.route(f"{BASE}/bump", type="http", auth="public", methods=["POST"],
                 csrf=False, save_session=False)
     @_authentifie

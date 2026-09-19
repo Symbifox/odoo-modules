@@ -28,7 +28,8 @@
                  navigateur, donc il ne peut naître que dans l'application.
                  `delete="0"` : la corbeille est le chemin, et elle est là-bas. -->
             <list string="Tokens OTP" create="0" delete="0"
-                  multi_edit="1" editable="bottom" sample="1">
+                  multi_edit="1" editable="bottom" sample="1"
+                  decoration-muted="archived">
                 <field name="favorite" widget="boolean_favorite" string=" "/>
                 <field name="issuer" readonly="1"/>
                 <field name="name" readonly="1"/>
@@ -37,6 +38,10 @@
                 <field name="partner_id" options="{'no_create': True}"/>
                 <field name="project_id" options="{'no_create': True}"/>
                 <field name="sensitive" optional="show"/>
+                <!-- ⚠️ Modifiable en lot exprès : ranger cent tokens d'un coup
+                     est précisément ce que l'application ne sait pas faire et
+                     que cette liste existe pour permettre. -->
+                <field name="archived" optional="show"/>
                 <field name="last_used" readonly="1" optional="show"/>
                 <field name="deleted_at" readonly="1" optional="hide"/>
                 <field name="active" column_invisible="1"/>
@@ -59,6 +64,11 @@
                     </div>
                     <widget name="web_ribbon" title="À la corbeille" bg_color="text-bg-danger"
                             invisible="active"/>
+                    <!-- ⚠️ Deux rubans, jamais ensemble : la corbeille l'emporte
+                         à l'affichage parce que c'est l'état qui a des
+                         conséquences. -->
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-secondary"
+                            invisible="not archived or not active"/>
                     <group>
                         <group string="Le compte">
                             <field name="issuer" readonly="1"/>
@@ -78,6 +88,8 @@
                             <field name="favorite"/>
                             <field name="sensitive"/>
                             <field name="last_used" readonly="1"/>
+                            <field name="archived"/>
+                            <field name="archived_at" readonly="1" invisible="not archived"/>
                             <field name="deleted_at" readonly="1" invisible="active"/>
                             <field name="active" invisible="1"/>
                         </group>
@@ -107,6 +119,15 @@
                 <filter name="jamais_utilise" string="Jamais utilisé"
                         domain="[('last_used', '=', False)]"/>
                 <separator/>
+                <!-- ⚠️ L'archive n'est PAS la corbeille, et les deux filtres se
+                     suivent exprès pour que la différence se lise : au-dessus,
+                     ce qui est rangé et vivant ; en dessous, ce qui attend
+                     d'être détruit. -->
+                <filter name="hors_archive" string="Hors archive"
+                        domain="[('archived', '=', False)]"/>
+                <filter name="archives" string="Archivés"
+                        domain="[('archived', '=', True)]"/>
+                <separator/>
                 <!-- ⚠️ Un domaine qui nomme `active` désactive de lui-même le
                      filtre implicite des archivés : pas besoin de contexte. -->
                 <filter name="corbeille" string="À la corbeille"
@@ -117,6 +138,7 @@
                     <filter name="par_groupe" string="Regroupement" context="{'group_by': 'group_name'}"/>
                     <filter name="par_emetteur" string="Émetteur" context="{'group_by': 'issuer'}"/>
                     <filter name="par_type" string="Type" context="{'group_by': 'otp_type'}"/>
+                    <filter name="par_archive" string="Archive" context="{'group_by': 'archived'}"/>
                 </group>
             </search>
         </field>
@@ -127,6 +149,12 @@
         <field name="res_model">bf.otp.token</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="view_otp_token_search"/>
+        <!-- ⚠️ Le filtre par défaut se pose ICI, dans le contexte de l'action,
+             et pas par un `<filter … default="1"/>` dans la vue de recherche :
+             une vue de recherche partagée se départage au nom, et le défaut
+             posé dans l'arbre s'est déjà fait ignorer en production sur un
+             autre module. -->
+        <field name="context">{'search_default_hors_archive': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Aucun token dans votre coffre</p>
             <p>

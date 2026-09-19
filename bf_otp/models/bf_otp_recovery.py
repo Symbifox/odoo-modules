@@ -10,7 +10,7 @@ d'un domaine à l'autre. Restait une seule vraie porte, dans une seule tête.
 Le code de relève ferme ce trou sans toucher aux graines. C'est **exactement le
 scellé de la clé d'accès**, avec un code tiré au sort à la place du secret PRF :
 la clé du coffre ne change pas, aucune graine n'est ré-encryptée, et le serveur
-reçoit un bloc qu'il ne peut pas ouvrir. Sur un coffre de cent quarante-quatre
+reçoit un bloc qu'il ne peut pas ouvrir. Sur un coffre bien rempli de
 graines vivantes, ne pas les retoucher est la moitié de l'argument.
 
 Ce qui entre ici

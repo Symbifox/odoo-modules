@@ -349,7 +349,7 @@ class TestLeModuleSeTientEnsemble(OtpCase):
         « Failed to resolve module specifier ». La fonction ne s'ouvre jamais et
         rien ne l'annonce à l'écran : ni erreur visible, ni bouton inerte, juste
         un clic sans effet. La suppression d'un token a vécu comme ça depuis
-        qu'elle existe, sur un coffre de cent quarante-quatre tokens en
+        qu'elle existe, sur un coffre bien rempli de tokens en
         production. Ce test refuse la forme, parce que le symptôme, lui, ne se
         voit pas.
         """

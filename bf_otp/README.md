@@ -33,7 +33,7 @@ serveur**.
 * Rattachement à un **client** et à un **projet** ; sans étiquette de
   regroupement, le client sert de regroupement, et à défaut l'**émetteur**
   quand il porte plus d'un token
-* Icône de marque pour une trentaine de services courants, **embarquée** dans
+* Icône de marque pour **plusieurs centaines de services**, **embarquée** dans
   le module : aucune favicon n'est récupérée, parce que la requête révélerait
   au service, et à qui regarde le réseau, la liste des comptes protégés. Ce
   qui n'est pas reconnu garde une pastille de couleur calculée du nom.
@@ -46,6 +46,11 @@ serveur**.
   contenu, sans rien choisir, et le déchiffrement se fait toujours dans la page
 * **Export chiffré** du coffre, sous une phrase distincte de celle du coffre
 * **Codes de relève** : une seconde porte, rangée hors ligne
+* **Archive**, qui n'est pas la corbeille : un token archivé sort de la liste
+  de tous les jours, garde sa graine, produit encore ses codes depuis
+  l'archive, et la recherche l'y retrouve
+* **Regroupement proposé** : un assistant lit le domaine de l'adresse du
+  compte, propose des paquets, et n'écrit que ce qu'on retient
 * **Corbeille** : retirer un token est réversible, le détruire est un second geste
 * **Inventaire** dans Odoo : liste, filtres, regroupements, et le compte des
   tokens sur la fiche du client et du projet
@@ -56,6 +61,45 @@ serveur**.
   enveloppe (clé d'item emballée pour chaque destinataire)
 * La lecture d'un **QR par la caméra** depuis le navigateur. L'application
   Android le fait ; ici, il faut coller le contenu du code
+
+## L'archive, et pourquoi ce n'est pas la corbeille
+
+Un coffre qui vit accumule des tokens dont on ne se sert plus, sans qu'aucun
+d'eux mérite d'être détruit : un service qu'on n'ouvre que deux fois par an
+reste un accès qu'on veut garder.
+
+L'archive et la corbeille sont donc deux états distincts, et ils ne se
+rattrapent pas pareil :
+
+| | Archive | Corbeille |
+|---|---|---|
+| Ce que ça dit | « je m'en sers deux fois par an » | « je n'en veux plus » |
+| Le code | se produit encore, depuis l'archive | ne se produit plus |
+| La suite | s'en servir | la destruction, qui est définitive |
+| Retour | un geste | un geste, tant qu'on n'a pas vidé |
+
+> ⚠️ L'action **Archiver** générique d'Odoo n'est pas offerte sur ces tokens, et
+> c'est volontaire : elle écrit le champ `active`, qui est ici **la corbeille**.
+> Le mot aurait promis un rangement et fait une suppression.
+
+La liste de tous les jours ne montre pas l'archive — c'est tout son intérêt.
+Mais **dès qu'on cherche**, l'archive répond, dans un paquet à part et sous son
+propre titre : une archive qu'on ne peut plus chercher fait regretter d'avoir
+archivé. La règle est la même dans l'application Android et dans l'extension.
+
+## Le regroupement proposé
+
+Les trois champs de rangement — étiquette, client, projet — restent vides sur un
+coffre importé, et personne ne saisit des centaines d'étiquettes à la main.
+L'assistant **Proposer un regroupement**, dans l'Inventaire, lit le **domaine de
+l'adresse** contenue dans le nom du compte : c'est ce qui dit sous quelle
+identité le token a été créé, et c'est la question qu'on se pose vraiment devant
+un coffre. À défaut d'adresse, il propose l'émetteur, et seulement quand celui-ci
+porte plus d'un token.
+
+Il **propose** : il montre les paquets avec leur compte, laisse renommer chacun
+et décocher ce qu'on ne veut pas, puis écrit. Un token qui porte déjà une
+étiquette n'est jamais touché, même s'il tombe dans un paquet retenu.
 
 ## Les clés d'accès, et leurs limites
 
@@ -95,9 +139,17 @@ Le fichier est chiffré par une phrase **choisie à l'export**, avec son propre
 sel, ses propres itérations et son propre témoin : il ne dépend donc pas de la
 clé du coffre Odoo, et il se relit sur une autre instance.
 
-> ⚠️ **Il n'existe aucun export en clair, et c'est délibéré.** Un fichier de
-> graines lisibles qui traîne dans un dossier de téléchargements est un coffre
-> ouvert dont personne ne se souvient trois mois plus tard.
+Un export **en clair** existe aussi, et il coûte trois gestes exprès : la phrase
+du coffre à retaper, un mot à écrire à la main, et un avertissement déployé
+au-dessus. Le fichier porte `EN-CLAIR` dans son nom et son propre avertissement
+en première clé, parce que le contrôle qui compte vraiment arrive trois mois plus
+tard, quand quelqu'un le retrouve dans ses téléchargements. Chaque token y porte
+son adresse `otpauth://`, pour qu'un autre gestionnaire sache le relire.
+
+> ⚠️ **Le chiffré reste le défaut.** Un fichier de graines lisibles qui traîne
+> dans un dossier de téléchargements est un coffre ouvert dont personne ne se
+> souvient trois mois plus tard. L'export en clair sert à déménager vers un autre
+> outil, et il s'efface une fois qu'il a servi.
 
 À la relecture, les rattachements reviennent **par le nom**, et seulement quand
 le nom désigne un seul client ou projet de l'instance : deviner mal rattacherait

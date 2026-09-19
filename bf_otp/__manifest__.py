@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox OTP',
-    'version': '18.0.10.0.1',
+    'version': '18.0.11.0.1',
     'category': 'Productivity',
     'summary': "Coffre de tokens OTP dont le serveur ne peut lire aucune graine",
     'description': """
@@ -35,11 +35,19 @@ Ce que le module fait
   (``otpauth-migration://``) ou d'un export du gestionnaire OTP de Nextcloud,
   le déchiffrement se faisant toujours dans la page
 * **Export chiffré du coffre**, sous une phrase distincte de celle du coffre.
-  Il n'existe volontairement aucun export en clair
+  Un export **en clair** existe aussi, derrière la phrase du coffre et un mot à
+  taper : c'est un coffre ouvert dans un fichier, et l'écran le dit sans détour
 * **Codes de relève** : une copie scellée de la clé, ouverte par un code tiré au
   sort et rangé hors ligne, pour que la phrase perdue ne soit plus une perte
 * **Corbeille** : retirer un token est réversible, le détruire est un second
   geste et il le dit
+* **Archive**, qui n'est PAS la corbeille : un token archivé sort de la liste de
+  tous les jours, garde sa graine, produit encore ses codes et revient d'un geste
+* **Regroupement proposé** : l'assistant lit le domaine de l'adresse du compte,
+  propose des paquets, et n'écrit que ce qu'on retient
+* **Icônes de marque** tirées de Simple Icons, embarquées : le module ne va
+  JAMAIS chercher une favicon, parce que la requête dirait au service et au
+  réseau quels comptes vous protégez
 * **Inventaire** dans Odoo : liste, filtres, regroupements, et le compte des
   tokens sur la fiche du client et du projet
 
@@ -63,6 +71,7 @@ Ce que le module ne fait PAS encore
         'security/otp_security.xml',
         'security/ir.model.access.csv',
         'views/otp_views.xml',
+        'views/otp_group_wizard_views.xml',
         'data/cron.xml',
     ],
     'assets': {

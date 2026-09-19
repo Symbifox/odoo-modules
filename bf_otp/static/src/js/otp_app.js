@@ -20,9 +20,10 @@ import {
     webauthnAvailable, enrollPasskey, unlockWithPasskey, PrfNonRendu,
 } from "./otp_webauthn";
 import { base32Decode, totp, hotp, secondsLeft, parseOtpauth } from "./otp_totp";
-import { iconeDe, contraste } from "./otp_icons";
+import { iconeDe, contraste, chargerIcones } from "./otp_icons";
 import {
-    construireExport, lireExport, estUnExportSymbifox, PhraseIncorrecte,
+    construireExport, construireExportClair, lireExport, estUnExportSymbifox,
+    PhraseIncorrecte,
 } from "./otp_export";
 import { estUneMigration, lireMigration } from "./otp_migration";
 import {
@@ -74,6 +75,12 @@ export class BfOtpApp extends Component {
             showExport: false,
             exportPass: "",
             exportConfirm: "",
+            // ⚠️ La porte de l'export en clair. Trois choses, pas une : la
+            // phrase du COFFRE (ce qu'on sait), un mot à écrire (ce qu'on
+            // décide), et l'avertissement déployé au-dessus (ce qu'on lit).
+            clairOuvert: false,
+            clairPass: "",
+            clairMot: "",
             showRecovery: false,  // panneau des codes de relève
             recovName: "",
             recovPass: "",
@@ -82,6 +89,7 @@ export class BfOtpApp extends Component {
             recovInput: "",
             showTrash: false,
             trash: [],
+            showArchive: false,
         });
 
         // La clé ne va PAS dans le state : rien qui la porte ne doit finir dans
@@ -93,7 +101,15 @@ export class BfOtpApp extends Component {
         this._onKey = (ev) => this._clavier(ev);
 
         onWillStart(async () => {
-            this.state.vault = await this.orm.call("bf.otp.vault", "get_my_vault", []);
+            // ⚠️ Les deux en parallèle : le catalogue d'icônes est un fichier
+            // statique, il n'a pas à faire attendre l'écran de déverrouillage.
+            // Et s'il ne vient pas, chaque token garde sa pastille, qui est un
+            // repli qui ne rate jamais.
+            const [coffre] = await Promise.all([
+                this.orm.call("bf.otp.vault", "get_my_vault", []),
+                chargerIcones(),
+            ]);
+            this.state.vault = coffre;
             this.state.passkeyOk = webauthnAvailable();
             this.state.ready = true;
         });
@@ -112,8 +128,9 @@ export class BfOtpApp extends Component {
     /**
      * L'icône embarquée de l'émetteur, ou `null`.
      *
-     * ⚠️ Aucune requête : les tracés vivent dans le paquet. Le refus d'aller
-     * chercher une favicon tient toujours, et pour la même raison.
+     * ⚠️ Le catalogue est récupéré une fois, en fichier statique servi par
+     * l'instance elle-même. Aucune requête ne part vers le SERVICE : le refus
+     * d'aller chercher une favicon tient toujours, et pour la même raison.
      */
     icone(t) {
         return iconeDe(t.issuer);
@@ -236,7 +253,7 @@ export class BfOtpApp extends Component {
      */
     _panneaux() {
         return ["showForm", "showImport", "showKeys", "showExport",
-                "showRecovery", "showTrash"];
+                "showRecovery", "showTrash", "showArchive"];
     }
 
     _unPanneauEstOuvert() {
@@ -248,6 +265,11 @@ export class BfOtpApp extends Component {
             this.state[nom] = false;
         }
         this.state.recovCode = "";
+        // La porte de l'export en clair se referme avec son panneau : la
+        // rouvrir doit coûter les mêmes trois gestes à chaque fois.
+        this.state.clairOuvert = false;
+        this.state.clairPass = "";
+        this.state.clairMot = "";
     }
 
     /**
@@ -338,7 +360,7 @@ export class BfOtpApp extends Component {
             this._key = await keyFromBytes(octets);
             await this._chargerJetons();
             // Un jeton cassé partout voudrait dire que la clé est mauvaise :
-            // mieux vaut le dire que d'afficher cent quarante lignes de points.
+            // mieux vaut le dire que d'afficher des centaines de lignes de points.
             if (this.state.tokens.length && this.state.tokens.every((t) => t.broken)) {
                 this._key = null;
                 this.state.tokens = [];
@@ -526,14 +548,27 @@ export class BfOtpApp extends Component {
         ].filter(Boolean).join(" ").toLowerCase();
     }
 
+    /** Le terme cherché, normalisé. Vide quand on ne cherche rien. */
+    get _requete() {
+        return (this.state.search || "").trim().toLowerCase();
+    }
+
+    /**
+     * Ce que la liste de tous les jours montre.
+     *
+     * ⚠️ L'archive en est exclue, mais seulement ICI. Elle reste chargée, et la
+     * recherche la retrouve : voir `archiveTrouvee`. Une archive qu'on ne peut
+     * plus chercher fait regretter d'avoir archivé, et la fois d'après on
+     * n'archive plus rien.
+     */
     get visibleTokens() {
-        const q = (this.state.search || "").trim().toLowerCase();
+        const q = this._requete;
         const liste = this.state.tokens.filter(
-            (t) => !q || this._texteDe(t).includes(q)
+            (t) => !t.archived && (!q || this._texteDe(t).includes(q))
         );
         // Les favoris d'abord, toujours. Ensuite l'ordre demandé : par dernière
         // utilisation (le défaut, parce qu'on ne se sert vraiment que d'une
-        // dizaine de jetons sur cent quarante) ou par nom.
+        // dizaine de jetons sur des centaines) ou par nom.
         return liste.sort((a, b) => {
             if (!!b.favorite !== !!a.favorite) {
                 return b.favorite ? 1 : -1;
@@ -558,12 +593,14 @@ export class BfOtpApp extends Component {
      * frappe.
      *
      * ⚠️ Et seulement au-delà de un. Regrouper un émetteur qui n'a qu'un jeton
-     * fabrique un en-tête par ligne : sur ce coffre, 112 émetteurs pour 144
+     * fabrique un en-tête par ligne : sur un coffre réel, presque autant d'émetteurs que de
      * jetons, ça remplacerait une liste par une liste deux fois plus haute.
      */
     get emetteursMultiples() {
         const n = new Map();
-        for (const t of this.state.tokens) {
+        // ⚠️ Hors archive : un émetteur dont le second token est archivé ne
+        // doit pas fabriquer un en-tête au-dessus d'une seule ligne.
+        for (const t of this.state.tokens.filter((x) => !x.archived)) {
             const e = (t.issuer || "").trim();
             if (e) {
                 n.set(e, (n.get(e) || 0) + 1);
@@ -605,7 +642,63 @@ export class BfOtpApp extends Component {
             m.get(g).push(t);
         }
         const reste = [...m.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-        return favoris.length ? [[_t("Favoris"), favoris], ...reste] : reste;
+        const groupes = favoris.length
+            ? [[_t("Favoris"), favoris], ...reste]
+            : reste;
+        // ⚠️ L'archive trouvée par la recherche ferme la liste, dans son propre
+        // groupe et sous son propre nom. Elle ne se mêle jamais aux autres :
+        // trouver un token qu'on avait rangé doit se voir comme tel, sinon on
+        // le croit revenu de lui-même.
+        const archivee = this.archiveTrouvee;
+        return archivee.length
+            ? [...groupes, [_t("Dans l'archive"), archivee]]
+            : groupes;
+    }
+
+    /**
+     * Tout ce qui est archivé, pour le panneau de l'archive.
+     *
+     * ⚠️ Rangé par émetteur puis par compte, jamais par date d'archivage :
+     * on vient ici chercher un compte précis, pas consulter un journal.
+     */
+    get archivedTokens() {
+        return this.state.tokens
+            .filter((t) => t.archived)
+            .sort((a, b) => (a.issuer || a.name).localeCompare(b.issuer || b.name));
+    }
+
+    /**
+     * Les tokens ARCHIVÉS que la recherche en cours trouve.
+     *
+     * 🔴 Vide tant qu'on ne cherche rien. Sans cette condition, l'archive
+     * réapparaîtrait en permanence au bas de la liste et n'archiverait plus
+     * rien du tout.
+     */
+    get archiveTrouvee() {
+        const q = this._requete;
+        if (!q) {
+            return [];
+        }
+        return this.state.tokens.filter(
+            (t) => t.archived && this._texteDe(t).includes(q)
+        );
+    }
+
+    async toggleArchive(t) {
+        const methode = t.archived ? "unarchive_token" : "archive_token";
+        await this.orm.call("bf.otp.token", methode, [t.id]);
+        t.archived = !t.archived;
+        this.notification.add(
+            t.archived
+                ? _t("Rangé dans l'archive. Il y produit encore ses codes.")
+                : _t("Ressorti de l'archive."),
+            { type: "success" }
+        );
+    }
+
+    openArchive() {
+        this.state.error = "";
+        this.state.showArchive = true;
     }
 
     async toggleFavorite(t) {
@@ -978,8 +1071,8 @@ export class BfOtpApp extends Component {
      * client, ce qui est pire que de ne rien rattacher : la faute serait
      * invisible et se propagerait dans les rapports de fin de mandat.
      *
-     * Une requête par nom DISTINCT, pas par token : cent quarante tokens ne
-     * portent qu'une vingtaine de clients.
+     * Une requête par nom DISTINCT, pas par token : un coffre entier ne porte
+     * qu'une poignée de clients distincts.
      */
     async _resoudreRattachements(entries) {
         const paires = [["partner", "partner_id", "res.partner"],
@@ -1020,8 +1113,11 @@ export class BfOtpApp extends Component {
      * Écrit le coffre dans un fichier chiffré, et le fait télécharger.
      *
      * ⚠️ La phrase demandée ici n'est PAS celle du coffre, et l'écran le dit :
-     * le fichier part ailleurs et vit plus longtemps que la session. Il n'existe
-     * volontairement aucune option « en clair ».
+     * le fichier part ailleurs et vit plus longtemps que la session.
+     *
+     * L'export EN CLAIR est une autre fonction, plus bas, et il coûte trois
+     * gestes. Les garder séparées est volontaire : un seul formulaire avec une
+     * case à cocher aurait fini par être coché par habitude.
      */
     async onExport(ev) {
         ev.preventDefault();
@@ -1064,6 +1160,102 @@ export class BfOtpApp extends Component {
             }
             msg += " " + _t("Sans la phrase de ce fichier, personne ne pourra le relire.");
             this.notification.add(msg, { type: "success", sticky: true });
+        } catch (e) {
+            this.state.error = e.message || _t("Export impossible.");
+        } finally {
+            this.state.busy = false;
+        }
+    }
+
+    /** Le mot qu'il faut écrire pour ouvrir la porte de l'export en clair. */
+    get motDeGarde() {
+        return _t("EN CLAIR");
+    }
+
+    /**
+     * Déplie l'avertissement. Ne produit encore aucun fichier.
+     *
+     * ⚠️ Un geste pour lire, un autre pour faire. Le repli n'est pas de la
+     * décoration : c'est ce qui empêche de télécharger un coffre ouvert en
+     * cliquant au mauvais endroit d'un panneau qu'on avait ouvert pour autre
+     * chose.
+     */
+    ouvrirPorteClaire() {
+        this.state.error = "";
+        this.state.clairOuvert = true;
+        this.state.clairPass = "";
+        this.state.clairMot = "";
+    }
+
+    /**
+     * Écrit le coffre EN CLAIR dans un fichier, et le fait télécharger.
+     *
+     * 🔴 Trois contrôles, et aucun n'est là pour décorer :
+     *
+     * 1. **La phrase du coffre**, revérifiée contre le témoin. L'écran est
+     *    peut-être ouvert depuis une heure, dans une pièce où d'autres passent.
+     *    Produire un coffre ouvert se confirme par ce qu'on SAIT, pas par le
+     *    fait qu'une page soit restée déverrouillée.
+     * 2. **Un mot à écrire à la main.** Une case à cocher se coche par
+     *    habitude ; un mot se tape en ayant lu ce qu'il y a au-dessus.
+     * 3. **Le nom du fichier porte « EN-CLAIR »**, parce que le contrôle qui
+     *    compte vraiment arrive trois mois plus tard, quand quelqu'un retrouve
+     *    ce fichier dans ses téléchargements et doit comprendre en une seconde
+     *    ce qu'il tient.
+     *
+     * ⚠️ La vérification de la phrase passe par `unlockVault`, la MÊME fonction
+     * que l'écran verrouillé. Réécrire ici une comparaison maison aurait créé
+     * un second chemin d'authentification, et c'est toujours le second qui est
+     * plus faible que le premier.
+     */
+    async onExportClair(ev) {
+        ev.preventDefault();
+        this.state.error = "";
+        if ((this.state.clairMot || "").trim().toUpperCase()
+            !== this.motDeGarde.toUpperCase()) {
+            this.state.error = _t(
+                "Écrivez « %s » pour confirmer que ce fichier contiendra vos graines lisibles.",
+                this.motDeGarde
+            );
+            return;
+        }
+        this.state.busy = true;
+        try {
+            const cle = await unlockVault(this.state.clairPass || "", this.state.vault);
+            if (!cle) {
+                this.state.error = _t("Phrase de passe du coffre incorrecte.");
+                return;
+            }
+            const { fichier, exportes, ignores } = construireExportClair(this.state.tokens);
+            if (!exportes) {
+                this.state.error = _t("Aucun token lisible à exporter.");
+                return;
+            }
+            const nom = `symbifox-tokens-EN-CLAIR-${new Date().toISOString().slice(0, 10)}.json`;
+            const blob = new Blob([JSON.stringify(fichier, null, 2)],
+                                  { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const lien = document.createElement("a");
+            lien.href = url;
+            lien.download = nom;
+            lien.click();
+            URL.revokeObjectURL(url);
+
+            this.state.showExport = false;
+            this.state.clairOuvert = false;
+            this.state.clairPass = "";
+            this.state.clairMot = "";
+            let msg = _t(
+                "%(nombre)s token(s) écrits EN CLAIR dans %(fichier)s.",
+                { nombre: exportes, fichier: nom }
+            );
+            if (ignores) {
+                msg += " " + _t("%s illisible(s) dans ce coffre, non exporté(s).", ignores);
+            }
+            msg += " " + _t(
+                "Qui ouvre ce fichier peut produire vos codes. Rangez-le comme un mot de passe, ou effacez-le dès qu'il a servi."
+            );
+            this.notification.add(msg, { type: "warning", sticky: true });
         } catch (e) {
             this.state.error = e.message || _t("Export impossible.");
         } finally {

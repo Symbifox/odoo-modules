@@ -8,7 +8,7 @@
  * C'est **exactement** le scellé de la clé d'accès (`otp_webauthn.js`), avec un
  * code tiré au sort à la place du secret rendu par l'authentificateur. La clé du
  * coffre ne change pas, donc **aucune graine n'est ré-encryptée** : sur un coffre
- * qui en porte cent quarante-quatre, c'était le seul vrai risque à éviter.
+ * qui en porte des centaines, c'était le seul vrai risque à éviter.
  *
  * Ouvrir devient : saisir le code → PBKDF2 sur ce code avec le sel rangé → HKDF
  * avec une étiquette de contexte → la clé qui ouvre le scellé → les octets de la

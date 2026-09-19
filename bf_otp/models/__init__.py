@@ -4,3 +4,4 @@ from . import bf_otp_credential
 from . import bf_otp_recovery
 from . import bf_otp_device
 from . import bf_otp_rattachement
+from . import bf_otp_group_wizard
