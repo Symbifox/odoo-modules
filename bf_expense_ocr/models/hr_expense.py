@@ -44,6 +44,14 @@ MIMES_LISIBLES = (
 #: Deux sous : un reçu peut arrondir sa TPS et sa TVQ séparément.
 TOLERANCE_BALANCE = 0.02
 
+#: Marque posée sur la copie recadrée d'une photo, dans `description`. Elle
+#: sert à deux choses, et la seconde est la plus importante : distinguer la
+#: copie de la pièce justificative À L'ŒIL, et l'écarter de la recherche de la
+#: pièce à lire. 🔴 Sans cette exclusion, une deuxième lecture lirait le
+#: recadrage du recadrage : `_ocr_attachment` prend la plus RÉCENTE, et la
+#: plus récente est justement celle que la lecture précédente a posée.
+MARQUE_RECADRE = "bf_ocr_recadre"
+
 #: Au-delà de cette part du sous-total, un « pourboire » déduit par
 #: soustraction n'est plus un pourboire mais une erreur de lecture ailleurs.
 POURBOIRE_MAX_RATIO = 0.40
@@ -100,20 +108,57 @@ class HrExpense(models.Model):
 
         La principale d'abord — c'est celle que le téléversement mobile vient
         de poser — puis la plus récente qui soit d'un type qu'on sait lire.
+
+        🔴 Les copies recadrées que NOUS avons posées sont écartées des deux
+        côtés : ce sont des aides à la lecture, pas des pièces justificatives,
+        et les relire reviendrait à recadrer un recadrage.
         """
         self.ensure_one()
         principale = self.message_main_attachment_id
-        if principale and principale.mimetype in MIMES_LISIBLES:
+        if (principale and principale.mimetype in MIMES_LISIBLES
+                and principale.description != MARQUE_RECADRE):
             return principale
         return self.env["ir.attachment"].search(
             [
                 ("res_model", "=", "hr.expense"),
                 ("res_id", "=", self.id),
                 ("mimetype", "in", list(MIMES_LISIBLES)),
+                "|",
+                ("description", "=", False),
+                ("description", "!=", MARQUE_RECADRE),
             ],
             order="id desc",
             limit=1,
         )
+
+    def _ocr_poser_recadrage(self, piece, res):
+        """Joindre la version recadrée À CÔTÉ de l'originale, jamais à sa place.
+
+        Arbitrage du 2026-09-18 : on garde les deux. L'originale reste la pièce
+        justificative et la principale du fil ; la recadrée est une copie de
+        travail, droite et lisible sans zoomer.
+
+        Ne lève jamais : perdre la copie de travail ne doit pas coûter la
+        lecture qui vient de réussir.
+        """
+        self.ensure_one()
+        recadre = (res or {}).get("cropped_base64")
+        if not recadre:
+            return self.env["ir.attachment"]
+        info = (res or {}).get("crop") or {}
+        base = ".".join((piece.name or "recu").split(".")[:-1]) or (piece.name or "recu")
+        try:
+            return self.env["ir.attachment"].create({
+                "name": f"{base} (recadré){info.get('ext', '.jpg')}",
+                "datas": recadre,
+                "mimetype": info.get("mimetype") or "image/jpeg",
+                "res_model": "hr.expense",
+                "res_id": self.id,
+                "description": MARQUE_RECADRE,
+            })
+        except Exception:  # noqa: BLE001
+            _logger.exception("Copie recadrée du reçu %s non posée", self.id)
+            return self.env["ir.attachment"]
 
     # ------------------------------------------------------------------
     # La lecture
@@ -174,6 +219,10 @@ class HrExpense(models.Model):
             })
             return False
 
+        # La copie recadrée se pose même quand le garde-fou refusera ensuite :
+        # c'est ce que le modèle a lu, et c'est justement quand il se trompe
+        # qu'on veut pouvoir regarder la même chose que lui.
+        self._ocr_poser_recadrage(piece, res)
         return self._apply_ocr_result(res["data"])
 
     # ------------------------------------------------------------------
@@ -186,15 +235,31 @@ class HrExpense(models.Model):
 
         Rend `(total, pourboire, motif)`. Un `motif` non vide veut dire qu'on
         ne pose rien : c'est le seul contrat de cette méthode.
+
+        🔴 **Deux lectures d'« autres taxes », et il faut essayer les deux.**
+        Un frais imprimé dans le bloc des taxes n'est pas forcément ajouté au
+        sous-total. Les frais environnementaux du Québec (EHF), les frais de
+        recyclage et les consignes s'impriment là ET sont déjà COMPRIS dans le
+        sous-total. Les compter une deuxième fois déséquilibre le reçu du
+        montant du frais, et un reçu juste se fait refuser.
+
+        Vécu le 2026-09-18 sur un reçu de détaillant d'informatique :
+        1 499,00 + 0,60 + 29,99 + 0,60 = 1 530,19 de sous-total, EHF 1,20
+        imprimé au-dessus, écart de 1,20 exactement, trois refus sur trois.
+        Le défaut dormait parce que l'image était trop floue pour que le modèle
+        lise la ligne ; le jour où elle a été recadrée, il s'est réveillé.
+
+        On essaie donc la lecture littérale d'abord (le frais s'ajoute), puis
+        celle où il est déjà dedans. La première qui balance gagne. Quand il
+        n'y a pas d'« autres taxes », les deux sont identiques et rien ne
+        change.
         """
         total = _nombre(donnees.get("total"))
         sous_total = _nombre(donnees.get("subtotal"))
-        taxes = sum(filter(None, (
-            _nombre(donnees.get("gst")),
-            _nombre(donnees.get("qst")),
-            _nombre(donnees.get("other_taxes")),
-        ))) or 0.0
-        pourboire = _nombre(donnees.get("tip"))
+        gst = _nombre(donnees.get("gst")) or 0.0
+        qst = _nombre(donnees.get("qst")) or 0.0
+        autres = _nombre(donnees.get("other_taxes")) or 0.0
+        pourboire_lu = _nombre(donnees.get("tip"))
 
         if total is None:
             return None, None, _("Le total n'a pas été lu.")
@@ -203,18 +268,35 @@ class HrExpense(models.Model):
         if sous_total is None:
             return None, None, _("Le sous-total avant taxes n'a pas été lu.")
 
+        premier_motif = None
+        for taxes in (gst + qst + autres, gst + qst):
+            pourboire, motif = self._ocr_pourboire(
+                total, sous_total, taxes, pourboire_lu)
+            if not motif:
+                return total, pourboire, None
+            if premier_motif is None:
+                premier_motif = motif
+            if not autres:
+                break  # les deux hypothèses sont la même, ne pas refuser deux fois
+
+        return None, None, premier_motif
+
+    @api.model
+    def _ocr_pourboire(self, total, sous_total, taxes, pourboire_lu):
+        """Le pourboire sous UNE hypothèse de taxes. Rend `(pourboire, motif)`."""
+        pourboire = pourboire_lu
         if pourboire is None:
             # Le pourboire n'est pas imprimé : c'est le résidu, s'il est plausible.
             residu = round(total - (sous_total + taxes), 2)
             if residu < -TOLERANCE_BALANCE:
-                return None, None, _(
+                return None, _(
                     "Le reçu ne balance pas : sous-total et taxes (%(part).2f) "
                     "dépassent le total (%(total).2f)."
                 ) % {"part": sous_total + taxes, "total": total}
             if residu <= TOLERANCE_BALANCE:
                 pourboire = 0.0
             elif residu > sous_total * POURBOIRE_MAX_RATIO:
-                return None, None, _(
+                return None, _(
                     "L'écart entre le total et le détail (%(residu).2f) est trop "
                     "grand pour être un pourboire."
                 ) % {"residu": residu}
@@ -222,16 +304,16 @@ class HrExpense(models.Model):
                 pourboire = residu
 
         if pourboire < 0:
-            return None, None, _("Le pourboire lu est négatif.")
+            return None, _("Le pourboire lu est négatif.")
 
         ecart = abs((sous_total + taxes + pourboire) - total)
         if ecart > TOLERANCE_BALANCE:
-            return None, None, _(
+            return None, _(
                 "Le reçu ne balance pas : sous-total + taxes + pourboire = "
                 "%(somme).2f, total lu = %(total).2f."
             ) % {"somme": sous_total + taxes + pourboire, "total": total}
 
-        return total, pourboire, None
+        return pourboire, None
 
     # ------------------------------------------------------------------
     # L'application
@@ -308,11 +390,43 @@ class HrExpense(models.Model):
     def _ocr_auto_actif(self):
         return bool((self.company_id or self.env.company).expense_ocr_auto)
 
+    @api.model
+    def _ocr_domaine_rattrapage(self):
+        """Les dépenses que le rattrapage doit reprendre.
+
+        🔴 Même défaut que chez `bf_invoice_ocr` : une panne de TRANSPORT écrit
+        `error` (socket endormie, service muet, délai), et on ne reprenait que
+        les `none`. La dépense restait condamnée alors que le modèle ne l'avait
+        jamais vue. `ocr_raw_response` tranche : vide, l'appel n'a pas abouti et
+        l'échec est passager ; remplie, c'est le modèle ou le garde-fou qui a
+        décidé, et on ne repasse pas par-dessus.
+        """
+        return [
+            ("state", "=", "draft"),
+            "|",
+            ("ocr_state", "=", "none"),
+            "&",
+            ("ocr_state", "=", "error"),
+            ("ocr_raw_response", "in", [False, ""]),
+        ]
+
+    def _ocr_a_relire(self):
+        """Une pièce qu'on vient de poser mérite-t-elle une lecture ?
+
+        Oui si rien n'a jamais été tenté, et oui aussi si la tentative
+        précédente est morte en transport : le cron des dépenses est éteint par
+        décision de vie privée, donc sans ça personne ne repasserait jamais.
+        """
+        self.ensure_one()
+        if self.ocr_state in ("none", False):
+            return True
+        return self.ocr_state == "error" and not self.ocr_raw_response
+
     def attach_document(self, **kwargs):
         """Une pièce jointe posée sur une dépense existante."""
         res = super().attach_document(**kwargs)
         for depense in self:
-            if depense._ocr_auto_actif() and depense.ocr_state in ("none", False):
+            if depense._ocr_auto_actif() and depense._ocr_a_relire():
                 depense._ocr_scan_silencieux()
         return res
 
@@ -348,7 +462,7 @@ class HrExpense(models.Model):
         des photos de reçus à un tiers ne s'allume pas tout seul.
         """
         candidates = self.search(
-            [("state", "=", "draft"), ("ocr_state", "=", "none")],
+            self._ocr_domaine_rattrapage(),
             order="create_date desc",
             limit=limite,
         )

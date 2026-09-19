@@ -3,7 +3,7 @@
     "name": "Lecture des reçus",
     "summary": "Photographier un reçu de repas et laisser l'extraction "
                "remplir le total, les taxes et le pourboire",
-    "version": "18.0.2.0.0",
+    "version": "18.0.2.1.1",
     "category": "Human Resources/Expenses",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
