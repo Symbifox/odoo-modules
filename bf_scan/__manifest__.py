@@ -1,9 +1,9 @@
 {
     "name": "Numériser depuis le téléphone",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.1.1",
     "category": "Productivity",
-    "summary": "La page /scan gagne deux gestes : photographier une facture, "
-               "et déposer un document au bloc-notes ou au chatter d'une fiche",
+    "summary": "Photographier une carte d'affaires, une facture ou un document "
+               "depuis le téléphone, et les ranger dans Odoo",
     "description": """
 Numériser depuis le téléphone
 =============================
