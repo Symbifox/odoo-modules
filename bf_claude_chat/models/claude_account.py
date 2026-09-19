@@ -246,8 +246,8 @@ class ClaudeAccount(models.Model):
 
         Le compte se crée tout seul au premier relevé : rien n'est semé à
         l'installation, parce que la liste des comptes dépend de l'hôte et pas
-        du locataire. Semer « BSI » sur l'Odoo de PME Conforme n'aurait aucun
-        sens.
+        du locataire. Semer les comptes d'un poste sur l'Odoo d'un autre
+        n'aurait aucun sens.
         """
         if not config_dir:
             return self.browse()

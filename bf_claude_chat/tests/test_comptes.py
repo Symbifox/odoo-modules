@@ -55,9 +55,9 @@ class TestComptesClaude(TransactionCase):
 
     def test_deux_repertoires_sont_deux_comptes(self):
         a = self.Compte.compte_par_repertoire("/home/x/.claude")
-        b = self.Compte.compte_par_repertoire("/home/x/.claude-bsi")
+        b = self.Compte.compte_par_repertoire("/home/x/.claude-autre")
         self.assertNotEqual(a, b)
-        self.assertEqual(b.name, ".claude-bsi", "le nom se déduit du chemin")
+        self.assertEqual(b.name, ".claude-autre", "le nom se déduit du chemin")
 
     # ── Ce qui se mesure, et ce qui ne se mesure pas ──────────────────
     def test_une_fenetre_non_rendue_n_a_pas_de_ligne(self):
@@ -139,7 +139,7 @@ class TestComptesClaude(TransactionCase):
 
     def test_un_compte_sans_releve_utilisable_ne_juge_rien(self):
         cid = self.Compte.enregistrer_releve(
-            "/home/x/.claude-bsi",
+            "/home/x/.claude-autre",
             erreur="session éteinte : jeton d'accès blanchi")
         compte = self.Compte.browse(cid)
         self.assertEqual(compte.etat_sonde, "session_morte")
