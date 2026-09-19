@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate="0" volontairement : la liste des contrôles est du contenu de
+         module, pas de la donnée d'utilisateur. Une montée doit pouvoir en
+         ajouter un, ou corriger le texte d'un autre. L'état, lui, vit sur
+         l'enregistrement et n'est pas touché par ces champs. -->
+
+    <record id="controle_codes_invalides" model="bf.oe2oc.check">
+        <field name="name">Codes de langue ou de fuseau inexistants</field>
+        <field name="key">invalid_locales</field>
+        <field name="sequence">5</field>
+        <field name="category">data</field>
+        <field name="description">Cherche les codes de langue et de fuseau horaire portés par des fiches alors qu'ils n'existent pas. À la différence d'une langue simplement inactive, un code inexistant fait lever Odoo sur tout appel qui le résout, et la trace nomme le code plutôt que la fiche. C'est le premier contrôle à passer après une migration.</field>
+    </record>
+
+    <record id="controle_langues" model="bf.oe2oc.check">
+        <field name="name">Langues employées mais inactives</field>
+        <field name="key">languages</field>
+        <field name="sequence">10</field>
+        <field name="category">config</field>
+        <field name="description">Relève les codes de langue portés par des contacts ou des comptes alors que la langue n'est pas activée. Un champ traduit s'affiche alors dans la langue de repli, sans prévenir.</field>
+    </record>
+
+    <record id="controle_base_url" model="bf.oe2oc.check">
+        <field name="name">web.base.url après neutralisation</field>
+        <field name="key">base_url</field>
+        <field name="sequence">20</field>
+        <field name="category">config</field>
+        <field name="description">La migration remet web.base.url sur une valeur locale pour que rien ne parte vers l'ancien domaine. Laissée telle quelle, tout lien envoyé par courriel pointe vers la machine de la personne qui le reçoit.</field>
+    </record>
+
+    <record id="controle_crons" model="bf.oe2oc.check">
+        <field name="name">Actions planifiées encore arrêtées</field>
+        <field name="key">crons</field>
+        <field name="sequence">30</field>
+        <field name="category">config</field>
+        <field name="description">La neutralisation arrête les planificateurs. C'est le bon état le temps des essais, et le mauvais dès la mise en service : relances, factures récurrentes et synchronisations dorment.</field>
+    </record>
+
+    <record id="controle_sequences" model="bf.oe2oc.check">
+        <field name="name">Séquences en retard sur leur table</field>
+        <field name="key">sequences</field>
+        <field name="sequence">40</field>
+        <field name="category">data</field>
+        <field name="description">Compare la séquence d'identifiants de chaque table courante au plus grand identifiant qu'elle contient. Une séquence en retard ne dit rien jusqu'à la prochaine création, qui échoue sur une clé dupliquée.</field>
+    </record>
+
+    <record id="controle_pieces_jointes" model="bf.oe2oc.check">
+        <field name="name">Pièces jointes dont le fichier n'a pas suivi</field>
+        <field name="key">attachments</field>
+        <field name="sequence">50</field>
+        <field name="category">data</field>
+        <field name="description">Échantillonne des pièces jointes et tente de les lire. Une fiche qui porte une pièce jointe illisible a l'air complète jusqu'au clic.</field>
+    </record>
+
+    <record id="controle_serveurs_envoi" model="bf.oe2oc.check">
+        <field name="name">Serveurs d'envoi actifs</field>
+        <field name="key">mail_servers</field>
+        <field name="sequence">60</field>
+        <field name="category">mail</field>
+        <field name="description">Sur une base fraîchement migrée, une file de courriels reprise peut partir vers de vrais destinataires au premier passage du planificateur. Ce contrôle dit si une porte de sortie est ouverte.</field>
+    </record>
+
+    <record id="controle_reprise" model="bf.oe2oc.check">
+        <field name="name">Données Enterprise laissées de côté</field>
+        <field name="key">leftovers</field>
+        <field name="sequence">70</field>
+        <field name="category">data</field>
+        <field name="description">Vérifie qu'un fichier de reprise a été déposé et que tout ce qui avait une correspondance a été relogé.</field>
+    </record>
+
+    <record id="controle_dbfilter" model="bf.oe2oc.check">
+        <field name="name">Remettre le dbfilter et le mot de passe maître</field>
+        <field name="key">dbfilter</field>
+        <field name="sequence">80</field>
+        <field name="category">manual</field>
+        <field name="automatic" eval="False"/>
+        <field name="description">Le dbfilter a été élargi pour atteindre la base migrée, et la liste des bases est souvent ouverte le temps des essais. Ces deux réglages vivent dans odoo.conf, hors de portée d'un contrôle depuis l'intérieur : à refermer à la main, puis cocher ici.</field>
+    </record>
+
+    <record id="controle_mots_de_passe" model="bf.oe2oc.check">
+        <field name="name">Revoir les comptes et leurs accès</field>
+        <field name="key">accounts</field>
+        <field name="sequence">90</field>
+        <field name="category">manual</field>
+        <field name="automatic" eval="False"/>
+        <field name="description">Les mots de passe sont repris tels quels depuis Enterprise, y compris ceux de comptes partis depuis. Passer la liste des comptes internes, désactiver ce qui n'a plus lieu d'être, et refaire l'authentification à deux facteurs là où elle était en place : les jetons ne suivent pas.</field>
+    </record>
+</odoo>

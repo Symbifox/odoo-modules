@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_oe2oc" model="ir.module.category">
+        <field name="name">Reprise Enterprise</field>
+        <field name="description">Reprise des données laissées par une migration Odoo Enterprise vers Community.</field>
+        <field name="sequence">40</field>
+    </record>
+
+    <!-- Un seul groupe, et il est haut placé : reloger écrit dans des modèles
+         métier à partir d'un fichier déposé, et les contrôles lisent la
+         configuration de l'instance. Ce n'est pas un droit à distribuer. -->
+    <record id="group_oe2oc_manager" model="res.groups">
+        <field name="name">Gestion de la reprise</field>
+        <field name="category_id" ref="module_category_oe2oc"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <record id="base.group_system" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('bf_oe2oc.group_oe2oc_manager'))]"/>
+    </record>
+
+    <record id="regle_reprise_societe" model="ir.rule">
+        <field name="name">Reprises : cloison des sociétés</field>
+        <field name="model_id" ref="model_bf_oe2oc_bundle"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

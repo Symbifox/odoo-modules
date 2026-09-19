@@ -1,0 +1,1073 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_oe2oc
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-19 03:15+0000\n"
+"PO-Revision-Date: 2026-09-19 03:15+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "%(missing)s des %(total)s pièces jointes échantillonnées sont introuvables sur disque. Le filestore n'a probablement pas été copié au bon endroit : il va sous <data_dir>/filestore/<nom_de_la_base>."
+msgstr "%(missing)s des %(total)s pièces jointes échantillonnées sont introuvables sur disque. Le filestore n'a probablement pas été copié au bon endroit : il va sous <data_dir>/filestore/<nom_de_la_base>."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_table.py:0
+msgid "%(n)s créés dans %(model)s."
+msgstr "%(n)s créés dans %(model)s."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "%(n)s serveurs d'envoi sont actifs. Sur une base fraîchement migrée, les files de courriels reprises peuvent partir vers de vrais destinataires dès le premier passage du planificateur."
+msgstr "%(n)s serveurs d'envoi sont actifs. Sur une base fraîchement migrée, les files de courriels reprises peuvent partir vers de vrais destinataires dès le premier passage du planificateur."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "%(n)s tables laissées de côté, leur modèle d'arrivée n'étant pas installé : %(models)s."
+msgstr "%(n)s tables laissées de côté, leur modèle d'arrivée n'étant pas installé : %(models)s."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "%(off)s actions planifiées sur %(total)s sont arrêtées. C'est l'état voulu juste après une migration ; ce ne l'est plus une fois la base en service."
+msgstr "%(off)s actions planifiées sur %(total)s sont arrêtées. C'est l'état voulu juste après une migration ; ce ne l'est plus une fois la base en service."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_table.py:0
+msgid "%s en échec :"
+msgstr "%s en échec :"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "%s tables reprises ont une correspondance mais n'ont pas encore été relogées."
+msgstr "%s tables reprises ont une correspondance mais n'ont pas encore été relogées."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_row.py:0
+msgid "(rang vide)"
+msgstr "(rang vide)"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_apercu_formulaire
+msgid ""
+".\n"
+"                    Rien n'est encore créé."
+msgstr ""
+".\n"
+"                    Rien n'est encore créé."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__message_needaction
+msgid "Action Needed"
+msgstr "Action Needed"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_crons
+msgid "Actions planifiées encore arrêtées"
+msgstr "Actions planifiées encore arrêtées"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__summary
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_apercu_formulaire
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_formulaire
+msgid "Aperçu"
+msgstr "Aperçu"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_table.py:0
+#: model:ir.model,name:bf_oe2oc.model_bf_oe2oc_preview
+msgid "Aperçu du relogement"
+msgstr "Aperçu du relogement"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__message_attachment_count
+msgid "Attachment Count"
+msgstr "Attachment Count"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Aucun contrôle automatique sous cette clé."
+msgstr "Aucun contrôle automatique sous cette clé."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Aucun fichier de reprise n'a été déposé. Si la migration a laissé des données Enterprise de côté, elles sont dans « enterprise-leftovers.json », à côté du dump."
+msgstr "Aucun fichier de reprise n'a été déposé. Si la migration a laissé des données Enterprise de côté, elles sont dans « enterprise-leftovers.json », à côté du dump."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Aucun fichier n'est déposé sur cette reprise."
+msgstr "Aucun fichier n'est déposé sur cette reprise."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_table.py:0
+msgid "Aucun rang à montrer."
+msgstr "Aucun rang à montrer."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Aucun serveur d'envoi n'est configuré : rien ne peut sortir de cette base."
+msgstr "Aucun serveur d'envoi n'est configuré : rien ne peut sortir de cette base."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Aucune action planifiée dans cette base."
+msgstr "Aucune action planifiée dans cette base."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_table.py:0
+msgid "Aucune correspondance n'est définie pour « %s ». Ses rangs restent consultables ici, mais ce module ne sait pas où les écrire."
+msgstr "Aucune correspondance n'est définie pour « %s ». Ses rangs restent consultables ici, mais ce module ne sait pas où les écrire."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Aucune pièce jointe stockée sur disque à contrôler."
+msgstr "Aucune pièce jointe stockée sur disque à contrôler."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Aucune table en attente de relogement. Les tables sans correspondance restent consultables telles quelles."
+msgstr "Aucune table en attente de relogement. Les tables sans correspondance restent consultables telles quelles."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_table.py:0
+msgid "Aucune valeur exploitable dans ce rang."
+msgstr "Aucune valeur exploitable dans ce rang."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__automatic
+msgid "Automatique"
+msgstr "Automatique"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__target_db
+msgid "Base d'arrivée"
+msgstr "Base d'arrivée"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__source_db
+msgid "Base d'origine"
+msgstr "Base d'origine"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__category
+msgid "Catégorie"
+msgstr "Catégorie"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Ce fichier annonce le format « %(got)s ». Ce module lit « %(want)s », écrit par la phase 9 d'odoo18-ee2ce."
+msgstr "Ce fichier annonce le format « %(got)s ». Ce module lit « %(want)s », écrit par la phase 9 d'odoo18-ee2ce."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Ce fichier n'est pas du JSON lisible. Attendu : le fichier « enterprise-leftovers.json » écrit par odoo18-ee2ce. Détail : %s"
+msgstr "Ce fichier n'est pas du JSON lisible. Attendu : le fichier « enterprise-leftovers.json » écrit par odoo18-ee2ce. Détail : %s"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Ce fichier ne porte pas un objet JSON."
+msgstr "Ce fichier ne porte pas un objet JSON."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Ce fichier porte %(total)s rangs, au-delà de la limite de %(cap)s. Un export de reprise normal en compte quelques centaines : un fichier de cette taille veut probablement dire que des tables métier y sont tombées par erreur."
+msgstr "Ce fichier porte %(total)s rangs, au-delà de la limite de %(cap)s. Un export de reprise normal en compte quelques centaines : un fichier de cette taille veut probablement dire que des tables métier y sont tombées par erreur."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__description
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_controle_formulaire
+msgid "Ce qu'il vérifie"
+msgstr "Ce qu'il vérifie"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__caveat
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_formulaire
+msgid "Ce qui ne suit pas"
+msgstr "Ce qui ne suit pas"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_preview__body
+msgid "Ce qui serait écrit"
+msgstr "Ce qui serait écrit"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_formulaire
+msgid "Ceci crée des enregistrements dans le modèle d'arrivée."
+msgstr "Ceci crée des enregistrements dans le modèle d'arrivée."
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+msgid "Ceci crée des enregistrements dans les modèles d'arrivée. Avez-vous regardé l'aperçu de chaque table ?"
+msgstr "Ceci crée des enregistrements dans les modèles d'arrivée. Avez-vous regardé l'aperçu de chaque table ?"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_codes_invalides
+msgid "Cherche les codes de langue et de fuseau horaire portés par des fiches alors qu'ils n'existent pas. À la différence d'une langue simplement inactive, un code inexistant fait lever Odoo sur tout appel qui le résout, et la trace nomme le code plutôt que la fiche. C'est le premier contrôle à passer après une migration."
+msgstr "Cherche les codes de langue et de fuseau horaire portés par des fiches alors qu'ils n'existent pas. À la différence d'une langue simplement inactive, un code inexistant fait lever Odoo sur tout appel qui le résout, et la trace nomme le code plutôt que la fiche. C'est le premier contrôle à passer après une migration."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__target_available
+msgid "Cible installée"
+msgstr "Cible installée"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_codes_invalides
+msgid "Codes de langue ou de fuseau inexistants"
+msgstr "Codes de langue ou de fuseau inexistants"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Codes inexistants trouvés : %(list)s. Ce n'est pas cosmétique : Odoo lève sur tout appel qui les résout, et la trace nomme le code, pas la fiche. À vider ou à corriger avant la mise en service."
+msgstr "Codes inexistants trouvés : %(list)s. Ce n'est pas cosmétique : Odoo lève sur tout appel qui les résout, et la trace nomme le code, pas la fiche. À vider ou à corriger avant la mise en service."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__columns
+msgid "Colonnes"
+msgstr "Colonnes"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_sequences
+msgid "Compare la séquence d'identifiants de chaque table courante au plus grand identifiant qu'elle contient. Une séquence en retard ne dit rien jusqu'à la prochaine création, qui échoue sur une clé dupliquée."
+msgstr "Compare la séquence d'identifiants de chaque table courante au plus grand identifiant qu'elle contient. Une séquence en retard ne dit rien jusqu'à la prochaine création, qui échoue sur une clé dupliquée."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_check__category__config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_table__state__kept
+msgid "Conservée"
+msgstr "Conservée"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__result
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_controle_formulaire
+msgid "Constat"
+msgstr "Constat"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+msgid "Contenu"
+msgstr "Contenu"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_controle_formulaire
+msgid "Contrôle"
+msgstr "Contrôle"
+
+#. module: bf_oe2oc
+#: model:ir.model,name:bf_oe2oc.model_bf_oe2oc_check
+msgid "Contrôle d'après-migration"
+msgstr "Contrôle d'après-migration"
+
+#. module: bf_oe2oc
+#: model:ir.ui.menu,name:bf_oe2oc.menu_oe2oc_controles
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_controle_liste
+msgid "Contrôles"
+msgstr "Contrôles"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+#: model:ir.actions.act_window,name:bf_oe2oc.action_controle
+msgid "Contrôles d'après-migration"
+msgstr "Contrôles d'après-migration"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__target_label
+msgid "Correspondance"
+msgstr "Correspondance"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_check__category__mail
+msgid "Courriel"
+msgstr "Courriel"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__create_uid
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__create_uid
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_preview__create_uid
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__create_uid
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__create_uid
+msgid "Created by"
+msgstr "Created by"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__create_date
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__create_date
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_preview__create_date
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__create_date
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__create_date
+msgid "Created on"
+msgstr "Created on"
+
+#. module: bf_oe2oc
+#: model:ir.model.constraint,message:bf_oe2oc.constraint_bf_oe2oc_check_key_uniq
+msgid "Deux contrôles ne peuvent pas porter la même clé."
+msgstr "Deux contrôles ne peuvent pas porter la même clé."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__display_name
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__display_name
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_preview__display_name
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__display_name
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__display_name
+msgid "Display Name"
+msgstr "Display Name"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_check__category__data
+msgid "Données"
+msgstr "Données"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_reprise
+msgid "Données Enterprise laissées de côté"
+msgstr "Données Enterprise laissées de côté"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_check__automatic
+msgid "Décoché, le contrôle ne se coche qu'à la main."
+msgstr "Décoché, le contrôle ne se coche qu'à la main."
+
+#. module: bf_oe2oc
+#: model_terms:ir.actions.act_window,help:bf_oe2oc.action_reprise
+msgid "Déposer un export de reprise"
+msgstr "Déposer un export de reprise"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_bundle__state__draft
+msgid "Déposé"
+msgstr "Déposé"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_row__state__pending
+msgid "En attente"
+msgstr "En attente"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__generated_at
+msgid "Exporté le"
+msgstr "Exporté le"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_apercu_formulaire
+msgid "Fermer"
+msgstr "Fermer"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+msgid "Fichier"
+msgstr "Fichier"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__file
+msgid "Fichier d'export"
+msgstr "Fichier d'export"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Fichier lu : %(tables)s tables, %(rows)s rangs."
+msgstr "Fichier lu : %(tables)s tables, %(rows)s rangs."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__source_dump
+msgid "Fichier source"
+msgstr "Fichier source"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__message_follower_ids
+msgid "Followers"
+msgstr "Followers"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Followers (Partners)"
+
+#. module: bf_oe2oc
+#: model:res.groups,name:bf_oe2oc.group_oe2oc_manager
+msgid "Gestion de la reprise"
+msgstr "Gestion de la reprise"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__has_message
+msgid "Has Message"
+msgstr "Has Message"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__id
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__id
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_preview__id
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__id
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__target_id
+msgid "Identifiant créé"
+msgstr "Identifiant créé"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__source_id
+msgid "Identifiant d'origine"
+msgstr "Identifiant d'origine"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_check__key
+msgid "Identifiant du contrôle automatique, le cas échéant."
+msgstr "Identifiant du contrôle automatique, le cas échéant."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_bundle__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "If checked, new messages require your attention."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_bundle__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr "If checked, some messages have a delivery error."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__message_is_follower
+msgid "Is Follower"
+msgstr "Is Follower"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__message
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_formulaire
+msgid "Journal"
+msgstr "Journal"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__key
+msgid "Key"
+msgstr "Key"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_formulaire
+msgid ""
+"L'export a plafonné le nombre de rangs pour cette table :\n"
+"                        ce qui est ici n'est pas tout."
+msgstr ""
+"L'export a plafonné le nombre de rangs pour cette table :\n"
+"                        ce qui est ici n'est pas tout."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_table__truncated
+msgid "L'export a plafonné le nombre de rangs pour cette table."
+msgstr "L'export a plafonné le nombre de rangs pour cette table."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_row__source_id
+msgid "La clé primaire du rang dans la base Enterprise."
+msgstr "La clé primaire du rang dans la base Enterprise."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_table.py:0
+msgid "La correspondance vise le modèle « %(model)s », qui n'est pas installé. Installez le module qui le porte, puis reprenez."
+msgstr "La correspondance vise le modèle « %(model)s », qui n'est pas installé. Installez le module qui le porte, puis reprenez."
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_base_url
+msgid "La migration remet web.base.url sur une valeur locale pour que rien ne parte vers l'ancien domaine. Laissée telle quelle, tout lien envoyé par courriel pointe vers la machine de la personne qui le reçoit."
+msgstr "La migration remet web.base.url sur une valeur locale pour que rien ne parte vers l'ancien domaine. Laissée telle quelle, tout lien envoyé par courriel pointe vers la machine de la personne qui le reçoit."
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_crons
+msgid "La neutralisation arrête les planificateurs. C'est le bon état le temps des essais, et le mauvais dès la mise en service : relances, factures récurrentes et synchronisations dorment."
+msgstr "La neutralisation arrête les planificateurs. C'est le bon état le temps des essais, et le mauvais dès la mise en service : relances, factures récurrentes et synchronisations dorment."
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_langues
+msgid "Langues employées mais inactives"
+msgstr "Langues employées mais inactives"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Langues employées par des fiches mais inactives : %(codes)s. Activez-les dans Paramètres › Traductions › Langues, sinon les champs traduits s'affichent dans la langue de repli."
+msgstr "Langues employées par des fiches mais inactives : %(codes)s. Activez-les dans Paramètres › Traductions › Langues, sinon les champs traduits s'affichent dans la langue de repli."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__write_uid
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__write_uid
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_preview__write_uid
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__write_uid
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__write_uid
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__write_date
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__write_date
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_preview__write_date
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__write_date
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__write_date
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Le contrôle a levé : %s"
+msgstr "Le contrôle a levé : %s"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_dbfilter
+msgid "Le dbfilter a été élargi pour atteindre la base migrée, et la liste des bases est souvent ouverte le temps des essais. Ces deux réglages vivent dans odoo.conf, hors de portée d'un contrôle depuis l'intérieur : à refermer à la main, puis cocher ici."
+msgstr "Le dbfilter a été élargi pour atteindre la base migrée, et la liste des bases est souvent ouverte le temps des essais. Ces deux réglages vivent dans odoo.conf, hors de portée d'un contrôle depuis l'intérieur : à refermer à la main, puis cocher ici."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Le fichier n'a pas pu être décodé : %s"
+msgstr "Le fichier n'a pas pu être décodé : %s"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_table__target_available
+msgid "Le module qui porte le modèle d'arrivée est-il installé ici ?"
+msgstr "Le module qui porte le modèle d'arrivée est-il installé ici ?"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_formulaire
+msgid ""
+"Le modèle d'arrivée de cette table n'est pas installé sur\n"
+"                        cette instance. Ses rangs restent consultables ici ; pour\n"
+"                        les reloger, installez d'abord le module qui le porte."
+msgstr ""
+"Le modèle d'arrivée de cette table n'est pas installé sur\n"
+"                        cette instance. Ses rangs restent consultables ici ; pour\n"
+"                        les reloger, installez d'abord le module qui le porte."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Les %(n)s tables en attente visent des modèles qui ne sont pas installés ici : %(models)s. Installez les modules qui les portent, puis reprenez."
+msgstr "Les %(n)s tables en attente visent des modèles qui ne sont pas installés ici : %(models)s. Installez les modules qui les portent, puis reprenez."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Les %s actions planifiées sont actives."
+msgstr "Les %s actions planifiées sont actives."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Les %s pièces jointes échantillonnées sont lisibles."
+msgstr "Les %s pièces jointes échantillonnées sont lisibles."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Les %s serveurs d'envoi sont désactivés."
+msgstr "Les %s serveurs d'envoi sont désactivés."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Les codes de langue et de fuseau portés par les fiches existent tous."
+msgstr "Les codes de langue et de fuseau portés par les fiches existent tous."
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_apercu_formulaire
+msgid "Les dix premiers rangs, tels qu'ils seraient écrits dans"
+msgstr "Les dix premiers rangs, tels qu'ils seraient écrits dans"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_mots_de_passe
+msgid "Les mots de passe sont repris tels quels depuis Enterprise, y compris ceux de comptes partis depuis. Passer la liste des comptes internes, désactiver ce qui n'a plus lieu d'être, et refaire l'authentification à deux facteurs là où elle était en place : les jetons ne suivent pas."
+msgstr "Les mots de passe sont repris tels quels depuis Enterprise, y compris ceux de comptes partis depuis. Passer la liste des comptes internes, désactiver ce qui n'a plus lieu d'être, et refaire l'authentification à deux facteurs là où elle était en place : les jetons ne suivent pas."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Les séquences contrôlées sont au-delà du plus grand identifiant de leur table."
+msgstr "Les séquences contrôlées sont au-delà du plus grand identifiant de leur table."
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+msgid "Lire le fichier"
+msgstr "Lire le fichier"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_bundle__state__loaded
+msgid "Lu"
+msgstr "Lu"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_controle_formulaire
+msgid "Marquer réglé"
+msgstr "Marquer réglé"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__message_has_error
+msgid "Message Delivery error"
+msgstr "Message Delivery error"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+msgid "Migration de janvier"
+msgstr "Migration de janvier"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_preview__target_model
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__target_model
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__target_model
+msgid "Modèle d'arrivée"
+msgstr "Modèle d'arrivée"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__name
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__name
+msgid "Name"
+msgstr "Name"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__file_name
+msgid "Nom du fichier"
+msgstr "Nom du fichier"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_check__state__na
+msgid "Non vérifiable"
+msgstr "Non vérifiable"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__message
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_rang_formulaire
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Number of Actions"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__message_has_error_counter
+msgid "Number of errors"
+msgstr "Number of errors"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_bundle__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Number of messages requiring action"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_bundle__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Number of messages with delivery error"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_rang_liste
+msgid "Ouvrir la fiche créée"
+msgstr "Ouvrir la fiche créée"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_table__state__partial
+msgid "Partielle"
+msgstr "Partielle"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_pieces_jointes
+msgid "Pièces jointes dont le fichier n'a pas suivi"
+msgstr "Pièces jointes dont le fichier n'a pas suivi"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+msgid "Provenance"
+msgstr "Provenance"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_rang_formulaire
+msgid "Rang"
+msgstr "Rang"
+
+#. module: bf_oe2oc
+#: model:ir.model,name:bf_oe2oc.model_bf_oe2oc_row
+msgid "Rang Enterprise repris"
+msgstr "Rang Enterprise repris"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__row_count
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__row_count
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_rang_liste
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_formulaire
+msgid "Rangs"
+msgstr "Rangs"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__row_ids
+msgid "Rangs repris"
+msgstr "Rangs repris"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__mappable_count
+msgid "Relogeables"
+msgstr "Relogeables"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_table.py:0
+msgid "Relogement de %(table)s : %(created)s créés, %(failed)s en échec."
+msgstr "Relogement de %(table)s : %(created)s créés, %(failed)s en échec."
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_apercu_formulaire
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_formulaire
+msgid "Reloger"
+msgstr "Reloger"
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+msgid "Reloger tout ce qui a une correspondance"
+msgstr "Reloger tout ce qui a une correspondance"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_row__state__rehomed
+msgid "Relogé"
+msgstr "Relogé"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_table__state__rehomed
+msgid "Relogée"
+msgstr "Relogée"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__rehomed_count
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__rehomed_count
+msgid "Relogés"
+msgstr "Relogés"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_langues
+msgid "Relève les codes de langue portés par des contacts ou des comptes alors que la langue n'est pas activée. Un champ traduit s'affiche alors dans la langue de repli, sans prévenir."
+msgstr "Relève les codes de langue portés par des contacts ou des comptes alors que la langue n'est pas activée. Un champ traduit s'affiche alors dans la langue de repli, sans prévenir."
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_dbfilter
+msgid "Remettre le dbfilter et le mot de passe maître"
+msgstr "Remettre le dbfilter et le mot de passe maître"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__bundle_id
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__bundle_id
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+msgid "Reprise"
+msgstr "Reprise"
+
+#. module: bf_oe2oc
+#: model:ir.module.category,name:bf_oe2oc.module_category_oe2oc
+#: model:ir.ui.menu,name:bf_oe2oc.menu_oe2oc_racine
+msgid "Reprise Enterprise"
+msgstr "Reprise Enterprise"
+
+#. module: bf_oe2oc
+#: model:ir.model,name:bf_oe2oc.model_bf_oe2oc_bundle
+msgid "Reprise de données Odoo Enterprise"
+msgstr "Reprise de données Odoo Enterprise"
+
+#. module: bf_oe2oc
+#: model:ir.module.category,description:bf_oe2oc.module_category_oe2oc
+msgid "Reprise des données laissées par une migration Odoo Enterprise vers Community."
+msgstr "Reprise des données laissées par une migration Odoo Enterprise vers Community."
+
+#. module: bf_oe2oc
+#: model:ir.ui.menu,name:bf_oe2oc.menu_oe2oc_reprises
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_liste
+msgid "Reprises"
+msgstr "Reprises"
+
+#. module: bf_oe2oc
+#: model:ir.actions.act_window,name:bf_oe2oc.action_reprise
+msgid "Reprises Enterprise"
+msgstr "Reprises Enterprise"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_mots_de_passe
+msgid "Revoir les comptes et leurs accès"
+msgstr "Revoir les comptes et leurs accès"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_check__state__ok
+msgid "Rien à faire"
+msgstr "Rien à faire"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_check__state__done
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_controle_liste
+msgid "Réglé"
+msgstr "Réglé"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_row__state__skipped
+msgid "Sans objet"
+msgstr "Sans objet"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__sequence
+msgid "Sequence"
+msgstr "Sequence"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_serveurs_envoi
+msgid "Serveurs d'envoi actifs"
+msgstr "Serveurs d'envoi actifs"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__company_id
+msgid "Société"
+msgstr "Société"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_serveurs_envoi
+msgid "Sur une base fraîchement migrée, une file de courriels reprise peut partir vers de vrais destinataires au premier passage du planificateur. Ce contrôle dit si une porte de sortie est ouverte."
+msgstr "Sur une base fraîchement migrée, une file de courriels reprise peut partir vers de vrais destinataires au premier passage du planificateur. Ce contrôle dit si une porte de sortie est ouverte."
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_sequences
+msgid "Séquences en retard sur leur table"
+msgstr "Séquences en retard sur leur table"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Séquences en retard sur leur table : %(list)s. La prochaine création y lèvera une erreur de clé dupliquée."
+msgstr "Séquences en retard sur leur table : %(list)s. La prochaine création y lèvera une erreur de clé dupliquée."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_preview__table_id
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__table_id
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_formulaire
+msgid "Table"
+msgstr "Table"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__name
+msgid "Table Enterprise"
+msgstr "Table Enterprise"
+
+#. module: bf_oe2oc
+#: model:ir.model,name:bf_oe2oc.model_bf_oe2oc_table
+msgid "Table Enterprise reprise"
+msgstr "Table Enterprise reprise"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__table_count
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_reprise_formulaire
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_table_liste
+msgid "Tables"
+msgstr "Tables"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+#: model:ir.actions.act_window,name:bf_oe2oc.action_table
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__table_ids
+#: model:ir.ui.menu,name:bf_oe2oc.menu_oe2oc_tables
+msgid "Tables reprises"
+msgstr "Tables reprises"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Tout ce qui pouvait être relogé l'a été. %s tables restent conservées telles quelles, faute de modèle d'arrivée."
+msgstr "Tout ce qui pouvait être relogé l'a été. %s tables restent conservées telles quelles, faute de modèle d'arrivée."
+
+#. module: bf_oe2oc
+#: model:ir.actions.server,name:bf_oe2oc.action_controle_tout
+#: model:ir.ui.menu,name:bf_oe2oc.menu_oe2oc_controle_tout
+msgid "Tout vérifier"
+msgstr "Tout vérifier"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Toutes les données reprises ont été relogées."
+msgstr "Toutes les données reprises ont été relogées."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Toutes les langues utilisées par les contacts et les comptes sont actives."
+msgstr "Toutes les langues utilisées par les contacts et les comptes sont actives."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_bundle__state__done
+msgid "Traité"
+msgstr "Traité"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__truncated
+msgid "Tronquée à l'export"
+msgstr "Tronquée à l'export"
+
+#. module: bf_oe2oc
+#: model_terms:ir.actions.act_window,help:bf_oe2oc.action_reprise
+msgid ""
+"Une migration Enterprise vers Community laisse des données de côté :\n"
+"                les billets d'assistance, les articles Knowledge, les modèles de\n"
+"                signature et les abonnements n'ont pas de table dans une base\n"
+"                Community. L'outil <code>odoo18-ee2ce</code> les écrit dans un\n"
+"                fichier <code>enterprise-leftovers.json</code> plutôt que de les\n"
+"                perdre. Déposez ce fichier ici."
+msgstr ""
+"Une migration Enterprise vers Community laisse des données de côté :\n"
+"                les billets d'assistance, les articles Knowledge, les modèles de\n"
+"                signature et les abonnements n'ont pas de table dans une base\n"
+"                Community. L'outil <code>odoo18-ee2ce</code> les écrit dans un\n"
+"                fichier <code>enterprise-leftovers.json</code> plutôt que de les\n"
+"                perdre. Déposez ce fichier ici."
+
+#. module: bf_oe2oc
+#: model:ir.model.constraint,message:bf_oe2oc.constraint_bf_oe2oc_table_bundle_name_uniq
+msgid "Une table ne peut figurer qu'une fois dans une reprise."
+msgstr "Une table ne peut figurer qu'une fois dans une reprise."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__payload
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_rang_formulaire
+msgid "Valeurs d'origine"
+msgstr "Valeurs d'origine"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__source_version
+msgid "Version d'origine"
+msgstr "Version d'origine"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid "Version de format %(got)s non gérée : ce module lit %(want)s."
+msgstr "Version de format %(got)s non gérée : ce module lit %(want)s."
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_reprise
+msgid "Vérifie qu'un fichier de reprise a été déposé et que tout ce qui avait une correspondance a été relogé."
+msgstr "Vérifie qu'un fichier de reprise a été déposé et que tout ce qui avait une correspondance a été relogé."
+
+#. module: bf_oe2oc
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_controle_formulaire
+#: model_terms:ir.ui.view,arch_db:bf_oe2oc.vue_controle_liste
+msgid "Vérifier"
+msgstr "Vérifier"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__checked_on
+msgid "Vérifié le"
+msgstr "Vérifié le"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,name:bf_oe2oc.controle_base_url
+msgid "web.base.url après neutralisation"
+msgstr "web.base.url après neutralisation"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "web.base.url n'est pas défini."
+msgstr "web.base.url n'est pas défini."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "web.base.url vaut encore « %(url)s », la valeur de neutralisation. Tout lien envoyé par courriel pointera vers la machine du destinataire."
+msgstr "web.base.url vaut encore « %(url)s », la valeur de neutralisation. Tout lien envoyé par courriel pointera vers la machine du destinataire."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "web.base.url vaut « %(url)s » mais il est gelé (web.base.url.freeze). Il ne suivra pas un changement de domaine."
+msgstr "web.base.url vaut « %(url)s » mais il est gelé (web.base.url.freeze). Il ne suivra pas un changement de domaine."
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "web.base.url vaut « %s »."
+msgstr "web.base.url vaut « %s »."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_check__state__warn
+msgid "À corriger"
+msgstr "À corriger"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_check__category__manual
+msgid "À faire à la main"
+msgstr "À faire à la main"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_check__state__todo
+msgid "À vérifier"
+msgstr "À vérifier"
+
+#. module: bf_oe2oc
+#: model:bf.oe2oc.check,description:bf_oe2oc.controle_pieces_jointes
+msgid "Échantillonne des pièces jointes et tente de les lire. Une fiche qui porte une pièce jointe illisible a l'air complète jusqu'au clic."
+msgstr "Échantillonne des pièces jointes et tente de les lire. Une fiche qui porte une pièce jointe illisible a l'air complète jusqu'au clic."
+
+#. module: bf_oe2oc
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_row__state__failed
+#: model:ir.model.fields.selection,name:bf_oe2oc.selection__bf_oe2oc_table__state__failed
+msgid "Échec"
+msgstr "Échec"
+
+#. module: bf_oe2oc
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__state
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__state
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_row__state
+#: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_table__state
+msgid "État"
+msgstr "État"
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_table.py:0
+msgid "… et %s autres."
+msgstr "… et %s autres."

@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**48 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**49 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -195,6 +195,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_nfc_round_inspection` | Pastilles NFC : tournées avec relevé | 18.0.1.0.1 | BUSL-1.1 | A round checkpoint that carries a checklist: the pass and the reading in a single tap |
 | `bf_nfc_timer` | Pastilles NFC : le chronomètre | 18.0.1.0.1 | BUSL-1.1 | NFC tag gestures for the timesheet timer: start, stop, and stop that logs the timesheet in the same request |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
+| `bf_oe2oc` | Reprise après migration Enterprise | 18.0.1.0.0 | LGPL-3 | Recover the data an Enterprise-to-Community migration left behind, and check what still needs settling |
 | `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.0.1 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
 | `bf_org_chart` | Organigrammes : le moteur de dessin | 18.0.1.2.0 | BUSL-1.1 | Une géométrie, deux rendus : l'organigramme à l'écran et le même en PDF |
 | `bf_org_chart_ownership` | Organigramme de détention | 18.0.1.1.0 | BUSL-1.1 | Qui détient quoi, pour quelle part, et le dessin qui va avec |
@@ -292,7 +293,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **48 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **49 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

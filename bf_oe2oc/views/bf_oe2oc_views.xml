@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Reprise ────────────────────────────────────────────────────── -->
+
+    <record id="vue_reprise_liste" model="ir.ui.view">
+        <field name="name">bf.oe2oc.bundle.list</field>
+        <field name="model">bf.oe2oc.bundle</field>
+        <field name="arch" type="xml">
+            <list string="Reprises">
+                <field name="name"/>
+                <field name="source_db"/>
+                <field name="source_version"/>
+                <field name="table_count"/>
+                <field name="row_count"/>
+                <field name="rehomed_count"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'loaded'"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vue_reprise_formulaire" model="ir.ui.view">
+        <field name="name">bf.oe2oc.bundle.form</field>
+        <field name="model">bf.oe2oc.bundle</field>
+        <field name="arch" type="xml">
+            <form string="Reprise">
+                <header>
+                    <button name="action_load" type="object" string="Lire le fichier"
+                            class="btn-primary" invisible="not file"/>
+                    <button name="action_rehome_all" type="object"
+                            string="Reloger tout ce qui a une correspondance"
+                            invisible="state == 'draft' or mappable_count == 0"
+                            confirm="Ceci crée des enregistrements dans les modèles d'arrivée. Avez-vous regardé l'aperçu de chaque table ?"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,loaded,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_tables" type="object"
+                                class="oe_stat_button" icon="fa-table"
+                                invisible="table_count == 0">
+                            <field name="table_count" widget="statinfo" string="Tables"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Migration de janvier"/></h1>
+                    </div>
+                    <group>
+                        <group string="Fichier">
+                            <field name="file" filename="file_name"/>
+                            <field name="file_name" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Provenance" invisible="state == 'draft'">
+                            <field name="source_db"/>
+                            <field name="source_version"/>
+                            <field name="source_dump"/>
+                            <field name="generated_at"/>
+                            <field name="target_db"/>
+                        </group>
+                    </group>
+                    <group invisible="state == 'draft'">
+                        <group string="Contenu">
+                            <field name="row_count"/>
+                            <field name="mappable_count"/>
+                            <field name="rehomed_count"/>
+                        </group>
+                    </group>
+                    <notebook invisible="state == 'draft'">
+                        <page string="Tables" name="tables">
+                            <field name="table_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="row_count"/>
+                                    <field name="target_label"/>
+                                    <field name="target_available" widget="boolean_toggle"
+                                           column_invisible="not context.get('show_all')"/>
+                                    <field name="rehomed_count"/>
+                                    <field name="truncated" widget="boolean_toggle"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'rehomed'"
+                                           decoration-warning="state == 'partial'"
+                                           decoration-danger="state == 'failed'"/>
+                                    <button name="action_preview" type="object"
+                                            string="Aperçu" icon="fa-search"
+                                            invisible="not target_model"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_reprise" model="ir.actions.act_window">
+        <field name="name">Reprises Enterprise</field>
+        <field name="res_model">bf.oe2oc.bundle</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Déposer un export de reprise</p>
+            <p>
+                Une migration Enterprise vers Community laisse des données de côté :
+                les billets d'assistance, les articles Knowledge, les modèles de
+                signature et les abonnements n'ont pas de table dans une base
+                Community. L'outil <code>odoo18-ee2ce</code> les écrit dans un
+                fichier <code>enterprise-leftovers.json</code> plutôt que de les
+                perdre. Déposez ce fichier ici.
+            </p>
+        </field>
+    </record>
+
+    <!-- ── Tables ─────────────────────────────────────────────────────── -->
+
+    <record id="vue_table_liste" model="ir.ui.view">
+        <field name="name">bf.oe2oc.table.list</field>
+        <field name="model">bf.oe2oc.table</field>
+        <field name="arch" type="xml">
+            <list string="Tables">
+                <field name="bundle_id"/>
+                <field name="name"/>
+                <field name="row_count"/>
+                <field name="target_label"/>
+                <field name="rehomed_count"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'rehomed'"
+                       decoration-warning="state == 'partial'"
+                       decoration-danger="state == 'failed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vue_table_formulaire" model="ir.ui.view">
+        <field name="name">bf.oe2oc.table.form</field>
+        <field name="model">bf.oe2oc.table</field>
+        <field name="arch" type="xml">
+            <form string="Table">
+                <header>
+                    <button name="action_preview" type="object" string="Aperçu"
+                            class="btn-primary" invisible="not target_model"/>
+                    <button name="action_rehome" type="object" string="Reloger"
+                            invisible="not target_model or not target_available or state == 'rehomed'"
+                            confirm="Ceci crée des enregistrements dans le modèle d'arrivée."/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_rows" type="object"
+                                class="oe_stat_button" icon="fa-list">
+                            <field name="row_count" widget="statinfo" string="Rangs"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="alert"
+                         invisible="not target_model or target_available">
+                        Le modèle d'arrivée de cette table n'est pas installé sur
+                        cette instance. Ses rangs restent consultables ici ; pour
+                        les reloger, installez d'abord le module qui le porte.
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not truncated">
+                        L'export a plafonné le nombre de rangs pour cette table :
+                        ce qui est ici n'est pas tout.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bundle_id" readonly="1"/>
+                            <field name="target_model" readonly="1"/>
+                            <field name="target_available" readonly="1"/>
+                            <field name="target_label" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="row_count" readonly="1"/>
+                            <field name="rehomed_count" readonly="1"/>
+                            <field name="state" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Ce qui ne suit pas" invisible="not caveat">
+                        <field name="caveat" nolabel="1" readonly="1"/>
+                    </group>
+                    <group string="Journal" invisible="not message">
+                        <field name="message" nolabel="1" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Rangs" name="rangs">
+                            <field name="row_ids" readonly="1">
+                                <list>
+                                    <field name="source_id"/>
+                                    <field name="summary"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'rehomed'"
+                                           decoration-danger="state == 'failed'"/>
+                                    <field name="message"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_table" model="ir.actions.act_window">
+        <field name="name">Tables reprises</field>
+        <field name="res_model">bf.oe2oc.table</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- ── Rangs ──────────────────────────────────────────────────────── -->
+
+    <record id="vue_rang_liste" model="ir.ui.view">
+        <field name="name">bf.oe2oc.row.list</field>
+        <field name="model">bf.oe2oc.row</field>
+        <field name="arch" type="xml">
+            <list string="Rangs">
+                <field name="table_id"/>
+                <field name="source_id"/>
+                <field name="summary"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'rehomed'"
+                       decoration-danger="state == 'failed'"/>
+                <field name="message"/>
+                <button name="action_open_target" type="object" icon="fa-external-link"
+                        string="Ouvrir la fiche créée" invisible="state != 'rehomed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="vue_rang_formulaire" model="ir.ui.view">
+        <field name="name">bf.oe2oc.row.form</field>
+        <field name="model">bf.oe2oc.row</field>
+        <field name="arch" type="xml">
+            <form string="Rang">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="table_id" readonly="1"/>
+                            <field name="source_id" readonly="1"/>
+                            <field name="state" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="target_model" readonly="1"/>
+                            <field name="target_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Note" invisible="not message">
+                        <field name="message" nolabel="1" readonly="1"/>
+                    </group>
+                    <group string="Valeurs d'origine">
+                        <field name="payload" nolabel="1" readonly="1" widget="json"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Aperçu ─────────────────────────────────────────────────────── -->
+
+    <record id="vue_apercu_formulaire" model="ir.ui.view">
+        <field name="name">bf.oe2oc.preview.form</field>
+        <field name="model">bf.oe2oc.preview</field>
+        <field name="arch" type="xml">
+            <form string="Aperçu">
+                <p>
+                    Les dix premiers rangs, tels qu'ils seraient écrits dans
+                    <field name="target_model" readonly="1" nolabel="1" class="oe_inline"/>.
+                    Rien n'est encore créé.
+                </p>
+                <field name="body" nolabel="1" readonly="1" widget="text"/>
+                <field name="table_id" invisible="1"/>
+                <footer>
+                    <button name="action_rehome" type="object" string="Reloger"
+                            class="btn-primary"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_oe2oc_racine" name="Reprise Enterprise"
+              web_icon="bf_oe2oc,static/description/icon.png"
+              groups="bf_oe2oc.group_oe2oc_manager" sequence="95"/>
+
+    <menuitem id="menu_oe2oc_reprises" name="Reprises" parent="menu_oe2oc_racine"
+              action="action_reprise" sequence="10"/>
+
+    <menuitem id="menu_oe2oc_tables" name="Tables reprises" parent="menu_oe2oc_racine"
+              action="action_table" sequence="20"/>
+
+    <menuitem id="menu_oe2oc_controles" name="Contrôles" parent="menu_oe2oc_racine"
+              action="action_controle" sequence="30"/>
+
+    <menuitem id="menu_oe2oc_controle_tout" name="Tout vérifier"
+              parent="menu_oe2oc_racine" action="action_controle_tout" sequence="40"/>
+</odoo>
