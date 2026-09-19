@@ -100,7 +100,7 @@ dict. The form picks it up with no other change.
 
 ## Tests
 
-52 tests, including a full round trip over a real 18-table, 915-row file.
+55 tests, including a full round trip over a real 18-table, 915-row file, and three that read the wording of a finding rather than its state: a check can return the right verdict in the wrong French.
 
 ```bash
 odoo -d <database> -u bf_oe2oc --test-enable --test-tags /bf_oe2oc \

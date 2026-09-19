@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-19 03:15+0000\n"
-"PO-Revision-Date: 2026-09-19 03:15+0000\n"
+"POT-Creation-Date: 2026-09-19 04:21+0000\n"
+"PO-Revision-Date: 2026-09-19 04:21+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -532,6 +532,12 @@ msgid "L'export a plafonné le nombre de rangs pour cette table."
 msgstr ""
 
 #. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "L'unique action planifiée est active."
+msgstr ""
+
+#. module: bf_oe2oc
 #: model:ir.model.fields,help:bf_oe2oc.field_bf_oe2oc_row__source_id
 msgid "La clé primaire du rang dans la base Enterprise."
 msgstr ""
@@ -558,6 +564,12 @@ msgid ""
 "La neutralisation arrête les planificateurs. C'est le bon état le temps des "
 "essais, et le mauvais dès la mise en service : relances, factures "
 "récurrentes et synchronisations dorment."
+msgstr ""
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "La pièce jointe échantillonnée est lisible."
 msgstr ""
 
 #. module: bf_oe2oc
@@ -624,6 +636,12 @@ msgid ""
 "Le modèle d'arrivée de cette table n'est pas installé sur\n"
 "                        cette instance. Ses rangs restent consultables ici ; pour\n"
 "                        les reloger, installez d'abord le module qui le porte."
+msgstr ""
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid "Le serveur d'envoi est désactivé."
 msgstr ""
 
 #. module: bf_oe2oc
@@ -720,7 +738,7 @@ msgstr ""
 #. module: bf_oe2oc
 #: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_bundle__name
 #: model:ir.model.fields,field_description:bf_oe2oc.field_bf_oe2oc_check__name
-msgid "Name"
+msgid "Nom"
 msgstr ""
 
 #. module: bf_oe2oc
@@ -988,6 +1006,14 @@ msgid ""
 msgstr ""
 
 #. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid ""
+"Tout ce qui pouvait être relogé l'a été. Une table reste conservée telle "
+"quelle, faute de modèle d'arrivée."
+msgstr ""
+
+#. module: bf_oe2oc
 #: model:ir.actions.server,name:bf_oe2oc.action_controle_tout
 #: model:ir.ui.menu,name:bf_oe2oc.menu_oe2oc_controle_tout
 msgid "Tout vérifier"
@@ -1017,6 +1043,15 @@ msgid "Tronquée à l'export"
 msgstr ""
 
 #. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid ""
+"Un serveur d'envoi est actif. Sur une base fraîchement migrée, les files de "
+"courriels reprises peuvent partir vers de vrais destinataires dès le premier"
+" passage du planificateur."
+msgstr ""
+
+#. module: bf_oe2oc
 #: model_terms:ir.actions.act_window,help:bf_oe2oc.action_reprise
 msgid ""
 "Une migration Enterprise vers Community laisse des données de côté :\n"
@@ -1028,8 +1063,22 @@ msgid ""
 msgstr ""
 
 #. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_bundle.py:0
+msgid ""
+"Une table laissée de côté, son modèle d'arrivée n'étant pas installé : %s."
+msgstr ""
+
+#. module: bf_oe2oc
 #: model:ir.model.constraint,message:bf_oe2oc.constraint_bf_oe2oc_table_bundle_name_uniq
 msgid "Une table ne peut figurer qu'une fois dans une reprise."
+msgstr ""
+
+#. module: bf_oe2oc
+#. odoo-python
+#: code:addons/bf_oe2oc/models/bf_oe2oc_check.py:0
+msgid ""
+"Une table reprise a une correspondance mais n'a pas encore été relogée."
 msgstr ""
 
 #. module: bf_oe2oc

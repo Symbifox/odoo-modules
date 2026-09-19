@@ -171,3 +171,47 @@ class TestInvalidLocales(TransactionCase):
         check = self._check()
         check.action_run()
         self.assertNotIn(lang.code, check.result or "")
+
+
+@tagged("post_install", "-at_install")
+class TestAccordEnNombre(TransactionCase):
+    """« Les 1 serveurs d'envoi sont désactivés » se lit dans un produit vendu
+    en français, et aucun essai fonctionnel ne le voit : le contrôle rend le
+    bon état, avec la mauvaise phrase. Ces essais lisent le constat.
+    """
+
+    def _constat(self, key):
+        c = self.env["bf.oe2oc.check"].search([("key", "=", key)], limit=1)
+        c.action_run()
+        return c.result or ""
+
+    def test_un_seul_serveur_se_dit_au_singulier(self):
+        self.env["ir.mail_server"].sudo().with_context(
+            active_test=False).search([]).unlink()
+        self.env["ir.mail_server"].create({
+            "name": "Sortie", "smtp_host": "smtp.exemple.ca", "active": False})
+        constat = self._constat("mail_servers")
+        self.assertIn("Le serveur d'envoi est désactivé", constat)
+        self.assertNotIn("Les 1 ", constat)
+
+    def test_une_seule_table_en_attente_se_dit_au_singulier(self):
+        from .test_bundle import encode, sample
+        self.env["bf.oe2oc.bundle"].search([]).unlink()
+        if "helpdesk.ticket" not in self.env:
+            self.skipTest("helpdesk_mgmt n'est pas installé sur cette base")
+        b = self.env["bf.oe2oc.bundle"].create({
+            "name": "Une seule", "file": encode(sample({"helpdesk_ticket": {
+                "columns": ["id", "name", "description"], "row_count": 1,
+                "truncated": False, "rows": [[1, "Billet", "<p>x</p>"]]}}))})
+        b.action_load()
+        constat = self._constat("leftovers")
+        self.assertIn("Une table reprise a une correspondance", constat)
+        self.assertNotIn("1 tables", constat)
+
+    def test_les_champs_nom_ne_sont_pas_en_anglais(self):
+        """Un champ `name` sans `string=` s'affiche « Name » à l'écran."""
+        for modele in ("bf.oe2oc.bundle", "bf.oe2oc.check"):
+            champ = self.env[modele]._fields["name"]
+            etiquette = champ.get_description(self.env)["string"]
+            self.assertEqual(etiquette, "Nom",
+                             f"{modele}.name s'affiche « {etiquette} »")

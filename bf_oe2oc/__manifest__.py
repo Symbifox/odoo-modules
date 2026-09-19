@@ -1,6 +1,6 @@
 {
     "name": "Reprise après migration Enterprise",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Productivity",
     "summary": "Récupérer les données qu'une migration Enterprise vers Community "
                "a laissées de côté, et contrôler ce qui reste à régler",

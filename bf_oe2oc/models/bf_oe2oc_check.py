@@ -36,7 +36,7 @@ class BfOe2ocCheck(models.Model):
     _description = "Contrôle d'après-migration"
     _order = "sequence, id"
 
-    name = fields.Char(required=True, translate=True)
+    name = fields.Char(string="Nom", required=True, translate=True)
     key = fields.Char(required=True, index=True,
                       help="Identifiant du contrôle automatique, le cas échéant.")
     sequence = fields.Integer(default=10)
@@ -197,6 +197,8 @@ class BfOe2ocCheck(models.Model):
             return "na", _("Aucune action planifiée dans cette base.")
         off = crons.filtered(lambda c: not c.active)
         if not off:
+            if len(crons) == 1:
+                return "ok", _("L'unique action planifiée est active.")
             return "ok", _("Les %s actions planifiées sont actives.", len(crons))
         return "warn", _(
             "%(off)s actions planifiées sur %(total)s sont arrêtées. C'est "
@@ -254,6 +256,8 @@ class BfOe2ocCheck(models.Model):
             if not os.path.exists(path):
                 missing += 1
         if not missing:
+            if len(sample) == 1:
+                return "ok", _("La pièce jointe échantillonnée est lisible.")
             return "ok", _("Les %s pièces jointes échantillonnées sont lisibles.",
                            len(sample))
         return "warn", _(
@@ -273,7 +277,17 @@ class BfOe2ocCheck(models.Model):
                            "peut sortir de cette base.")
         active = servers.filtered("active")
         if not active:
+            # Un msgid par forme : « Les 1 serveurs » se lit dans un produit
+            # vendu en français, et aucun essai ne le voit.
+            if len(servers) == 1:
+                return "ok", _("Le serveur d'envoi est désactivé.")
             return "ok", _("Les %s serveurs d'envoi sont désactivés.", len(servers))
+        if len(active) == 1:
+            return "warn", _(
+                "Un serveur d'envoi est actif. Sur une base fraîchement "
+                "migrée, les files de courriels reprises peuvent partir vers "
+                "de vrais destinataires dès le premier passage du "
+                "planificateur.")
         return "warn", _(
             "%(n)s serveurs d'envoi sont actifs. Sur une base fraîchement "
             "migrée, les files de courriels reprises peuvent partir vers de "
@@ -294,11 +308,19 @@ class BfOe2ocCheck(models.Model):
             1 for b in bundles for t in b.table_ids
             if t.target_model and t.state != "rehomed")
         if pending:
+            if pending == 1:
+                return "warn", _(
+                    "Une table reprise a une correspondance mais n'a pas "
+                    "encore été relogée.")
             return "warn", _(
                 "%s tables reprises ont une correspondance mais n'ont pas "
                 "encore été relogées.", pending)
         kept = sum(1 for b in bundles for t in b.table_ids if not t.target_model)
         if kept:
+            if kept == 1:
+                return "ok", _(
+                    "Tout ce qui pouvait être relogé l'a été. Une table reste "
+                    "conservée telle quelle, faute de modèle d'arrivée.")
             return "ok", _(
                 "Tout ce qui pouvait être relogé l'a été. %s tables restent "
                 "conservées telles quelles, faute de modèle d'arrivée.", kept)

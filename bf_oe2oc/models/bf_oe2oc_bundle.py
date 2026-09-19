@@ -23,7 +23,7 @@ class BfOe2ocBundle(models.Model):
     _inherit = ["mail.thread"]
     _order = "create_date desc, id desc"
 
-    name = fields.Char(required=True, tracking=True)
+    name = fields.Char(string="Nom", required=True, tracking=True)
     file = fields.Binary(string="Fichier d'export", required=True, attachment=True)
     file_name = fields.Char(string="Nom du fichier")
     state = fields.Selection(
@@ -175,11 +175,15 @@ class BfOe2ocBundle(models.Model):
 
         todo.action_rehome()
         if unavailable:
-            self.message_post(body=_(
-                "%(n)s tables laissées de côté, leur modèle d'arrivée n'étant "
-                "pas installé : %(models)s.",
-                n=len(unavailable),
-                models=", ".join(sorted(set(unavailable.mapped("target_model"))))))
+            modeles = ", ".join(sorted(set(unavailable.mapped("target_model"))))
+            if len(unavailable) == 1:
+                corps = _("Une table laissée de côté, son modèle d'arrivée "
+                          "n'étant pas installé : %s.", modeles)
+            else:
+                corps = _("%(n)s tables laissées de côté, leur modèle "
+                          "d'arrivée n'étant pas installé : %(models)s.",
+                          n=len(unavailable), models=modeles)
+            self.message_post(body=corps)
         remaining = self.table_ids.filtered(
             lambda t: t.target_model and t.target_available and t.state != "rehomed")
         if not remaining:
