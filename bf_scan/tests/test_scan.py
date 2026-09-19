@@ -8,6 +8,7 @@ droit est arrêté avant d'écrire quoi que ce soit.
 import base64
 import json
 
+from odoo.exceptions import AccessError
 from odoo.tests import tagged
 from odoo.tests.common import HttpCase
 
@@ -385,3 +386,51 @@ class EssaiScan(HttpCase):
         self.assertIn("/bf_scan/static/src/scan/facture.js", source)
         self.assertIn("/bf_contact_enrichment/static/", source)
         self.assertIn("/bf_scan/static/", source)
+
+    # ── La tuile ────────────────────────────────────────────────────
+
+    def test_la_tuile_est_une_action_d_adresse(self):
+        """Jamais une action serveur : elle tomberait pour l'employé ordinaire.
+
+        Odoo refuse d'exécuter une ``ir.actions.server`` à qui n'a pas le droit
+        d'écriture sur son modèle. Une autre tuile de la maison a payé ce
+        piège; l'assertion est ici pour que personne ne le repaie en
+        changeant le type de l'action.
+        """
+        action = self.env.ref("bf_scan.action_ouvrir_scan")
+        self.assertEqual(action._name, "ir.actions.act_url")
+        self.assertEqual(action.url, "/scan")
+
+    def test_un_employe_ordinaire_voit_la_tuile(self):
+        """Mia n'a que le compte interne, et c'est assez pour voir la tuile."""
+        menu = self.env.ref("bf_scan.menu_scan_root")
+        vues = self.env["ir.ui.menu"].with_user(self.mia).search([("id", "=", menu.id)])
+        self.assertTrue(vues, "la tuile manque à un employé ordinaire")
+        self.assertEqual(menu.action.url, "/scan")
+
+    def test_un_compte_de_portail_ne_voit_pas_la_tuile(self):
+        """La page est réservée aux internes : une tuile vers un refus ne vaut rien.
+
+        Deux barrières, et l'essai les nomme toutes les deux. La mienne : la
+        tuile est tenue par le seul groupe des internes. Celle d'Odoo : un
+        compte de portail ne lit pas la table des menus du tout, donc rien ne
+        peut lui être rendu, même si ma garde tombait.
+        """
+        portail = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Paul Portail", "login": "paul_essai", "password": "paul_essai",
+            "email": "paul@essai.test",
+            "groups_id": [(6, 0, [self.env.ref("base.group_portal").id])],
+        })
+        menu = self.env.ref("bf_scan.menu_scan_root")
+        self.assertEqual(menu.groups_id, self.env.ref("base.group_user"))
+        self.assertNotIn(self.env.ref("base.group_user"), portail.groups_id)
+        with self.assertRaises(AccessError):
+            self.env["ir.ui.menu"].with_user(portail).search([("id", "=", menu.id)])
+
+    def test_la_tuile_mene_a_une_page_qui_repond(self):
+        """L'adresse de la tuile est bien celle qui sert l'accueil."""
+        action = self.env.ref("bf_scan.action_ouvrir_scan")
+        self.authenticate("mia_essai", "mia_essai")
+        reponse = self.url_open(action.url)
+        self.assertEqual(reponse.status_code, 200)
+        self.assertIn("/scan/document", reponse.text)

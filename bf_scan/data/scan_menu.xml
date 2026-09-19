@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Une action d'ADRESSE, jamais une action serveur. Odoo refuse d'exécuter
+         une action serveur à qui n'a pas le droit d'écriture sur son modèle :
+         une tuile bâtie ainsi tombe pour chaque employé ordinaire, et le refus
+         ne se voit qu'en jouant le parcours dans le rôle visé. Piège déjà payé
+         par une autre tuile de la maison, dont celle-ci reprend la forme. -->
+    <record id="action_ouvrir_scan" model="ir.actions.act_url">
+        <field name="name">Numériser</field>
+        <field name="url">/scan</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- base.group_user, donc jamais un compte de portail : la page est réservée
+         aux comptes internes, et une tuile qui mène à un refus ne vaut rien.
+         Tout interne voit au moins la tuile Document, puisqu'elle ne demande
+         que le droit de créer une note. -->
+    <menuitem id="menu_scan_root"
+              name="Numériser"
+              action="action_ouvrir_scan"
+              web_icon="bf_scan,static/description/icon.png"
+              groups="base.group_user"
+              sequence="990"/>
+
+</odoo>

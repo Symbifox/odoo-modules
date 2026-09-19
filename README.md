@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**149 modules are BUSL-1.1.** The source is published and auditable, and **you
+**150 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -146,7 +146,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_employee_experience_health_privacy` | Expérience employé — allergies, pont vie privée (Loi 25) | 18.0.1.0.0 | BUSL-1.1 | Express consent, retention tied to the employment relationship, destruction on departure |
 | `bf_employee_experience_privacy` | Expérience employé — pont vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Declare what the usage register collects, set a retention rule, keep the measurement when the lines go |
 | `bf_employee_experience_pulse` | Expérience employé : pulse | 18.0.1.1.2 | BUSL-1.1 | Anonymous mood pulse and eNPS: separate invitation and answer registers, shuffled batch hand-off, and display thresholds that hold because the answers are readable by no one |
-| `bf_expense_ocr` | Lecture des reçus | 18.0.2.0.0 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
+| `bf_expense_ocr` | Lecture des reçus | 18.0.2.1.1 | BUSL-1.1 | Photograph a meal receipt and let the extraction fill in the total, the taxes and the tip — read on the tenant's own Claude subscription, and nothing is pre-filled unless the receipt's own arithmetic balances |
 | `bf_expense_tip` | Pourboire | 18.0.1.0.1 | BUSL-1.1 | The tip on a meal receipt, entered on the expense that carries it and removed from the tax base, so input tax credits are not overstated |
 | `bf_federation` | Fédération | 18.0.1.5.1 | LGPL-3 | Federate two Odoo/Symbifox instances: share an object with the other side, messages and attachments following. The core carries tasks; satellites add deliverables, agendas, process maps and a Discuss channel |
 | `bf_federation_discuss` | Fédération : canal de discussion | 18.0.1.1.1 | BUSL-1.1 | Un canal Discuss par objet fédéré, adossé au chatter qui fait foi |
@@ -219,6 +219,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_recruitment_source` | Recrutement : statistiques par source d'affichage | 18.0.1.0.1 | BUSL-1.1 | One tracked link per job board, the clicks and applications it brings in, and a conversion rate that states which share of applications it covers |
 | `bf_recruitment_source_expense` | Recrutement : ce que chaque site d'emploi coûte | 18.0.1.0.0 | BUSL-1.1 | Attribute a posting outlay to the board that billed it, and give the cost per application while saying which share of the job's spend it covers |
 | `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.0.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
+| `bf_scan` | Numériser depuis le téléphone | 18.0.1.1.0 | BUSL-1.1 | An installable phone page with three tiles: a business card becomes a contact, an invoice becomes a draft vendor bill with its photo, and a document goes to the note pad with a reminder or straight into any record's thread |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.21.4 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.2.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
 | `bf_security_awareness` | Security Awareness | 18.0.2.0.0 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
@@ -287,7 +288,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **149 modules: BUSL-1.1.** Production use for your own internal business
+- **150 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

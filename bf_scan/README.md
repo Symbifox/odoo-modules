@@ -45,6 +45,17 @@ screen in place — not a second icon beside the old one. The name becomes
 The service worker is the one from `bf_contact_enrichment`, extended to cache
 this module's assets too, under a new cache name.
 
+### Finding it in the first place (18.0.1.1.0)
+
+A page nobody knows about is a page nobody uses: before this version, `/scan`
+had to be typed. The module now adds a **Numériser** entry to the application
+grid, held by the internal-user group, so every employee has it where they
+already look.
+
+The entry is a URL action, never a server action: Odoo refuses to run a server
+action for anyone who lacks write access on its model, so a tile built that way
+fails for every ordinary employee. A test pins the action type for that reason.
+
 ## Requirements
 
 `bf_contact_enrichment`, `bf_bloc_notes` and `account`. Reading is optional:

@@ -1,6 +1,6 @@
 {
     "name": "Numériser depuis le téléphone",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Productivity",
     "summary": "La page /scan gagne deux gestes : photographier une facture, "
                "et déposer un document au bloc-notes ou au chatter d'une fiche",
@@ -44,7 +44,8 @@ Ce que ce module ne fait pas
     ],
     "data": [
         "views/scan_templates.xml",
+        "data/scan_menu.xml",
     ],
     "installable": True,
-    "application": False,
+    "application": True,
 }
