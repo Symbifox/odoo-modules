@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
+from datetime import timedelta
 
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
+from odoo.tools.misc import format_date
 
 _logger = logging.getLogger(__name__)
 
@@ -119,10 +121,21 @@ class BabillardPost(models.Model):
     # Le fil de discussion, vu de la carte. Des cardinaux, jamais des noms :
     # une carte ne dit pas qui a commenté, elle dit que quelqu'un l'a fait.
     nb_commentaires = fields.Integer("Commentaires", compute="_compute_fil")
-    nb_reactions = fields.Integer("Réactions", compute="_compute_fil")
 
     peut_relancer_equipe = fields.Boolean(
         "Je relance mon équipe", compute="_compute_peut_relancer_equipe")
+
+    # Un fil se lit « hier », pas « 2026-09-15 ». ⚠️ Le format de `fr_CA` dans
+    # Odoo est `%Y-%m-%d` : le corriger sur `res.lang` déplacerait TOUTES les
+    # dates du locataire, factures comprises. Le babillard rend donc la sienne.
+    date_affichee = fields.Char("Quand", compute="_compute_date_affichee")
+    est_nouveau = fields.Boolean(
+        "Nouveau", compute="_compute_est_nouveau",
+        help="Publiée depuis moins de deux jours.")
+
+    jaime_ids = fields.One2many("bf.babillard.jaime", "post_id", string="J'aime")
+    nb_jaime = fields.Integer("J'aime", compute="_compute_jaime")
+    jaime_par_moi = fields.Boolean("Aimée par moi", compute="_compute_jaime")
 
     avis_envoye_le = fields.Datetime(
         "Avis envoyé le", readonly=True, copy=False,
@@ -226,9 +239,57 @@ class BabillardPost(models.Model):
                 connus[cle] = post.sudo()._destinataires()
             post.a_lire_pour_moi = self.env.user in connus[cle]
 
+    @api.depends("date_publication")
+    @api.depends_context("lang", "tz")
+    def _compute_date_affichee(self):
+        """La journée, dite comme une personne la dirait.
+
+        ⚠️ `depends_context("lang", "tz")` : le libellé est traduit ET dépend du
+        fuseau de qui lit. Sans les deux, la valeur d'un lecteur est servie à un
+        autre, dans sa langue et sa journée à lui.
+        """
+        aujourdhui = fields.Date.context_today(self)
+        for post in self:
+            if not post.date_publication:
+                post.date_affichee = ""
+                continue
+            jour = fields.Datetime.context_timestamp(
+                post, post.date_publication).date()
+            ecart = (aujourdhui - jour).days
+            if ecart <= 0:
+                post.date_affichee = self.env._("aujourd'hui")
+            elif ecart == 1:
+                post.date_affichee = self.env._("hier")
+            elif ecart < 7:
+                post.date_affichee = self.env._("il y a %(jours)s jours", jours=ecart)
+            elif jour.year == aujourdhui.year:
+                post.date_affichee = format_date(self.env, jour, date_format="d MMMM")
+            else:
+                post.date_affichee = format_date(self.env, jour, date_format="d MMMM yyyy")
+
+    @api.depends("date_publication", "state")
+    def _compute_est_nouveau(self):
+        limite = fields.Datetime.now() - timedelta(hours=48)
+        for post in self:
+            post.est_nouveau = bool(
+                post.state == "publie" and post.date_publication
+                and post.date_publication >= limite)
+
+    @api.depends("jaime_ids")
+    @api.depends_context("uid")
+    def _compute_jaime(self):
+        miens = set()
+        if self.ids:
+            miens = set(self.env["bf.babillard.jaime"].sudo().search([
+                ("post_id", "in", self.ids), ("user_id", "=", self.env.uid),
+            ]).mapped("post_id").ids)
+        for post in self:
+            post.nb_jaime = len(post.sudo().jaime_ids)
+            post.jaime_par_moi = post.id in miens
+
     @api.depends("message_ids")
     def _compute_fil(self):
-        """Le nombre de commentaires et de réactions, par lot.
+        """Le nombre de commentaires, par lot.
 
         ⚠️ En sudo, et en cardinal seulement. Le fil de discussion est déjà
         lisible par l'audience ; ce qu'on évite ici, c'est une requête par carte
@@ -236,7 +297,6 @@ class BabillardPost(models.Model):
         """
         for post in self:
             post.nb_commentaires = 0
-            post.nb_reactions = 0
         vivants = self.filtered("id")
         if not vivants:
             return
@@ -258,17 +318,10 @@ class BabillardPost(models.Model):
             return
         par_post = {}
         for message in messages:
-            par_post.setdefault(message.res_id, []).append(message.id)
-        reactions = {}
-        groupes = self.env["mail.message.reaction"].sudo()._read_group(
-            [("message_id", "in", messages.ids)],
-            groupby=["message_id"], aggregates=["__count"])
-        for message, compte in groupes:
-            reactions[message.id] = compte
+            par_post.setdefault(message.res_id, 0)
+            par_post[message.res_id] += 1
         for post in vivants:
-            ids = par_post.get(post.id, [])
-            post.nb_commentaires = len(ids)
-            post.nb_reactions = sum(reactions.get(i, 0) for i in ids)
+            post.nb_commentaires = par_post.get(post.id, 0)
 
     @api.depends("state", "lecture_requise", "audience",
                  "department_ids", "group_ids")
@@ -322,7 +375,12 @@ class BabillardPost(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        posts = super().create(vals_list)
+        # ⚠️ `mail_create_nolog` : sans lui, le fil de discussion d'une
+        # publication s'ouvre sur « Publication du babillard créé », qui est la
+        # trace d'un ORM et non une conversation. Le suivi des champs, lui,
+        # reste : c'est le passage au fil qui intéresse la rédaction.
+        posts = super(BabillardPost, self.with_context(
+            mail_create_nolog=True)).create(vals_list)
         posts._apres_passage_au_fil()
         return posts
 
@@ -460,6 +518,29 @@ class BabillardPost(models.Model):
                 ("post_id", "=", post.id), ("user_id", "=", self.env.uid)])
             if not deja:
                 Lecture.sudo().create({"post_id": post.id, "user_id": self.env.uid})
+        return True
+
+    def action_basculer_jaime(self):
+        """Aimer, ou retirer son j'aime. Un clic, et il se reprend.
+
+        🔴 La méthode est publique, donc appelable par RPC : le contrôle d'accès
+        en lecture passe AVANT tout, et on ne touche jamais que sa propre ligne.
+        """
+        self.ensure_one()
+        self.check_access("read")
+        if self.sudo().state != "publie":
+            raise UserError(self.env._(
+                "Une publication qui n'est pas au fil ne s'aime pas."))
+        if not self.sudo()._est_destinataire(self.env.user):
+            raise AccessError(self.env._(
+                "Cette publication ne vous est pas adressée."))
+        Jaime = self.env["bf.babillard.jaime"].sudo()
+        deja = Jaime.search(
+            [("post_id", "=", self.id), ("user_id", "=", self.env.uid)], limit=1)
+        if deja:
+            deja.unlink()
+        else:
+            Jaime.create({"post_id": self.id, "user_id": self.env.uid})
         return True
 
     def action_voir_manquants(self):

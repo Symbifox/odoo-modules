@@ -3,7 +3,7 @@
     "name": "Babillard",
     "summary": "Les annonces de la maison, avec leur audience, leur échéance et "
                "la preuve qu'elles ont été lues",
-    "version": "18.0.1.4.0",
+    "version": "18.0.1.5.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -84,6 +84,11 @@ Ce qu'il fait
   ne paraissent qu'à la rédaction.
 * **Le gestionnaire relaie.** Il voit qui, dans son équipe directe, n'a pas
   encore confirmé sa lecture.
+* **Le fil se lit comme un fil** : une colonne, la date en mots, une pastille
+  « Nouveau », ni pagination ni sélecteur de vue.
+* **Un j'aime en un clic**, qui se reprend, et dont l'écran ne rend que le
+  cardinal.
+* **Une arrivée se souhaite toute seule**, une à la fois.
 * **L'échéance retire la publication du fil**, sans rien détruire.
 
 Ce qu'il ne fait pas, et c'est voulu

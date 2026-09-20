@@ -80,3 +80,59 @@ $o-bf-bab-pastilles: (
         margin-bottom: 0;
     }
 }
+
+// ── Le fil se lit de haut en bas ─────────────────────────────────────────
+// 🔴 Un kanban pose ses cartes en GRILLE, trois de front sur un écran de
+// poste. Un babillard se lit comme un fil : une colonne, largeur de lecture.
+// ⚠️ Odoo pose l'attribut `class` d'un `<kanban>` sur la RACINE DU
+// CONTRÔLEUR (`kanban_controller.xml`), pas sur le rendu : viser
+// `.o_bf_bab_fil.o_kanban_renderer` ne touchait rien. Et la largeur d'une
+// carte vient de `--KanbanRecord-width`, pas d'une règle sur la carte.
+.o_bf_bab_fil .o_kanban_renderer.o_kanban_ungrouped {
+    --KanbanRecord-width: 100%;
+    max-width: 44rem;
+    margin-inline: auto;
+
+    .o_kanban_record {
+        width: 100%;
+        flex-basis: 100%;
+        margin: 0 0 0.75rem 0;
+    }
+}
+
+// Le compteur « 1-3 / 3 » d'Odoo dit qu'on est dans une table. Personne n'a
+// jamais vu de pagination sur un babillard de corridor.
+// ⚠️ Le compteur vit dans le panneau de contrôle, donc HORS du kanban : il
+// faut remonter par `:has()`. La limite de l'action est portée à 200 pour que
+// le masquer ne laisse personne enfermé sur une première page.
+// Le panneau de contrôle vit DANS la racine du contrôleur : pas besoin de
+// remonter par `:has()`, un descendant suffit.
+.o_bf_bab_fil {
+    .o_cp_pager,
+    .o_pager {
+        display: none;
+    }
+}
+
+// ── Le geste le moins cher ───────────────────────────────────────────────
+.o_bf_bab_jaime {
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.o_bf_bab_jaime_actif {
+    color: #177AA3;
+    font-weight: 600;
+}
+
+.o_bf_bab_signaler {
+    opacity: 0.55;
+
+    &:hover {
+        opacity: 1;
+    }
+}

@@ -1,5 +1,6 @@
 from . import babillard_post
 from . import babillard_lecture
+from . import babillard_jaime
 from . import babillard_signalement
 from . import babillard_signalement_assistant
 from . import mail_message

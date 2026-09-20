@@ -8,10 +8,12 @@ sous un compte réel, dans le rôle visé.
 import io
 import os
 import re
+from datetime import timedelta
 
 from odoo import fields
 from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import TransactionCase, tagged
+from odoo.tools.safe_eval import safe_eval
 
 
 @tagged("post_install", "-at_install")
@@ -590,7 +592,7 @@ class TestBabillard(TransactionCase):
             {p.name: p.a_lire_pour_moi for p in lot},
             {"Pour l'atelier": True, "Pour le bureau": False})
 
-    def test_le_compte_du_fil_ne_dit_que_des_cardinaux(self):
+    def test_le_compte_des_commentaires_ne_dit_qu_un_cardinal(self):
         """⚠️ Le compte est LU d'abord, puis relu après le commentaire.
 
         Sans cette première lecture, l'essai ne prouve que le calcul, jamais
@@ -601,15 +603,10 @@ class TestBabillard(TransactionCase):
         post.with_user(self.u_redactrice).action_publier()
         vue = post.with_user(self.u_bureau)
         self.assertEqual(vue.nb_commentaires, 0)
-        self.assertEqual(vue.nb_reactions, 0)
-        message = post.with_user(self.u_atelier).message_post(
+        post.with_user(self.u_atelier).message_post(
             body="Bien reçu.", message_type="comment",
             subtype_xmlid="mail.mt_comment")
-        self.env["mail.message.reaction"].sudo().create({
-            "message_id": message.id, "content": "👍",
-            "partner_id": self.u_bureau.partner_id.id})
         self.assertEqual(vue.nb_commentaires, 1)
-        self.assertEqual(vue.nb_reactions, 1)
         # ⚠️ Le chemin qui ne passe PAS par `message_post` : un message créé en
         # direct n'invalide rien de lui-même, c'est la dépendance qui doit le
         # faire. C'est aussi le chemin qu'emprunte la passerelle de courriel.
@@ -787,6 +784,241 @@ class TestBabillard(TransactionCase):
         post.with_user(self.u_redactrice).action_publier()
         self.assertTrue(post.with_user(gestionnaire).peut_relancer_equipe)
         self.assertFalse(post.with_user(self.u_bureau).peut_relancer_equipe)
+
+
+@tagged("post_install", "-at_install")
+class TestBienvenue(TransactionCase):
+    """L'arrivée d'une personne se souhaite, et le fil se nourrit tout seul."""
+
+    def _cartes(self, employe):
+        return self.env["bf.babillard.post"].sudo().search([
+            ("source_model", "=", "hr.employee"),
+            ("source_res_id", "=", employe.id)])
+
+    def test_une_arrivee_pose_sa_carte(self):
+        employe = self.env["hr.employee"].create({"name": "Arrivante"})
+        carte = self._cartes(employe)
+        self.assertEqual(len(carte), 1)
+        self.assertIn("Arrivante", carte.name)
+        self.assertEqual(carte.type_publication, "celebration")
+        self.assertEqual(carte.state, "publie")
+        self.assertEqual(carte.personne_id.id, employe.id,
+                         "c'est son visage qui paraît, pas celui du compte qui crée")
+
+    def test_la_carte_nomme_l_equipe_quand_il_y_en_a_une(self):
+        equipe = self.env["hr.department"].create({"name": "Quai de chargement"})
+        employe = self.env["hr.employee"].create(
+            {"name": "Arrivant", "department_id": equipe.id})
+        self.assertIn("Quai de chargement", self._cartes(employe).name)
+
+    def test_un_import_ne_souhaite_pas_deux_cents_bienvenues(self):
+        """🔴 La garde est le NOMBRE d'employés créés d'un coup. Une arrivée se
+        crée seule ; un import en crée des dizaines."""
+        employes = self.env["hr.employee"].create(
+            [{"name": "Lot un"}, {"name": "Lot deux"}])
+        for employe in employes:
+            self.assertFalse(self._cartes(employe))
+
+    def test_une_installation_ne_souhaite_rien(self):
+        employe = self.env["hr.employee"].with_context(
+            install_mode=True).create({"name": "Semé"})
+        self.assertFalse(self._cartes(employe))
+
+    def test_un_televersement_ne_souhaite_rien(self):
+        employe = self.env["hr.employee"].with_context(
+            import_file=True).create({"name": "Importé"})
+        self.assertFalse(self._cartes(employe))
+
+    def test_la_carte_ne_se_pose_qu_une_fois(self):
+        employe = self.env["hr.employee"].create({"name": "Arrivante"})
+        self.env["bf.babillard.post"]._depuis_source(
+            "hr.employee", employe.id, {"name": "Doublon", "audience": "tous"})
+        self.assertEqual(len(self._cartes(employe)), 1)
+
+
+@tagged("post_install", "-at_install")
+class TestFilVivant(TransactionCase):
+    """Ce qui distingue un fil d'une fiche : la date, le neuf, le geste."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        Users = cls.env["res.users"].with_context(no_reset_password=True)
+        cls.g_interne = cls.env.ref("base.group_user")
+        cls.redac = Users.create({
+            "name": "Rédaction du fil", "login": "fil_redac@essai.test",
+            "email": "fil_redac@essai.test",
+            "groups_id": [(6, 0, [cls.g_interne.id,
+                                  cls.env.ref("bf_babillard.group_babillard_redacteur").id])]})
+        cls.lecteur = Users.create({
+            "name": "Lecteur du fil", "login": "fil_lecteur@essai.test",
+            "email": "fil_lecteur@essai.test",
+            "groups_id": [(6, 0, [cls.g_interne.id])]})
+        cls.voisin = Users.create({
+            "name": "Voisin du fil", "login": "fil_voisin@essai.test",
+            "email": "fil_voisin@essai.test",
+            "groups_id": [(6, 0, [cls.g_interne.id])]})
+
+    def _publiee(self, **kw):
+        post = self.env["bf.babillard.post"].with_user(self.redac).create(
+            dict({"name": "Retour du caucus", "audience": "tous"}, **kw))
+        post.with_user(self.redac).action_publier()
+        return post
+
+    def _reculer(self, post, jours):
+        post.sudo().write({
+            "date_publication": fields.Datetime.now() - timedelta(days=jours)})
+        post.invalidate_recordset()
+
+    # --- la date se dit -----------------------------------------------------
+
+    def test_la_date_se_dit_en_mots(self):
+        """🔴 `fr_CA` formate en %Y-%m-%d : « 2026-09-15 » sur chaque carte est
+        le signal « fiche de base de données » le plus fort de l'écran."""
+        post = self._publiee()
+        self.assertEqual(post.with_user(self.lecteur).date_affichee, "aujourd'hui")
+        self._reculer(post, 1)
+        self.assertEqual(post.with_user(self.lecteur).date_affichee, "hier")
+        self._reculer(post, 3)
+        self.assertEqual(post.with_user(self.lecteur).date_affichee, "il y a 3 jours")
+
+    def test_au_dela_d_une_semaine_la_date_se_pose(self):
+        post = self._publiee()
+        self._reculer(post, 40)
+        dit = post.with_user(self.lecteur).date_affichee
+        self.assertNotIn("-", dit, "une date de fil ne s'écrit pas 2026-09-15")
+        self.assertRegex(dit, r"^\d{1,2} \w+", "un jour et un mois, en toutes lettres")
+
+    def test_un_brouillon_n_a_pas_de_date_a_dire(self):
+        brouillon = self.env["bf.babillard.post"].with_user(self.redac).create(
+            {"name": "Pas encore", "audience": "tous"})
+        self.assertEqual(brouillon.date_affichee, "")
+
+    # --- le neuf se voit ----------------------------------------------------
+
+    def test_une_publication_du_jour_est_neuve(self):
+        self.assertTrue(self._publiee().est_nouveau)
+
+    def test_apres_deux_jours_elle_ne_l_est_plus(self):
+        post = self._publiee()
+        self._reculer(post, 3)
+        self.assertFalse(post.est_nouveau)
+
+    def test_un_brouillon_n_est_jamais_neuf(self):
+        brouillon = self.env["bf.babillard.post"].with_user(self.redac).create(
+            {"name": "Pas encore", "audience": "tous"})
+        self.assertFalse(brouillon.est_nouveau)
+
+    def test_une_publication_retiree_du_fil_n_est_plus_neuve(self):
+        """⚠️ Un brouillon neuf n'a PAS de date de publication, donc il ne
+        prouve rien du contrôle d'état : une mutation qui retirait ce contrôle
+        y survivait. Une publication retirée, elle, garde sa date."""
+        post = self._publiee()
+        self.assertTrue(post.est_nouveau)
+        post.with_user(self.redac).action_retirer()
+        post.with_user(self.redac).action_remettre_en_brouillon()
+        post.invalidate_recordset()
+        self.assertTrue(post.date_publication, "elle garde sa date")
+        self.assertFalse(post.est_nouveau, "mais elle n'est plus au fil")
+
+    # --- le geste le moins cher ---------------------------------------------
+
+    def test_aimer_et_se_reprendre(self):
+        post = self._publiee()
+        vu = post.with_user(self.lecteur)
+        self.assertEqual(vu.nb_jaime, 0)
+        self.assertFalse(vu.jaime_par_moi)
+        vu.action_basculer_jaime()
+        vu.invalidate_recordset()
+        self.assertEqual(vu.nb_jaime, 1)
+        self.assertTrue(vu.jaime_par_moi)
+        vu.action_basculer_jaime()
+        vu.invalidate_recordset()
+        self.assertEqual(vu.nb_jaime, 0)
+        self.assertFalse(vu.jaime_par_moi)
+
+    def test_le_jaime_est_personnel(self):
+        """Le cardinal compte tout le monde ; « aimée par moi » ne compte que moi."""
+        post = self._publiee()
+        post.with_user(self.lecteur).action_basculer_jaime()
+        post.invalidate_recordset()
+        self.assertTrue(post.with_user(self.lecteur).jaime_par_moi)
+        self.assertFalse(post.with_user(self.voisin).jaime_par_moi)
+        self.assertEqual(post.with_user(self.voisin).nb_jaime, 1)
+
+    def test_on_n_aime_pas_deux_fois(self):
+        post = self._publiee()
+        Jaime = self.env["bf.babillard.jaime"].with_user(self.lecteur)
+        Jaime.create({"post_id": post.id, "user_id": self.lecteur.id})
+        with self.assertRaises(Exception):
+            with self.cr.savepoint():
+                Jaime.create({"post_id": post.id, "user_id": self.lecteur.id})
+
+    def test_on_n_aime_pas_au_nom_d_un_autre(self):
+        post = self._publiee()
+        with self.assertRaises(AccessError):
+            self.env["bf.babillard.jaime"].with_user(self.lecteur).create(
+                {"post_id": post.id, "user_id": self.voisin.id})
+
+    def test_on_ne_lit_que_ses_propres_jaime(self):
+        """🔴 L'écran ne rend qu'un cardinal : personne ne dresse la liste de
+        qui a aimé quoi en interrogeant le modèle."""
+        post = self._publiee()
+        post.with_user(self.lecteur).action_basculer_jaime()
+        vus = self.env["bf.babillard.jaime"].with_user(self.voisin).search([])
+        self.assertFalse(vus, "le voisin ne voit pas le j'aime du lecteur")
+
+    def test_un_brouillon_ne_s_aime_pas(self):
+        brouillon = self.env["bf.babillard.post"].with_user(self.redac).create(
+            {"name": "Pas encore", "audience": "tous"})
+        with self.assertRaises(UserError):
+            brouillon.with_user(self.redac).action_basculer_jaime()
+
+    def test_le_jaime_refuse_une_publication_qu_on_ne_peut_pas_lire(self):
+        """🔴 La méthode est publique, donc appelable par RPC."""
+        departement = self.env["hr.department"].create({"name": "Ailleurs"})
+        post = self._publiee(audience="departements",
+                             department_ids=[(6, 0, [departement.id])])
+        with self.assertRaises(AccessError):
+            post.with_user(self.lecteur).action_basculer_jaime()
+
+    def test_aucun_champ_de_mesure_sur_le_jaime(self):
+        """Comme l'accusé : un j'aime dit qu'on a aimé, il ne mesure personne."""
+        champs = set(self.env["bf.babillard.jaime"]._fields)
+        self.assertFalse(champs & {"score", "poids", "duree", "nb_vues", "engagement"})
+        self.assertEqual(
+            champs - {"id", "display_name", "create_uid", "create_date",
+                      "write_uid", "write_date", "post_id", "user_id", "company_id"},
+            set(), "un champ neuf sur le j'aime se décide, il ne s'ajoute pas")
+
+    # --- le fil ne s'ouvre plus sur du bruit --------------------------------
+
+    def test_le_fil_de_discussion_ne_s_ouvre_pas_sur_la_creation(self):
+        """« Publication du babillard créé » est la trace d'un ORM.
+
+        ⚠️ La première version cherchait le mot « créé » dans les corps. Elle
+        passait pour la mauvaise raison : la base d'essai tourne en anglais, le
+        message aurait dit « created », et la mutation y survivait. On demande
+        à Odoo LE message qu'il aurait écrit, dans la langue courante.
+        """
+        post = self._publiee()
+        attendu = post.sudo()._creation_message()
+        corps = [(m.body or "") for m in post.sudo().message_ids]
+        self.assertTrue(attendu, "Odoo doit savoir dire son message de création")
+        self.assertFalse([c for c in corps if attendu in c],
+                         "le fil ne s'ouvre pas sur la trace de l'ORM")
+
+    def test_l_action_du_fil_porte_son_domaine(self):
+        """La puce « Au fil ✕ » invitait à retirer le seul filtre qui définit
+        le fil, et le sélecteur de vue offrait une liste sur un babillard."""
+        action = self.env.ref("bf_babillard.action_babillard_fil")
+        self.assertIn(("state", "=", "publie"), safe_eval(action.domain))
+        self.assertEqual(action.view_mode, "kanban,form")
+        self.assertGreaterEqual(action.limit or 0, 200)
+        # ⚠️ Le contexte doit être VIDE, pas seulement absent du fichier : un
+        # `-u` n'efface pas une valeur déjà en base, et `search_default_au_fil`
+        # y remettait la puce « Au fil ✕ » que le domaine rend inutile.
+        self.assertNotIn("search_default", action.context or "")
 
 
 @tagged("post_install", "-at_install")

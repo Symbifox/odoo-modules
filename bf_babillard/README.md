@@ -38,6 +38,9 @@ When Odoo is installed, it creates a "general" channel and subscribes every inte
 * **A reader sees a post, not a record.** Audience, expiry, pin, comments and company are the editorial team's controls, and they appear to that team alone.
 * **A post can feature a person and carry an image.** On a recognition or a celebration it is that person's face at the top, with the author signing underneath. The bridges set both on their own.
 * **Managers chase their own team.** On a required-reading post, anyone with direct reports sees which of them has not confirmed, and only them. Editors see the whole audience; a manager sees their own people, and the button stays hidden when their team is not addressed.
+* **The feed reads like a feed**, not like a table: one column at reading width, the date said in words ("yesterday", "3 days ago"), a "New" pill for two days, and neither a pagination counter nor a view switcher. Odoo's `fr_CA` date format is `%Y-%m-%d`, so the module renders its own rather than moving every date in the database.
+* **One gesture, one click.** A like is placed and taken back from the card itself. There was nothing to do on a news post but open it, and lowering the bar to a reaction rather than a sentence is the best-documented answer to the ghost-town problem. The screen shows the COUNT and nothing else: a like is not a score, and nobody can list who liked what.
+* **An arrival greets itself.** Creating an employee posts a welcome card with their face and their team. One at a time: an import that creates dozens of records greets none of them, because two hundred welcomes on one morning would bury the feed rather than animate it.
 * **Expired posts leave the feed** once a day. Nothing is destroyed.
 * **Each company keeps its own records:** posts, read receipts and reports stay in the company they belong to.
 

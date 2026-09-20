@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-19 11:07+0000\n"
-"PO-Revision-Date: 2026-09-19 11:07+0000\n"
+"POT-Creation-Date: 2026-09-20 00:27+0000\n"
+"PO-Revision-Date: 2026-09-20 00:27+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -103,11 +103,6 @@ msgid "<i class=\"fa fa-comment-o me-1\" title=\"Commentaires\"/>"
 msgstr "<i class=\"fa fa-comment-o me-1\" title=\"Commentaires\"/>"
 
 #. module: bf_babillard
-#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
-msgid "<i class=\"fa fa-smile-o me-1\" title=\"Réactions\"/>"
-msgstr "<i class=\"fa fa-smile-o me-1\" title=\"Réactions\"/>"
-
-#. module: bf_babillard
 #: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
 msgid ""
 "<span class=\"badge text-bg-warning ms-2\" invisible=\"not "
@@ -176,6 +171,11 @@ msgstr "Activity State"
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__activity_type_icon
 msgid "Activity Type Icon"
 msgstr "Activity Type Icon"
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__jaime_par_moi
+msgid "Aimée par moi"
+msgstr "Aimée par moi"
 
 #. module: bf_babillard
 #: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__type_publication__annonce
@@ -250,6 +250,18 @@ msgstr "Babillard : faire tomber les publications échues"
 #: model:mail.template,name:bf_babillard.mail_template_signalement_recu
 msgid "Babillard : signalement reçu"
 msgstr "Babillard : signalement reçu"
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/hr_employee.py:0
+msgid "Bienvenue à %(nom)s"
+msgstr "Bienvenue à %(nom)s"
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/hr_employee.py:0
+msgid "Bienvenue à %(nom)s, qui rejoint %(equipe)s"
+msgstr "Bienvenue à %(nom)s, qui rejoint %(equipe)s"
 
 #. module: bf_babillard
 #: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__state__brouillon
@@ -380,6 +392,7 @@ msgstr ""
 "commentaire est effacé ou réécrit ensuite."
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_jaime__create_uid
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__create_uid
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__create_uid
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__create_uid
@@ -388,6 +401,7 @@ msgid "Created by"
 msgstr "Created by"
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_jaime__create_date
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__create_date
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__create_date
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__create_date
@@ -421,6 +435,7 @@ msgid "Diffusion"
 msgstr "Diffusion"
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_jaime__display_name
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__display_name
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__display_name
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__display_name
@@ -477,6 +492,7 @@ msgid "Has Message"
 msgstr "Has Message"
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_jaime__id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__id
@@ -531,6 +547,19 @@ msgid "J'ai lu"
 msgstr "J'ai lu"
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__jaime_ids
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__nb_jaime
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
+msgid "J'aime"
+msgstr "J'aime"
+
+#. module: bf_babillard
+#: model:ir.model,name:bf_babillard.model_bf_babillard_jaime
+msgid "J'aime sur une publication du babillard"
+msgstr "J'aime sur une publication du babillard"
+
+#. module: bf_babillard
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__peut_relancer_equipe
 msgid "Je relance mon équipe"
 msgstr "Je relance mon équipe"
@@ -578,6 +607,7 @@ msgid "La publication quitte le fil tout de suite. Rien n'est détruit."
 msgstr "La publication quitte le fil tout de suite. Rien n'est détruit."
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_jaime__write_uid
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__write_uid
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__write_uid
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__write_uid
@@ -586,6 +616,7 @@ msgid "Last Updated by"
 msgstr "Last Updated by"
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_jaime__write_date
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__write_date
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__write_date
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__write_date
@@ -772,7 +803,9 @@ msgstr ""
 "Nommez au moins un groupe, ou adressez la publication à tout le personnel."
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__est_nouveau
 #: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_signalement__state__nouveau
+#: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_kanban
 msgid "Nouveau"
 msgstr "Nouveau"
 
@@ -806,6 +839,13 @@ msgid "Number of messages with delivery error"
 msgstr "Number of messages with delivery error"
 
 #. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_jaime.py:0
+msgid "On n'aime pas une publication au nom de quelqu'un d'autre."
+msgstr "On n'aime pas une publication au nom de quelqu'un d'autre."
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_jaime__user_id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__user_id
 msgid "Personne"
 msgstr "Personne"
@@ -861,6 +901,7 @@ msgid "Prévenir l'audience ne se fait pas à la main."
 msgstr "Prévenir l'audience ne se fait pas à la main."
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_jaime__post_id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__post_id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__post_id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement_assistant__post_titre
@@ -896,9 +937,19 @@ msgid "Publiée"
 msgstr "Publiée"
 
 #. module: bf_babillard
+#: model:ir.model.fields,help:bf_babillard.field_bf_babillard_post__est_nouveau
+msgid "Publiée depuis moins de deux jours."
+msgstr "Publiée depuis moins de deux jours."
+
+#. module: bf_babillard
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__date_publication
 msgid "Publiée le"
 msgstr "Publiée le"
+
+#. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__date_affichee
+msgid "Quand"
+msgstr "Quand"
 
 #. module: bf_babillard
 #: model:ir.model.fields.selection,name:bf_babillard.selection__bf_babillard_post__type_publication__reconnaissance
@@ -953,11 +1004,6 @@ msgstr "Reçu le"
 #: model_terms:ir.actions.act_window,help:bf_babillard.action_babillard_fil
 msgid "Rien au babillard pour l'instant."
 msgstr "Rien au babillard pour l'instant."
-
-#. module: bf_babillard
-#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__nb_reactions
-msgid "Réactions"
-msgstr "Réactions"
 
 #. module: bf_babillard
 #: model:res.groups,name:bf_babillard.group_babillard_redacteur
@@ -1060,6 +1106,7 @@ msgid "Signature"
 msgstr "Signature"
 
 #. module: bf_babillard
+#: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_jaime__company_id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_lecture__company_id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_post__company_id
 #: model:ir.model.fields,field_description:bf_babillard.field_bf_babillard_signalement__company_id
@@ -1148,6 +1195,11 @@ msgid "Une même source ne peut pas produire deux publications."
 msgstr "Une même source ne peut pas produire deux publications."
 
 #. module: bf_babillard
+#: model:ir.model.constraint,message:bf_babillard.constraint_bf_babillard_jaime_jaime_unique
+msgid "Une personne n'aime qu'une fois la même publication."
+msgstr "Une personne n'aime qu'une fois la même publication."
+
+#. module: bf_babillard
 #: model:ir.model.constraint,message:bf_babillard.constraint_bf_babillard_lecture_lecture_unique
 msgid "Une personne ne confirme qu'une fois la lecture d'une publication."
 msgstr "Une personne ne confirme qu'une fois la lecture d'une publication."
@@ -1160,6 +1212,12 @@ msgid ""
 msgstr ""
 "Une publication au fil, qui demande une confirmation, qui m'est adressée, et"
 " que je n'ai pas encore confirmée."
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "Une publication qui n'est pas au fil ne s'aime pas."
+msgstr "Une publication qui n'est pas au fil ne s'aime pas."
 
 #. module: bf_babillard
 #. odoo-python
@@ -1223,9 +1281,27 @@ msgid "Website communication history"
 msgstr "Website communication history"
 
 #. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "aujourd'hui"
+msgstr "aujourd'hui"
+
+#. module: bf_babillard
 #: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
 msgid "d'ici le"
 msgstr "d'ici le"
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "hier"
+msgstr "hier"
+
+#. module: bf_babillard
+#. odoo-python
+#: code:addons/bf_babillard/models/babillard_post.py:0
+msgid "il y a %(jours)s jours"
+msgstr "il y a %(jours)s jours"
 
 #. module: bf_babillard
 #: model_terms:ir.ui.view,arch_db:bf_babillard.view_babillard_post_form
