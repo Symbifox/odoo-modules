@@ -22,8 +22,13 @@
                             groups="bf_babillard.group_babillard_redacteur"/>
                     <button name="action_marquer_lu" type="object" string="J'ai lu"
                             class="btn-primary" invisible="not a_lire_pour_moi"/>
+                    <!-- 🔴 La barre d'état est un outil de rédaction. Affichée au
+                         lecteur, elle transformait la page d'une reconnaissance en
+                         fiche de suivi : « brouillon > publié > échue » n'apprend
+                         rien à qui vient lire une annonce. -->
                     <field name="state" widget="statusbar"
-                           statusbar_visible="brouillon,publie,echue"/>
+                           statusbar_visible="brouillon,publie,echue"
+                           groups="bf_babillard.group_babillard_redacteur"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -45,6 +50,22 @@
                     </div>
                     <widget name="web_ribbon" title="Lue" bg_color="text-bg-success"
                             invisible="not lu_par_moi"/>
+                    <!-- 🔴 Le dépouillement du fil de discussion ne peut pas se
+                         décider en CSS : rien dans le DOM ne dit à quel groupe
+                         appartient qui regarde. Ce marqueur, lui, n'est servi
+                         qu'au lecteur, le serveur retirant le nœud avant que le
+                         navigateur le voie. La feuille de style le lit avec
+                         `:has()`, depuis `.o_form_view`, le seul ancêtre commun
+                         à la feuille et au fil de discussion.
+
+                         ⚠️ Odoo 18 refuse `groups_id` sur une vue HÉRITÉE
+                         (« Use 'groups' attributes inside the view definition »),
+                         et une vue primaire à `groups_id` LÈVE une erreur pour
+                         les autres au lieu d'être écartée. Le marqueur est ce
+                         qu'il reste, et il a l'avantage de se mesurer dans
+                         l'arbre rendu. -->
+                    <div class="o_bf_bab_marque_lecteur d-none"
+                         groups="!bf_babillard.group_babillard_redacteur"/>
                     <!-- Champs de condition, lisibles par toute l'audience. -->
                     <field name="lu_par_moi" invisible="1"/>
                     <field name="a_lire_pour_moi" invisible="1"/>
@@ -96,12 +117,9 @@
                                        invisible="not personne_nom"/>
                             </span>
                         </div>
-                        <field name="jaime_par_moi" invisible="1"/>
-                        <button name="action_basculer_jaime" type="object"
-                                class="btn btn-sm btn-link o_bf_bab_jaime ms-2"
-                                title="J'aime" invisible="state != 'publie'">
-                            <i class="fa fa-thumbs-o-up me-1"/><field name="nb_jaime"/>
-                        </button>
+                        <field name="reactions" widget="bf_babillard_reactions"
+                               nolabel="1" class="ms-2"
+                               invisible="state != 'publie'"/>
                         <span class="badge text-bg-warning ms-2"
                               invisible="not a_lire_pour_moi">À lire</span>
                         <span class="text-muted small ms-2"
@@ -203,8 +221,7 @@
                 <field name="auteur_avatar"/>
                 <field name="image_couverture"/>
                 <field name="nb_commentaires"/>
-                <field name="nb_jaime"/>
-                <field name="jaime_par_moi"/>
+                <field name="reactions"/>
                 <field name="est_nouveau"/>
                 <templates>
                     <t t-name="card">
@@ -252,12 +269,8 @@
                                     t-if="record.a_lire_pour_moi.raw_value">J'ai lu</button>
                             <span class="badge text-bg-success"
                                   t-if="record.lu_par_moi.raw_value">Lue</span>
-                            <button name="action_basculer_jaime" type="object"
-                                    class="btn btn-sm btn-link o_bf_bab_jaime px-1"
-                                    t-attf-class="#{record.jaime_par_moi.raw_value ? 'o_bf_bab_jaime_actif' : ''}"
-                                    title="J'aime">
-                                <i class="fa fa-thumbs-o-up me-1"/><field name="nb_jaime"/>
-                            </button>
+                            <field name="reactions" widget="bf_babillard_reactions"
+                                   nolabel="1"/>
                             <span class="text-muted small ms-auto"
                                   t-if="record.nb_commentaires.raw_value">
                                 <i class="fa fa-comment-o me-1" title="Commentaires"/><field name="nb_commentaires"/>

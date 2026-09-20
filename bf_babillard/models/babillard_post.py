@@ -133,9 +133,16 @@ class BabillardPost(models.Model):
         "Nouveau", compute="_compute_est_nouveau",
         help="Publiée depuis moins de deux jours.")
 
-    jaime_ids = fields.One2many("bf.babillard.jaime", "post_id", string="J'aime")
-    nb_jaime = fields.Integer("J'aime", compute="_compute_jaime")
-    jaime_par_moi = fields.Boolean("Aimée par moi", compute="_compute_jaime")
+    geste_ids = fields.One2many(
+        "bf.babillard.geste", "post_id", string="Réactions posées")
+    # 🔴 Un seul champ calculé porte TOUT ce que l'écran rend : les réactions
+    # posées avec leur compte et les noms, et celles encore offertes. Un champ
+    # par réaction était impossible, le catalogue étant configurable ; une
+    # requête par bouton aurait rendu une carte à dix requêtes.
+    reactions = fields.Json(
+        "Réactions", compute="_compute_reactions",
+        help="Ce que l'écran affiche : symbole, compte, noms, et ce qui reste "
+             "à offrir. Calculé par personne qui regarde.")
 
     avis_envoye_le = fields.Datetime(
         "Avis envoyé le", readonly=True, copy=False,
@@ -275,17 +282,75 @@ class BabillardPost(models.Model):
                 post.state == "publie" and post.date_publication
                 and post.date_publication >= limite)
 
-    @api.depends("jaime_ids")
-    @api.depends_context("uid")
-    def _compute_jaime(self):
-        miens = set()
+    @api.depends("geste_ids", "geste_ids.reaction_id")
+    @api.depends_context("uid", "lang")
+    def _compute_reactions(self):
+        """Ce que la barre de réactions affiche, calculé par lot.
+
+        🔴 `depends_context("uid")` : « par_moi » et le sélecteur dépendent de
+        QUI regarde. Sans lui, Odoo met la valeur en cache par enregistrement
+        et sert à tout le monde la barre de la première personne qui a ouvert
+        le fil. `"lang"` pour la même raison : le nom d'une réaction se
+        traduit.
+
+        ⚠️ En sudo, et c'est voulu : la publication porte déjà son contrôle
+        d'accès, et la règle sur `bf.babillard.geste` garde l'interrogation
+        directe du modèle. Calculer sans sudo ferait dépendre l'affichage de
+        la règle deux fois, pour le même résultat et une requête de plus.
+
+        ⚠️ Une réaction décochée après coup reste affichée là où elle a été
+        posée : l'historique ne se réécrit pas parce que l'administration a
+        changé d'idée. Ça ne tient pas au contexte de recherche mais au fait
+        que `geste.reaction_id` DÉSIGNE la réaction : lire un enregistrement
+        par sa référence ne filtre pas sur `active`. Seul le SÉLECTEUR, qui
+        passe par une recherche, cesse de la proposer.
+
+        🔴 Il y avait ici un `with_context(active_test=False)` inutile, et son
+        commentaire lui attribuait cette conservation. Une mutation l'a
+        démasqué en survivant sans rien changer : la recherche porte déjà
+        `("active", "=", True)`.
+        """
+        Reaction = self.env["bf.babillard.reaction"].sudo()
+        Geste = self.env["bf.babillard.geste"].sudo()
+
+        par_post = {}
         if self.ids:
-            miens = set(self.env["bf.babillard.jaime"].sudo().search([
-                ("post_id", "in", self.ids), ("user_id", "=", self.env.uid),
-            ]).mapped("post_id").ids)
+            for geste in Geste.search([("post_id", "in", self.ids)]):
+                par_post.setdefault(geste.post_id.id, []).append(geste)
+
+        offertes_par_societe = {}
         for post in self:
-            post.nb_jaime = len(post.sudo().jaime_ids)
-            post.jaime_par_moi = post.id in miens
+            groupes = {}
+            for geste in par_post.get(post.id, []):
+                groupes.setdefault(geste.reaction_id, []).append(geste)
+
+            posees = []
+            for reaction in sorted(groupes, key=lambda r: (r.sequence, r.id)):
+                lignes = groupes[reaction]
+                posees.append({
+                    "id": reaction.id,
+                    "symbole": reaction.symbole,
+                    "nom": reaction.name,
+                    "nb": len(lignes),
+                    "par_moi": any(
+                        ligne.user_id.id == self.env.uid for ligne in lignes),
+                    "noms": sorted(ligne.user_id.name for ligne in lignes),
+                })
+
+            societe = post.company_id.id
+            if societe not in offertes_par_societe:
+                offertes_par_societe[societe] = Reaction.search([
+                    ("active", "=", True),
+                    "|", ("company_id", "=", False),
+                         ("company_id", "=", societe),
+                ])
+            deja = set(groupes)
+            offertes = [
+                {"id": r.id, "symbole": r.symbole, "nom": r.name}
+                for r in offertes_par_societe[societe] if r not in deja
+            ]
+
+            post.reactions = {"posees": posees, "offertes": offertes}
 
     @api.depends("message_ids")
     def _compute_fil(self):
@@ -520,27 +585,54 @@ class BabillardPost(models.Model):
                 Lecture.sudo().create({"post_id": post.id, "user_id": self.env.uid})
         return True
 
-    def action_basculer_jaime(self):
-        """Aimer, ou retirer son j'aime. Un clic, et il se reprend.
+    def action_basculer_reaction(self, reaction_id):
+        """Poser une réaction, ou retirer la sienne. Un clic, et il se reprend.
 
-        🔴 La méthode est publique, donc appelable par RPC : le contrôle d'accès
-        en lecture passe AVANT tout, et on ne touche jamais que sa propre ligne.
+        🔴 La méthode est publique, donc appelable par RPC : tous les contrôles
+        vivent ICI, pas dans le composant d'écran. Le `reaction_id` arrive du
+        navigateur et ne vaut rien tant qu'il n'a pas été confronté au
+        catalogue de la société de la publication.
+
+        ⚠️ Retirer sa réaction reste possible même si le catalogue ne l'offre
+        plus : l'administration décoche « 🎉 » et les gens qui l'avaient posé
+        doivent pouvoir se reprendre. C'est l'AJOUT qui est refusé.
         """
         self.ensure_one()
         self.check_access("read")
         if self.sudo().state != "publie":
             raise UserError(self.env._(
-                "Une publication qui n'est pas au fil ne s'aime pas."))
+                "Une publication qui n'est pas au fil ne reçoit pas de "
+                "réaction."))
         if not self.sudo()._est_destinataire(self.env.user):
             raise AccessError(self.env._(
                 "Cette publication ne vous est pas adressée."))
-        Jaime = self.env["bf.babillard.jaime"].sudo()
-        deja = Jaime.search(
-            [("post_id", "=", self.id), ("user_id", "=", self.env.uid)], limit=1)
+
+        reaction = self.env["bf.babillard.reaction"].sudo().with_context(
+            active_test=False).browse(int(reaction_id)).exists()
+        if not reaction:
+            raise UserError(self.env._("Cette réaction n'existe pas."))
+
+        Geste = self.env["bf.babillard.geste"].sudo()
+        deja = Geste.search([
+            ("post_id", "=", self.id), ("user_id", "=", self.env.uid),
+            ("reaction_id", "=", reaction.id),
+        ], limit=1)
         if deja:
             deja.unlink()
-        else:
-            Jaime.create({"post_id": self.id, "user_id": self.env.uid})
+            return True
+
+        # 🔴 Offerte, et offerte ICI : une réaction propre à une autre société
+        # ne se pose pas sur cette publication, même en connaissant son
+        # identifiant.
+        if not reaction.active or reaction.company_id not in (
+                self.env["res.company"], self.sudo().company_id):
+            raise UserError(self.env._(
+                "« %(nom)s » n'est pas offerte sur ce babillard.",
+                nom=reaction.name))
+        Geste.create({
+            "post_id": self.id, "user_id": self.env.uid,
+            "reaction_id": reaction.id,
+        })
         return True
 
     def action_voir_manquants(self):

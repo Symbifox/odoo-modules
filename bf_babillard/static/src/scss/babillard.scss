@@ -115,18 +115,108 @@ $o-bf-bab-pastilles: (
 }
 
 // ── Le geste le moins cher ───────────────────────────────────────────────
-.o_bf_bab_jaime {
-    text-decoration: none;
-    color: inherit;
+.o_bf_bab_reactions {
+    .o_bf_bab_reaction {
+        border: 1px solid rgba(0, 0, 0, 0.14);
+        border-radius: 999px;
+        padding: 0.05rem 0.55rem;
+        line-height: 1.5;
+        background: transparent;
+        color: inherit;
 
-    &:hover {
+        &:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+    }
+
+    // 🔴 La mienne se distingue par la BORDURE et la GRAISSE autant que par la
+    // couleur : à la seule teinte, un daltonisme efface l'information, et
+    // « ai-je déjà réagi » est justement ce que le bouton doit dire.
+    .o_bf_bab_reaction_mienne {
+        border-color: #177AA3;
+        background: rgba(23, 122, 163, 0.09);
+        color: #177AA3;
+        font-weight: 600;
+    }
+
+    .o_bf_bab_compte {
+        margin-left: 0.3rem;
+        font-size: 0.82rem;
+        // Les compteurs d'une colonne ne doivent pas danser quand un 9 devient
+        // un 10.
+        font-variant-numeric: tabular-nums;
+    }
+
+    .o_bf_bab_ajouter {
         text-decoration: none;
+
+        &:hover {
+            text-decoration: none;
+        }
     }
 }
 
-.o_bf_bab_jaime_actif {
-    color: #177AA3;
-    font-weight: 600;
+.o_bf_bab_symbole {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+// La colonne du symbole dans la liste de configuration : un émoji au milieu
+// d'une colonne de texte se perd.
+.o_bf_bab_col_symbole {
+    width: 4rem;
+    font-size: 1.1rem;
+}
+
+// ── Le lecteur voit une publication et un fil, rien d'autre ─────────────
+// 🔴 Le marqueur est posé par la VUE, pas par le CSS : rien dans le DOM ne dit
+// à quel groupe appartient qui regarde. Le serveur retire le nœud avant que le
+// navigateur le voie, et `:has()` le lit depuis `.o_form_view`, seul ancêtre
+// commun à la feuille et au fil de discussion.
+.o_form_view:has(.o_bf_bab_marque_lecteur) {
+    // « Journaliser une note » est une commande interne : sous une annonce de
+    // la maison, elle propose au lecteur une conversation qu'il ne verra pas.
+    .o-mail-Chatter-logNote,
+    // Les activités et la boîte de pièces jointes appartiennent au suivi d'une
+    // fiche, pas à la lecture d'une publication. Les pièces jointes d'un
+    // COMMENTAIRE passent par le composeur, qui reste.
+    .o-mail-Chatter-activity,
+    .o-mail-Chatter-attachFiles,
+    // ⚠️ Le bouton « Suivre » disparaît, l'abonnement ne disparaît pas :
+    // commenter abonne toujours, et une annonce à lire prévient son audience
+    // par son propre chemin.
+    .o-mail-Chatter-follow,
+    .o-mail-Followers,
+    // La loupe de recherche dans le fil. Désignée par sa POSITION et non par
+    // son `aria-label` : celui-ci se traduit, et une feuille de style qui vise
+    // « Search Messages » ne vise plus rien sur une base française.
+    .o-mail-Chatter-topbarGrow + button {
+        // 🔴 `!important`, et il le faut : Odoo pose `d-flex` de Bootstrap sur
+        // ces boutons, et cette classe utilitaire porte son propre
+        // `!important`. Sans lui, la règle était écrite, chargée, appliquée,
+        // et perdait en silence : le trombone et les abonnés restaient à
+        // l'écran alors que « journaliser une note », qui n'a pas `d-flex`,
+        // disparaissait bien. Un dépouillement à moitié se lit comme un
+        // dépouillement raté.
+        display: none !important;
+    }
+
+    // « 2 / 6 » et l'engrenage d'actions sont du mobilier de fiche. Le fil les
+    // cachait déjà sur la grille ; la page les remontrait, et c'est là qu'ils
+    // se voient le plus. Le fil d'Ariane reste : c'est le chemin du retour.
+    .o_cp_pager,
+    .o_pager,
+    .o_cp_action_menus {
+        display: none !important;
+    }
+
+    // Ce qui reste du bandeau ne mérite plus sa bordure ni sa hauteur.
+    .o-mail-Chatter-topbar {
+        border-bottom: 0;
+        min-height: auto;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
 }
 
 .o_bf_bab_signaler {

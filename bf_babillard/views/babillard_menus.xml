@@ -13,4 +13,12 @@
     <menuitem id="menu_babillard_signalements" name="Signalements"
               parent="menu_babillard_root" action="action_babillard_signalement"
               groups="bf_babillard.group_babillard_moderation" sequence="30"/>
+
+    <menuitem id="menu_babillard_configuration" name="Configuration"
+              parent="menu_babillard_root" groups="base.group_system"
+              sequence="90"/>
+
+    <menuitem id="menu_babillard_reactions" name="Réactions"
+              parent="menu_babillard_configuration"
+              action="action_babillard_reaction" sequence="10"/>
 </odoo>

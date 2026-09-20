@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_babillard.Reactions">
+        <!-- 🔴 `t-on-click.stop` sur l'enveloppe : dans le fil, la carte entière
+             ouvre la publication. Sans ça, réagir depuis la carte ouvrait la
+             fiche au lieu de poser la réaction. -->
+        <div class="o_bf_bab_reactions d-flex flex-wrap align-items-center gap-1"
+             t-on-click.stop="() => {}">
+
+            <button t-foreach="posees" t-as="reaction" t-key="reaction.id"
+                    type="button"
+                    class="btn btn-sm o_bf_bab_reaction"
+                    t-att-class="{ 'o_bf_bab_reaction_mienne': reaction.par_moi }"
+                    t-att-data-tooltip="survol(reaction)"
+                    t-on-click="() => this.basculer(reaction.id)">
+                <span class="o_bf_bab_symbole" t-esc="reaction.symbole"/>
+                <span class="o_bf_bab_compte" t-esc="reaction.nb"/>
+            </button>
+
+            <Dropdown t-if="offertes.length" menuClass="'o_bf_bab_palette'">
+                <button type="button"
+                        class="btn btn-sm btn-link text-muted o_bf_bab_ajouter"
+                        t-att-title="etiquetteAjouter">
+                    <i class="fa fa-smile-o"/>
+                </button>
+                <t t-set-slot="content">
+                    <t t-foreach="offertes" t-as="offerte" t-key="offerte.id">
+                        <DropdownItem onSelected.bind="() => this.basculer(offerte.id)">
+                            <span class="o_bf_bab_symbole me-2" t-esc="offerte.symbole"/>
+                            <span t-esc="offerte.nom"/>
+                        </DropdownItem>
+                    </t>
+                </t>
+            </Dropdown>
+        </div>
+    </t>
+
+</templates>

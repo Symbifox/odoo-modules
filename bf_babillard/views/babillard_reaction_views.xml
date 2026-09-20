@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Une liste à cocher, pas un écran de réglages. Douze réactions arrivent
+         avec le module, cinq cochées ; l'administration coche, décoche, et la
+         ligne du bas en ajoute une maison. -->
+    <record id="view_babillard_reaction_list" model="ir.ui.view">
+        <field name="name">bf.babillard.reaction.list</field>
+        <field name="model">bf.babillard.reaction</field>
+        <field name="arch" type="xml">
+            <list string="Réactions offertes" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="symbole" class="o_bf_bab_col_symbole"
+                       placeholder="🙂"/>
+                <field name="name" placeholder="Ce que le survol annonce"/>
+                <!-- ⚠️ En-tête court : « Réactions posées » se fait rogner en
+                     silence par la liste, et « Réactions po... » n'apprend
+                     rien. -->
+                <field name="nb_gestes" string="Posée"/>
+                <field name="predefinie" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"
+                       optional="hide"/>
+                <field name="active" widget="boolean_toggle" string="Offerte"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_babillard_reaction" model="ir.actions.act_window">
+        <field name="name">Réactions</field>
+        <field name="res_model">bf.babillard.reaction</field>
+        <field name="view_mode">list</field>
+        <!-- 🔴 `active_test: False` : sans lui, la liste ne montre QUE les
+             réactions déjà offertes, et les sept qui attendent d'être cochées
+             sont invisibles. La case à cocher n'aurait alors jamais qu'un
+             sens : décocher. -->
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiley_face">Aucune réaction offerte.</p>
+            <p>Cochez « Offerte » sur celles que la maison propose, ou ajoutez
+               la vôtre sur la dernière ligne.</p>
+        </field>
+    </record>
+</odoo>

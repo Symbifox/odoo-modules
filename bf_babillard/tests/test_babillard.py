@@ -11,7 +11,7 @@ import re
 from datetime import timedelta
 
 from odoo import fields
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests.common import TransactionCase, tagged
 from odoo.tools.safe_eval import safe_eval
 
@@ -923,73 +923,263 @@ class TestFilVivant(TransactionCase):
 
     # --- le geste le moins cher ---------------------------------------------
 
-    def test_aimer_et_se_reprendre(self):
+    # 🔴 Les essais du geste posent LEURS réactions au lieu d'emprunter celles
+    # du catalogue livré. Le catalogue est configurable : c'est la donnée d'un
+    # usager, pas une constante. Un essai qui affirme « 👍 est offerte » devient
+    # rouge le jour où une maison la décoche, et une suite qui rougit pour ça
+    # finit par ne plus être lue. Constaté ici même : un contrôle navigateur a
+    # coché « Étonnant » et deux essais sont tombés.
+    def _neuve(self, symbole, nom="Réaction d'essai", **kw):
+        return self.env["bf.babillard.reaction"].sudo().create(
+            dict({"name": nom, "symbole": symbole}, **kw))
+
+    def _posees(self, post, user):
+        return post.with_user(user).reactions["posees"]
+
+    def test_reagir_et_se_reprendre(self):
+        post = self._publiee()
+        pouce = self._neuve("\N{ROSETTE}", "Bravo d'essai")
+        vu = post.with_user(self.lecteur)
+        self.assertEqual(self._posees(post, self.lecteur), [])
+        vu.action_basculer_reaction(pouce.id)
+        vu.invalidate_recordset()
+        posees = self._posees(post, self.lecteur)
+        self.assertEqual(len(posees), 1)
+        self.assertEqual(posees[0]["nb"], 1)
+        self.assertTrue(posees[0]["par_moi"])
+        vu.action_basculer_reaction(pouce.id)
+        vu.invalidate_recordset()
+        self.assertEqual(self._posees(post, self.lecteur), [])
+
+    def test_une_personne_pose_plusieurs_reactions(self):
+        """🔴 Le choix d'Olivier, 2026-09-19 : plusieurs par personne, comme
+        Slack. L'unicité porte sur le triplet, pas sur la paire."""
+        post = self._publiee()
+        une = self._neuve("\N{ROSETTE}", "Une", sequence=1)
+        deux = self._neuve("\N{MAPLE LEAF}", "Deux", sequence=2)
+        vu = post.with_user(self.lecteur)
+        vu.action_basculer_reaction(une.id)
+        vu.action_basculer_reaction(deux.id)
+        vu.invalidate_recordset()
+        posees = self._posees(post, self.lecteur)
+        self.assertEqual([r["symbole"] for r in posees],
+                         ["\N{ROSETTE}", "\N{MAPLE LEAF}"])
+        self.assertEqual([r["nb"] for r in posees], [1, 1])
+        self.assertTrue(all(r["par_moi"] for r in posees))
+
+    def test_le_compte_additionne_des_gestes_pas_des_personnes(self):
+        """Deux réactions à 1 posées par UNE personne ne font pas deux
+        personnes. Le module ne prétend pas le contraire : il ne publie aucun
+        total."""
         post = self._publiee()
         vu = post.with_user(self.lecteur)
-        self.assertEqual(vu.nb_jaime, 0)
-        self.assertFalse(vu.jaime_par_moi)
-        vu.action_basculer_jaime()
+        vu.action_basculer_reaction(self._neuve("\N{ROSETTE}", "Une").id)
+        vu.action_basculer_reaction(self._neuve("\N{MAPLE LEAF}", "Deux").id)
         vu.invalidate_recordset()
-        self.assertEqual(vu.nb_jaime, 1)
-        self.assertTrue(vu.jaime_par_moi)
-        vu.action_basculer_jaime()
-        vu.invalidate_recordset()
-        self.assertEqual(vu.nb_jaime, 0)
-        self.assertFalse(vu.jaime_par_moi)
+        self.assertEqual(
+            self.env["bf.babillard.geste"].sudo().search_count(
+                [("post_id", "=", post.id)]), 2)
+        self.assertEqual(
+            len(set(self.env["bf.babillard.geste"].sudo().search(
+                [("post_id", "=", post.id)]).mapped("user_id"))), 1)
 
-    def test_le_jaime_est_personnel(self):
-        """Le cardinal compte tout le monde ; « aimée par moi » ne compte que moi."""
+    def test_deux_personnes_une_meme_reaction(self):
         post = self._publiee()
-        post.with_user(self.lecteur).action_basculer_jaime()
+        pouce = self._neuve("\N{ROSETTE}", "Partagée")
+        post.with_user(self.lecteur).action_basculer_reaction(pouce.id)
+        post.with_user(self.voisin).action_basculer_reaction(pouce.id)
         post.invalidate_recordset()
-        self.assertTrue(post.with_user(self.lecteur).jaime_par_moi)
-        self.assertFalse(post.with_user(self.voisin).jaime_par_moi)
-        self.assertEqual(post.with_user(self.voisin).nb_jaime, 1)
+        posees = self._posees(post, self.voisin)
+        self.assertEqual(len(posees), 1)
+        self.assertEqual(posees[0]["nb"], 2)
 
-    def test_on_n_aime_pas_deux_fois(self):
+    def test_les_noms_sont_lisibles_par_l_audience(self):
+        """🔴 Renversement assumé de la 18.0.1.6.0 : jusque-là l'écran ne
+        rendait qu'un cardinal. Olivier a tranché le 2026-09-19."""
         post = self._publiee()
-        Jaime = self.env["bf.babillard.jaime"].with_user(self.lecteur)
-        Jaime.create({"post_id": post.id, "user_id": self.lecteur.id})
+        post.with_user(self.lecteur).action_basculer_reaction(
+            self._neuve("\N{ROSETTE}", "Nommée").id)
+        post.invalidate_recordset()
+        posees = self._posees(post, self.voisin)
+        self.assertEqual(posees[0]["noms"], ["Lecteur du fil"])
+        self.assertFalse(posees[0]["par_moi"], "le voisin n'a pas réagi")
+
+    def test_on_ne_lit_pas_les_reactions_de_ce_qui_ne_nous_est_pas_adresse(self):
+        """🔴 La fuite que la relaxation de la règle aurait ouverte : sans un
+        domaine borné à l'AUDIENCE, un `search` sur le modèle laissait énumérer
+        qui a réagi à des annonces qu'on n'a pas le droit de lire."""
+        prive = self.env["res.groups"].create({"name": "Cercle restreint"})
+        self.voisin.write({"groups_id": [(4, prive.id)]})
+        post = self._publiee(audience="groupes", group_ids=[(6, 0, [prive.id])])
+        post.with_user(self.voisin).action_basculer_reaction(
+            self._neuve("\N{ROSETTE}", "Discrète").id)
+
+        Geste = self.env["bf.babillard.geste"]
+        self.assertTrue(Geste.with_user(self.voisin).search(
+            [("post_id", "=", post.id)]), "le destinataire lit")
+        self.assertFalse(Geste.with_user(self.lecteur).search(
+            [("post_id", "=", post.id)]), "hors audience, rien")
+
+    def test_on_ne_reagit_pas_au_nom_d_un_autre(self):
+        """⚠️ On vérifie le MESSAGE, pas seulement le refus.
+
+        Deux gardes couvrent ce geste : celle de `create` et la règle
+        d'enregistrement. Chacune suffit, donc retirer l'une laissait l'essai
+        au vert et la mutation survivait. Le message nomme laquelle a parlé, et
+        c'est celle du modèle qui doit répondre : elle dit à la personne ce qui
+        s'est passé, là où la règle rend le refus générique d'Odoo."""
+        post = self._publiee()
+        with self.assertRaises(AccessError) as pris:
+            self.env["bf.babillard.geste"].with_user(self.lecteur).create({
+                "post_id": post.id, "user_id": self.voisin.id,
+                "reaction_id": self._neuve("\N{ROSETTE}", "Usurpée").id})
+        self.assertIn("au nom de quelqu'un d'autre", str(pris.exception))
+
+    def test_on_ne_pose_pas_deux_fois_la_meme(self):
+        post = self._publiee()
+        Geste = self.env["bf.babillard.geste"].with_user(self.lecteur)
+        vals = {"post_id": post.id, "user_id": self.lecteur.id,
+                "reaction_id": self._neuve("\N{ROSETTE}", "Répétée").id}
+        Geste.create(vals)
         with self.assertRaises(Exception):
             with self.cr.savepoint():
-                Jaime.create({"post_id": post.id, "user_id": self.lecteur.id})
+                Geste.create(dict(vals))
 
-    def test_on_n_aime_pas_au_nom_d_un_autre(self):
-        post = self._publiee()
-        with self.assertRaises(AccessError):
-            self.env["bf.babillard.jaime"].with_user(self.lecteur).create(
-                {"post_id": post.id, "user_id": self.voisin.id})
-
-    def test_on_ne_lit_que_ses_propres_jaime(self):
-        """🔴 L'écran ne rend qu'un cardinal : personne ne dresse la liste de
-        qui a aimé quoi en interrogeant le modèle."""
-        post = self._publiee()
-        post.with_user(self.lecteur).action_basculer_jaime()
-        vus = self.env["bf.babillard.jaime"].with_user(self.voisin).search([])
-        self.assertFalse(vus, "le voisin ne voit pas le j'aime du lecteur")
-
-    def test_un_brouillon_ne_s_aime_pas(self):
+    def test_un_brouillon_ne_recoit_pas_de_reaction(self):
         brouillon = self.env["bf.babillard.post"].with_user(self.redac).create(
             {"name": "Pas encore", "audience": "tous"})
         with self.assertRaises(UserError):
-            brouillon.with_user(self.redac).action_basculer_jaime()
+            brouillon.with_user(self.redac).action_basculer_reaction(
+                self._neuve("\N{ROSETTE}", "Prématurée").id)
 
-    def test_le_jaime_refuse_une_publication_qu_on_ne_peut_pas_lire(self):
+    def test_la_reaction_refuse_une_publication_qu_on_ne_peut_pas_lire(self):
         """🔴 La méthode est publique, donc appelable par RPC."""
         departement = self.env["hr.department"].create({"name": "Ailleurs"})
         post = self._publiee(audience="departements",
                              department_ids=[(6, 0, [departement.id])])
         with self.assertRaises(AccessError):
-            post.with_user(self.lecteur).action_basculer_jaime()
+            post.with_user(self.lecteur).action_basculer_reaction(
+                self._neuve("\N{ROSETTE}", "Interdite").id)
 
-    def test_aucun_champ_de_mesure_sur_le_jaime(self):
-        """Comme l'accusé : un j'aime dit qu'on a aimé, il ne mesure personne."""
-        champs = set(self.env["bf.babillard.jaime"]._fields)
-        self.assertFalse(champs & {"score", "poids", "duree", "nb_vues", "engagement"})
+    def test_la_redaction_hors_audience_ne_reagit_pas_non_plus(self):
+        """🔴 Le contrôle d'audience du bascule est une SECONDE défense, et ce
+        rôle-ci est le seul qui la met à l'épreuve.
+
+        Un lecteur hors audience est déjà arrêté par `check_access`, la règle
+        d'enregistrement lui cachant la publication : retirer
+        `_est_destinataire` ne changeait rien pour lui, et la mutation
+        survivait. La rédaction, elle, LIT tout (`rule_post_redacteur`) sans
+        être pour autant destinataire. C'est là que la garde travaille."""
+        departement = self.env["hr.department"].create({"name": "Sans moi"})
+        post = self._publiee(audience="departements",
+                             department_ids=[(6, 0, [departement.id])])
+        self.assertTrue(post.with_user(self.redac).name, "la rédaction LIT")
+        with self.assertRaises(AccessError):
+            post.with_user(self.redac).action_basculer_reaction(
+                self._neuve("\N{ROSETTE}", "Pas pour elle").id)
+
+    def test_on_ne_retire_pas_la_reaction_d_un_autre(self):
+        """🔴 La garde de `create` ne couvre QUE la création. Retirer la
+        réaction de quelqu'un d'autre passe par `unlink`, et seule la règle
+        d'enregistrement s'y oppose. Sans cet essai, la règle pouvait être
+        élargie à tout le monde sans qu'un seul essai bronche."""
+        post = self._publiee()
+        sienne = self._neuve("\N{ROSETTE}", "Au voisin")
+        post.with_user(self.voisin).action_basculer_reaction(sienne.id)
+        geste = self.env["bf.babillard.geste"].sudo().search(
+            [("post_id", "=", post.id), ("user_id", "=", self.voisin.id)])
+        self.assertEqual(len(geste), 1)
+        with self.assertRaises(AccessError):
+            geste.with_user(self.lecteur).unlink()
+        self.assertTrue(geste.exists(), "elle est toujours là")
+
+    def test_une_reaction_non_offerte_ne_se_pose_pas(self):
+        """L'identifiant vient du navigateur : il ne vaut rien tant qu'il n'a
+        pas été confronté au catalogue."""
+        post = self._publiee()
+        dormante = self._neuve("\N{ROSETTE}", "Rangée", active=False)
+        self.assertFalse(dormante.active)
+        with self.assertRaises(UserError):
+            post.with_user(self.lecteur).action_basculer_reaction(dormante.id)
+
+    def test_on_retire_une_reaction_meme_si_elle_n_est_plus_offerte(self):
+        """⚠️ L'administration décoche, et les gens qui l'avaient posée doivent
+        pouvoir se reprendre. C'est l'AJOUT qui est refusé, pas le retrait."""
+        post = self._publiee()
+        bravo = self._neuve("\N{ROSETTE}", "Retirable")
+        post.with_user(self.lecteur).action_basculer_reaction(bravo.id)
+        bravo.sudo().active = False
+        post.invalidate_recordset()
+        post.with_user(self.lecteur).action_basculer_reaction(bravo.id)
+        post.invalidate_recordset()
+        self.assertEqual(self._posees(post, self.lecteur), [])
+
+    def test_une_reaction_decochee_reste_affichee(self):
+        """L'historique ne se réécrit pas parce que l'administration a changé
+        d'idée."""
+        post = self._publiee()
+        bravo = self._neuve("\N{ROSETTE}", "Historique")
+        post.with_user(self.lecteur).action_basculer_reaction(bravo.id)
+        bravo.sudo().active = False
+        post.invalidate_recordset()
+        lues = post.with_user(self.lecteur).reactions
+        self.assertEqual([r["symbole"] for r in lues["posees"]],
+                         ["\N{ROSETTE}"])
+        self.assertNotIn(bravo.id, [o["id"] for o in lues["offertes"]],
+                         "mais elle n'est plus proposée")
+
+    def test_le_selecteur_n_offre_pas_ce_qui_est_deja_pose(self):
+        post = self._publiee()
+        pouce = self._neuve("\N{ROSETTE}", "Offerte puis posée")
+        avant = post.with_user(self.lecteur).reactions["offertes"]
+        self.assertIn(pouce.id, [o["id"] for o in avant])
+        post.with_user(self.lecteur).action_basculer_reaction(pouce.id)
+        post.invalidate_recordset()
+        apres = post.with_user(self.lecteur).reactions["offertes"]
+        self.assertNotIn(pouce.id, [o["id"] for o in apres])
+
+    def test_le_selecteur_depend_de_qui_regarde(self):
+        """🔴 `depends_context("uid")` : sans lui, la barre calculée pour la
+        première personne qui ouvre le fil est servie à tout le monde."""
+        post = self._publiee()
+        pouce = self._neuve("\N{ROSETTE}", "Par moi")
+        post.with_user(self.lecteur).action_basculer_reaction(pouce.id)
+        post.invalidate_recordset()
+        self.assertTrue(self._posees(post, self.lecteur)[0]["par_moi"])
+        self.assertFalse(self._posees(post, self.voisin)[0]["par_moi"])
+
+    def test_une_reaction_d_une_autre_societe_ne_se_pose_pas(self):
+        """🔴 Le catalogue peut être propre à une société. Connaître
+        l'identifiant d'une réaction d'ailleurs ne doit pas suffire à la poser
+        ici : le contrôle est au serveur, pas au sélecteur."""
+        ailleurs = self.env["res.company"].create({"name": "Société voisine"})
+        etrangere = self.env["bf.babillard.reaction"].sudo().create({
+            "name": "Ailleurs", "symbole": "\N{GLOBE WITH MERIDIANS}",
+            "company_id": ailleurs.id})
+        post = self._publiee()
+        self.assertNotEqual(post.company_id, ailleurs)
+        with self.assertRaises(UserError):
+            post.with_user(self.lecteur).action_basculer_reaction(etrangere.id)
+
+    def test_aucun_champ_de_mesure_sur_le_geste(self):
+        """Une réaction dit qu'on a réagi ; elle ne pondère rien."""
+        champs = set(self.env["bf.babillard.geste"]._fields)
+        self.assertFalse(champs & {"score", "poids", "duree", "nb_vues",
+                                   "engagement"})
         self.assertEqual(
             champs - {"id", "display_name", "create_uid", "create_date",
-                      "write_uid", "write_date", "post_id", "user_id", "company_id"},
-            set(), "un champ neuf sur le j'aime se décide, il ne s'ajoute pas")
+                      "write_uid", "write_date", "post_id", "user_id",
+                      "reaction_id", "company_id"},
+            set(), "un champ neuf sur le geste se décide, il ne s'ajoute pas")
+
+    def test_l_accuse_de_lecture_reste_prive(self):
+        """⚠️ Les réactions se voient, l'accusé non. Deux tables, deux usages :
+        relâcher l'une ne relâche pas l'autre."""
+        post = self._publiee(lecture_requise=True)
+        post.with_user(self.lecteur).action_marquer_lu()
+        vus = self.env["bf.babillard.lecture"].with_user(self.voisin).search(
+            [("post_id", "=", post.id)])
+        self.assertFalse(vus, "le voisin ne voit pas l'accusé du lecteur")
 
     # --- le fil ne s'ouvre plus sur du bruit --------------------------------
 
@@ -1022,6 +1212,245 @@ class TestFilVivant(TransactionCase):
 
 
 @tagged("post_install", "-at_install")
+@tagged("post_install", "-at_install")
+class TestCatalogueReactions(TransactionCase):
+    """Le catalogue se coche. C'est une liste, pas un écran de réglages."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        Users = cls.env["res.users"].with_context(no_reset_password=True)
+        cls.g_interne = cls.env.ref("base.group_user")
+        cls.admin = Users.create({
+            "name": "Administration du babillard",
+            "login": "cat_admin@essai.test", "email": "cat_admin@essai.test",
+            "groups_id": [(6, 0, [cls.g_interne.id,
+                                  cls.env.ref("base.group_system").id])]})
+        cls.redac = Users.create({
+            "name": "Rédaction du catalogue", "login": "cat_redac@essai.test",
+            "email": "cat_redac@essai.test",
+            "groups_id": [(6, 0, [cls.g_interne.id,
+                                  cls.env.ref("bf_babillard.group_babillard_redacteur").id])]})
+        cls.lecteur = Users.create({
+            "name": "Lecteur du catalogue", "login": "cat_lecteur@essai.test",
+            "email": "cat_lecteur@essai.test",
+            "groups_id": [(6, 0, [cls.g_interne.id])]})
+
+    def _toutes(self):
+        return self.env["bf.babillard.reaction"].with_context(
+            active_test=False).search([("predefinie", "=", True)])
+
+    def test_le_catalogue_arrive_garni(self):
+        """Douze réactions prédéfinies, présentes quoi qu'en fasse la maison :
+        elles se décochent, elles ne se suppriment pas."""
+        self.assertEqual(len(self._toutes()), 12)
+
+    def test_le_jeu_coche_a_la_livraison_est_de_cinq(self):
+        """⚠️ Mesuré dans le FICHIER de données, pas en base.
+
+        L'état coché est une donnée d'usager dès la première minute : une
+        maison décoche « Merci » et la base ne dit plus rien de ce que le
+        module livre. La promesse « cinq d'emblée » porte sur ce qui est semé,
+        et c'est là qu'elle se vérifie. Un essai qui lisait la base est tombé
+        parce qu'un contrôle navigateur avait coché « Étonnant »."""
+        import xml.etree.ElementTree as ET
+        chemin = os.path.join(os.path.dirname(os.path.dirname(
+            os.path.abspath(__file__))), "data", "babillard_reaction.xml")
+        arbre = ET.parse(chemin).getroot()
+        self.assertEqual(arbre.get("noupdate"), "1",
+                         "sans noupdate, un -u recoche les douze")
+        cochees = []
+        for record in arbre.findall("record"):
+            valeurs = {c.get("name"): (c.get("eval") or c.text)
+                       for c in record.findall("field")}
+            self.assertEqual(valeurs.get("predefinie"), "True")
+            if valeurs.get("active") == "True":
+                cochees.append(valeurs["symbole"])
+        self.assertEqual(cochees,
+                         ["\N{THUMBS UP SIGN}", "\N{PARTY POPPER}",
+                          "\N{HEAVY BLACK HEART}\N{VARIATION SELECTOR-16}",
+                          "\N{ELECTRIC LIGHT BULB}",
+                          "\N{PERSON WITH FOLDED HANDS}"])
+
+    def test_aucune_prédéfinie_ne_juge(self):
+        """Pas de pouce vers le bas : sur une annonce de la maison, un 👎
+        n'ouvre pas une conversation, il la ferme. Qui veut nuancer a le fil de
+        discussion."""
+        self.assertNotIn("\N{THUMBS DOWN SIGN}", self._toutes().mapped("symbole"))
+
+    def test_les_predefinies_sont_en_noupdate(self):
+        """🔴 C'est `noupdate` qui rend le décochage DURABLE. Sans lui, un `-u`
+        recoche les douze, et l'écran d'une maison qui n'en voulait que deux se
+        regarnit tout seul. Mesuré en base, pas lu dans le fichier."""
+        donnees = self.env["ir.model.data"].search([
+            ("module", "=", "bf_babillard"),
+            ("model", "=", "bf.babillard.reaction"),
+        ])
+        self.assertEqual(len(donnees), 12)
+        self.assertTrue(all(donnees.mapped("noupdate")),
+                        "une prédéfinie sans noupdate se recoche à la montée")
+
+    def test_une_predefinie_ne_se_supprime_pas(self):
+        """Supprimée, elle revient cochée à la prochaine mise à jour : Odoo
+        recrée l'enregistrement dont l'identifiant externe a disparu."""
+        dormante = self.env.ref("bf_babillard.reaction_etonnant")
+        with self.assertRaises(UserError):
+            dormante.with_user(self.admin).unlink()
+
+    def test_une_reaction_maison_posee_ne_se_supprime_pas(self):
+        maison = self.env["bf.babillard.reaction"].with_user(self.admin).create(
+            {"name": "Café", "symbole": "\N{HOT BEVERAGE}"})
+        post = self.env["bf.babillard.post"].with_user(self.redac).create(
+            {"name": "Pause", "audience": "tous"})
+        post.with_user(self.redac).action_publier()
+        post.with_user(self.lecteur).action_basculer_reaction(maison.id)
+        with self.assertRaises(UserError):
+            maison.with_user(self.admin).unlink()
+
+    def test_une_reaction_maison_inutilisee_se_supprime(self):
+        maison = self.env["bf.babillard.reaction"].with_user(self.admin).create(
+            {"name": "Éphémère", "symbole": "\N{SNOWFLAKE}"})
+        maison.with_user(self.admin).unlink()
+        self.assertFalse(maison.exists())
+
+    def test_une_maison_ajoute_la_sienne(self):
+        maison = self.env["bf.babillard.reaction"].with_user(self.admin).create(
+            {"name": "Poutine", "symbole": "\N{POT OF FOOD}", "sequence": 5})
+        self.assertTrue(maison.active)
+        self.assertFalse(maison.predefinie)
+
+    def test_seule_l_administration_configure(self):
+        """La rédaction publie ; elle ne décide pas du ton de la maison."""
+        Reaction = self.env["bf.babillard.reaction"]
+        with self.assertRaises(AccessError):
+            Reaction.with_user(self.redac).create(
+                {"name": "Non", "symbole": "\N{CROSS MARK}"})
+        with self.assertRaises(AccessError):
+            self.env.ref("bf_babillard.reaction_en_route").with_user(
+                self.redac).write({"active": True})
+        self.assertTrue(
+            Reaction.with_user(self.lecteur).search([]),
+            "tout le monde LIT le catalogue, sinon aucune barre ne s'affiche")
+
+    def test_deux_fois_le_meme_symbole_offert_est_refuse(self):
+        Reaction = self.env["bf.babillard.reaction"].with_user(self.admin)
+        Reaction.create({"name": "Première", "symbole": "\N{ROSETTE}"})
+        with self.assertRaises(ValidationError):
+            Reaction.create({"name": "Doublon", "symbole": "\N{ROSETTE}"})
+
+    def test_une_rangee_peut_doubler_une_offerte(self):
+        """Le contrôle porte sur ce qui est OFFERT : une réaction rangée peut
+        porter le symbole d'une réaction offerte, personne ne voit deux
+        boutons.
+
+        ⚠️ Cet essai mettait DEUX rangées face à face, et ne prouvait rien :
+        `search` écarte les archivées d'office, donc la garde qui écarte la
+        réaction inactive ne servait jamais. La mutation survivait. Le cas que
+        la garde gouverne vraiment, c'est une rangée face à une OFFERTE."""
+        Reaction = self.env["bf.babillard.reaction"].with_user(self.admin)
+        Reaction.create({"name": "Offerte", "symbole": "\N{ROSETTE}"})
+        rangee = Reaction.create({"name": "Rangée", "symbole": "\N{ROSETTE}",
+                                  "active": False})
+        self.assertTrue(rangee.exists())
+
+    def test_un_symbole_trop_long_est_refuse(self):
+        with self.assertRaises(ValidationError):
+            self.env["bf.babillard.reaction"].with_user(self.admin).create(
+                {"name": "Discours", "symbole": "bravo à toute l'équipe"})
+
+    def test_decocher_n_efface_pas_les_gestes(self):
+        bravo = self.env["bf.babillard.reaction"].with_user(self.admin).create(
+            {"name": "Éphémère cochée", "symbole": "\N{ROSETTE}"})
+        post = self.env["bf.babillard.post"].with_user(self.redac).create(
+            {"name": "Beau coup", "audience": "tous"})
+        post.with_user(self.redac).action_publier()
+        post.with_user(self.lecteur).action_basculer_reaction(bravo.id)
+        bravo.with_user(self.admin).write({"active": False})
+        self.assertEqual(
+            self.env["bf.babillard.geste"].sudo().search_count(
+                [("post_id", "=", post.id), ("reaction_id", "=", bravo.id)]), 1)
+
+    def test_l_administration_voit_combien_de_fois_une_reaction_a_servi(self):
+        """Le compte sert à savoir si décocher va vider un écran. Il est en
+        cardinal : le catalogue ne nomme personne.
+
+        ⚠️ Mesuré sur une réaction NEUVE. Sur « J'aime », le compte porte tout
+        l'historique de la base, y compris ce qu'une montée y a versé : l'essai
+        annonçait 1 et la base en avait 7."""
+        neuve = self.env["bf.babillard.reaction"].with_user(self.admin).create(
+            {"name": "Compté", "symbole": "\N{SEEDLING}"})
+        self.assertEqual(neuve.nb_gestes, 0)
+        post = self.env["bf.babillard.post"].with_user(self.redac).create(
+            {"name": "Un mot", "audience": "tous"})
+        post.with_user(self.redac).action_publier()
+        post.with_user(self.lecteur).action_basculer_reaction(neuve.id)
+        neuve.invalidate_recordset()
+        self.assertEqual(neuve.with_user(self.admin).nb_gestes, 1)
+
+
+@tagged("post_install", "-at_install")
+class TestPageDuLecteur(TransactionCase):
+    """Le lecteur voit une publication et un fil, pas une fiche."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        Users = cls.env["res.users"].with_context(no_reset_password=True)
+        g_interne = cls.env.ref("base.group_user")
+        cls.redac = Users.create({
+            "name": "Rédaction de la page", "login": "page_redac@essai.test",
+            "email": "page_redac@essai.test",
+            "groups_id": [(6, 0, [g_interne.id,
+                                  cls.env.ref("bf_babillard.group_babillard_redacteur").id])]})
+        cls.lecteur = Users.create({
+            "name": "Lecteur de la page", "login": "page_lecteur@essai.test",
+            "email": "page_lecteur@essai.test",
+            "groups_id": [(6, 0, [g_interne.id])]})
+
+    def _arch(self, user):
+        vue = self.env.ref("bf_babillard.view_babillard_post_form")
+        return self.env["bf.babillard.post"].with_user(user).get_view(
+            vue.id, "form")["arch"]
+
+    def test_la_barre_d_etat_est_reservee_a_la_redaction(self):
+        """« brouillon > publié > échue » n'apprend rien à qui vient lire une
+        annonce, et c'est ce qui donnait à la page son air de fiche."""
+        self.assertIn("statusbar", self._arch(self.redac))
+        self.assertNotIn("statusbar", self._arch(self.lecteur))
+
+    def test_les_commandes_de_diffusion_restent_a_la_redaction(self):
+        """⚠️ On cherche `name="champ"`, pas le mot nu : « toute l'audience »
+        dans un commentaire de la vue faisait passer l'essai pour un échec, et
+        aurait tout aussi bien pu le faire passer pour un succès."""
+        arch_redac, arch_lecteur = self._arch(self.redac), self._arch(self.lecteur)
+        for commande in ("audience", "epingle", "department_ids",
+                         "nb_destinataires", "auteur_user_id"):
+            balise = 'name="%s"' % commande
+            self.assertIn(balise, arch_redac)
+            self.assertNotIn(balise, arch_lecteur,
+                             "%s est une commande de rédaction" % commande)
+
+    def test_la_page_du_lecteur_porte_le_marqueur_du_fil_depouille(self):
+        """🔴 Le dépouillement ne peut pas se décider en CSS : rien dans le DOM
+        ne dit à quel groupe appartient qui regarde. Un marqueur n'est servi
+        qu'au lecteur, le serveur retirant le nœud avant le navigateur, et la
+        feuille de style le lit avec `:has()`.
+
+        ⚠️ Cet essai mesure l'arbre RENDU pour chaque rôle, pas le fichier :
+        c'est le serveur qui retire le nœud, et c'est là que ça peut manquer."""
+        self.assertIn("o_bf_bab_marque_lecteur", self._arch(self.lecteur))
+        self.assertNotIn("o_bf_bab_marque_lecteur", self._arch(self.redac))
+
+    def test_le_lecteur_garde_le_fil_de_discussion(self):
+        """Dépouiller n'est pas couper : « sleek », pas muet."""
+        self.assertIn("chatter", self._arch(self.lecteur))
+
+    def test_le_lecteur_garde_ses_propres_commandes(self):
+        arch = self._arch(self.lecteur)
+        self.assertIn("action_marquer_lu", arch)
+        self.assertIn("bf_babillard_reactions", arch)
+
+
 class TestPastilles(TransactionCase):
     """Les couleurs de type, mesurées et non regardées.
 

@@ -3,7 +3,7 @@
     "name": "Babillard",
     "summary": "Les annonces de la maison, avec leur audience, leur échéance et "
                "la preuve qu'elles ont été lues",
-    "version": "18.0.1.5.0",
+    "version": "18.0.1.6.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -20,13 +20,17 @@
         "security/bf_babillard_rules.xml",
         "data/ir_cron.xml",
         "data/mail_template.xml",
+        "data/babillard_reaction.xml",
         "views/babillard_signalement_views.xml",
+        "views/babillard_reaction_views.xml",
         "views/babillard_post_views.xml",
         "views/babillard_menus.xml",
     ],
     "assets": {
         "web.assets_backend": [
             "bf_babillard/static/src/scss/babillard.scss",
+            "bf_babillard/static/src/js/babillard_reactions.js",
+            "bf_babillard/static/src/xml/babillard_reactions.xml",
         ],
     },
     "description": """
@@ -86,17 +90,24 @@ Ce qu'il fait
   encore confirmé sa lecture.
 * **Le fil se lit comme un fil** : une colonne, la date en mots, une pastille
   « Nouveau », ni pagination ni sélecteur de vue.
-* **Un j'aime en un clic**, qui se reprend, et dont l'écran ne rend que le
-  cardinal.
+* **Des réactions en un clic**, qui se reprennent. L'administration coche ce
+  que la maison offre dans un catalogue de douze, et en ajoute autant qu'elle
+  veut. Une même personne peut en poser plusieurs, et le survol dit qui a
+  réagi.
 * **Une arrivée se souhaite toute seule**, une à la fois.
 * **L'échéance retire la publication du fil**, sans rien détruire.
 
 Ce qu'il ne fait pas, et c'est voulu
 ------------------------------------
 
-* **Aucun pointage, aucun classement, aucun score d'engagement.** L'accusé prouve
-  la diffusion ; il ne mesure personne. La Loi 25 encadre le profilage, qui inclut
-  l'évaluation du rendement au travail, et un babillard n'a rien à y faire.
+* **Aucun pointage, aucun classement, aucun score d'engagement.** L'accusé de
+  lecture prouve la diffusion ; il ne mesure personne, et il reste privé. Les
+  réactions, elles, sont publiques au sein de l'audience depuis la 18.0.1.6.0 :
+  on voit qui a réagi à une publication, comme dans le fil de discussion. Ce
+  que le module ne fournit toujours pas, c'est l'agrégat par personne, celui
+  qui répondrait à « qui ne réagit jamais ». La Loi 25 encadre le profilage,
+  qui inclut l'évaluation du rendement au travail, et un babillard n'a rien à
+  y faire.
 * **Aucune communauté d'intérêt, aucun fil personnel.** Sous deux cents personnes,
   la participation spontanée se compte sur les doigts d'une main.
 * **Aucun clavardage.** Discuss existe, il est complet, et le doublon est la façon

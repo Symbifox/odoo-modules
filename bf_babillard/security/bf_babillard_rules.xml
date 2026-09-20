@@ -64,20 +64,77 @@
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 
-    <!-- 🔴 Un j'aime est PERSONNEL : on ne lit et on ne retire que le sien.
-         L'écran n'affiche qu'un cardinal, calculé en sudo — personne ne peut
-         dresser la liste de qui a aimé quoi en interrogeant le modèle. -->
-    <record id="rule_jaime_le_mien" model="ir.rule">
-        <field name="name">Babillard : mon j'aime</field>
-        <field name="model_id" ref="model_bf_babillard_jaime"/>
+    <!-- 🔴 Une réaction se LIT par toute l'audience, et ne se POSE que pour soi.
+         Jusqu'à la 18.0.1.6.0 elle était strictement personnelle et l'écran n'en
+         rendait qu'un cardinal. Olivier a tranché le 2026-09-19 : on voit qui a
+         réagi, comme sur les réactions natives du fil de discussion juste en
+         dessous. Ce qui suit est la conséquence de ce choix, pas un oubli.
+
+         🔴 La lecture est donc bornée par l'AUDIENCE DE LA PUBLICATION, pas par
+         la société : sans ce domaine, un `search_read` sur le modèle laissait
+         énumérer qui a réagi à des annonces qu'on n'a pas le droit de lire, et
+         leurs identifiants avec. Le domaine reprend celui de la publication,
+         préfixé, et il traverse les données pour la même raison qu'elle : la
+         liste des départements mise en cache ne suit pas une mutation.
+
+         ⚠️ L'accusé de lecture, lui, RESTE personnel. C'est une autre table et
+         un autre usage : il prouve la diffusion, et sa règle n'a pas bougé. -->
+    <record id="rule_geste_audience" model="ir.rule">
+        <field name="name">Babillard : les réactions de ce qui m'est adressé</field>
+        <field name="model_id" ref="model_bf_babillard_geste"/>
         <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[
+            '&amp;',
+                ('post_id.state', '=', 'publie'),
+                '|', '|',
+                    ('post_id.audience', '=', 'tous'),
+                    '&amp;', ('post_id.audience', '=', 'departements'),
+                             ('post_id.department_ids.member_ids.user_id', '=', user.id),
+                    '&amp;', ('post_id.audience', '=', 'groupes'),
+                             ('post_id.group_ids', 'in', user.groups_id.ids)
+        ]</field>
+    </record>
+
+    <record id="rule_geste_redacteur" model="ir.rule">
+        <field name="name">Babillard : la rédaction voit les réactions</field>
+        <field name="model_id" ref="model_bf_babillard_geste"/>
+        <field name="groups" eval="[(6, 0, [ref('group_babillard_redacteur'), ref('group_babillard_moderation')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- 🔴 Poser et retirer, c'est pour soi et personne d'autre, rédaction
+         comprise. Une règle par permission : celle-ci ne dit rien de la
+         lecture, donc elle ne l'élargit pas. -->
+    <record id="rule_geste_le_mien" model="ir.rule">
+        <field name="name">Babillard : je ne pose que mes réactions</field>
+        <field name="model_id" ref="model_bf_babillard_geste"/>
+        <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
         <field name="domain_force">[('user_id', '=', user.id)]</field>
     </record>
 
-    <record id="rule_jaime_societe" model="ir.rule">
-        <field name="name">Babillard : les j'aime de mes sociétés</field>
-        <field name="model_id" ref="model_bf_babillard_jaime"/>
+    <record id="rule_geste_societe" model="ir.rule">
+        <field name="name">Babillard : les réactions de mes sociétés</field>
+        <field name="model_id" ref="model_bf_babillard_geste"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Le catalogue : ce qui est partagé, et ce qui appartient à ma société. -->
+    <record id="rule_reaction_societe" model="ir.rule">
+        <field name="name">Babillard : les réactions offertes chez moi</field>
+        <field name="model_id" ref="model_bf_babillard_reaction"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
 
     <!-- Un signalement est confidentiel : la modération, et elle seule. La personne
