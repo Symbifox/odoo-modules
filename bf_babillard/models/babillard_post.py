@@ -88,6 +88,41 @@ class BabillardPost(models.Model):
     nb_destinataires = fields.Integer("Destinataires", compute="_compute_lectures")
     lu_par_moi = fields.Boolean(
         "Lue par moi", compute="_compute_lu_par_moi", search="_search_lu_par_moi")
+    a_lire_pour_moi = fields.Boolean(
+        "À lire par moi", compute="_compute_a_lire_pour_moi",
+        help="Une publication au fil, qui demande une confirmation, qui m'est "
+             "adressée, et que je n'ai pas encore confirmée.")
+
+    # ⚠️ `hr.employee` n'est PAS lisible par une personne interne ordinaire
+    # (seule la RH l'est) : le modèle public porte les mêmes identifiants et se
+    # lit par tout le monde. Un lien vers `hr.employee` rendrait la carte
+    # illisible à l'audience, qui est précisément qui doit la voir.
+    # 🔴 Pas de `ondelete=` ici, et ce n'est pas un oubli : `hr.employee.public`
+    # est une VUE SQL, et Odoo ne pose aucune clé étrangère vers une vue
+    # (`Many2one.update_db_foreign_key` sort avant). Un `ondelete` déclaré
+    # mentirait. Le ménage se fait à la main, dans `HrEmployee.unlink`.
+    personne_id = fields.Many2one(
+        "hr.employee.public", string="Personne mise en avant",
+        help="La personne dont la publication parle. Son visage paraît sur la "
+             "carte, à la place de celui de l'auteur.")
+    personne_avatar = fields.Image(
+        "Visage de la personne", related="personne_id.avatar_128")
+    auteur_avatar = fields.Image(
+        "Visage de l'auteur", related="auteur_user_id.avatar_128")
+    auteur_nom = fields.Char("Signature", related="auteur_user_id.name")
+    personne_nom = fields.Char("Nom de la personne", related="personne_id.name")
+    image_couverture = fields.Image(
+        "Image", max_width=1920, max_height=1920,
+        help="Une image en tête de la publication. Facultative : une annonce "
+             "sans image reste une annonce.")
+
+    # Le fil de discussion, vu de la carte. Des cardinaux, jamais des noms :
+    # une carte ne dit pas qui a commenté, elle dit que quelqu'un l'a fait.
+    nb_commentaires = fields.Integer("Commentaires", compute="_compute_fil")
+    nb_reactions = fields.Integer("Réactions", compute="_compute_fil")
+
+    peut_relancer_equipe = fields.Boolean(
+        "Je relance mon équipe", compute="_compute_peut_relancer_equipe")
 
     avis_envoye_le = fields.Datetime(
         "Avis envoyé le", readonly=True, copy=False,
@@ -132,6 +167,19 @@ class BabillardPost(models.Model):
             post.nb_lectures = len(post.sudo().lecture_ids)
             post.nb_destinataires = len(post.sudo()._destinataires())
 
+    # ⚠️ Chaque calcul ci-dessous porte AUSSI une dépendance de champ, même
+    # quand sa valeur n'en dépend pas vraiment : un calcul non stocké qui ne
+    # déclare que `depends_context` n'est jamais rejoué pendant un `onchange`,
+    # et la vue reçoit alors la valeur par défaut. C'est le piège miroir de
+    # celui décrit juste en dessous, et il est silencieux côté serveur.
+    # 🔴 `depends_context("uid")` n'est PAS décoratif : sans lui, Odoo met la
+    # valeur en cache par enregistrement seulement (`Environment.cache_key` ne
+    # retient `uid` que si le champ le déclare). Dans une transaction qui voit
+    # passer deux personnes (un cron, un essai, un `with_user`), la deuxième
+    # hérite de la réponse de la première. Le défaut existait déjà sur
+    # `lu_par_moi` dans la version publiée.
+    @api.depends("lecture_ids")
+    @api.depends_context("uid")
     def _compute_lu_par_moi(self):
         lues = set()
         if self.ids:
@@ -149,6 +197,118 @@ class BabillardPost(models.Model):
             ("user_id", "=", self.env.uid)]).mapped("post_id").ids
         positif = (operator == "=") == value
         return [("id", "in" if positif else "not in", lues)]
+
+    @api.depends("state", "lecture_requise", "lu_par_moi")
+    @api.depends_context("uid")
+    def _compute_a_lire_pour_moi(self):
+        """Ce qui M'attend, à moi, maintenant.
+
+        🔴 Le bouton « J'ai lu » se réglait sur `lecture_requise` seul : il
+        paraissait donc à la rédaction, qui voit tout le fil, pour des annonces
+        adressées à d'autres. Le serveur refusait ensuite, à raison, et l'écran
+        avait invité.
+
+        ⚠️ `_destinataires()` fait une recherche par publication. Le fil en
+        affiche des dizaines, presque toutes adressées à tout le personnel :
+        le résultat est retenu par audience identique, jamais recalculé par
+        carte. L'autorité reste `_est_destinataire`, pas une deuxième règle.
+        """
+        connus = {}
+        for post in self:
+            if not (post.id and post.state == "publie" and post.lecture_requise
+                    and not post.lu_par_moi):
+                post.a_lire_pour_moi = False
+                continue
+            cle = (post.audience, post.company_id.id,
+                   tuple(sorted(post.department_ids.ids)),
+                   tuple(sorted(post.group_ids.ids)))
+            if cle not in connus:
+                connus[cle] = post.sudo()._destinataires()
+            post.a_lire_pour_moi = self.env.user in connus[cle]
+
+    @api.depends("message_ids")
+    def _compute_fil(self):
+        """Le nombre de commentaires et de réactions, par lot.
+
+        ⚠️ En sudo, et en cardinal seulement. Le fil de discussion est déjà
+        lisible par l'audience ; ce qu'on évite ici, c'est une requête par carte
+        et la tentation d'afficher QUI a réagi.
+        """
+        for post in self:
+            post.nb_commentaires = 0
+            post.nb_reactions = 0
+        vivants = self.filtered("id")
+        if not vivants:
+            return
+        Message = self.env["mail.message"].sudo()
+        # 🔴 Une note interne est un message de type « comment » : seul son
+        # sous-type change. Le module laisse exprès la rédaction et la
+        # modération noter en privé sous une publication dont les commentaires
+        # sont FERMÉS ; sans ce filtre, la carte annonçait « 1 commentaire » à
+        # toute l'audience pour une note qu'elle ne peut pas lire.
+        note = self.env.ref("mail.mt_note", raise_if_not_found=False)
+        domaine = [
+            ("model", "=", self._name), ("res_id", "in", vivants.ids),
+            ("message_type", "=", "comment"), ("is_internal", "=", False),
+        ]
+        if note:
+            domaine.append(("subtype_id", "!=", note.id))
+        messages = Message.search(domaine)
+        if not messages:
+            return
+        par_post = {}
+        for message in messages:
+            par_post.setdefault(message.res_id, []).append(message.id)
+        reactions = {}
+        groupes = self.env["mail.message.reaction"].sudo()._read_group(
+            [("message_id", "in", messages.ids)],
+            groupby=["message_id"], aggregates=["__count"])
+        for message, compte in groupes:
+            reactions[message.id] = compte
+        for post in vivants:
+            ids = par_post.get(post.id, [])
+            post.nb_commentaires = len(ids)
+            post.nb_reactions = sum(reactions.get(i, 0) for i in ids)
+
+    @api.depends("state", "lecture_requise", "audience",
+                 "department_ids", "group_ids")
+    @api.depends_context("uid")
+    def _compute_peut_relancer_equipe(self):
+        """Le bouton ne paraît que s'il a quelqu'un à montrer.
+
+        🔴 Il suffisait d'avoir des subordonnés : un gestionnaire dont toute
+        l'équipe est au Bureau voyait « Mon équipe » sur une annonce adressée à
+        l'Atelier, et le clic ouvrait une liste vide.
+        """
+        equipe = self._equipe_du_gestionnaire(self.env.user)
+        connus = {}
+        for post in self:
+            if not (equipe and post.id and post.state == "publie"
+                    and post.lecture_requise):
+                post.peut_relancer_equipe = False
+                continue
+            cle = (post.audience, post.company_id.id,
+                   tuple(sorted(post.department_ids.ids)),
+                   tuple(sorted(post.group_ids.ids)))
+            if cle not in connus:
+                connus[cle] = post.sudo()._destinataires()
+            post.peut_relancer_equipe = bool(connus[cle] & equipe)
+
+    @api.model
+    def _equipe_du_gestionnaire(self, user):
+        """Les personnes dont `user` est le supérieur immédiat.
+
+        Les subordonnés DIRECTS seulement, jamais l'arborescence : un relais de
+        gestionnaire sert à parler à son monde, pas à donner à un directeur la
+        liste nominative de trois cents retardataires.
+        """
+        Employee = self.env["hr.employee"].sudo()
+        moi = Employee.search([("user_id", "=", user.id)], limit=1)
+        if not moi:
+            return self.env["res.users"]
+        membres = Employee.search([
+            ("parent_id", "=", moi.id), ("user_id", "!=", False)])
+        return membres.mapped("user_id")
 
     @api.constrains("audience", "department_ids", "group_ids")
     def _check_audience(self):
@@ -317,6 +477,38 @@ class BabillardPost(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("Lecture en attente"),
+            "res_model": "res.users",
+            "view_mode": "list,form",
+            "domain": [("id", "in", manquants.ids)],
+            "target": "current",
+        }
+
+    def action_voir_manquants_equipe(self):
+        """Qui, dans MON équipe, n'a pas encore confirmé sa lecture.
+
+        Le relais par le supérieur immédiat est ce que la recherche donne de
+        plus solide après l'annonce ciblée elle-même, et c'est justement ce
+        qu'un gestionnaire n'a nulle part ailleurs : la rédaction voit tout le
+        monde, lui ne voit rien.
+
+        🔴 La méthode est publique, donc appelable par RPC. Deux gardes : le
+        contrôle d'accès en lecture AVANT tout (sans lui, un gestionnaire
+        interrogeait n'importe quelle publication, y compris celles qui ne lui
+        sont pas adressées), et la restriction aux subordonnés directs.
+        """
+        self.ensure_one()
+        self.check_access("read")
+        equipe = self.sudo()._equipe_du_gestionnaire(self.env.user)
+        if not equipe:
+            raise AccessError(_("Personne ne relève de vous : il n'y a pas "
+                                "d'équipe à relancer."))
+        if self.sudo().state != "publie" or not self.sudo().lecture_requise:
+            raise UserError(_("Cette publication ne demande pas de confirmation."))
+        lus = self.sudo().lecture_ids.mapped("user_id")
+        manquants = (self.sudo()._destinataires() & equipe) - lus
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Mon équipe, lecture en attente"),
             "res_model": "res.users",
             "view_mode": "list,form",
             "domain": [("id", "in", manquants.ids)],

@@ -5,6 +5,10 @@
 donc il ne prouve rien sur les règles d'enregistrement. Chaque parcours est joué
 sous un compte réel, dans le rôle visé.
 """
+import io
+import os
+import re
+
 from odoo import fields
 from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import TransactionCase, tagged
@@ -43,10 +47,12 @@ class TestBabillard(TransactionCase):
             "groups_id": [(6, 0, [cls.g_interne.id, cls.g_moderation.id])]})
 
         Employe = cls.env["hr.employee"]
-        Employe.create({"name": "Personne de l'atelier", "user_id": cls.u_atelier.id,
-                        "department_id": cls.dept_atelier.id})
-        Employe.create({"name": "Personne du bureau", "user_id": cls.u_bureau.id,
-                        "department_id": cls.dept_bureau.id})
+        cls.e_atelier = Employe.create({
+            "name": "Personne de l'atelier", "user_id": cls.u_atelier.id,
+            "department_id": cls.dept_atelier.id})
+        cls.e_bureau = Employe.create({
+            "name": "Personne du bureau", "user_id": cls.u_bureau.id,
+            "department_id": cls.dept_bureau.id})
 
     def _publication(self, **kw):
         vals = {"name": "Fermeture du 24 décembre", "audience": "tous"}
@@ -60,6 +66,24 @@ class TestBabillard(TransactionCase):
             dict({"post_ref": post.id, "motif": motif}, **kw)).action_envoyer()
         return self.env["bf.babillard.signalement"].sudo().search(
             [("post_id", "=", post.id)], order="id desc", limit=1)
+
+    def _gestionnaire_de(self, *employes, departement=None):
+        """Un compte qui a des subordonnés DIRECTS, comme à l'organigramme.
+
+        Créé dans l'essai, pas au montage : un compte interne de plus change le
+        nombre de destinataires d'une audience « tout le personnel », donc les
+        décomptes d'envoi des autres essais.
+        """
+        user = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Gestionnaire", "login": "babillard_gestionnaire",
+            "email": "gestion@exemple.test",
+            "groups_id": [(6, 0, [self.g_interne.id])]})
+        employe = self.env["hr.employee"].create({
+            "name": "Gestionnaire", "user_id": user.id,
+            "department_id": (departement or self.dept_atelier).id})
+        for subordonne in employes:
+            subordonne.sudo().parent_id = employe.id
+        return user, employe
 
     # --- audience ---------------------------------------------------------
 
@@ -506,6 +530,318 @@ class TestBabillard(TransactionCase):
                                    "write_uid", "write_date", "post_id", "user_id", "date",
                                    "company_id"},
                          set(), "un champ neuf sur l'accusé se décide, il ne s'ajoute pas")
+
+    # --- ce que le lecteur voit -------------------------------------------
+
+    def test_a_lire_pour_moi_vrai_pour_qui_est_vise(self):
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        self.assertTrue(post.with_user(self.u_atelier).a_lire_pour_moi)
+
+    def test_a_lire_pour_moi_faux_hors_audience(self):
+        """🔴 Le bouton « J'ai lu » paraissait à la rédaction sur une annonce
+        adressée à un département dont elle ne fait pas partie."""
+        post = self._publication(
+            lecture_requise=True, audience="departements",
+            department_ids=[(6, 0, [self.dept_atelier.id])])
+        post.with_user(self.u_redactrice).action_publier()
+        self.assertTrue(post.with_user(self.u_atelier).a_lire_pour_moi)
+        self.assertFalse(post.with_user(self.u_redactrice).a_lire_pour_moi)
+
+    def test_a_lire_pour_moi_faux_une_fois_confirmee(self):
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        post.with_user(self.u_atelier).action_marquer_lu()
+        self.assertFalse(post.with_user(self.u_atelier).a_lire_pour_moi)
+
+    def test_lu_par_moi_ne_repond_pas_pour_quelqu_un_d_autre(self):
+        """🔴 Le champ était mis en cache par publication, pas par personne.
+
+        Une mutation a survécu à toute la passe : aucun essai ne lisait
+        `lu_par_moi` pour deux personnes dans la même transaction, ce qui est
+        pourtant ce qui arrive dans un cron ou un `with_user`.
+        """
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        post.with_user(self.u_atelier).action_marquer_lu()
+        self.assertTrue(post.with_user(self.u_atelier).lu_par_moi)
+        self.assertFalse(post.with_user(self.u_bureau).lu_par_moi)
+
+    def test_a_lire_pour_moi_faux_sur_un_brouillon(self):
+        post = self._publication(lecture_requise=True)
+        self.assertFalse(post.with_user(self.u_redactrice).a_lire_pour_moi)
+
+    def test_a_lire_pour_moi_suit_l_autorite_de_l_audience(self):
+        """La mise en cache par audience ne doit pas répondre pour une autre.
+
+        ⚠️ Le calcul retient `_destinataires()` par audience identique. Deux
+        publications d'audiences DIFFÉRENTES lues dans le même lot doivent donc
+        donner deux réponses différentes, sinon la clé est trop large.
+        """
+        visee = self._publication(
+            name="Pour l'atelier", lecture_requise=True, audience="departements",
+            department_ids=[(6, 0, [self.dept_atelier.id])])
+        autre = self._publication(
+            name="Pour le bureau", lecture_requise=True, audience="departements",
+            department_ids=[(6, 0, [self.dept_bureau.id])])
+        (visee | autre).with_user(self.u_redactrice).action_publier()
+        lot = (visee | autre).with_user(self.u_atelier)
+        self.assertEqual(
+            {p.name: p.a_lire_pour_moi for p in lot},
+            {"Pour l'atelier": True, "Pour le bureau": False})
+
+    def test_le_compte_du_fil_ne_dit_que_des_cardinaux(self):
+        """⚠️ Le compte est LU d'abord, puis relu après le commentaire.
+
+        Sans cette première lecture, l'essai ne prouve que le calcul, jamais
+        son invalidation : une mutation qui retirait `@api.depends`
+        ("message_ids") lui survivait sans rien casser.
+        """
+        post = self._publication()
+        post.with_user(self.u_redactrice).action_publier()
+        vue = post.with_user(self.u_bureau)
+        self.assertEqual(vue.nb_commentaires, 0)
+        self.assertEqual(vue.nb_reactions, 0)
+        message = post.with_user(self.u_atelier).message_post(
+            body="Bien reçu.", message_type="comment",
+            subtype_xmlid="mail.mt_comment")
+        self.env["mail.message.reaction"].sudo().create({
+            "message_id": message.id, "content": "👍",
+            "partner_id": self.u_bureau.partner_id.id})
+        self.assertEqual(vue.nb_commentaires, 1)
+        self.assertEqual(vue.nb_reactions, 1)
+        # ⚠️ Le chemin qui ne passe PAS par `message_post` : un message créé en
+        # direct n'invalide rien de lui-même, c'est la dépendance qui doit le
+        # faire. C'est aussi le chemin qu'emprunte la passerelle de courriel.
+        self.env["mail.message"].with_user(self.u_atelier).create({
+            "model": "bf.babillard.post", "res_id": post.id,
+            "body": "Une deuxième fois.", "message_type": "comment",
+            "subtype_id": self.env.ref("mail.mt_comment").id,
+        })
+        self.assertEqual(vue.nb_commentaires, 2)
+
+    def test_le_compte_du_fil_ignore_les_notifications(self):
+        """Le suivi et les avis ne sont pas des commentaires."""
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        post.invalidate_recordset()
+        self.assertEqual(post.with_user(self.u_atelier).nb_commentaires, 0)
+
+    def test_une_note_interne_ne_compte_pas_comme_un_commentaire(self):
+        """🔴 Une note interne est un message de type « comment ».
+
+        Le module laisse la modération noter en privé sous une publication dont
+        les commentaires sont FERMÉS. La carte annonçait « 1 commentaire » à
+        toute l'audience pour une note qu'elle ne peut pas lire.
+        """
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        self.assertFalse(post.commentaires_ouverts)
+        post.with_user(self.u_redactrice).message_post(
+            body="Note pour la rédaction.", message_type="comment",
+            subtype_xmlid="mail.mt_note")
+        self.assertEqual(post.with_user(self.u_atelier).nb_commentaires, 0)
+
+    def test_un_employe_supprime_ne_casse_pas_le_fil(self):
+        """🔴 `personne_id` vise une VUE SQL : aucune clé étrangère, donc aucun
+        `ondelete`. Un identifiant mort faisait lever MissingError au champ lié,
+        et le fil entier tombait pour toute l'audience."""
+        employe = self.env["hr.employee"].create({"name": "Personne de passage"})
+        post = self._publication(personne_id=employe.id)
+        post.with_user(self.u_redactrice).action_publier()
+        self.assertEqual(post.personne_id.id, employe.id)
+        employe.unlink()
+        vue = post.with_user(self.u_atelier)
+        vue.invalidate_recordset()
+        self.assertFalse(vue.personne_id)
+        self.assertFalse(vue.personne_nom)
+
+    def test_le_relais_ne_parait_pas_si_l_equipe_n_est_pas_visee(self):
+        """🔴 Le bouton se contentait d'avoir des subordonnés : il paraissait
+        sur une annonce adressée à un autre département, et le clic ouvrait une
+        liste vide.
+
+        Le montage reproduit exactement ce cas : le gestionnaire est au Bureau,
+        donc il LIT l'annonce du Bureau ; son équipe est à l'Atelier, donc elle
+        n'est pas visée.
+        """
+        gestionnaire, _employe = self._gestionnaire_de(
+            self.e_atelier, departement=self.dept_bureau)
+        pour_le_bureau = self._publication(
+            lecture_requise=True, audience="departements",
+            department_ids=[(6, 0, [self.dept_bureau.id])])
+        pour_le_bureau.with_user(self.u_redactrice).action_publier()
+        self.assertFalse(pour_le_bureau.with_user(gestionnaire).peut_relancer_equipe)
+        pour_l_atelier = self._publication(
+            lecture_requise=True, audience="departements",
+            department_ids=[(6, 0, [self.dept_atelier.id, self.dept_bureau.id])])
+        pour_l_atelier.with_user(self.u_redactrice).action_publier()
+        self.assertTrue(pour_l_atelier.with_user(gestionnaire).peut_relancer_equipe)
+
+    def test_la_personne_mise_en_avant_est_lisible_par_l_audience(self):
+        """⚠️ `hr.employee` ne se lit pas comme les autres modèles.
+
+        Odoo 18 sert ses champs PUBLICS à tout le monde, par un détour vers
+        `hr.employee.public`, et refuse les privés. Le lien du babillard pointe
+        donc le modèle public : explicite, et sans dépendre de ce détour. L'essai
+        tient les deux bouts, le refus d'un champ privé et la lecture du visage.
+        """
+        # ⚠️ Le refus vit dans `fetch`, donc il ne se déclenche que sur un champ
+        # STOCKÉ : un champ calculé non stocké ne passe jamais par là et se lit
+        # sans bruit. Un essai monté sur le premier champ privé venu passait
+        # donc pour la mauvaise raison.
+        champs = self.env["hr.employee"]._fields
+        prives = sorted(nom for nom in
+                        set(champs) - set(self.env["hr.employee.public"]._fields)
+                        if champs[nom].store)
+        self.assertTrue(prives, "hr.employee n'a plus de champ privé stocké")
+        with self.assertRaises(AccessError):
+            self.env["hr.employee"].with_user(self.u_bureau).browse(
+                self.e_atelier.id).read([prives[0]])
+        post = self._publication(personne_id=self.e_atelier.id)
+        post.with_user(self.u_redactrice).action_publier()
+        vue = post.with_user(self.u_bureau)
+        self.assertEqual(vue.personne_id.name, "Personne de l'atelier")
+        self.assertTrue(vue.personne_avatar)
+        # Le nom lu par l'en-tête passe par un champ lié : c'est LUI que
+        # l'écran affiche, et il traverse le même contrôle d'accès.
+        self.assertEqual(vue.personne_nom, "Personne de l'atelier")
+
+    def test_les_vues_se_chargent_dans_chaque_role(self):
+        """Une vue qui nomme un champ absent tombe DANS LE NAVIGATEUR.
+
+        `get_views` ne rejoue pas le client, mais il valide l'arbre et les
+        droits de chaque champ : c'est le filet le moins cher contre un champ
+        oublié dans le gabarit d'une carte.
+        """
+        vues = [(False, "kanban"), (False, "form"), (False, "list"), (False, "search")]
+        for user in (self.u_redactrice, self.u_atelier, self.u_moderation):
+            rendu = self.env["bf.babillard.post"].with_user(user).get_views(vues)
+            self.assertEqual(set(rendu["views"]), {"kanban", "form", "list", "search"})
+
+    # --- le relais du gestionnaire ----------------------------------------
+
+    def test_le_gestionnaire_voit_qui_de_son_equipe_n_a_pas_lu(self):
+        gestionnaire, _employe = self._gestionnaire_de(self.e_atelier)
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        action = post.with_user(gestionnaire).action_voir_manquants_equipe()
+        manquants = action["domain"][0][2]
+        self.assertIn(self.u_atelier.id, manquants)
+        self.assertNotIn(self.u_bureau.id, manquants,
+                         "le bureau ne relève pas de ce gestionnaire")
+
+    def test_le_gestionnaire_ne_voit_plus_qui_a_confirme(self):
+        gestionnaire, _employe = self._gestionnaire_de(self.e_atelier)
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        post.with_user(self.u_atelier).action_marquer_lu()
+        action = post.with_user(gestionnaire).action_voir_manquants_equipe()
+        self.assertNotIn(self.u_atelier.id, action["domain"][0][2])
+
+    def test_le_relais_s_arrete_aux_subordonnes_directs(self):
+        """Un directeur ne récupère pas l'arborescence entière."""
+        gestionnaire, employe_gestionnaire = self._gestionnaire_de(self.e_atelier)
+        directrice = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Directrice", "login": "babillard_directrice",
+            "email": "direction@exemple.test",
+            "groups_id": [(6, 0, [self.g_interne.id])]})
+        employe_directrice = self.env["hr.employee"].create({
+            "name": "Directrice", "user_id": directrice.id})
+        employe_gestionnaire.sudo().parent_id = employe_directrice.id
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        action = post.with_user(directrice).action_voir_manquants_equipe()
+        manquants = action["domain"][0][2]
+        self.assertIn(gestionnaire.id, manquants)
+        self.assertNotIn(self.u_atelier.id, manquants,
+                         "l'atelier relève du gestionnaire, pas de la directrice")
+
+    def test_sans_equipe_le_relais_est_refuse(self):
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        with self.assertRaises(AccessError):
+            post.with_user(self.u_atelier).action_voir_manquants_equipe()
+
+    def test_le_relais_refuse_une_publication_qu_on_ne_peut_pas_lire(self):
+        """🔴 La méthode est publique : sans contrôle d'accès AVANT tout, un
+        gestionnaire interrogeait n'importe quelle publication par RPC."""
+        gestionnaire, _employe = self._gestionnaire_de(self.e_atelier)
+        post = self._publication(
+            lecture_requise=True, audience="departements",
+            department_ids=[(6, 0, [self.dept_bureau.id])])
+        post.with_user(self.u_redactrice).action_publier()
+        with self.assertRaises(AccessError):
+            post.with_user(gestionnaire).action_voir_manquants_equipe()
+
+    def test_le_relais_refuse_sans_lecture_obligatoire(self):
+        gestionnaire, _employe = self._gestionnaire_de(self.e_atelier)
+        post = self._publication()
+        post.with_user(self.u_redactrice).action_publier()
+        with self.assertRaises(UserError):
+            post.with_user(gestionnaire).action_voir_manquants_equipe()
+
+    def test_peut_relancer_equipe_faux_sans_equipe(self):
+        gestionnaire, _employe = self._gestionnaire_de(self.e_atelier)
+        post = self._publication(lecture_requise=True)
+        post.with_user(self.u_redactrice).action_publier()
+        self.assertTrue(post.with_user(gestionnaire).peut_relancer_equipe)
+        self.assertFalse(post.with_user(self.u_bureau).peut_relancer_equipe)
+
+
+@tagged("post_install", "-at_install")
+class TestPastilles(TransactionCase):
+    """Les couleurs de type, mesurées et non regardées.
+
+    🔴 Une pastille trop pâle ne lève rien : la page s'affiche, le texte est
+    là, il est seulement illisible pour une partie des gens. Le contrôle qui
+    tranche est un calcul de contraste, pas un coup d'œil.
+    """
+
+    SEUIL_AA = 4.5
+
+    @staticmethod
+    def _luminance(hexa):
+        hexa = hexa.lstrip("#")
+        canaux = [int(hexa[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+        canaux = [c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+                  for c in canaux]
+        return 0.2126 * canaux[0] + 0.7152 * canaux[1] + 0.0722 * canaux[2]
+
+    @classmethod
+    def _contraste(cls, a, b):
+        la, lb = cls._luminance(a), cls._luminance(b)
+        return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+    def _feuille(self):
+        chemin = os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                              "static", "src", "scss", "babillard.scss")
+        with io.open(chemin, encoding="utf-8") as f:
+            return f.read()
+
+    def test_pastilles_contraste_aa(self):
+        feuille = self._feuille()
+        bloc = re.search(r"\$o-bf-bab-pastilles:\s*\((.*?)\);", feuille, re.S)
+        self.assertTrue(bloc, "la carte des couleurs de type a changé de forme")
+        couleurs = re.findall(r'"([a-z]+)":\s*(#[0-9A-Fa-f]{6})', bloc.group(1))
+        self.assertTrue(couleurs, "aucune couleur lue dans la feuille")
+        types = {code for code, _libelle in
+                 self.env["bf.babillard.post"]._fields["type_publication"].selection}
+        self.assertEqual({nom for nom, _hexa in couleurs}, types,
+                         "chaque type a sa couleur, et rien de plus")
+        for nom, hexa in couleurs:
+            ratio = self._contraste(hexa, "#FFFFFF")
+            self.assertGreaterEqual(
+                ratio, self.SEUIL_AA,
+                "la pastille %s (%s) rend %.2f:1 sous du texte blanc" % (nom, hexa, ratio))
+
+    def test_l_accent_de_la_maison_ne_porte_pas_de_texte_blanc(self):
+        """L'accent brut rend 2,3:1 : il décore, il ne porte pas de texte."""
+        # Les commentaires de la feuille NOMMENT l'accent pour dire de ne pas
+        # s'en servir : c'est le code qui se mesure, pas la prose.
+        code = re.sub(r"//.*", "", self._feuille()).upper()
+        self.assertNotIn("#29ABE2", code)
+        self.assertLess(self._contraste("#29ABE2", "#FFFFFF"), self.SEUIL_AA)
 
 
 @tagged("post_install", "-at_install")

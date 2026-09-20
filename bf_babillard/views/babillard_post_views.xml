@@ -4,6 +4,11 @@
         <field name="name">bf.babillard.post.form</field>
         <field name="model">bf.babillard.post</field>
         <field name="arch" type="xml">
+            <!-- 🔴 Ce que le LECTEUR voit tient en haut : un visage, une
+                 signature, le texte. Les réglages de diffusion (audience,
+                 échéance, épingle, commentaires, société) sont les commandes de
+                 la RÉDACTION, et ils rendaient la page d'une reconnaissance
+                 impossible à distinguer d'une fiche d'administration. -->
             <form string="Publication">
                 <header>
                     <button name="action_publier" type="object" string="Publier"
@@ -16,8 +21,7 @@
                             string="Remettre en brouillon" invisible="state != 'echue'"
                             groups="bf_babillard.group_babillard_redacteur"/>
                     <button name="action_marquer_lu" type="object" string="J'ai lu"
-                            class="btn-primary"
-                            invisible="state != 'publie' or not lecture_requise or lu_par_moi"/>
+                            class="btn-primary" invisible="not a_lire_pour_moi"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="brouillon,publie,echue"/>
                 </header>
@@ -33,16 +37,86 @@
                                 groups="bf_babillard.group_babillard_redacteur">
                             <field name="nb_lectures" widget="statinfo" string="ont lu"/>
                         </button>
+                        <!-- Le relais du gestionnaire : son équipe, personne d'autre. -->
+                        <button name="action_voir_manquants_equipe" type="object"
+                                class="oe_stat_button" icon="fa-users"
+                                string="Mon équipe"
+                                invisible="not peut_relancer_equipe"/>
                     </div>
                     <widget name="web_ribbon" title="Lue" bg_color="text-bg-success"
                             invisible="not lu_par_moi"/>
+                    <!-- Champs de condition, lisibles par toute l'audience. -->
+                    <field name="lu_par_moi" invisible="1"/>
+                    <field name="a_lire_pour_moi" invisible="1"/>
+                    <field name="peut_relancer_equipe" invisible="1"/>
+                    <field name="lecture_requise" invisible="1"/>
+                    <field name="commentaires_ouverts" invisible="1"/>
+                    <field name="personne_avatar" invisible="1"/>
+                    <!-- 🔴 En haut, l'image ne fait que se MONTRER. La zone de dépôt
+                         vide d'Odoo mesure 260 px : posée ici, elle occupait le tiers
+                         de la page de toute publication sans image, pour la rédaction.
+                         On la charge depuis le bloc Diffusion, avec les autres
+                         commandes. -->
+                    <div class="o_bf_bab_couverture mb-3" invisible="not image_couverture">
+                        <field name="image_couverture" widget="image" nolabel="1"
+                               readonly="1" options="{'zoom': false}"/>
+                    </div>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Le titre que les gens liront"/></h1>
                     </div>
-                    <group>
+                    <div class="o_bf_bab_entete d-flex align-items-center gap-2 mb-3">
+                        <field name="personne_avatar" widget="image" nolabel="1"
+                               readonly="1" class="o_bf_bab_visage"
+                               options="{'zoom': false}"
+                               invisible="not personne_avatar"/>
+                        <field name="auteur_avatar" widget="image" nolabel="1"
+                               readonly="1" class="o_bf_bab_visage"
+                               options="{'zoom': false}"
+                               invisible="personne_avatar"/>
+                        <!-- 🔴 Le visage et le nom en gras doivent désigner la même
+                             personne : la carte d'un badge montrait le visage d'Anouk
+                             au-dessus du nom de Félix. Quand une personne est mise en
+                             avant, c'est elle en tête, et l'auteur signe en dessous. -->
+                        <div class="d-flex flex-column">
+                            <span class="fw-bold">
+                                <field name="personne_nom" nolabel="1" readonly="1"
+                                       invisible="not personne_nom"/>
+                                <field name="auteur_nom" nolabel="1" readonly="1"
+                                       invisible="personne_nom"/>
+                            </span>
+                            <span class="text-muted small d-flex align-items-center gap-1">
+                                <field name="type_publication" nolabel="1" readonly="1"/>
+                                <span invisible="state == 'brouillon'">·</span>
+                                <!-- La journée, pas la seconde : « 2026-09-15 07:23:37 »
+                                     dans la signature d'une annonce n'apprend rien. -->
+                                <field name="date_jour" nolabel="1" readonly="1"
+                                       invisible="state == 'brouillon'"/>
+                                <span invisible="not personne_nom">· par</span>
+                                <field name="auteur_nom" nolabel="1" readonly="1"
+                                       invisible="not personne_nom"/>
+                            </span>
+                        </div>
+                        <span class="badge text-bg-warning ms-2"
+                              invisible="not a_lire_pour_moi">À lire</span>
+                        <span class="text-muted small ms-2"
+                              invisible="not lecture_requise or not date_echeance">
+                            d'ici le <field name="date_echeance" nolabel="1" readonly="1"/>
+                        </span>
+                    </div>
+                    <field name="corps_html" placeholder="Ce qu'il faut savoir, en clair."/>
+                    <div class="alert alert-light border mt-2" role="status"
+                         invisible="commentaires_ouverts">
+                        Les commentaires sont fermés sur cette publication.
+                    </div>
+                    <group string="Diffusion" name="reglages"
+                           groups="bf_babillard.group_babillard_redacteur">
                         <group>
                             <field name="type_publication"/>
                             <field name="auteur_user_id"/>
+                            <field name="personne_id"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="image_couverture" widget="image"
+                                   options="{'zoom': false, 'size': [0, 90]}"/>
                             <field name="date_publication" invisible="state == 'brouillon'"/>
                             <field name="date_echeance"/>
                             <field name="epingle"/>
@@ -60,14 +134,8 @@
                                    invisible="not lecture_requise or state == 'brouillon'"/>
                             <field name="commentaires_ouverts"/>
                             <field name="company_id" groups="base.group_multi_company"/>
-                            <field name="lu_par_moi" invisible="1"/>
                         </group>
                     </group>
-                    <field name="corps_html" placeholder="Ce qu'il faut savoir, en clair."/>
-                    <div class="alert alert-light border mt-2" role="status"
-                         invisible="commentaires_ouverts">
-                        Les commentaires sont fermés sur cette publication.
-                    </div>
                     <group string="Suivi de lecture" invisible="not lecture_requise"
                            groups="bf_babillard.group_babillard_redacteur">
                         <field name="lecture_ids" nolabel="1" readonly="1">
@@ -120,25 +188,68 @@
                      déclaré ici : sinon la carte tombe en OwlError DANS LE
                      NAVIGATEUR, et le serveur ne dit rien. -->
                 <field name="lu_par_moi"/>
+                <field name="a_lire_pour_moi"/>
                 <field name="epingle"/>
                 <field name="lecture_requise"/>
+                <field name="type_publication"/>
+                <field name="personne_avatar"/>
+                <field name="auteur_avatar"/>
+                <field name="image_couverture"/>
+                <field name="nb_commentaires"/>
+                <field name="nb_reactions"/>
                 <templates>
                     <t t-name="card">
-                        <div class="d-flex align-items-start">
-                            <strong class="flex-grow-1"><field name="name"/></strong>
+                        <div class="o_bf_bab_couverture mb-2"
+                             t-if="record.image_couverture.raw_value">
+                            <field name="image_couverture" widget="image"
+                                   options="{'zoom': false}"/>
+                        </div>
+                        <div class="d-flex align-items-start gap-2">
+                            <field name="personne_avatar" widget="image"
+                                   class="o_bf_bab_visage o_bf_bab_visage_carte"
+                                   options="{'zoom': false}"
+                                   t-if="record.personne_avatar.raw_value"/>
+                            <field name="auteur_avatar" widget="image"
+                                   class="o_bf_bab_visage o_bf_bab_visage_carte"
+                                   options="{'zoom': false}"
+                                   t-if="!record.personne_avatar.raw_value"/>
+                            <div class="flex-grow-1">
+                                <strong><field name="name"/></strong>
+                                <div class="text-muted d-flex align-items-center flex-wrap gap-1 mt-1">
+                                    <!-- La couleur trie avant la lecture : quatre
+                                         types se lisaient tous en gris. -->
+                                    <span t-attf-class="o_bf_bab_pastille o_bf_bab_pastille_#{record.type_publication.raw_value}">
+                                        <field name="type_publication"/>
+                                    </span>
+                                    <span>·</span>
+                                    <field name="date_jour"/>
+                                    <span class="badge text-bg-warning ms-1"
+                                          t-if="record.lecture_requise.raw_value and !record.lu_par_moi.raw_value">À lire</span>
+                                </div>
+                            </div>
                             <i class="fa fa-thumb-tack ms-2" t-if="record.epingle.raw_value"
                                title="Épinglée"/>
                         </div>
-                        <div class="text-muted d-flex align-items-center flex-wrap gap-1">
-                            <field name="type_publication"/>
-                            <span>·</span>
-                            <field name="date_jour"/>
-                            <span class="badge text-bg-warning ms-1"
-                                  t-if="record.lecture_requise.raw_value and !record.lu_par_moi.raw_value">À lire</span>
-                            <span class="badge text-bg-success ms-1"
+                        <!-- 🔴 Le corps entier tenait dans la carte : une politique
+                             de trois pages noyait tout le reste du fil. -->
+                        <div class="mt-2 o_bf_bab_extrait"><field name="corps_html" widget="html"/></div>
+                        <div class="mt-2 d-flex align-items-center flex-wrap gap-2">
+                            <!-- Le seul geste que le module demande, sur la carte :
+                                 il fallait ouvrir la publication pour le poser. -->
+                            <button name="action_marquer_lu" type="object"
+                                    class="btn btn-sm btn-primary"
+                                    t-if="record.a_lire_pour_moi.raw_value">J'ai lu</button>
+                            <span class="badge text-bg-success"
                                   t-if="record.lu_par_moi.raw_value">Lue</span>
+                            <span class="text-muted small ms-auto"
+                                  t-if="record.nb_commentaires.raw_value">
+                                <i class="fa fa-comment-o me-1" title="Commentaires"/><field name="nb_commentaires"/>
+                            </span>
+                            <span class="text-muted small"
+                                  t-if="record.nb_reactions.raw_value">
+                                <i class="fa fa-smile-o me-1" title="Réactions"/><field name="nb_reactions"/>
+                            </span>
                         </div>
-                        <div class="mt-2"><field name="corps_html" widget="html"/></div>
                     </t>
                 </templates>
             </kanban>

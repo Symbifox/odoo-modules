@@ -42,6 +42,12 @@ class TestPontCelebrations(TransactionCase):
         self.assertIn("Personne fêtée", carte.name)
         self.assertEqual(carte.state, "publie")
 
+    def test_la_carte_porte_le_visage_de_qui_est_fete(self):
+        """Une célébration sans visage se lit comme une ligne de journal."""
+        tableau = self._tableau()
+        tableau._livrer()
+        self.assertEqual(self._carte(tableau).personne_id.id, self.employe.id)
+
     def test_un_tableau_non_livre_ne_paraît_pas(self):
         """La garde ne se prouve qu'en APPELANT la livraison.
 

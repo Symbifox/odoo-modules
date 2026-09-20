@@ -2,7 +2,7 @@
 {
     "name": "Babillard : reconnaissance",
     "summary": "Un badge remis par un collègue se voit enfin",
-    "version": "18.0.1.0.3",
+    "version": "18.0.1.1.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

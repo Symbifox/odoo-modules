@@ -4,6 +4,8 @@ A bridge between the noticeboard (`bf_babillard`) and Odoo's badges (`hr_gamific
 
 In Odoo, a badge given by a colleague is almost invisible: one email goes to the recipient, and the badge sits in a tab of their employee form. This bridge posts a card on the noticeboard instead, with the giver's words if there are any.
 
+The card is signed by the person who gave the badge, shows the face of the person recognised, and carries the badge image when it has one. The employee is looked up in the recipient's own company, not in whichever company the giver happened to be in.
+
 Badges awarded automatically by a challenge or a goal are not posted, because that is not recognition between colleagues. There are no points and no ranking: each badge makes one card, and nothing adds up. The card belongs to the recipient's company.
 
 ## Licence

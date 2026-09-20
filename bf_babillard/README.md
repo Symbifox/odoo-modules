@@ -34,6 +34,10 @@ When Odoo is installed, it creates a "general" channel and subscribes every inte
   * The file keeps a copy of the reported content as it stood at the time. A comment deleted or rewritten afterwards does not take the evidence with it, and the person the report targets is frozen when it is made.
   * If nobody in the organisation can receive the report, the dialog says so plainly instead of promising a delivery that did not happen. The file is kept, and the person is pointed to their policy's designated contact, or to the CNESST.
 * **Nobody receives a complaint about themselves.** The author of the reported content is left out of the recipients, even if they belong to moderation. If that leaves nobody, the report goes to the company's administrators. They can read that report, and they need to designate someone to handle it.
+* **The feed reads before it has to be deciphered.** Every card carries a face, a coloured pill for its type, an excerpt rather than the whole body, the number of comments and reactions, and the "I have read this" button where people actually read. It holds up at phone width.
+* **A reader sees a post, not a record.** Audience, expiry, pin, comments and company are the editorial team's controls, and they appear to that team alone.
+* **A post can feature a person and carry an image.** On a recognition or a celebration it is that person's face at the top, with the author signing underneath. The bridges set both on their own.
+* **Managers chase their own team.** On a required-reading post, anyone with direct reports sees which of them has not confirmed, and only them. Editors see the whole audience; a manager sees their own people, and the button stays hidden when their team is not addressed.
 * **Expired posts leave the feed** once a day. Nothing is destroyed.
 * **Each company keeps its own records:** posts, read receipts and reports stay in the company they belong to.
 
@@ -83,6 +87,10 @@ Five optional bridges install themselves as soon as both of their modules are pr
 ## Known limitation
 
 When comments are closed, the chatter composer is still shown on the post. If someone tries to post, the server refuses the message and explains why.
+
+Posts created by a bridge **before** version 18.0.1.3 keep the author they were given at the time and have neither a featured person nor an image: the fix applies from that version onwards, and there is no back-fill migration.
+
+An employee record that is **deleted** rather than archived is cleared from the posts that feature them, by a hook on `hr.employee`. `hr.employee.public` is a SQL view, so no foreign key can do it: a deletion that bypasses the ORM would leave a dangling reference.
 
 ## Dependencies
 

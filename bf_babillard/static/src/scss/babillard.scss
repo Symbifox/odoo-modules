@@ -1,0 +1,82 @@
+// Le babillard, côté écran.
+//
+// 🔴 Les pastilles de type portent du texte BLANC sur un fond plein. Chacune
+// est mesurée contre le blanc : le minimum retenu est 4,5:1 (AA), et le test
+// `test_pastilles_contraste_aa` relit CE fichier pour le prouver. Une couleur
+// ajoutée ici sans passer le seuil fait rougir la passe.
+//
+// ⚠️ L'accent de la maison (#29ABE2) ne sert PAS de fond sous du texte blanc :
+// il rend 2,3:1. C'est sa variante assombrie (#177AA3) qui porte l'annonce.
+//
+// ⚠️ Un fond qui porte du texte blanc à 4,5:1 ne peut pas, en même temps, se
+// détacher à 3:1 d'une carte sombre : les deux exigences se contredisent. D'où
+// le liseré, qui donne la frontière sans toucher au contraste du texte.
+
+$o-bf-bab-pastilles: (
+    "annonce":        #177AA3,  // l'accent de la maison, assombri pour AA
+    "nouvelle":       #4A6572,
+    "reconnaissance": #BA4514,
+    "evenement":      #6A4C93,
+    "celebration":    #2E7D5B,
+);
+
+.o_bf_bab_pastille {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: #FFFFFF;
+    background-color: #4A6572;
+    box-shadow: 0 0 0 1px rgba(128, 128, 128, 0.45);
+}
+
+@each $type, $couleur in $o-bf-bab-pastilles {
+    .o_bf_bab_pastille_#{$type} {
+        background-color: $couleur;
+    }
+}
+
+// Un visage, rond, à taille fixe : la photo d'un employé n'est pas cadrée.
+.o_bf_bab_visage img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.o_bf_bab_visage_carte img {
+    width: 32px;
+    height: 32px;
+}
+
+// 🔴 `cover` recadre et AGRANDIT : l'icône d'un badge, qui est carrée et
+// petite, devenait une bannière pleine largeur recadrée sur le milieu du
+// trophée. `contain` tient les deux cas, la photo et le pictogramme.
+.o_bf_bab_couverture img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    object-position: left center;
+    border-radius: 0.5rem;
+}
+
+.o_kanban_view .o_bf_bab_couverture img {
+    max-height: 120px;
+    object-position: center;
+}
+
+// 🔴 Le corps entier était rendu dans la carte : une politique de trois pages
+// remplissait la colonne et noyait le reste du fil.
+.o_bf_bab_extrait {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+}

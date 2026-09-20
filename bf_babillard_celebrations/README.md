@@ -4,6 +4,8 @@ A bridge between the noticeboard (`bf_babillard`) and Celebrations (`bf_celebrat
 
 When a group greeting card is delivered to the person being celebrated, a card appears on the noticeboard so the whole office sees it go by.
 
+The card features the person being celebrated, so it is their face that appears on the feed rather than the account that wrote it.
+
 The bridge only publishes what Celebrations already makes public: the display name of a person who agreed to be celebrated. It never publishes a date of birth or the signatures. Each board produces one card at most, even if its delivery runs again. The card belongs to the board's company.
 
 ## Licence

@@ -3,7 +3,7 @@
     "name": "Babillard",
     "summary": "Les annonces de la maison, avec leur audience, leur échéance et "
                "la preuve qu'elles ont été lues",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.4.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -24,6 +24,11 @@
         "views/babillard_post_views.xml",
         "views/babillard_menus.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "bf_babillard/static/src/scss/babillard.scss",
+        ],
+    },
     "description": """
 Babillard
 =========
@@ -72,6 +77,13 @@ Ce qu'il fait
   remonte à l'administration de la société.
 * **Chaque société a son babillard.** Publications, accusés et signalements
   restent dans la société qui les porte.
+* **Le fil se lit avant de se déchiffrer.** Un visage, une couleur par type, un
+  extrait, le nombre de commentaires, et le bouton « J'ai lu » sur la carte. Une
+  publication peut porter une image et mettre une personne en avant.
+* **Le lecteur voit une publication, pas une fiche.** Les commandes de diffusion
+  ne paraissent qu'à la rédaction.
+* **Le gestionnaire relaie.** Il voit qui, dans son équipe directe, n'a pas
+  encore confirmé sa lecture.
 * **L'échéance retire la publication du fil**, sans rien détruire.
 
 Ce qu'il ne fait pas, et c'est voulu

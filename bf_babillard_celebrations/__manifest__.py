@@ -2,7 +2,7 @@
 {
     "name": "Babillard : célébrations",
     "summary": "Une carte de fête livrée se voit au babillard",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.1.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

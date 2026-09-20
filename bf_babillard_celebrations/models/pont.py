@@ -23,5 +23,8 @@ class CelebrationBoard(models.Model):
                 "company_id": board.sudo().company_id.id or self.env.company.id,
                 "corps_html": "<p>%s</p>" % _(
                     "Le bureau a signé, la carte est partie."),
+                # Le visage de la personne fêtée. Une célébration sans visage se
+                # lit comme une ligne de journal.
+                "personne_id": board.sudo().recipient_employee_id.id or False,
             })
         return resultat
