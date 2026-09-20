@@ -201,6 +201,21 @@ $o-bf-bab-pastilles: (
         display: none !important;
     }
 
+    // 🔴 Les entrées de SUIVI. Sept champs sont suivis, dont l'audience,
+    // l'échéance, l'épingle et la lecture obligatoire : précisément les
+    // commandes qu'on vient de retirer de l'écran du lecteur. Les cacher tout
+    // en lui publiant leur journal de modification, c'était se contredire dans
+    // la même page. La valeur COURANTE reste affichée sur la publication ; son
+    // historique est de la tenue de dossier.
+    //
+    // ⚠️ On vise `.o-mail-Message-tracking`, le bloc des valeurs suivies, et
+    // non `.o-note` qui couvre toutes les notifications : un vrai commentaire
+    // ne disparaît pas, et le message entier s'efface plutôt que son seul
+    // corps, sinon il resterait un avatar au-dessus du vide.
+    .o-mail-Message:has(.o-mail-Message-tracking) {
+        display: none !important;
+    }
+
     // « 2 / 6 » et l'engrenage d'actions sont du mobilier de fiche. Le fil les
     // cachait déjà sur la grille ; la page les remontrait, et c'est là qu'ils
     // se voient le plus. Le fil d'Ariane reste : c'est le chemin du retour.
