@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_charge_contract_company_rule" model="ir.rule">
+        <field name="name">Contrat de capacité : société</field>
+        <field name="model_id" ref="model_bf_charge_contract"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="bf_charge_plan_company_rule" model="ir.rule">
+        <field name="name">Plan de charge : société</field>
+        <field name="model_id" ref="model_bf_charge_plan"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="bf_charge_snapshot_company_rule" model="ir.rule">
+        <field name="name">Relevé de charge : société</field>
+        <field name="model_id" ref="model_bf_charge_snapshot"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="bf_charge_plan_week_company_rule" model="ir.rule">
+        <field name="name">Semaine du plan : société du plan</field>
+        <field name="model_id" ref="model_bf_charge_plan_week"/>
+        <field name="domain_force">[('plan_id.company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="bf_charge_plan_signal_company_rule" model="ir.rule">
+        <field name="name">Signal du plan : société du plan</field>
+        <field name="model_id" ref="model_bf_charge_plan_signal"/>
+        <field name="domain_force">[('plan_id.company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+    <record id="bf_charge_plan_line_company_rule" model="ir.rule">
+        <field name="name">Ligne du plan : société du plan</field>
+        <field name="model_id" ref="model_bf_charge_plan_line"/>
+        <field name="domain_force">[('plan_id.company_id', 'in', company_ids)]</field>
+        <field name="global" eval="True"/>
+    </record>
+</odoo>

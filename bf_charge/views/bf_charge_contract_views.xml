@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_charge_contract_form" model="ir.ui.view">
+        <field name="name">bf.charge.contract.form</field>
+        <field name="model">bf.charge.contract</field>
+        <field name="arch" type="xml">
+            <form string="Contrat de capacité">
+                <header>
+                    <button name="action_activate" type="object" string="Mettre en vigueur"
+                            class="btn-primary" invisible="state == 'active'"/>
+                    <button name="action_close" type="object" string="Clore"
+                            invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Contrat de capacité"/></h1>
+                    </div>
+                    <group>
+                        <group string="Portée">
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="date_start"/>
+                        </group>
+                        <group string="Ce qui est déclaré">
+                            <field name="hours_per_week"/>
+                            <field name="meeting_hours_per_week"/>
+                            <field name="net_hours_per_week"/>
+                            <field name="client_share_target"/>
+                            <field name="max_concurrent_clients"/>
+                        </group>
+                    </group>
+                    <group string="Ce que la base mesure, et que personne ne doit confondre avec une réponse">
+                        <div class="alert alert-info" role="alert" colspan="2">
+                            Ces cinq nombres décrivent ce qui a été <b>saisi</b>, pas du temps
+                            d'horloge. Sur une base réelle, plusieurs journées dépassent seize
+                            heures, parfois bien davantage : du travail assisté produit plusieurs
+                            heures dans la même heure. Aucune division ne rattrape ça. Choisir
+                            reste un geste humain.
+                        </div>
+                        <group>
+                            <field name="measure_median_12m"/>
+                            <field name="measure_mean_12m"/>
+                            <field name="measure_calendar"/>
+                        </group>
+                        <group>
+                            <field name="measure_capped_90d"/>
+                            <field name="measure_meetings"/>
+                            <button name="action_adopt_measure_meetings" type="object"
+                                    string="Reprendre la médiane des rencontres" class="btn-link"/>
+                        </group>
+                        <field name="measure_note" colspan="2" readonly="1"/>
+                    </group>
+                    <group string="Critères d'arrêt">
+                        <field name="stop_criteria" nolabel="1"
+                               placeholder="Ce qui doit arriver pour qu'on arrête d'en prendre."/>
+                    </group>
+                    <group string="Notes">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_charge_contract_list" model="ir.ui.view">
+        <field name="name">bf.charge.contract.list</field>
+        <field name="model">bf.charge.contract</field>
+        <field name="arch" type="xml">
+            <list string="Contrats de capacité">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="date_start"/>
+                <field name="hours_per_week"/>
+                <field name="meeting_hours_per_week"/>
+                <field name="net_hours_per_week"/>
+                <field name="max_concurrent_clients"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_charge_contract" model="ir.actions.act_window">
+        <field name="name">Contrats de capacité</field>
+        <field name="res_model">bf.charge.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Déclarer la capacité</p>
+            <p>Un plan de charge sans dénominateur ne dit rien. Trois nombres suffisent :
+               les heures par semaine réellement disponibles, le plafond de clients
+               simultanés, et la part client visée.</p>
+        </field>
+    </record>
+</odoo>

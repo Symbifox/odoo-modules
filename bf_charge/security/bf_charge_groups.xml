@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_bf_charge_manager" model="res.groups">
+        <field name="name">Plan de charge : gestion</field>
+        <field name="category_id" ref="base.module_category_services_project"/>
+        <field name="comment">Voit et déclare la capacité, bâtit les plans de charge.
+La capacité d'une personne est une donnée sensible : elle n'est pas offerte à
+l'ensemble des internes.</field>
+    </record>
+</odoo>

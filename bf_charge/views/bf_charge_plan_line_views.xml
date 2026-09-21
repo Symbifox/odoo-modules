@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_charge_plan_line_list" model="ir.ui.view">
+        <field name="name">bf.charge.plan.line.list</field>
+        <field name="model">bf.charge.plan.line</field>
+        <field name="arch" type="xml">
+            <list string="Lignes du plan" default_order="week_start,hours desc">
+                <field name="week_start"/>
+                <field name="project_id"/>
+                <field name="task_name" string="Tâche"/>
+                <field name="bucket" widget="badge"/>
+                <field name="source"/>
+                <field name="hours" sum="Heures"/>
+                <field name="share" optional="hide"/>
+                <field name="date_start" optional="hide"/>
+                <field name="date_end" optional="hide"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="is_client" optional="hide"/>
+                <field name="project_kind" optional="hide"/>
+                <field name="task_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_charge_plan_line_graph" model="ir.ui.view">
+        <field name="name">bf.charge.plan.line.graph</field>
+        <field name="model">bf.charge.plan.line</field>
+        <field name="arch" type="xml">
+            <graph string="Charge par semaine" type="bar" stacked="True" sample="0">
+                <field name="week_start" interval="week"/>
+                <field name="bucket"/>
+                <field name="hours" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_bf_charge_plan_line_pivot" model="ir.ui.view">
+        <field name="name">bf.charge.plan.line.pivot</field>
+        <field name="model">bf.charge.plan.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Charge croisée" sample="0">
+                <field name="project_id" type="row"/>
+                <field name="week_start" interval="week" type="col"/>
+                <field name="hours" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_bf_charge_plan_line_search" model="ir.ui.view">
+        <field name="name">bf.charge.plan.line.search</field>
+        <field name="model">bf.charge.plan.line</field>
+        <field name="arch" type="xml">
+            <search string="Lignes du plan">
+                <field name="task_name"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <filter name="posees" string="Posées" domain="[('bucket','=','pose')]"/>
+                <filter name="non_placables" string="Non plaçables"
+                        domain="[('bucket','=','non_placable')]"/>
+                <filter name="hors_plan" string="Hors plan"
+                        domain="[('bucket','in',['dormant','gabarit','au_dela','ecartee'])]"/>
+                <filter name="sans_charge" string="Sans charge"
+                        domain="[('bucket','=','sans_charge')]"/>
+                <separator/>
+                <filter name="client" string="Travail client" domain="[('is_client','=',True)]"/>
+                <filter name="interne" string="Travail interne" domain="[('is_client','=',False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="g_semaine" string="Semaine" context="{'group_by':'week_start:week'}"/>
+                    <filter name="g_sort" string="Sort de la charge" context="{'group_by':'bucket'}"/>
+                    <filter name="g_projet" string="Projet" context="{'group_by':'project_id'}"/>
+                    <filter name="g_client" string="Client" context="{'group_by':'partner_id'}"/>
+                    <filter name="g_source" string="Source" context="{'group_by':'source'}"/>
+                    <filter name="g_nature" string="Nature du projet" context="{'group_by':'project_kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_charge_plan_line" model="ir.actions.act_window">
+        <field name="name">Charge, ligne par ligne</field>
+        <field name="res_model">bf.charge.plan.line</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="search_view_id" ref="view_bf_charge_plan_line_search"/>
+        <field name="context">{'search_default_posees': 1, 'search_default_g_semaine': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien à découper pour l'instant</p>
+            <p>Les lignes naissent au calcul d'un plan. Chaque part de charge y porte sa
+               semaine, son projet, son client, sa source et son sort : posée, non plaçable,
+               hors plan ou écartée.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_charge_plan_form" model="ir.ui.view">
+        <field name="name">bf.charge.plan.form</field>
+        <field name="model">bf.charge.plan</field>
+        <field name="arch" type="xml">
+            <form string="Plan de charge">
+                <header>
+                    <button name="action_build" type="object" string="Calculer le plan"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_lines" type="object"
+                                class="oe_stat_button" icon="fa-bar-chart">
+                            <field name="line_count" widget="statinfo" string="Lignes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Plan de charge"/></h1>
+                    </div>
+                    <group>
+                        <group string="Portée">
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="date_from"/>
+                            <field name="week_count"/>
+                            <field name="contract_id"/>
+                            <field name="capacity_per_week"/>
+                            <field name="build_date"/>
+                        </group>
+                        <group string="Ce que le plan n'a pas su poser">
+                            <field name="hours_unplaceable"/>
+                            <field name="tasks_unplaceable"/>
+                            <field name="tasks_without_charge"/>
+                            <field name="hours_beyond"/>
+                            <field name="hours_late"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Posé">
+                            <field name="hours_placed"/>
+                            <field name="backlog_weeks"/>
+                        </group>
+                        <group string="Hors plan, par construction">
+                            <field name="hours_template"/>
+                            <field name="hours_dormant"/>
+                            <field name="hours_rejected"/>
+                        </group>
+                    </group>
+                    <group string="Ce que le plan dit">
+                        <field name="summary" nolabel="1" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Semaines">
+                            <field name="week_ids" readonly="1">
+                                <list string="Semaines" decoration-danger="verdict == 'rouge'"
+                                      decoration-warning="verdict == 'jaune'"
+                                      decoration-muted="verdict == 'inconnu'">
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="hours" sum="Heures posées"/>
+                                    <field name="capacity"/>
+                                    <field name="load_percent" widget="float"/>
+                                    <field name="task_count" sum="Tâches"/>
+                                    <field name="verdict" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Signaux">
+                            <field name="signal_ids" readonly="1" mode="kanban">
+                                <kanban class="o_kanban_mobile" create="false" records_draggable="false">
+                                    <field name="verdict"/>
+                                    <templates>
+                                        <t t-name="card">
+                                            <div class="o_kanban_card_content">
+                                                <div class="d-flex justify-content-between">
+                                                    <strong><field name="name"/></strong>
+                                                    <span class="badge"
+                                                          t-attf-class="badge {{ record.verdict.raw_value == 'rouge' ? 'text-bg-danger' : record.verdict.raw_value == 'jaune' ? 'text-bg-warning' : record.verdict.raw_value == 'vert' ? 'text-bg-success' : 'text-bg-secondary' }}">
+                                                        <field name="verdict"/>
+                                                    </span>
+                                                </div>
+                                                <div class="mt-1"><field name="measure"/></div>
+                                                <div class="text-muted small"><field name="target"/></div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Lignes">
+                            <field name="line_ids" readonly="1">
+                                <list string="Lignes" default_order="week_start,hours desc">
+                                    <field name="week_start"/>
+                                    <field name="project_id"/>
+                                    <field name="task_name" string="Tâche"/>
+                                    <field name="bucket" widget="badge"/>
+                                    <field name="source" optional="hide"/>
+                                    <field name="hours" sum="Heures"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_charge_plan_list" model="ir.ui.view">
+        <field name="name">bf.charge.plan.list</field>
+        <field name="model">bf.charge.plan</field>
+        <field name="arch" type="xml">
+            <list string="Plans de charge">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="date_from"/>
+                <field name="week_count"/>
+                <field name="capacity_per_week"/>
+                <field name="hours_placed"/>
+                <field name="hours_unplaceable"/>
+                <field name="backlog_weeks"/>
+                <field name="build_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_charge_plan" model="ir.actions.act_window">
+        <field name="name">Plans de charge</field>
+        <field name="res_model">bf.charge.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Bâtir un plan</p>
+            <p>Le plan pose sur des semaines les heures qu'il sait placer, et affiche
+               toujours à côté celles qu'il ne sait pas placer. C'est souvent le second
+               nombre qui répond à la question.</p>
+        </field>
+    </record>
+
+    <record id="view_bf_charge_plan_week_graph" model="ir.ui.view">
+        <field name="name">bf.charge.plan.week.graph</field>
+        <field name="model">bf.charge.plan.week</field>
+        <field name="arch" type="xml">
+            <graph string="Charge posée par semaine" type="bar" sample="0">
+                <field name="date_start" interval="week"/>
+                <field name="hours" type="measure"/>
+                <field name="capacity" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_bf_charge_plan_week_calendar" model="ir.ui.view">
+        <field name="name">bf.charge.plan.week.calendar</field>
+        <field name="model">bf.charge.plan.week</field>
+        <field name="arch" type="xml">
+            <calendar string="Semaines" date_start="date_start" date_stop="date_end"
+                      mode="month" quick_create="0" event_limit="5">
+                <field name="hours"/>
+                <field name="capacity"/>
+                <field name="task_count"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_bf_charge_plan_week" model="ir.actions.act_window">
+        <field name="name">Semaines de charge</field>
+        <field name="res_model">bf.charge.plan.week</field>
+        <field name="view_mode">graph,calendar,list</field>
+    </record>
+</odoo>

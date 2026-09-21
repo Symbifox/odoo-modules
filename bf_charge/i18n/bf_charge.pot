@@ -1,0 +1,1326 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_charge
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-21 06:16+0000\n"
+"PO-Revision-Date: 2026-09-21 06:16+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "%(a)s ouvertes et %(c)s fermées sur 30 jours"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "%(h).0f h au carnet"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid ""
+"%(h).0f h écartées parce qu'elles viennent d'une unité de vente qui n'est "
+"pas l'heure."
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "%(n)s clients touchés sur 30 jours"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_contract.py:0
+msgid ""
+"%(n)s semaines mesurées. Ces chiffres décrivent ce qui a été SAISI, pas du "
+"temps d'horloge : à lire comme des bornes, pas comme une réponse."
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "%(n)s sur %(t)s"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid ""
+"%(nb)s tâches vivantes ne portent aucune charge : elles ne sont comptées "
+"nulle part, et c'est un fait, pas un zéro."
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "%(p).0f %% sur 30 jours (%(c).0f h client, %(i).0f h interne)"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid ""
+"%(placees).0f h posées sur l'horizon, %(non_placables).0f h que le plan ne "
+"sait pas placer (%(nb)s tâches sans aucune date)."
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "%(s).1f semaines de capacité déclarée"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "Arrivées contre clôtures"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__au_dela
+msgid "Au delà de l'horizon"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid ""
+"Au rythme déclaré de %(cap).1f h par semaine, le carnet vaut %(sem).1f "
+"semaines."
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid ""
+"Aucun contrat de capacité en vigueur. Le plan pose les heures mais ne peut "
+"dire si elles tiennent : déclarer les heures par semaine est le préalable, "
+"pas une option."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__source__aucune
+#: model:ir.model.fields.selection,name:bf_charge.selection__project_task__charge_source__aucune
+msgid "Aucune"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "Banques d'heures"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "Banques d'heures sous zéro"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_contract__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.actions.act_window,help:bf_charge.action_bf_charge_plan
+msgid "Bâtir un plan"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Calculer le plan"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__build_date
+msgid "Calculé le"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__measure_calendar
+msgid "Calendrier de travail déclaré"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__capacity
+msgid "Capacité déclarée"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__capacity_per_week
+msgid "Capacité déclarée par semaine"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__net_hours_per_week
+msgid "Capacité nette par semaine"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_snapshot_form
+msgid "Carnet"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__backlog_weeks
+msgid "Carnet en semaines de capacité"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid ""
+"Ce que la base mesure, et que personne ne doit confondre avec une réponse"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_project_task__charge_hours
+msgid "Ce que le plan de charge retient pour cette tâche."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__summary
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Ce que le plan dit"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Ce que le plan n'a pas su poser"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__measure_note
+msgid "Ce que les candidats valent"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid "Ce qui doit arriver pour qu'on arrête d'en prendre."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__stop_criteria
+msgid ""
+"Ce qui doit arriver pour qu'on arrête d'en prendre. Numérique de préférence,"
+" et écrit avant d'en avoir besoin."
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid "Ce qui est déclaré"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid ""
+"Ces cinq nombres décrivent ce qui a été <b>saisi</b>, pas du temps\n"
+"                            d'horloge. Sur une base réelle, plusieurs journées dépassent seize\n"
+"                            heures, parfois bien davantage : du travail assisté produit plusieurs\n"
+"                            heures dans la même heure. Aucune division ne rattrape ça. Choisir\n"
+"                            reste un geste humain."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__load_percent
+msgid "Charge (%)"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_project_task__charge_hours_manual
+msgid "Charge corrigée (h)"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_pivot
+msgid "Charge croisée"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__meeting_hours_per_week
+msgid ""
+"Charge de rencontres retranchée de la capacité. À modéliser sur "
+"l'historique, pas sur le calendrier à venir : les rendez-vous se posent "
+"tard, donc le calendrier futur sous-estime toujours."
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "Charge de « %(nom)s »"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_graph
+msgid "Charge par semaine"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_week_graph
+msgid "Charge posée par semaine"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_project_task__charge_hours
+msgid "Charge retenue (h)"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.actions.act_window,name:bf_charge.action_bf_charge_plan_line
+#: model:ir.ui.menu,name:bf_charge.menu_bf_charge_lines
+msgid "Charge, ligne par ligne"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Client"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "Clients simultanés"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__clients_touched
+msgid "Clients touchés (30 j)"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid "Clore"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_contract__state__closed
+msgid "Clos"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__code
+msgid "Code"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model,name:bf_charge.model_bf_charge_contract
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__contract_id
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid "Contrat de capacité"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.actions.act_window,name:bf_charge.action_bf_charge_contract
+#: model:ir.ui.menu,name:bf_charge.menu_bf_charge_contract
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_list
+msgid "Contrats de capacité"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__source__manuel
+#: model:ir.model.fields.selection,name:bf_charge.selection__project_task__charge_source__manuel
+msgid "Corrigée à la main"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__create_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__create_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__create_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__create_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__create_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__create_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__create_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__create_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__create_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__create_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__stop_criteria
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid "Critères d'arrêt"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__date
+msgid "Date"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_project_project__charge_last_timesheet_date
+msgid "Dernière heure saisie"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__date_end
+msgid "Dimanche"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__display_name
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__display_name
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__display_name
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__display_name
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__display_name
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__project_kind__dormant
+#: model:ir.model.fields.selection,name:bf_charge.selection__project_project__charge_kind__dormant
+msgid "Dormant"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__date_start
+#: model:ir.model.fields,field_description:bf_charge.field_project_task__charge_date_start
+msgid "Début retenu"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.actions.act_window,help:bf_charge.action_bf_charge_contract
+msgid "Déclarer la capacité"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__retard
+msgid "En retard, ramenée sur la première semaine"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_contract__state__active
+msgid "En vigueur"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__date_start
+msgid "En vigueur depuis"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__source__estime
+#: model:ir.model.fields.selection,name:bf_charge.selection__project_task__charge_source__estime
+msgid "Estimée"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_project_task__charge_placeable
+msgid ""
+"Faux quand la tâche ne porte aucune date : elle ne tombe alors sur aucune "
+"semaine, et son total est affiché à part."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__date_end
+#: model:ir.model.fields,field_description:bf_charge.field_project_task__charge_date_end
+msgid "Fin retenue"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_plan_line__share
+msgid ""
+"Fraction de la tâche qui tombe sur cette semaine. Vaut 1 quand la tâche "
+"tient dans une seule semaine."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__gabarit
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__project_kind__gabarit
+#: model:ir.model.fields.selection,name:bf_charge.selection__project_project__charge_kind__gabarit
+msgid "Gabarit"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_project_project__charge_kind
+msgid ""
+"Gabarit : porte l'étiquette des patrons, ses heures n'entrent dans aucun "
+"plan. Vivant : du temps y a été saisi récemment. Dormant : aucune heure "
+"saisie depuis la fenêtre configurée."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__hours
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_list
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_snapshot_form
+msgid "Heures"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__hours_beyond
+msgid "Heures au delà de l'horizon"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__client_hours
+msgid "Heures client (30 j)"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__hours_template
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__hours_template
+msgid "Heures de gabarits"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__meeting_hours_per_week
+msgid "Heures de rencontres par semaine"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__hours_dormant
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__hours_dormant
+msgid "Heures dormantes"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__hours_late
+msgid "Heures en retard"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__internal_hours
+msgid "Heures internes (30 j)"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__hours_unplaceable
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__hours_unplaceable
+msgid "Heures non plaçables"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__hours_per_week
+msgid "Heures par semaine"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__net_hours_per_week
+msgid "Heures par semaine, moins la charge de rencontres modélisée."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__hours_placeable
+msgid "Heures plaçables"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__hours_placed
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__hours
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Heures posées"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_plan__backlog_weeks
+msgid ""
+"Heures posées et non plaçables, divisées par la capacité nette déclarée."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__hours_per_week
+msgid ""
+"Heures réellement disponibles pour livrer, par semaine. Ce chiffre se "
+"déclare, il ne se calcule pas."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__hours_live
+msgid "Heures vivantes"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__hours_rejected
+msgid "Heures écartées (unité de vente)"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Hors plan"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "Hors plan : %(g).0f h de gabarits et %(d).0f h de projets dormants."
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Hors plan, par construction"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__message_has_error
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__task_name
+msgid "Intitulé"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_signal__verdict__jaune
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_week__verdict__jaune
+msgid "Jaune"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "L'horizon doit valoir au moins une semaine."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__user_id
+msgid "La capacité déclarée porte sur une personne, pas sur une équipe."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__write_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__write_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__write_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__write_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__write_uid
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__write_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__write_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__write_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__write_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__write_date
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid ""
+"Le contrat en vigueur ne porte pas d'heures par semaine, donc aucun signal "
+"de saturation ne peut se calculer."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_plan_line__week_start
+msgid ""
+"Le lundi de la semaine où cette part de charge tombe. Vide quand la charge "
+"n'a pas pu être posée."
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "Le non plaçable pèse %(part).0f %% du carnet."
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.actions.act_window,help:bf_charge.action_bf_charge_plan
+msgid ""
+"Le plan pose sur des semaines les heures qu'il sait placer, et affiche\n"
+"               toujours à côté celles qu'il ne sait pas placer. C'est souvent le second\n"
+"               nombre qui répond à la question."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.constraint,message:bf_charge.constraint_bf_charge_contract_hours_positive
+msgid "Les heures par semaine ne peuvent pas être négatives."
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.actions.act_window,help:bf_charge.action_bf_charge_plan_line
+msgid ""
+"Les lignes naissent au calcul d'un plan. Chaque part de charge y porte sa\n"
+"               semaine, son projet, son client, sa source et son sort : posée, non plaçable,\n"
+"               hors plan ou écartée."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model,name:bf_charge.model_bf_charge_plan_line
+msgid "Ligne du plan de charge"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Lignes"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_list
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Lignes du plan"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__date_start
+msgid "Lundi"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__measure
+msgid "Mesure"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid "Mettre en vigueur"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_project_task__charge_reject_reason
+msgid "Motif de l'écart"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__measure_mean_12m
+msgid "Moyenne hebdomadaire (12 mois)"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__measure_capped_90d
+msgid "Médiane 90 jours plafonnée au temps d'horloge"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__measure_median_12m
+msgid "Médiane hebdomadaire (12 mois)"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_project_project__charge_kind
+msgid "Nature"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__project_kind
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Nature du projet"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__name
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__name
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__name
+msgid "Nom"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__max_concurrent_clients
+msgid ""
+"Nombre de clients distincts que l'on accepte de porter en même temps. 0 veut"
+" dire : aucun plafond déclaré, donc aucun signal."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__line_count
+msgid "Nombre de lignes"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_signal__verdict__inconnu
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_week__verdict__inconnu
+msgid "Non déclaré"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__non_placable
+msgid "Non plaçable, aucune date"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Non plaçables"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__note
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid "Notes"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "Part client des heures livrées"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__client_share_target
+msgid "Part client visée (%)"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__share
+msgid "Part de la tâche"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__client_share_target
+msgid "Part des heures livrées qui doit aller à des mandats clients."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__user_id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__user_id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__user_id
+msgid "Personne"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__max_concurrent_clients
+msgid "Plafond de clients simultanés"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__plan_id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__plan_id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__plan_id
+msgid "Plan"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model,name:bf_charge.model_bf_charge_plan
+#: model:ir.ui.menu,name:bf_charge.menu_bf_charge_root
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Plan de charge"
+msgstr ""
+
+#. module: bf_charge
+#: model:res.groups,name:bf_charge.group_bf_charge_manager
+msgid "Plan de charge : gestion"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.actions.server,name:bf_charge.cron_bf_charge_snapshot_ir_actions_server
+msgid "Plan de charge : relevé hebdomadaire"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.actions.act_window,name:bf_charge.action_bf_charge_plan
+#: model:ir.ui.menu,name:bf_charge.menu_bf_charge_plan
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_list
+msgid "Plans de charge"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_project_task__charge_placeable
+msgid "Plaçable"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_snapshot_form
+msgid "Portée"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_project_task__charge_hours_manual
+msgid ""
+"Pose une charge à la main quand l'estimé est absent ou faux. Elle prime sur "
+"toutes les autres sources."
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Posé"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__pose
+msgid "Posée sur une semaine"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Posées"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model,name:bf_charge.model_project_project
+msgid "Project"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__project_id
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Projet"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__dormant
+msgid "Projet dormant"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__source__vente
+#: model:ir.model.fields.selection,name:bf_charge.selection__project_task__charge_source__vente
+msgid "Quantité vendue"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__source__vente_ecartee
+#: model:ir.model.fields.selection,name:bf_charge.selection__project_task__charge_source__vente_ecartee
+msgid "Quantité vendue, écartée"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__sequence
+msgid "Rang"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model,name:bf_charge.model_bf_charge_snapshot
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_snapshot_form
+msgid "Relevé de charge"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_snapshot.py:0
+msgid "Relevé du %(d)s"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.ui.menu,name:bf_charge.menu_bf_charge_snapshot
+msgid "Relevés"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_snapshot_pivot
+msgid "Relevés croisés"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.actions.act_window,name:bf_charge.action_bf_charge_snapshot
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_snapshot_list
+msgid "Relevés de charge"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__measure_meetings
+msgid "Rencontres par semaine (médiane 90 jours)"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_contract_form
+msgid "Reprendre la médiane des rencontres"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__target
+msgid "Repère"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.actions.act_window,help:bf_charge.action_bf_charge_plan_line
+msgid "Rien à découper pour l'instant"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_signal__verdict__rouge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_week__verdict__rouge
+msgid "Rouge"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Sans charge"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__week_start
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Semaine"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model,name:bf_charge.model_bf_charge_plan_week
+msgid "Semaine du plan de charge"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__week_ids
+#: model:ir.ui.menu,name:bf_charge.menu_bf_charge_weeks
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_week_calendar
+msgid "Semaines"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__week_count
+msgid "Semaines d'horizon"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.actions.act_window,name:bf_charge.action_bf_charge_plan_week
+msgid "Semaines de charge"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__name
+msgid "Signal"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model,name:bf_charge.model_bf_charge_plan_signal
+msgid "Signal de saturation"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__signal_ids
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Signaux"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__company_id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__company_id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__company_id
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__bucket
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Sort de la charge"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Source"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__source
+#: model:ir.model.fields,field_description:bf_charge.field_project_task__charge_source
+msgid "Source de la charge"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model,name:bf_charge.model_project_task
+msgid "Task"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_snapshot_graph
+msgid "Tendance du carnet"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__is_client
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Travail client"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_search
+msgid "Travail interne"
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_snapshot_form
+msgid "Trente derniers jours"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_line__task_id
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_line_list
+msgid "Tâche"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__task_count
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+msgid "Tâches"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__tasks_dated
+msgid "Tâches datées"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__tasks_closed
+msgid "Tâches fermées sur 30 j"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__tasks_unplaceable
+msgid "Tâches non plaçables"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__tasks_open
+msgid "Tâches ouvertes"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__tasks_opened
+msgid "Tâches ouvertes sur 30 j"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_snapshot__tasks_placeable
+msgid "Tâches plaçables"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__tasks_without_charge
+msgid "Tâches sans charge"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_contract.py:0
+msgid ""
+"Un contrat en vigueur doit porter un nombre d'heures par semaine. C'est tout"
+" son objet : sans dénominateur, aucun signal de saturation n'a de sens."
+msgstr ""
+
+#. module: bf_charge
+#: model_terms:ir.actions.act_window,help:bf_charge.action_bf_charge_contract
+msgid ""
+"Un plan de charge sans dénominateur ne dit rien. Trois nombres suffisent :\n"
+"               les heures par semaine réellement disponibles, le plafond de clients\n"
+"               simultanés, et la part client visée."
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/project_task.py:0
+msgid ""
+"Vendue en « %(uom)s » (%(qte).2f), convertie en %(h).0f h. Une durée vendue "
+"n'est pas un effort estimé."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_signal__verdict
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan_week__verdict
+msgid "Verdict"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_signal__verdict__vert
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_week__verdict__vert
+msgid "Vert"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__project_kind__vivant
+#: model:ir.model.fields.selection,name:bf_charge.selection__project_project__charge_kind__vivant
+msgid "Vivant"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__sans_charge
+msgid "Vivante, sans charge"
+msgstr ""
+
+#. module: bf_charge
+#: model:res.groups,comment:bf_charge.group_bf_charge_manager
+msgid ""
+"Voit et déclare la capacité, bâtit les plans de charge.\n"
+"La capacité d'une personne est une donnée sensible : elle n'est pas offerte à\n"
+"l'ensemble des internes."
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,help:bf_charge.field_bf_charge_contract__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "aucun"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "aucun solde à surveiller"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "aucune"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "indéterminé : aucune capacité déclarée"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "le carnet ne doit pas grossir deux mois de suite"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "module de banque d'heures absent"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "non déclarée"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "part visée : %(v).0f %%"
+msgstr ""
+
+#. module: bf_charge
+#. odoo-python
+#: code:addons/bf_charge/models/bf_charge_plan.py:0
+msgid "plafond déclaré : %(p)s"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_plan__date_from
+msgid "À partir du"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__ecartee
+msgid "Écartée, unité de vente"
+msgstr ""
+
+#. module: bf_charge
+#: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__state
+msgid "État"
+msgstr ""

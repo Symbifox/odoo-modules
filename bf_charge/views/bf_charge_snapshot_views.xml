@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_charge_snapshot_list" model="ir.ui.view">
+        <field name="name">bf.charge.snapshot.list</field>
+        <field name="model">bf.charge.snapshot</field>
+        <field name="arch" type="xml">
+            <list string="Relevés de charge">
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="tasks_open"/>
+                <field name="tasks_placeable"/>
+                <field name="hours_live"/>
+                <field name="hours_placeable"/>
+                <field name="hours_unplaceable"/>
+                <field name="clients_touched"/>
+                <field name="client_hours"/>
+                <field name="internal_hours"/>
+                <field name="tasks_opened"/>
+                <field name="tasks_closed"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_charge_snapshot_form" model="ir.ui.view">
+        <field name="name">bf.charge.snapshot.form</field>
+        <field name="model">bf.charge.snapshot</field>
+        <field name="arch" type="xml">
+            <form string="Relevé de charge">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Portée">
+                            <field name="date"/>
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Carnet">
+                            <field name="tasks_open"/>
+                            <field name="tasks_dated"/>
+                            <field name="tasks_placeable"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Heures">
+                            <field name="hours_live"/>
+                            <field name="hours_placeable"/>
+                            <field name="hours_unplaceable"/>
+                            <field name="hours_dormant"/>
+                            <field name="hours_template"/>
+                        </group>
+                        <group string="Trente derniers jours">
+                            <field name="clients_touched"/>
+                            <field name="client_hours"/>
+                            <field name="internal_hours"/>
+                            <field name="tasks_opened"/>
+                            <field name="tasks_closed"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_charge_snapshot" model="ir.actions.act_window">
+        <field name="name">Relevés de charge</field>
+        <field name="res_model">bf.charge.snapshot</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+    </record>
+
+    <record id="view_bf_charge_snapshot_graph" model="ir.ui.view">
+        <field name="name">bf.charge.snapshot.graph</field>
+        <field name="model">bf.charge.snapshot</field>
+        <field name="arch" type="xml">
+            <graph string="Tendance du carnet" type="line" sample="0">
+                <field name="date" interval="week"/>
+                <field name="hours_placeable" type="measure"/>
+                <field name="hours_unplaceable" type="measure"/>
+                <field name="client_hours" type="measure"/>
+                <field name="internal_hours" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_bf_charge_snapshot_pivot" model="ir.ui.view">
+        <field name="name">bf.charge.snapshot.pivot</field>
+        <field name="model">bf.charge.snapshot</field>
+        <field name="arch" type="xml">
+            <pivot string="Relevés croisés" sample="0">
+                <field name="date" interval="month" type="row"/>
+                <field name="hours_live" type="measure"/>
+                <field name="hours_unplaceable" type="measure"/>
+                <field name="clients_touched" type="measure"/>
+                <field name="client_hours" type="measure"/>
+                <field name="internal_hours" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+</odoo>

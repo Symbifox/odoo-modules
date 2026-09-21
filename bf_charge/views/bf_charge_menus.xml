@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_charge_root" name="Plan de charge"
+              web_icon="bf_charge,static/description/icon.png"
+              groups="bf_charge.group_bf_charge_manager" sequence="72"/>
+    <menuitem id="menu_bf_charge_plan" name="Plans de charge"
+              parent="menu_bf_charge_root" action="action_bf_charge_plan" sequence="10"/>
+    <menuitem id="menu_bf_charge_contract" name="Contrats de capacité"
+              parent="menu_bf_charge_root" action="action_bf_charge_contract" sequence="20"/>
+    <menuitem id="menu_bf_charge_lines" name="Charge, ligne par ligne"
+              parent="menu_bf_charge_root" action="action_bf_charge_plan_line" sequence="15"/>
+    <menuitem id="menu_bf_charge_weeks" name="Semaines"
+              parent="menu_bf_charge_root" action="action_bf_charge_plan_week" sequence="18"/>
+    <menuitem id="menu_bf_charge_snapshot" name="Relevés"
+              parent="menu_bf_charge_root" action="action_bf_charge_snapshot" sequence="30"/>
+</odoo>
