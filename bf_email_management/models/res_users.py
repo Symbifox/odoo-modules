@@ -6,6 +6,8 @@ y compris le mode « ne pas déranger », qui fait taire des
 avis de deux modules et n'appartient à aucun compte.
 """
 
+import logging
+
 from datetime import timedelta
 
 from odoo import _, api, fields, models
@@ -16,6 +18,8 @@ from odoo.exceptions import AccessError
 # sélection n'est évaluée qu'au `fields_get`, la page ENTIÈRE des Préférences
 # refuse de s'ouvrir, pas seulement ce champ. Signalé le 2026-09-09.
 from odoo.addons.base.models.res_partner import _tz_get
+
+_logger = logging.getLogger(__name__)
 
 
 class ResUsers(models.Model):
@@ -272,12 +276,26 @@ class ResUsers(models.Model):
         mode à ce moment-là ferait une requête d'agenda par ouverture de
         session.
         """
+        # ── Coupe-circuit au départ ─────────────────────────────────────────
+        # ⚠️ Relevé AVANT le ``super()``, réveillé APRÈS : réveillé pendant que
+        # le compte est encore actif, le téléphone rappellerait, recevrait un
+        # 200 et repartirait tranquille. Et la bascule se mesure sur la VALEUR
+        # écrite, pas sur la présence de la clé : ``write`` passe ici à chaque
+        # connexion, et un test sur la seule clé réveillerait aussi à la
+        # RÉACTIVATION d'un compte.
+        bascule = self.env["res.users"]
+        if "active" in vals and not vals["active"]:
+            bascule = self.filtered("active")
+
         touched = [f for f in self.BF_DND_SELF_FIELDS if f in vals]
         if not touched:
-            return super().write(vals)
+            result = super().write(vals)
+            self._reveiller_si_archive(bascule)
+            return result
         Dnd = self.env["bf.dnd"]
         before = {u.id: Dnd._state_for(u)["active"] for u in self}
         result = super().write(vals)
+        self._reveiller_si_archive(bascule)
         for user in self:
             state = Dnd._state_for(user)
             if bool(state["active"]) == bool(before.get(user.id)):
@@ -287,3 +305,25 @@ class ResUsers(models.Model):
             if not state["active"]:
                 Dnd._release(user)
         return result
+
+    def _reveiller_si_archive(self, bascule):
+        """Sonne chez les téléphones des personnes qu'on vient d'archiver.
+
+        Archiver le compte fait déjà refuser le jeton
+        (``_resolve``), mais le refus n'arrive qu'au PROCHAIN appel du
+        téléphone, et rien ne dit quand. Ceci est le coup de sonnette : le
+        téléphone rappelle, reçoit son 401, et efface ce qu'il garde.
+
+        Jumeau de celui de ``bf_sms_archive`` : les deux modules s'installent
+        l'un sans l'autre, et chacun ne réveille que SES appareils.
+        """
+        if not bascule:
+            return
+        # Rater un réveil ne doit pas faire rater l'archivage, qui est LE geste
+        # utile. ``_send`` est déjà défensif ; ceci est sa ceinture.
+        try:
+            self.env["bf.email.unifiedpush"].sudo()\
+                ._reveiller_les_appareils_de(bascule)
+        except Exception:  # noqa: BLE001
+            _logger.warning("Coupe-circuit : réveil raté à l'archivage de %s.",
+                            bascule.ids, exc_info=True)

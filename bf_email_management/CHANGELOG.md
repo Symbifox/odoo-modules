@@ -4,6 +4,133 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.41.2] - 2026-09-21
+
+### Security
+
+- 🔴 **Six méthodes publiques de deux modèles ABSTRAITS étaient appelables par
+  RPC.** Un `AbstractModel` n'a pas de table : ni règle d'enregistrement ni
+  ligne d'`ir.model.access` ne se déclenchent quand `call_kw` l'atteint, donc
+  toute méthode sans tiret bas y est appelable par n'importe quel usager
+  interne depuis la console de son navigateur. Deux d'entre elles faisaient
+  signer une demande de jeton par le secret client de l'instance. Les six
+  portent désormais `@api.private`, et un essai vérifie qu'aucune méthode
+  publique n'apparaît sur ces modèles sans qu'on l'ait décidée — c'est lui qui
+  a trouvé la sixième.
+
+## [18.0.11.41.1] - 2026-09-21
+
+Revue de sécurité de l'assistant, avant de le poser ailleurs. Trois faiblesses,
+toutes MESURÉES en production plutôt que supposées.
+
+### Security
+
+- 🔴 **L'assistant et le bouton « Tester la connexion » étaient un scanner du
+  réseau interne.** Les deux passaient l'hôte ET le port saisis à
+  `open_connection`. Depuis un compte employé ordinaire, un port de base de
+  données interne répondait par une erreur TLS et un port fermé par
+  « Connection refused » : de quoi distinguer ouvert de fermé, et même nommer
+  le service. La garde est posée dans `open_connection` lui-même, seul goulot
+  d'étranglement, et couvre donc aussi le bouton du formulaire, qui portait le
+  même défaut avant cette version. L'échappatoire
+  (`bf_email.autoriser_hotes_internes`) est fermée par défaut.
+- 🔴 **Le serveur sortant recopiait le mot de passe du compte dans
+  `smtp_pass`**, champ réservé à `base.group_system` : un secret que la règle
+  d'enregistrement réserve à son PROPRIÉTAIRE devenait lisible de tout
+  administrateur des réglages. Les deux modes d'authentification empruntent
+  désormais le secret au compte au moment de l'envoi, et `smtp_pass` reste
+  vide.
+- 🔴 **La ligne d'assistant gardait le mot de passe en clair pendant une
+  heure** après un refus (`transient_age_limit`). Il est effacé à chaque
+  sortie, par un curseur SÉPARÉ : un effacement écrit dans la transaction qui
+  va être annulée n'efface rien, puisque Odoo annule tout dès qu'une erreur
+  remonte à la requête. La ligne elle-même ne survit plus qu'un quart d'heure.
+- L'état OAuth porte un horodatage DANS sa signature et n'est plus valable que
+  quinze minutes ; sa comparaison est à temps constant.
+- La résolution MX et SRV passe par le résolveur du SYSTÈME au lieu d'annoncer
+  à un service tiers chaque domaine qu'on branche. DNS-over-HTTPS reste en
+  secours et se coupe (`bf_email.doh_secours`).
+
+## [18.0.11.41.0] - 2026-09-20
+
+Un assistant pour brancher une boîte, et l'OAuth par personne qui va avec.
+
+### Added
+
+- **Assistant d'ajout de compte** (`bf.email.account.setup`) : deux champs,
+  puis le serveur, le port et le moyen d'entrer se découvrent. Cascade à sept
+  voies avec arrêt au premier succès, mesurée sur 53 domaines réels : 49
+  résolus, 0,43 s de médiane. La voie qui décide est la moins connue, le MX
+  puis la base de Thunderbird interrogée sur le domaine du MX, et elle porte à
+  elle seule 42 points de couverture.
+- **OAuth 2.0 par PERSONNE** (`bf.email.oauth`, `auth_mode` sur le compte,
+  point de retour `/bf_email/oauth/retour`) : les jetons vivent sur le compte,
+  sous la même règle d'enregistrement que le mot de passe qu'ils remplacent,
+  et non sur le serveur de courriel derrière `base.group_system`. C'est le seul
+  moyen d'entrer chez Microsoft, dont le serveur annonce `AUTH=PLAIN` et
+  répond pourtant « Basic authentication is disabled » à toute tentative.
+- **Serveur sortant emprunteur** : un `ir.mail_server` créé par l'assistant
+  avec son filtre d'expéditeur écrit par le code, épinglé à l'adresse du
+  compte, et sans copie du secret.
+- `AUTHENTICATE XOAUTH2` dans `open_connection`, éprouvé sur le vecteur publié
+  par Microsoft.
+- Réglages d'inscription d'application, avec l'URL de retour à déclarer.
+
+### Changed
+
+- Les douze appels directs à `open_connection` passent par
+  `account._ouvrir_imap()` : le mode d'authentification se décide à un seul
+  endroit.
+- Un compte créé par l'assistant naît sans réécriture de la boîte
+  (`writeback_archive` à faux) et son filigrane est semé à sept jours : un
+  `last_uid_inbox` à zéro rejouerait des dizaines de milliers de messages
+  avant d'arriver au courrier du jour.
+- Le message d'erreur IMAP n'affiche plus une chaîne d'octets Python ni un
+  double `@`.
+
+## [18.0.11.40.1] - 2026-09-20
+
+### Fixed
+
+- La garde « rangé = déjà traité » manquait sur l'AUTRE chemin d'ingestion.
+  Quand Odoo porte déjà le `mail.message`, sa copie gagne et la rangée naît
+  `source='chatter'` sans passer par la préparation IMAP, or la deuxième
+  branche du domaine de la boîte y fait entrer TOUTE rangée de chatter, quel
+  que soit le dossier serveur. Trouvé en mesurant un rattrapage en production
+  plutôt qu'en relisant le code.
+
+## [18.0.11.40.0] - 2026-09-20
+
+### La capture cesse de ne regarder que l'INBOX
+
+Signalé par un usager : « mon IMAP et bf_email ne se synchronisent pas
+toujours ». Mesuré en réconciliant les dossiers IMAP vivants contre les
+en-têtes `Message-ID` déjà en base, plutôt que déduit.
+
+🔴 L'ingestion vive ET la réconciliation ne lisaient toutes deux que
+`INBOX` et `Sent`. Un message sorti de l'INBOX avant qu'une passe le voie,
+archivé du téléphone ou déplacé par une règle du serveur, n'était **jamais**
+capté, et le rattrapage aux six heures ne pouvait pas le retrouver puisqu'il
+ne regardait pas là où il était rendu. Le trou était permanent et rien ne le
+signalait ; la boîte mesurée portait deux arbres d'archive, dont un que rien
+ne nommait dans Odoo.
+
+### Changed
+
+- La réconciliation relit **tout ce que le serveur liste**, moins le bruit
+  (corbeille, brouillons, indésirables, et une liste de motifs configurable).
+- 🔴 Gmail ne se lit pas aux noms de dossiers : la liste des dossiers rend
+  maintenant les attributs d'usage spécial de `LIST` (RFC 6154), `\All` est
+  écarté (il porte tout le compte et remontre chaque message sous chacune de
+  ses étiquettes), `\Flagged` et `\Important` aussi, et `\Sent` est ajouté
+  quel que soit son nom. Sans ça, le côté envoyé restait muet sur tout
+  locataire Gmail.
+- Un message capté dans un dossier de classement naît « Traité », donc aucun
+  téléphone ne sonne pour du courrier d'il y a deux mois.
+- Déduplication par paquet au lieu d'une requête par en-tête.
+- Le miroir devient symétrique : désarchiver au webmail remet la ligne dans la
+  boîte, là où il ne savait que poser « Traité ».
+
 ## [18.0.11.38.0] - 2026-09-18
 
 Les abonnés de la fiche, au poste : classer ne notifie plus, et le composeur

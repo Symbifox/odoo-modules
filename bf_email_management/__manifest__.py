@@ -1,7 +1,7 @@
 {
     "name": "Gestion des courriels",
     "summary": "Inbox unifiée IMAP + chatters Odoo, avec re-routage UI",
-    "version": "18.0.11.38.0",
+    "version": "18.0.11.41.2",
     "category": "Productivity",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -58,6 +58,11 @@
         "views/mail_scheduled_message_views.xml",
         "views/res_config_settings_views.xml",
         "views/bf_email_menu.xml",
+        # After the parent menu: this file declares a menu item whose
+        # parent is declared there. Listed before it, a FRESH INSTALL
+        # fails with a ParseError, and an upgrade never sees it because
+        # the parent is already in the database.
+        "wizard/bf_email_account_setup_views.xml",
         "views/bf_dnd_views.xml",
         "views/res_partner_views.xml",
     ],

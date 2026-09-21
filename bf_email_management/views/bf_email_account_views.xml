@@ -27,6 +27,12 @@
                             type="object"
                             string="Tester la connexion"
                             class="btn-primary"/>
+                    <button name="action_lier_oauth"
+                            type="object"
+                            string="Lier le compte"
+                            class="btn-primary"
+                            invisible="auth_mode != 'xoauth2'"
+                            help="Ouvre l'&#233;cran de consentement du fournisseur. Chez Microsoft, c'est le SEUL moyen d'entrer : le serveur refuse tout mot de passe."/>
                     <button name="action_sync_now"
                             type="object"
                             string="Synchroniser maintenant"
@@ -61,7 +67,14 @@
                             <field name="host" placeholder="imap.example.com"/>
                             <field name="port"/>
                             <field name="login" placeholder="user@example.com"/>
-                            <field name="password" password="True"/>
+                            <field name="auth_mode"/>
+                            <field name="oauth_provider"
+                                   invisible="auth_mode != 'xoauth2'"
+                                   required="auth_mode == 'xoauth2'"/>
+                            <field name="oauth_lie" invisible="auth_mode != 'xoauth2'"/>
+                            <field name="password" password="True"
+                                   invisible="auth_mode == 'xoauth2'"
+                                   required="auth_mode == 'password'"/>
                         </group>
                     </group>
                     <group>

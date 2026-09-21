@@ -173,6 +173,50 @@ class ResConfigSettings(models.TransientModel):
             "1" if self.bf_email_dnd_enabled else "0",
         )
 
+    # ------------------------------------------------------------------
+    # Inscriptions d'application OAuth
+    # ------------------------------------------------------------------
+    # ⚠️ Un seul jeu d'identifiants par instance, comme chez Odoo : c'est
+    # notre inscription qui apparaîtra dans l'écran de consentement de
+    # chaque personne. La décision « la nôtre, multi-locataire, ou une par
+    # client » n'est pas technique, elle se prend avant de remplir ceci.
+    bf_email_oauth_microsoft_client_id = fields.Char(
+        string="Microsoft : identifiant d'application",
+        config_parameter="bf_email.oauth_microsoft_client_id",
+        help="Inscription Entra avec les autorisations déléguées "
+             "IMAP.AccessAsUser.All, SMTP.Send et offline_access. Sans elle, "
+             "aucune boîte Microsoft ne peut être branchée : leur serveur "
+             "refuse tout mot de passe.",
+    )
+    bf_email_oauth_microsoft_client_secret = fields.Char(
+        string="Microsoft : secret d'application",
+        config_parameter="bf_email.oauth_microsoft_client_secret",
+    )
+    bf_email_oauth_google_client_id = fields.Char(
+        string="Google : identifiant d'application",
+        config_parameter="bf_email.oauth_google_client_id",
+        help="Facultatif : chez Google, le mot de passe d'application "
+             "fonctionne toujours. L'OAuth exige en plus une évaluation de "
+             "sécurité CASA annuelle, parce que la portée mail.google.com "
+             "est restreinte.",
+    )
+    bf_email_oauth_google_client_secret = fields.Char(
+        string="Google : secret d'application",
+        config_parameter="bf_email.oauth_google_client_secret",
+    )
+    bf_email_oauth_redirect_uri = fields.Char(
+        string="URL de retour à déclarer",
+        compute="_compute_bf_email_oauth_redirect_uri",
+        help="À coller telle quelle dans l'inscription d'application. Une "
+             "URL de retour qui ne correspond pas au caractère près fait "
+             "échouer le consentement avant même l'écran de connexion.",
+    )
+
+    def _compute_bf_email_oauth_redirect_uri(self):
+        uri = self.env["bf.email.oauth"]._uri_de_retour()
+        for reglage in self:
+            reglage.bf_email_oauth_redirect_uri = uri
+
     def action_bf_email_refresh_imap_folders(self):
         """Relever tout de suite les dossiers de mes comptes IMAP.
 

@@ -1993,9 +1993,7 @@ class BfEmail(models.Model):
             if not (account.host and account.login and account.password):
                 continue
             try:
-                conn = bf_email_imap.open_connection(
-                    account.host, account.port, account.login, account.password,
-                )
+                conn = account._ouvrir_imap()
             except bf_email_imap.ImapConnectionError as exc:
                 _logger.warning(
                     "bf.email IMAP restore (%s): %s", account.display_name, exc,
@@ -2171,9 +2169,7 @@ class BfEmail(models.Model):
             if not (account.host and account.login and account.password):
                 continue
             try:
-                conn = bf_email_imap.open_connection(
-                    account.host, account.port, account.login, account.password,
-                )
+                conn = account._ouvrir_imap()
             except bf_email_imap.ImapConnectionError as exc:
                 _logger.warning(
                     "bf.email IMAP writeback (%s): %s", account.display_name, exc,
@@ -4043,6 +4039,9 @@ class BfEmail(models.Model):
     # volontairement : une table servirait un compteur à écrire à chaque
     # arrivée de courriel, ce qui coûterait plus cher que ce qu'on protège.
     _imap_wake_seen = {}
+    # Le miroir a son propre compteur : une rafale d'arrivées ne doit pas
+    # faire taire le réveil d'un archivage, ni l'inverse.
+    _imap_mirror_wake_seen = {}
     _IMAP_WAKE_MIN_INTERVAL = 2.0
 
     @api.model
@@ -4107,6 +4106,42 @@ class BfEmail(models.Model):
         _logger.info("bf.email: réveil IMAP déclenché (%s)", label)
         return True
 
+    @api.model
+    def imap_wake_mirror(self, reason=False):
+        """Lancer le miroir maintenant plutôt qu'à la passe aux 5 minutes.
+
+        Jumelle de ``imap_wake``, pour l'autre direction. Le guetteur IDLE
+        l'appelle quand le serveur annonce un ``EXPUNGE`` : c'est ce que dit
+        une boîte quand un message la quitte, donc quand on archive depuis le
+        téléphone ou le webmail. Sans elle, « Traité » arrivait jusqu'à cinq
+        minutes plus tard, et le geste semblait sans effet.
+
+        Même forme et mêmes raisons que ``imap_wake`` : un ``_trigger()`` sur
+        le cron, jamais un appel direct, pour que le travail reste dans
+        l'unique fil de cron et ne puisse pas tourner en parallèle de la
+        passe régulière. Son propre compteur de débit, pour qu'un réveil de
+        miroir ne mange pas le budget de l'ingestion et inversement.
+        """
+        cron = self.env.ref(
+            "bf_email_management.ir_cron_imap_mirror", raise_if_not_found=False
+        )
+        if not cron:
+            _logger.warning("bf.email: réveil miroir demandé, cron introuvable")
+            return False
+        cron = cron.sudo()
+        if not cron.active:
+            return False
+        now = time.monotonic()
+        last = self._imap_mirror_wake_seen.get(self.env.uid, 0.0)
+        if now - last < self._IMAP_WAKE_MIN_INTERVAL:
+            return True
+        self._imap_mirror_wake_seen[self.env.uid] = now
+
+        cron._trigger()
+        label = re.sub(r"\s+", " ", str(reason))[:120] if reason else "sans motif"
+        _logger.info("bf.email: réveil du miroir IMAP déclenché (%s)", label)
+        return True
+
     # ------------------------------------------------------------------
     # Cron: incremental sync from IMAP (Inbox + Sent live)
     # ------------------------------------------------------------------
@@ -4167,9 +4202,7 @@ class BfEmail(models.Model):
         if not (account.host and account.login and account.password):
             return
         try:
-            conn = bf_email_imap.open_connection(
-                account.host, account.port, account.login, account.password,
-            )
+            conn = account._ouvrir_imap()
         except bf_email_imap.ImapConnectionError as exc:
             account.write({"state": "error", "last_error": str(exc)})
             _logger.warning(
@@ -4216,12 +4249,21 @@ class BfEmail(models.Model):
         Idempotent — dedup on (message_id_header, user_id) means a second run
         finds nothing to do. ``days`` / ``folders`` override the defaults for
         a one-shot recovery (e.g. ``_cron_imap_reconcile(days=60)``).
+
+        🔴 Depuis 18.0.11.40.0 la passe ne se limite plus à INBOX et Sent.
+        Elle relit **tout ce que le serveur liste**, moins les dossiers de
+        bruit — voir ``bf.email.account._reconcile_folder_names``. Sans ça un
+        message archivé avant qu'une passe le voie n'était jamais capté du
+        tout : 55 cas mesurés sur BF pour le seul dossier ``Archive``, sur
+        deux mois et demi. Le prix est une passe plus longue, bornée par le
+        ``SINCE`` de ``days`` ; le gain est qu'un trou de capture redevient un
+        retard de six heures au lieu d'une perte définitive.
         """
         ICP = self.env["ir.config_parameter"].sudo()
         lookback = days if days is not None else int(
             ICP.get_param("bf_email.reconcile_days", "30")
         )
-        target_folders = folders or list(bf_email_imap.DEFAULT_LIVE_FOLDERS)
+        forced_folders = list(folders) if folders else None
         since = (fields.Datetime.now() - timedelta(days=lookback)).date()
 
         Account = self.env["bf.email.account"].sudo()
@@ -4231,9 +4273,7 @@ class BfEmail(models.Model):
             if not (account.host and account.login and account.password):
                 continue
             try:
-                conn = bf_email_imap.open_connection(
-                    account.host, account.port, account.login, account.password,
-                )
+                conn = account._ouvrir_imap()
             except bf_email_imap.ImapConnectionError as exc:
                 _logger.warning(
                     "bf.email reconcile (%s): %s", account.display_name, exc,
@@ -4249,6 +4289,20 @@ class BfEmail(models.Model):
 
             recovered = 0
             try:
+                if forced_folders is not None:
+                    target_folders = forced_folders
+                else:
+                    served = []
+                    try:
+                        served = bf_email_imap.list_folders(conn)
+                    except Exception:
+                        _logger.debug(
+                            "bf.email reconcile (%s) : LIST illisible",
+                            account.display_name, exc_info=True,
+                        )
+                    account._store_imap_folders(served)
+                    target_folders = account._reconcile_folder_names(
+                        served or None)
                 for folder in target_folders:
                     if not bf_email_imap.select_folder(conn, folder, readonly=True):
                         continue
@@ -4258,17 +4312,28 @@ class BfEmail(models.Model):
                     for i in range(0, len(uids), 200):
                         chunk = uids[i:i + 200]
                         headers = bf_email_imap.fetch_headers_bulk(conn, chunk)
+                        # Un seul SELECT par paquet plutôt qu'un par message :
+                        # la passe relit désormais tous les dossiers du
+                        # serveur, et une requête par en-tête y coûtait des
+                        # milliers d'allers-retours pour ne rien trouver.
+                        wanted = {}
                         for uid, (msg, _seen) in headers.items():
                             message_id = str(msg.get("Message-ID", "")).strip()
-                            if not message_id:
-                                continue
-                            existing = BfEmail.with_context(
+                            if message_id:
+                                wanted.setdefault(message_id, uid)
+                        if not wanted:
+                            continue
+                        known = {
+                            row["message_id_header"]
+                            for row in BfEmail.with_context(
                                 active_test=False
-                            ).search([
-                                ("message_id_header", "=", message_id),
+                            ).search_read([
+                                ("message_id_header", "in", list(wanted)),
                                 ("user_id", "=", account.user_id.id),
-                            ], limit=1)
-                            if existing:
+                            ], ["message_id_header"])
+                        }
+                        for message_id, uid in wanted.items():
+                            if message_id in known:
                                 continue
                             raw = bf_email_imap.fetch_rfc822(conn, uid)
                             if not raw:
@@ -4306,14 +4371,41 @@ class BfEmail(models.Model):
 
     @api.model
     def _cron_imap_mirror(self):
-        """Reconcile bf.email.imap_in_inbox against each account's live INBOX.
+        """Recopier l'état du serveur sur les lignes, dans les DEUX sens.
 
-        Runs every 5 minutes. For each active account, fetch the live INBOX
-        UID set and flip ``imap_in_inbox`` on the owner's rows whose
-        ``imap_folder='INBOX'`` and ``date >= now-90d``.
+        Toutes les 5 minutes, et sur demande depuis ``imap_wake_mirror``
+        quand le guetteur IDLE voit un ``EXPUNGE``.
 
-        Also wakes snoozed rows whose ``snoozed_until`` has passed (global
-        pass, no IMAP needed).
+        Trois mouvements, dans cet ordre, pour chaque compte actif :
+
+        1. **retour en boîte et ancrage manquant** — les UID vivants de
+           l'INBOX qu'aucune ligne ancrée ne revendique sont résolus par
+           Message-ID. Une ligne sans ``imap_uid`` (origine passerelle ou
+           chatter) reçoit son repère ; une ligne qu'on avait vue SORTIE et
+           qui est de retour dans l'INBOX est réancrée et **cesse d'être
+           traitée**. C'est la symétrie qui manquait : archiver au webmail
+           marquait « Traité », désarchiver ne le retirait jamais.
+        2. **sortie** — une ligne ancrée dans l'INBOX dont l'UID a disparu
+           est marquée hors boîte, et « Traité » si elle ne l'était pas.
+        3. **réveil des reports échus** (avant tout le reste, sans IMAP).
+
+        ⚠️ L'ordre 1 puis 2 n'est pas cosmétique. Si une boîte change de
+        ``UIDVALIDITY``, tous les UID changent d'un coup : la passe 2 verrait
+        toute la boîte disparue et marquerait tout « Traité », puis la
+        passe 1 défer_ait tout. En réancrant d'abord, la passe 2 ne voit plus
+        que de vraies sorties.
+
+        ⚠️ La passe 1 refuse une ligne qui suit un AUTRE compte. Une même
+        personne possède souvent deux boîtes et une adresse livrée aux deux y
+        laisse deux copies physiques pour une seule ligne : lui écrire l'UID
+        d'ici fabriquerait exactement l'UID périmé que la garde de
+        ``_imap_writeback_move`` existe pour rattraper.
+
+        La portée de la passe 2 est ``imap_in_inbox = True`` et non plus
+        « les 90 derniers jours ». C'est à la fois plus juste et beaucoup
+        moins cher : ce qui est déjà sorti n'a pas à ressortir, et la fenêtre
+        de 90 jours laissait dormir pour toujours une ligne plus ancienne.
+        Mesuré sur BF le 2026-09-20 : 3 lignes en portée au lieu de 1273.
         """
         # ---- Snooze wake-up first (cheap, no IMAP). Sudo because the cron
         #      runs as admin but rows belong to many users. ----
@@ -4346,20 +4438,33 @@ class BfEmail(models.Model):
         # ---- IMAP mirror pass: one connection per active account. ----
         Account = self.env["bf.email.account"].sudo()
         accounts = Account.search([("active", "=", True)])
-        cutoff = fields.Datetime.now() - timedelta(days=90)
         for account in accounts:
             if not (account.host and account.login and account.password):
                 continue
             try:
-                conn = bf_email_imap.open_connection(
-                    account.host, account.port, account.login, account.password,
-                )
+                conn = account._ouvrir_imap()
             except bf_email_imap.ImapConnectionError as exc:
                 _logger.warning(
                     "bf.email IMAP mirror (%s): %s", account.display_name, exc,
                 )
                 continue
             folders = []
+            returned = anchored = 0
+            # Les UID que des lignes revendiquent déjà comme étant en boîte.
+            # Sert deux fois : à savoir ce qui est « inconnu » côté serveur,
+            # et comme portée de la passe de sortie. Petit par construction,
+            # puisqu'il ne contient que ce qu'on croit encore en INBOX.
+            anchored_scope = [
+                ("account_id", "=", account.id),
+                ("imap_folder", "ilike", "INBOX"),
+                ("imap_in_inbox", "=", True),
+                ("imap_uid", "!=", False),
+            ]
+            claimed = {
+                str(uid)
+                for uid in Rows.search(anchored_scope).mapped("imap_uid")
+                if uid
+            }
             try:
                 # L'arborescence pendant qu'on tient la connexion : la colonne
                 # de gauche de la boîte de réception la lit dans le cache et
@@ -4381,6 +4486,14 @@ class BfEmail(models.Model):
                     if isinstance(raw, bytes):
                         raw = raw.decode("ascii", errors="ignore")
                     live_uids = {x for x in raw.split() if x.isdigit()}
+
+                # Passe 1, connexion encore ouverte : ce que l'INBOX contient
+                # et qu'aucune ligne ancrée ne revendique.
+                unclaimed = sorted(live_uids - claimed, key=int)
+                if unclaimed:
+                    returned, anchored = self._imap_mirror_adopt(
+                        conn, account, unclaimed,
+                    )
             finally:
                 try:
                     conn.logout()
@@ -4388,33 +4501,111 @@ class BfEmail(models.Model):
                     pass
                 account._store_imap_folders(folders)
 
-            rows = Rows.search([
-                ("account_id", "=", account.id),
-                ("imap_folder", "ilike", "INBOX"),
-                ("date", ">=", cutoff),
-                ("imap_uid", "!=", False),
-            ])
-            flipped_in = flipped_out = auto_handled = 0
+            # Passe 2 : ce qu'on croyait en boîte et qui n'y est plus. Relue
+            # après la passe 1, qui vient peut-être d'en réancrer.
+            rows = Rows.search(anchored_scope)
+            flipped_out = auto_handled = 0
             now = fields.Datetime.now()
             for row in rows:
-                in_inbox = str(row.imap_uid) in live_uids
-                if in_inbox == row.imap_in_inbox:
+                if str(row.imap_uid) in live_uids:
                     continue
-                vals = {"imap_in_inbox": in_inbox}
-                if in_inbox:
-                    flipped_in += 1
-                else:
-                    flipped_out += 1
-                    if not row.is_handled:
-                        vals["is_handled"] = True
-                        vals["handled_at"] = now
-                        auto_handled += 1
+                vals = {"imap_in_inbox": False}
+                flipped_out += 1
+                if not row.is_handled:
+                    vals["is_handled"] = True
+                    vals["handled_at"] = now
+                    auto_handled += 1
                 row.write(vals)
-            if flipped_in or flipped_out:
+            if flipped_out or returned or anchored:
                 _logger.info(
-                    "bf.email IMAP mirror (%s): %s in, %s out (%s auto-Traité)",
-                    account.display_name, flipped_in, flipped_out, auto_handled,
+                    "bf.email IMAP mirror (%s): %s sortie(s) dont %s "
+                    "auto-Traité, %s retour(s) en boîte, %s ancrage(s) posé(s)",
+                    account.display_name, flipped_out, auto_handled,
+                    returned, anchored,
                 )
+
+    def _imap_mirror_adopt(self, conn, account, uids):
+        """Rattacher les UID de l'INBOX qu'aucune ligne ancrée ne revendique.
+
+        Deux situations derrière un UID inconnu, et elles ne se traitent pas
+        pareil :
+
+        * **la ligne n'a aucun ancrage IMAP** (origine passerelle ou chatter,
+          1228 + 758 lignes sur trente jours chez BF). On lui pose son
+          repère, et rien d'autre. Surtout pas « Traité » : personne n'a rien
+          archivé, le message est simplement là où il a toujours été. Une
+          fois ancrée, elle suit le miroir comme les autres, et le balayage
+          horaire peut enfin recopier son archivage quand il viendra.
+        * **la ligne portait un ancrage et on l'avait vue SORTIE.** Le
+          message est de retour dans l'INBOX : quelqu'un l'a désarchivé au
+          webmail. On réancre, et on retire « Traité » — c'est la symétrie
+          demandée. Un report en cours (``snoozed_until``) est respecté : le
+          réveil a sa propre horloge, ce n'est pas au miroir de la devancer.
+
+        ⚠️ Une ligne qui suit un autre compte n'est pas touchée, même si son
+        Message-ID est bien là : son ``imap_uid`` décrit sa propre copie dans
+        sa propre boîte. Voir la docstring de ``_imap_writeback_move``.
+
+        Rend ``(retours, ancrages)``.
+        """
+        Rows = self.sudo().with_context(active_test=False)
+        returned = anchored = 0
+        for start in range(0, len(uids), 200):
+            chunk = uids[start:start + 200]
+            try:
+                headers = bf_email_imap.fetch_headers_bulk(conn, chunk)
+            except Exception:
+                _logger.warning(
+                    "bf.email IMAP mirror (%s) : en-têtes illisibles pour "
+                    "%s UID", account.display_name, len(chunk), exc_info=True,
+                )
+                continue
+            by_mid = {}
+            for uid, (msg, _seen) in headers.items():
+                message_id = str(msg.get("Message-ID", "")).strip()
+                if message_id:
+                    by_mid.setdefault(message_id, str(uid))
+            if not by_mid:
+                continue
+            rows = Rows.search([
+                ("message_id_header", "in", list(by_mid)),
+                ("user_id", "=", account.user_id.id),
+            ])
+            for row in rows:
+                uid = by_mid.get(row.message_id_header)
+                if not uid:
+                    continue
+                if row.account_id and row.account_id.id != account.id:
+                    _logger.info(
+                        "bf.email IMAP mirror (%s) : #%s trouvée ici mais "
+                        "suit %s — ancrage laissé intact",
+                        account.display_name, row.id,
+                        row.account_id.display_name,
+                    )
+                    continue
+                vals = {
+                    "imap_uid": uid,
+                    "imap_folder": "INBOX",
+                    "imap_in_inbox": True,
+                }
+                if not row.account_id:
+                    vals["account_id"] = account.id
+                if not row.imap_uid:
+                    row.write(vals)
+                    anchored += 1
+                    continue
+                if row.imap_in_inbox and (
+                        row.imap_folder or "").upper() == "INBOX":
+                    # Même place, UID différent : la boîte a changé de
+                    # UIDVALIDITY. On corrige le repère sans rien conclure.
+                    row.write(vals)
+                    continue
+                if row.is_handled and not row.snoozed_until:
+                    vals["is_handled"] = False
+                    vals["handled_at"] = False
+                    returned += 1
+                row.write(vals)
+        return returned, anchored
 
     @api.model
     def _cron_imap_writeback_sweep(self, dry_run=False):
@@ -4447,9 +4638,7 @@ class BfEmail(models.Model):
             if not (account.host and account.login and account.password):
                 continue
             try:
-                conn = bf_email_imap.open_connection(
-                    account.host, account.port, account.login, account.password,
-                )
+                conn = account._ouvrir_imap()
             except bf_email_imap.ImapConnectionError as exc:
                 _logger.warning(
                     "bf.email writeback sweep (%s): %s",
@@ -4639,6 +4828,21 @@ class BfEmail(models.Model):
                     "account_id": account.id,
                     "company_id": (account.company_id or account.user_id.company_id).id,
                 })
+                # 🔴 La même règle que dans `_prepare_imap_email_vals`, et
+                # elle manquait ici. Ce chemin-ci sert quand Odoo porte déjà
+                # le `mail.message` : la rangée naît alors `source='chatter'`,
+                # et la deuxième branche de `_inbox_domain` fait entrer TOUTE
+                # rangée de chatter dans la boîte, quel que soit le dossier
+                # serveur. Mesuré le 2026-09-20 sur le rattrapage des
+                # archives : 149 rangées sur 151 sont bien nées « Traité »,
+                # et les 2 qui ont atterri dans la boîte du propriétaire sont
+                # passées par ici — deux avis d'activité de juin.
+                if (folder or "").upper() not in ("INBOX", "SENT"):
+                    chatter_vals.update({
+                        "is_handled": True,
+                        "handled_at": fields.Datetime.now(),
+                        "imap_in_inbox": False,
+                    })
                 if not existing_msg.body:
                     # « L'interne gagne » suppose que la copie d'Odoo porte le
                     # message. Elle ne le porte pas quand le ``mail.mail`` a été
@@ -4716,7 +4920,19 @@ class BfEmail(models.Model):
         except Exception:
             raw_headers = ""
 
+        # ⚠️ Un message capté dans un dossier de classement n'est pas du
+        # travail en attente : son propriétaire l'a déjà rangé, souvent des
+        # mois plus tôt. Depuis que la réconciliation relit les archives
+        # (18.0.11.40.0), la première passe en remonte des dizaines d'un
+        # coup ; les laisser « non traités » les ferait apparaître dans les
+        # listes de suivi comme si la journée venait d'en hériter. INBOX et
+        # Sent gardent leur comportement : l'un est du travail, l'autre est
+        # traité par les règles comme avant.
+        parked = (folder or "").upper() not in ("INBOX", "SENT")
+
         return {
+            "is_handled": parked,
+            "handled_at": fields.Datetime.now() if parked else False,
             "date": date_str or fields.Datetime.now(),
             "email_from": email_from,
             "email_to": email_to,
@@ -5141,9 +5357,7 @@ class BfEmail(models.Model):
                 "Le compte IMAP %s n'a pas d'identifiants valides.",
                 account.display_name,
             ))
-        return bf_email_imap.open_connection(
-            account.host, account.port, account.login, account.password,
-        )
+        return account._ouvrir_imap()
 
     @api.model
     def imap_browser_get_folders(self):
@@ -5360,9 +5574,7 @@ class BfEmail(models.Model):
             raise UserError(_("UID manquant."))
         account = self._imap_browser_resolve_account(account_id)
         try:
-            conn = bf_email_imap.open_connection(
-                account.host, account.port, account.login, account.password,
-            )
+            conn = account._ouvrir_imap()
         except bf_email_imap.ImapConnectionError as exc:
             raise UserError(_("Connexion IMAP impossible : %s", exc)) from exc
         try:

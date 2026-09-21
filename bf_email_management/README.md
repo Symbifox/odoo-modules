@@ -26,6 +26,53 @@ A centralized email management module for Odoo 18 that provides a single, dedupl
 - **Automatic forwarding (9.11)** — internal or external, from *your* address (never spoofing the original sender, which would fail SPF/DKIM), original sender in Reply-To. Every guard is answered before a `mail.mail` exists: `Auto-Submitted` messages are never relayed, a message already stamped by this instance breaks the loop, a hop ceiling and a per-rule daily cap bound runaway, your own addresses are never a destination, and an out-of-organisation recipient needs a box only an administrator can tick (`bf_email.internal_domains` says which domains count as inside). Every send **and every refusal, with its reason**, lands in `bf.email.auto.log`, pruned after `bf_email.forward_log_retention_days` (180).
 - **Direction badges** — inbound (`←`) vs outbound (`→`), inferred from author membership and IMAP folder.
 
+### Connecting a mailbox (11.41+)
+
+- **Two fields, then it is connected.** Type the address; the server, the port
+  and the way in are discovered. A seven-route cascade, stopping at the first
+  answer: the domain's own `autoconfig` file, `.well-known`, the Thunderbird
+  ISP database, an `_imaps._tcp` SRV record, **the MX record and then the ISP
+  database on the MX's own domain**, a provider fingerprint table, and finally
+  a probe of `imap.<domain>` / `mail.<domain>` that is only trusted when a real
+  IMAP greeting comes back. Measured on 53 real domains: 49 resolved, 0.43 s
+  median.
+  - The MX route is the one that decides. A business domain hosted by a large
+    provider publishes no `autoconfig`, no `.well-known` and no SRV, and is not
+    in the ISP database under its own name: only its MX names the provider. It
+    carries 42 points of coverage on its own.
+  - `.well-known` returned nothing at all on those 53 domains, and the
+    `imap.`/`mail.` guess was wrong roughly half the time, which is why the
+    probe requires a greeting rather than a DNS record.
+- **The way in is decided by the provider, never by what the server
+  announces.** Microsoft's IMAP server advertises `AUTH=PLAIN` and then answers
+  `Basic authentication is disabled.` to every attempt. An assistant that read
+  the CAPABILITY would promise a connection that cannot happen, so the mode
+  comes from the recognised provider: OAuth 2.0 where no password is accepted,
+  an app password where one is required (with the link to create it), an
+  ordinary password elsewhere.
+- **OAuth 2.0 per person, not per company.** Odoo's own Gmail and Outlook
+  bridges keep their tokens on the mail server record, behind
+  `base.group_system`; this module keeps them on the account, under the same
+  record rule as the password they replace, so the person who owns the mailbox
+  is the one who links it. Register the application once per deployment in
+  Settings (the redirect URL to declare is shown there).
+- **The defaults are a safety decision.** A new account is created with
+  server-side archiving **off** and its watermark seeded to the last seven
+  days, so connecting a mailbox never rearranges it and the first pass does not
+  replay years of history before reaching today's mail. Importing the backlog
+  stays a separate, dated gesture.
+- **Nothing is written until the connection works.** The IMAP session is opened
+  first; on refusal the wizard explains what the server actually said and
+  creates nothing. The outgoing server is created with its sender filter
+  written by the code, pinned to the account's own address, and it holds no
+  copy of the secret: both authentication modes borrow it from the account at
+  send time.
+- **Only public mail servers.** The typed host must resolve to a public
+  address; a private, loopback or link-local address is refused, so the wizard
+  cannot be turned into a probe of the network the server sits on. A deployment
+  whose mail server really is internal opens it with
+  `bf_email.autoriser_hotes_internes`.
+
 ### Out-of-office responder (11.0+)
 - **RFC 3834 by the letter, because a responder that answers once too often loops with the one facing it.** Never to a message carrying `Auto-Submitted`, never to a list (`List-*`, `Precedence: list/junk/bulk`), never to a null return path or a service local-part, never unless a valid address of yours appears explicitly in `To` or `Cc`, and **one reply per sender** over a sliding window (seven days by default, as §4.3 recommends). The reply carries `Auto-Submitted: auto-replied`, `In-Reply-To`, `References` and no attachment.
 - **The message depends on who writes.** Each period holds a list of messages with the routing engine's own conditions, so "clients" and "this contact in particular" are expressible, not just internal versus external. A period may also **hand the record to a stand-in** and **decline the invitations** that fall inside it — the event is never modified, only your own attendee answer.

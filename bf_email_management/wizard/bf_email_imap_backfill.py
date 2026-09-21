@@ -89,9 +89,7 @@ class BfEmailImapBackfill(models.TransientModel):
             return self._reopen()
 
         try:
-            conn = bf_email_imap.open_connection(
-                account.host, account.port, account.login, account.password,
-            )
+            conn = account._ouvrir_imap()
         except bf_email_imap.ImapConnectionError as exc:
             self.write({
                 "state": "done",

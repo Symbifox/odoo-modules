@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bf_email_account_setup_view_form" model="ir.ui.view">
+        <field name="name">bf.email.account.setup.form</field>
+        <field name="model">bf.email.account.setup</field>
+        <field name="arch" type="xml">
+            <form string="Ajouter une boîte courriel">
+                <field name="state" invisible="1"/>
+                <field name="auth_mode" invisible="1"/>
+                <field name="oauth_provider" invisible="1"/>
+                <field name="oauth_pret" invisible="1"/>
+                <field name="provider_code" invisible="1"/>
+                <field name="account_id" invisible="1"/>
+
+                <group invisible="state != 'saisie'">
+                    <div class="text-muted mb-3" colspan="2">
+                        Entrez votre adresse : le serveur, le port et la façon
+                        de s'y connecter se trouvent tout seuls dans la plupart
+                        des cas.
+                    </div>
+                    <field name="email" placeholder="vous@exemple.com"/>
+                    <field name="name" placeholder="Laisser vide pour prendre l'adresse"/>
+                </group>
+
+                <div invisible="state in ('saisie', 'fini')">
+                    <field name="message" nolabel="1" readonly="1"/>
+                </div>
+
+                <group invisible="state not in ('detecte', 'manuel')">
+                    <group string="Réception">
+                        <field name="imap_host" required="state in ('detecte', 'manuel')"/>
+                        <field name="imap_port"/>
+                        <field name="imap_security"/>
+                    </group>
+                    <group string="Envoi">
+                        <field name="smtp_host"/>
+                        <field name="smtp_port"/>
+                        <field name="smtp_security"/>
+                    </group>
+                </group>
+
+                <group invisible="state not in ('detecte', 'manuel') or auth_mode == 'oauth'">
+                    <field name="password" password="True"
+                           required="state in ('detecte', 'manuel') and auth_mode != 'oauth'"/>
+                </group>
+
+                <div class="alert alert-success" role="status" invisible="state != 'fini'">
+                    La boîte est branchée. Le courrier des sept derniers jours
+                    arrivera à la prochaine passe ; pour remonter plus loin,
+                    utilisez « Import initial » depuis la fiche du compte.
+                </div>
+
+                <footer>
+                    <button name="action_detecter" type="object" string="Détecter"
+                            class="btn-primary" invisible="state != 'saisie'"/>
+                    <button name="action_brancher" type="object" string="Brancher"
+                            class="btn-primary"
+                            invisible="state not in ('detecte', 'manuel') or auth_mode == 'oauth'"/>
+                    <button name="action_lier_oauth" type="object"
+                            string="Lier le compte chez le fournisseur"
+                            class="btn-primary"
+                            invisible="auth_mode != 'oauth' or not oauth_pret"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_email_account_setup_action" model="ir.actions.act_window">
+        <field name="name">Ajouter une boîte courriel</field>
+        <field name="res_model">bf.email.account.setup</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_bf_email_account_setup"
+              name="Ajouter une boîte courriel"
+              parent="menu_bf_email_config"
+              action="bf_email_account_setup_action"
+              sequence="0"/>
+
+    <!-- Page de retour du fournisseur OAuth : elle ne sert que les cas où
+         quelque chose n'a PAS marché, le succès redirigeant vers la fiche. -->
+    <template id="oauth_retour" name="Retour d'autorisation courriel">
+        <t t-call="web.frontend_layout">
+            <div class="container my-5" style="max-width: 44rem;">
+                <h3 t-esc="titre"/>
+                <p style="white-space: pre-line;" t-esc="message"/>
+                <a class="btn btn-primary" href="/odoo">Retour à Symbifox</a>
+            </div>
+        </t>
+    </template>
+
+</odoo>

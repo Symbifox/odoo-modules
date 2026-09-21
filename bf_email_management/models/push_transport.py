@@ -293,7 +293,9 @@ class BfEmailUnifiedPush(models.AbstractModel):
         ⚠️ The app rejects an undecrypted message of a listed type, so a type
         only belongs here once it really goes through ``_send``.
         """
-        return ["mail", "mail_clear", "mail_clear_all"]
+        # "wake": the offboarding killswitch's nudge (offboarding). It goes
+        # out through ``_envoyer_a`` like every other type here.
+        return ["mail", "mail_clear", "mail_clear_all", "wake"]
 
     @api.model
     def _post(self, endpoint, payload, p256dh=None, auth=None):
@@ -321,7 +323,17 @@ class BfEmailUnifiedPush(models.AbstractModel):
         Encrypted for each device that carries both keys, clear for the others:
         one person's two phones may run two versions of the app.
         """
-        for dev in self._devices(owner):
+        return self._envoyer_a(self._devices(owner), payload)
+
+    @api.model
+    def _envoyer_a(self, appareils, payload):
+        """Same thing, to NAMED devices.
+
+        Split out of ``_send`` for the killswitch: revoking one phone from "My
+        devices" must wake that phone, not the person's three others, which
+        still work.
+        """
+        for dev in appareils:
             # Re-checked at send time, not only at registration: DNS can be
             # repointed at an internal address after the endpoint was stored.
             if not safe_push_endpoint(dev.push_endpoint):
@@ -392,6 +404,54 @@ class BfEmailUnifiedPush(models.AbstractModel):
                     "thread_key": rec._mobile_thread_key(),
                     "account_id": rec.account_id.id or False,
                 })
+
+    @api.model
+    def _reveiller(self, appareils):
+        """"Come talk to me." Nothing else.
+
+        🔴 The message does NOT carry the order to wipe, and that is the whole
+        design. A UnifiedPush endpoint is a URL: whoever has seen it go by can
+        POST to it. A push saying "wipe yourself" would be a remote wipe handed
+        to anyone who knows the endpoint, on the phone of someone who still
+        works here. This one only says "call the server back", and it is the
+        server's ANSWER, a 401, that cuts. A forged wake therefore costs one
+        pointless HTTP call.
+
+        ⚠️ A device with no WebPush keys (app <= 2.41.0) will reject this
+        message, since "wake" is announced as always encrypted. It simply is
+        not woken, and the 401 on its next call cuts it: a degradation, not a
+        failure.
+        """
+        if not appareils:
+            return
+        # ⚠️ The wake honours the tenant's push switch like everything else.
+        # The killswitch's two other triggers (the 401 on the next call, the
+        # local expiry) depend on no setting and cover the case.
+        if not _truthy(self.env["ir.config_parameter"].sudo().get_param(
+                "bf_email.push_enabled"), defaut=True):
+            _logger.info("Killswitch: wake not pushed, push is off on this tenant.")
+            return
+        vivants = appareils.filtered(lambda d: d.push_endpoint)
+        if not vivants:
+            return
+        _logger.info("Killswitch: wake pushed to %d device(s).", len(vivants))
+        self._envoyer_a(vivants, {"type": "wake"})
+
+    @api.model
+    def _reveiller_les_appareils_de(self, usagers):
+        """Wake every paired device of these people.
+
+        ⚠️ Read in sudo and WITHOUT ``_devices``: that helper is scoped to one
+        owner one can read, and the call comes from an archiving that someone
+        else may be performing.
+        """
+        if not usagers:
+            return
+        appareils = self.env["bf.email.mobile.device"].sudo().search([
+            ("user_id", "in", usagers.ids), ("active", "=", True),
+            ("push_endpoint", "!=", False),
+        ])
+        self._reveiller(appareils)
 
     @api.model
     def _notify_clear(self, owner, email_id):

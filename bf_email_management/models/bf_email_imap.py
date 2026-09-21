@@ -8,10 +8,12 @@ ingestion path on the Odoo side stays consistent with the CLI tool.
 import base64
 import email
 import email.policy
+import fnmatch
 import html as html_mod
 import imaplib
 import logging
 import re
+import socket
 import ssl
 from email.utils import parseaddr, parsedate_to_datetime
 
@@ -21,10 +23,60 @@ _logger = logging.getLogger(__name__)
 # Folders the live cron polls. Backfill wizard targets a single folder.
 DEFAULT_LIVE_FOLDERS = ("INBOX", "Sent")
 
-# Folders we never poll: trash / drafts / junk produce noise.
+# Folders we never poll: trash / drafts / junk produce noise. Les alias
+# français sont là parce qu'un serveur peut les servir localisés (Migadu
+# sert « Brouillons » à côté de « Drafts » sur la même boîte).
 EXCLUDED_FOLDER_PATTERNS = re.compile(
-    r"^(Trash|Junk|Drafts|Spam)(/|$)", re.IGNORECASE
+    r"^(Trash|Junk|Drafts|Spam|Corbeille|Brouillons|Ind[ée]sirables|Pourriels)"
+    r"(/|$)",
+    re.IGNORECASE,
 )
+
+# Dossiers exclus de la réconciliation par défaut, en plus du motif dur.
+# Motifs ``fnmatch``, insensibles à la casse, surchargeables par l'ICP
+# ``bf_email.reconcile_exclude``.
+DEFAULT_RECONCILE_EXCLUDE = "Templates,Snoozed,Migadu Backups"
+
+# 🔴 Attributs d'usage spécial que la réconciliation ne relit jamais.
+# ``\All`` est le piège coûteux : sur Gmail, `[Gmail]/All Mail` contient
+# TOUT le compte — 55 812 messages sur une boîte cliente mesurée le
+# 2026-09-20 — et le même message y reparaît sous chacune de ses étiquettes.
+# Le dédoublonnage par Message-ID évite les doublons en base, pas le coût :
+# la passe tourne aux six heures. ``\Flagged`` et ``\Important`` sont des
+# vues de Gmail sur des messages qui vivent ailleurs, jamais un rangement.
+EXCLUDED_SPECIAL_USE = {
+    "\\all", "\\junk", "\\trash", "\\drafts", "\\flagged", "\\important",
+}
+
+# Et son inverse : le dossier des envoyés, quel que soit son nom. Sans lui,
+# `DEFAULT_LIVE_FOLDERS` cherche « Sent », que Gmail appelle
+# `[Gmail]/Sent Mail` — le journal dit « folder 'Sent' not selectable,
+# skipping » et le côté envoyé reste muet, mesuré sur deux comptes réels.
+SENT_SPECIAL_USE = "\\sent"
+
+
+def folder_is_excluded(name, patterns=()):
+    """Vrai quand la réconciliation ne doit pas relire ce dossier.
+
+    Deux filtres, et ils ne servent pas la même chose. ``EXCLUDED_FOLDER_``
+    ``PATTERNS`` couvre ce qui est du bruit par construction : corbeille,
+    brouillons, indésirables. La liste ``patterns`` vient de la configuration
+    et couvre ce qui dépend du serveur ou du moment — « Migadu Backups », un
+    dossier d'essai « rtqa* » laissé par un banc.
+
+    ⚠️ Ne jamais y mettre un dossier d'archive : c'est précisément là que
+    dorment les messages qu'aucune passe n'a captés.
+    """
+    if not name:
+        return True
+    if EXCLUDED_FOLDER_PATTERNS.match(name):
+        return True
+    low = name.lower()
+    for pattern in patterns:
+        pattern = (pattern or "").strip().lower()
+        if pattern and fnmatch.fnmatch(low, pattern):
+            return True
+    return False
 
 
 class ImapConnectionError(Exception):
@@ -73,20 +125,87 @@ def imap_uid_token(uid):
     return text
 
 
-def open_connection(host, port, user, password, timeout=30):
+def _texte_de_l_erreur(exc):
+    """Le message du serveur, lisible par un humain.
+
+    ``str()`` d'une erreur ``imaplib`` rend une chaîne d'OCTETS : le
+    ``b'...'`` se retrouvait tel quel dans ``last_error`` et dans la fenêtre
+    « Tester la connexion ». Vu en production sur le compte d'André Roy chez
+    un locataire réel, en erreur depuis quatre mois. """
+    if isinstance(exc, imaplib.IMAP4.error) and exc.args:
+        premier = exc.args[0]
+        if isinstance(premier, bytes):
+            return premier.decode("utf-8", "replace")
+        return str(premier)
+    return str(exc)
+
+
+def hote_est_joignable(host):
+    """Rend ``(permis, motif)`` pour un hôte de serveur de courriel.
+
+    🔴 Sans cette garde, l'assistant et le bouton « Tester la connexion » sont
+    un scanner de réseau interne offert à tout usager interne : les deux
+    passent l'hôte ET le port saisis à `open_connection`, et le refus distingue
+    un port fermé d'un port ouvert. Mesuré en production le 2026-09-20,
+    depuis un compte employé ordinaire :
+
+        <base interne>:5432   -> [SSL: UNEXPECTED_EOF_WHILE_READING]   (ouvert)
+        <base interne>:5433   -> [Errno 111] Connection refused        (fermé)
+        127.0.0.1:<port web>  -> [SSL: WRONG_VERSION_NUMBER]           (HTTP)
+
+    Le message nomme donc le service. On refuse tout ce qui ne résout pas vers
+    une adresse publique ; les hôtes réellement employés en production
+    sont tous publics, vérifié avant de poser la garde.
+    """
+    from .push_transport import _host_is_public  # import local : pas de cycle
+    if not host or not isinstance(host, str):
+        return False, "aucun serveur"
+    if _host_is_public(host):
+        return True, ""
+    try:
+        socket.getaddrinfo(host, None)
+    except (socket.gaierror, UnicodeError):
+        return False, "introuvable"
+    return False, "interne"
+
+
+def open_connection(host, port, user, password=None, timeout=30, xoauth2=None,
+                    autoriser_hote_interne=False):
     """Open an authenticated IMAP4_SSL connection.
 
     Caller is responsible for ``logout()``. We deliberately do not return
-    a context manager — Odoo cron methods commit between batches and we
+    a context manager - Odoo cron methods commit between batches and we
     keep the connection alive across them.
+
+    ``xoauth2`` : chaîne SASL déjà encodée en base64
+    (``bf.email.oauth.chaine_xoauth2``). Quand elle est fournie, le mot de
+    passe est ignoré et la session s'authentifie par
+    ``AUTHENTICATE XOAUTH2``, seul mécanisme accepté par Microsoft depuis la
+    fin de l'authentification de base.
     """
+    if not autoriser_hote_interne:
+        permis, motif = hote_est_joignable(host)
+        if not permis:
+            raise ImapConnectionError(
+                f"IMAP refusé pour {host} : serveur {motif}. Un serveur de "
+                f"courriel doit être joignable sur l'Internet public."
+                if motif == "interne" else
+                f"IMAP refusé pour {host} : serveur {motif}.")
     try:
         ctx = ssl.create_default_context()
         conn = imaplib.IMAP4_SSL(host, int(port), ssl_context=ctx, timeout=timeout)
-        conn.login(user, password)
+        if xoauth2:
+            # imaplib encode lui-même en base64 ce que rend le callback, donc
+            # on lui redonne les octets bruts de la chaîne SASL.
+            brut = base64.b64decode(xoauth2)
+            conn.authenticate("XOAUTH2", lambda _defi: brut)
+        else:
+            conn.login(user, password)
         return conn
     except (imaplib.IMAP4.error, OSError) as exc:
-        raise ImapConnectionError(f"IMAP login failed for {user}@{host}: {exc}") from exc
+        raise ImapConnectionError(
+            f"IMAP login failed for {user} on {host}: {_texte_de_l_erreur(exc)}"
+        ) from exc
 
 
 def select_folder(conn, folder, readonly=True):
@@ -464,5 +583,17 @@ def list_folders(conn):
             "delimiter": delimiter,
             "has_children": "\\HasChildren" in flags,
             "noselect": "\\Noselect" in flags or "\\NonExistent" in flags,
+            # Attributs d'usage spécial (RFC 6154 et les extensions Gmail).
+            # C'est la seule façon de reconnaître le dossier « envoyés » ou
+            # la corbeille sur un serveur qui les nomme dans sa langue, ou
+            # entre crochets comme Gmail. Les noms en dur ne suffisent pas.
+            "special": sorted(
+                tok for tok in flags.split()
+                if tok.startswith("\\") and tok.lower() not in (
+                    "\\haschildren", "\\hasnochildren",
+                    "\\noselect", "\\nonexistent", "\\noinferiors",
+                    "\\marked", "\\unmarked", "\\subscribed",
+                )
+            ),
         })
     return out

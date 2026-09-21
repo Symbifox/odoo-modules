@@ -48,9 +48,7 @@ def _open_account_conn(account):
             "Le compte « %s » n'a pas d'identifiants valides.",
             account.name,
         ))
-    return bf_email_imap.open_connection(
-        account.host, account.port, account.login, account.password,
-    )
+    return account._ouvrir_imap()
 
 
 class BfEmailBrowser(models.TransientModel):

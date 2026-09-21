@@ -73,6 +73,35 @@
                             <field name="bf_email_dnd_enabled"/>
                         </setting>
                     </block>
+                    <block title="Comptes OAuth (Microsoft, Google)"
+                           name="bf_email_oauth_block">
+                        <div class="text-muted mb-3">
+                            Microsoft refuse tout mot de passe sur IMAP depuis
+                            la fin de l'authentification de base : son serveur
+                            r&#233;pond &#171;&#160;Basic authentication is disabled&#160;&#187;.
+                            Sans inscription d'application ici, aucune bo&#238;te
+                            Microsoft ne peut &#234;tre branch&#233;e. Chez Google, le mot
+                            de passe d'application suffit et reste le chemin
+                            recommand&#233;.
+                        </div>
+                        <setting id="bf_email_oauth_redirect_setting"
+                                 string="URL de retour &#224; d&#233;clarer"
+                                 help="&#192; coller telle quelle dans l'inscription d'application, chez Microsoft comme chez Google.">
+                            <field name="bf_email_oauth_redirect_uri" readonly="1"/>
+                        </setting>
+                        <setting id="bf_email_oauth_microsoft_setting"
+                                 string="Microsoft (Entra)"
+                                 help="Autorisations d&#233;l&#233;gu&#233;es&#160;: IMAP.AccessAsUser.All, SMTP.Send, offline_access.">
+                            <field name="bf_email_oauth_microsoft_client_id"/>
+                            <field name="bf_email_oauth_microsoft_client_secret" password="True"/>
+                        </setting>
+                        <setting id="bf_email_oauth_google_setting"
+                                 string="Google"
+                                 help="Facultatif. La port&#233;e mail.google.com est restreinte&#160;: au-del&#224; de cent usagers, Google exige une &#233;valuation de s&#233;curit&#233; CASA, factur&#233;e chaque ann&#233;e.">
+                            <field name="bf_email_oauth_google_client_id"/>
+                            <field name="bf_email_oauth_google_client_secret" password="True"/>
+                        </setting>
+                    </block>
                 </app>
             </xpath>
         </field>

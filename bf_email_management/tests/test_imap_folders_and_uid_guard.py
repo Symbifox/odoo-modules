@@ -541,7 +541,12 @@ class TestSweepAcrossMailboxes(MobileApiCase):
         self.box_a = FakeImap(inbox={"4242": self.inbound.message_id_header})
         self.box_b = FakeImap(mailboxes={"Archive": {"1715": self.inbound.message_id_header}})
 
-    def _dispatch(self, host, port, login, password, timeout=30):
+    def _dispatch(self, host, port, login, password, timeout=30, **kw):
+        # ⚠️ `**kw` n'est pas de la complaisance : un montage qui fige la
+        # signature de `open_connection` casse à chaque mot-clé ajouté au
+        # vrai appelant, et fait passer une amélioration pour une régression.
+        # Vu deux fois en une soirée (`xoauth2`, puis
+        # `autoriser_hote_interne`).
         return self.box_b if "bonjour" in login else self.box_a
 
     def _sweep(self, **kw):
