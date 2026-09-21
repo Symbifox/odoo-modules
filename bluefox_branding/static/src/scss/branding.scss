@@ -418,13 +418,13 @@ body.bg-dark,
 }
 
 // ---------------------------------------------------------------------------
-// Ce qui est POSÉ sur la barre du site — 2026-09-18.
+// Ce qui est POSÉ sur la barre du site — 2026-09-18, reporté le 2026-09-21.
 //
 // La règle juste au-dessus peint l'en-tête de tout site avec la couleur sombre
 // de la marque. Odoo, lui, laisse cet en-tête en thème CLAIR : `navbar-light`,
-// liens à `rgba(0, 0, 0, .65)` et logo en couleur. Peindre le fond sans
-// repeindre ce qu'il porte donne un menu noir sur fond sombre, donc illisible,
-// et un logo foncé qui disparaît.
+// liens à `rgba(0, 0, 0, .65)`, séparateurs à `rgba(0, 0, 0, .1)` et logo en
+// couleur. Peindre le fond sans repeindre ce qu'il porte donne un menu noir sur
+// fond sombre, donc illisible, et un logo foncé qui disparaît.
 //
 // 🔴 Mesuré le 2026-09-18 sur la démonstration publique : sept liens en
 // `rgb(0, 0, 0)` sur le marine #071B4A, et aucun filtre sur le logo. Le défaut
@@ -432,9 +432,36 @@ body.bg-dark,
 // d'être ramené ici, où il naît : c'est ce module qui peint la barre, donc
 // c'est lui qui doit peindre ce qui est dessus.
 //
-// ⚠️ Sélecteurs en enfants directs de `.o_main_nav` : le tiroir du menu mobile
-// (`.offcanvas`) vit DANS la barre mobile, sur fond blanc, et doit garder son
-// texte foncé.
+// 🔴 La première écriture bornait la portée aux enfants DIRECTS de
+// `.o_main_nav`. Odoo compte douze gabarits d'en-tête ; trois seulement posent
+// la marque et les `ul.navbar-nav` en enfants directs (« par défaut »,
+// « boîte arrondie », « pleine hauteur »). Sept les imbriquent d'un à trois
+// niveaux (« vertical », « Recherche », « barre latérale », les quatre
+// « ventes »), et deux ne l'étaient qu'à moitié : « hamburger » gardait ses
+// liens desktop non peints, et la barre mobile ne devait de toute façon pas
+// voir son tiroir peint. Les quatre sites vérifiés le 2026-09-18 tenaient tous
+// dans les trois premiers. Mesuré le 2026-09-21 sur
+// le seul site d'un locataire en gabarit « Recherche » : six liens
+// entre 1,46:1 et 1,72:1 sur une barre #09445B, logo à `filter: none`, et les
+// trois séparateurs de la barre en noir 10 % donc invisibles. La portée est
+// maintenant en DESCENDANTS.
+//
+// ⚠️ `:not(.offcanvas *)` sur chaque sélecteur, et non un `>` : le tiroir du
+// menu vit DANS `.o_main_nav` — dans la barre mobile pour la plupart des
+// gabarits, et dans la barre DESKTOP pour « hamburger » et « barre latérale ».
+// Il prend sa couleur de fond de la couleur « menu » du site (`.o_navbar_mobile`
+// dans `website.scss`), pas de la nôtre : blanc chez deux locataires,
+// #212529 chez Blue Fox. Odoo colore son texte en conséquence, et il a raison
+// dans les deux cas. On n'y touche donc jamais. Mesuré : 6,98:1 dans le tiroir
+// avant comme après.
+//
+// ⚠️ Les fonds de pastille, les bordures `o_border_contrast` et les séparateurs
+// `o_header_separator` ne sont PAS peints à la main : on pose les trois jetons
+// qu'Odoo pose lui-même quand la couleur « menu » est sombre (`website.scss`).
+// Les jetons sont posés SUR l'élément qui les consomme et jamais sur un
+// ancêtre : posés sur `.navbar`, ils couleraient dans le tiroir, où un
+// `o_border_contrast` est sorti en blanc sur blanc à la mesure.
+//
 // ⚠️ Le logo est blanchi par filtre plutôt que remplacé : un logo changé depuis
 // le site suit sans retouche. Suppose un logo à fond transparent (un JPEG à fond
 // blanc sortirait en rectangle blanc).
@@ -442,28 +469,42 @@ body.bg-dark,
 // du dessus suppose déjà.
 // ⚠️ Ces sélecteurs n'existent que sur le site : `branding.scss` est chargé dans
 // les deux paquets, et rien ici ne touche le client web.
+//
+// ⚠️ La vraie cause tient plus haut : ce module force la barre en sombre sans le
+// dire à Odoo, qui continue de calculer un en-tête CLAIR. Poser la couleur
+// « menu » du locataire au sombre de la marque ferait appliquer `navbar-dark`
+// par Odoo lui-même, et rendrait tout ce bloc inutile. Napkin ouvert.
 // ---------------------------------------------------------------------------
 
-#wrapwrap > header .navbar > .o_main_nav {
-    > .navbar-brand img { filter: brightness(0) invert(1); }
+#wrapwrap > header .navbar {
+    .o_main_nav {
+        .navbar-brand:not(.offcanvas *) img { filter: brightness(0) invert(1); }
 
-    > .navbar-nav {
-        color: #fff;  // la loupe est en `text-reset` : elle hérite d'ici
+        .navbar-nav:not(.offcanvas *) {
+            color: #fff;  // la loupe et les boutons `text-reset` héritent d'ici
 
-        .nav-link { color: rgba(255, 255, 255, .88); }
-        .nav-link:hover,
-        .nav-link:focus,
-        .nav-link.active { color: #fff; }
+            .nav-link { color: rgba(255, 255, 255, .88); }
+            .nav-link:hover,
+            .nav-link:focus,
+            .nav-link.active { color: #fff; }
 
-        .o_navlink_background { background-color: rgba(255, 255, 255, .12); }
-        .o_navlink_background:hover { background-color: rgba(255, 255, 255, .22); }
+            .o_nav_link_btn { border-color: rgba(255, 255, 255, .55) !important; }
+            .o_nav_link_btn:hover { background-color: rgba(255, 255, 255, .10); }
+        }
 
-        .o_nav_link_btn { border-color: rgba(255, 255, 255, .55) !important; }
-        .o_nav_link_btn:hover { background-color: rgba(255, 255, 255, .10); }
+        .navbar-toggler:not(.offcanvas *) .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
     }
 
-    > .o_header_mobile_buttons_wrap .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    // Les jetons d'Odoo, posés sur le consommateur — voir la note ci-dessus.
+    .o_navlink_background:not(.offcanvas *),
+    .o_navlink_background_hover:not(.offcanvas *),
+    .o_border_contrast:not(.offcanvas *),
+    .o_header_separator:not(.offcanvas *) {
+        --NavLinkWithBackground-bg-color: rgba(255, 255, 255, .12);
+        --NavLinkWithBackground-bg-color--hover: rgba(255, 255, 255, .22);
+        --HeaderSeparator-bg-color: rgba(255, 255, 255, .15);
     }
 }
 
