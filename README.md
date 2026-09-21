@@ -168,7 +168,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_federation_discuss` | Fédération : canal de discussion | 18.0.1.1.1 | BUSL-1.1 | Un canal Discuss par objet fédéré, adossé au chatter qui fait foi |
 | `bf_federation_document` | Fédération : livrables remis | 18.0.1.2.2 | BUSL-1.1 | Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu |
 | `bf_federation_gantt` | Fédération : échéanciers | 18.0.1.0.1 | BUSL-1.1 | L'échéancier d'un chantier commun vit chez les deux firmes, et une date déplacée l'est des deux côtés |
-| `bf_federation_meeting` | Fédération : ordres du jour | 18.0.1.1.0 | BUSL-1.1 | L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet |
+| `bf_federation_meeting` | Fédération : ordres du jour | 18.0.1.0.1 | BUSL-1.1 | L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet |
 | `bf_federation_outreach` | Fédération : suivis de démarchage | 18.0.1.0.1 | BUSL-1.1 | L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter |
 | `bf_federation_process` | Fédération : cartographies | 18.0.1.2.1 | BUSL-1.1 | La cartographie du client vit chez lui, et la version qui suit y arrive toute seule |
 | `bf_federation_timesheet` | Fédération : relevés des heures | 18.0.1.0.1 | BUSL-1.1 | Le relevé des heures d'une période, remis au partenaire comme un livrable, avec son accusé de réception |
