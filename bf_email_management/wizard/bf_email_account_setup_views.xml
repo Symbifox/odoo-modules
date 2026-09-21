@@ -42,6 +42,7 @@
 
                 <group invisible="state not in ('detecte', 'manuel') or auth_mode == 'oauth'">
                     <field name="password" password="True"
+                           placeholder="Mot de passe d'application"
                            required="state in ('detecte', 'manuel') and auth_mode != 'oauth'"/>
                 </group>
 

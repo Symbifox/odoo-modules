@@ -165,15 +165,18 @@ class BfEmailAccountSetup(models.TransientModel):
         """
         if valeurs["state"] == "manuel":
             return _(
-                "<p>Aucune configuration publiée pour ce domaine. Ce n'est "
-                "pas rare : quatre domaines sur cinquante-trois n'en "
+                "<p>Aucune configuration publiée pour <b>%(adresse)s</b>. Ce "
+                "n'est pas rare : quatre domaines sur cinquante-trois n'en "
                 "publient aucune. Entrez le serveur à la main, votre "
-                "fournisseur le donne dans son aide.</p>")
+                "fournisseur le donne dans son aide.</p>",
+                adresse=valeurs.get("email") or self.email or "")
         libelle = valeurs.get("provider_label") or _("ce domaine")
         entete = _(
-            "<p>Trouvé en %(ms)s ms : <b>%(hote)s:%(port)s</b> (%(voie)s).</p>",
-            ms=valeurs["duree_ms"], hote=valeurs["imap_host"],
-            port=valeurs["imap_port"], voie=self._nom_de_la_voie(valeurs["source"]))
+            "<p>Pour <b>%(adresse)s</b> : trouvé en %(ms)s ms, "
+            "<b>%(hote)s:%(port)s</b> (%(voie)s).</p>",
+            adresse=valeurs["email"], ms=valeurs["duree_ms"],
+            hote=valeurs["imap_host"], port=valeurs["imap_port"],
+            voie=self._nom_de_la_voie(valeurs["source"]))
         if valeurs["auth_mode"] == "oauth":
             suite = _(
                 "<p><b>%(f)s n'accepte aucun mot de passe</b>, ni celui du "
@@ -338,8 +341,11 @@ class BfEmailAccountSetup(models.TransientModel):
         }
 
     def _rouvrir(self):
+        # ⚠️ `name` n'est pas décoratif : une action qui n'en porte pas fait
+        # titrer le dialogue « Odoo ». Vu sur une capture destinée au guide.
         return {
             "type": "ir.actions.act_window",
+            "name": _("Ajouter une boîte courriel"),
             "res_model": self._name,
             "res_id": self.id,
             "view_mode": "form",

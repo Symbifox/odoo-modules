@@ -323,6 +323,29 @@ class TestAssistant(TransactionCase):
         with self.assertRaises(UserError):
             assistant.action_lier_oauth()
 
+
+    def test_le_dialogue_porte_un_titre_et_nomme_l_adresse(self):
+        """🔴 Deux défauts vus sur une capture destinée au guide public.
+
+        Une action sans `name` fait titrer le dialogue « Odoo », et l'écran
+        de détection montrait des serveurs sans jamais redire de quelle
+        adresse il parlait. Les deux sautent aux yeux en image et à personne
+        en lisant le code.
+        """
+        assistant = self._assistant(email="moi@chez-nous.test")
+        faux = {"adresse": "moi@chez-nous.test", "domaine": "chez-nous.test",
+                "source": "empreinte_mx", "fournisseur": "migadu",
+                "libelle_fournisseur": "Migadu",
+                "imap": {"host": "imap.migadu.com", "port": 993, "socket": "SSL"},
+                "smtp": {"host": "smtp.migadu.com", "port": 465, "socket": "SSL"},
+                "auth": "password", "oauth": False, "aide_url": False,
+                "duree_ms": 305, "essais": [], "mx": []}
+        with patch("odoo.addons.bf_email_management.models.bf_email_autoconfig."
+                   "BfEmailAutoconfig.decouvrir", lambda self_, a: faux):
+            action = assistant.action_detecter()
+        self.assertTrue(action.get("name"), "le dialogue retomberait sur « Odoo »")
+        self.assertIn("moi@chez-nous.test", assistant.message)
+
     def test_un_domaine_muet_bascule_a_la_saisie_manuelle(self):
         assistant = self._assistant(email="moi@muet.test")
         vide = {"adresse": "moi@muet.test", "domaine": "muet.test",

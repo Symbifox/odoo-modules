@@ -4,6 +4,18 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.41.3] - 2026-09-21
+
+### Fixed
+
+- Le dialogue de l'assistant s'intitulait « Odoo » : une action de fenêtre
+  sans `name` fait retomber Odoo sur le nom du produit. Vu sur une capture
+  destinée au guide, pas en relisant le code.
+- L'écran de détection montrait des serveurs sans jamais redire **de quelle
+  adresse** il parlait. Il la nomme désormais, y compris quand aucune
+  configuration n'est publiée pour le domaine.
+- Le champ de mot de passe porte un repère visible dans le dialogue.
+
 ## [18.0.11.41.2] - 2026-09-21
 
 ### Security
