@@ -4,6 +4,17 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.41.4] - 2026-09-21
+
+### Fixed
+
+- 🔴 L'URL de retour à déclarer restait **vide** dans l'écran des réglages.
+  C'était un champ calculé non stocké, et ce formulaire travaille sur un
+  enregistrement jamais créé : le client lit `default_get`, qui ne déclenche
+  aucun calcul. La valeur se lisait parfaitement en `web_read` et ne
+  s'affichait nulle part, donc personne ne pouvait déclarer l'inscription
+  d'application sans aller lire le code.
+
 ## [18.0.11.41.3] - 2026-09-21
 
 ### Fixed

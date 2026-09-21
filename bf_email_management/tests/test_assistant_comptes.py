@@ -672,6 +672,21 @@ class TestSecurite(TransactionCase):
                       " ".join(sql_joue),
                       "l'effacement n'a pas été écrit hors de la transaction")
 
+
+    def test_l_url_de_retour_parait_dans_les_reglages(self):
+        """🔴 Un `compute` non stocké est VIDE dans l'écran des réglages.
+
+        Ce formulaire travaille sur un enregistrement jamais créé : le client
+        lit `default_get`, qui ne déclenche aucun calcul. La valeur se lisait
+        parfaitement par `web_read`, et l'écran restait vide. Sans cette URL,
+        personne ne peut déclarer l'inscription d'application.
+        """
+        defauts = self.env["res.config.settings"].default_get(
+            ["bf_email_oauth_redirect_uri"])
+        self.assertIn("/bf_email/oauth/retour",
+                      defauts.get("bf_email_oauth_redirect_uri") or "",
+                      "l'URL de retour ne parvient pas au formulaire")
+
     def test_un_etat_oauth_perime_est_refuse(self):
         """🔴 Un état sans borne de temps se rejoue des mois plus tard."""
         compte = self.env["bf.email.account"].create({

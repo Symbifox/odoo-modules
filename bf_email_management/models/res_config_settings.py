@@ -204,18 +204,19 @@ class ResConfigSettings(models.TransientModel):
         string="Google : secret d'application",
         config_parameter="bf_email.oauth_google_client_secret",
     )
+    # 🔴 Un `compute` non stocké reste VIDE dans cet écran. Le formulaire des
+    # réglages travaille sur un enregistrement jamais créé : le client lit
+    # `default_get`, qui ne déclenche aucun calcul. La valeur se lisait
+    # parfaitement en `web_read` et ne s'affichait nulle part. Un `default`,
+    # lui, passe par `default_get`.
     bf_email_oauth_redirect_uri = fields.Char(
         string="URL de retour à déclarer",
-        compute="_compute_bf_email_oauth_redirect_uri",
+        readonly=True,
+        default=lambda self: self.env["bf.email.oauth"]._uri_de_retour(),
         help="À coller telle quelle dans l'inscription d'application. Une "
              "URL de retour qui ne correspond pas au caractère près fait "
              "échouer le consentement avant même l'écran de connexion.",
     )
-
-    def _compute_bf_email_oauth_redirect_uri(self):
-        uri = self.env["bf.email.oauth"]._uri_de_retour()
-        for reglage in self:
-            reglage.bf_email_oauth_redirect_uri = uri
 
     def action_bf_email_refresh_imap_folders(self):
         """Relever tout de suite les dossiers de mes comptes IMAP.

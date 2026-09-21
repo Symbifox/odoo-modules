@@ -152,7 +152,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.1 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
-| `bf_email_management` | Gestion des courriels | 18.0.11.41.3 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_management` | Gestion des courriels | 18.0.11.41.4 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
 | `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.1.1 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.1 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
@@ -168,7 +168,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_federation_discuss` | Fédération : canal de discussion | 18.0.1.1.1 | BUSL-1.1 | Un canal Discuss par objet fédéré, adossé au chatter qui fait foi |
 | `bf_federation_document` | Fédération : livrables remis | 18.0.1.2.2 | BUSL-1.1 | Remettre un document à un pair fédéré, daté et versionné, et savoir qu'il l'a lu |
 | `bf_federation_gantt` | Fédération : échéanciers | 18.0.1.0.1 | BUSL-1.1 | L'échéancier d'un chantier commun vit chez les deux firmes, et une date déplacée l'est des deux côtés |
-| `bf_federation_meeting` | Fédération : ordres du jour | 18.0.1.0.1 | BUSL-1.1 | L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet |
+| `bf_federation_meeting` | Fédération : ordres du jour | 18.0.1.1.0 | BUSL-1.1 | L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet |
 | `bf_federation_outreach` | Fédération : suivis de démarchage | 18.0.1.0.1 | BUSL-1.1 | L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter |
 | `bf_federation_process` | Fédération : cartographies | 18.0.1.2.1 | BUSL-1.1 | La cartographie du client vit chez lui, et la version qui suit y arrive toute seule |
 | `bf_federation_timesheet` | Fédération : relevés des heures | 18.0.1.0.1 | BUSL-1.1 | Le relevé des heures d'une période, remis au partenaire comme un livrable, avec son accusé de réception |
@@ -276,7 +276,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_training_sign` | Registre de formation : accusé signé par module | 18.0.1.0.0 | BUSL-1.1 | Lire une politique et le confirmer par écrit devient une ligne du registre, datée et rattachée à la version lue |
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.1 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
-| `bluefox_branding` | Symbifox Branding | 18.0.3.21.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
+| `bluefox_branding` | Symbifox Branding | 18.0.3.22.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.16.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.2.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
