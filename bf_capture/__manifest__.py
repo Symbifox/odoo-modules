@@ -1,12 +1,15 @@
 {
     "name": "Captation audio",
-    "version": "18.0.1.2.1",
+    "version": "18.0.1.2.2",
     "category": "Productivity",
     "summary": "Enregistrer une rencontre ou un mémo depuis le téléphone, et le déposer là où la suite est déjà automatique",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "Other proprietary",
-    "application": False,
+    # Une application : le module porte sa propre surface (l'écran mobile et la
+    # page installable), pas seulement une extension d'un écran existant. C'est
+    # aussi ce qui lui donne sa tuile au catalogue, avec son icône.
+    "application": True,
     "installable": True,
     "auto_install": False,
     # `calendar` pour nommer d'après l'événement, la passerelle Nextcloud pour
