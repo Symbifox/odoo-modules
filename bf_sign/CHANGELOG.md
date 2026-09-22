@@ -2,6 +2,59 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.26.1
+
+- 🔴 Correctif de la 26.0 : la page de signature montrait le pavé sur son numéro
+  d'ORIGINE alors que le scellement le posait sur la page résolue. Un pavé ancré
+  « dernière page » s'affichait page 9 d'un document de 12 : le signataire aurait
+  signé à un endroit et la marque serait tombée ailleurs. Le contrôleur passe
+  désormais la page effective au gabarit du portail.
+
+## 18.0.3.26.0
+
+- 🔴 **Un pavé hors du document n'était pas apposé, et rien ne le disait.**
+  `_stamp_document` parcourt les pages réelles : un pavé visant une page qui
+  n'existe pas n'était jamais atteint. Le document partait signé, scellé et
+  certifié, **sans marque sur le papier**. Mesuré : 0 image apposée là où un
+  pavé valide en appose 1. L'ancrage descend donc sur `bf.sign.field` et se
+  résout **au scellement**, comme `verify_qr_pages` le faisait déjà.
+- 🔴 Corollaire : un document remplacé **après** l'application d'un gabarit
+  suit maintenant l'ancrage, au lieu de rouvrir le défaut d'origine.
+- `action_send` refuse un pavé dont la page dépasse le document, et nomme les
+  pavés fautifs plutôt que de les déplacer en silence.
+- Le bornage se dit : `apply_field_template` rend un compteur `moved` et le
+  placement avertit au lieu d'annoncer un succès vert.
+- Le numéro de page reste **visible** en « Dernière page », en lecture seule :
+  c'est lui qui sert de repli si le document est illisible, et une valeur
+  invisible qui décide est une valeur que personne ne maintient.
+- Plafond de taille rétabli dans `_document_page_count` (retiré à tort la
+  veille en lisant une mutation survivante à l'envers).
+- Deux `ir.rule` de société sur les gabarits de pavés et leurs lignes, que les
+  quatre autres modèles du module avaient déjà.
+
+
+## 18.0.3.25.1
+
+- 🔴 Correctif de la 25.0 : un gabarit enregistré depuis un document d'**une
+  page** ancrait tous ses pavés en « dernière page », faute de pouvoir
+  distinguer « ici parce que c'est le bloc de signature » de « ici parce qu'il
+  n'y a qu'une page ». Le gabarit d'un formulaire d'une page empilait donc ses
+  pavés sur la dernière page du document suivant. L'ancrage exige désormais un
+  document source de plus d'une page.
+- Quatre essais de plus : source d'une page, source de deux pages, bornes basses
+  de `resolve_page`, et rétrocompatibilité d'une ligne sans `page_mode`.
+
+## 18.0.3.25.0
+
+- Les gabarits de pavés savent viser la **dernière page** du document. Un jeu de
+  pavés se réapplique désormais à des documents de longueurs différentes sans
+  se poser au milieu du texte : `page_mode` (« Page fixe » / « Dernière page »)
+  sur la ligne de gabarit, résolu contre le document visé à l'application, et
+  toujours borné à l'intérieur du document.
+- Les gabarits existants restent en « Page fixe » : leur comportement ne change
+  pas.
+
+
 ## 18.0.3.24.7 — Colours follow the document's company
 
 Certificate colours, logo and name read the document's company (`doc.company_id`), not `env.company` — the first allowed company of whoever prints, which painted a second company's certificate in the first one's colours. Placement marker and grid gradient follow the brand variables instead of a fixed blue.

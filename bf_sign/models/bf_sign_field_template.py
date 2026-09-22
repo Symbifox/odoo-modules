@@ -56,6 +56,21 @@ class BfSignFieldTemplateLine(models.Model):
         ],
         string="Type", default="signature", required=True)
     page = fields.Integer(string="Page", default=1, required=True)
+    # 🔴 Un gabarit de pavés se réapplique à des documents de longueurs
+    # DIFFÉRENTES. Les ententes de service de Blue Fox font 9, 11, 12, 36 et
+    # 37 pages : un pavé enregistré « page 9 » se pose au milieu du texte dès
+    # que le document suivant en compte douze. Le bloc de signature, lui, est
+    # toujours à la fin, d'où un ancrage relatif plutôt qu'un numéro absolu.
+    page_mode = fields.Selection(
+        selection=[
+            ("absolute", "Page fixe"),
+            ("last", "Dernière page"),
+        ],
+        string="Ancrage de la page", default="absolute", required=True,
+        help="« Page fixe » applique le numéro de page tel quel. "
+             "« Dernière page » le recalcule sur le document visé, ce qui "
+             "permet de réutiliser le même gabarit sur des documents de "
+             "longueurs différentes.")
     pos_x = fields.Float(default=0.60)
     pos_y = fields.Float(default=0.80)
     width = fields.Float(default=0.25)
@@ -74,3 +89,19 @@ class BfSignFieldTemplateLine(models.Model):
     cell_count = fields.Integer(string="Nombre de cases", default=0)
     option_values = fields.Text(string="Choix offerts")
     sequence = fields.Integer(default=10)
+
+    def resolve_page(self, page_count=None):
+        """Page number this pad lands on for a document of ``page_count`` pages.
+
+        ``page_count`` is None when the target document could not be read: the
+        stored number is then used as-is. A pad is never dropped and never
+        lands outside the document, because a pad that vanishes at apply time
+        is a signature block that nobody notices is missing.
+        """
+        self.ensure_one()
+        page = self.page or 1
+        if self.page_mode == "last" and page_count:
+            page = page_count
+        if page_count:
+            page = max(1, min(page, page_count))
+        return max(1, page)

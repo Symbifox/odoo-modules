@@ -468,6 +468,36 @@ class BfSignRequest(models.Model):
             raise UserError(_("Le PDF est illisible ou endommagé."))
         return raw
 
+    def _document_page_count(self):
+        """Number of pages in the attached document, or None if unreadable.
+
+        Never raises: this is used to place pads, and a placement helper that
+        blows up on a malformed document would block the whole request over a
+        detail the signer never sees. ``_validate_document_pdf`` is the place
+        that refuses a bad PDF, and it runs at send time.
+        """
+        self.ensure_one()
+        if not self.document_file:
+            return None
+        try:
+            # 🔴 Le plafond de taille est une GARDE, pas une ligne morte. Je
+            # l'avais retirée le 2026-09-21 en lisant une mutation survivante
+            # comme « cette ligne ne sert à rien » : c'était l'inverse, un
+            # mutant qui survit demande un essai de plus, pas une défense de
+            # moins. Sans elle, n'importe quel pavé joint fait analyser un
+            # tampon arbitrairement gros par PyPDF2 à chaque application de
+            # gabarit, là où `_validate_document_pdf` refuse le même fichier.
+            from PyPDF2 import PdfReader
+            raw = base64.b64decode(self.document_file)
+            if len(raw) > self._max_document_bytes():
+                return None
+            return len(PdfReader(io.BytesIO(raw)).pages) or None
+        except Exception:
+            _logger.warning(
+                "bf_sign: page count unreadable on request %s; pads keep their "
+                "stored page numbers.", self.name or self.id)
+            return None
+
     def _tsa_enabled(self):
         return self.env["ir.config_parameter"].sudo().get_param("bf_sign.rfc3161_enabled") in (
             "1", "True", "true")
@@ -517,6 +547,25 @@ class BfSignRequest(models.Model):
                         "Ces signataires n'ont aucun pavé sur le document : %s. "
                         "Placez-leur au moins un pavé, ou retirez-les de la demande."
                     ) % ", ".join(orphans.mapped("name")))
+                # 🔴 Un pavé dont la page dépasse le document n'est pas apposé,
+                # et rien ne le dit : le document partirait signé, scellé,
+                # certifié, et SANS marque sur le papier. Le cas s'atteint en
+                # remplaçant le PDF après avoir placé les pavés. Les octets sont
+                # déjà décodés ci-dessus, le contrôle ne coûte rien.
+                from PyPDF2 import PdfReader  # importé localement, comme ailleurs
+                nb_pages = len(PdfReader(io.BytesIO(doc_bytes)).pages)
+                hors = rec.field_ids.filtered(
+                    lambda f: f.page_out_of_range(nb_pages))
+                if hors:
+                    raise UserError(_(
+                        "Le document compte %(n)s page(s), mais ces pavés visent "
+                        "une page qui n'existe pas : %(liste)s. Replacez-les, ou "
+                        "ancrez-les à la dernière page.",
+                        n=nb_pages,
+                        liste=", ".join(
+                            "%s p.%s" % (f.signer_id.name or "?", f.page)
+                            for f in hors),
+                    ))
             rec._ensure_signer_partners()
             rec.hash_original = rec._sha256_hex(doc_bytes)
             if not rec.expiry_date:
@@ -636,16 +685,35 @@ class BfSignRequest(models.Model):
         self.ensure_one()
         return {str(s.id): s._overlay_fields().ids for s in self.signer_ids}
 
-    def save_field_template(self, name):
-        """Save the current pad layout as a reusable template. Returns the id."""
+    def save_field_template(self, name, anchor_last_page=True):
+        """Save the current pad layout as a reusable template. Returns the id.
+
+        Pads that sit on the document's final page are stored as « dernière
+        page » rather than as that absolute number, because the layout is meant
+        to be re-applied to documents of other lengths and the final page is
+        where the signature block lives. Pass ``anchor_last_page=False`` to keep
+        every number absolute.
+        """
         self.ensure_one()
         if not self.field_ids:
             raise UserError(_("Aucun pavé à enregistrer."))
         signers = self.signer_ids.sorted("sequence")
         idx = {s.id: i for i, s in enumerate(signers)}
+        page_count = self._document_page_count() if anchor_last_page else None
         lines = [(0, 0, {
             "signer_index": idx.get(f.signer_id.id, 0),
             "field_type": f.field_type, "page": f.page,
+            # 🔴 `page_count > 1` est la garde qui compte. Sur un document d'UNE
+            # page, tout pavé est « sur la dernière page » par accident, et rien
+            # ne distingue « ici parce que c'est le bloc de signature » de « ici
+            # parce qu'il n'y a qu'une page ». Sans cette garde, le gabarit d'un
+            # formulaire d'une page (NDA court, consentement) empilait TOUS ses
+            # pavés sur la dernière page du document suivant. Mesuré le
+            # 2026-09-21 : 3 pavés de la page 1 atterrissaient page 12.
+            # Indécidable ⇒ on n'invente pas, on garde l'absolu.
+            "page_mode": (
+                "last" if page_count and page_count > 1 and f.page == page_count
+                else "absolute"),
             "pos_x": f.pos_x, "pos_y": f.pos_y, "width": f.width, "height": f.height,
             "fill_mode": f.fill_mode, "required": f.required, "value_text": f.value_text,
             "cell_count": f.cell_count, "option_values": f.option_values,
@@ -670,14 +738,23 @@ class BfSignRequest(models.Model):
         if replace and self.field_ids:
             self.field_ids.unlink()
         Field = self.env["bf.sign.field"]
-        created = skipped = 0
+        # L'ancrage est COPIÉ sur le pavé, pas résolu ici : la résolution
+        # appartient au scellement, contre le document réellement apposé
+        # (`_stamp_document`). `page_count` ne sert plus qu'à prévenir quand un
+        # pavé absolu tombe hors du document visé.
+        page_count = self._document_page_count()
+        created = skipped = moved = 0
         for line in tmpl.line_ids:
             if line.signer_index >= len(signers):
                 skipped += 1
                 continue
+            if page_count and line.page_mode == "absolute" and (line.page or 1) > page_count:
+                moved += 1
             Field.create({
                 "request_id": self.id, "signer_id": signers[line.signer_index].id,
-                "field_type": line.field_type, "page": line.page,
+                "field_type": line.field_type,
+                "page": line.page or 1,
+                "page_mode": line.page_mode,
                 "pos_x": line.pos_x, "pos_y": line.pos_y,
                 "width": line.width, "height": line.height,
                 "fill_mode": line.fill_mode, "required": line.required,
@@ -685,7 +762,7 @@ class BfSignRequest(models.Model):
                 "option_values": line.option_values, "sequence": line.sequence,
             })
             created += 1
-        return {"created": created, "skipped": skipped}
+        return {"created": created, "skipped": skipped, "moved": moved}
 
     def action_cancel(self):
         for rec in self:
@@ -1183,9 +1260,16 @@ class BfSignRequest(models.Model):
 
         reader = PdfReader(io.BytesIO(original_bytes))
         writer = PdfWriter()
+        # 🔴 La page se résout ICI, contre le document réellement apposé, comme
+        # `_qr_pages_for` juste en dessous. Lire `f.page` en direct laissait un
+        # pavé hors document n'être JAMAIS atteint par la boucle des pages :
+        # aucune marque sur le papier, aucune erreur, aucune trace. Mesuré le
+        # 2026-09-21 : un pavé page 12 sur un document de 3 pages apposait
+        # 0 image là où un pavé valide en appose 1.
+        nb_pages = len(reader.pages)
         fields_by_page = {}
         for f in self.field_ids:
-            fields_by_page.setdefault(f.page, []).append(f)
+            fields_by_page.setdefault(f.effective_page(nb_pages), []).append(f)
 
         qr_pages = set()
         if self.verify_qr:

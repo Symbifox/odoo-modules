@@ -148,4 +148,23 @@
         </record>
 
     </data>
+        <!-- 🔴 Les quatre autres modèles du module portent une cloison de
+             sociétés ; les gabarits de pavés n'en avaient aucune, alors que le
+             CSV leur donne CRUD complet. Un gabarit est réutilisable d'un
+             document à l'autre, donc d'une société à l'autre si rien ne le
+             borne. Même forme que les règles ci-dessus. -->
+        <record id="rule_bf_sign_field_template_company" model="ir.rule">
+            <field name="name">Modèle de pavés : société</field>
+            <field name="model_id" ref="model_bf_sign_field_template"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_bf_sign_field_template_line_company" model="ir.rule">
+            <field name="name">Pavé de modèle : société</field>
+            <field name="model_id" ref="model_bf_sign_field_template_line"/>
+            <field name="domain_force">['|', ('template_id.company_id', '=', False), ('template_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
 </odoo>

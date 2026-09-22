@@ -10,9 +10,9 @@ _FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures")
 from odoo import fields
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
-from odoo.tools.pdf import PdfReader
 
 from .common import BaseNeuve
+from odoo.tools.pdf import PdfReader
 
 _PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 
@@ -532,6 +532,271 @@ class TestBfSign(BaseNeuve, TransactionCase):
         self.assertEqual(len(dst.field_ids), 1)
         dst.apply_field_template(tid)  # replace=True clears then recreates
         self.assertEqual(len(dst.field_ids), 1)
+
+    # ── field-layout templates : ancrage de page ────────────────────────────────
+    def _request_of(self, pages, signers=1):
+        """A request whose document really has ``pages`` pages."""
+        req = self.Request.create({
+            "document_file": base64.b64encode(self._make_pdf(pages=pages)),
+            "document_filename": "doc%dp.pdf" % pages,
+            "signing_order": "parallel",
+        })
+        for i in range(signers):
+            self.Signer.create({
+                "request_id": req.id, "name": "Signer %d" % i,
+                "email": "signer%d@example.com" % i, "sequence": 10 + i,
+            })
+        return req
+
+    def test_document_page_count_reads_the_real_document(self):
+        self.assertEqual(self._request_of(7)._document_page_count(), 7)
+
+    def test_document_page_count_none_when_unreadable(self):
+        req = self._request_of(3)
+        req.document_file = base64.b64encode(b"ceci n'est pas un PDF")
+        self.assertIsNone(req._document_page_count())
+
+    def test_last_page_pad_follows_the_target_document_length(self):
+        """The whole point: 9-page source, 12-page target, pad ends up on 12.
+
+        This is the defect measured on the Blue Fox service agreements, which
+        run 9, 11, 12, 36 and 37 pages. Before the fix the pad kept the absolute
+        number and landed in the middle of the contract.
+        """
+        src = self._request_of(9)
+        self._field(src, src.signer_ids[0])
+        src.field_ids.page = 9
+        tid = src.save_field_template("Bloc de signature")
+        tmpl = self.env["bf.sign.field.template"].browse(tid)
+        self.assertEqual(tmpl.line_ids.page_mode, "last")
+
+        dst = self._request_of(12)
+        dst.apply_field_template(tid)
+        # ⚠️ On assère la page EFFECTIVE, pas l'entier en base : depuis la
+        # 26.0 l'ancrage est copié sur le pavé et résolu au scellement, donc
+        # `page` garde le numéro d'origine et ne veut plus rien dire seul.
+        self.assertEqual(dst.field_ids.effective_page(12), 12)
+
+    def test_absolute_pad_keeps_its_page_across_documents(self):
+        """A pad that is NOT on the last page stays where it was put."""
+        src = self._request_of(9)
+        self._field(src, src.signer_ids[0])  # page 1, not the last
+        tid = src.save_field_template("Paraphe de la page couverture")
+        tmpl = self.env["bf.sign.field.template"].browse(tid)
+        self.assertEqual(tmpl.line_ids.page_mode, "absolute")
+
+        dst = self._request_of(12)
+        dst.apply_field_template(tid)
+        self.assertEqual(dst.field_ids.effective_page(12), 1)
+
+    def test_pad_never_lands_outside_a_shorter_document(self):
+        """An absolute page 9 applied to a 3-page document is clamped, not lost.
+
+        A pad that silently vanishes is a signature block nobody notices is
+        missing, which is worse than one placed on the wrong page.
+        """
+        src = self._request_of(9)
+        self._field(src, src.signer_ids[0])
+        src.field_ids.page = 5  # neither first nor last → stays absolute
+        tid = src.save_field_template("Pavé au milieu")
+        dst = self._request_of(3)
+        dst.apply_field_template(tid)
+        self.assertEqual(dst.field_ids.effective_page(3), 3)
+
+    def test_anchor_last_page_can_be_turned_off(self):
+        src = self._request_of(4)
+        self._field(src, src.signer_ids[0])
+        src.field_ids.page = 4
+        tid = src.save_field_template("Tout en absolu", anchor_last_page=False)
+        tmpl = self.env["bf.sign.field.template"].browse(tid)
+        self.assertEqual(tmpl.line_ids.page_mode, "absolute")
+        dst = self._request_of(12)
+        dst.apply_field_template(tid)
+        self.assertEqual(dst.field_ids.effective_page(12), 4)
+
+    def test_one_page_source_never_anchors_to_the_last_page(self):
+        """🔴 La régression du 2026-09-21, trouvée en relecture adverse.
+
+        Sur un document d'UNE page, tout pavé est « sur la dernière page » par
+        accident. Ancrer là-dessus empilait les trois pavés d'un formulaire
+        d'une page sur la dernière page du document suivant.
+        """
+        src = self._request_of(1)
+        for i, ftype in enumerate(("name", "date", "signature")):
+            self.Field.create({
+                "request_id": src.id, "signer_id": src.signer_ids[0].id,
+                "field_type": ftype, "page": 1, "pos_x": 0.2 + 0.2 * i,
+                "pos_y": 0.5, "width": 0.2, "height": 0.06})
+        tid = src.save_field_template("Formulaire d'une page")
+        tmpl = self.env["bf.sign.field.template"].browse(tid)
+        self.assertEqual(set(tmpl.line_ids.mapped("page_mode")), {"absolute"})
+
+        dst = self._request_of(12)
+        dst.apply_field_template(tid)
+        self.assertEqual({f.effective_page(12) for f in dst.field_ids}, {1})
+
+    def test_two_page_source_still_anchors_its_last_page(self):
+        """La garde ne doit pas tuer l'ancrage dès qu'il devient décidable."""
+        src = self._request_of(2)
+        self._field(src, src.signer_ids[0])
+        src.field_ids.page = 2
+        tid = src.save_field_template("Deux pages")
+        tmpl = self.env["bf.sign.field.template"].browse(tid)
+        self.assertEqual(tmpl.line_ids.page_mode, "last")
+        dst = self._request_of(9)
+        dst.apply_field_template(tid)
+        self.assertEqual(dst.field_ids.effective_page(9), 9)
+
+    def test_resolve_page_never_returns_below_one(self):
+        """Les bornes basses de resolve_page, que rien ne défendait."""
+        Line = self.env["bf.sign.field.template.line"]
+        tmpl = self.env["bf.sign.field.template"].create({"name": "Bornes"})
+        zero = Line.create({"template_id": tmpl.id, "page": 0, "page_mode": "absolute"})
+        self.assertEqual(zero.resolve_page(10), 1)
+        self.assertEqual(zero.resolve_page(None), 1)
+        neg = Line.create({"template_id": tmpl.id, "page": -3, "page_mode": "absolute"})
+        self.assertEqual(neg.resolve_page(10), 1)
+        self.assertEqual(neg.resolve_page(None), 1)
+        last = Line.create({"template_id": tmpl.id, "page": 0, "page_mode": "last"})
+        self.assertEqual(last.resolve_page(7), 7)
+
+    def test_existing_template_line_defaults_to_absolute(self):
+        """Rétrocompatibilité : une ligne créée sans `page_mode` garde l'absolu."""
+        tmpl = self.env["bf.sign.field.template"].create({"name": "Sans mode"})
+        line = self.env["bf.sign.field.template.line"].create({
+            "template_id": tmpl.id, "field_type": "signature", "page": 3})
+        self.assertEqual(line.page_mode, "absolute")
+        self.assertEqual(line.resolve_page(12), 3)
+
+    def _images_apposees(self, req, doc_bytes):
+        """Nombre d'images réellement dessinées dans le PDF scellé.
+
+        C'est la seule mesure qui compte : asserter `field_ids.page` vérifie un
+        entier en base, pas ce qui est sur le papier. Un pavé hors document
+        était vert à l'assertion et absent du document.
+        """
+        from PyPDF2 import PdfReader
+        out = req._stamp_document(doc_bytes)
+        n = 0
+        for page in PdfReader(io.BytesIO(out)).pages:
+            xo = (page.get("/Resources") or {}).get("/XObject")
+            if xo:
+                n += len(xo.get_object())
+        return n
+
+    def _request_with_signature(self, pages, page, page_mode="absolute"):
+        req = self._request_of(pages)
+        req.signer_ids[0].signature_image = self._png_b64()
+        self.Field.create({
+            "request_id": req.id, "signer_id": req.signer_ids[0].id,
+            "field_type": "signature", "page": page, "page_mode": page_mode,
+            "pos_x": 0.5, "pos_y": 0.3, "width": 0.3, "height": 0.08})
+        return req
+
+    def test_a_pad_outside_the_document_is_still_stamped(self):
+        """🔴 D1 : un pavé hors document n'était PAS apposé, sans un mot.
+
+        Mesuré le 2026-09-21 avant correctif : un pavé page 12 sur un document
+        de 3 pages apposait 0 image, là où un pavé valide en apposait 1. Le
+        document partait signé, scellé, certifié, et vierge de toute marque.
+        """
+        doc = self._make_pdf(pages=3)
+        dedans = self._request_with_signature(3, 3)
+        dehors = self._request_with_signature(3, 12)
+        self.assertEqual(self._images_apposees(dedans, doc), 1)
+        self.assertEqual(self._images_apposees(dehors, doc), 1)
+
+    def test_last_page_pad_follows_a_document_replaced_afterwards(self):
+        """🔴 D3 : la page se résout au SCELLEMENT, pas à l'application.
+
+        Figer l'entier à l'application rouvrait le défaut d'origine dès que le
+        document était remplacé ensuite par un plus long.
+        """
+        req = self._request_with_signature(9, 9, page_mode="last")
+        # Le document est remplacé par un bien plus long, après coup.
+        plus_long = self._make_pdf(pages=37)
+        req.document_file = base64.b64encode(plus_long)
+        from PyPDF2 import PdfReader
+        out = req._stamp_document(plus_long)
+        pages = PdfReader(io.BytesIO(out)).pages
+        derniere = (pages[36].get("/Resources") or {}).get("/XObject")
+        self.assertTrue(derniere, "la marque doit être sur la 37e page")
+        self.assertEqual(self._images_apposees(req, plus_long), 1)
+
+    def test_send_refuses_a_pad_beyond_the_document(self):
+        """Le garde à l'envoi nomme les pavés fautifs au lieu de les déplacer."""
+        req = self._request_with_signature(3, 12)
+        with self.assertRaises(UserError) as capture:
+            req.action_send()
+        self.assertIn("3 page(s)", str(capture.exception))
+        self.assertEqual(req.state, "draft")
+
+    def test_send_accepts_a_last_page_pad_whatever_the_length(self):
+        req = self._request_with_signature(3, 9, page_mode="last")
+        req.action_send()
+        self.assertEqual(req.state, "sent")
+
+    def test_apply_reports_a_pad_it_had_to_move(self):
+        """D4 : un pavé ramené dans le document se dit, il ne se tait pas."""
+        src = self._request_of(12)
+        self._field(src, src.signer_ids[0])
+        src.field_ids.page = 11
+        tid = src.save_field_template("Paraphe page 11")
+        dst = self._request_of(3)
+        res = dst.apply_field_template(tid)
+        self.assertEqual(res["moved"], 1)
+
+    def test_page_count_refuses_an_oversized_document(self):
+        """D6 : la garde de taille que j'avais retirée à tort.
+
+        ⚠️ Le document doit être un VRAI PDF, lisible, et seulement trop gros.
+        Un tampon d'octets quelconques ferait échouer PyPDF2 de toute façon, et
+        l'essai resterait vert même sans la garde : c'est la mutation du
+        2026-09-21 qui l'a montré. Le plafond est abaissé par le paramètre
+        plutôt que de fabriquer 25 Mo de PDF.
+        """
+        req = self._request_of(2)
+        doc = self._make_pdf(pages=2)
+        self.assertTrue(len(doc) > 512, "le PDF d'essai doit dépasser le plafond posé")
+        self.env["ir.config_parameter"].sudo().set_param("bf_sign.max_document_mb", "1")
+        # 1 Mo : le document passe.
+        self.assertEqual(req._document_page_count(), 2)
+        # Plafond ramené sous la taille du document : il ne passe plus, alors
+        # qu'il reste parfaitement lisible.
+        with patch.object(type(req), "_max_document_bytes", return_value=len(doc) - 1):
+            self.assertIsNone(req._document_page_count())
+
+    def test_signing_page_shows_the_page_the_mark_will_land_on(self):
+        """🔴 Le signataire doit voir le pavé LÀ où la marque tombera.
+
+        Le gabarit du portail lisait `of.page` en direct : un pavé ancré
+        « dernière page » s'affichait page 9 alors que le scellement le posait
+        page 12. Mesuré au parcours réel : data-page="9" sur un document de
+        12 pages.
+        """
+        req = self._request_of(12)
+        signer = req.signer_ids[0]
+        self.Field.create({
+            "request_id": req.id, "signer_id": signer.id, "field_type": "signature",
+            "page": 9, "page_mode": "last",
+            "pos_x": 0.5, "pos_y": 0.3, "width": 0.3, "height": 0.08})
+        nb = req._document_page_count()
+        pave = req.field_ids
+        self.assertEqual(nb, 12)
+        # Ce que le contrôleur passera au gabarit, et donc ce que le signataire voit.
+        self.assertEqual(pave.effective_page(nb), 12)
+        self.assertEqual(pave.page, 9, "le numéro d'origine reste, comme repli")
+
+    def test_unreadable_target_document_keeps_the_stored_page(self):
+        src = self._request_of(6)
+        self._field(src, src.signer_ids[0])
+        src.field_ids.page = 6
+        tid = src.save_field_template("Bloc de signature")
+        dst = self._request_of(12)
+        dst.document_file = base64.b64encode(b"pas un PDF")
+        dst.apply_field_template(tid)
+        # page_count is None → le repli est le numéro conservé.
+        self.assertEqual(dst.field_ids.effective_page(None), 6)
 
     # ── refusal ─────────────────────────────────────────────────────────────────
     def test_refusal(self):

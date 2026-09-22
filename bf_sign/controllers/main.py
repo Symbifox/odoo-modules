@@ -69,6 +69,13 @@ class BfSignController(Controller):
         """
         overlay_fields = signer._overlay_fields()
         field_numbers = {f.id: i + 1 for i, f in enumerate(overlay_fields)}
+        # 🔴 La page MONTRÉE au signataire doit être celle où la marque tombera.
+        # Le gabarit lisait `of.page` en direct : un pavé ancré « dernière page »
+        # s'affichait sur son numéro d'origine (9) alors que le scellement le
+        # posait sur la dernière (12). Le signataire signait à un endroit et la
+        # marque apparaissait ailleurs. Mesuré au parcours réel du 2026-09-22.
+        nb_pages = req_sudo._document_page_count()
+        field_pages = {f.id: f.effective_page(nb_pages) for f in overlay_fields}
         # Pre-compute the marker numbers per pad type in Python (QWeb does not
         # reliably evaluate list comprehensions inside t-value on the website
         # render path).
@@ -80,6 +87,7 @@ class BfSignController(Controller):
             "req": req_sudo, "signer": signer, "access_token": access_token,
             "need_initials": signer.has_initials,
             "overlay_fields": overlay_fields, "field_numbers": field_numbers,
+            "field_pages": field_pages,
             "sig_nums": sig_nums, "ini_nums": ini_nums,
             "default_initials": signer._default_initials(),
             # Kept in sync with the model so a new pad type does not need a

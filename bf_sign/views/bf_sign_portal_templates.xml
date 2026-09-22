@@ -156,7 +156,7 @@
                                 <t t-set="is_input"
                                    t-value="is_fill and of.fill_mode == 'signer'"/>
                                 <div t-attf-class="bf-marker#{is_fill and ' bf-marker-fill' or ''}"
-                                     t-att-data-page="of.page"
+                                     t-att-data-page="field_pages[of.id]"
                                      t-att-data-x="of.pos_x" t-att-data-y="of.pos_y"
                                      t-att-data-w="of.width" t-att-data-h="of.height"
                                      t-att-data-type="of.field_type"

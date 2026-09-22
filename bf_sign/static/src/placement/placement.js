@@ -361,9 +361,14 @@ export class BfSignPlacement extends Component {
         await this.reload();
         let msg = `${res.created} pavé(s) placé(s)`;
         if (res.skipped) {
-            msg += ` — ${res.skipped} ignoré(s) (pas assez de signataires)`;
+            msg += `, ${res.skipped} ignoré(s) (pas assez de signataires)`;
         }
-        this.notification.add(msg, { type: "success" });
+        // Un pavé ramené dans le document est un pavé que personne n'a placé
+        // là : il se dit, et en avertissement, pas en vert.
+        if (res.moved) {
+            msg += `, ${res.moved} ramené(s) dans le document (le modèle vise une page qui n'existe pas ici)`;
+        }
+        this.notification.add(msg, { type: res.moved ? "warning" : "success" });
     }
 
     async saveTemplate() {

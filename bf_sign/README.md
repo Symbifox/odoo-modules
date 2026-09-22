@@ -64,7 +64,7 @@ signed document is then **posted back into the source record's thread**.
 - **A field order you control**: the sequence the signer is presented with is editable, defaulting to reading order.
 - **Boxed cells for pre-printed forms**: a `cells` field spans a row of printed boxes (a postal code, a licence number, a phone number) and stamps one character per box. The box count drives the spacing, and the signing page caps the entry at that count so the limit is felt while typing. No grid is drawn on top of the document: the boxes already belong to the form underneath.
 - **Choice lists**: a `select` field offers a fixed set of answers, rendered as a real dropdown on the signing page and refused server-side if the submitted value is not one of them.
-- **Reusable field templates** (`bf.sign.field.template`) storing the layout **per signer rank**.
+- **Reusable field templates** (`bf.sign.field.template`) storing the layout **per signer rank**. Each pad also carries a **page anchor**: `Page fixe` keeps the stored number, `Dernière page` is resolved against the document at stamping time, so one saved layout fits documents of different lengths and follows the document if it is replaced. Existing layouts stay on `Page fixe`.
 - **A branded, responsive public signing page**: a rendered preview of the document with **numbered placement markers** (reading order), a live mirror of the signature and fields, explicit timestamped consent, and the option to **refuse**.
 
 ### Signer identity

@@ -30,7 +30,12 @@
                         <list editable="bottom">
                             <field name="signer_index" string="Rang signataire"/>
                             <field name="field_type"/>
-                            <field name="page"/>
+                            <field name="page_mode"/>
+                            <!-- Le numéro reste VISIBLE même en « Dernière page » :
+                                 c'est lui qui sert de repli quand le document est
+                                 illisible, et une valeur invisible qui décide est
+                                 une valeur que personne ne maintient. -->
+                            <field name="page" readonly="page_mode == 'last'"/>
                             <field name="fill_mode"/>
                             <field name="required"/>
                             <field name="value_text"/>

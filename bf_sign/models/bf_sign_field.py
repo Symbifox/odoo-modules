@@ -47,6 +47,17 @@ class BfSignField(models.Model):
         string="Type", default="signature", required=True,
     )
     page = fields.Integer(string="Page", default=1, required=True)
+    # 🔴 L'ancrage vit sur le PAVÉ, pas seulement sur la ligne de gabarit, et il
+    # se résout au SCELLEMENT. Le figer à l'application d'un gabarit ne protège
+    # que l'instant de l'application : remplacer ensuite le document par un plus
+    # long rouvrait le défaut d'origine (pavé au milieu du texte), et par un plus
+    # court faisait disparaître le pavé en silence. `verify_qr_pages` fait déjà
+    # ainsi dans ce module, contre `len(reader.pages)` : on suit ce patron.
+    page_mode = fields.Selection(
+        selection=[("absolute", "Page fixe"), ("last", "Dernière page")],
+        string="Ancrage de la page", default="absolute", required=True,
+        help="« Dernière page » recalcule la position sur le document au moment "
+             "d'apposer les marques, et suit donc le document s'il est remplacé.")
     pos_x = fields.Float(string="X (fraction)", default=0.60)
     pos_y = fields.Float(string="Y (fraction)", default=0.80)
     width = fields.Float(string="Largeur (fraction)", default=0.25)
@@ -222,6 +233,34 @@ class BfSignField(models.Model):
             "sequence": self.sequence,
         })
         return copy.id
+
+    def effective_page(self, page_count=None):
+        """Page this pad lands on, for a document of ``page_count`` pages.
+
+        ``page_count`` is None when the document cannot be read: the stored
+        number is then used as-is. The result is always inside the document, so
+        a pad is never silently dropped by ``_stamp_document``, which iterates
+        the real pages and would simply never reach an out-of-range one.
+        """
+        self.ensure_one()
+        page = self.page or 1
+        if self.page_mode == "last" and page_count:
+            page = page_count
+        if page_count:
+            page = min(page, page_count)
+        return max(1, page)
+
+    def page_out_of_range(self, page_count):
+        """True when the pad would fall outside a document of ``page_count``.
+
+        Read at send time. ``effective_page`` clamps, which keeps the mark on
+        the paper, but a clamped pad is a pad the preparer did not place: the
+        send guard says so rather than moving it quietly.
+        """
+        self.ensure_one()
+        if not page_count or self.page_mode == "last":
+            return False
+        return (self.page or 1) > page_count
 
     # ── Structural lock: pads are frozen once the request leaves draft ──────────
     @staticmethod
