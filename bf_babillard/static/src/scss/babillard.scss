@@ -308,3 +308,9 @@ $o-bf-bab-pastilles: (
         max-width: 22rem;
     }
 }
+
+// Le sélecteur de type, sous le titre du formulaire. Il décide de tout le reste
+// de l'écran, mais il ne mérite pas la largeur d'un titre.
+.o_bf_bab_type_saisie {
+    max-width: 16rem;
+}

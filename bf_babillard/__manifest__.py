@@ -3,7 +3,7 @@
     "name": "Babillard",
     "summary": "Les annonces de la maison, avec leur audience, leur échéance et "
                "la preuve qu'elles ont été lues",
-    "version": "18.0.1.7.2",
+    "version": "18.0.1.8.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -96,6 +96,9 @@ Ce qu'il fait
   que la maison offre dans un catalogue de douze, et en ajoute autant qu'elle
   veut. Une même personne peut en poser plusieurs, et le survol dit qui a
   réagi.
+* **Un sondage a sa porte d'entrée.** Un menu « Sondages » ne liste que les
+  sondages et en crée un du bon type ; le type de la publication est sous le
+  titre, là où il décide, et non plus au fond du bloc de diffusion.
 * **Un sondage se pose dans le fil.** Le titre est la question, la publication
   porte ses propres choix, et on vote d'un clic sur la carte. Un seul choix ou
   plusieurs, au gré de la rédaction. L'audience peut se voir offrir d'ajouter

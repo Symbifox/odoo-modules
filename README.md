@@ -90,7 +90,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.0.2 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
-| `bf_babillard` | Babillard | 18.0.1.7.2 | BUSL-1.1 | Announcements with an audience, an expiry date and named read receipts, with a confidential reporting path |
+| `bf_babillard` | Babillard | 18.0.1.8.0 | BUSL-1.1 | Announcements with an audience, an expiry date and named read receipts, with a confidential reporting path |
 | `bf_babillard_appointment_poll` | Babillard : sondage de disponibilités | 18.0.1.0.0 | BUSL-1.1 | An editor announces on the feed that a date poll is looking for answers |
 | `bf_babillard_celebrations` | Babillard : célébrations | 18.0.1.1.0 | BUSL-1.1 | A delivered group greeting card appears on the noticeboard |
 | `bf_babillard_event` | Babillard : événements | 18.0.1.1.0 | BUSL-1.1 | Upcoming events appear on the noticeboard and follow their changes |

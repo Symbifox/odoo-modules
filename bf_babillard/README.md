@@ -43,6 +43,10 @@ When Odoo is installed, it creates a "general" channel and subscribes every inte
 * **The house chooses its reactions.** The module ships a catalogue of twelve, five of them offered out of the box (👍 🎉 ❤️ 💡 🙏); administrators tick the ones that fit and add their own. No thumbs-down and no symbol that passes judgement: under a company announcement, a 👎 does not open a conversation, it closes one, and the comment thread is right there for anyone who wants to qualify.
   * One person may place several reactions on the same post, so a counter adds up gestures rather than people. Hovering a reaction names who placed it, to everyone the post is addressed to, and to nobody else: a record rule bounds that to the post's audience, not to the company.
   * Unticking a reaction stops it being offered. The ones already placed stay on the posts that carry them, and the people who placed them can still take them back. History is not rewritten because an administrator changed their mind.
+* **A poll has its own way in.** A **Polls** menu lists only the polls and creates one of the
+  right type; the post's type sits under the title, where it decides what the rest of the form
+  shows, instead of at the bottom of the distribution block. The first person who tried to run a
+  poll could not find how, which is what this fixes.
 * **A poll lives in the feed.** The post's title is the question, the post carries its own
   choices, and one click casts a vote on the card. Single choice by default, several when the
   editor allows it, and the audience can be allowed to add its own choices, up to a per-person

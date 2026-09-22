@@ -12,6 +12,7 @@ module qui publie les votes en clair juste à côté.
 """
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests.common import TransactionCase, tagged
+from odoo.tools.safe_eval import safe_eval
 
 
 @tagged("post_install", "-at_install")
@@ -362,6 +363,28 @@ class TestSondage(TransactionCase):
         post = self._sondage()
         with self.assertRaises(AccessError):
             post.with_user(self.u1).action_fermer_sondage()
+
+    def test_la_porte_dentree_des_sondages(self):
+        """🔴 Le défaut qui a mené à cette action : un sondage est un TYPE de
+        publication, et rien à l'écran ne le disait. La personne qui voulait en
+        poser un n'a pas trouvé comment. L'action doit donc ne montrer que les
+        sondages ET en créer un du bon type.
+        """
+        action = self.env.ref("bf_babillard.action_babillard_sondages")
+        self.assertEqual(
+            safe_eval(action.domain), [("type_publication", "=", "sondage")])
+        self.assertEqual(
+            safe_eval(action.context).get("default_type_publication"), "sondage")
+
+        # Le contexte fait vraiment naître un sondage, pas une annonce.
+        post = self.env["bf.babillard.post"].with_user(self.u_redactrice).with_context(
+            **safe_eval(action.context)).create({"name": "Un sondage né du menu"})
+        self.assertEqual(post.type_publication, "sondage")
+
+    def test_le_menu_des_sondages_est_reserve_a_la_redaction(self):
+        menu = self.env.ref("bf_babillard.menu_babillard_sondages")
+        self.assertIn(self.g_redaction, menu.groups_id,
+                      "le menu ne s'offre qu'à qui peut publier")
 
     def test_une_publication_ordinaire_na_pas_de_sondage(self):
         post = self.env["bf.babillard.post"].with_user(self.u_redactrice).create({

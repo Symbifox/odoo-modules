@@ -92,6 +92,16 @@
                     </div>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Le titre que les gens liront"/></h1>
+                        <!-- 🔴 Le type décide de TOUT le reste de l'écran : c'est lui
+                             qui fait apparaître le bloc du sondage. Enterré dans
+                             « Diffusion », sous le corps du texte, il n'était pas
+                             trouvable : la première personne à vouloir poser un sondage
+                             n'a pas trouvé comment (2026-09-22). Il est donc ici, sous
+                             le titre, et il n'y est qu'une fois : le même champ en
+                             lecture seule, dans la signature, est réservé à qui n'est
+                             pas de la rédaction. -->
+                        <field name="type_publication" class="o_bf_bab_type_saisie"
+                               groups="bf_babillard.group_babillard_redacteur"/>
                     </div>
                     <div class="o_bf_bab_entete d-flex align-items-center gap-2 mb-3">
                         <field name="personne_avatar" widget="image" nolabel="1"
@@ -114,7 +124,8 @@
                                        invisible="personne_nom"/>
                             </span>
                             <span class="text-muted small d-flex align-items-center gap-1">
-                                <field name="type_publication" nolabel="1" readonly="1"/>
+                                <field name="type_publication" nolabel="1" readonly="1"
+                                       groups="!bf_babillard.group_babillard_redacteur"/>
                                 <span invisible="state == 'brouillon'">·</span>
                                 <!-- La journée, pas la seconde : « 2026-09-15 07:23:37 »
                                      dans la signature d'une annonce n'apprend rien. -->
@@ -149,7 +160,6 @@
                     <group string="Diffusion" name="reglages"
                            groups="bf_babillard.group_babillard_redacteur">
                         <group>
-                            <field name="type_publication"/>
                             <field name="auteur_user_id"/>
                             <field name="personne_id"
                                    options="{'no_create': True, 'no_open': True}"/>
@@ -370,6 +380,22 @@
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">Rien au babillard pour l'instant.</p>
             <p>Les annonces adressées à votre équipe apparaîtront ici.</p>
+        </field>
+    </record>
+
+    <!-- 🔴 Un sondage est un TYPE de publication, ce que rien à l'écran ne disait.
+         Cette action est la porte d'entrée qui manquait : elle ne liste que les
+         sondages, et un « Nouveau » y naît déjà du bon type. -->
+    <record id="action_babillard_sondages" model="ir.actions.act_window">
+        <field name="name">Sondages</field>
+        <field name="res_model">bf.babillard.post</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('type_publication', '=', 'sondage')]</field>
+        <field name="context">{'default_type_publication': 'sondage'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Poser une question à la maison</p>
+            <p>Le titre est la question, et la publication porte ses propres choix.
+               On vote d'un clic sur la carte du fil.</p>
         </field>
     </record>
 
