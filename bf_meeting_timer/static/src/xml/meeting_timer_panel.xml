@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_meeting_timer.Panel">
+        <div class="o_bf_meeting_timer mb-3">
+
+            <div t-if="!resId" class="alert alert-info mb-0" role="alert">
+                Enregistrez l'ordre du jour, puis le chronomètre pourra partir.
+            </div>
+
+            <t t-elif="state.payload">
+                <div class="o_bf_meeting_timer_head d-flex flex-wrap align-items-center gap-4 p-3 border rounded">
+
+                    <div class="d-flex flex-column">
+                        <span class="text-muted small text-uppercase">Écoulé</span>
+                        <span class="o_bf_meeting_timer_clock" t-esc="duree(ecoule)"/>
+                    </div>
+
+                    <!--
+                        Le nom du sujet en cours vit sur le chronomètre, pas
+                        seulement dans la liste : une fois le panneau épinglé, la
+                        liste peut être défilée ailleurs, et « 12:04 » tout seul ne
+                        dit pas de quoi on est en train de parler.
+                    -->
+                    <div class="d-flex flex-column o_bf_meeting_timer_sujet"
+                         t-if="ligneCourante">
+                        <span class="text-muted small text-uppercase">Sujet en cours</span>
+                        <span class="fs-5 fw-bold text-truncate"
+                              t-att-title="ligneCourante.name"
+                              t-esc="ligneCourante.name"/>
+                        <span class="text-muted small">
+                            <t t-esc="duree(secondesDuSujet(ligneCourante))"/>
+                            <t t-if="ligneCourante.planned_minutes">
+                                sur <t t-esc="duree(ligneCourante.planned_minutes * 60)"/>
+                            </t>
+                            <t t-if="ligneCourante.visits > 1">
+                                (<t t-esc="ligneCourante.visits"/><sup>e</sup> passage)
+                            </t>
+                        </span>
+                    </div>
+
+                    <div class="d-flex flex-column" t-if="state.payload.state !== 'idle'">
+                        <!-- Une rencontre terminée n'a plus de fin PROJETÉE : elle a une fin. -->
+                        <span class="text-muted small text-uppercase">
+                            <t t-if="state.payload.state === 'done'">Fin</t>
+                            <t t-else="">Fin projetée</t>
+                        </span>
+                        <span class="fs-5" t-att-class="enRetard ? 'text-danger fw-bold' : 'fw-bold'">
+                            <t t-esc="finProjetee"/>
+                        </span>
+                        <span class="text-muted small" t-if="state.payload.planned_end">
+                            prévu <t t-esc="heure(state.payload.planned_end)"/>
+                        </span>
+                    </div>
+
+                    <div class="d-flex flex-column" t-if="state.payload.state !== 'idle'">
+                        <span class="text-muted small text-uppercase">Écart cumulé</span>
+                        <span class="fs-5" t-att-class="classeEcart(ecart)" t-esc="signe(ecart)"/>
+                    </div>
+
+                    <div class="d-flex flex-column" t-if="state.payload.state === 'running' or state.payload.state === 'paused'">
+                        <span class="text-muted small text-uppercase">Reste alloué</span>
+                        <span class="fs-5" t-esc="duree(state.payload.remaining_planned_seconds)"/>
+                    </div>
+
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                        <span class="badge text-bg-secondary" t-esc="etiquetteEtat"/>
+
+                        <button t-if="state.payload.state === 'idle'"
+                                class="btn btn-primary" t-on-click="() => this.demarrer()"
+                                t-att-disabled="state.busy">
+                            <i class="fa fa-play me-1"/>Démarrer
+                        </button>
+
+                        <button t-if="state.payload.state === 'running'"
+                                class="btn btn-primary" t-on-click="() => this.geste('action_timer_split')"
+                                t-att-disabled="state.busy"
+                                title="Sujet suivant (Alt+S)">
+                            <i class="fa fa-step-forward me-1"/>Sujet suivant
+                        </button>
+
+                        <button t-if="state.payload.state === 'running'"
+                                class="btn btn-secondary" t-on-click="() => this.geste('action_timer_skip')"
+                                t-att-disabled="state.busy"
+                                title="Marquer le sujet en cours comme non couvert">
+                            Passer
+                        </button>
+
+                        <button t-if="state.payload.state === 'running'"
+                                class="btn btn-secondary" t-on-click="() => this.geste('action_timer_pause')"
+                                t-att-disabled="state.busy" title="Pause (Alt+P)">
+                            <i class="fa fa-pause"/>
+                        </button>
+
+                        <button t-if="state.payload.state === 'paused'"
+                                class="btn btn-primary" t-on-click="() => this.geste('action_timer_resume')"
+                                t-att-disabled="state.busy" title="Reprendre (Alt+P)">
+                            <i class="fa fa-play me-1"/>Reprendre
+                        </button>
+
+                        <button t-if="state.payload.state === 'running' or state.payload.state === 'paused'"
+                                class="btn btn-outline-secondary" t-on-click="() => this.geste('action_timer_stop')"
+                                t-att-disabled="state.busy">
+                            Terminer
+                        </button>
+
+                        <button t-if="state.payload.state !== 'idle'"
+                                class="btn btn-link text-muted" t-on-click="() => this.effacer()"
+                                t-att-disabled="state.busy" title="Effacer le chronomètre">
+                            <i class="fa fa-eraser"/>
+                        </button>
+                    </div>
+                </div>
+
+                <div t-if="lignes.length" class="o_bf_meeting_timer_liste">
+                <table class="table table-sm o_bf_meeting_timer_list mt-2 mb-0">
+                    <thead>
+                        <tr>
+                            <th>Sujet</th>
+                            <th class="text-end" style="width: 6rem;">Prévu</th>
+                            <th class="text-end" style="width: 6rem;">Réel</th>
+                            <th class="text-end" style="width: 6rem;">Écart</th>
+                            <th style="width: 7rem;"/>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="lignes" t-as="ligne" t-key="ligne.id"
+                            t-att-class="{
+                                'table-active fw-bold': ligne.is_current,
+                                'o_bf_meeting_timer_joignable': joignable(ligne),
+                            }"
+                            t-att-title="joignable(ligne) ? 'Revenir à ce sujet' : ''"
+                            t-on-click="() => this.ouvrirLigne(ligne)">
+                            <td>
+                                <t t-esc="ligne.name"/>
+                                <span t-if="ligne.state === 'skipped'" class="badge text-bg-light ms-1">sauté</span>
+                                <span t-if="ligne.visits > 1" class="badge text-bg-light ms-1">
+                                    <t t-esc="ligne.visits"/> passages
+                                </span>
+                            </td>
+                            <!-- Prévu et réel s'écrivent dans la MÊME unité : deux
+                                 colonnes qu'on compare d'un coup d'œil ne peuvent
+                                 pas être l'une en minutes et l'autre en horloge. -->
+                            <td class="text-end text-muted">
+                                <t t-if="ligne.planned_minutes" t-esc="duree(ligne.planned_minutes * 60)"/>
+                                <t t-else="">&#8212;</t>
+                            </td>
+                            <td class="text-end">
+                                <t t-if="ligne.visits or ligne.is_current" t-esc="duree(secondesDuSujet(ligne))"/>
+                            </td>
+                            <td class="text-end" t-att-class="classeEcart(ecartDuSujet(ligne))"
+                                t-esc="signe(ecartDuSujet(ligne))"/>
+                            <td class="text-end">
+                                <button t-if="joignable(ligne)"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        t-on-click.stop="() => this.ouvrirLigne(ligne)"
+                                        t-att-disabled="state.busy">
+                                    <i class="fa fa-undo me-1" t-if="ligne.visits"/>
+                                    <t t-if="ligne.visits">Revenir</t>
+                                    <t t-else="">Ouvrir</t>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+
+                <div t-if="!lignes.length" class="text-muted small mt-2">
+                    Aucun sujet accepté à l'ordre du jour : le chronomètre n'aurait rien à découper.
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

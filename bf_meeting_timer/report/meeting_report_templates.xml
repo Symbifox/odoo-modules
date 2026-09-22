@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Le compte rendu imprime le temps réel des sujets de l'ORDRE DU JOUR.
+
+        🔴 Et pas les siens : les sujets du compte rendu sont écrits par le
+        modèle à partir de l'audio, ce ne sont pas ceux de l'ordre du jour. Sur
+        un ordre du jour et son compte rendu n'ont ni le même nombre de sujets
+        ni les mêmes titres. Les apparier serait deviner.
+    -->
+    <template id="report_meeting_record_timer" inherit_id="bf_meeting.report_meeting_record">
+        <xpath expr="//t[@t-if='doc.decision_ids']" position="before">
+            <t t-if="doc.agenda_id and doc.agenda_id.timer_state == 'done'">
+                <t t-set="lignes_chrono" t-value="doc.agenda_id._timer_recap_lines()"/>
+                <t t-if="lignes_chrono">
+                    <div class="mr-section-title">Temps par sujet de l'ordre du jour</div>
+                    <table class="mr-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 58%;">Sujet</th>
+                                <th style="width: 14%;">Pr&#233;vu</th>
+                                <th style="width: 14%;">R&#233;el</th>
+                                <th style="width: 14%;">&#201;cart</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="lignes_chrono" t-as="ligne">
+                                <td>
+                                    <t t-out="ligne['name']"/>
+                                    <span t-if="not ligne['covered']"> (non abord&#233;)</span>
+                                    <span t-elif="ligne['state'] == 'skipped'"> (saut&#233;)</span>
+                                    <span t-if="ligne['visits'] &gt; 1">
+                                        (<t t-out="ligne['visits']"/> passages)
+                                    </span>
+                                </td>
+                                <td><t t-out="ligne['planned_minutes']"/> min</td>
+                                <td><t t-out="ligne['minutes']"/> min</td>
+                                <td>
+                                    <t t-set="ecart" t-value="round(ligne['minutes'] - ligne['planned_minutes'], 1)"/>
+                                    <t t-if="ecart &gt; 0">+</t><t t-out="ecart"/> min
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+</odoo>

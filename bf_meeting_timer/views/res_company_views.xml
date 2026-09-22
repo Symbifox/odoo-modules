@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Le réglage se pose là où `bf_meeting` met déjà ses préférences de
+        rencontre : sur la fiche de société (Paramètres, Sociétés), et pas dans
+        les Paramètres généraux. ⚠️ Un bloc `<app>` des Paramètres généraux sans
+        `name="<module>"` tue la page entière ; on ne s'en approche pas.
+    -->
+    <record id="view_company_form_timer" model="ir.ui.view">
+        <field name="name">res.company.form.meeting.timer</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="bf_meeting.view_company_form_inherit_bf_meeting"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='meeting_resend_changes_default']" position="after">
+                <field name="meeting_timer_placement"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Le panneau se pose dans l'onglet « Notes en direct », parce que c'est là
+        que la personne qui préside a les mains : c'est là que se tapent les
+        notes pendant la rencontre.
+
+        ⚠️ Aucun champ `timer_*` de l'ordre du jour n'entre dans le formulaire.
+        S'ils y étaient, une sauvegarde du formulaire réécrirait l'état du
+        chronomètre avec ce que le navigateur avait en mémoire au chargement.
+        Le panneau lit et écrit par ses propres appels.
+    -->
+    <record id="meeting_agenda_view_form_timer" model="ir.ui.view">
+        <field name="name">meeting.agenda.form.timer</field>
+        <field name="model">meeting.agenda</field>
+        <field name="inherit_id" ref="bf_meeting.meeting_agenda_view_form"/>
+        <field name="arch" type="xml">
+
+            <!--
+                Deux places possibles, une seule rendue : le champ de placement
+                décide. Un `<widget>` rendu invisible n'est pas monté du tout,
+                donc il n'y a jamais deux chronomètres qui battent en même temps
+                (vérifié au navigateur, pas supposé).
+            -->
+            <xpath expr="//notebook" position="before">
+                <field name="timer_panel_placement" invisible="1"/>
+                <widget name="bf_meeting_timer_panel"
+                        invisible="timer_panel_placement == 'tab'"/>
+            </xpath>
+
+            <xpath expr="//page[@name='live_notes']/field[@name='live_notes_html']" position="before">
+                <widget name="bf_meeting_timer_panel"
+                        invisible="timer_panel_placement != 'tab'"/>
+            </xpath>
+
+            <!-- Après la rencontre, le temps réel se lit à côté du temps alloué. -->
+            <xpath expr="//page[@name='topics']//field[@name='topic_ids']/list/field[@name='duration_planned']"
+                   position="after">
+                <field name="timer_minutes" optional="hide"/>
+                <field name="timer_delta_minutes" optional="hide"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

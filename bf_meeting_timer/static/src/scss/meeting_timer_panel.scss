@@ -1,0 +1,65 @@
+// 🔴 Le panneau doit rester sous les yeux pendant qu'on tape des notes, et la
+// mesure au navigateur a montré que l'en-tête collant ne suffisait pas : un
+// élément « sticky » est borné par SON PARENT, et le parent du panneau ne fait
+// que sa propre hauteur. Après 900 px de défilement, il était déjà à moitié
+// sorti de l'écran.
+//
+// C'est donc le conteneur de widget qui colle : son bloc englobant est la
+// feuille du formulaire, qui contient les onglets et les notes. Le panneau
+// reste alors en haut tant qu'on défile dans la rencontre.
+.o_widget_bf_meeting_timer_panel {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+.o_bf_meeting_timer {
+    // Opaque : ce qui passe dessous ne doit pas se lire au travers. Et une
+    // ombre basse, sinon la ligne de sujet coupée par le bord du panneau se
+    // confond avec le texte qui défile dessous.
+    background-color: var(--o-view-background-color, #fff);
+    border-bottom: 1px solid rgba(0, 0, 0, .125);
+    box-shadow: 0 .25rem .375rem -.25rem rgba(0, 0, 0, .15);
+
+    .o_bf_meeting_timer_clock {
+        font-size: 2.25rem;
+        line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+        font-feature-settings: "tnum";
+    }
+
+    // Collé en haut, le panneau ne doit pas manger l'écran : épinglé en entier,
+    // il occupait la moitié de la zone où l'on tape les notes. La liste des
+    // sujets défile donc dans sa propre boîte, et le tout tient sous le tiers
+    // de l'écran.
+    .o_bf_meeting_timer_liste {
+        max-height: 26vh;
+        overflow-y: auto;
+    }
+
+    // Un titre de sujet peut être long : il se coupe plutôt que de pousser les
+    // chiffres hors de la barre.
+    .o_bf_meeting_timer_sujet {
+        min-width: 10rem;
+        max-width: 22rem;
+    }
+
+    .o_bf_meeting_timer_list {
+        td, th {
+            vertical-align: middle;
+        }
+        tr.table-active td {
+            font-weight: 600;
+        }
+        // Les durées s'alignent sur la virgule : des chiffres qui dansent se
+        // comparent mal d'une ligne à l'autre.
+        td.text-end {
+            font-variant-numeric: tabular-nums;
+        }
+        // Toute la ligne ramène au sujet, pas seulement le bouton au bout :
+        // un lien discret en fin de ligne ne se trouve pas.
+        tr.o_bf_meeting_timer_joignable {
+            cursor: pointer;
+        }
+    }
+}
