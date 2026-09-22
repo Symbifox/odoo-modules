@@ -99,6 +99,39 @@ class TestCapturePage(HttpCase):
         # Trois chiffres, la forme courte : #abc vaut #aabbcc.
         self.assertEqual(_encre_sur("#fff"), _encre_sur("#ffffff"))
 
+    def test_les_phrases_du_script_viennent_du_serveur(self):
+        """🔴 Écrites en dur dans le `.js`, elles restaient françaises en anglais.
+
+        La page se rendait alors à moitié dans chaque langue : l'en-tête
+        traduit, l'état de l'enregistrement non.
+        """
+        self.authenticate("admin", "admin")
+        reponse = self.url_open("/capture")
+        self.assertIn('id="i18n"', reponse.text)
+        bloc = reponse.text.split('id="i18n">', 1)[1].split("</script>", 1)[0]
+        mots = json.loads(bloc)
+        for cle in ("en_cours", "pret", "plafond_atteint", "micro_refuse",
+                    "note_sans_texte", "session_expiree"):
+            self.assertIn(cle, mots)
+            self.assertTrue(mots[cle].strip(), cle)
+
+    def test_la_page_suit_la_langue_de_la_session(self):
+        """La langue vient du CONTEXTE DE SESSION, figé à la connexion.
+
+        ⚠️ Changer la langue d'un usager ne change donc rien tant que sa session
+        vit : il faut se reconnecter. C'est le comportement d'Odoo, pas celui du
+        module, et c'est ce qui a fait croire à une page non traduite en
+        préparant les captures de la vitrine.
+        """
+        anglais = self.env.ref("base.lang_en_CA", raise_if_not_found=False)
+        if not anglais:
+            self.skipTest("en_CA absent de cette base")
+        anglais.sudo().active = True
+        self.env.ref("base.user_admin").sudo().lang = "en_CA"
+        self.authenticate("admin", "admin")       # session NEUVE : elle prend la langue
+        reponse = self.url_open("/capture")
+        self.assertIn('<html lang="en-CA">', reponse.text)
+
     # ── L'installabilité ──────────────────────────────────────────────
 
     def test_manifeste_porte_son_identite_et_ses_icones(self):

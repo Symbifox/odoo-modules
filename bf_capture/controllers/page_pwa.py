@@ -184,6 +184,37 @@ def _encre_sur(couleur):
     return "#0b0f13" if contraste_noir >= contraste_blanc else "#ffffff"
 
 
+def _mots():
+    """Les phrases que le SCRIPT de la page affiche, traduites par le serveur.
+
+    🔴 Écrites en dur dans le fichier `.js`, elles restaient en français sur une
+    instance anglaise : l'en-tête se traduisait, l'état de l'enregistrement non,
+    et la page se rendait à moitié dans chaque langue. Relevé en préparant les
+    captures de la vitrine, pas par un essai.
+    """
+    return {
+        "en_cours": _("Enregistrement en cours"),
+        "pret": _("Prêt à envoyer"),
+        "plafond_dans": _("Plafond du mémo dans"),
+        "plafond_atteint": _("Enregistrement arrêté : plafond de cinq minutes atteint."),
+        "https_requis": _("Cette page a besoin d'une connexion sécurisée (HTTPS) pour "
+                          "ouvrir le micro."),
+        "navigateur_incapable": _("Ce navigateur ne sait pas enregistrer. Essayez "
+                                  "l'application, ou un navigateur récent."),
+        "micro_refuse": _("Le micro n'est pas accessible. Autorisez-le pour ce site, "
+                          "puis réessayez."),
+        "envoi_en_cours": _("Envoi en cours…"),
+        "envoi_echoue": _("L'envoi a échoué."),
+        "note_avec_texte": _("Note créée :"),
+        "note_sans_texte": _("Note créée, avec l'audio en pièce jointe."),
+        "ouvrir_la_note": _("Ouvrir la note"),
+        "session_expiree": _("Votre session a expiré. Rechargez la page."),
+        "serveur_a_repondu": _("Le serveur a répondu"),
+        "trop_long": _("Le serveur a mis trop de temps. Le son est encore là, réessayez."),
+        "lecture_impossible": _("Lecture du son impossible."),
+    }
+
+
 def _accent():
     """L'accent de la marque du locataire, ou celui de la maison.
 
@@ -214,7 +245,7 @@ class BfCapturePage(http.Controller):
               "sans texte.")
         )
         html = Markup("""<!DOCTYPE html>
-<html lang="fr-CA">
+<html lang="%(langue)s">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
@@ -245,6 +276,7 @@ class BfCapturePage(http.Controller):
   </div>
 
   <div id="message" class="message hidden"></div>
+  <script type="application/json" id="i18n">%(mots)s</script>
 
   <p class="note">%(pourquoi)s</p>
 </main>
@@ -257,6 +289,8 @@ class BfCapturePage(http.Controller):
             "encre": escape(_encre_sur(accent)),
             "statiques": STATIQUES,
             "version": _version(),
+            "mots": json.dumps(_mots(), ensure_ascii=False),
+            "langue": (request.env.lang or "fr_CA").replace("_", "-"),
             "enregistrer": escape(_("Enregistrer")),
             "arreter": escape(_("Arrêter")),
             "jeter": escape(_("Jeter")),

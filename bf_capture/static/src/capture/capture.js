@@ -31,6 +31,19 @@
 
     function $(id) { return document.getElementById(id); }
 
+    /* 🔴 Les phrases du script viennent du SERVEUR, pas du fichier.
+       Écrites en dur ici, elles restaient en français sur une instance
+       anglaise : la page se rendait à moitié traduite, l'en-tête dans une
+       langue et l'état de l'enregistrement dans l'autre. Le repli garde le
+       français pour une page servie par un serveur plus ancien. */
+    var MOTS = (function () {
+        var bloc = document.getElementById("i18n");
+        try { return bloc ? JSON.parse(bloc.textContent) : {}; }
+        catch (e) { return {}; }
+    })();
+
+    function dire(cle, repli) { return MOTS[cle] || repli; }
+
     function message(texte, classe) {
         var boite = $("message");
         boite.textContent = texte;
@@ -60,10 +73,10 @@
         }).then(function (reponse) {
             clearTimeout(minuteur);
             if (reponse.status === 401 || reponse.status === 403) {
-                throw new Error("Votre session Odoo a expiré. Rechargez la page.");
+                throw new Error(dire("session_expiree", "Votre session a expiré. Rechargez la page."));
             }
             if (!reponse.ok) {
-                throw new Error("Le serveur a répondu " + reponse.status + ".");
+                throw new Error(dire("serveur_a_repondu", "Le serveur a répondu") + " " + reponse.status + ".");
             }
             return reponse.json();
         }).then(function (charge) {
@@ -81,7 +94,7 @@
         }, function (err) {
             clearTimeout(minuteur);
             if (err.name === "AbortError") {
-                throw new Error("Le serveur a mis trop de temps. Le son est encore là, réessayez.");
+                throw new Error(dire("trop_long", "Le serveur a mis trop de temps. Le son est encore là, réessayez."));
             }
             throw err;
         });
@@ -93,7 +106,7 @@
             lecteur.onload = function () {
                 resoudre(String(lecteur.result).split(",")[1]);
             };
-            lecteur.onerror = function () { rejeter(new Error("Lecture du son impossible.")); };
+            lecteur.onerror = function () { rejeter(new Error(dire("lecture_impossible", "Lecture du son impossible."))); };
             lecteur.readAsDataURL(blob);
         });
     }
@@ -120,7 +133,8 @@
         boite.textContent = chrono(ecoule);
         if (reste <= PREVENIR_MS) {
             boite.classList.add("bientot");
-            $("etat").textContent = "Plafond du mémo dans " + Math.ceil(reste / 1000) + " s";
+            $("etat").textContent = dire("plafond_dans", "Plafond du mémo dans")
+                + " " + Math.ceil(reste / 1000) + " s";
         }
         if (reste <= 0) { arreter(true); }
     }
@@ -132,15 +146,14 @@
            semble simplement ne pas savoir enregistrer : il faut nommer la vraie
            cause, sinon on cherche du côté du navigateur pendant une heure. */
         if (!window.isSecureContext) {
-            message("Cette page a besoin d'une connexion sécurisée (HTTPS) pour " +
-                    "ouvrir le micro. Ouvrez-la par l'adresse https de l'instance.",
-                    "erreur");
+            message(dire("https_requis", "Cette page a besoin d'une connexion sécurisée "
+                + "(HTTPS) pour ouvrir le micro."), "erreur");
             return;
         }
         var mimetype = typeSupporte();
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !mimetype) {
-            message("Ce navigateur ne sait pas enregistrer. Essayez l'application, " +
-                    "ou un navigateur récent.", "erreur");
+            message(dire("navigateur_incapable", "Ce navigateur ne sait pas enregistrer. "
+                + "Essayez l'application, ou un navigateur récent."), "erreur");
             return;
         }
         /* 🔴 Le `catch` du micro est accroché ICI, à la promesse de
@@ -151,8 +164,8 @@
         navigator.mediaDevices.getUserMedia({
             audio: {channelCount: 1, echoCancellation: true, noiseSuppression: true},
         }).catch(function (err) {
-            message("Le micro n'est pas accessible. Autorisez-le pour ce site, " +
-                    "puis réessayez.", "erreur");
+            message(dire("micro_refuse", "Le micro n'est pas accessible. Autorisez-le "
+                + "pour ce site, puis réessayez."), "erreur");
             throw err;
         }).then(function (flux) {
             etat.flux = flux;
@@ -186,9 +199,8 @@
         try { etat.recorder.stop(); } catch (e) { relacherMicro(); }
         etat.recorder = null;
         if (plafond) {
-            message("Enregistrement arrêté : plafond de cinq minutes atteint. " +
-                    "Au-delà, c'est une rencontre, et elle se capte depuis l'application.",
-                    "erreur");
+            message(dire("plafond_atteint", "Enregistrement arrêté : plafond de cinq "
+                + "minutes atteint."), "erreur");
         }
     }
 
@@ -214,7 +226,7 @@
         if (!etat.blob || etat.envoi) { return; }
         etat.envoi = true;
         peindre();
-        message("Envoi en cours…", "");
+        message(dire("envoi_en_cours", "Envoi en cours…"), "");
         enBase64(etat.blob).then(function (b64) {
             return appeler("/capture/memo", {
                 audio_b64: b64,
@@ -223,14 +235,13 @@
             });
         }).then(function (resultat) {
             var texte = resultat.transcrit
-                ? "Note créée : " + (resultat.texte || "").slice(0, 200)
-                : "Note créée, avec l'audio en pièce jointe. " +
-                  "La dictée n'est pas configurée ici, il n'y a donc pas de texte.";
+                ? dire("note_avec_texte", "Note créée :") + " " + (resultat.texte || "").slice(0, 200)
+                : dire("note_sans_texte", "Note créée, avec l'audio en pièce jointe.");
             message(texte, "faite");
             if (resultat.url) {
                 var lien = document.createElement("a");
                 lien.href = resultat.url;
-                lien.textContent = " Ouvrir la note";
+                lien.textContent = " " + dire("ouvrir_la_note", "Ouvrir la note");
                 $("message").appendChild(lien);
             }
             etat.blob = null;
@@ -239,7 +250,7 @@
             $("chrono").textContent = "00:00";
             $("chrono").classList.remove("bientot");
         }).catch(function (err) {
-            message(err.message || "L'envoi a échoué.", "erreur");
+            message(err.message || dire("envoi_echoue", "L'envoi a échoué."), "erreur");
         }).then(function () {
             etat.envoi = false;
             peindre();
@@ -259,9 +270,9 @@
         $("jeter").disabled = etat.envoi;
         $("pastille").classList.toggle("hidden", !enCours);
         if (enCours) {
-            $("etat").textContent = "Enregistrement en cours";
+            $("etat").textContent = dire("en_cours", "Enregistrement en cours");
         } else if (pret) {
-            $("etat").textContent = "Prêt à envoyer";
+            $("etat").textContent = dire("pret", "Prêt à envoyer");
         } else if (!etat.envoi) {
             $("etat").textContent = "";
         }

@@ -1,6 +1,6 @@
 {
     "name": "Captation audio",
-    "version": "18.0.1.2.2",
+    "version": "18.0.1.2.4",
     "category": "Productivity",
     "summary": "Enregistrer une rencontre ou un mémo depuis le téléphone, et le déposer là où la suite est déjà automatique",
     "author": "Les services de consultation Blue Fox, Inc.",

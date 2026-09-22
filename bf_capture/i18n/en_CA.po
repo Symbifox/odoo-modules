@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-21 23:58+0000\n"
-"PO-Revision-Date: 2026-09-21 23:58+0000\n"
+"POT-Creation-Date: 2026-09-22 07:51+0000\n"
+"PO-Revision-Date: 2026-09-22 07:51+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -15,6 +15,12 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Language: en_CA\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Arrêter"
+msgstr "Stop"
 
 #. module: bf_capture
 #. odoo-python
@@ -30,6 +36,7 @@ msgstr "No audio file."
 
 #. module: bf_capture
 #. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
 #: code:addons/bf_capture/models/bf_capture.py:0
 msgid "Aucun son reçu."
 msgstr "No sound received."
@@ -43,6 +50,31 @@ msgstr "Audio capture"
 #: model:ir.model,name:bf_capture.model_bf_capture
 msgid "Captation audio mobile"
 msgstr "Mobile audio capture"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid ""
+"Ce navigateur ne sait pas enregistrer. Essayez l'application, ou un "
+"navigateur récent."
+msgstr "This browser cannot record. Try the app, or a recent browser."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid ""
+"Cette page a besoin d'une connexion sécurisée (HTTPS) pour ouvrir le micro."
+msgstr "This page needs a secure connection (HTTPS) to open the microphone."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid ""
+"Cinq minutes au plus, et au premier plan : une page web n'a pas de service "
+"en arrière-plan, et un enregistrement de rencontre s'y perdrait en chemin. "
+"Les rencontres se captent depuis l'application, qui tient le micro écran "
+"éteint."
+msgstr "Five minutes at most, and in the foreground: a web page has no background service, and a meeting recording would be lost along the way. Meetings are captured from the app, which holds the microphone with the screen off."
 
 #. module: bf_capture
 #: model:ir.model,name:bf_capture.model_res_config_settings
@@ -80,9 +112,39 @@ msgstr "Meeting deposit"
 
 #. module: bf_capture
 #. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Enregistrement arrêté : plafond de cinq minutes atteint."
+msgstr "Recording stopped: five-minute limit reached."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Enregistrement en cours"
+msgstr "Recording"
+
+#. module: bf_capture
+#. odoo-python
 #: code:addons/bf_capture/models/bf_capture.py:0
 msgid "Enregistrement trop volumineux (%(recu)s, maximum %(max)s)."
 msgstr "Recording too large (%(recu)s, maximum %(max)s)."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Enregistrer"
+msgstr "Record"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Envoi en cours…"
+msgstr "Sending…"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Envoyer"
+msgstr "Send"
 
 #. module: bf_capture
 #. odoo-python
@@ -99,6 +161,12 @@ msgid ""
 msgstr "A meeting or a title is required: the filename is what tells the processor which client this is."
 
 #. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Jeter"
+msgstr "Discard"
+
+#. module: bf_capture
 #: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
 msgid ""
 "L'enregistrement part vers le dossier Nextcloud que surveille le processeur "
@@ -107,11 +175,61 @@ msgid ""
 msgstr "The recording goes to the Nextcloud folder watched by the meeting processor. The filename is composed here, from the calendar event."
 
 #. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "L'envoi a échoué."
+msgstr "Sending failed."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid ""
+"La dictée n'est pas configurée ici : le mémo arrivera en audio, sans texte."
+msgstr "Dictation is not configured here: the memo will arrive as audio, without text."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid ""
+"Le micro n'est pas accessible. Autorisez-le pour ce site, puis réessayez."
+msgstr "The microphone is not available. Allow it for this site, then try again."
+
+#. module: bf_capture
 #: model:ir.model.fields,help:bf_capture.field_res_config_settings__bf_capture_memo_max_bytes
 msgid ""
 "Le mémo passe par la dictée : au-delà de son propre plafond, le "
 "téléversement serait refusé plus loin, après coup."
 msgstr "A memo goes through dictation: past its own limit the upload would be refused further down the line, after the fact."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Le mémo revient transcrit, dans une note."
+msgstr "The memo comes back transcribed, as a note."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Le serveur a mis trop de temps. Le son est encore là, réessayez."
+msgstr "The server took too long. The audio is still here, try again."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Le serveur a répondu"
+msgstr "The server answered"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Le serveur n'a pas pu enregistrer le mémo."
+msgstr "The server could not save the memo."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Lecture du son impossible."
+msgstr "Could not read the audio."
 
 #. module: bf_capture
 #. odoo-python
@@ -123,6 +241,13 @@ msgstr "Memo too long (%(recu)s, maximum %(max)s). Beyond that it is a meeting, 
 
 #. module: bf_capture
 #. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Mémo trop long pour cette page."
+msgstr "Memo too long for this page."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
 #: code:addons/bf_capture/models/bf_capture.py:0
 msgid "Mémo vocal"
 msgstr "Voice memo"
@@ -142,9 +267,45 @@ msgid ""
 msgstr "Voice memo without a transcription: dictation is not configured on this instance. The audio is attached."
 
 #. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Note créée :"
+msgstr "Note created:"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Note créée, avec l'audio en pièce jointe."
+msgstr "Note created, with the audio attached."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Ouvrir la note"
+msgstr "Open the note"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Plafond du mémo dans"
+msgstr "Memo limit in"
+
+#. module: bf_capture
 #: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
 msgid "Plafonds"
 msgstr "Limits"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Prêt à envoyer"
+msgstr "Ready to send"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Rappeler l'équipe"
+msgstr "Call the team back"
 
 #. module: bf_capture
 #: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
@@ -167,6 +328,12 @@ msgid "Rencontre introuvable."
 msgstr "Meeting not found."
 
 #. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Son illisible."
+msgstr "Unreadable audio."
+
+#. module: bf_capture
 #: model:ir.model.fields,field_description:bf_capture.field_res_config_settings__bf_capture_memo_max_bytes
 msgid "Taille maximale d'un mémo (octets)"
 msgstr "Maximum memo size (bytes)"
@@ -175,6 +342,12 @@ msgstr "Maximum memo size (bytes)"
 #: model:ir.model.fields,field_description:bf_capture.field_res_config_settings__bf_capture_max_bytes
 msgid "Taille maximale d'une rencontre (octets)"
 msgstr "Maximum meeting size (bytes)"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Titre (facultatif)"
+msgstr "Title (optional)"
 
 #. module: bf_capture
 #: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
@@ -191,3 +364,9 @@ msgstr "Too many recordings with the same name in the folder."
 #: model:ir.model.fields,help:bf_capture.field_res_config_settings__bf_capture_max_bytes
 msgid "Une heure d'audio du téléphone pèse environ 5 Mo."
 msgstr "One hour of phone audio weighs about 5 MB."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Votre session a expiré. Rechargez la page."
+msgstr "Your session has expired. Reload the page."
