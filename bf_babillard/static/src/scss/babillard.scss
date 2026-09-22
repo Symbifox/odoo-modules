@@ -292,6 +292,16 @@ $o-bf-bab-pastilles: (
     .o_bf_bab_compte {
         font-variant-numeric: tabular-nums;
         opacity: 0.75;
+        // 🔴 Sans cet espace, le compte se colle au libellé dès que celui-ci
+        // remplit la ligne : « Une sortie, sans repas (Thomas Girard)1 ». Ça ne
+        // se voit pas au fil, où la carte est large, mais dans le formulaire,
+        // où elle ne l'est pas. Vu sur une capture du guide, pas à l'essai.
+        //
+        // 🔴 Et c'est un PADDING, pas une marge : le compte porte `ms-auto`,
+        // qui est un utilitaire Bootstrap en `margin-left: auto !important`.
+        // Une marge y est écrasée en silence, et la première tentative (18.0.1.7.1)
+        // n'a rien changé à l'écran.
+        padding-left: 0.5rem;
     }
 
     .o_bf_bab_ajout {
