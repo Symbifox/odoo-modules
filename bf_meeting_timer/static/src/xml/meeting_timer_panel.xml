@@ -2,17 +2,30 @@
 <templates xml:space="preserve">
 
     <t t-name="bf_meeting_timer.Panel">
-        <div class="o_bf_meeting_timer mb-3">
+        <div class="o_bf_meeting_timer mb-3" t-ref="racine"
+             t-att-class="{ 'o_bf_meeting_timer_reduit': state.reduit }">
 
             <div t-if="!resId" class="alert alert-info mb-0" role="alert">
                 Enregistrez l'ordre du jour, puis le chronomètre pourra partir.
             </div>
 
             <t t-elif="state.payload">
-                <div class="o_bf_meeting_timer_head d-flex flex-wrap align-items-center gap-4 p-3 border rounded">
+                <!--
+                    Une seule rangée : la tête en faisait deux, parce que
+                    six boutons, une étiquette et un titre ne tenaient pas sur la
+                    ligne des chiffres. Les gestes secondaires sont des icônes.
+                -->
+                <div class="o_bf_meeting_timer_head d-flex flex-wrap flex-md-nowrap align-items-center gap-3 px-3 py-2 border rounded">
+
+                    <button type="button" class="btn btn-link text-muted p-0 o_bf_meeting_timer_reduire"
+                            t-on-click="() => this.basculerReduit()"
+                            t-att-title="state.reduit ? 'Déployer le chronomètre' : 'Réduire le chronomètre'"
+                            t-att-aria-expanded="state.reduit ? 'false' : 'true'">
+                        <i t-att-class="state.reduit ? 'fa fa-chevron-right' : 'fa fa-chevron-down'"/>
+                    </button>
 
                     <div class="d-flex flex-column">
-                        <span class="text-muted small text-uppercase">Écoulé</span>
+                        <span class="text-muted small text-uppercase" t-if="!state.reduit">Écoulé</span>
                         <span class="o_bf_meeting_timer_clock" t-esc="duree(ecoule)"/>
                     </div>
 
@@ -24,11 +37,16 @@
                     -->
                     <div class="d-flex flex-column o_bf_meeting_timer_sujet"
                          t-if="ligneCourante">
-                        <span class="text-muted small text-uppercase">Sujet en cours</span>
-                        <span class="fs-5 fw-bold text-truncate"
+                        <span class="text-muted small text-uppercase" t-if="!state.reduit">Sujet en cours</span>
+                        <span class="fw-bold text-truncate"
+                              t-att-class="state.reduit ? '' : 'fs-5'"
                               t-att-title="ligneCourante.name"
                               t-esc="ligneCourante.name"/>
-                        <span class="text-muted small">
+                        <!-- Le dépassement du sujet ouvert se voit ici : c'est le
+                             chiffre qui aurait trahi une fin projetée
+                             trompeuse, mesurée en rencontre réelle. -->
+                        <span class="small"
+                              t-att-class="depasse(ligneCourante) ? 'text-danger fw-bold' : 'text-muted'">
                             <t t-esc="duree(secondesDuSujet(ligneCourante))"/>
                             <t t-if="ligneCourante.planned_minutes">
                                 sur <t t-esc="duree(ligneCourante.planned_minutes * 60)"/>
@@ -38,33 +56,43 @@
                             </t>
                         </span>
                     </div>
+                    <div class="flex-grow-1" t-else=""/>
 
-                    <div class="d-flex flex-column" t-if="state.payload.state !== 'idle'">
+                    <div class="d-flex flex-column text-nowrap" t-if="state.payload.state !== 'idle'">
                         <!-- Une rencontre terminée n'a plus de fin PROJETÉE : elle a une fin. -->
-                        <span class="text-muted small text-uppercase">
+                        <span class="text-muted small text-uppercase" t-if="!state.reduit">
                             <t t-if="state.payload.state === 'done'">Fin</t>
                             <t t-else="">Fin projetée</t>
                         </span>
-                        <span class="fs-5" t-att-class="enRetard ? 'text-danger fw-bold' : 'fw-bold'">
+                        <span t-att-class="(state.reduit ? '' : 'fs-5 ') + (enRetard ? 'text-danger fw-bold' : 'fw-bold')">
+                            <!-- Réduit, l'heure garde un mot : seule, une heure
+                                 rouge ne dit pas ce qu'elle est. -->
+                            <span class="text-muted small fw-normal me-1" t-if="state.reduit">
+                                <t t-if="state.payload.state === 'done'">fin</t>
+                                <t t-else="">fin projetée</t>
+                            </span>
                             <t t-esc="finProjetee"/>
                         </span>
-                        <span class="text-muted small" t-if="state.payload.planned_end">
+                        <span class="text-muted small" t-if="state.payload.planned_end and !state.reduit">
                             prévu <t t-esc="heure(state.payload.planned_end)"/>
                         </span>
                     </div>
 
-                    <div class="d-flex flex-column" t-if="state.payload.state !== 'idle'">
+                    <div class="d-flex flex-column text-nowrap" t-if="state.payload.state !== 'idle' and !state.reduit">
                         <span class="text-muted small text-uppercase">Écart cumulé</span>
                         <span class="fs-5" t-att-class="classeEcart(ecart)" t-esc="signe(ecart)"/>
                     </div>
 
-                    <div class="d-flex flex-column" t-if="state.payload.state === 'running' or state.payload.state === 'paused'">
+                    <div class="d-flex flex-column text-nowrap" t-if="(state.payload.state === 'running' or state.payload.state === 'paused') and !state.reduit">
                         <span class="text-muted small text-uppercase">Reste alloué</span>
                         <span class="fs-5" t-esc="duree(state.payload.remaining_planned_seconds)"/>
                     </div>
 
-                    <div class="ms-auto d-flex align-items-center gap-2">
-                        <span class="badge text-bg-secondary" t-esc="etiquetteEtat"/>
+                    <div class="ms-auto d-flex flex-wrap justify-content-end align-items-center gap-2">
+                        <!-- En marche, l'horloge qui avance dit l'état : l'étiquette
+                             ne sert qu'aux autres. -->
+                        <span t-if="state.payload.state !== 'running'"
+                              class="badge text-bg-secondary" t-esc="etiquetteEtat"/>
 
                         <button t-if="state.payload.state === 'idle'"
                                 class="btn btn-primary" t-on-click="() => this.demarrer()"
@@ -73,46 +101,57 @@
                         </button>
 
                         <button t-if="state.payload.state === 'running'"
-                                class="btn btn-primary" t-on-click="() => this.geste('action_timer_split')"
+                                class="btn btn-primary text-nowrap" t-on-click="() => this.geste('action_timer_split')"
                                 t-att-disabled="state.busy"
-                                title="Sujet suivant (Alt+S)">
+                                title="Sujet suivant (Alt+Maj+S)">
                             <i class="fa fa-step-forward me-1"/>Sujet suivant
+                        </button>
+
+                        <button t-if="state.payload.state === 'running' or state.payload.state === 'paused'"
+                                class="btn btn-secondary text-nowrap" t-on-click="() => this.varia()"
+                                t-att-disabled="state.busy"
+                                title="Ouvrir le sujet Varia (créé au premier clic) et y poser le curseur">
+                            <i class="fa fa-plus me-1"/>Varia
                         </button>
 
                         <button t-if="state.payload.state === 'running'"
                                 class="btn btn-secondary" t-on-click="() => this.geste('action_timer_skip')"
                                 t-att-disabled="state.busy"
-                                title="Marquer le sujet en cours comme non couvert">
-                            Passer
+                                title="Passer : marquer le sujet en cours comme non couvert"
+                                aria-label="Passer">
+                            <i class="fa fa-share"/>
                         </button>
 
                         <button t-if="state.payload.state === 'running'"
                                 class="btn btn-secondary" t-on-click="() => this.geste('action_timer_pause')"
-                                t-att-disabled="state.busy" title="Pause (Alt+P)">
+                                t-att-disabled="state.busy" title="Pause (Alt+Maj+P)" aria-label="Pause">
                             <i class="fa fa-pause"/>
                         </button>
 
                         <button t-if="state.payload.state === 'paused'"
-                                class="btn btn-primary" t-on-click="() => this.geste('action_timer_resume')"
-                                t-att-disabled="state.busy" title="Reprendre (Alt+P)">
+                                class="btn btn-primary text-nowrap" t-on-click="() => this.geste('action_timer_resume')"
+                                t-att-disabled="state.busy" title="Reprendre (Alt+Maj+P)">
                             <i class="fa fa-play me-1"/>Reprendre
                         </button>
 
                         <button t-if="state.payload.state === 'running' or state.payload.state === 'paused'"
-                                class="btn btn-outline-secondary" t-on-click="() => this.geste('action_timer_stop')"
-                                t-att-disabled="state.busy">
-                            Terminer
+                                class="btn btn-outline-secondary" t-on-click="() => this.terminer()"
+                                t-att-disabled="state.busy"
+                                title="Terminer la rencontre : arrête le chronomètre et passe l'ordre du jour à « Terminé »"
+                                aria-label="Terminer la rencontre">
+                            <i class="fa fa-stop"/>
                         </button>
 
-                        <button t-if="state.payload.state !== 'idle'"
-                                class="btn btn-link text-muted" t-on-click="() => this.effacer()"
-                                t-att-disabled="state.busy" title="Effacer le chronomètre">
+                        <button t-if="state.payload.state !== 'idle' and !state.reduit"
+                                class="btn btn-link text-muted px-1" t-on-click="() => this.effacer()"
+                                t-att-disabled="state.busy" title="Effacer le chronomètre"
+                                aria-label="Effacer le chronomètre">
                             <i class="fa fa-eraser"/>
                         </button>
                     </div>
                 </div>
 
-                <div t-if="lignes.length" class="o_bf_meeting_timer_liste">
+                <div t-if="lignes.length and !state.reduit" class="o_bf_meeting_timer_liste">
                 <table class="table table-sm o_bf_meeting_timer_list mt-2 mb-0">
                     <thead>
                         <tr>
@@ -165,7 +204,7 @@
                 </table>
                 </div>
 
-                <div t-if="!lignes.length" class="text-muted small mt-2">
+                <div t-if="!lignes.length and !state.reduit" class="text-muted small mt-2">
                     Aucun sujet accepté à l'ordre du jour : le chronomètre n'aurait rien à découper.
                 </div>
             </t>

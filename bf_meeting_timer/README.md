@@ -20,9 +20,26 @@ personne qui préside a déjà les mains :
 * ce que le sujet qu'on vient de quitter a coûté ;
 * ce qu'il reste d'alloué aux sujets pas encore abordés.
 
-Gestes : démarrer, sujet suivant (`Alt+S`), revenir sur un sujet, passer un
-sujet, pause (`Alt+P`), terminer. Un sujet imprévu né en cours de rencontre est
+Gestes : démarrer, sujet suivant (`Alt+Maj+S`), revenir sur un sujet, passer un
+sujet, pause (`Alt+Maj+P`), terminer. Un sujet imprévu né en cours de rencontre est
 chronométré comme les autres ; un sujet repris plus tard cumule ses passages.
+Revenir aussitôt (moins de 90 secondes) au sujet qu'on vient de quitter annule
+le « Sujet suivant » au lieu de compter un passage. Chaque geste qui ouvre un
+sujet amène à ce sujet dans les notes en direct. Le panneau se réduit à une
+rangée.
+
+« + Varia » ouvre le sujet Varia, créé au premier clic à la fin de l'ordre du
+jour, et y pose le curseur.
+
+Les notes en direct se prennent par sujet : les sujets à gauche, les notes du
+sujet choisi à droite. Le chronomètre choisit le sujet ; un clic à gauche en
+ouvre un autre sans toucher au chronomètre. Ces notes vont aux points du compte
+rendu, sujet par sujet, et les « Notes générales » à son résumé. Un réglage de
+société rend l'ancien fil continu.
+
+Terminer au chronomètre termine la rencontre, et terminer la rencontre (ou
+créer son compte rendu) arrête le chronomètre. La barre d'étapes ramène un
+ordre du jour terminé à « Confirmé » ; le chronomètre, lui, ne repart pas.
 
 À la fin, le temps réel de chaque sujet reste sur l'ordre du jour, le chatter
 reçoit un récapitulatif, et le rapport de compte rendu imprime le tableau,

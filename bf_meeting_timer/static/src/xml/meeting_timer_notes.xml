@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_meeting_timer.Notes">
+        <div class="o_bf_meeting_timer_notes d-flex flex-column flex-md-row gap-3" t-ref="racine">
+
+            <div t-if="!resId" class="alert alert-info mb-0" role="alert">
+                Enregistrez l'ordre du jour, puis les notes par sujet seront disponibles.
+            </div>
+
+            <t t-else="">
+                <nav class="o_bf_meeting_timer_notes_sujets list-group" aria-label="Sujets">
+                    <t t-foreach="sujets" t-as="sujet" t-key="sujet.id">
+                        <button type="button"
+                                class="list-group-item list-group-item-action d-flex align-items-start gap-2"
+                                t-att-class="{ 'active': state.choisi === sujet.id }"
+                                t-att-aria-current="state.choisi === sujet.id ? 'true' : 'false'"
+                                t-on-click="() => this.choisir(sujet.id, { curseur: true })"
+                                t-att-title="estCourant(sujet) ? 'Sujet en cours au chronomètre' : 'Ouvrir les notes de ce sujet (le chronomètre ne bouge pas)'">
+                            <i t-if="estCourant(sujet)" class="fa fa-clock-o mt-1"/>
+                            <i t-else="" class="fa fa-fw mt-1"/>
+                            <span class="flex-grow-1">
+                                <t t-esc="sujet.name"/>
+                                <span t-if="sujet.state === 'skipped'" class="badge text-bg-light ms-1">sauté</span>
+                            </span>
+                        </button>
+                    </t>
+                    <button type="button"
+                            class="list-group-item list-group-item-action d-flex align-items-start gap-2 fst-italic"
+                            t-att-class="{ 'active': state.choisi === 'general' }"
+                            t-on-click="() => this.choisir('general', { curseur: true })"
+                            title="Ce qui ne va à aucun sujet. Va au résumé du compte rendu.">
+                        <i class="fa fa-fw fa-sticky-note-o mt-1"/>
+                        <span class="flex-grow-1">Notes générales</span>
+                    </button>
+                </nav>
+
+                <section class="o_bf_meeting_timer_notes_zone flex-grow-1">
+                    <t t-if="recordChoisi">
+                        <div class="d-flex align-items-baseline gap-2 mb-2">
+                            <h4 class="mb-0">
+                                <t t-if="state.choisi === 'general'">Notes générales</t>
+                                <t t-else="" t-esc="sujetChoisi.name"/>
+                            </h4>
+                            <span t-if="sujetChoisi and estCourant(sujetChoisi)" class="badge text-bg-primary">
+                                en cours
+                            </span>
+                        </div>
+                        <div class="o_bf_meeting_timer_notes_editeur" t-att-data-cle="cleEditeur" t-key="cleEditeur">
+                            <t t-component="HtmlField"
+                               t-props="state.choisi === 'general' ? propsGeneral : propsEditeur"
+                               record="recordChoisi"
+                               name="'live_notes_html'"
+                               readonly="false"/>
+                        </div>
+                    </t>
+                    <div t-else="" class="text-muted">
+                        Aucun sujet accepté à l'ordre du jour.
+                    </div>
+                </section>
+            </t>
+        </div>
+    </t>
+
+</templates>

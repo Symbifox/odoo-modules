@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Chronomètre de rencontre",
-    "version": "18.0.1.2.2",
+    "version": "18.0.1.4.0",
     "category": "Services/Meetings",
     "summary": "Le temps réel passé sur chaque sujet, et l'heure de fin projetée "
                "pendant que la rencontre dure encore",
@@ -34,9 +34,16 @@ Ce qu'il montre pendant la rencontre
 
 Les gestes
 ----------
-Démarrer, sujet suivant, revenir à un sujet, passer un sujet, pause, terminer.
-Un sujet imprévu qui naît en cours de rencontre est chronométré comme les
-autres, et un sujet repris plus tard cumule ses passages.
+Démarrer, sujet suivant, revenir à un sujet, passer un sujet, « + Varia »,
+pause, terminer. Un sujet imprévu qui naît en cours de rencontre est
+chronométré comme les autres, et un sujet repris plus tard cumule ses passages.
+Revenir aussitôt au sujet qu'on vient de quitter annule le « Sujet suivant ».
+
+Les notes par sujet
+-------------------
+Les notes en direct se prennent sujet par sujet, à côté de la liste des
+sujets, et vont aux points du compte rendu. Le fil continu reste disponible
+par un réglage de société.
 
 Ce qu'il laisse
 ---------------
@@ -57,8 +64,11 @@ somme des meilleurs, ni record à battre. La seule comparaison est le plan.
     ],
     "assets": {
         "web.assets_backend": [
+            "bf_meeting_timer/static/src/js/meeting_timer_store.js",
             "bf_meeting_timer/static/src/js/meeting_timer_panel.js",
+            "bf_meeting_timer/static/src/js/meeting_timer_notes.js",
             "bf_meeting_timer/static/src/xml/meeting_timer_panel.xml",
+            "bf_meeting_timer/static/src/xml/meeting_timer_notes.xml",
             "bf_meeting_timer/static/src/scss/meeting_timer_panel.scss",
         ],
     },

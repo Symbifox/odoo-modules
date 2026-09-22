@@ -22,7 +22,7 @@
     box-shadow: 0 .25rem .375rem -.25rem rgba(0, 0, 0, .15);
 
     .o_bf_meeting_timer_clock {
-        font-size: 2.25rem;
+        font-size: 1.75rem;
         line-height: 1.1;
         font-variant-numeric: tabular-nums;
         font-feature-settings: "tnum";
@@ -33,15 +33,24 @@
     // sujets défile donc dans sa propre boîte, et le tout tient sous le tiers
     // de l'écran.
     .o_bf_meeting_timer_liste {
-        max-height: 26vh;
+        max-height: 22vh;
         overflow-y: auto;
     }
 
     // Un titre de sujet peut être long : il se coupe plutôt que de pousser les
-    // chiffres hors de la barre.
+    // chiffres ou les boutons à la ligne. C'est lui qui prend la place qui
+    // reste, et lui seul qui rétrécit (la tête faisait deux étages).
     .o_bf_meeting_timer_sujet {
-        min-width: 10rem;
-        max-width: 22rem;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    // Réduit : une rangée, sans étiquettes ni liste. Ce qu'on regarde du coin
+    // de l'œil en tapant, et rien d'autre.
+    &.o_bf_meeting_timer_reduit {
+        .o_bf_meeting_timer_clock {
+            font-size: 1.25rem;
+        }
     }
 
     .o_bf_meeting_timer_list {
@@ -61,5 +70,27 @@
         tr.o_bf_meeting_timer_joignable {
             cursor: pointer;
         }
+    }
+}
+
+// Notes par sujet : les sujets à gauche, les notes à droite. La
+// colonne des sujets garde sa largeur ; c'est la zone de notes qui prend la
+// place. Sous `md`, les deux s'empilent.
+.o_bf_meeting_timer_notes {
+    .o_bf_meeting_timer_notes_sujets {
+        flex: 0 0 16rem;
+        align-self: flex-start;
+        .list-group-item {
+            font-size: .95rem;
+        }
+    }
+    .o_bf_meeting_timer_notes_zone {
+        min-width: 0;
+    }
+    .o_bf_meeting_timer_notes_editeur {
+        min-height: 40vh;
+        border: 1px solid rgba(0, 0, 0, .125);
+        border-radius: .375rem;
+        padding: .5rem .75rem;
     }
 }

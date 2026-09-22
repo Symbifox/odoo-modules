@@ -25,6 +25,7 @@
             -->
             <xpath expr="//notebook" position="before">
                 <field name="timer_panel_placement" invisible="1"/>
+                <field name="timer_notes_layout" invisible="1"/>
                 <widget name="bf_meeting_timer_panel"
                         invisible="timer_panel_placement == 'tab'"/>
             </xpath>
@@ -32,6 +33,32 @@
             <xpath expr="//page[@name='live_notes']/field[@name='live_notes_html']" position="before">
                 <widget name="bf_meeting_timer_panel"
                         invisible="timer_panel_placement != 'tab'"/>
+            </xpath>
+
+            <!--
+                Notes par sujet : les sujets à gauche, les notes du sujet
+                choisi à droite. Le fil continu et la liste « Notes par sujet »
+                restent dans la vue, cachés : ils y sont pour que le formulaire
+                charge et enregistre les mêmes champs (les notes générales, et
+                les notes de chaque ligne de sujet), qu'on édite désormais à
+                droite. « Fil continu » au réglage de société rend l'ancienne
+                mise en page telle quelle.
+            -->
+            <xpath expr="//page[@name='live_notes']/div[hasclass('alert')]" position="attributes">
+                <attribute name="invisible">timer_notes_layout != 'flow'</attribute>
+            </xpath>
+            <xpath expr="//page[@name='live_notes']/field[@name='live_notes_html']" position="attributes">
+                <attribute name="invisible">timer_notes_layout != 'flow'</attribute>
+            </xpath>
+            <xpath expr="//page[@name='live_notes']/separator" position="attributes">
+                <attribute name="invisible">timer_notes_layout != 'flow'</attribute>
+            </xpath>
+            <xpath expr="//page[@name='live_notes']/field[@name='topic_ids']" position="attributes">
+                <attribute name="invisible">timer_notes_layout != 'flow'</attribute>
+            </xpath>
+            <xpath expr="//page[@name='live_notes']" position="inside">
+                <widget name="bf_meeting_timer_notes"
+                        invisible="timer_notes_layout == 'flow'"/>
             </xpath>
 
             <!-- Après la rencontre, le temps réel se lit à côté du temps alloué. -->

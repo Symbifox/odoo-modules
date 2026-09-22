@@ -25,6 +25,12 @@ from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
+# Un « Sujet suivant » suivi d'un retour au sujet qu'on vient de quitter, avant
+# ce délai, n'est pas un passage : c'est un geste à annuler. Mesuré sur une
+# rencontre réelle : trois allers-retours de 1 à 29 secondes, et 16 minutes de
+# retard effacées de la fin projetée.
+TIMER_UNDO_SECONDS = 90
+
 
 class MeetingAgenda(models.Model):
     _inherit = 'meeting.agenda'
@@ -68,6 +74,22 @@ class MeetingAgenda(models.Model):
         copy=False,
         ondelete='set null',
     )
+    timer_previous_topic_id = fields.Many2one(
+        'meeting.agenda.topic',
+        string='Sujet ouvert avant le sujet en cours',
+        copy=False,
+        ondelete='set null',
+        help="Sert au retour arrière : revenir aussitôt à ce sujet annule "
+             "le dernier « Sujet suivant » au lieu de compter un passage.",
+    )
+    timer_notes_layout = fields.Selection(
+        related='company_id.meeting_notes_layout',
+        string='Mise en page des notes en direct',
+        readonly=True,
+        help="Sert uniquement à la vue. Le repli vaut « par sujet » : une "
+             "société dont la colonne est restée nulle n'a pas deux zones de "
+             "notes qui disparaissent.",
+    )
     timer_panel_placement = fields.Selection(
         related='company_id.meeting_timer_placement',
         string='Place du chronomètre',
@@ -92,7 +114,14 @@ class MeetingAgenda(models.Model):
         contraire ferait tomber une fonction qui marchait avant lui, exactement
         comme le récapitulatif au chatter empêchait de terminer.
         """
+        # Par sujet, les notes générales sont pour ce qui ne va à aucun
+        # sujet : `bf_meeting` y verse sinon la liste de tous les sujets et leur
+        # contexte, que le compte rendu reprend ensuite comme résumé.
+        vides = self.filtered(
+            lambda r: (r.company_id.meeting_notes_layout or 'split') == 'split'
+            and not (r.live_notes_html or '').strip())
         resultat = super().action_start_meeting()
+        vides.write({'live_notes_html': False})
         for rec in self:
             if rec.timer_state != 'idle' or rec.state == 'cancelled':
                 continue
@@ -168,6 +197,7 @@ class MeetingAgenda(models.Model):
         # avant cet appel, et ne servaient à rien puisque le `write` ci-dessous
         # les réécrit. Une mutation qui survit sans `assertRaises` accuse
         # d'abord une ligne morte : c'était le cas.
+        quitte = self.timer_current_topic_id
         if topic:
             topic.write({
                 'timer_state': 'current',
@@ -176,6 +206,7 @@ class MeetingAgenda(models.Model):
             })
         self.write({
             'timer_current_topic_id': topic.id if topic else False,
+            'timer_previous_topic_id': quitte.id if quitte and quitte != topic else False,
             'timer_segment_since': now if self.timer_state == 'running' else False,
         })
 
@@ -245,12 +276,91 @@ class MeetingAgenda(models.Model):
         now = self._timer_now()
         self._timer_close_slice(now)
         previous = self.timer_current_topic_id
+        if self._timer_is_undo(previous, topic):
+            return self._timer_undo(previous, topic, now)
         if previous and previous != topic and previous.timer_state == 'current':
             previous.timer_state = 'done'
         # Le sujet s'ouvre même en pause : c'est `_timer_open_topic` qui refuse
         # de faire repartir la tranche tant que le chronomètre n'avance pas.
         self._timer_open_topic(topic, now)
         return self.timer_payload()
+
+    def _timer_is_undo(self, quitte, cible):
+        """Revenir aussitôt au sujet d'avant annule le geste qui l'a quitté.
+
+        Les trois conditions tiennent ensemble : on revient au sujet ouvert
+        JUSTE AVANT, le sujet qu'on quitte n'en est qu'à son premier passage, et
+        il n'a pas atteint `TIMER_UNDO_SECONDS` (la tranche en cours est déjà
+        versée quand on arrive ici).
+
+        Un seuil posé sur « Sujet suivant » lui-même aurait gardé « à venir » les
+        sujets vraiment expédiés en trente secondes, et le prochain « Sujet
+        suivant » les aurait rouverts en fin de rencontre.
+        """
+        self.ensure_one()
+        return bool(
+            quitte and cible and quitte != cible
+            and cible == self.timer_previous_topic_id
+            and quitte.timer_visits == 1
+            and quitte.timer_seconds < TIMER_UNDO_SECONDS
+        )
+
+    def _timer_undo(self, quitte, cible, now):
+        """Annuler le dernier « Sujet suivant » : le sujet quitté redevient à venir.
+
+        Ses secondes vont au sujet d'avant, parce qu'on parlait encore de lui, et
+        le sujet d'avant reprend SANS compter de passage : c'est le même passage
+        qui continue. Sans ça, la fin projetée compte le sujet quitté comme
+        couvert, et son alloué inutilisé comme du temps gagné.
+        """
+        secondes = quitte.timer_seconds
+        quitte.write({
+            'timer_state': 'pending',
+            'timer_visits': 0,
+            'timer_seconds': 0,
+            'timer_first_at': False,
+        })
+        cible.write({
+            'timer_state': 'current',
+            'timer_seconds': cible.timer_seconds + secondes,
+        })
+        self.write({
+            'timer_current_topic_id': cible.id,
+            'timer_previous_topic_id': False,
+            'timer_segment_since': now if self.timer_state == 'running' else False,
+        })
+        return self.timer_payload()
+
+    def action_timer_varia(self):
+        """« + Varia » : ouvrir le sujet Varia, en le créant au besoin.
+
+        Un seul Varia par ordre du jour : un second clic y ramène. Il n'a pas de
+        minutes allouées, donc il ne déplace pas la fin projetée ; son temps
+        réel, lui, compte à l'écart comme tout sujet couvert.
+
+        Le sujet s'ouvre par le même chemin que « Revenir » : il retient le sujet
+        d'avant, donc un retour aussitôt annule le détour.
+        """
+        self._timer_guard()
+        if self.timer_state not in ('running', 'paused'):
+            raise UserError(_("Le chronomètre n'est pas parti."))
+        varia = self._timer_topics().filtered(
+            lambda t: (t.name or '').strip().lower() == 'varia')[:1]
+        if not varia:
+            dernier = max(self.topic_ids.mapped('sequence') or [0])
+            varia = self.env['meeting.agenda.topic'].create({
+                'agenda_id': self.id,
+                'name': 'Varia',
+                'sequence': dernier + 10,
+                'duration_planned': 0,
+            })
+            if (self.company_id.meeting_notes_layout or 'split') == 'flow':
+                # Au fil continu, le saut vers les notes cherche un titre.
+                self.live_notes_html = (self.live_notes_html or Markup('')) + Markup(
+                    '<h3>Varia</h3><p><br></p>')
+        if varia == self.timer_current_topic_id:
+            return self.timer_payload()
+        return self.action_timer_goto(varia.id)
 
     def action_timer_skip(self):
         """Passer le sujet en cours : il est marqué sauté, le temps déjà couru reste.
@@ -290,10 +400,61 @@ class MeetingAgenda(models.Model):
         return self.timer_payload()
 
     def action_timer_stop(self):
+        """Terminer au chronomètre, c'est terminer la rencontre.
+
+        L'ordre du jour passe à « Terminé » comme par le bouton d'en-tête. On
+        peut toujours le ramener à « Confirmé » par la barre d'étapes, et le
+        chronomètre, lui, ne repart pas : une rencontre ne se rejoue pas.
+
+        🔴 Sous filet, dans ce sens-là aussi : si l'ordre du jour refuse de se
+        terminer, le chronomètre est quand même arrêté et sa mesure écrite.
+        """
         self._timer_guard()
         if self.timer_state not in ('running', 'paused'):
             raise UserError(_("Le chronomètre n'est pas parti."))
-        return self._timer_finish()
+        self._timer_finish()
+        if self.state in ('draft', 'confirmed'):
+            try:
+                with self.env.cr.savepoint():
+                    self.action_done()
+            except Exception:
+                _logger.warning(
+                    "Chronomètre : l'ordre du jour %s n'a pas pu passer à "
+                    "« Terminé ». Le chronomètre, lui, est arrêté.",
+                    self.id, exc_info=True)
+        return self.timer_payload()
+
+    def _timer_stop_with_meeting(self):
+        """Arrêter le chronomètre quand la rencontre se termine ailleurs.
+
+        Le bouton « Terminer » de l'en-tête et « Créer le compte rendu » passent
+        l'ordre du jour à « Terminé ». Un chronomètre laissé en marche derrière
+        eux courait sur une rencontre finie, et le compte rendu, qui n'imprime
+        le temps par sujet que d'un chronomètre terminé, perdait son tableau.
+
+        Sous filet : le bouton de la rencontre doit marcher même si le
+        chronomètre refuse.
+        """
+        for rec in self:
+            if rec.timer_state not in ('running', 'paused'):
+                continue
+            try:
+                with self.env.cr.savepoint():
+                    rec._timer_guard()
+                    rec._timer_finish()
+            except Exception:
+                _logger.warning(
+                    "Chronomètre : arrêt refusé à la fin de la rencontre %s. "
+                    "La rencontre, elle, est bien terminée.",
+                    rec.id, exc_info=True)
+
+    def action_done(self):
+        self._timer_stop_with_meeting()
+        return super().action_done()
+
+    def action_create_meeting_record(self):
+        self._timer_stop_with_meeting()
+        return super().action_create_meeting_record()
 
     def _timer_finish(self, now=None):
         self.ensure_one()
@@ -306,6 +467,7 @@ class MeetingAgenda(models.Model):
             'timer_ended_at': now,
             'timer_segment_since': False,
             'timer_current_topic_id': False,
+            'timer_previous_topic_id': False,
         })
         self._timer_post_recap()
         return self.timer_payload()
@@ -327,6 +489,7 @@ class MeetingAgenda(models.Model):
             'timer_elapsed_seconds': 0,
             'timer_segment_since': False,
             'timer_current_topic_id': False,
+            'timer_previous_topic_id': False,
         })
         return self.timer_payload()
 
@@ -414,6 +577,7 @@ class MeetingAgenda(models.Model):
             'elapsed_seconds': self._timer_elapsed_at(now),
             'planned_minutes': self.duration_planned or 0,
             'planned_end': fields.Datetime.to_string(prevue) if prevue else False,
+            'notes_layout': self.company_id.meeting_notes_layout or 'split',
             'projected_end': fields.Datetime.to_string(projetee) if projetee else False,
             'delta_seconds': ecart,
             'remaining_planned_seconds': reste_courant + reste_alloue,

@@ -193,6 +193,9 @@ class TestMeetingTimer(TransactionCase):
             agenda.action_timer_start()
             horloge.move_to('2026-09-21 18:04:00')
             agenda.action_timer_split()          # 4 min sur le premier
+            # Deux minutes sur le deuxième : au-delà du seuil de retour arrière,
+            # sinon revenir au premier annulerait le « Sujet suivant ».
+            horloge.move_to('2026-09-21 18:06:00')
             agenda.action_timer_pause()
             horloge.move_to('2026-09-21 18:30:00')
             agenda.action_timer_goto(premier.id)  # retour pendant la pause
@@ -209,9 +212,9 @@ class TestMeetingTimer(TransactionCase):
             agenda.action_timer_stop()
         self.assertEqual(premier.timer_visits, 2)
         self.assertEqual(premier.timer_seconds, 4 * 60 + 3 * 60,
-                         "les 28 minutes de pause n'appartiennent à personne")
-        self.assertEqual(deuxieme.timer_seconds, 0)
-        self.assertEqual(agenda.timer_elapsed_seconds, 7 * 60)
+                         "les 24 minutes de pause n'appartiennent à personne")
+        self.assertEqual(deuxieme.timer_seconds, 2 * 60)
+        self.assertEqual(agenda.timer_elapsed_seconds, 9 * 60)
 
     def test_un_sujet_d_un_autre_ordre_du_jour_est_refuse(self):
         agenda = self._agenda()
@@ -308,7 +311,8 @@ class TestMeetingTimer(TransactionCase):
             agenda.action_timer_start()
             horloge.move_to('2026-09-21 18:05:00')
             agenda.action_timer_split()
-            horloge.move_to('2026-09-21 18:06:00')
+            # Deux minutes : au-delà du seuil, c'est un vrai second passage.
+            horloge.move_to('2026-09-21 18:07:00')
             etat = agenda.action_timer_goto(premier.id)
         ligne = next(l for l in etat['topics'] if l['id'] == premier.id)
         self.assertEqual(ligne['visits'], 2)
@@ -327,7 +331,7 @@ class TestMeetingTimer(TransactionCase):
             agenda.action_timer_start()
             horloge.move_to('2026-09-21 18:12:00')
             agenda.action_timer_stop()
-        corps = agenda.message_ids[0].body
+        corps = self._recaps(agenda).body
         self.assertIn('&lt;b&gt;Gras&lt;/b&gt;', corps)
         self.assertNotIn('<b>Gras</b>', corps)
 
@@ -368,7 +372,7 @@ class TestMeetingTimer(TransactionCase):
         self.assertTrue(lignes[0]['covered'])
         self.assertFalse(lignes[1]['covered'])
         self.assertFalse(lignes[2]['covered'])
-        corps = agenda.message_ids[0].body
+        corps = self._recaps(agenda).body
         self.assertIn('non abordé', corps)
 
     def test_le_clone_ne_rapporte_pas_le_temps(self):
@@ -471,6 +475,423 @@ class TestMeetingTimer(TransactionCase):
             agenda.action_start_meeting()
         self.assertEqual(agenda.state, 'confirmed', "la rencontre démarre quand même")
         self.assertEqual(agenda.timer_state, 'idle')
+
+    # ------------------------------------------------------------------
+    # Le retour arrière
+    # ------------------------------------------------------------------
+    def test_revenir_aussitot_annule_le_sujet_suivant(self):
+        """Le motif relevé en rencontre réelle : « Sujet suivant », une demi-minute,
+        retour au sujet d'avant. Ce n'est pas un passage, c'est un geste annulé :
+        la projection doit être exactement celle d'une rencontre sans l'aller-retour."""
+        agenda = self._agenda()
+        temoin = self._agenda(name="Témoin sans aller-retour")
+        premier, deuxieme, _t = self._sujets(agenda)
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            temoin.action_timer_start()
+            horloge.move_to('2026-09-21 18:30:00')      # 30 min sur un sujet de 20
+            agenda.action_timer_split()
+            horloge.move_to('2026-09-21 18:30:29')
+            agenda.action_timer_goto(premier.id)
+            horloge.move_to('2026-09-21 18:31:00')
+            etat = agenda.timer_payload()
+            etat_temoin = temoin.timer_payload()
+
+        self.assertEqual(deuxieme.timer_state, 'pending', "le deuxième reste à venir")
+        self.assertEqual(deuxieme.timer_visits, 0)
+        self.assertEqual(deuxieme.timer_seconds, 0)
+        self.assertFalse(deuxieme.timer_first_at)
+        self.assertEqual(premier.timer_state, 'current')
+        self.assertEqual(premier.timer_visits, 1, "le même passage continue")
+        self.assertEqual(premier.timer_seconds, 30 * 60 + 29,
+                         "les 29 secondes vont au sujet dont on parlait encore")
+        for cle in ('delta_seconds', 'remaining_planned_seconds', 'projected_end',
+                    'elapsed_seconds'):
+            self.assertEqual(etat[cle], etat_temoin[cle], cle)
+        self.assertEqual(etat['delta_seconds'], 11 * 60, "le retard se voit")
+
+    def test_revenir_apres_le_seuil_compte_un_passage(self):
+        agenda = self._agenda()
+        premier, deuxieme, _t = self._sujets(agenda)
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:10:00')
+            agenda.action_timer_split()
+            horloge.move_to('2026-09-21 18:11:30')      # 90 s pile : plus un geste
+            agenda.action_timer_goto(premier.id)
+        self.assertEqual(deuxieme.timer_state, 'done')
+        self.assertEqual(deuxieme.timer_visits, 1)
+        self.assertEqual(deuxieme.timer_seconds, 90)
+        self.assertEqual(premier.timer_visits, 2)
+        self.assertEqual(premier.timer_seconds, 10 * 60)
+
+    def test_revenir_juste_sous_le_seuil_annule_encore(self):
+        agenda = self._agenda()
+        premier, deuxieme, _t = self._sujets(agenda)
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:10:00')
+            agenda.action_timer_split()
+            horloge.move_to('2026-09-21 18:11:29')
+            agenda.action_timer_goto(premier.id)
+        self.assertEqual(deuxieme.timer_state, 'pending')
+        self.assertEqual(premier.timer_visits, 1)
+
+    def test_ouvrir_un_autre_sujet_n_annule_rien(self):
+        """Seul le sujet ouvert JUSTE AVANT se reprend par retour arrière."""
+        agenda = self._agenda()
+        premier, deuxieme, troisieme = self._sujets(agenda)
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:10:00')
+            agenda.action_timer_split()                 # vers le deuxième
+            horloge.move_to('2026-09-21 18:10:20')
+            agenda.action_timer_goto(troisieme.id)      # on saute au troisième
+        self.assertEqual(deuxieme.timer_state, 'done')
+        self.assertEqual(deuxieme.timer_visits, 1)
+        self.assertEqual(troisieme.timer_visits, 1)
+        self.assertEqual(premier.timer_seconds, 10 * 60)
+
+    def test_un_sujet_deja_repris_ne_s_annule_pas(self):
+        """Un sujet à son deuxième passage a déjà été couvert une fois."""
+        agenda = self._agenda()
+        premier, deuxieme, _t = self._sujets(agenda)
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:00:30')
+            agenda.action_timer_split()                 # 30 s sur le premier
+            horloge.move_to('2026-09-21 18:10:00')
+            agenda.action_timer_goto(premier.id)        # 9:30 sur le deuxième
+            horloge.move_to('2026-09-21 18:10:10')      # 2e passage, 40 s en tout
+            agenda.action_timer_goto(deuxieme.id)
+        self.assertEqual(premier.timer_visits, 2)
+        self.assertEqual(premier.timer_state, 'done')
+        self.assertEqual(premier.timer_seconds, 40)
+        self.assertEqual(deuxieme.timer_visits, 2)
+
+    def test_le_retour_arriere_marche_en_pause(self):
+        agenda = self._agenda()
+        premier, deuxieme, _t = self._sujets(agenda)
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:10:00')
+            agenda.action_timer_split()
+            horloge.move_to('2026-09-21 18:10:20')
+            agenda.action_timer_pause()
+            horloge.move_to('2026-09-21 18:20:00')
+            agenda.action_timer_goto(premier.id)
+            self.assertFalse(agenda.timer_segment_since,
+                             "aucune tranche ne s'ouvre pendant une pause")
+            horloge.move_to('2026-09-21 18:25:00')
+            agenda.action_timer_resume()
+            horloge.move_to('2026-09-21 18:26:00')
+            agenda.action_timer_pause()
+        self.assertEqual(deuxieme.timer_state, 'pending')
+        self.assertEqual(premier.timer_visits, 1)
+        self.assertEqual(premier.timer_seconds, 10 * 60 + 20 + 60,
+                         "ni la pause ni l'attente ne comptent")
+        self.assertEqual(agenda.timer_elapsed_seconds, 10 * 60 + 20 + 60)
+
+    def test_le_retour_arriere_defait_aussi_un_passer(self):
+        agenda = self._agenda()
+        premier, deuxieme, _t = self._sujets(agenda)
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:00:10')
+            agenda.action_timer_skip()                  # le premier est sauté
+            horloge.move_to('2026-09-21 18:00:20')
+            agenda.action_timer_goto(premier.id)
+        self.assertEqual(premier.timer_state, 'current',
+                         "un sujet sauté par erreur se reprend")
+        self.assertEqual(deuxieme.timer_state, 'pending')
+        self.assertEqual(premier.timer_seconds, 20)
+
+    def test_on_n_annule_qu_un_geste(self):
+        """Le retour arrière ne se chaîne pas : il n'y a pas de pile de gestes."""
+        agenda = self._agenda()
+        premier, deuxieme, _t = self._sujets(agenda)
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:00:20')
+            agenda.action_timer_split()
+            horloge.move_to('2026-09-21 18:00:40')
+            agenda.action_timer_goto(premier.id)        # annulé
+            self.assertFalse(agenda.timer_previous_topic_id)
+            horloge.move_to('2026-09-21 18:00:50')
+            agenda.action_timer_split()                 # le deuxième, de nouveau
+        self.assertEqual(deuxieme.timer_visits, 1)
+        self.assertEqual(deuxieme.timer_state, 'current')
+        self.assertEqual(agenda.timer_previous_topic_id, premier)
+
+    def test_trois_allers_retours_rejoues(self):
+        """Trois allers-retours relevés en rencontre réelle, au rythme mesuré.
+        Avant la correction, l'écart affichait −0:04 alors que le sujet en
+        cours avait seize minutes de retard."""
+        agenda = self._agenda(duration_planned=29, topic_ids=[
+            Command.create({'sequence': 10, 'name': 'Premier sujet', 'duration_planned': 12}),
+            Command.create({'sequence': 20, 'name': 'Deuxième sujet', 'duration_planned': 12}),
+            Command.create({'sequence': 30, 'name': 'Troisième sujet', 'duration_planned': 5}),
+        ])
+        un, deux, trois = self._sujets(agenda)
+        with freeze_time('2026-09-22 18:02:14') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-22 18:18:01')
+            agenda.action_timer_split()
+            horloge.move_to('2026-09-22 18:18:30')
+            agenda.action_timer_goto(un.id)
+            horloge.move_to('2026-09-22 18:28:57')
+            agenda.action_timer_split()
+            horloge.move_to('2026-09-22 18:29:25')
+            agenda.action_timer_goto(un.id)
+            horloge.move_to('2026-09-22 18:31:10')
+            etat = agenda.timer_payload()
+        self.assertEqual(deux.timer_state, 'pending')
+        self.assertEqual(trois.timer_state, 'pending')
+        self.assertEqual(un.timer_visits, 1)
+        self.assertEqual(etat['delta_seconds'], 28 * 60 + 56 - 12 * 60)
+        self.assertEqual(etat['remaining_planned_seconds'], 17 * 60)
+        self.assertEqual(etat['projected_end'], '2026-09-22 18:48:10')
+        self.assertEqual(etat['planned_end'], '2026-09-22 18:31:14')
+
+    # ------------------------------------------------------------------
+    # Terminer, c'est terminer la rencontre
+    # ------------------------------------------------------------------
+    def _recaps(self, agenda):
+        return agenda.message_ids.filtered(lambda m: 'min courues' in (m.body or ''))
+
+    def test_terminer_au_chronometre_termine_l_ordre_du_jour(self):
+        for depart, pause in (('draft', False), ('confirmed', False), ('confirmed', True)):
+            with self.subTest(depart=depart, pause=pause):
+                agenda = self._agenda()
+                if depart == 'confirmed':
+                    agenda.action_confirm()
+                with freeze_time('2026-09-21 18:00:00') as horloge:
+                    agenda.action_timer_start()
+                    horloge.move_to('2026-09-21 18:10:00')
+                    if pause:
+                        agenda.action_timer_pause()
+                    etat = agenda.action_timer_stop()
+                self.assertEqual(agenda.state, 'done')
+                self.assertEqual(agenda.timer_state, 'done')
+                self.assertEqual(etat['agenda_state'], 'done',
+                                 "le panneau reçoit l'état à jour")
+                self.assertEqual(len(self._recaps(agenda)), 1, "un seul récapitulatif")
+
+    def test_terminer_en_tete_arrete_le_chronometre(self):
+        for pause in (False, True):
+            with self.subTest(pause=pause):
+                agenda = self._agenda()
+                agenda.action_confirm()
+                premier = self._sujets(agenda)[0]
+                with freeze_time('2026-09-21 18:00:00') as horloge:
+                    agenda.action_timer_start()
+                    horloge.move_to('2026-09-21 18:10:00')
+                    if pause:
+                        agenda.action_timer_pause()
+                        horloge.move_to('2026-09-21 18:15:00')
+                    agenda.action_done()
+                self.assertEqual(agenda.state, 'done')
+                self.assertEqual(agenda.timer_state, 'done')
+                self.assertEqual(premier.timer_seconds, 10 * 60)
+                self.assertEqual(len(self._recaps(agenda)), 1)
+
+    def test_creer_le_compte_rendu_arrete_le_chronometre(self):
+        """Sans ça, le compte rendu perdait son tableau de temps par sujet : il
+        ne l'imprime que d'un chronomètre terminé."""
+        agenda = self._agenda()
+        agenda.action_confirm()
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:10:00')
+            agenda.action_create_meeting_record()
+        self.assertEqual(agenda.state, 'done')
+        self.assertEqual(agenda.timer_state, 'done')
+        self.assertTrue(agenda.meeting_record_id)
+
+    def test_un_ordre_du_jour_qui_refuse_de_finir_n_empeche_pas_l_arret(self):
+        agenda = self._agenda()
+        agenda.action_confirm()
+        chemin = 'odoo.addons.bf_meeting.models.meeting_agenda.MeetingAgenda.action_done'
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:10:00')
+            with patch(chemin, side_effect=UserError("refus simulé")):
+                etat = agenda.action_timer_stop()
+        self.assertEqual(etat['state'], 'done', "le chronomètre est arrêté")
+        self.assertEqual(agenda.timer_state, 'done')
+        self.assertEqual(agenda.state, 'confirmed')
+
+    def test_un_chronometre_qui_refuse_n_empeche_pas_de_terminer(self):
+        agenda = self._agenda()
+        agenda.action_confirm()
+        chemin = 'odoo.addons.bf_meeting_timer.models.meeting_agenda.MeetingAgenda._timer_finish'
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:10:00')
+            with patch(chemin, side_effect=UserError("refus simulé")):
+                agenda.action_done()
+        self.assertEqual(agenda.state, 'done', "la rencontre se termine quand même")
+
+    def test_revenir_a_confirme_ne_relance_pas_le_chronometre(self):
+        """On peut toujours ramener l'ordre du jour à une étape
+        précédente. La barre d'étapes le permet ; la course, elle, est finie."""
+        agenda = self._agenda()
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_start_meeting()
+            horloge.move_to('2026-09-21 18:10:00')
+            agenda.action_timer_stop()
+            agenda.state = 'confirmed'
+            horloge.move_to('2026-09-21 18:20:00')
+            agenda.action_start_meeting()
+        self.assertEqual(agenda.timer_state, 'done')
+        self.assertEqual(agenda.timer_elapsed_seconds, 10 * 60)
+
+    # ------------------------------------------------------------------
+    # « + Varia » et les notes par sujet
+    # ------------------------------------------------------------------
+    def test_varia_cree_le_sujet_et_l_ouvre(self):
+        agenda = self._agenda()
+        premier = self._sujets(agenda)[0]
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:05:00')
+            etat_avant = agenda.timer_payload()
+            etat = agenda.action_timer_varia()
+        varia = agenda.topic_ids.filtered(lambda t: t.name == 'Varia')
+        self.assertEqual(len(varia), 1)
+        self.assertEqual(varia.sequence, 40, "à la fin de l'ordre du jour")
+        self.assertEqual(varia.duration_planned, 0)
+        self.assertEqual(varia.moderation_state, 'accepted', "il entre dans la course")
+        self.assertEqual(agenda.timer_current_topic_id, varia)
+        self.assertEqual(agenda.timer_previous_topic_id, premier)
+        self.assertEqual(premier.timer_seconds, 5 * 60)
+        self.assertEqual(etat['current_topic_id'], varia.id)
+        # Ouvrir Varia termine le sujet quitté, comme « Revenir » : l'alloué
+        # qui lui restait (15 min) sort de la projection. Varia, à 0 minute
+        # allouée, n'y ajoute rien.
+        self.assertEqual(premier.timer_state, 'done')
+        self.assertEqual(etat['remaining_planned_seconds'],
+                         etat_avant['remaining_planned_seconds'] - 15 * 60)
+
+    def test_varia_ne_se_cree_qu_une_fois(self):
+        agenda = self._agenda()
+        premier = self._sujets(agenda)[0]
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            agenda.action_timer_varia()
+            horloge.move_to('2026-09-21 18:05:00')
+            agenda.action_timer_goto(premier.id)
+            horloge.move_to('2026-09-21 18:10:00')
+            agenda.action_timer_varia()
+            agenda.action_timer_varia()         # déjà ouvert : rien ne bouge
+        varia = agenda.topic_ids.filtered(lambda t: t.name == 'Varia')
+        self.assertEqual(len(varia), 1)
+        self.assertEqual(varia.timer_visits, 2)
+        self.assertEqual(agenda.timer_current_topic_id, varia)
+
+    def test_varia_se_reconnait_sans_la_casse(self):
+        agenda = self._agenda(topic_ids=[
+            Command.create({'sequence': 10, 'name': 'Premier', 'duration_planned': 10}),
+            Command.create({'sequence': 20, 'name': ' VARIA ', 'duration_planned': 5}),
+        ])
+        agenda.action_timer_start()
+        agenda.action_timer_varia()
+        self.assertEqual(len(agenda.topic_ids), 2, "le Varia prévu est repris")
+        self.assertEqual(agenda.timer_current_topic_id.name, ' VARIA ')
+
+    def test_un_varia_en_moderation_n_est_pas_repris(self):
+        agenda = self._agenda(topic_ids=[
+            Command.create({'sequence': 10, 'name': 'Premier', 'duration_planned': 10}),
+            Command.create({'sequence': 20, 'name': 'Varia', 'duration_planned': 5,
+                            'source': 'contributed', 'moderation_state': 'pending'}),
+        ])
+        agenda.action_timer_start()
+        agenda.action_timer_varia()
+        ouvert = agenda.timer_current_topic_id
+        self.assertEqual(ouvert.moderation_state, 'accepted')
+        self.assertEqual(len(agenda.topic_ids), 3)
+
+    def test_varia_refuse_hors_rencontre(self):
+        """🔴 Pas d'`assertRaises` : il ouvre un point de reprise et annule ce
+        qui s'est écrit avant l'erreur, donc un Varia créé puis refusé
+        disparaîtrait et l'essai serait vert même sans la garde."""
+        agenda = self._agenda()
+        refus = None
+        try:
+            agenda.action_timer_varia()
+        except UserError as erreur:
+            refus = erreur
+        self.assertTrue(refus, "le geste est refusé")
+        self.assertFalse(agenda.topic_ids.filtered(lambda t: t.name == 'Varia'),
+                         "et rien n'a été créé avant le refus")
+
+    def test_varia_en_pause_ne_repart_pas(self):
+        agenda = self._agenda()
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:05:00')
+            agenda.action_timer_pause()
+            agenda.action_timer_varia()
+        self.assertEqual(agenda.timer_state, 'paused')
+        self.assertFalse(agenda.timer_segment_since)
+
+    def test_un_detour_par_varia_s_annule(self):
+        """Varia s'ouvre comme « Revenir » : un retour aussitôt annule le détour."""
+        agenda = self._agenda()
+        premier = self._sujets(agenda)[0]
+        with freeze_time('2026-09-21 18:00:00') as horloge:
+            agenda.action_timer_start()
+            horloge.move_to('2026-09-21 18:05:00')
+            agenda.action_timer_varia()
+            horloge.move_to('2026-09-21 18:05:20')
+            agenda.action_timer_goto(premier.id)
+        varia = agenda.topic_ids.filtered(lambda t: t.name == 'Varia')
+        self.assertEqual(varia.timer_state, 'pending')
+        self.assertEqual(premier.timer_seconds, 5 * 60 + 20)
+
+    def test_varia_au_fil_continu_pose_un_titre(self):
+        """Au fil continu, le saut vers les notes cherche un titre : Varia en a un."""
+        agenda = self._agenda()
+        agenda.company_id.meeting_notes_layout = 'flow'
+        agenda.action_start_meeting()
+        agenda.action_timer_varia()
+        self.assertIn('<h3>Varia</h3>', str(agenda.live_notes_html))
+
+    def test_varia_par_sujet_ne_touche_pas_aux_notes_generales(self):
+        agenda = self._agenda()
+        agenda.company_id.meeting_notes_layout = 'split'
+        agenda.action_start_meeting()
+        avant = str(agenda.live_notes_html)
+        agenda.action_timer_varia()
+        self.assertEqual(str(agenda.live_notes_html), avant)
+
+    def test_par_sujet_les_notes_generales_restent_vides(self):
+        """Sinon le résumé du compte rendu reprend la liste des sujets."""
+        agenda = self._agenda()
+        agenda.company_id.meeting_notes_layout = 'split'
+        agenda.action_start_meeting()
+        self.assertFalse(agenda.live_notes_html)
+
+    def test_au_fil_continu_les_notes_generales_sont_preremplies(self):
+        agenda = self._agenda()
+        agenda.company_id.meeting_notes_layout = 'flow'
+        agenda.action_start_meeting()
+        self.assertIn('<h3>Premier</h3>', str(agenda.live_notes_html))
+
+    def test_des_notes_generales_deja_tapees_ne_sont_pas_effacees(self):
+        agenda = self._agenda(live_notes_html='<p>Tapé avant</p>')
+        agenda.company_id.meeting_notes_layout = 'split'
+        agenda.action_start_meeting()
+        self.assertIn('Tapé avant', str(agenda.live_notes_html))
+
+    def test_la_mise_en_page_par_defaut_est_par_sujet(self):
+        """Une colonne de sélection ajoutée reste NULLE sur les sociétés existantes."""
+        agenda = self._agenda()
+        agenda.company_id.meeting_notes_layout = False
+        self.assertEqual(agenda.timer_payload()['notes_layout'], 'split')
+        agenda.company_id.meeting_notes_layout = 'flow'
+        self.assertEqual(agenda.timer_payload()['notes_layout'], 'flow')
+        self.assertEqual(agenda.timer_notes_layout, 'flow')
 
     # ------------------------------------------------------------------
     # Les droits
