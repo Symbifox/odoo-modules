@@ -98,6 +98,14 @@ SURVEY_TERMS = {
             "Could we quote your comments as a testimonial?",
         ),
     },
+    "answer_nps_testimonial_direct": {
+        "value": (
+            "Oui, vous pouvez me citer avec mon nom, ma fonction et mon "
+            "organisation, sans me recontacter",
+            "Yes, you may quote me with my name, title and organization, "
+            "no need to contact me",
+        ),
+    },
     "answer_nps_testimonial_yes": {
         "value": (
             "Oui, contactez-moi pour confirmer",

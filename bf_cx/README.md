@@ -49,7 +49,18 @@ hook, ticket closing CSAT) — goes through
 - **active dunning** (the Symbifox invoice follow-up module, detected at
   runtime through the `bf_followup_state` field): no "rate us" for a client on
   a second reminder or a formal demand;
-- the **"Do not contact" list** from `privacy_consent` (through the bridge).
+- the **"Do not contact" list** from `privacy_consent` (through the bridge);
+- the **account exclusion** (*Never solicit*, on the contact form's *Customer
+  experience* tab): a decision your organisation takes about an account, with a
+  reason, a date and the user who set it. Set on a **company**, it covers every
+  one of its contacts, including those created later. It is not the "Do not
+  contact" list — that one is the person's own objection and lives in the
+  privacy register — and it touches neither invoicing nor that register. Only
+  a Customer experience user can set or lift it (the fields are guarded on
+  write, not just hidden on the form), and the date and author are always
+  stamped by the server, changes tracked in the chatter. A searchable *Out of
+  surveys* flag tells the truth on every contact, including the employees of
+  an excluded company.
 
 Deferred contacts are logged in the chatter and **picked up by the cron** once
 the cooldown expires: a guardrail defers, it does not delete, otherwise it
@@ -100,6 +111,14 @@ score (% promoters − % detractors) is computed per program and per wave.
 Campaign attribution (`utm.campaign`) is carried by the wave, since the
 survey ↔ campaign link does not exist in core.
 
+**Resend one invitation.** An invitation that was deleted or never received is
+resent line by line from the wave, on the **same** answer link: the *Resend*
+button reaches that one person and nobody else, and moves neither the wave
+counters, nor the collective reminder, nor the solicitation cooldown. It refuses
+a contact who has already answered, one past the wave's deadline, one without an
+email, a blacklisted or excluded one, and a closed wave. A test entry skips the
+blacklist and exclusion checks, like the test send it came from.
+
 **Send a test.** Every wave carries a *Send a test* button that mails the real
 invitation to a single test contact and to nobody else (Settings → Customer
 experience → Tests). It is deliberately outside every outbound guardrail, since
@@ -126,10 +145,40 @@ deadline (configurable delay), root cause analysis and corrective action. The
 linked ticket creation.
 
 ### Testimonials
-Candidates are detected from surveys (an opt-in question), and publication is
-blocked until consent is recorded (verbal, written, or formal through
-`privacy_consent` with the `bf_cx_privacy` bridge). Withdrawal ("Pull") reminds
-you where the testimonial is being used.
+Candidates are detected from surveys, and publication is blocked until consent
+is recorded (verbal, written, survey, or formal through `privacy_consent` with
+the `bf_cx_privacy` bridge). Withdrawal ("Pull") reminds you where the
+testimonial is being used.
+
+The default NPS survey asks "Could we quote your comments as a testimonial?"
+with **two** yes answers, and the program maps each one:
+
+- **"Yes, you may quote me with my name, title and organization, no need to
+  contact me"** is the consent itself. The testimonial is created straight away
+  in *Consent obtained*, with the *Survey* consent mode, and the owner gets a
+  *publish* activity (when testimonial activities are on; the testimonial is
+  created either way). The proof records the answer number, when it was
+  submitted and through which channel, and the wording the respondent ticked,
+  in the contact's language. Because the wording is the proof, it names everything the published
+  quote may show.
+- **"Yes, contact me to confirm"** only flags a candidate: the owner gets an
+  activity to get back to the respondent, and nothing can be published until
+  consent is recorded.
+
+The box only counts as consent when it arrives the way a client's answer
+does: the answer must belong to a wave that invited that contact, and be
+submitted through their personal invitation link (or by their own user). Like
+any link-based consent, this proves which link was used, not who held it: a
+forwarded invitation still counts. An answer filled in from the back
+office, or outside any wave, is at most a candidate. A detractor, or a
+dissatisfied rating, is never quoted without a conversation first, and neither
+is a respondent who ticks the box but leaves no comment: all three fall back to
+the second path. On existing databases the
+18.0.1.12.0 migration creates the new answer, and wires it, only where the
+default program still uses the module's own "contact me" answer; anywhere else
+the answer is not created, so no respondent sees a choice that does nothing.
+It translates only that answer: templates and survey wording you have edited
+are left as they are.
 
 ### Internal feedback (360)
 "Internal" type programs use the same survey mechanics, but the entries are

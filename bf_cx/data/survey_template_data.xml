@@ -37,6 +37,15 @@
             <field name="question_type">simple_choice</field>
         </record>
 
+        <!-- forcecreate="0": created on install only. On an upgrade the 18.0.1.12.0
+             migration creates it, and only where it also wires it to a program,
+             so a respondent never sees an answer that does nothing. -->
+        <record id="answer_nps_testimonial_direct" model="survey.question.answer" forcecreate="0">
+            <field name="question_id" ref="question_nps_testimonial"/>
+            <field name="sequence">5</field>
+            <field name="value">Oui, vous pouvez me citer avec mon nom, ma fonction et mon organisation, sans me recontacter</field>
+        </record>
+
         <record id="answer_nps_testimonial_yes" model="survey.question.answer">
             <field name="question_id" ref="question_nps_testimonial"/>
             <field name="sequence">10</field>
@@ -58,6 +67,7 @@
             <field name="comment_question_id" ref="question_nps_reason"/>
             <field name="testimonial_question_id" ref="question_nps_testimonial"/>
             <field name="testimonial_answer_id" ref="answer_nps_testimonial_yes"/>
+            <field name="testimonial_direct_answer_id" ref="answer_nps_testimonial_direct"/>
             <field name="invite_template_id" ref="mail_template_cx_invite"/>
             <field name="reminder_days">5</field>
         </record>

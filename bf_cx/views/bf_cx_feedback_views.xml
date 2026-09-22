@@ -102,6 +102,8 @@
                             <field name="score_max"/>
                             <field name="nps_bucket"/>
                             <field name="is_testimonial_candidate"/>
+                            <field name="testimonial_consent_direct"
+                                   invisible="not is_testimonial_candidate"/>
                             <field name="testimonial_id" invisible="not testimonial_id"/>
                         </group>
                     </group>

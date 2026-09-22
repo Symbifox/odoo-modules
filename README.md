@@ -127,7 +127,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.2.1.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.0.0 | LGPL-3 | The minute book of a share corporation kept in Odoo: resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.2.0.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
-| `bf_cx` | Expérience client | 18.0.1.8.3 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
+| `bf_cx` | Expérience client | 18.0.1.12.1 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.1.2 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
 | `bf_cx_crm` | Expérience client - sondage post-perte CRM | 18.0.1.1.0 | BUSL-1.1 | Automatic win/loss survey when a CRM opportunity is marked lost |
 | `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.1.2 | BUSL-1.1 | NPS tile with pending detractors and open complaints on the Symbifox dashboard |

@@ -7,7 +7,8 @@ _bf_cx_split_solicitable() and stamps _bf_cx_mark_solicited().
 """
 from datetime import timedelta
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 
 class ResPartner(models.Model):
@@ -33,6 +34,135 @@ class ResPartner(models.Model):
              "(vague, post-rencontre, post-perte). Sert au garde-fou "
              "anti-sursollicitation.",
     )
+    bf_cx_exclude = fields.Boolean(
+        string="Ne jamais solliciter (Expérience client)",
+        copy=False,
+        tracking=True,
+        help="Exclut définitivement ce contact de toute demande d'avis : "
+             "vagues, post-rencontre, post-perte, notes de projet, CSAT des "
+             "billets. Posé sur une SOCIÉTÉ, il couvre tous ses contacts, y "
+             "compris ceux créés plus tard.\n\n"
+             "À ne pas confondre avec « Ne pas contacter » : celui-là est une "
+             "objection formulée par la personne et vit au registre de vie "
+             "privée. Celui-ci est une décision de votre organisation sur un "
+             "compte, et ne touche ni la facturation ni le registre.",
+    )
+    bf_cx_exclude_reason = fields.Char(
+        string="Motif de l'exclusion CX",
+        copy=False,
+        tracking=True,
+        help="Pourquoi ce compte est hors des sondages. Écrit pour la "
+             "personne qui montera la prochaine vague et se demandera "
+             "pourquoi il en manque un. Le motif est suivi dans le fil de "
+             "discussion, donc visible de tous les usagers internes : "
+             "restez factuel.",
+    )
+    bf_cx_exclude_date = fields.Datetime(
+        string="Exclu le", readonly=True, copy=False
+    )
+    bf_cx_exclude_user_id = fields.Many2one(
+        "res.users", string="Exclu par", readonly=True, copy=False
+    )
+    bf_cx_exclude_effective = fields.Boolean(
+        string="Hors sondages",
+        compute="_compute_bf_cx_exclude_effective",
+        search="_search_bf_cx_exclude_effective",
+        help="Vrai aussi quand c'est la SOCIÉTÉ du contact qui est exclue - "
+             "sinon la fiche d'un employé afficherait « sollicitable » alors "
+             "que rien ne lui parviendra jamais.",
+    )
+
+    @api.depends("bf_cx_exclude", "commercial_partner_id.bf_cx_exclude")
+    def _compute_bf_cx_exclude_effective(self):
+        for partner in self:
+            partner.bf_cx_exclude_effective = partner._bf_cx_is_excluded()
+
+    def _search_bf_cx_exclude_effective(self, operator, value):
+        """Rendre le champ cherchable - sinon il ment DANS LES DEUX SENS.
+
+        Un calculé non stocké et sans `search=` n'est pas refusé par
+        l'ORM : le critère est simplement ÉCARTÉ du domaine, et `= True`
+        rend alors le même ensemble que `= False`. Un filtre « Hors sondages » aurait donc
+        répondu « tout le monde » à la question « qui est exclu ? » comme à
+        son contraire, sans la moindre erreur. Un contrôle qui rendrait
+        vert même cassé ne contrôle rien.
+        """
+        if operator not in ("=", "!=") or not isinstance(value, bool):
+            raise NotImplementedError(
+                _("« Hors sondages » ne se cherche qu'avec = ou != sur un "
+                  "booléen.")
+            )
+        exclu = [
+            "|",
+            ("bf_cx_exclude", "=", True),
+            ("commercial_partner_id.bf_cx_exclude", "=", True),
+        ]
+        # (= True) et (!= False) veulent les exclus ; les deux autres, le reste.
+        return exclu if (operator == "=") == value else ["!"] + exclu
+
+    def _bf_cx_is_excluded(self):
+        """Exclu en propre, ou par l'entité commerciale dont il relève.
+
+        Remonter à `commercial_partner_id` est ce qui fait tenir la promesse
+        « ni lui ni aucun autre employé » : un contact créé chez ce compte
+        l'an prochain sera couvert sans que personne y repense.
+        """
+        self.ensure_one()
+        return bool(
+            self.bf_cx_exclude or self.commercial_partner_id.bf_cx_exclude
+        )
+
+    _BF_CX_EXCLUDE_FIELDS = (
+        "bf_cx_exclude",
+        "bf_cx_exclude_reason",
+        "bf_cx_exclude_date",
+        "bf_cx_exclude_user_id",
+    )
+
+    def _bf_cx_exclude_vals(self, vals):
+        """Garder la décision d'exclusion à ceux qui portent l'Expérience client.
+
+        La page du formulaire est masquée aux autres, mais un champ se lit et
+        s'écrit aussi par `call_kw` ou par import : c'est ici que la décision
+        se garde. La date et l'auteur ne viennent jamais du client - sinon
+        la trace s'antidate ou s'attribue à quelqu'un d'autre -, ils sont
+        posés au moment où la décision se prend : six mois plus tard,
+        « pourquoi ce compte manque-t-il ? » n'a de réponse que si on sait
+        qui l'a posée et quand.
+        """
+        if not any(k in vals for k in self._BF_CX_EXCLUDE_FIELDS):
+            return vals
+        if not self.env.su and not self.env.user.has_group(
+            "bf_cx.group_bf_cx_user"
+        ):
+            raise AccessError(
+                _("Seul un opérateur de l'Expérience client peut exclure un "
+                  "compte des sondages ou lever cette exclusion.")
+            )
+        vals = {
+            k: v
+            for k, v in vals.items()
+            if k not in ("bf_cx_exclude_date", "bf_cx_exclude_user_id")
+        }
+        if "bf_cx_exclude" in vals:
+            if vals["bf_cx_exclude"]:
+                vals.update(
+                    bf_cx_exclude_date=fields.Datetime.now(),
+                    bf_cx_exclude_user_id=self.env.uid,
+                )
+            else:
+                vals.update(
+                    bf_cx_exclude_date=False, bf_cx_exclude_user_id=False
+                )
+        return vals
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        vals_list = [self._bf_cx_exclude_vals(vals) for vals in vals_list]
+        return super().create(vals_list)
+
+    def write(self, vals):
+        return super().write(self._bf_cx_exclude_vals(vals))
 
     def _compute_bf_cx_unsubscribe_url(self):
         from odoo.tools import hmac as _hmac
@@ -49,7 +179,8 @@ class ResPartner(models.Model):
     def _bf_cx_split_solicitable(self, days=None):
         """Split into (allowed, blocked) according to the outbound guards.
 
-        Guards, in order: mail blacklist, active dunning (a client under a
+        Guards, in order: account exclusion (bf_cx_exclude, per commercial
+        entity), mail blacklist, active dunning (a client under a
         formal payment notice must never receive "rate us" the same week),
         then the solicitation cooldown. ``days`` overrides the global
         cooldown (per-program cadence: relational 90d vs transactional 30d);
@@ -57,6 +188,10 @@ class ResPartner(models.Model):
         with the do-not-contact list.
         """
         blocked = self.browse()
+
+        # Exclusion de compte, en tout premier : c'est la décision la plus
+        # forte, elle ne se négocie pas avec une cadence ni une fenêtre.
+        blocked |= self.filtered(lambda p: p._bf_cx_is_excluded())
 
         # Mail blacklist (core mail): template sends bypass mass_mailing's
         # own blacklist handling, so it is enforced here.

@@ -14,6 +14,44 @@
                     <field name="bf_cx_feedback_count" widget="statinfo" string="Feedbacks"/>
                 </button>
             </xpath>
+            <xpath expr="//page[@name='contact_addresses']" position="after">
+                <page string="Expérience client" name="bf_cx"
+                      groups="bf_cx.group_bf_cx_user">
+                    <group>
+                        <group string="Sollicitation">
+                            <field name="bf_cx_last_solicited" readonly="1"/>
+                            <field name="bf_cx_exclude_effective" invisible="1"/>
+                        </group>
+                        <group string="Exclusion de compte">
+                            <field name="bf_cx_exclude"/>
+                            <field name="bf_cx_exclude_reason"
+                                   placeholder="Pourquoi ce compte est hors des sondages"
+                                   invisible="not bf_cx_exclude"/>
+                            <field name="bf_cx_exclude_date"
+                                   invisible="not bf_cx_exclude"/>
+                            <field name="bf_cx_exclude_user_id"
+                                   invisible="not bf_cx_exclude"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="bf_cx_exclude or not bf_cx_exclude_effective">
+                        Hors des sondages parce que sa société l'est. Le
+                        retirer de l'exclusion se fait sur la fiche de la
+                        société, pas ici.
+                    </div>
+                    <div class="text-muted mt-2">
+                        « Ne jamais solliciter » est une décision de votre organisation
+                        sur un compte : elle couvre les vagues, le
+                        post-rencontre, le post-perte, les notes de projet et
+                        le CSAT des billets, et rien d'autre — ni la
+                        facturation, ni le registre de vie privée. Posée sur
+                        une société, elle couvre tous ses contacts, y compris
+                        ceux créés plus tard. À distinguer de « Ne pas
+                        contacter », qui est une objection formulée par la
+                        personne elle-même.
+                    </div>
+                </page>
+            </xpath>
         </field>
     </record>
 

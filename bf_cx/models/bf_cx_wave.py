@@ -312,10 +312,16 @@ class BfCxWave(models.Model):
             template = program.reminder_template_id or program.invite_template_id
             if not template:
                 continue
+            # L'exclusion de compte doit mordre ICI aussi : `action_remind`
+            # ne passe pas par `_bf_cx_split_solicitable` (il relance des
+            # réponses déjà créées), donc un compte exclu APRÈS l'envoi de la
+            # vague recevrait quand même sa relance. Une exclusion qui fuit
+            # par le rappel n'est pas une exclusion.
             pending = wave.user_input_ids.filtered(
                 lambda i: not i.test_entry
                 and i.state != "done"
                 and i.partner_id.email
+                and not i.partner_id._bf_cx_is_excluded()
             )
             for answer in pending:
                 template.send_mail(answer.id, force_send=False)

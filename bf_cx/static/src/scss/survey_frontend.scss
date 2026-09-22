@@ -44,7 +44,7 @@
         // Pas de `!important` nécessaire : la règle du coeur vise le wrapper,
         // pas cet élément-ci. Une déclaration normale sur l'enfant l'emporte
         // sur une valeur héritée, fût-elle `!important` chez le parent.
-        color: #2E3132;
+        color: var(--brand-dark, #2E3132);
 
         // Celle-ci, en revanche, vise bien les descendants
         // (`.o_survey_background .text-muted { color: #F8F9FA !important }`) :
@@ -67,7 +67,7 @@
         // spécificité suffit — pas de `!important`.
         .form-control,
         .form-select {
-            color: #2E3132;
+            color: var(--brand-dark, #2E3132);
             background-color: #FFFFFF;
             border-color: #CED4DA;
 
@@ -77,12 +77,12 @@
             }
 
             &:focus {
-                color: #2E3132;
+                color: var(--brand-dark, #2E3132);
                 background-color: #FFFFFF;
                 // Même bleu assombri que la tuile choisie, pour la même raison
                 // de contraste : l'accent de marque sur blanc ne passe pas.
                 border-color: #1F8FBF;
-                box-shadow: 0 0 0 0.25rem rgba(41, 171, 225, 0.25);
+                box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--brand-primary, #29ABE2) 25%, transparent);
             }
         }
     }
@@ -90,7 +90,7 @@
     // La tuile choisie mérite d'être vue de loin.
     //
     // L'anneau est une frontière de composant : WCAG demande 3:1 contre le
-    // fond. L'accent #29ABE1 sur blanc ne donne que 2,62:1, donc on prend la
+    // fond. L'accent #29ABE2 sur blanc ne donne que 2,62:1, donc on prend la
     // variante assombrie que la marque utilise déjà au survol (#1F8FBF,
     // 3,66:1). Volontairement une valeur fixe et non `var(--o-color-1)` : une
     // couleur primaire de thème inconnue pourrait repasser sous le seuil sans
@@ -98,6 +98,6 @@
     // et garde l'accent clair.
     .o_survey_form .o_survey_choice_btn.o_survey_selected {
         box-shadow: #1F8FBF 0 0 0 2px;
-        background-color: rgba(41, 171, 225, 0.12);
+        background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 12%, transparent);
     }
 }

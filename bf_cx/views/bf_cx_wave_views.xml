@@ -97,6 +97,13 @@
                             </field>
                         </page>
                         <page string="Invitations" name="answers">
+                            <div class="text-muted mb-2">
+                                Une invitation supprimée ou jamais reçue se
+                                renvoie ligne par ligne, sur le même lien de
+                                réponse : le bouton « Renvoyer » ne touche
+                                que cette personne et ne modifie ni les
+                                compteurs, ni le rappel collectif.
+                            </div>
                             <field name="user_input_ids" readonly="1">
                                 <list decoration-muted="test_entry">
                                     <field name="partner_id"/>
@@ -105,6 +112,13 @@
                                     <field name="state"/>
                                     <field name="create_date" string="Invité le"/>
                                     <field name="end_datetime" string="Répondu le"/>
+                                    <button name="action_bf_cx_resend_invite"
+                                            type="object"
+                                            string="Renvoyer"
+                                            icon="fa-paper-plane"
+                                            class="btn-link"
+                                            invisible="state == 'done'"
+                                            confirm="Renvoyer l'invitation à ce seul destinataire ? Le lien de réponse reste le même et personne d'autre n'est touché."/>
                                 </list>
                             </field>
                         </page>

@@ -75,6 +75,15 @@ class BfCxProgram(models.Model):
         help="Choix de réponse qui marque le feedback comme candidat "
              "témoignage.",
     )
+    testimonial_direct_answer_id = fields.Many2one(
+        "survey.question.answer",
+        string="Réponse « oui, sans recontacter »",
+        domain="[('question_id', '=', testimonial_question_id)]",
+        help="Choix de réponse qui vaut consentement : le témoignage est "
+             "créé directement en « Consentement obtenu », la réponse au "
+             "sondage servant de preuve. Son libellé doit dire comment le "
+             "répondant sera nommé. Optionnel.",
+    )
     invite_template_id = fields.Many2one(
         "mail.template",
         string="Gabarit d'invitation",

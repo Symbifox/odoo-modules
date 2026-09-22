@@ -53,6 +53,7 @@ class BfCxTestimonial(models.Model):
         [
             ("verbal", "Verbal"),
             ("written", "Écrit (courriel, lettre)"),
+            ("survey", "Sondage (case cochée par le répondant)"),
         ],
         string="Mode de consentement",
         tracking=True,

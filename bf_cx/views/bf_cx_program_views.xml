@@ -78,6 +78,8 @@
                             <field name="testimonial_question_id"/>
                             <field name="testimonial_answer_id"
                                    invisible="not testimonial_question_id"/>
+                            <field name="testimonial_direct_answer_id"
+                                   invisible="not testimonial_question_id"/>
                         </group>
                     </group>
                     <group string="Pulse (lien public permanent)" name="pulse_group"

@@ -170,6 +170,14 @@ class BfCxFeedback(models.Model):
         help="Le répondant a accepté qu'on le recontacte pour citer ses "
              "commentaires.",
     )
+    testimonial_consent_direct = fields.Boolean(
+        string="Citation autorisée sans recontact",
+        readonly=True,
+        copy=False,
+        help="Le répondant a coché au sondage la réponse qui autorise la "
+             "citation sans le recontacter. Le témoignage est créé en "
+             "« Consentement obtenu », avec cette réponse pour preuve.",
+    )
     testimonial_id = fields.Many2one(
         "bf.cx.testimonial",
         string="Témoignage",
@@ -432,30 +440,61 @@ class BfCxFeedback(models.Model):
         return Markup("").join(lignes)
 
     def _run_testimonial_candidate_loop(self):
-        """A testimonial opt-in is perishable: act on it within days."""
-        if not param_is_true(
+        """A testimonial opt-in is perishable: act on it within days.
+
+        A consent given in the survey itself becomes a consented testimonial
+        whatever the activity setting says - the setting governs the
+        reminder, not the consent. A detractor is never quoted without a
+        conversation first, so their box falls back to the contact path.
+        """
+        activity_on = param_is_true(
             self.env, "bf_cx.testimonial_activity", default=True
-        ):
-            return
+        )
         for rec in self:
             if not rec.is_testimonial_candidate or not rec.partner_id:
+                continue
+            testimonial = False
+            if (
+                rec.testimonial_consent_direct
+                and rec.nps_bucket != "detractor"
+                and not rec.needs_followup
+            ):
+                try:
+                    with self.env.cr.savepoint():
+                        testimonial = rec._create_consented_testimonial()
+                except Exception:  # noqa: BLE001 - never break the public flow
+                    _logger.exception(
+                        "bf_cx: consented testimonial failed for feedback %s",
+                        rec.id,
+                    )
+            if not activity_on:
                 continue
             user = rec._closed_loop_user()
             if not user:
                 continue
             try:
+                if testimonial:
+                    summary = _("Témoignage consenti : publier celui de %s")
+                    note = _(
+                        "Le répondant a autorisé au sondage la citation sans "
+                        "être recontacté. Le témoignage est créé en "
+                        "« Consentement obtenu » : le relire, puis le publier."
+                    )
+                else:
+                    summary = _("Candidat témoignage : recontacter %s")
+                    note = _(
+                        "Le répondant accepte d'être cité à condition d'être "
+                        "recontacté pour confirmer. Lui écrire pendant que "
+                        "c'est frais, puis créer le témoignage (bouton "
+                        "« Créer un témoignage » sur cette fiche)."
+                    )
                 rec.activity_schedule(
                     "mail.mail_activity_data_todo",
                     date_deadline=fields.Date.context_today(rec)
                     + timedelta(days=5),
                     user_id=user.id,
-                    summary=_("Candidat témoignage : recontacter %s")
-                    % rec.partner_id.display_name,
-                    note=_(
-                        "Le répondant a accepté d'être cité. Confirmer le "
-                        "témoignage pendant que c'est frais (bouton « Créer "
-                        "un témoignage » sur cette fiche)."
-                    ),
+                    summary=summary % rec.partner_id.display_name,
+                    note=note,
                 )
             except Exception:  # noqa: BLE001 - never break the public flow
                 _logger.exception(
@@ -483,6 +522,54 @@ class BfCxFeedback(models.Model):
     def action_reset_new(self):
         self.write({"state": "new"})
         return True
+
+    def _create_consented_testimonial(self):
+        """Survey consent: the ticked answer IS the proof, no call needed."""
+        self.ensure_one()
+        if self.testimonial_id or not self.comment:
+            return self.testimonial_id
+        user_input = self.survey_user_input_id
+        # The proof is the line the respondent actually ticked, in the
+        # language they saw it in - not the program's current wording.
+        ticked = user_input.user_input_line_ids.filtered(
+            lambda l: l.suggested_answer_id
+            == self.program_id.testimonial_direct_answer_id
+        )[:1].suggested_answer_id
+        lang = self.partner_id.lang or None
+        wording = ticked.with_context(lang=lang).value if ticked else ""
+        submitted = user_input.end_datetime or user_input.write_date
+        answered_on = (
+            fields.Date.to_date(submitted) if submitted else self.date
+        )
+        testimonial = self.env["bf.cx.testimonial"].create(
+            {
+                "name": _("Témoignage - %s") % self.partner_id.display_name,
+                "partner_id": self.partner_id.id,
+                "body": self.comment,
+                "project_id": self.project_id.id,
+                "company_id": self.company_id.id,
+                "feedback_id": self.id,
+                "consent_mode": "survey",
+                "consent_note": _(
+                    "Réponse au sondage #%(id)s, soumise le %(when)s UTC "
+                    "%(channel)s : « %(answer)s »"
+                )
+                % {
+                    "id": user_input.id,
+                    "when": fields.Datetime.to_string(submitted)
+                    if submitted
+                    else self.date,
+                    "answer": wording,
+                    "channel": _("par le lien d'invitation personnel")
+                    if self.env.user._is_public()
+                    else _("par l'usager du contact"),
+                },
+                "consent_date": answered_on,
+            }
+        )
+        testimonial.action_set_consented()
+        self.testimonial_id = testimonial
+        return testimonial
 
     def action_create_testimonial(self):
         """Turn this feedback's comment into a draft testimonial."""

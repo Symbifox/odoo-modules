@@ -34,8 +34,9 @@ class MailThread(models.AbstractModel):
                 self.message_post(
                     body=_(
                         "Demande d'évaluation non envoyée à %s : garde-fou "
-                        "de sollicitation (cooldown, liste à ne pas "
-                        "contacter ou dossier en recouvrement)."
+                        "de sollicitation (compte exclu des sondages, "
+                        "cadence, liste à ne pas contacter, courriel bloqué "
+                        "ou dossier en recouvrement)."
                     )
                     % partner.display_name
                 )
