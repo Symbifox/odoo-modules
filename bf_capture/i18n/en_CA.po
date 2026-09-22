@@ -1,0 +1,193 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_capture
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-21 23:58+0000\n"
+"PO-Revision-Date: 2026-09-21 23:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: en_CA\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "Aucun dossier de dépôt n'est configuré sur cette instance."
+msgstr "No deposit folder is configured on this instance."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/mobile_api.py:0
+msgid "Aucun fichier audio."
+msgstr "No audio file."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "Aucun son reçu."
+msgstr "No sound received."
+
+#. module: bf_capture
+#: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
+msgid "Captation audio"
+msgstr "Audio capture"
+
+#. module: bf_capture
+#: model:ir.model,name:bf_capture.model_bf_capture
+msgid "Captation audio mobile"
+msgstr "Mobile audio capture"
+
+#. module: bf_capture
+#: model:ir.model,name:bf_capture.model_res_config_settings
+msgid "Config Settings"
+msgstr "Config Settings"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "Date de début illisible : %s"
+msgstr "Unreadable start time: %s"
+
+#. module: bf_capture
+#: model:ir.model.fields,help:bf_capture.field_res_config_settings__bf_capture_folder
+msgid ""
+"Dossier Nextcloud surveillé par le processeur de rencontres, relatif à la "
+"racine du compte de la configuration Nextcloud (par exemple « Transcriptions"
+" »)."
+msgstr "Nextcloud folder watched by the meeting processor, relative to the root of the account in the Nextcloud configuration (for example “Transcriptions”)."
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_res_config_settings__bf_capture_folder
+msgid "Dossier de dépôt"
+msgstr "Deposit folder"
+
+#. module: bf_capture
+#: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
+msgid "Dossier surveillé"
+msgstr "Watched folder"
+
+#. module: bf_capture
+#: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
+msgid "Dépôt des rencontres"
+msgstr "Meeting deposit"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "Enregistrement trop volumineux (%(recu)s, maximum %(max)s)."
+msgstr "Recording too large (%(recu)s, maximum %(max)s)."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/mobile_api.py:0
+msgid "Format non reconnu : %s"
+msgstr "Unrecognised format: %s"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid ""
+"Il faut une rencontre ou un titre : c'est le nom du fichier qui dit au "
+"processeur de quel client il s'agit."
+msgstr "A meeting or a title is required: the filename is what tells the processor which client this is."
+
+#. module: bf_capture
+#: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
+msgid ""
+"L'enregistrement part vers le dossier Nextcloud que surveille le processeur "
+"de rencontres. Le nom du fichier est composé ici, à partir de l'événement au"
+" calendrier."
+msgstr "The recording goes to the Nextcloud folder watched by the meeting processor. The filename is composed here, from the calendar event."
+
+#. module: bf_capture
+#: model:ir.model.fields,help:bf_capture.field_res_config_settings__bf_capture_memo_max_bytes
+msgid ""
+"Le mémo passe par la dictée : au-delà de son propre plafond, le "
+"téléversement serait refusé plus loin, après coup."
+msgstr "A memo goes through dictation: past its own limit the upload would be refused further down the line, after the fact."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid ""
+"Mémo trop long (%(recu)s, maximum %(max)s). Au-delà, c'est une rencontre : "
+"elle se dépose par l'autre porte."
+msgstr "Memo too long (%(recu)s, maximum %(max)s). Beyond that it is a meeting, and meetings go through the other door."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "Mémo vocal"
+msgstr "Voice memo"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "Mémo vocal capté depuis le téléphone."
+msgstr "Voice memo captured from the phone."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid ""
+"Mémo vocal sans transcription : la dictée n'est pas configurée sur cette "
+"instance. L'audio est en pièce jointe."
+msgstr "Voice memo without a transcription: dictation is not configured on this instance. The audio is attached."
+
+#. module: bf_capture
+#: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
+msgid "Plafonds"
+msgstr "Limits"
+
+#. module: bf_capture
+#: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
+msgid ""
+"Relatif à la racine du compte de la configuration Nextcloud active. Le "
+"processeur y prend les fichiers et les déplace vers son sous-dossier « "
+"Traités »."
+msgstr "Relative to the root of the active Nextcloud configuration account. The processor picks files up there and moves them into its “Traités” subfolder."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "Rencontre"
+msgstr "Meeting"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "Rencontre introuvable."
+msgstr "Meeting not found."
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_res_config_settings__bf_capture_memo_max_bytes
+msgid "Taille maximale d'un mémo (octets)"
+msgstr "Maximum memo size (bytes)"
+
+#. module: bf_capture
+#: model:ir.model.fields,field_description:bf_capture.field_res_config_settings__bf_capture_max_bytes
+msgid "Taille maximale d'une rencontre (octets)"
+msgstr "Maximum meeting size (bytes)"
+
+#. module: bf_capture
+#: model_terms:ir.ui.view,arch_db:bf_capture.res_config_settings_view_form_capture
+msgid "Transcriptions"
+msgstr "Transcriptions"
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "Trop d'enregistrements du même nom dans le dossier."
+msgstr "Too many recordings with the same name in the folder."
+
+#. module: bf_capture
+#: model:ir.model.fields,help:bf_capture.field_res_config_settings__bf_capture_max_bytes
+msgid "Une heure d'audio du téléphone pèse environ 5 Mo."
+msgstr "One hour of phone audio weighs about 5 MB."

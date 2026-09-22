@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**157 modules are BUSL-1.1.** The source is published and auditable, and **you
+**158 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -108,6 +108,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.5.0.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
 | `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.2.0 | LGPL-3 | Calendar and deadlines for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |
+| `bf_capture` | Captation audio | 18.0.1.2.1 | BUSL-1.1 | Record a meeting or a memo from a phone; the server names the file and drops it where the rest is already automatic |
 | `bf_celebrations` | Célébrations | 18.0.2.1.3 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_celebrations_email` | Célébrations : groupes de destinataires | 18.0.1.0.0 | LGPL-3 | Tend une carte de fête aux groupes de destinataires du composeur de courriels |
 | `bf_charge` | Plan de charge | 18.0.1.1.2 | BUSL-1.1 | What is actually left to do, placed on weeks, against a declared capacity rather than a guessed one |
@@ -313,7 +314,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **157 modules: BUSL-1.1.** Production use for your own internal business
+- **158 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

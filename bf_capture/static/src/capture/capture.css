@@ -1,0 +1,166 @@
+/* Page de mémo vocal — un écran, un pouce, une main.
+ *
+ * Sombre par dessein, comme la page de numérisation : elle sert debout, à bout
+ * de bras, souvent le soir. Rien ici ne vient des paquets d'actifs d'Odoo : la
+ * page doit s'afficher avant que le client web ait seulement fini de s'analyser. */
+
+:root {
+    --bg: #12161a;
+    --surface: #1b2127;
+    --line: #2f3841;
+    --text: #e8edf2;
+    --muted: #9aa7b4;
+    --accent: var(--brand-primary, #29ABE2);
+    /* 🔴 Calculée par le serveur d'après l'accent, jamais fixée ici : l'accent
+       d'origine d'Odoo est un prune foncé, sur lequel une encre bleu nuit tombe
+       à 1,6:1. Le repli ne sert que si la page est ouverte sans son gabarit. */
+    --accent-ink: var(--brand-ink, #06283a);
+    --danger: #e5534b;
+    --good: #4caf7d;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 17px;              /* 16 px au minimum, sinon iOS zoome au focus */
+    min-height: 100%;
+}
+
+main {
+    max-width: 30rem;
+    margin: 0 auto;
+    padding: 1.25rem 1rem 3rem;
+}
+
+h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 .25rem;
+}
+
+.sous-titre {
+    color: var(--muted);
+    font-size: .95rem;
+    margin: 0 0 1.5rem;
+}
+
+.carte {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.25rem;
+    text-align: center;
+}
+
+.chrono {
+    font-variant-numeric: tabular-nums;
+    font-size: 2.75rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    margin: .25rem 0 .1rem;
+}
+
+.chrono.bientot { color: var(--danger); }
+
+.etat {
+    color: var(--muted);
+    font-size: .9rem;
+    margin: 0 0 1rem;
+    min-height: 1.2em;
+}
+
+.pastille {
+    display: inline-block;
+    width: .6rem;
+    height: .6rem;
+    border-radius: 50%;
+    background: var(--danger);
+    margin-right: .4rem;
+    vertical-align: baseline;
+    animation: battement 1.6s ease-in-out infinite;
+}
+
+@keyframes battement {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .25; }
+}
+
+/* Une personne qui préfère moins d'animation ne doit pas subir un point qui
+   clignote pendant une heure. */
+@media (prefers-reduced-motion: reduce) {
+    .pastille { animation: none; }
+}
+
+button {
+    font: inherit;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    padding: .8rem 1.1rem;
+    cursor: pointer;
+    min-height: 48px;             /* cible tactile */
+}
+
+button.principal {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: transparent;
+    font-weight: 600;
+}
+
+button[disabled] { opacity: .5; cursor: default; }
+
+.boutons {
+    display: flex;
+    gap: .65rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+label {
+    display: block;
+    text-align: left;
+    color: var(--muted);
+    font-size: .85rem;
+    margin: 1.25rem 0 .35rem;
+}
+
+input[type="text"] {
+    width: 100%;
+    font: inherit;
+    color: var(--text);
+    background: #10151a;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: .7rem .8rem;
+}
+
+.message {
+    margin-top: 1.25rem;
+    padding: .9rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    text-align: left;
+}
+
+.message.erreur { border-color: var(--danger); }
+.message.faite { border-color: var(--good); }
+
+.message a { color: var(--accent); }
+
+.hidden { display: none !important; }
+
+.note {
+    color: var(--muted);
+    font-size: .85rem;
+    line-height: 1.45;
+    margin-top: 1.5rem;
+    text-align: left;
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form_capture" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf_capture</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Captation audio" string="Captation audio"
+                     name="bf_capture" groups="base.group_system">
+                    <block title="Dépôt des rencontres"
+                           help="L'enregistrement part vers le dossier Nextcloud que surveille le processeur de rencontres. Le nom du fichier est composé ici, à partir de l'événement au calendrier.">
+                        <setting string="Dossier surveillé"
+                                 help="Relatif à la racine du compte de la configuration Nextcloud active. Le processeur y prend les fichiers et les déplace vers son sous-dossier « Traités ».">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="bf_capture_folder" class="col-lg-3 o_light_label"/>
+                                    <field name="bf_capture_folder" class="col-lg-6"
+                                           placeholder="Transcriptions"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting string="Plafonds">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="bf_capture_max_bytes" class="col-lg-4 o_light_label"/>
+                                    <field name="bf_capture_max_bytes" class="col-lg-6"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="bf_capture_memo_max_bytes" class="col-lg-4 o_light_label"/>
+                                    <field name="bf_capture_memo_max_bytes" class="col-lg-6"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
