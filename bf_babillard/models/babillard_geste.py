@@ -21,7 +21,7 @@ class BabillardGeste(models.Model):
 
     ⚠️ Cette table ne porte toujours aucune mesure : ni horodatage de
     consultation, ni compte de visites, ni pondération. Depuis la 18.0.1.6.0,
-    l'audience voit QUI a réagi (décision d'Olivier, 2026-09-19) ; ce qui reste
+    l'audience voit QUI a réagi (décision de l'exploitant, 2026-09-19) ; ce qui reste
     hors de portée, c'est l'agrégat par personne. L'accusé de lecture, lui,
     demeure privé : c'est une autre table et un autre usage.
     """

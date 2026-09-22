@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_appointment_poll_form_babillard" model="ir.ui.view">
+        <field name="name">appointment.poll.form.babillard</field>
+        <field name="model">appointment.poll</field>
+        <field name="inherit_id" ref="bf_appointment_poll.appointment_poll_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_annoncer_au_babillard" type="object"
+                        string="Annoncer au babillard"
+                        invisible="state != 'open'"
+                        groups="bf_babillard.group_babillard_redacteur"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

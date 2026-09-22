@@ -952,7 +952,7 @@ class TestFilVivant(TransactionCase):
         self.assertEqual(self._posees(post, self.lecteur), [])
 
     def test_une_personne_pose_plusieurs_reactions(self):
-        """🔴 Le choix d'Olivier, 2026-09-19 : plusieurs par personne, comme
+        """🔴 Le choix de l'exploitant, 2026-09-19 : plusieurs par personne, comme
         Slack. L'unicité porte sur le triplet, pas sur la paire."""
         post = self._publiee()
         une = self._neuve("\N{ROSETTE}", "Une", sequence=1)
@@ -995,7 +995,7 @@ class TestFilVivant(TransactionCase):
 
     def test_les_noms_sont_lisibles_par_l_audience(self):
         """🔴 Renversement assumé de la 18.0.1.6.0 : jusque-là l'écran ne
-        rendait qu'un cardinal. Olivier a tranché le 2026-09-19."""
+        rendait qu'un cardinal. L'exploitant a tranché le 2026-09-19."""
         post = self._publiee()
         post.with_user(self.lecteur).action_basculer_reaction(
             self._neuve("\N{ROSETTE}", "Nommée").id)

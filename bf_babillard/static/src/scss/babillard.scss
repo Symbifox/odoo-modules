@@ -18,6 +18,7 @@ $o-bf-bab-pastilles: (
     "reconnaissance": #BA4514,
     "evenement":      #6A4C93,
     "celebration":    #2E7D5B,
+    "sondage":        #A03C78,  // 6,15:1 sur blanc, et distinct des cinq autres
 );
 
 .o_bf_bab_pastille {
@@ -239,5 +240,61 @@ $o-bf-bab-pastilles: (
 
     &:hover {
         opacity: 1;
+    }
+}
+
+// ── Le bulletin de vote ─────────────────────────────────────────────────────
+// 🔴 La jauge est un bloc DERRIÈRE le texte, pas une bordure : une barre de
+// progression posée à côté du libellé doublait la hauteur de chaque choix, et
+// une carte à six choix ne tenait plus dans le fil.
+.o_bf_bab_sondage {
+
+    .o_bf_bab_choix {
+        position: relative;
+        border: 1px solid rgba(0, 0, 0, 0.14);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 0.25rem;
+        background: transparent;
+    }
+
+    .o_bf_bab_choix_cliquable {
+        cursor: pointer;
+
+        &:hover {
+            border-color: rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    // ⚠️ L'accent brut de la maison ne paraît nulle part dans cette feuille,
+    // et un essai le vérifie : c'est sa variante assombrie qui sert, la même
+    // que porte déjà la réaction qu'on a posée soi-même.
+    .o_bf_bab_choix_mien {
+        border-color: #177AA3;
+        font-weight: 600;
+    }
+
+    .o_bf_bab_jauge {
+        position: absolute;
+        inset: 0 auto 0 0;
+        background: rgba(23, 122, 163, 0.12);
+        transition: width 0.2s ease;
+    }
+
+    .o_bf_bab_choix_texte {
+        position: relative;
+        display: flex;
+        align-items: center;
+        padding: 0.25rem 0.55rem;
+        line-height: 1.5;
+    }
+
+    .o_bf_bab_compte {
+        font-variant-numeric: tabular-nums;
+        opacity: 0.75;
+    }
+
+    .o_bf_bab_ajout {
+        max-width: 22rem;
     }
 }

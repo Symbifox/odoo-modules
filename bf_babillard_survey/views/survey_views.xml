@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_survey_form_babillard" model="ir.ui.view">
+        <field name="name">survey.survey.form.babillard</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_annoncer_au_babillard" type="object"
+                        string="Annoncer au babillard"
+                        groups="bf_babillard.group_babillard_redacteur"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -66,7 +66,7 @@
 
     <!-- 🔴 Une réaction se LIT par toute l'audience, et ne se POSE que pour soi.
          Jusqu'à la 18.0.1.6.0 elle était strictement personnelle et l'écran n'en
-         rendait qu'un cardinal. Olivier a tranché le 2026-09-19 : on voit qui a
+         rendait qu'un cardinal. L'exploitant a tranché le 2026-09-19 : on voit qui a
          réagi, comme sur les réactions natives du fil de discussion juste en
          dessous. Ce qui suit est la conséquence de ce choix, pas un oubli.
 
@@ -127,6 +127,97 @@
     <record id="rule_geste_societe" model="ir.rule">
         <field name="name">Babillard : les réactions de mes sociétés</field>
         <field name="model_id" ref="model_bf_babillard_geste"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- 🔴 Les choix d'un sondage se lisent comme la publication qui les porte :
+         sans ce domaine, un `search_read` sur le modèle rendait les choix de
+         sondages qu'on n'a pas le droit de lire. Le domaine traverse les
+         données pour la raison expliquée en tête de fichier. -->
+    <record id="rule_option_audience" model="ir.rule">
+        <field name="name">Babillard : les choix de ce qui m'est adressé</field>
+        <field name="model_id" ref="model_bf_babillard_option"/>
+        <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[
+            '&amp;',
+                ('post_id.state', '=', 'publie'),
+                '|', '|',
+                    ('post_id.audience', '=', 'tous'),
+                    '&amp;', ('post_id.audience', '=', 'departements'),
+                             ('post_id.department_ids.member_ids.user_id', '=', user.id),
+                    '&amp;', ('post_id.audience', '=', 'groupes'),
+                             ('post_id.group_ids', 'in', user.groups_id.ids)
+        ]</field>
+    </record>
+
+    <record id="rule_option_redacteur" model="ir.rule">
+        <field name="name">Babillard : la rédaction voit les choix</field>
+        <field name="model_id" ref="model_bf_babillard_option"/>
+        <field name="groups" eval="[(6, 0, [ref('group_babillard_redacteur'), ref('group_babillard_moderation')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_option_societe" model="ir.rule">
+        <field name="name">Babillard : les choix de mes sociétés</field>
+        <field name="model_id" ref="model_bf_babillard_option"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- 🔴 L'anonymat d'un sondage tient ICI, pas à l'écran. Sur un sondage
+         anonyme, une voix n'est lisible que par la personne qui l'a posée :
+         ni l'audience, ni l'auteur, ni la rédaction n'y accèdent. Le
+         dépouillement sort du champ calculé de la publication, qui applique le
+         seuil sous lequel un résultat se déchiffre par soustraction.
+
+         ⚠️ Sur un sondage NOMINATIF, la lecture est bornée par l'audience,
+         exactement comme les réactions depuis la 18.0.1.6.0 : on voit qui a
+         voté quoi, et seulement sur ce qui nous est adressé. -->
+    <record id="rule_vote_audience" model="ir.rule">
+        <field name="name">Babillard : les voix de ce qui m'est adressé</field>
+        <field name="model_id" ref="model_bf_babillard_vote"/>
+        <field name="groups" eval="[(6, 0, [ref('base.group_user')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[
+            '&amp;',
+                '|',
+                    ('post_id.sondage_anonyme', '=', False),
+                    ('user_id', '=', user.id),
+            '&amp;',
+                ('post_id.state', '=', 'publie'),
+                '|', '|',
+                    ('post_id.audience', '=', 'tous'),
+                    '&amp;', ('post_id.audience', '=', 'departements'),
+                             ('post_id.department_ids.member_ids.user_id', '=', user.id),
+                    '&amp;', ('post_id.audience', '=', 'groupes'),
+                             ('post_id.group_ids', 'in', user.groups_id.ids)
+        ]</field>
+    </record>
+
+    <!-- 🔴 La rédaction voit les voix d'un sondage nominatif, et RIEN de plus :
+         l'auteur d'un sondage anonyme ne doit pas pouvoir le déchiffrer par sa
+         propre table. C'est la seule règle de rédaction du module qui porte une
+         condition, et elle la porte exprès. -->
+    <record id="rule_vote_redacteur" model="ir.rule">
+        <field name="name">Babillard : la rédaction voit les voix nominatives</field>
+        <field name="model_id" ref="model_bf_babillard_vote"/>
+        <field name="groups" eval="[(6, 0, [ref('group_babillard_redacteur'), ref('group_babillard_moderation')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('post_id.sondage_anonyme', '=', False)]</field>
+    </record>
+
+    <record id="rule_vote_societe" model="ir.rule">
+        <field name="name">Babillard : les voix de mes sociétés</field>
+        <field name="model_id" ref="model_bf_babillard_vote"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
 

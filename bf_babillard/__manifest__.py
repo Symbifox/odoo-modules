@@ -3,7 +3,7 @@
     "name": "Babillard",
     "summary": "Les annonces de la maison, avec leur audience, leur échéance et "
                "la preuve qu'elles ont été lues",
-    "version": "18.0.1.6.1",
+    "version": "18.0.1.7.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -31,6 +31,8 @@
             "bf_babillard/static/src/scss/babillard.scss",
             "bf_babillard/static/src/js/babillard_reactions.js",
             "bf_babillard/static/src/xml/babillard_reactions.xml",
+            "bf_babillard/static/src/js/babillard_sondage.js",
+            "bf_babillard/static/src/xml/babillard_sondage.xml",
         ],
     },
     "description": """
@@ -94,6 +96,15 @@ Ce qu'il fait
   que la maison offre dans un catalogue de douze, et en ajoute autant qu'elle
   veut. Une même personne peut en poser plusieurs, et le survol dit qui a
   réagi.
+* **Un sondage se pose dans le fil.** Le titre est la question, la publication
+  porte ses propres choix, et on vote d'un clic sur la carte. Un seul choix ou
+  plusieurs, au gré de la rédaction. L'audience peut se voir offrir d'ajouter
+  ses propres choix, avec un plafond par personne.
+* **Un vote est signé, sauf si on demande l'inverse.** Signé, l'audience voit
+  qui a voté quoi, comme pour les réactions. Anonyme, personne ne le voit, pas
+  même la rédaction ni l'auteur, et le résultat reste caché tant que moins de
+  trois personnes n'ont pas répondu : sous ce seuil, un résultat se déchiffre
+  par soustraction.
 * **Une arrivée se souhaite toute seule**, une à la fois.
 * **L'échéance retire la publication du fil**, sans rien détruire.
 

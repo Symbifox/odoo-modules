@@ -43,6 +43,18 @@ When Odoo is installed, it creates a "general" channel and subscribes every inte
 * **The house chooses its reactions.** The module ships a catalogue of twelve, five of them offered out of the box (👍 🎉 ❤️ 💡 🙏); administrators tick the ones that fit and add their own. No thumbs-down and no symbol that passes judgement: under a company announcement, a 👎 does not open a conversation, it closes one, and the comment thread is right there for anyone who wants to qualify.
   * One person may place several reactions on the same post, so a counter adds up gestures rather than people. Hovering a reaction names who placed it, to everyone the post is addressed to, and to nobody else: a record rule bounds that to the post's audience, not to the company.
   * Unticking a reaction stops it being offered. The ones already placed stay on the posts that carry them, and the people who placed them can still take them back. History is not rewritten because an administrator changed their mind.
+* **A poll lives in the feed.** The post's title is the question, the post carries its own
+  choices, and one click casts a vote on the card. Single choice by default, several when the
+  editor allows it, and the audience can be allowed to add its own choices, up to a per-person
+  cap.
+  * **A vote is signed unless you ask otherwise.** Signed, the audience sees who voted for
+    what, the way it sees reactions. Anonymous, nobody sees it, not the editorial team and not
+    the author: the record rule returns no vote of an anonymous poll to anyone but the person
+    who cast it, and the tally is masked until three people have answered. Below that, a
+    result is read back by subtraction. The threshold counts people, not votes, because in
+    multiple choice two people easily cast three.
+  * The editor is warned while writing when the audience is too small for that promise to
+    hold, rather than after the first vote.
 * **An arrival greets itself.** Creating an employee posts a welcome card with their face and their team. One at a time: an import that creates dozens of records greets none of them, because two hundred welcomes on one morning would bury the feed rather than animate it.
 * **Expired posts leave the feed** once a day. Nothing is destroyed.
 * **Each company keeps its own records:** posts, read receipts and reports stay in the company they belong to.
@@ -81,7 +93,7 @@ The module has two templates. Each holds only the email body. If `bluefox_brandi
 
 ## Bridges
 
-Five optional bridges install themselves as soon as both of their modules are present.
+Seven optional bridges install themselves as soon as both of their modules are present.
 
 | Module | What it adds |
 |---|---|
@@ -90,6 +102,8 @@ Five optional bridges install themselves as soon as both of their modules are pr
 | `bf_babillard_pulse` | The displayable results of a closed pulse wave appear on the feed |
 | `bf_babillard_event` | An upcoming event appears, follows renames and date changes, and leaves the feed when cancelled |
 | `bf_babillard_home` | A dashboard tile counts what you still have to read |
+| `bf_babillard_survey` | An editor announces an open Odoo survey on the feed, with its link |
+| `bf_babillard_appointment_poll` | An editor announces that a date poll is looking for answers |
 
 ## Known limitation
 

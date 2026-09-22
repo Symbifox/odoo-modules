@@ -5,7 +5,7 @@ from datetime import timedelta
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools.misc import format_date
 
 _logger = logging.getLogger(__name__)
@@ -16,7 +16,19 @@ TYPES = [
     ("reconnaissance", "Reconnaissance"),
     ("evenement", "Événement"),
     ("celebration", "Célébration"),
+    ("sondage", "Sondage"),
 ]
+
+#: 🔴 Sous ce nombre de votants, un résultat anonyme se déchiffre par
+#: soustraction : à deux voix, « 1 et 1 » nomme tout le monde dès qu'une
+#: personne dit ce qu'elle a mis. C'est le seuil que le pulse applique déjà à
+#: ses scores (`_check_thresholds` y refuse moins de trois), et il est repris
+#: ici pour la même raison, pas par symétrie.
+SEUIL_ANONYME = 3
+
+#: Un sondage qui offre trente choix ne se dépouille plus. Le plafond vaut pour
+#: l'audience comme pour la rédaction.
+MAX_OPTIONS = 20
 
 
 class BabillardPost(models.Model):
@@ -143,6 +155,49 @@ class BabillardPost(models.Model):
         "Réactions", compute="_compute_reactions",
         help="Ce que l'écran affiche : symbole, compte, noms, et ce qui reste "
              "à offrir. Calculé par personne qui regarde.")
+
+    # ── Sondage ───────────────────────────────────────────────────────────
+    # Le titre de la publication EST la question : « taper la question et les
+    # options » est la façon dont le marché entier décrit le geste, et un champ
+    # « question » de plus aurait fait deux titres sur la carte.
+    option_ids = fields.One2many(
+        "bf.babillard.option", "post_id", string="Choix",
+        help="Les choix offerts. Ils appartiennent à cette publication.")
+    vote_ids = fields.One2many("bf.babillard.vote", "post_id", string="Voix")
+    sondage_choix_multiple = fields.Boolean(
+        "Plusieurs choix", default=False, tracking=True,
+        help="Coché, on coche autant de choix qu'on veut. Décoché, voter pour "
+             "un choix retire le précédent.")
+    sondage_anonyme = fields.Boolean(
+        "Vote anonyme", default=False, tracking=True,
+        help="Décoché, l'audience voit qui a voté quoi, comme pour les "
+             "réactions. Coché, personne ne le voit, pas même la rédaction, et "
+             "le résultat reste caché tant que moins de trois personnes n'ont "
+             "pas répondu.")
+    sondage_ajout_ouvert = fields.Boolean(
+        "L'audience peut ajouter un choix", default=False, tracking=True,
+        help="Coché, chaque personne de l'audience peut proposer ses propres "
+             "choix, dans la limite du plafond.")
+    sondage_max_ajouts = fields.Integer(
+        "Choix par personne", default=2,
+        help="Plafond de choix qu'une même personne peut ajouter. Sans lui, "
+             "quelqu'un en propose quinze et le dépouillement ne dit plus rien.")
+    sondage_ferme = fields.Boolean(
+        "Sondage fermé", default=False, copy=False, tracking=True,
+        help="Un sondage fermé garde son résultat au fil, mais n'accepte plus "
+             "de voix.")
+    sondage_avertissement = fields.Char(
+        "Avertissement", compute="_compute_sondage_avertissement",
+        help="Ce que la rédaction doit savoir AVANT de publier, pas après le "
+             "premier vote.")
+    # 🔴 Même patron que `reactions`, et pour les mêmes raisons : un seul champ
+    # calculé porte tout ce que l'écran rend, borné au serveur et calculé par
+    # personne qui regarde. C'est aussi le SEUL endroit d'où sort un
+    # dépouillement : ni l'option ni la voix ne portent de compteur lisible.
+    sondage = fields.Json(
+        "Sondage", compute="_compute_sondage",
+        help="Ce que l'écran affiche du sondage : les choix, ce que j'ai voté, "
+             "et le dépouillement quand il a le droit de paraître.")
 
     avis_envoye_le = fields.Datetime(
         "Avis envoyé le", readonly=True, copy=False,
@@ -351,6 +406,253 @@ class BabillardPost(models.Model):
             ]
 
             post.reactions = {"posees": posees, "offertes": offertes}
+
+    # ── Sondage ───────────────────────────────────────────────────────────────
+
+    def _sondage_ouvert(self):
+        """Un sondage qui accepte encore une voix.
+
+        L'échéance n'est pas contrôlée ici : elle fait passer la publication à
+        « Échue », et c'est cet état qui ferme le sondage. Un seul chemin, pas
+        deux qui pourraient se contredire.
+        """
+        self.ensure_one()
+        post = self.sudo()
+        return bool(
+            post.type_publication == "sondage"
+            and post.state == "publie"
+            and not post.sondage_ferme
+        )
+
+    @api.depends("option_ids", "vote_ids", "sondage_anonyme",
+                 "sondage_choix_multiple", "sondage_ajout_ouvert",
+                 "sondage_max_ajouts", "sondage_ferme", "state",
+                 "type_publication")
+    @api.depends_context("uid")
+    def _compute_sondage(self):
+        """Le dépouillement, calculé par lot et par personne qui regarde.
+
+        🔴 `depends_context("uid")` pour la même raison que la barre de
+        réactions : « par_moi », « peut voter » et le reste dépendent de QUI
+        regarde. Sans lui, Odoo sert à tout le monde le sondage de la première
+        personne qui a ouvert le fil.
+
+        🔴 Le seuil s'applique ICI, sur le nombre de VOTANTS et non sur le
+        nombre de voix : en choix multiple, deux personnes posent facilement
+        trois voix, et compter les voix aurait rendu un résultat que deux
+        personnes se partagent.
+        """
+        Vote = self.env["bf.babillard.vote"].sudo()
+        moi = self.env.user
+
+        par_post = {}
+        if self.ids:
+            for vote in Vote.search([("post_id", "in", self.ids)]):
+                par_post.setdefault(vote.post_id.id, []).append(vote)
+
+        for post in self:
+            if post.type_publication != "sondage":
+                post.sondage = {"est_sondage": False}
+                continue
+
+            voix = par_post.get(post.id, [])
+            votants = {v.user_id.id for v in voix}
+            anonyme = bool(post.sondage_anonyme)
+            masque = anonyme and len(votants) < SEUIL_ANONYME
+
+            par_option = {}
+            for vote in voix:
+                par_option.setdefault(vote.option_id.id, []).append(vote)
+
+            total = 0 if masque else sum(len(lot) for lot in par_option.values())
+            options = []
+            for option in post.sudo().option_ids:
+                lot = par_option.get(option.id, [])
+                nb = 0 if masque else len(lot)
+                options.append({
+                    "id": option.id,
+                    "libelle": option.name,
+                    "nb": nb,
+                    "part": round(100.0 * nb / total) if total else 0,
+                    "par_moi": any(v.user_id.id == moi.id for v in lot),
+                    # 🔴 Les noms ne sortent que d'un sondage nominatif. Et
+                    # « proposé par » non plus : sur un sondage anonyme, savoir
+                    # qui a ajouté un choix est déjà un demi-vote.
+                    "noms": None if anonyme else sorted(v.user_id.name for v in lot),
+                    "propose_par": (
+                        option.propose_par_id.name
+                        if not anonyme and option.propose_par_id else None),
+                })
+
+            ouvert = post._sondage_ouvert()
+            destinataire = ouvert and post.sudo()._est_destinataire(moi)
+            deja_proposees = len(post.sudo().option_ids.filtered(
+                lambda o: o.propose_par_id.id == moi.id))
+            restants = max(0, (post.sondage_max_ajouts or 0) - deja_proposees)
+
+            post.sondage = {
+                "est_sondage": True,
+                "ouvert": ouvert,
+                "anonyme": anonyme,
+                "multiple": bool(post.sondage_choix_multiple),
+                "peut_voter": bool(destinataire),
+                "peut_ajouter": bool(
+                    destinataire and post.sondage_ajout_ouvert and restants
+                    and len(post.sudo().option_ids) < MAX_OPTIONS),
+                "ajouts_restants": restants,
+                "masque": masque,
+                "nb_votants": 0 if masque else len(votants),
+                "message": self.env._(
+                    "Pas assez de réponses pour afficher le résultat."
+                ) if masque else False,
+                "options": options,
+            }
+
+    @api.depends("sondage_anonyme", "type_publication", "audience",
+                 "department_ids", "group_ids")
+    def _compute_sondage_avertissement(self):
+        """Dire AVANT de publier qu'une audience trop petite ne tiendra pas la
+        promesse d'anonymat, plutôt que de le découvrir au premier vote.
+
+        ⚠️ Le calcul porte une dépendance de champ en plus de ce qu'il lit
+        vraiment, pour la raison décrite au-dessus de `_compute_lectures` : un
+        calcul non stocké qui ne déclare rien n'est pas rejoué pendant un
+        `onchange`, et le formulaire reçoit alors la valeur par défaut.
+        """
+        for post in self:
+            post.sondage_avertissement = False
+            if post.type_publication != "sondage" or not post.sondage_anonyme:
+                continue
+            if not post.id:
+                continue
+            audience = len(post.sudo()._destinataires())
+            if audience < SEUIL_ANONYME:
+                post.sondage_avertissement = _(
+                    "Cette audience compte %(nb)s personnes. Un vote anonyme "
+                    "n'affichera aucun résultat tant que trois personnes n'auront "
+                    "pas répondu.", nb=audience)
+            elif audience == SEUIL_ANONYME:
+                post.sondage_avertissement = _(
+                    "Cette audience compte exactement trois personnes : le "
+                    "résultat ne paraîtra que si toutes les trois répondent, et "
+                    "il restera facile à deviner.")
+
+    @api.constrains("type_publication", "sondage_max_ajouts", "option_ids")
+    def _check_sondage(self):
+        for post in self:
+            if post.type_publication != "sondage":
+                continue
+            if post.sondage_max_ajouts < 0:
+                raise ValidationError(_("Un plafond négatif ne veut rien dire."))
+            if len(post.option_ids) > MAX_OPTIONS:
+                raise ValidationError(_(
+                    "Un sondage porte au plus %(max)s choix.", max=MAX_OPTIONS))
+
+    def action_basculer_vote(self, option_id):
+        """Voter, ou retirer sa voix. Un clic, et il se reprend.
+
+        🔴 La méthode est publique, donc appelable par RPC : tous les contrôles
+        vivent ICI. L'`option_id` arrive du navigateur et ne vaut rien tant
+        qu'il n'a pas été confronté aux choix de CETTE publication.
+        """
+        self.ensure_one()
+        self.check_access("read")
+        post = self.sudo()
+        if not post._sondage_ouvert():
+            raise UserError(self.env._("Ce sondage n'accepte plus de voix."))
+        if not post._est_destinataire(self.env.user):
+            raise AccessError(self.env._("Cette publication ne vous est pas adressée."))
+
+        option = self.env["bf.babillard.option"].sudo().browse(int(option_id)).exists()
+        if not option or option.post_id.id != self.id:
+            raise UserError(self.env._("Ce choix n'existe pas sur cette publication."))
+
+        Vote = self.env["bf.babillard.vote"].sudo()
+        deja = Vote.search([
+            ("post_id", "=", self.id), ("user_id", "=", self.env.uid),
+            ("option_id", "=", option.id),
+        ], limit=1)
+        if deja:
+            deja.unlink()
+            return True
+
+        if not post.sondage_choix_multiple:
+            # Un seul choix : voter pour un autre remplace, il ne s'ajoute pas.
+            Vote.search([
+                ("post_id", "=", self.id), ("user_id", "=", self.env.uid),
+            ]).unlink()
+        Vote.create({
+            "post_id": self.id, "option_id": option.id, "user_id": self.env.uid,
+        })
+        return True
+
+    def action_ajouter_option(self, libelle):
+        """Ajouter un choix, quand le sondage le permet.
+
+        🔴 Publique, donc appelable par RPC, et elle ouvre une ÉCRITURE à
+        l'audience : c'est la méthode la plus exposée du module. D'où le
+        plafond par personne, le plafond global, la longueur bornée, et le
+        refus d'un doublon, qui sont tous vérifiés ici et nulle part ailleurs.
+        """
+        self.ensure_one()
+        self.check_access("read")
+        post = self.sudo()
+        if not post._sondage_ouvert():
+            raise UserError(self.env._("Ce sondage n'accepte plus de choix."))
+        # ⚠️ L'audience d'abord : « ce n'est pas pour vous » précède « ce
+        # sondage n'accepte pas d'ajout ». Dans l'autre ordre, une personne hors
+        # audience apprenait un réglage du sondage avant d'être refusée.
+        if not post._est_destinataire(self.env.user):
+            raise AccessError(self.env._("Cette publication ne vous est pas adressée."))
+        if not post.sondage_ajout_ouvert:
+            raise UserError(self.env._(
+                "Ce sondage n'accepte que les choix de la rédaction."))
+
+        texte = " ".join((libelle or "").split())[:80]
+        if not texte:
+            raise UserError(self.env._("Un choix sans texte n'est pas un choix."))
+
+        deja = post.option_ids.filtered(
+            lambda o: o.propose_par_id.id == self.env.uid)
+        if len(deja) >= post.sondage_max_ajouts:
+            raise UserError(self.env._(
+                "Vous avez déjà ajouté %(nb)s choix à ce sondage.", nb=len(deja)))
+        if len(post.option_ids) >= MAX_OPTIONS:
+            raise UserError(self.env._(
+                "Ce sondage porte déjà %(max)s choix.", max=MAX_OPTIONS))
+        # ⚠️ Comparaison sur le texte normalisé : « Le jeudi » et « le  jeudi »
+        # sont le même choix, et deux lignes jumelles partagent les voix sans
+        # que personne comprenne pourquoi le total ne tombe pas juste.
+        if any(o.name.strip().casefold() == texte.casefold()
+               for o in post.option_ids):
+            raise UserError(self.env._("Ce choix est déjà offert."))
+
+        self.env["bf.babillard.option"].sudo().create({
+            "post_id": self.id,
+            "name": texte,
+            "sequence": 10 + len(post.option_ids),
+            "propose_par_id": self.env.uid,
+        })
+        return True
+
+    def action_fermer_sondage(self):
+        """Fermer le sondage sans retirer la publication du fil."""
+        self._garde_de_redaction()
+        self.filtered(lambda p: p.type_publication == "sondage").sudo().write(
+            {"sondage_ferme": True})
+        return True
+
+    def action_rouvrir_sondage(self):
+        self._garde_de_redaction()
+        self.filtered(lambda p: p.type_publication == "sondage").sudo().write(
+            {"sondage_ferme": False})
+        return True
+
+    def _garde_de_redaction(self):
+        """🔴 Les deux méthodes au-dessus sont publiques : le `groups=` d'un
+        bouton ne garde que l'écran."""
+        if not self.env.user.has_group("bf_babillard.group_babillard_redacteur"):
+            raise AccessError(_("Seule la rédaction ferme ou rouvre un sondage."))
 
     @api.depends("message_ids")
     def _compute_fil(self):

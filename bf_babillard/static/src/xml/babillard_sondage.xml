@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_babillard.Sondage">
+        <!-- 🔴 `t-on-click.stop` sur l'enveloppe, pour la raison qui a déjà
+             piégé la barre de réactions : dans le fil, la carte entière ouvre
+             la publication, et voter l'ouvrait au lieu de voter. -->
+        <div class="o_bf_bab_sondage mt-2" t-if="donnees.est_sondage"
+             t-on-click.stop="() => {}">
+
+            <div t-foreach="options" t-as="option" t-key="option.id"
+                 class="o_bf_bab_choix"
+                 t-att-class="{ 'o_bf_bab_choix_mien': option.par_moi,
+                                'o_bf_bab_choix_cliquable': donnees.peut_voter }"
+                 t-att-data-tooltip="survol(option)"
+                 t-on-click="() => this.basculer(option.id)">
+                <div class="o_bf_bab_jauge" t-if="!donnees.masque"
+                     t-attf-style="width: {{ option.part }}%;"/>
+                <div class="o_bf_bab_choix_texte">
+                    <i class="me-1 fa"
+                       t-att-class="option.par_moi ? 'fa-check-square-o' : 'fa-square-o'"
+                       t-if="donnees.peut_voter"/>
+                    <span t-esc="option.libelle"/>
+                    <span class="text-muted small ms-1" t-if="option.propose_par">
+                        (<t t-esc="option.propose_par"/>)
+                    </span>
+                    <span class="o_bf_bab_compte ms-auto" t-if="!donnees.masque">
+                        <t t-esc="option.nb"/>
+                    </span>
+                </div>
+            </div>
+
+            <div class="text-muted small mt-1 d-flex align-items-center gap-2">
+                <span t-if="donnees.masque" t-esc="donnees.message"/>
+                <span t-if="!donnees.masque" t-esc="etiquetteVotants"/>
+                <span t-if="donnees.anonyme" class="badge text-bg-light">
+                    <i class="fa fa-user-secret me-1"/>Anonyme
+                </span>
+                <span t-if="!donnees.ouvert" class="badge text-bg-secondary"
+                      t-esc="etiquetteFerme"/>
+            </div>
+
+            <div class="d-flex align-items-center gap-1 mt-2" t-if="donnees.peut_ajouter">
+                <input type="text" class="form-control form-control-sm o_bf_bab_ajout"
+                       t-att-placeholder="etiquetteAjouter"
+                       t-model="state.nouveau"
+                       t-on-keydown="surTouche"/>
+                <button type="button" class="btn btn-sm btn-secondary"
+                        t-att-disabled="state.enCours"
+                        t-on-click="() => this.ajouter()">
+                    <i class="fa fa-plus"/>
+                </button>
+            </div>
+        </div>
+    </t>
+
+</templates>

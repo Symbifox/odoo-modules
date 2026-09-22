@@ -22,6 +22,14 @@
                             groups="bf_babillard.group_babillard_redacteur"/>
                     <button name="action_marquer_lu" type="object" string="J'ai lu"
                             class="btn-primary" invisible="not a_lire_pour_moi"/>
+                    <button name="action_fermer_sondage" type="object"
+                            string="Fermer le sondage"
+                            invisible="type_publication != 'sondage' or state != 'publie' or sondage_ferme"
+                            groups="bf_babillard.group_babillard_redacteur"/>
+                    <button name="action_rouvrir_sondage" type="object"
+                            string="Rouvrir le sondage"
+                            invisible="type_publication != 'sondage' or not sondage_ferme"
+                            groups="bf_babillard.group_babillard_redacteur"/>
                     <!-- 🔴 La barre d'état est un outil de rédaction. Affichée au
                          lecteur, elle transformait la page d'une reconnaissance en
                          fiche de suivi : « brouillon > publié > échue » n'apprend
@@ -128,6 +136,12 @@
                         </span>
                     </div>
                     <field name="corps_html" placeholder="Ce qu'il faut savoir, en clair."/>
+                    <!-- Le bulletin, à la place où le lecteur le cherche : sous
+                         le texte, avant les commentaires. Il n'est pas dans le
+                         bloc Diffusion parce qu'il n'appartient pas à la
+                         rédaction. -->
+                    <field name="sondage" widget="bf_babillard_sondage" nolabel="1"
+                           invisible="type_publication != 'sondage' or state == 'brouillon'"/>
                     <div class="alert alert-light border mt-2" role="status"
                          invisible="commentaires_ouverts">
                         Les commentaires sont fermés sur cette publication.
@@ -159,6 +173,32 @@
                             <field name="commentaires_ouverts"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
+                    </group>
+                    <group string="Sondage" name="sondage"
+                           invisible="type_publication != 'sondage'"
+                           groups="bf_babillard.group_babillard_redacteur">
+                        <div class="alert alert-warning" role="alert" colspan="2"
+                             invisible="not sondage_avertissement">
+                            <field name="sondage_avertissement" nolabel="1" readonly="1"/>
+                        </div>
+                        <group>
+                            <field name="sondage_choix_multiple"/>
+                            <field name="sondage_anonyme"/>
+                        </group>
+                        <group>
+                            <field name="sondage_ajout_ouvert"/>
+                            <field name="sondage_max_ajouts"
+                                   invisible="not sondage_ajout_ouvert"/>
+                            <field name="sondage_ferme"/>
+                        </group>
+                        <field name="option_ids" nolabel="1" colspan="2">
+                            <list editable="bottom">
+                                <field name="sequence" widget="handle"/>
+                                <field name="name" string="Choix"/>
+                                <field name="propose_par_id" optional="show"
+                                       readonly="1"/>
+                            </list>
+                        </field>
                     </group>
                     <group string="Suivi de lecture" invisible="not lecture_requise"
                            groups="bf_babillard.group_babillard_redacteur">
@@ -199,6 +239,7 @@
                 <field name="nb_destinataires" string="Visés"/>
                 <field name="date_publication"/>
                 <field name="date_echeance"/>
+                <field name="sondage_ferme" string="Fermé" optional="hide"/>
                 <field name="state"/>
             </list>
         </field>
@@ -222,6 +263,7 @@
                 <field name="image_couverture"/>
                 <field name="nb_commentaires"/>
                 <field name="reactions"/>
+                <field name="sondage"/>
                 <field name="est_nouveau"/>
                 <templates>
                     <t t-name="card">
@@ -261,6 +303,8 @@
                         <!-- 🔴 Le corps entier tenait dans la carte : une politique
                              de trois pages noyait tout le reste du fil. -->
                         <div class="mt-2 o_bf_bab_extrait"><field name="corps_html" widget="html"/></div>
+                        <field name="sondage" widget="bf_babillard_sondage" nolabel="1"
+                               t-if="record.type_publication.raw_value === 'sondage'"/>
                         <div class="mt-2 d-flex align-items-center flex-wrap gap-2">
                             <!-- Le seul geste que le module demande, sur la carte :
                                  il fallait ouvrir la publication pour le poser. -->

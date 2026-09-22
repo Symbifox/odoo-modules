@@ -10,3 +10,7 @@ access_babillard_reaction_admin,bf.babillard.reaction configuration,model_bf_bab
 access_babillard_signalement_moderation,bf.babillard.signalement modération,model_bf_babillard_signalement,group_babillard_moderation,1,1,1,0
 access_babillard_signalement_admin,bf.babillard.signalement administration,model_bf_babillard_signalement,base.group_system,1,0,0,0
 access_babillard_signalement_assistant_user,bf.babillard.signalement.assistant utilisateur,model_bf_babillard_signalement_assistant,base.group_user,1,1,1,0
+access_babillard_option_user,bf.babillard.option utilisateur,model_bf_babillard_option,base.group_user,1,0,0,0
+access_babillard_option_redacteur,bf.babillard.option rédaction,model_bf_babillard_option,group_babillard_redacteur,1,1,1,1
+access_babillard_vote_user,bf.babillard.vote utilisateur,model_bf_babillard_vote,base.group_user,1,0,0,0
+access_babillard_vote_redacteur,bf.babillard.vote rédaction,model_bf_babillard_vote,group_babillard_redacteur,1,0,0,0
