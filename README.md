@@ -106,6 +106,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.0.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.0.1 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.0 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
+| `bf_calculator` | BF Calculatrice | 18.0.1.2.0 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
 | `bf_calendar_invite` | BF Calendar — usable invitations | 18.0.5.0.0 | LGPL-3 | Branded calendar invitations written in the guests' language, carrying the .ics and a link to the attendee's invitation page, plus a prefilled SMS body. |
 | `bf_calendar_mobile` | Symbifox — Agenda mobile | 18.0.3.2.0 | LGPL-3 | Calendar and deadlines for a mobile client, carrying what CalDAV cannot: the meeting agenda, the minutes, the RSVP and the two reminder gestures |
 | `bf_calendar_nc_talk` | BF Calendar — Nextcloud Talk button | 18.0.1.1.0 | LGPL-3 | Adds a '+ Nextcloud Talk' button next to '+ Odoo meeting' on calendar events. Creates a public Talk conversation via the Spreed OCS API and writes the room URL into videocall_location. |

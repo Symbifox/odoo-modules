@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_calculator.Systray">
+        <div class="o_bf_calc_systray o-dropdown dropdown" t-ref="root">
+            <button type="button" class="o-dropdown--toggle btn" t-on-click="toggle"
+                    title="Calculator (Alt+Shift+C)" aria-label="Calculator">
+                <i class="fa fa-lg fa-calculator"/>
+            </button>
+        </div>
+    </t>
+</templates>

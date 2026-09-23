@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Barre d'actions sur un résultat : des icônes, le libellé en infobulle. -->
+    <t t-name="bf_calculator.ResultActions">
+        <div class="o_bf_calc_actions d-flex align-items-center gap-1">
+            <button class="btn btn-sm o_bf_calc_icon" t-on-click="() => this.copy(entry, false)"
+                    title="Copy the result" aria-label="Copy the result">
+                <i class="fa fa-clipboard"/>
+            </button>
+            <button class="btn btn-sm o_bf_calc_icon" t-on-click="() => this.copy(entry, true)"
+                    title="Copy the calculation and its result" aria-label="Copy the calculation and its result">
+                <i class="fa fa-files-o"/>
+            </button>
+            <button class="btn btn-sm o_bf_calc_icon o_bf_calc_insert" t-on-click="() => this.insert(entry)"
+                    t-att-disabled="!state.canInsert" t-att-title="insertTitle" t-att-aria-label="insertTitle">
+                <i class="fa fa-sign-in"/>
+            </button>
+            <button t-if="entry.id" class="btn btn-sm o_bf_calc_icon o_bf_calc_pin" t-on-click="() => this.togglePin(entry)"
+                    t-att-class="{ 'o_bf_calc_on': entry.pinned }" title="Pin to the top of the history" aria-label="Pin to the top of the history">
+                <i class="fa fa-thumb-tack"/>
+            </button>
+            <button t-if="entry.id" class="btn btn-sm btn-primary ms-auto o_bf_calc_post" t-on-click="() => this.post(entry)"
+                    title="Post as an internal note to a chatter">
+                <i class="fa fa-comment-o me-1"/>Post
+            </button>
+        </div>
+    </t>
+
+    <t t-name="bf_calculator.Panel">
+        <div class="o_bf_calc_panel">
+            <div class="o_bf_calc_top d-flex align-items-center">
+                <nav class="o_bf_calc_tabs d-flex flex-grow-1">
+                    <a t-foreach="tabs" t-as="tab" t-key="tab[0]" href="#"
+                       t-attf-class="o_bf_calc_tab {{ state.tab === tab[0] ? 'active' : '' }}"
+                       t-att-data-tab="tab[0]"
+                       t-on-click.prevent="() => this.setTab(tab[0])" t-esc="tab[1]"/>
+                </nav>
+                <button class="btn btn-sm o_bf_calc_icon o_bf_calc_help_btn" t-att-class="{ 'o_bf_calc_on': state.showHelp }"
+                        t-on-click="() => this.toggle('showHelp')" title="What can I type?" aria-label="What can I type?">
+                    <i class="fa fa-question-circle-o"/>
+                </button>
+            </div>
+
+            <!-- Aide : ce qu'on peut taper -->
+            <div t-if="state.showHelp" class="o_bf_calc_help small">
+                <table class="table table-sm mb-0">
+                    <tr><td><code>6 (weeks) * 750 $</code></td><td>Labels are kept, ignored in the math</td></tr>
+                    <tr><td><code>Budget : 6 * 750</code></td><td>A title before the colon</td></tr>
+                    <tr><td><code>200 + 10 %</code></td><td>Percentages like a desk calculator</td></tr>
+                    <tr><td><code>1 h 45 * 120 $</code></td><td>Durations</td></tr>
+                    <tr><td><code>100 USD en CAD</code></td><td>Bank of Canada daily rates</td></tr>
+                    <tr><td><code>rate = 125</code></td><td>A variable, then <code>6 h * rate</code></td></tr>
+                    <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Previous calculations</td></tr>
+                    <tr><td><kbd>Esc</kbd></td><td>Clear</td></tr>
+                </table>
+            </div>
+
+            <!-- Calcul -->
+            <t t-if="state.tab === 'calc'">
+                <div t-attf-class="o_bf_calc_display bg-body-tertiary {{ state.justComputed ? 'o_bf_calc_done' : '' }}">
+                    <div class="d-flex align-items-center gap-1">
+                        <button class="btn btn-sm o_bf_calc_icon o_bf_calc_tagbtn" t-att-class="{ 'o_bf_calc_on': state.showTitle or state.title }"
+                                t-on-click="() => this.toggle('showTitle')" title="Add a title" aria-label="Add a title">
+                            <i class="fa fa-tag"/>
+                        </button>
+                        <input t-if="state.showTitle" type="text" class="o_bf_calc_title flex-grow-1"
+                               placeholder="Title (optional)" t-model="state.title"/>
+                        <div t-else="" class="o_bf_calc_line flex-grow-1 text-end text-truncate small text-muted"
+                             t-att-title="screen.line" t-esc="screen.line"/>
+                    </div>
+                    <input type="text" class="o_bf_calc_expression" t-ref="expression"
+                           placeholder="6 (weeks) * 750 $" autocomplete="off" spellcheck="false"
+                           t-on-input="onExpressionInput" t-on-keydown="onExpressionKeydown"/>
+                    <div t-if="screen.error" class="o_bf_calc_error small text-danger text-end" t-esc="screen.error"/>
+                    <div t-elif="!state.justComputed" t-attf-class="o_bf_calc_result text-end text-truncate {{ screen.live ? 'o_bf_calc_live' : '' }}"
+                         t-esc="screen.big"/>
+                    <div t-if="screen.note" class="o_bf_calc_note small text-muted text-end" t-esc="screen.note"/>
+                </div>
+
+                <div class="d-flex align-items-center gap-1 mt-1">
+                    <t t-if="state.last" t-call="bf_calculator.ResultActions">
+                        <t t-set="entry" t-value="state.last"/>
+                    </t>
+                    <select class="form-select form-select-sm o_bf_calc_rounding ms-auto" t-on-change="setRounding"
+                            title="Rounding" aria-label="Rounding">
+                        <option t-foreach="roundings" t-as="r" t-key="r[0]" t-att-value="r[0]"
+                                t-att-selected="r[0] === state.rounding" t-esc="r[1]"/>
+                    </select>
+                </div>
+
+                <div t-if="state.variables.length" class="o_bf_calc_vars d-flex flex-wrap gap-1 mt-1">
+                    <span t-foreach="state.variables" t-as="v" t-key="v.name" class="o_bf_calc_chip">
+                        <a href="#" t-on-click.prevent="() => this.insertName(v.name)" t-att-title="v.text">
+                            <strong t-esc="v.name"/> <t t-esc="v.text"/>
+                        </a>
+                        <button class="btn btn-link p-0 ms-1 o_bf_calc_chip_x" t-on-click="() => this.deleteVariable(v.name)"
+                                title="Delete" aria-label="Delete">×</button>
+                    </span>
+                </div>
+
+                <div class="o_bf_calc_keypad mt-2">
+                    <button class="o_bf_calc_key o_bf_calc_mem" t-on-click="() => this.memory('clear')" title="Clear memory">MC</button>
+                    <button class="o_bf_calc_key o_bf_calc_mem" t-on-click="() => this.memory('recall')"
+                            t-att-disabled="!hasMemory" title="Recall memory">MR</button>
+                    <button class="o_bf_calc_key o_bf_calc_mem" t-on-click="() => this.memory('add')" title="Add to memory">M+</button>
+                    <button class="o_bf_calc_key o_bf_calc_mem" t-on-click="() => this.memory('sub')" title="Subtract from memory">M−</button>
+                    <t t-foreach="keypad" t-as="row" t-key="row_index">
+                        <t t-foreach="row" t-as="key" t-key="key_index">
+                            <button t-attf-class="o_bf_calc_key {{ key === '=' ? 'btn btn-primary o_bf_calc_eq' : (key_index === 3 ? 'o_bf_calc_op' : '') }}"
+                                    t-on-click="() => this.pressKey(key)" t-esc="key"/>
+                        </t>
+                    </t>
+                </div>
+            </t>
+
+            <!-- Taxes -->
+            <t t-if="state.tab === 'tax'">
+                <div class="o_bf_calc_segment mb-2">
+                    <button t-attf-class="{{ state.taxDirection === 'reverse' ? 'active' : '' }} o_bf_calc_reverse"
+                            t-on-click="() => this.setTaxDirection('reverse')">Total → before taxes</button>
+                    <button t-attf-class="{{ state.taxDirection === 'forward' ? 'active' : '' }}"
+                            t-on-click="() => this.setTaxDirection('forward')">Before taxes → total</button>
+                </div>
+                <select class="form-select form-select-sm mb-1" t-on-change="(ev) => this.setField('taxProfile', ev, 'computeTax')">
+                    <option t-foreach="state.profiles" t-as="p" t-key="p.key" t-att-value="p.key"
+                            t-att-selected="p.key === state.taxProfile" t-esc="p.name"/>
+                </select>
+                <input type="text" class="form-control form-control-sm o_bf_calc_tax_amount"
+                       t-att-placeholder="taxPlaceholder" t-att-value="state.taxAmount"
+                       t-on-input="(ev) => this.setField('taxAmount', ev, 'computeTax')"
+                       t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.computeTax(true)"/>
+                <t t-set="tr" t-value="state.taxRes"/>
+                <div t-if="tr" class="mt-2 small">
+                    <div t-if="!tr.ok" class="text-danger" t-esc="tr.error"/>
+                    <table t-else="" class="table table-sm mb-0 o_bf_calc_tax_table">
+                        <tr><td>Before taxes</td><td class="text-end" t-attf-class="{{ tr.direction === 'reverse' ? 'fw-bold' : '' }}" t-esc="tr.base"/></tr>
+                        <tr t-foreach="tr.taxes" t-as="t" t-key="t_index">
+                            <td><t t-esc="t.name"/> (<t t-esc="t.rate"/>)</td><td class="text-end" t-esc="t.amount"/>
+                        </tr>
+                        <tr><td>Total</td><td class="text-end" t-attf-class="{{ tr.direction === 'forward' ? 'fw-bold' : '' }}" t-esc="tr.total"/></tr>
+                        <tr t-if="tr.inexact"><td colspan="2" class="text-muted">No before-tax amount gives exactly this total once taxes are rounded; the closest one gives <t t-esc="tr.inexact"/>.</td></tr>
+                    </table>
+                    <button t-if="tr.ok and !tr.entry" class="btn btn-sm btn-light mt-1" t-on-click="() => this.computeTax(true)">
+                        <i class="fa fa-history me-1"/>Keep in history
+                    </button>
+                </div>
+            </t>
+
+            <!-- Heures -->
+            <t t-if="state.tab === 'hours'">
+                <input type="text" class="form-control form-control-sm o_bf_calc_hours"
+                       placeholder="1 h 45, 1,75 or 1 h 45 + 2 h 30"
+                       t-att-value="state.hours" t-on-input="onHoursInput"
+                       t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.recordHours()"/>
+                <div t-if="state.hoursRes" class="mt-2">
+                    <div t-if="!state.hoursRes.ok" class="small text-danger" t-esc="state.hoursRes.error"/>
+                    <div t-else="" class="o_bf_calc_display bg-body-tertiary d-flex justify-content-around align-items-baseline">
+                        <span class="o_bf_calc_result"><t t-esc="state.hoursRes.decimal"/> h</span>
+                        <span class="text-muted">=</span>
+                        <span class="o_bf_calc_result" t-esc="state.hoursRes.clock"/>
+                    </div>
+                </div>
+                <p class="small text-muted mt-2 mb-0">Durations also work in Calculate: 1 h 45 * 120 $.</p>
+            </t>
+
+            <!-- Pourcentages et marges -->
+            <t t-if="state.tab === 'percent'">
+                <select class="form-select form-select-sm mb-1" t-on-change="(ev) => this.setField('percentKind', ev, 'computePercent')">
+                    <option value="margin">Margin and markup</option>
+                    <option value="change">Change in %</option>
+                    <option value="discount">Discount</option>
+                    <option value="portion">Share of a total</option>
+                </select>
+                <div class="d-flex gap-1">
+                    <input type="text" class="form-control form-control-sm o_bf_calc_pa" t-att-placeholder="percentLabels[0]"
+                           t-att-value="state.percentA" t-on-input="(ev) => this.setField('percentA', ev, 'computePercent')"/>
+                    <input type="text" class="form-control form-control-sm o_bf_calc_pb" t-att-placeholder="percentLabels[1]"
+                           t-att-value="state.percentB" t-on-input="(ev) => this.setField('percentB', ev, 'computePercent')"
+                           t-on-keydown="(ev) => ev.key === 'Enter' &amp;&amp; this.computePercent(true)"/>
+                </div>
+                <t t-set="pr" t-value="state.percentRes"/>
+                <div t-if="pr" class="mt-2 small">
+                    <div t-if="!pr.ok" class="text-danger" t-esc="pr.error"/>
+                    <table t-else="" class="table table-sm mb-0">
+                        <tr t-foreach="pr.rows" t-as="r" t-key="r_index">
+                            <td t-esc="r.label"/><td class="text-end" t-att-class="r_first ? 'fw-bold' : ''" t-esc="r.value"/>
+                        </tr>
+                    </table>
+                    <button t-if="pr.ok and !pr.entry" class="btn btn-sm btn-light mt-1" t-on-click="() => this.computePercent(true)">
+                        <i class="fa fa-history me-1"/>Keep in history
+                    </button>
+                </div>
+            </t>
+
+            <!-- Dates -->
+            <t t-if="state.tab === 'date'">
+                <div class="o_bf_calc_segment mb-2">
+                    <button t-attf-class="{{ state.dateKind === 'add' ? 'active' : '' }} o_bf_calc_date_add"
+                            t-on-click="() => this.setDateKind('add')">Date + days</button>
+                    <button t-attf-class="{{ state.dateKind === 'between' ? 'active' : '' }} o_bf_calc_date_between"
+                            t-on-click="() => this.setDateKind('between')">Between two dates</button>
+                </div>
+                <div class="d-flex gap-1 align-items-center">
+                    <input type="date" class="form-control form-control-sm o_bf_calc_date_a" t-att-value="state.dateA"
+                           t-on-change="(ev) => this.setField('dateA', ev, 'computeDates')"/>
+                    <t t-if="state.dateKind === 'add'">
+                        <span class="text-muted">+</span>
+                        <input type="number" class="form-control form-control-sm o_bf_calc_date_n" style="max-width: 5.5rem"
+                               t-att-value="state.dateN" t-on-input="(ev) => this.setField('dateN', ev, 'computeDates')"/>
+                    </t>
+                    <input t-else="" type="date" class="form-control form-control-sm o_bf_calc_date_b" t-att-value="state.dateB"
+                           t-on-change="(ev) => this.setField('dateB', ev, 'computeDates')"/>
+                </div>
+                <label class="form-check small mt-1">
+                    <input type="checkbox" class="form-check-input o_bf_calc_date_business" t-att-checked="state.dateBusiness"
+                           t-on-change="(ev) => this.setField('dateBusiness', ev, 'computeDates')"/>
+                    <span class="form-check-label">Business days (weekends and Québec statutory holidays excluded)</span>
+                </label>
+                <t t-set="dr" t-value="state.dateRes"/>
+                <div t-if="dr" class="mt-2 small">
+                    <div t-if="!dr.ok" class="text-danger" t-esc="dr.error"/>
+                    <t t-else="">
+                        <div class="o_bf_calc_display bg-body-tertiary">
+                            <div class="small text-muted text-end" t-esc="dr.display"/>
+                            <div class="o_bf_calc_result o_bf_calc_date_result text-end" t-esc="dr.result_text"/>
+                        </div>
+                        <table t-if="dr.rows.length > 1" class="table table-sm mb-0 mt-1">
+                            <tr t-foreach="dr.rows" t-as="r" t-key="r_index"><td t-esc="r.label"/><td class="text-end" t-esc="r.value"/></tr>
+                        </table>
+                        <div t-if="dr.holidays.length" class="text-muted mt-1">
+                            Holidays skipped: <t t-esc="dr.holidays.join(', ')"/>
+                        </div>
+                        <button t-if="!dr.entry" class="btn btn-sm btn-light mt-1" t-on-click="() => this.computeDates(true)">
+                            <i class="fa fa-history me-1"/>Keep in history
+                        </button>
+                    </t>
+                </div>
+                <p class="small text-muted mt-2 mb-0">Statutory holidays of the Act respecting labour standards (CNESST), not court deadlines.</p>
+            </t>
+
+            <!-- Colonne collée -->
+            <t t-if="state.tab === 'column'">
+                <textarea class="form-control form-control-sm o_bf_calc_column" rows="4"
+                          placeholder="Paste a column of numbers (spreadsheet, email)"
+                          t-att-value="state.column" t-on-input="(ev) => this.setField('column', ev, 'computeColumn')"/>
+                <t t-set="cr" t-value="state.columnRes"/>
+                <div t-if="cr" class="mt-2 small">
+                    <div t-if="!cr.ok" class="text-danger" t-esc="cr.error"/>
+                    <t t-else="">
+                        <table class="table table-sm mb-0">
+                            <tr t-foreach="cr.rows" t-as="r" t-key="r_index">
+                                <td t-esc="r.label"/><td class="text-end" t-att-class="r_first ? 'fw-bold' : ''" t-esc="r.value"/>
+                            </tr>
+                        </table>
+                        <div t-if="cr.skipped" class="text-muted"><t t-esc="cr.skipped"/> cell(s) ignored (not a number).</div>
+                        <button t-if="!cr.entry" class="btn btn-sm btn-light mt-1" t-on-click="() => this.computeColumn(true)">
+                            <i class="fa fa-history me-1"/>Keep in history
+                        </button>
+                    </t>
+                </div>
+            </t>
+
+            <!-- Dernier résultat, hors onglet Calcul (qui l'a dans son écran) -->
+            <div t-if="state.last and state.tab !== 'calc'" class="o_bf_calc_display bg-body-tertiary mt-2">
+                <div class="small text-muted text-end text-truncate" t-att-title="lineOf(state.last)">
+                    <t t-if="state.last.title"><t t-esc="state.last.title"/> : </t><t t-esc="state.last.display"/> =
+                </div>
+                <div class="o_bf_calc_result text-end" t-esc="state.last.result_text"/>
+            </div>
+            <div t-if="state.last and state.tab !== 'calc'" class="mt-1">
+                <t t-call="bf_calculator.ResultActions">
+                    <t t-set="entry" t-value="state.last"/>
+                </t>
+            </div>
+
+            <!-- Historique -->
+            <div class="o_bf_calc_history mt-2">
+                <div class="d-flex align-items-center gap-1 mb-1">
+                    <span class="small fw-semibold flex-grow-1">History</span>
+                    <button class="btn btn-sm o_bf_calc_icon" t-att-class="{ 'o_bf_calc_on': state.showSearch }"
+                            t-on-click="() => this.toggle('showSearch')" title="Search history" aria-label="Search history">
+                        <i class="fa fa-search"/>
+                    </button>
+                    <button class="btn btn-sm p-0 small o_bf_calc_all" t-on-click="openFullHistory">All ›</button>
+                </div>
+                <input t-if="state.showSearch" type="search" class="form-control form-control-sm mb-1" placeholder="Search history"
+                       t-att-value="state.search" t-on-input="onSearchInput"/>
+                <div t-if="!state.history.length" class="small text-muted">No calculation yet.</div>
+                <div t-foreach="shownHistory" t-as="entry" t-key="entry.id" class="o_bf_calc_row d-flex align-items-center gap-1 small">
+                    <button class="btn btn-link p-0 o_bf_calc_row_pin" t-att-class="{ 'o_bf_calc_on': entry.pinned }"
+                            t-on-click="() => this.togglePin(entry)" title="Pin to the top of the history" aria-label="Pin to the top of the history">
+                        <i class="fa fa-thumb-tack"/>
+                    </button>
+                    <div class="flex-grow-1 text-truncate cursor-pointer" t-on-click="() => this.reuse(entry)" t-att-title="lineOf(entry)">
+                        <strong t-if="entry.title"><t t-esc="entry.title"/> : </strong>
+                        <span class="text-muted" t-esc="entry.display"/>
+                    </div>
+                    <span class="fw-semibold text-nowrap o_bf_calc_row_result" t-esc="entry.result_text"/>
+                    <i t-if="entry.posted" class="fa fa-comment text-muted" title="Posted to a chatter"/>
+                    <button class="btn btn-link p-0 o_bf_calc_row_del" t-on-click="() => this.deleteEntry(entry)" title="Delete" aria-label="Delete">
+                        <i class="fa fa-trash-o"/>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

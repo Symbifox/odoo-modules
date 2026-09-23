@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_calculator_entry_list" model="ir.ui.view">
+        <field name="name">bf.calculator.entry.list</field>
+        <field name="model">bf.calculator.entry</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="create_date" string="Date"/>
+                <field name="title"/>
+                <field name="display_text"/>
+                <field name="result_text" string="Result"/>
+                <field name="mode"/>
+                <field name="message_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_calculator_entry_search" model="ir.ui.view">
+        <field name="name">bf.calculator.entry.search</field>
+        <field name="model">bf.calculator.entry</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="display_text" string="Calculation"
+                       filter_domain="['|', '|', ('title', 'ilike', self), ('display_text', 'ilike', self), ('result_text', 'ilike', self)]"/>
+                <filter name="not_posted" string="Not posted" domain="[('message_id', '=', False)]"/>
+                <filter name="posted" string="Posted to a chatter" domain="[('message_id', '!=', False)]"/>
+                <separator/>
+                <filter name="group_mode" string="Mode" context="{'group_by': 'mode'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_calculator_history" model="ir.actions.act_window">
+        <field name="name">Calculator history</field>
+        <field name="res_model">bf.calculator.entry</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No calculation yet</p>
+            <p>Open the calculator from the top bar (Alt+Shift+C).</p>
+        </field>
+    </record>
+
+    <record id="action_server_bf_calculator_post" model="ir.actions.server">
+        <field name="name">Post to a chatter</field>
+        <field name="model_id" ref="model_bf_calculator_entry"/>
+        <field name="binding_model_id" ref="model_bf_calculator_entry"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_open_post_wizard()</field>
+    </record>
+</odoo>

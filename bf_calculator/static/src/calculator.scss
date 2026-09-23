@@ -1,0 +1,228 @@
+// Le popover de Bootstrap réimpose la pile de polices par défaut : sans cet
+// héritage, le panneau ignore la police de marque posée sur <body> (Lexend
+// par bf_lexend), et un poste sans Segoe/Roboto prend les chiffres dans une
+// police d'émojis à couleur figée, illisible en mode sombre.
+.o_bf_calc_popover {
+    font-family: inherit;
+
+    .popover-body,
+    & > .o_popover {
+        padding: 0;
+    }
+}
+
+.o_bf_calc_panel {
+    width: 360px;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 0.6rem;
+
+    // Onglets soulignés, pas de pastille pleine : le texte garde la couleur du
+    // corps, donc le contraste ne dépend pas de la couleur de marque.
+    .o_bf_calc_tabs {
+        gap: 0.1rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .o_bf_calc_tab {
+        padding: 0.25rem 0.35rem;
+        font-size: 0.8rem;
+        // Un lien, mais jamais en couleur de lien : bf_dark_mode peint les <a>
+        // en bleu de marque, interdit comme texte sur fond foncé.
+        color: var(--bs-body-color) !important;
+        opacity: 0.85;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        white-space: nowrap;
+        &.active {
+            opacity: 1;
+            font-weight: 600;
+            // La couleur du locataire (bluefox_branding), sinon celle d'Odoo.
+            border-bottom-color: var(--brand-primary, var(--bs-primary));
+        }
+    }
+
+    .o_bf_calc_post {
+        white-space: nowrap;
+    }
+    .o_bf_calc_icon {
+        padding: 0.2rem 0.4rem;
+        color: inherit;
+        border: 0;
+        border-radius: 0.4rem;
+        &:hover { background-color: rgba(128, 128, 128, 0.15); }
+        &.o_bf_calc_on { background-color: rgba(128, 128, 128, 0.22); }
+    }
+
+    .o_bf_calc_help {
+        margin: 0.4rem 0;
+        td { padding: 0.15rem 0.3rem; vertical-align: top; }
+        code { white-space: nowrap; }
+        kbd { padding: 0 0.3rem; font-size: 0.75rem; line-height: 1.4; }
+    }
+
+    // L'écran de la calculatrice.
+    .o_bf_calc_display {
+        margin-top: 0.4rem;
+        padding: 0.4rem 0.6rem 0.5rem;
+        border-radius: 0.75rem;
+    }
+    .o_bf_calc_title,
+    .o_bf_calc_expression {
+        width: 100%;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: inherit;
+    }
+    .o_bf_calc_title {
+        font-size: 0.85rem;
+        border-bottom: 1px dashed rgba(128, 128, 128, 0.5);
+    }
+    .o_bf_calc_expression {
+        text-align: right;
+        font-size: 1.05rem;
+        padding: 0.15rem 0;
+        &::placeholder { color: #5c636a; opacity: 1; }
+    }
+    // Après « = », le champ EST l'affichage : la valeur résiduelle en grand,
+    // comme sur une vraie calculatrice, sans la répéter en dessous.
+    .o_bf_calc_done .o_bf_calc_expression {
+        font-size: 1.85rem;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+    .o_bf_calc_result {
+        font-size: 1.85rem;
+        font-weight: 600;
+        line-height: 1.15;
+        font-variant-numeric: tabular-nums;
+        &.o_bf_calc_live { font-weight: 400; }
+    }
+    .o_bf_calc_date_result {
+        font-size: 1.2rem;
+    }
+    // bf_dark_mode éteint le texte des <select> ; on garde celui du corps.
+    .form-select {
+        color: var(--bs-body-color) !important;
+    }
+    .o_bf_calc_rounding {
+        width: auto;
+        min-width: 5.2rem;
+        font-size: 0.8rem;
+    }
+
+    .o_bf_calc_chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.05rem 0.5rem;
+        border-radius: 1rem;
+        font-size: 0.8rem;
+        background-color: rgba(128, 128, 128, 0.15);
+        a { color: var(--bs-body-color) !important; text-decoration: none; }
+        .o_bf_calc_chip_x { color: inherit; line-height: 1; }
+    }
+
+    // Pavé : touches plates et arrondies, opérateurs teintés, « = » en couleur.
+    .o_bf_calc_keypad {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.3rem;
+    }
+    .o_bf_calc_key {
+        border: 0;
+        border-radius: 0.6rem;
+        padding: 0.4rem 0;
+        font-size: 1rem;
+        font-variant-numeric: tabular-nums;
+        color: inherit;
+        background-color: rgba(128, 128, 128, 0.12);
+        &:hover { background-color: rgba(128, 128, 128, 0.22); }
+        &:active { transform: scale(0.97); }
+        &:disabled { opacity: 0.45; }
+    }
+    .o_bf_calc_op {
+        // Échappé : libsass ne connaît pas color-mix() et le laisserait mal passer.
+        background-color: #{"color-mix(in srgb, var(--brand-primary, var(--bs-primary)) 16%, transparent)"};
+        font-weight: 600;
+    }
+    // « = » est un .btn-primary : il suit la couleur et la décision de contraste
+    // du locataire (bluefox_branding : blanc sur la marque, assumé).
+    .o_bf_calc_eq {
+        font-weight: 600;
+    }
+    .o_bf_calc_mem {
+        padding: 0.2rem 0;
+        font-size: 0.75rem;
+        background-color: transparent;
+        border: 1px solid rgba(128, 128, 128, 0.3);
+    }
+
+    .o_bf_calc_segment {
+        display: flex;
+        padding: 0.15rem;
+        border-radius: 0.6rem;
+        background-color: rgba(128, 128, 128, 0.12);
+        button {
+            flex: 1;
+            border: 0;
+            border-radius: 0.5rem;
+            padding: 0.25rem 0.3rem;
+            font-size: 0.8rem;
+            color: inherit;
+            background: transparent;
+            &.active {
+                background-color: var(--bs-body-bg);
+                font-weight: 600;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            }
+        }
+    }
+
+    .o_bf_calc_row {
+        padding: 0.25rem 0.2rem;
+        border-radius: 0.4rem;
+        &:hover { background-color: rgba(128, 128, 128, 0.1); }
+        .o_bf_calc_row_pin,
+        .o_bf_calc_row_del {
+            color: inherit;
+            visibility: hidden;
+        }
+        .o_bf_calc_row_pin { opacity: 0.45; }
+        .o_bf_calc_row_pin.o_bf_calc_on { visibility: visible; opacity: 1; }
+        &:hover,
+        &:focus-within {
+            .o_bf_calc_row_pin,
+            .o_bf_calc_row_del { visibility: visible; }
+        }
+    }
+}
+
+// Écrans tactiles : pas de survol, les boutons de ligne restent visibles.
+@media (hover: none) {
+    .o_bf_calc_panel .o_bf_calc_row {
+        .o_bf_calc_row_pin,
+        .o_bf_calc_row_del { visibility: visible; }
+    }
+}
+
+// Contraste (mesuré au navigateur, texte par texte, en clair et en sombre) :
+// - en clair, le `text-muted` d'Odoo (rgba(73,80,87,.76)) rend 4,34:1 sur blanc,
+//   sous le 4,5 d'AA ; le panneau en porte beaucoup, on le fonce ;
+// - en sombre, `bf_dark_mode` ne recolore pas `text-danger` : le rouge d'Odoo
+//   rend 2,82:1 sur l'anthracite ; #ff9e96 passe sur les deux fonds du panneau
+//   (5,08:1 sur l'écran #3d4344, 6,61:1 sur #2e3132 ; #ff8a80 échouait à 4,41).
+body:not(.bf_dark_mode) .o_bf_calc_panel .text-muted {
+    color: #5c636a !important;
+}
+body.bf_dark_mode .o_bf_calc_panel .text-danger {
+    color: #ff9e96 !important;
+}
+// Le segment actif prend le fond du corps : en sombre, celui du thème.
+body.bf_dark_mode .o_bf_calc_panel .o_bf_calc_expression::placeholder {
+    color: #b6bcbf;
+}
+body.bf_dark_mode .o_bf_calc_panel .o_bf_calc_segment button.active {
+    background-color: #3d4344;
+}

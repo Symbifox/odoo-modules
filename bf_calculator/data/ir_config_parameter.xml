@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Jours d'historique gardés ; 0 = jamais purgé. -->
+    <record id="param_history_days" model="ir.config_parameter">
+        <field name="key">bf_calculator.history_days</field>
+        <field name="value">90</field>
+    </record>
+    <!-- Férié de Pâques retenu par l'employeur (CNESST : au choix) : friday | monday. -->
+    <record id="param_easter_holiday" model="ir.config_parameter">
+        <field name="key">bf_calculator.easter_holiday</field>
+        <field name="value">friday</field>
+    </record>
+</odoo>
