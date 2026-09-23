@@ -4,7 +4,10 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.2.10.0",
+    # 18.0.3.0.0: le bloc-notes au téléphone. Page installable
+    #   /notes (saisie d'abord, file hors ligne, cible du menu Partager),
+    #   API à jeton pour Symbifox Mobile, gestes rapides sur la carte kanban.
+    "version": "18.0.3.0.0",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',

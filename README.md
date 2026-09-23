@@ -99,7 +99,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_babillard_home` | Babillard : accueil | 18.0.1.0.2 | BUSL-1.1 | What you still have to read, on the dashboard |
 | `bf_babillard_pulse` | Babillard : pulse | 18.0.1.0.3 | BUSL-1.1 | The displayable results of a closed pulse wave appear on the noticeboard |
 | `bf_babillard_survey` | Babillard : sondages Odoo | 18.0.1.0.0 | BUSL-1.1 | An editor announces an open Odoo survey on the feed, with its link |
-| `bf_bloc_notes` | BF Bloc-notes | 18.0.2.10.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
+| `bf_bloc_notes` | BF Bloc-notes | 18.0.3.0.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_budget` | Budgets opérationnels | 18.0.1.0.2 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.1.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.0.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |

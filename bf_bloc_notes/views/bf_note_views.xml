@@ -227,6 +227,33 @@
                                  t-attf-class="small #{record.deadline_date.raw_value &lt; (new Date()).toISOString().slice(0,10) ? 'text-danger fw-bold' : 'text-muted'}">
                                 <i class="fa fa-calendar" title="Due date"/> <field name="deadline_date"/>
                             </div>
+                            <!-- Gestes rapides : les mêmes qu'au téléphone,
+                                 sans ouvrir le formulaire. Masqués sur une note
+                                 archivée : on la restaure d'abord. -->
+                            <div t-if="record.active.raw_value" class="o_bf_note_quick d-flex flex-wrap gap-1 mt-2">
+                                <button type="object" name="action_create_activity_quick"
+                                        context="{'offset': 0}"
+                                        class="btn btn-sm btn-light" title="Reminder today">
+                                    <i class="fa fa-bell-o"/> Today
+                                </button>
+                                <button type="object" name="action_create_activity_quick"
+                                        context="{'offset': 1}"
+                                        class="btn btn-sm btn-light" title="Reminder tomorrow">
+                                    <i class="fa fa-bell-o"/> Tomorrow
+                                </button>
+                                <button type="object" name="action_open_task_wizard"
+                                        class="btn btn-sm btn-light" title="Make it a task">
+                                    <i class="fa fa-tasks"/> Task
+                                </button>
+                                <button type="object" name="action_open_reroute_wizard"
+                                        class="btn btn-sm btn-light" title="Link to a record">
+                                    <i class="fa fa-link"/>
+                                </button>
+                                <button type="object" name="action_archive"
+                                        class="btn btn-sm btn-light" title="Archive">
+                                    <i class="fa fa-archive"/>
+                                </button>
+                            </div>
                         </div>
                     </t>
                 </templates>

@@ -1,16 +1,18 @@
-# Translation template for BF Bloc-notes.
-# The module's source strings are written in English.
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_bloc_notes
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_bloc_notes 18.0.2.10.0\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 05:47+0000\n"
-"PO-Revision-Date: 2026-09-14 05:47+0000\n"
+"POT-Creation-Date: 2026-09-23 00:31+0000\n"
+"PO-Revision-Date: 2026-09-23 00:31+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
 #. module: bf_bloc_notes
@@ -56,6 +58,16 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "<i class=\"fa fa-bell-o\"/> Today"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "<i class=\"fa fa-bell-o\"/> Tomorrow"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
 msgid "<i class=\"fa fa-calendar\" title=\"Due date\"/>"
 msgstr ""
 
@@ -65,8 +77,19 @@ msgid "<i class=\"fa fa-link\" title=\"Linked to\"/>"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "<i class=\"fa fa-tasks\"/> Task"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
 msgid "<strong>How it works:</strong>"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/mobile_api.py:0
+msgid "A JSON object is expected."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -78,11 +101,19 @@ msgid ""
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Access denied."
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_needaction
 msgid "Action Needed"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
 msgid "Actions"
 msgstr ""
@@ -159,6 +190,12 @@ msgid "All notes"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "An empty note is not saved."
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
 msgid ""
 "Any record with a chatter is a valid destination: task, ticket, contact, "
@@ -166,6 +203,8 @@ msgid ""
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
 msgid "Archive"
@@ -223,6 +262,8 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_activity_wizard_form
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_task_wizard_form
@@ -231,11 +272,25 @@ msgid "Cancel"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Choose a project for the task."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Choose the project"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__partner_id
 msgid "Client"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_reroute_view_form
 msgid "Close"
 msgstr ""
@@ -393,6 +448,11 @@ msgid "Details"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__client_uuid
+msgid "Device identifier"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__display_name
@@ -434,6 +494,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
 msgid "Enter a title or content to create the task."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Find the record (name, number, pasted URL)"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -499,6 +565,13 @@ msgid "Idea"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__client_uuid
+msgid ""
+"Identifier drawn by the phone when the note was written offline. The server "
+"returns the same note each time it is sent again."
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__message_needaction
 msgid "If checked, new messages require your attention."
 msgstr ""
@@ -515,8 +588,26 @@ msgid "If checked, some messages have a delivery error."
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Invalid limit or offset."
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_is_follower
 msgid "Is Follower"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Keep mine"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Kept on this device. It will be sent when the network is back."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -555,11 +646,20 @@ msgid "Link the note to the task"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Link to a record"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "Linked model"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__res_name
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_list
 msgid "Linked to"
@@ -580,6 +680,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__link_ids
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Links"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Make it a task"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -663,6 +770,14 @@ msgid "Needs Target"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "New"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model:onboarding.onboarding.step,button_text:bf_bloc_notes.bf_onb_step_first_note
 msgid "New note"
 msgstr ""
@@ -723,6 +838,18 @@ msgid "No note to reroute."
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "No notes yet. The first one starts above."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "No result."
+msgstr ""
+
+#. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 #: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_default_reminder__none
@@ -738,8 +865,33 @@ msgid "Note"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Note archived."
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__note_count
 msgid "Note count"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Note linked to %s."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Note pinned."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Note restored."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -751,6 +903,12 @@ msgstr ""
 #. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_bf_note_tag
 msgid "Note tag"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Note unpinned."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -768,6 +926,8 @@ msgid "Notepad preferences"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_reroute__note_ids
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_calendar
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_list
@@ -805,6 +965,12 @@ msgid "Number of messages with delivery error"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Offline: your notes stay on this device."
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model,name:bf_bloc_notes.model_onboarding_onboarding
 msgid "Onboarding"
 msgstr ""
@@ -823,6 +989,12 @@ msgstr ""
 #. module: bf_bloc_notes
 #: model:onboarding.onboarding.step,button_text:bf_bloc_notes.bf_onb_step_settings
 msgid "Open Settings"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Open in Symbifox"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -847,6 +1019,8 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Pin"
@@ -889,6 +1063,7 @@ msgstr ""
 #. module: bf_bloc_notes
 #. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note.py:0
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 #: model:ir.model,name:bf_bloc_notes.model_bf_note
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Quick note"
@@ -915,6 +1090,12 @@ msgid "Reference"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Refused."
+msgstr ""
+
+#. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 msgid "Reminder"
@@ -926,8 +1107,34 @@ msgid "Reminder preselected in the quick creation dialog (Alt+N)."
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Reminder set for %(date)s (%(count)s activity)."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Reminder today"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
+msgid "Reminder tomorrow"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields.selection,name:bf_bloc_notes.selection__bf_note_reroute__mode__replace
 msgid "Replace existing links"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/mobile_api.py:0
+msgid "Request too large."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -991,6 +1198,8 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_user_pref_view_form
 msgid "Save"
@@ -1000,6 +1209,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 msgid "Save + open the list"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Saved."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1014,6 +1229,12 @@ msgstr ""
 msgid ""
 "Search for the record by its name: the picker scans every module at once, "
 "without having to choose the type of object."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Search notes"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1088,6 +1309,12 @@ msgid "Tags"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Take the other version"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__link_target_ref
 msgid "Target"
 msgstr ""
@@ -1106,6 +1333,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_task_wizard.py:0
 msgid "Task created"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Task created: %s"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1130,6 +1363,12 @@ msgid "Tasks created from the note"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "The device identifier is not a valid UUID."
+msgstr ""
+
+#. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/js/bf_note_quick_create.js:0
 msgid "The image upload failed."
@@ -1142,8 +1381,70 @@ msgid "The note is empty."
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "The server could not complete the request."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "The server refused:"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.constraint,message:bf_bloc_notes.constraint_bf_note_client_uuid_user_unique
+msgid "This device identifier is already used by another note."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "This gesture needs the network."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid ""
+"This note has formatting that the phone cannot keep. Edit it in Symbifox."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid ""
+"This note has formatting that the phone cannot keep. Read it here, edit it "
+"in Symbifox."
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.constraint,message:bf_bloc_notes.constraint_bf_note_link_uniq_note_target
 msgid "This note is already linked to this record."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "This note is too long for the phone (%s characters at most)."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "This note no longer exists, or you do not have access to it."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "This note was changed elsewhere while you were editing it."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "This record no longer exists, or you do not have access to it."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1184,6 +1485,12 @@ msgid "Title (automatic if empty)"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Title (optional)"
+msgstr ""
+
+#. module: bf_bloc_notes
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 msgid "Title (optional, filled in from the content)"
@@ -1192,6 +1499,12 @@ msgstr ""
 #. module: bf_bloc_notes
 #: model:bf.note.tag,name:bf_bloc_notes.tag_a_faire
 msgid "To do"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "To send"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1234,8 +1547,52 @@ msgid "Unarchive"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Undo"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Unknown action: %s"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Unknown mode: %s"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Unpin"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/mobile_api.py:0
+msgid "Unreadable JSON."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Unreadable date: %s"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Unsupported reminder delay."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Untitled note"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1254,6 +1611,18 @@ msgid "Website communication history"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Write a note in one second, even offline."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Write a note…"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Write your note here…"
 msgstr ""
@@ -1262,6 +1631,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_bloc_notes/static/src/xml/bf_note_templates.xml:0
 msgid "You can paste or drag an image straight into the text area."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Your session has expired. Reload the page to sign in."
 msgstr ""
 
 #. module: bf_bloc_notes

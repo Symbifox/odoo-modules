@@ -1,0 +1,268 @@
+/* Page /notes — le bloc-notes au pouce.
+ *
+ * Sombre par dessein, comme /capture et /scan : elle sert debout, à bout de bras,
+ * souvent le soir. Rien ici ne vient des paquets d'actifs d'Odoo : la page doit
+ * s'afficher avant que le client web ait seulement commencé à se charger. */
+
+:root {
+    --bg: #12161a;
+    --surface: #1b2127;
+    --line: #2f3841;
+    --text: #e8edf2;
+    --muted: #9aa7b4;
+    --accent: var(--brand-primary, #29ABE2);
+    /* 🔴 Calculée par le serveur d'après l'accent, jamais fixée ici : l'accent
+       d'origine d'Odoo est un prune foncé, sur lequel une encre bleu nuit tombe
+       à 1,6:1. */
+    --accent-ink: var(--brand-ink, #06283a);
+    --danger: #e5534b;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 17px;              /* 16 px au minimum, sinon iOS zoome au focus */
+    min-height: 100%;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: max(.75rem, env(safe-area-inset-top)) 1rem .25rem;
+}
+
+h1 { font-size: 1.2rem; font-weight: 600; margin: 0; flex: 1; }
+
+.reseau {
+    font-size: .8rem;
+    color: var(--bg);
+    background: #e0b44c;
+    border-radius: 999px;
+    padding: .15rem .6rem;
+}
+
+main {
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: .5rem 1rem calc(4rem + env(safe-area-inset-bottom));
+}
+
+.hidden { display: none !important; }
+
+/* ── Saisie ──────────────────────────────────────────────────────── */
+.saisie {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: .75rem;
+    margin-bottom: 1rem;
+}
+
+.saisie:focus-within { border-color: var(--accent); }
+
+input, textarea {
+    width: 100%;
+    background: transparent;
+    color: var(--text);
+    border: 0;
+    font: inherit;
+    outline: none;
+}
+
+.saisie input { font-weight: 600; padding: .25rem 0 .4rem; }
+
+.saisie textarea {
+    resize: none;
+    min-height: 4.5rem;
+    line-height: 1.4;
+}
+
+::placeholder { color: var(--muted); }
+
+.saisie-pied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-top: .5rem;
+}
+
+.etat { color: var(--muted); font-size: .85rem; }
+
+button {
+    font: inherit;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: .55rem 1rem;
+    min-height: 44px;             /* cible tactile minimale */
+    cursor: pointer;
+}
+
+button.principal {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+    font-weight: 600;
+}
+
+button.danger { color: var(--danger); border-color: var(--danger); }
+
+.recherche {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: .55rem .75rem;
+    margin-bottom: .75rem;
+}
+
+/* ── Liste ───────────────────────────────────────────────────────── */
+.liste {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    columns: 2 14rem;
+    column-gap: .75rem;
+}
+
+.carte-note {
+    position: relative;
+    break-inside: avoid;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--line);
+    border-radius: 12px;
+    padding: .7rem 2.4rem .7rem .8rem;
+    margin: 0 0 .75rem;
+    cursor: pointer;
+}
+
+.carte-note .tete { display: flex; gap: .4rem; align-items: baseline; }
+.carte-note .tete strong { flex: 1; overflow-wrap: anywhere; }
+
+.carte-note .texte {
+    margin: .35rem 0 0;
+    color: var(--muted);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: .95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 8;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.carte-note .liens { margin-top: .4rem; font-size: .8rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: .4rem; }
+
+.carte-note .attente {
+    font-size: .7rem;
+    color: var(--bg);
+    background: #e0b44c;
+    border-radius: 999px;
+    padding: .05rem .45rem;
+}
+
+.carte-note .menu {
+    position: absolute;
+    top: .2rem;
+    right: .2rem;
+    border: 0;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0;
+    font-size: 1.2rem;
+    color: var(--muted);
+}
+
+/* Palette kanban d'Odoo (0 = aucune), en liseré pour garder le texte lisible
+   sur le fond sombre. */
+.couleur-1 { border-left-color: #f06050; }
+.couleur-2 { border-left-color: #f4a460; }
+.couleur-3 { border-left-color: #f7cd1f; }
+.couleur-4 { border-left-color: #6cc1ed; }
+.couleur-5 { border-left-color: #814968; }
+.couleur-6 { border-left-color: #eb7e7f; }
+.couleur-7 { border-left-color: #2c8397; }
+.couleur-8 { border-left-color: #475577; }
+.couleur-9 { border-left-color: #d6145f; }
+.couleur-10 { border-left-color: #30c381; }
+.couleur-11 { border-left-color: #9365b8; }
+
+.vide { color: var(--muted); text-align: center; margin-top: 2rem; }
+
+/* ── Fiche (dialogue) ────────────────────────────────────────────── */
+.fiche {
+    width: min(40rem, calc(100vw - 1.5rem));
+    max-height: calc(100dvh - 2rem);
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1rem;
+}
+
+.fiche::backdrop { background: rgba(0, 0, 0, .6); }
+
+.fiche input, .fiche textarea {
+    border-bottom: 1px solid var(--line);
+    padding: .5rem 0;
+    margin-bottom: .5rem;
+}
+
+.fiche textarea { resize: vertical; min-height: 40vh; line-height: 1.4; }
+.fiche pre { white-space: pre-wrap; background: var(--bg); padding: .5rem; border-radius: 8px; }
+.fiche .avis { color: var(--muted); font-size: .9rem; }
+
+.fiche .pied {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .75rem;
+    margin-top: .75rem;
+    flex-wrap: wrap;
+}
+
+/* 🔴 Jamais la couleur d'accent comme couleur de TEXTE sur ce fond : l'accent
+   d'origine d'Odoo (#714B67) y tombe à ~2:1. L'accent reste pour les fonds de
+   bouton, où l'encre est calculée par le serveur. */
+.fiche .ouvrir { color: var(--text); text-decoration: underline; }
+
+.gestes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .5rem;
+    margin-top: .75rem;
+}
+
+.resultats { list-style: none; margin: .5rem 0 0; padding: 0; max-height: 50vh; overflow-y: auto; }
+.resultats li { padding: .7rem .25rem; border-bottom: 1px solid var(--line); cursor: pointer; min-height: 44px; }
+.resultats li.aucun { color: var(--muted); cursor: default; }
+
+/* ── Toast ───────────────────────────────────────────────────────── */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    width: min(36rem, calc(100vw - 2rem));
+    background: #2a323a;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: .6rem .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    z-index: 10;
+}
+
+.toast button { color: var(--text); border-color: transparent; font-weight: 600; text-decoration: underline; }

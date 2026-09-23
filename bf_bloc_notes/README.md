@@ -42,6 +42,16 @@ One activity is created per linked record (e.g. a note linked to 3 tasks → 3 a
 - Private by default (`is_shared=False`): only the author sees it.
 - Toggling "Shared" makes it readable by all internal users; only the author can still edit.
 
+### On the phone (18.0.3.0.0)
+A note taken on a phone has to be written in a second, or it ends up in another app, far from the records it belongs to.
+- **Installable `/notes` page**: opens straight on the text field, keyboard up. Works on Android and iPhone, installs to the home screen, and offers a **New** shortcut on a long press.
+- **Offline first**: a note typed without a network is kept on the device, marked *To send*, and sent when the network comes back. Each note carries a `client_uuid` drawn by the device, and the server returns the same note every time it is sent again, so a replayed queue never creates a duplicate.
+- **Share target**: text or a link shared from another Android app opens the page with the note pre-filled.
+- **Quick actions** on every note: pin, reminder today or tomorrow, make it a task (project picker), link to a record (name, number or pasted URL), archive with undo.
+- **Plain text on the phone**: a note that carries formatting from the desktop (list, image, bold, link, heading) is read-only on the phone, so its formatting is never lost through a text field.
+- **Token API** at `/bf_bloc_notes/mobile/v1` for the Symbifox Mobile app: the same model methods as the page, so both behave identically. Device tokens are those issued by `bf_sms_archive` or `bf_email_management`; an archived or portal user is refused even with a valid token.
+- The page shell cached for offline use carries **no user data**; the local queue and cache are kept per user, so a second person signing in on the same device never sees or sends the first one's notes.
+
 ### Views
 - **Kanban**: colored cards (color picker), built-in pin button, body snippet, tags, primary link, deadline.
 - **List**: direct pin toggle, filters "My notes / Pinned / Shared / Linked / Overdue".
@@ -97,6 +107,12 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 35 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), and the `target_ref` picker on the link row.
 
 ## Changelog
+
+### 18.0.3.0.0
+- **The note pad on the phone**: installable `/notes` page, offline queue, Android share target, quick actions, and a token API for Symbifox Mobile (see *On the phone*).
+- **Quick actions on the kanban card** at the desk: reminder today, reminder tomorrow, task, link, archive — without opening the note.
+- New field `client_uuid` (unique per author) for idempotent creation from a device.
+- A failed request is rolled back before answering: a route that *returns* an error is otherwise committed by Odoo, and a half-done gesture would stay in the database.
 
 ### 18.0.2.10.0
 - **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read this module in French.
