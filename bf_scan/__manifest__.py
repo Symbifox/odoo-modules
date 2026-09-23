@@ -1,6 +1,9 @@
 {
     "name": "Numériser depuis le téléphone",
-    "version": "18.0.1.1.1",
+    # 18.0.1.2.0 : API à jeton pour Symbifox Mobile (les mêmes gestes
+    #   que la page, ouverts au jeton d'appareil). Corrige aussi le lien
+    #   « Ouvrir la note » d'un document déposé, qui visait une action absente.
+    "version": "18.0.1.2.0",
     "category": "Productivity",
     "summary": "Photographier une carte d'affaires, une facture ou un document "
                "depuis le téléphone, et les ranger dans Odoo",

@@ -56,6 +56,20 @@ The entry is a URL action, never a server action: Odoo refuses to run a server
 action for anyone who lacks write access on its model, so a tile built that way
 fails for every ordinary employee. A test pins the action type for that reason.
 
+### From the Symbifox Mobile app (18.0.1.2.0)
+
+A token API at `/bf_scan/mobile/v1` opens the same three gestures to the Android
+app: `capacites` tells the app which tiles the user may see, then `document`,
+`facture`, `carte/lire` and `carte/enregistrer` take a multipart photo (JPEG, PNG,
+WEBP or PDF, recognised by its bytes). Each route authenticates the device, acts
+as its user, and calls **the same methods as the page**, so rights and refusals
+are written once. A refusal comes back as `400` with a readable `detail`, and the
+transaction is rolled back first: the page methods *return* their refusals, and
+Odoo commits a normal response.
+
+This version also fixes the **Open the note** link after a document deposit,
+which pointed at an action that does not exist and showed "Missing action".
+
 ## Requirements
 
 `bf_contact_enrichment`, `bf_bloc_notes` and `account`. Reading is optional:

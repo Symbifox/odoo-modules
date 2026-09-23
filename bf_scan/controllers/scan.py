@@ -530,7 +530,10 @@ class ScanEtendu(BfContactScanPortal):
             "destination": "tampon",
             "note_id": note.id,
             "name": note.name,
-            "url": "/odoo/action-bf_bloc_notes.action_bf_note/%s" % note.id,
+            # 🔴 `/odoo/m-bf.note/<id>` et non une action nommée : l'action que
+            # visait ce lien (`bf_bloc_notes.action_bf_note`) n'a jamais existé,
+            # et « Ouvrir la note » affichait « Action manquante ».
+            "url": "/odoo/m-bf.note/%s" % note.id,
             "lien": fiche.display_name if fiche is not None else "",
             "rappel": rappel_pose,
             "au_fil": au_fil,
