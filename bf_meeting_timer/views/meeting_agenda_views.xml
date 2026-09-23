@@ -56,6 +56,15 @@
             <xpath expr="//page[@name='live_notes']/field[@name='topic_ids']" position="attributes">
                 <attribute name="invisible">timer_notes_layout != 'flow'</attribute>
             </xpath>
+            <!--
+                Le détail de chaque sujet se lit à côté de ses notes : la liste
+                cachée le charge avec la ligne, sans lecture à part. Le lire sur
+                la fiche montre aussi un détail modifié et pas encore enregistré.
+            -->
+            <xpath expr="//page[@name='live_notes']/field[@name='topic_ids']/list/field[@name='live_notes_html']"
+                   position="after">
+                <field name="description" column_invisible="1"/>
+            </xpath>
             <xpath expr="//page[@name='live_notes']" position="inside">
                 <widget name="bf_meeting_timer_notes"
                         invisible="timer_notes_layout == 'flow'"/>

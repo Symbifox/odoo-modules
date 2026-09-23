@@ -73,16 +73,21 @@
     }
 }
 
-// Notes par sujet : les sujets à gauche, les notes à droite. La
-// colonne des sujets garde sa largeur ; c'est la zone de notes qui prend la
-// place. Sous `md`, les deux s'empilent.
+// Notes par sujet : les sujets à gauche, les notes au milieu, le détail à
+// droite. Les deux volets de côté ont la largeur qu'on leur donne à la poignée
+// (posée par le composant) ; c'est l'éditeur qui prend le reste. Trop étroit
+// pour les trois, le détail passe au-dessus de l'éditeur.
 .o_bf_meeting_timer_notes {
     .o_bf_meeting_timer_notes_sujets {
-        flex: 0 0 16rem;
         align-self: flex-start;
+        min-width: 0;
         .list-group-item {
             font-size: .95rem;
         }
+    }
+    // Empilés, les volets prennent toute la largeur.
+    &.flex-column > .o_bf_meeting_timer_notes_sujets {
+        align-self: stretch;
     }
     .o_bf_meeting_timer_notes_zone {
         min-width: 0;
@@ -93,4 +98,81 @@
         border-radius: .375rem;
         padding: .5rem .75rem;
     }
+
+    // La poignée est large de 12 px pour se saisir sans viser ; seul son
+    // milieu se dessine, et s'épaissit au survol.
+    .o_bf_meeting_timer_notes_poignee {
+        flex: 0 0 12px;
+        align-self: stretch;
+        position: relative;
+        cursor: col-resize;
+        touch-action: none;
+        &::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 5px;
+            width: 2px;
+            border-radius: 1px;
+            background-color: var(--bs-border-color, rgba(0, 0, 0, .08));
+        }
+        &:hover::after,
+        &:focus-visible::after {
+            left: 4px;
+            width: 4px;
+            background-color: $o-action;
+        }
+        &:focus-visible {
+            outline: none;
+        }
+    }
+
+    // Le détail se lit, il ne s'édite pas ici : ton de fond discret, et sa
+    // propre barre de défilement pour qu'un long détail ne pousse pas l'éditeur.
+    .o_bf_meeting_timer_notes_detail {
+        align-self: flex-start;
+        min-width: 0;
+        max-height: 70vh;
+        overflow-y: auto;
+        padding: .5rem .75rem;
+        border-radius: .375rem;
+        background-color: var(--bs-tertiary-bg, rgba(0, 0, 0, .03));
+        font-size: .92rem;
+        overflow-wrap: anywhere;
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    }
+    .o_bf_meeting_timer_notes_detail_titre {
+        font-size: .75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        opacity: .7;
+    }
+    .o_bf_meeting_timer_notes_detail_texte {
+        white-space: pre-wrap;
+    }
+    .o_bf_meeting_timer_notes_detail_html > :last-child {
+        margin-bottom: 0;
+    }
+    .o_bf_meeting_timer_notes_detail_empile {
+        max-height: none;
+    }
+    // Empilé, un long détail se replie à quelques lignes : il est au-dessus de
+    // l'éditeur et le ferait descendre sous le pli.
+    .o_bf_meeting_timer_notes_detail_court .o_bf_meeting_timer_notes_detail_corps {
+        max-height: 6.5em;
+        overflow: hidden;
+        mask-image: linear-gradient(to bottom, #000 60%, transparent);
+    }
+}
+
+// Pendant qu'on tire une poignée, le texte ne se sélectionne pas et le
+// curseur reste celui du redimensionnement, même hors de la poignée.
+body.o_bf_meeting_timer_glisse {
+    cursor: col-resize;
+    user-select: none;
 }

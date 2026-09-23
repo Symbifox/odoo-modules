@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Chronomètre de rencontre",
-    "version": "18.0.1.4.0",
+    "version": "18.0.1.5.0",
     "category": "Services/Meetings",
     "summary": "Le temps réel passé sur chaque sujet, et l'heure de fin projetée "
                "pendant que la rencontre dure encore",
@@ -41,8 +41,9 @@ Revenir aussitôt au sujet qu'on vient de quitter annule le « Sujet suivant ».
 
 Les notes par sujet
 -------------------
-Les notes en direct se prennent sujet par sujet, à côté de la liste des
-sujets, et vont aux points du compte rendu. Le fil continu reste disponible
+Les notes en direct se prennent sujet par sujet, entre la liste des sujets
+et ce que l'ordre du jour dit du sujet choisi, et vont aux points du compte
+rendu. Les trois volets se redimensionnent. Le fil continu reste disponible
 par un réglage de société.
 
 Ce qu'il laisse

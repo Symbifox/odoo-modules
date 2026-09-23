@@ -48,11 +48,21 @@ Les raccourcis ne prennent rien à Odoo : `Alt+S` y sauvegarde la fiche et
 
 ## Les notes par sujet
 
-L'onglet « Notes en direct » passe en deux colonnes : les sujets à gauche, les
-notes du sujet choisi à droite, sous le contexte d'origine. Le chronomètre
-choisit le sujet et y pose le curseur ; un clic à gauche en ouvre un autre sans
-toucher au chronomètre. Les « Notes générales » reçoivent ce qui ne va à aucun
-sujet.
+L'onglet « Notes en direct » passe en trois volets : les sujets à gauche, les
+notes du sujet choisi au milieu, et à droite ce que l'ordre du jour en dit (le
+« Notes / Contexte » du sujet, en lecture seule). Aux « Notes générales », le
+volet de droite montre les objectifs, le contexte et la préparation de l'ordre
+du jour. Le chronomètre choisit le sujet et y pose le curseur ; un clic à
+gauche en ouvre un autre sans toucher au chronomètre. Les « Notes générales »
+reçoivent ce qui ne va à aucun sujet.
+
+Les deux volets de côté se redimensionnent : on tire la poignée, on la règle aux
+flèches du clavier, et un double-clic remet la largeur par défaut. Le détail se
+replie d'un clic et l'éditeur prend la place. Largeurs et repli sont retenus
+par le navigateur. L'éditeur ne descend jamais sous 320 px : quand le
+formulaire est trop étroit pour les trois volets (fil de discussion ouvert sur
+un petit écran, téléphone), le détail passe au-dessus de l'éditeur, replié à
+quelques lignes s'il est long.
 
 Les notes s'enregistrent avec la fiche, comme tout champ. À la création du
 compte rendu, celles de chaque sujet deviennent ses points clés, et les notes
@@ -70,7 +80,7 @@ Sur la fiche de société, à côté des autres préférences de rencontre :
 
 * **Place du chronomètre de rencontre** : au-dessus des onglets (défaut), ou
   dans l'onglet « Notes en direct ».
-* **Notes en direct** : par sujet, en deux colonnes (défaut), ou un fil continu
+* **Notes en direct** : par sujet, en trois volets (défaut), ou un fil continu
   qui va au résumé du compte rendu.
 
 ## Ce qu'il n'est pas

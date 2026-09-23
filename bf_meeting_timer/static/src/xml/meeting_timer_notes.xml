@@ -2,14 +2,17 @@
 <templates xml:space="preserve">
 
     <t t-name="bf_meeting_timer.Notes">
-        <div class="o_bf_meeting_timer_notes d-flex flex-column flex-md-row gap-3" t-ref="racine">
+        <div class="o_bf_meeting_timer_notes d-flex"
+             t-att-class="{ 'flex-column gap-3': empile, 'flex-row': !empile }"
+             t-ref="racine">
 
             <div t-if="!resId" class="alert alert-info mb-0" role="alert">
                 Enregistrez l'ordre du jour, puis les notes par sujet seront disponibles.
             </div>
 
             <t t-else="">
-                <nav class="o_bf_meeting_timer_notes_sujets list-group" aria-label="Sujets">
+                <nav class="o_bf_meeting_timer_notes_sujets list-group" aria-label="Sujets"
+                     t-att-style="styleSujets()">
                     <t t-foreach="sujets" t-as="sujet" t-key="sujet.id">
                         <button type="button"
                                 class="list-group-item list-group-item-action d-flex align-items-start gap-2"
@@ -35,6 +38,11 @@
                     </button>
                 </nav>
 
+                <t t-if="!empile" t-call="bf_meeting_timer.NotesPoignee">
+                    <t t-set="volet" t-value="'sujets'"/>
+                    <t t-set="libelle" t-value="'Largeur de la liste des sujets'"/>
+                </t>
+
                 <section class="o_bf_meeting_timer_notes_zone flex-grow-1">
                     <t t-if="recordChoisi">
                         <div class="d-flex align-items-baseline gap-2 mb-2">
@@ -45,7 +53,14 @@
                             <span t-if="sujetChoisi and estCourant(sujetChoisi)" class="badge text-bg-primary">
                                 en cours
                             </span>
+                            <button t-if="state.volets.replie" type="button"
+                                    class="btn btn-link btn-sm ms-auto p-0 o_bf_meeting_timer_notes_afficher"
+                                    t-on-click="basculerDetail"
+                                    title="Afficher ce que l'ordre du jour dit de ce sujet">
+                                <i class="fa fa-columns me-1"/>Afficher le détail
+                            </button>
                         </div>
+                        <t t-if="empile and !state.volets.replie" t-call="bf_meeting_timer.NotesDetail"/>
                         <div class="o_bf_meeting_timer_notes_editeur" t-att-data-cle="cleEditeur" t-key="cleEditeur">
                             <t t-component="HtmlField"
                                t-props="state.choisi === 'general' ? propsGeneral : propsEditeur"
@@ -58,8 +73,71 @@
                         Aucun sujet accepté à l'ordre du jour.
                     </div>
                 </section>
+
+                <t t-if="!empile and !state.volets.replie and recordChoisi">
+                    <t t-call="bf_meeting_timer.NotesPoignee">
+                        <t t-set="volet" t-value="'detail'"/>
+                        <t t-set="libelle" t-value="'Largeur du détail'"/>
+                    </t>
+                    <t t-call="bf_meeting_timer.NotesDetail"/>
+                </t>
             </t>
         </div>
+    </t>
+
+    <!--
+        Une poignée entre deux volets : on la tire, on la règle aux flèches du
+        clavier, et un double-clic remet la largeur par défaut.
+    -->
+    <t t-name="bf_meeting_timer.NotesPoignee">
+        <div class="o_bf_meeting_timer_notes_poignee"
+             role="separator" aria-orientation="vertical" tabindex="0"
+             t-att-aria-label="libelle"
+             t-att-aria-valuenow="largeurs and largeurs[volet]"
+             t-att-data-volet="volet"
+             title="Tirer pour élargir ou rétrécir. Double-clic : largeur par défaut."
+             t-on-pointerdown="(ev) => this.commencerGlisse(ev, volet)"
+             t-on-keydown="(ev) => this.toucheGlisse(ev, volet)"
+             t-on-dblclick="() => this.reinitialiser(volet)"/>
+    </t>
+
+    <!--
+        Ce que l'ordre du jour dit du sujet choisi (ou, aux notes générales, de
+        la rencontre). En lecture seule : le détail se modifie dans l'onglet
+        « Sujets », pas pendant qu'on prend des notes.
+    -->
+    <t t-name="bf_meeting_timer.NotesDetail">
+        <t t-set="d" t-value="detail"/>
+        <aside class="o_bf_meeting_timer_notes_detail"
+               t-att-class="{ 'o_bf_meeting_timer_notes_detail_empile mb-2': empile,
+                              'o_bf_meeting_timer_notes_detail_court': empile and d.long and !state.detailDeplie }"
+               t-att-style="styleDetail()"
+               aria-label="Détail à l'ordre du jour">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="o_bf_meeting_timer_notes_detail_titre">À l'ordre du jour</span>
+                <button type="button" class="btn btn-link btn-sm ms-auto p-0 text-muted"
+                        t-on-click="basculerDetail"
+                        title="Replier le détail (l'éditeur prend la place)">
+                    <i t-att-class="empile ? 'fa fa-angle-up' : 'fa fa-angle-double-right'"/>
+                    <span class="visually-hidden">Replier le détail</span>
+                </button>
+            </div>
+            <div class="o_bf_meeting_timer_notes_detail_corps" t-key="cleEditeur">
+                <t t-if="d.blocs.length">
+                    <section t-foreach="d.blocs" t-as="bloc" t-key="bloc.cle" class="mb-2">
+                        <h6 t-if="bloc.titre" class="mb-1" t-esc="bloc.titre"/>
+                        <div t-if="bloc.texte" class="o_bf_meeting_timer_notes_detail_texte" t-esc="bloc.texte"/>
+                        <div t-else="" class="o_bf_meeting_timer_notes_detail_html" t-out="bloc.html"/>
+                    </section>
+                </t>
+                <p t-else="" class="text-muted fst-italic mb-0" t-esc="d.vide"/>
+            </div>
+            <button t-if="empile and d.long" type="button" class="btn btn-link btn-sm p-0"
+                    t-on-click="basculerDeplie">
+                <t t-if="state.detailDeplie">Réduire</t>
+                <t t-else="">Voir tout</t>
+            </button>
+        </aside>
     </t>
 
 </templates>

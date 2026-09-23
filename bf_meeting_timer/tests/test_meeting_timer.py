@@ -938,3 +938,28 @@ class TestMeetingTimer(TransactionCase):
             horloge.move_to('2026-09-21 18:03:00')
             etat = agenda.with_user(self.gestionnaire).action_timer_split()
         self.assertEqual(etat['state'], 'running')
+
+    def test_la_fiche_charge_le_detail_a_cote_des_notes(self):
+        """Le volet de droite lit le détail sur la fiche, pas par une lecture à part.
+
+        Il ne peut lire que ce que la fiche a chargé : le détail de chaque
+        sujet doit être dans la liste (cachée) de l'onglet des notes, et les
+        objectifs, le contexte et la préparation sur la fiche elle-même. Qu'une
+        de ces cases manque, et le volet affiche « rien de plus » sur un sujet
+        qui a un détail, sans erreur nulle part.
+        """
+        from lxml import etree
+
+        vue = self.env['meeting.agenda'].get_views([(False, 'form')])['views']['form']
+        arch = etree.fromstring(vue['arch'])
+        page = arch.xpath("//page[@name='live_notes']")
+        self.assertEqual(len(page), 1)
+        self.assertTrue(page[0].xpath(".//widget[@name='bf_meeting_timer_notes']"))
+        liste = page[0].xpath("./field[@name='topic_ids']/list")
+        self.assertEqual(len(liste), 1)
+        self.assertTrue(liste[0].xpath("./field[@name='description']"),
+                        "le détail du sujet doit être chargé avec sa ligne de notes")
+        self.assertTrue(liste[0].xpath("./field[@name='live_notes_html']"))
+        for champ in ('objectives', 'context_html', 'preparation_html'):
+            self.assertTrue(arch.xpath(f"//field[@name='{champ}']"),
+                            f"{champ} doit être sur la fiche pour les notes générales")

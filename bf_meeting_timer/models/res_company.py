@@ -31,13 +31,14 @@ class ResCompany(models.Model):
     # du compte rendu, qui ne lisent que les notes de chaque sujet.
     meeting_notes_layout = fields.Selection(
         [
-            ('split', "Par sujet, en deux colonnes"),
+            ('split', "Par sujet, en trois volets"),
             ('flow', "Un fil continu"),
         ],
         string='Notes en direct',
         default=NOTES_DEFAUT,
-        help="Par sujet : les sujets à gauche, les notes du sujet choisi à "
-             "droite ; elles vont aux points du compte rendu, sujet par sujet. "
+        help="Par sujet : les sujets à gauche, les notes du sujet choisi au "
+             "milieu, ce que l'ordre du jour en dit à droite ; les notes vont "
+             "aux points du compte rendu, sujet par sujet. "
              "Le chronomètre choisit le sujet, un clic à gauche en ouvre un autre "
              "sans toucher au chronomètre. Fil continu : une seule zone de notes, "
              "qui va au résumé du compte rendu.",
