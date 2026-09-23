@@ -1,0 +1,94 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_activity_cancel_note
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-22 21:59+0000\n"
+"PO-Revision-Date: 2026-09-22 21:59+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_activity_cancel_note
+#: model_terms:ir.ui.view,arch_db:bf_activity_cancel_note.message_activity_cancelled
+msgid "(originally assigned to"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#: model_terms:ir.ui.view,arch_db:bf_activity_cancel_note.message_activity_cancelled
+msgid "<span class=\"fa fa-ban fa-fw text-danger\"/>Cancellation:"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#: model:ir.model,name:bf_activity_cancel_note.model_mail_activity
+msgid "Activity"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#: model:ir.model,name:bf_activity_cancel_note.model_mail_activity_mixin
+msgid "Activity Mixin"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#. odoo-javascript
+#: code:addons/bf_activity_cancel_note/static/src/activity_cancel_dialog.xml:0
+msgid "Cancel and log a note"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#. odoo-javascript
+#: code:addons/bf_activity_cancel_note/static/src/activity_cancel_dialog.xml:0
+msgid ""
+"Cancel it and leave a note in the chatter, the way marking it done does,\n"
+"                or discard it without a trace."
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#. odoo-javascript
+#: code:addons/bf_activity_cancel_note/static/src/activity_cancel_dialog.xml:0
+msgid "Cancel the activity"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#: model_terms:ir.ui.view,arch_db:bf_activity_cancel_note.message_activity_cancelled
+msgid "Cancelled automatically:"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#. odoo-javascript
+#: code:addons/bf_activity_cancel_note/static/src/activity_cancel_dialog.xml:0
+msgid "Discard without a trace"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#: model_terms:ir.ui.view,arch_db:bf_activity_cancel_note.message_activity_cancelled
+msgid "Due date:"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#: model_terms:ir.ui.view,arch_db:bf_activity_cancel_note.message_activity_cancelled
+msgid "Original note:"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#. odoo-javascript
+#: code:addons/bf_activity_cancel_note/static/src/activity_cancel_dialog.xml:0
+msgid "Reason (optional)"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#: model_terms:ir.ui.view,arch_db:bf_activity_cancel_note.message_activity_cancelled
+msgid "Reason:"
+msgstr ""
+
+#. module: bf_activity_cancel_note
+#. odoo-python
+#: code:addons/bf_activity_cancel_note/models/mail_activity.py:0
+msgid "The record was archived."
+msgstr ""

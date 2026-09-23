@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="message_activity_cancelled">
+<div>
+    <p>
+        <span class="fa fa-ban fa-fw text-danger"/>Cancellation: <span t-field="activity.activity_type_id.name"/>
+        <t t-if="display_assignee"> (originally assigned to <span t-field="activity.user_id.name"/>)</t>
+        <span t-if="activity.summary">: </span><span t-if="activity.summary" t-field="activity.summary"/>
+    </p>
+    <p>Due date: <span t-field="activity.date_deadline"/></p>
+    <t t-if="activity.note and activity.note != '&lt;p&gt;&lt;br&gt;&lt;/p&gt;'">
+        <div class="o_mail_note_title fw-bold">Original note:</div>
+        <div t-field="activity.note"/>
+    </t>
+    <div t-if="reason">
+        <div class="fw-bold" t-if="automatic">Cancelled automatically:</div>
+        <div class="fw-bold" t-else="">Reason:</div>
+        <t t-foreach="reason.split('\n')" t-as="reason_line">
+            <t t-esc="reason_line"/>
+            <br t-if="not reason_line_last"/>
+        </t>
+    </div>
+</div>
+    </template>
+</odoo>

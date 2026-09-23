@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**51 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**52 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -83,6 +83,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 |---|---|---|---|---|
 | `audit_ti` | Audit TI - Loi 25 | 18.0.1.17.1 | BUSL-1.1 | IT security audit management for Quebec's Loi 25 compliance |
 | `bf_activity_calendar_link` | BF Activités - Lien Calendrier | 18.0.1.1.0 | LGPL-3 | Link existing calendar events to activities |
+| `bf_activity_cancel_note` | Symbifox — Activity Cancel Note | 18.0.1.0.1 | LGPL-3 | Cancelling an activity can leave a note in the chatter, like marking it done |
 | `bf_ai_bridge` | AI Bridge (socket transport) | 18.0.1.1.0 | LGPL-3 | The single transport to the AI bridge service |
 | `bf_appointment` | Symbifox Appointment | 18.0.2.60.0 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.0.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
@@ -318,7 +319,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **51 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **52 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

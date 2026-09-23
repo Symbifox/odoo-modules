@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_activity_cancel_note.ActivityCancelDialog">
+        <Dialog size="'md'" title.translate="Cancel the activity">
+            <p>
+                Cancel it and leave a note in the chatter, the way marking it done does,
+                or discard it without a trace.
+            </p>
+            <textarea class="form-control o-bf-ActivityCancelDialog-reason" rows="3"
+                placeholder="Reason (optional)" t-model="state.reason"/>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary o-bf-ActivityCancelDialog-note" t-att-disabled="state.busy" t-on-click="cancelWithNote">
+                    <i class="fa fa-ban me-1"/>Cancel and log a note
+                </button>
+                <button class="btn btn-secondary o-bf-ActivityCancelDialog-discard" t-att-disabled="state.busy" t-on-click="discard">
+                    Discard without a trace
+                </button>
+            </t>
+        </Dialog>
+    </t>
+</templates>
