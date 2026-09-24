@@ -478,6 +478,39 @@ class ResourceBooking(models.Model):
         self.ensure_one()
         return self._bf_local_strings(self.start or self.cancelled_start)
 
+    def bf_previous_start_display(self):
+        """(date, heure) du créneau que le client TENAIT avant de déplacer.
+
+        🔴 PUBLIQUE : le gabarit de l'organisateur l'appelle, et le QWeb d'un
+        `mail.template` refuse les méthodes en `_`.
+
+        ⚠️ La valeur ne vit PAS ici. Une annulation efface `start` et on en
+        garde une copie dans `cancelled_start` ; un déplacement, lui, le
+        REMPLACE, et il n'y a rien à copier au moment où ça arrive. Ce qui
+        garde l'ancienne heure est la référence posée sur l'événement d'agenda
+        par `bf_calendar_invite` : c'est par définition « ce que
+        les invités tiennent », donc exactement ce que l'organisateur doit
+        lire ici.
+
+        Lien MOU : sans ce module, on rend un couple vide et le gabarit saute
+        sa ligne, comme il le fait déjà pour une annulation sans date connue.
+        """
+        self.ensure_one()
+        evenement = self.meeting_id
+        if not evenement or "bf_change_baseline" not in evenement._fields:
+            return self._bf_local_strings(False)
+        try:
+            reference = evenement.sudo()._bf_change_baseline_read()
+        except Exception:  # noqa: BLE001 - un courriel ne tombe pas sur sa date
+            _logger.warning(
+                "bf_appointment : référence de changement illisible sur la "
+                "réservation %s.", self.id,
+            )
+            return self._bf_local_strings(False)
+        return self._bf_local_strings(
+            fields.Datetime.to_datetime(reference.get("start")) or False
+        )
+
     def get_start_display(self):
         """(date longue, heure) du créneau, dans le fuseau du LECTEUR.
 
@@ -1243,6 +1276,61 @@ class ResourceBooking(models.Model):
     # Surface d'ouverture : des liens en plus, posés par un satellite
     # ------------------------------------------------------------------
 
+    def bf_can_reschedule(self):
+        """Ce rendez-vous peut-il encore être déplacé par la personne, MAINTENANT ?
+
+        🔴 PUBLIQUE, sans underscore : la page publique et les gabarits de
+        courriel l'appellent, et le QWeb d'un `mail.template` refuse une
+        méthode dont le nom commence par `_` en rendant « 'NoneType' object is
+        not callable », c'est-à-dire aucune confirmation pour personne.
+
+        Quatre conditions, et elles sont là pour qu'aucun lien mort ne soit
+        jamais offert. Un lien qui mène à un refus est pire que pas de lien :
+        la personne a déjà décidé de déplacer, elle clique, et elle apprend que
+        non. Elle annule alors, ce qui est exactement ce qu'on cherche à éviter.
+
+        * la réservation n'est pas annulée et porte une heure ;
+        * cette heure est devant nous ;
+        * le verrou de modification du type n'est pas passé (`is_overdue`,
+          piloté par `modification_lock_hours`) ;
+        * le lien ouvre encore le choix d'un créneau (`_link_is_usable`).
+        """
+        self.ensure_one()
+        if self.state == "canceled" or not self.start:
+            return False
+        if self.start <= fields.Datetime.now():
+            return False
+        if self.is_overdue:
+            return False
+        return self._link_is_usable()
+
+    def bf_reschedule_url(self):
+        """L'adresse de la page de créneaux pour CETTE réservation.
+
+        La page existe depuis toujours et se défend seule ; ce qui manquait
+        était l'adresse dans les mains de la personne. Mesuré en production
+        (2026-09-21) : pas un seul vrai déplacement parmi les changements de
+        `start` tracés, presque tous des annulations. Un client qui veut
+        bouger d'une heure annule et reprend, ce qui produit deux courriels qui
+        ne se nomment pas l'un l'autre.
+        """
+        self.ensure_one()
+        # ⚠️ Le jeton se garantit ICI, comme le fait déjà `_send_appointment_email`
+        # avant d'écrire un lien dans un courriel. Une réservation créée au
+        # back-office ou par un cron n'en a pas, et un lien sans jeton rend
+        # `/appointment/b/22//schedule`, c'est-à-dire un 404 offert au client
+        # au moment où il essaie de bien faire.
+        if not self.access_token:
+            self.sudo()._portal_ensure_token()
+        if not self.access_token:
+            return ""
+        base = (self.get_base_url() or "").rstrip("/")
+        if not base:
+            return ""
+        return "%s/appointment/b/%d/%s/schedule" % (
+            base, self.id, self.access_token,
+        )
+
     def bf_extra_links(self):
         """Liens supplémentaires à montrer au demandeur, rendus par ce module.
 
@@ -1265,9 +1353,24 @@ class ResourceBooking(models.Model):
 
         ``help`` est facultatif : une ligne d'explication sous le bouton, que
         seules les surfaces HTML rendent.
+
+        Le module en pose UN lui-même depuis la 18.0.2.61.0 : « Déplacer ce
+        rendez-vous ». Il n'apparaît que quand le déplacement est réellement
+        possible (voir `bf_can_reschedule`), donc il se retire tout seul quand
+        le verrou de modification tombe, sans réglage à tenir à jour.
         """
         self.ensure_one()
-        return []
+        if not self.bf_can_reschedule():
+            return []
+        url = self.bf_reschedule_url()
+        if not url:
+            return []
+        return [{
+            "label": _("Déplacer ce rendez-vous"),
+            "url": url,
+            "help": _("Choisissez un autre créneau. L'ancien se libère et "
+                      "vous recevez une confirmation de la nouvelle heure."),
+        }]
 
     def bf_extra_cta_html(self):
         """Les liens supplémentaires en boutons, pour un corps de courriel.
@@ -2107,7 +2210,7 @@ class ResourceBooking(models.Model):
             # emporte la run entière, donc les rappels de tout le locataire.
             #
             # Vécu en production du 2026-08-30 au 2026-08-31. L'écriture de
-            # `sent_schedule_ids` sur la réservation #414 faisait lever
+            # `sent_schedule_ids` sur une réservation faisait lever
             # `_check_scheduling` d'OCA (« Cannot schedule these bookings
             # because no resources are selected ») : une automatisation du
             # locataire filtrant sur `state` force un recalcul de `state` au

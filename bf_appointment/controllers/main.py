@@ -985,6 +985,12 @@ class AppointmentController(Controller):
             # réponse à l'écran soit consignée.
             bf_consents_handled=True,
         )
+        # ⚠️ Lu AVANT l'écriture : c'est la seule fenêtre où l'on sait encore
+        # si cette personne avait déjà une heure. Après, la question ne se pose
+        # plus, et c'est elle qui décide si ce POST est une PREMIÈRE
+        # confirmation ou un DÉPLACEMENT. Les deux ne disent pas la même chose
+        # au demandeur, et jusqu'ici ils disaient la même.
+        debut_precedent = booking_sudo.start
         try:
             booking_sudo.start = when_naive
         except ValidationError as error:
@@ -1034,18 +1040,46 @@ class AppointmentController(Controller):
         # Le lien a servi. Marqué APRÈS la confirmation : un échec de créneau
         # renvoie l'usager au calendrier, et son lien doit encore marcher.
         booking_sudo._mark_link_used()
+        # Un DÉPLACEMENT ne se dit pas comme une première confirmation.
+        #
+        # Jusqu'ici les deux recevaient « voici votre confirmation », sans un
+        # mot sur l'heure qu'ils viennent de quitter. L'avis qui porte l'AVANT
+        # et l'APRÈS existe déjà dans `bf_calendar_invite`, il vit sur
+        # l'événement d'agenda, et le déplacement de la réservation l'a déjà armé au moment
+        # où on arrive ici : `_sync_meeting` a écrit la nouvelle heure sur
+        # l'événement, ce qui a compté la révision et retenu l'ancienne valeur.
+        #
+        # ⚠️ Lien MOU vers `bf_calendar_invite` : ce module tourne chez des
+        # locataires qui ne l'ont pas. Sans lui, on retombe exactement sur le
+        # comportement d'avant, c'est-à-dire la confirmation.
+        deplacement = bool(debut_precedent) and debut_precedent != when_naive
+        avis_envoye = False
+        if deplacement:
+            try:
+                evenement = booking_sudo.meeting_id
+                if (
+                    evenement
+                    and "bf_change_notice_due" in evenement._fields
+                    and evenement.sudo()._bf_change_notice_due()
+                ):
+                    evenement.sudo()._bf_send_change_notice()
+                    avis_envoye = True
+            except Exception:  # noqa: BLE001
+                _logger.exception(
+                    "Avis de déplacement (réservation %s)", booking_sudo.id)
         # Send our branded confirmation email with ICS attachment
-        try:
-            template = request.env.ref(
-                "bf_appointment.mail_template_appointment_confirmation"
-            ).sudo()
-            booking_sudo._send_appointment_email(template, recipient="booker")
-        except Exception as e:
-            _logger.error(
-                "Failed to send confirmation email for booking %d: %s",
-                booking_sudo.id,
-                e,
-            )
+        if not avis_envoye:
+            try:
+                template = request.env.ref(
+                    "bf_appointment.mail_template_appointment_confirmation"
+                ).sudo()
+                booking_sudo._send_appointment_email(template, recipient="booker")
+            except Exception as e:
+                _logger.error(
+                    "Failed to send confirmation email for booking %d: %s",
+                    booking_sudo.id,
+                    e,
+                )
         # Notify the organizer (BF employee) so they get a heads-up. Stock
         # Odoo calendar.event invitations are suppressed by our
         # CalendarEvent._track_subtype override (avoids the duplicate "Date
@@ -1060,8 +1094,16 @@ class AppointmentController(Controller):
                 and organizer_partner.email
                 and organizer_partner.email not in booker_emails
             ):
+                # 🔴 « Nouvelle réservation » pour une rencontre qui existait
+                # déjà fait lire à l'organisateur un deuxième rendez-vous là où
+                # il n'y en a qu'un, déplacé. Et il ne peut PAS l'apprendre par
+                # l'avis envoyé au demandeur : celui-ci écarte l'organisateur,
+                # par construction, parce qu'ailleurs c'est lui qui bouge la
+                # rencontre. Ici, c'est le client.
                 org_template = request.env.ref(
-                    "bf_appointment.mail_template_organizer_new_booking"
+                    "bf_appointment.mail_template_organizer_reschedule"
+                    if deplacement
+                    else "bf_appointment.mail_template_organizer_new_booking"
                 ).sudo()
                 booking_sudo._send_appointment_email(
                     org_template, attach_ics=True, recipient="organizer"

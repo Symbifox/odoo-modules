@@ -400,7 +400,7 @@
     #   Les quatre surfaces : le courriel de confirmation et les quatre rappels,
     #   la page publique du rendez-vous, la description de l'.ics, et celle de
     #   l'événement d'agenda (donc le CalDAV).
-    "version": "18.0.2.60.0",
+    "version": "18.0.2.61.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

@@ -125,6 +125,21 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
   points are public (no leading underscore) because the QWeb of a `mail.template`
   is sandboxed and refuses to call a private method — it renders
   `'NoneType' object is not callable` rather than an error you can read.
+- **"Reschedule this appointment" link** (v18.0.2.61.0). The module now fills
+  `bf_extra_links()` itself with a link to the booking's own slot page, so the
+  booker moves the appointment instead of cancelling and booking again. The link
+  is offered only when rescheduling actually works (`bf_can_reschedule()`): the
+  booking is not cancelled, its time is still ahead, the type's modification lock
+  (`modification_lock_hours`) has not passed, and the link still opens the slot
+  picker. It withdraws itself when the lock falls, with no setting to maintain. A
+  missing access token is generated before the URL is written, so the link never
+  leads to a 404.
+- **A move is not announced as a new booking** (v18.0.2.61.0). When the booker
+  picks a new time from their personal link, they receive the before/after change
+  notice of `bf_calendar_invite` (soft dependency; without it, the usual
+  confirmation is sent as before), and the organizer receives a dedicated
+  **"Rescheduled"** email showing the previous time, instead of "New booking" for
+  a meeting that already existed.
 
 ## Notes on the confirmation links
 

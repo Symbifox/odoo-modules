@@ -5,8 +5,8 @@
 // compile-time fallbacks so the stylesheet still works on tenants that
 // haven't customized branding.
 
-$bf-anthracite: #2E3132;
-$bf-blue: #29ABE2;
+$bf-anthracite: var(--brand-dark, #2E3132);
+$bf-blue: var(--brand-primary, #29ABE2);
 $bf-dark: #22303B;
 $bf-radius: 12px;
 $bf-radius-sm: 8px;
@@ -120,7 +120,7 @@ $bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
     border: none;
     border-radius: $bf-radius;
     overflow: hidden;
-    background-color: darken($bf-anthracite, 4%);
+    background-color: color-mix(in srgb, var(--brand-dark, #2E3132) 96%, black);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
@@ -201,7 +201,7 @@ $bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
     &:hover {
         // hover lightening uses the SCSS literal - falls back to BF anthracite
         // when the tenant theme is set, but the difference is subtle.
-        background-color: lighten($bf-anthracite, 10%);
+        background-color: color-mix(in srgb, var(--brand-dark, #2E3132) 90%, white);
         color: #fff;
     }
 }
@@ -271,7 +271,7 @@ $bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
 
     &:focus {
         border-color: $bf-primary;
-        box-shadow: 0 0 0 3px rgba($bf-blue, 0.15);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary, #29ABE2) 15%, transparent);
     }
 }
 
@@ -339,7 +339,7 @@ $bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
     padding: 0.5rem 1.15rem;
     border: 2px solid $bf-primary;
     border-radius: $bf-radius-sm;
-    background-color: rgba($bf-blue, 0.08);
+    background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 8%, transparent);
     color: $bf-primary;
     font-weight: 600;
     font-size: 0.95rem;
@@ -404,7 +404,7 @@ $bf-anthracite-themed: var(--bf-appt-dark, #{$bf-anthracite});
 }
 
 .bf-status-info {
-    background-color: rgba($bf-blue, 0.15);
+    background-color: color-mix(in srgb, var(--brand-primary, #29ABE2) 15%, transparent);
     color: $bf-primary;
 }
 
