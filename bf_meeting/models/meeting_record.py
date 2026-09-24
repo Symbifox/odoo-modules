@@ -14,6 +14,51 @@ from odoo.addons.bf_ai_bridge.tools import transport
 
 _logger = logging.getLogger(__name__)
 
+# Seuil AA du grand texte : la sur-ligne de bannière est en 8 pt gras espacé,
+# donc ce seuil-là et pas 4,5:1.
+_SEUIL_SUR_FOND_SOMBRE = 3.0
+
+
+def _rgb(hexa: str) -> tuple:
+    h = (hexa or '').lstrip('#')
+    if len(h) == 3:
+        h = ''.join(c * 2 for c in h)
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def _luminance(rgb: tuple) -> float:
+    canaux = []
+    for valeur in rgb:
+        v = valeur / 255
+        canaux.append(v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4)
+    return 0.2126 * canaux[0] + 0.7152 * canaux[1] + 0.0722 * canaux[2]
+
+
+def _contraste(a: str, b: str) -> float:
+    la, lb = _luminance(_rgb(a)), _luminance(_rgb(b))
+    haut, bas = max(la, lb), min(la, lb)
+    return (haut + 0.05) / (bas + 0.05)
+
+
+def _eclaircir_jusquau_contraste(couleur: str, fond: str,
+                                 seuil: float = _SEUIL_SUR_FOND_SOMBRE) -> str:
+    """Éclaircir `couleur` vers le blanc jusqu'à atteindre `seuil` contre `fond`.
+
+    Pendant exact de `assombrir_pour_texte_blanc` de bluefox_branding, qui,
+    lui, résout le cas inverse (texte blanc sur un fond de marque trop pâle).
+    Rendu inchangé si le contraste est déjà suffisant.
+    """
+    if _contraste(couleur, fond) >= seuil:
+        return couleur if couleur.startswith('#') else f'#{couleur}'
+    r, v, b = _rgb(couleur)
+    for pas in range(1, 21):          # 20 pas de 5 % vers le blanc
+        facteur = pas / 20
+        melange = tuple(round(c + (255 - c) * facteur) for c in (r, v, b))
+        candidat = '#%02X%02X%02X' % melange
+        if _contraste(candidat, fond) >= seuil:
+            return candidat
+    return '#FFFFFF'                  # dernier recours : toujours lisible
+
 # Ceiling on the free-text instructions collected by meeting.refine.wizard.
 # They are pasted into the `claude -p` prompt, so an unbounded field would
 # crowd out the skill body itself.
@@ -626,9 +671,81 @@ class MeetingRecord(models.Model):
                 if cmds:
                     rec.attendance_ids = cmds
 
+    def _bf_project_default_recipients(self, project_id):
+        """Commandes m2m pour les destinataires par défaut d'un projet.
+
+        Rend None quand il n'y a rien à poser, pour que l'appelant puisse
+        laisser la valeur d'origine intacte plutôt que de l'écraser par une
+        liste vide.
+        """
+        if not project_id:
+            return None
+        project = self.env['project.project'].browse(project_id).exists()
+        if not project:
+            return None
+        # sudo : le compte rendu d'un appel est créé par le meeting-processor,
+        # qui n'a pas toujours le projet en lecture selon la société portée par
+        # la requête. Sans sudo, le champ rendrait une liste vide — donc un
+        # compte rendu sans destinataire, et un envoi qui refuse de partir sans
+        # qu'on sache pourquoi.
+        partners = project.sudo().meeting_report_recipient_ids
+        return [(6, 0, partners.ids)] if partners else None
+
+    @api.private
+    def report_accent_on_dark(self):
+        """Couleur d'accent lisible SUR la bannière sombre du rapport.
+
+        La sur-ligne « COMPTE RENDU » est écrite en couleur primaire sur la
+        bannière `report_brand_dark`. Avec une primaire claire le couple passe
+        (#29ABE2 sur #2E3132 = 5,0:1), alors le gabarit posait la primaire telle
+        quelle. Une société dont la primaire est foncée ne s'en tire pas : un
+        Deep Teal #135466 sur un Deep Navy #2C3448 donne **1,47:1** — mesuré,
+        illisible.
+
+        On éclaircit donc la primaire par pas jusqu'à 3:1 (seuil AA du grand
+        texte), sans jamais toucher à la primaire elle-même : elle reste vraie
+        partout où elle est posée sur du clair, où elle est excellente
+        (#135466 sur blanc = 8,4:1).
+
+        Publique parce que le rendu QWeb refuse les méthodes préfixées, mais
+        `@api.private` : rien à faire pour un appelant RPC.
+        """
+        self.ensure_one()
+        company = self.company_id or self.env.company
+        primaire = (company.report_brand_primary or '#714B67').strip()
+        fond = (company.report_brand_dark or '#212529').strip()
+        try:
+            return _eclaircir_jusquau_contraste(primaire, fond)
+        except (ValueError, IndexError):
+            # Une couleur mal saisie ne doit pas faire tomber le rapport :
+            # on rend la primaire d'origine, comme avant ce correctif.
+            return primaire
+
+    def _bf_project_company(self, project_id):
+        """Société portée par le projet, quand il en porte une.
+
+        Le compte rendu se rend à la marque de SA société : le PDF comme le
+        courriel lisent `company_id` (logo de bannière, couleurs de rapport,
+        nom au pied). Un projet tenu pour un client qui a sa propre société
+        dans la base doit donc l'imposer — sinon le compte rendu d'un appel
+        sort aux couleurs de la société du compte qui l'a créé, ce qui n'a rien
+        à voir avec le sujet.
+
+        La plupart des projets n'ont aucune société : ils rendent None ici et
+        rien ne change pour eux.
+        """
+        if not project_id:
+            return None
+        project = self.env['project.project'].browse(project_id).exists()
+        if not project:
+            return None
+        company = project.sudo().company_id
+        return company.id if company else None
+
     @api.model_create_multi
     def create(self, vals_list):
-        """Appliquer la préférence de société sur la copie d'échange.
+        """Appliquer la préférence de société sur la copie d'échange, et
+        hériter des destinataires par défaut du projet.
 
         Le défaut du champ ne peut pas la lire (voir le commentaire sur
         `exchange_include_json`), et `default_get` ne servirait que la saisie à
@@ -637,6 +754,13 @@ class MeetingRecord(models.Model):
         """
         vals_list = [dict(vals) for vals in vals_list]
         for vals in vals_list:
+            if not vals.get('report_recipient_ids'):
+                cmds = self._bf_project_default_recipients(vals.get('project_id'))
+                if cmds:
+                    vals['report_recipient_ids'] = cmds
+            company = self._bf_project_company(vals.get('project_id'))
+            if company:
+                vals['company_id'] = company
             if 'exchange_include_json' in vals:
                 continue
             company = self.env['res.company'].browse(vals['company_id']) \
@@ -655,6 +779,25 @@ class MeetingRecord(models.Model):
         if cascade:
             old_by_record = {rec.id: rec.project_id.id for rec in self}
         res = super().write(vals)
+        if cascade and 'company_id' not in vals:
+            # Même raison qu'à la création : la marque du compte rendu suit la
+            # société de son projet, et le projet arrive souvent après coup.
+            for rec in self:
+                company = rec._bf_project_company(rec.project_id.id)
+                if company and rec.company_id.id != company:
+                    rec.company_id = company
+        if cascade and not vals.get('report_recipient_ids'):
+            # Le projet arrive souvent APRÈS la création : le meeting-processor
+            # crée le compte rendu d'un appel sans projet, /refine-meeting le
+            # range quelques minutes plus tard, et l'épinglage de la ligne VoIP
+            # le corrige au passage suivant. L'héritage posé dans create() ne
+            # verrait donc jamais rien — d'où la même reprise ici.
+            for rec in self:
+                if rec.report_recipient_ids or rec.report_state == 'sent':
+                    continue
+                cmds = rec._bf_project_default_recipients(rec.project_id.id)
+                if cmds:
+                    rec.report_recipient_ids = cmds
         if cascade:
             new_pid = vals.get('project_id')
             for rec in self:
@@ -797,6 +940,51 @@ class MeetingRecord(models.Model):
             'report_sent_date': fields.Datetime.now(),
             'report_sent_manually': False,
         })
+        return True
+
+    def action_send_report_auto(self):
+        """Envoyer le compte rendu sans intervention, après la revue Gen.
+
+        Seule porte du flux automatique : le pont l'appelle sur verdict
+        « send », et rien d'autre ne mène à un envoi non demandé. La garde vit
+        ici, en base, et pas chez l'appelant — une consigne donnée à Gen ou une
+        condition écrite dans le pont ne garde rien le jour où le déclencheur
+        se trompe de compte rendu.
+
+        Rend True si le courriel est parti, False si la rencontre n'est pas
+        éligible. Jamais None : XML-RPC ne sait pas le sérialiser, et l'erreur
+        de marshalling se lit alors comme un échec d'envoi.
+        """
+        self.ensure_one()
+        # sudo sur le projet seulement : le drapeau doit être lisible même
+        # quand la requête porte une autre société, sans pour autant élargir
+        # les droits de l'envoi lui-même.
+        project = self.sudo().project_id
+        if not project or not project.meeting_autosend:
+            _logger.info(
+                "Envoi automatique refusé pour meeting.record #%s : le projet "
+                "%s ne le permet pas.",
+                self.id, project.display_name if project else '(aucun)')
+            return False
+        if self.report_state == 'sent':
+            _logger.info(
+                "Envoi automatique ignoré pour meeting.record #%s : déjà "
+                "envoyé le %s.", self.id, self.report_sent_date)
+            return False
+        if not self.report_recipient_ids:
+            _logger.info(
+                "Envoi automatique refusé pour meeting.record #%s : aucun "
+                "destinataire.", self.id)
+            return False
+        self.action_send_report_direct()
+        self.message_post(
+            body=Markup(
+                "<p>🤖 Compte rendu <strong>envoyé automatiquement</strong> "
+                "après la revue Gen, à : %s.</p>"
+            ) % escape(', '.join(self.report_recipient_ids.mapped('name'))),
+            message_type='comment',
+            subtype_xmlid='mail.mt_note',
+        )
         return True
 
     def action_mark_report_sent_manually(self):

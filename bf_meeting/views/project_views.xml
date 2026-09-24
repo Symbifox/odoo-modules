@@ -17,4 +17,28 @@
         </field>
     </record>
 
+    <!-- Extend Project Form: envoi automatique du compte rendu -->
+    <record id="project_view_form_inherit_meeting_autosend" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.meeting.autosend</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='settings']//group[@name='extra_settings']"
+                   position="after">
+                <group name="bf_meeting_report" string="Comptes rendus">
+                    <field name="meeting_report_recipient_ids"
+                           widget="many2many_tags"
+                           options="{'no_create': True}"/>
+                    <field name="meeting_autosend"/>
+                    <div colspan="2" class="text-muted"
+                         invisible="not meeting_autosend">
+                        Chaque compte rendu de ce projet part tout seul aux
+                        destinataires ci-dessus dès que la revue Gen le juge
+                        prêt. À réserver à une ligne dédiée.
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

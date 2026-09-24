@@ -9,6 +9,9 @@
                 <t t-set="brand_company" t-value="doc.company_id or env.company"/>
                 <t t-set="brand_primary" t-value="(brand_company and brand_company.report_brand_primary) or '#714B67'"/>
                 <t t-set="brand_dark" t-value="(brand_company and brand_company.report_brand_dark) or '#212529'"/>
+                <!-- Sur la bannière sombre, la primaire telle quelle peut être
+                     illisible : Deep Teal sur Deep Navy tombait à 1,47:1. -->
+                <t t-set="brand_accent_on_dark" t-value="doc.report_accent_on_dark()"/>
                 <div class="article" style="padding: 0 !important; margin: 0 !important;">
                     <link rel="stylesheet" href="/bf_lexend/static/src/scss/lexend_report.css"/>
                     <style>
@@ -53,7 +56,7 @@
                             font-weight: 600;
                             text-transform: uppercase;
                             letter-spacing: 2pt;
-                            color: <t t-esc="brand_primary"/>;
+                            color: <t t-esc="brand_accent_on_dark"/>;
                             margin: 0 0 3pt 0;
                         }
                         .mr-banner h1 {

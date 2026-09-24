@@ -1,6 +1,7 @@
 from . import test_calendar_badges
 from . import test_meeting_exchange
 from . import test_agenda_changes_since_sent
+from . import test_report_autosend
 from . import test_report_company_brand
 from . import test_public_company_logo
 from . import test_discussed_tasks
