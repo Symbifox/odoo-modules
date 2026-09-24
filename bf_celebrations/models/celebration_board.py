@@ -137,6 +137,7 @@ class CelebrationBoard(models.Model):
             ("delivered", "Livré"),
             ("cancelled", "Annulé"),
         ],
+        string="État",
         default="draft", required=True, index=True, tracking=True)
 
     delivery_date = fields.Datetime(

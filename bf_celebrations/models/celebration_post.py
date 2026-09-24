@@ -85,6 +85,7 @@ class CelebrationPost(models.Model):
             ("published", "Visible"),
             ("rejected", "Retiré"),
         ],
+        string="État",
         default="published", required=True, index=True)
 
     create_ip = fields.Char(

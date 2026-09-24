@@ -96,6 +96,7 @@ class CelebrationOccasion(models.Model):
             ("done", "Passée"),
             ("skipped", "Sans suite"),
         ],
+        string="État",
         default="upcoming", required=True, index=True, tracking=True)
 
     allow_board = fields.Boolean(

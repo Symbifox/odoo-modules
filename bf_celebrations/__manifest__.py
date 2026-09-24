@@ -3,7 +3,7 @@
     "name": "Célébrations",
     "summary": "Tableaux de vœux collectifs, calendrier des occasions, et le "
                "consentement de la personne qu'on souligne",
-    "version": "18.0.2.1.3",
+    "version": "18.0.2.1.5",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

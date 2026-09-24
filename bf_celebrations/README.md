@@ -219,6 +219,7 @@ after its release — see `LICENSE` for the exact parameters.
 
 | Version | Notes |
 |---|---|
+| 18.0.2.1.5 | The board, occasion and message status fields carry a French label (« État ») instead of the default derived from the technical field name; consent email wording fix |
 | 18.0.2.1.3 | Public stylesheet reads `--brand-dark`/`--brand-primary` instead of fixed hex values. |
 | 18.0.2.1.0 | Recipient thank-you (keyed link, once, emailed to signers); signer-source hook for the `bf_celebrations_email` bridge |
 | 18.0.2.0.0 | Handwriting (font, style, vector ink), signer groups, delivery opening animation, PDF + self-contained HTML keepsakes, personal keepsake address, optional retention purge, dateless occasions; four 1.0 fixes (UTC delivery hour, missing QR, hourly activity, image MIME type) |
