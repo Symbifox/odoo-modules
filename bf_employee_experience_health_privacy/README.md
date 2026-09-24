@@ -46,6 +46,15 @@ odoo -d <database> -u bf_employee_experience_health_privacy --test-enable \
      --http-port=8180
 ```
 
+## Changelog
+
+- **18.0.1.0.1** — the consent notice shown to employees is reworded in
+  gender-neutral French. The purpose record is loaded `noupdate`, so a
+  database that already has the module keeps its current wording until an
+  administrator edits it; new installations get the new text.
+- **18.0.1.0.0** — first release.
+
 ## Licence
 
-LGPL-3.
+Business Source License 1.1, see [LICENSE](LICENSE). Each version converts to
+LGPL-3.0-or-later four years after its publication.
