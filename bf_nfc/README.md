@@ -114,12 +114,18 @@ read.
 
 ## Mobile API
 
-`/bf_nfc/mobile/v1` (api 2): `ping` (public, returns the company's branding), pairing
+`/bf_nfc/mobile/v1` (api 2): `ping` (public, returns the company's branding and the
+local expiry delay), pairing
 (`auth/start`, `auth/exchange`, `logout`), `tap`, `pastille/infos`, `pastilles`,
 `journal`, `cibles` (target search on a whitelist of models), `catalogue`,
 `pastille` (create), `liens` (link pages, when `bf_linkpage` is installed),
 and `gravure/debut` + `gravure/suite`, which write a signed chip (below).
 Every route runs as the device's person, in their language.
+
+Since 18.0.2.5.0, `ping` also announces `wipe_after_days`: the app wipes what it
+keeps after that many days without a successful authenticated call, which covers
+a phone that never calls the server again (airplane mode, app never reopened) and
+so never receives the 401 of a revoked token.
 
 ## Writing a signed chip
 
@@ -163,6 +169,8 @@ All of it from *Tags → Configuration*. Underneath:
 - `bf.nfc.sdm.key`: encrypted signed-tag keys per company (migrated in 18.0.2.3.0
   from the former plain-text `bf_nfc.sdm_meta_key` / `bf_nfc.sdm_file_key`
   parameters, which are erased).
+- `bf_mobile.wipe_after_days`: local expiry announced to the app, default 30,
+  `0` disarms it. A missing or unreadable value yields the default, never zero.
 
 ## Tests
 
