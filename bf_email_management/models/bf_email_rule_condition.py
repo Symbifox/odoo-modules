@@ -10,6 +10,20 @@ catalogue below is the entire surface a clause can look at. Two escape hatches
 (``partner_field`` and ``odoo_domain``) preserve what the old engine could do,
 and they are the only two paths that reach ``safe_eval``.
 
+🔴 18.0.11.41.5 (correctif de sécurité) : jusque-là, ces deux voies passaient
+des objets ORM à ``safe_eval``, et tout usager interne pouvait écrire une
+condition, ce qui lui donnait plus de droits qu'il n'en a. Trois gardes, chacune éprouvée seule par ``tests/test_regle_expression_securite.py`` :
+
+1. l'expression ne voit plus que des VALEURS simples préparées d'avance
+   (``_partner_values``, ``uid``) ; un domaine rendu est vérifié valeur par
+   valeur puis cherché sous les droits du PROPRIÉTAIRE de la ligne, sans sudo ;
+2. seul ``base.group_system`` crée, modifie ou copie une condition avancée
+   (``create``/``write``, donc aussi les commandes x2many de la règle, la
+   copie et ``load``), sauf les expressions que le module écrit lui-même
+   (``CATALOGUE_EXPRESSIONS``) ;
+3. une condition avancée dont l'auteur (création OU dernière modification)
+   n'est pas administrateur n'est jamais évaluée : fausse, et un WARNING.
+
 Two notes on what a clause can honestly see:
 
 - ``raw_headers`` is filled by the IMAP ingestion path. Chatter/gateway rows
@@ -27,9 +41,10 @@ Two notes on what a clause can honestly see:
 import ast
 import logging
 import re
+import types
 
-from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo import SUPERUSER_ID, _, api, fields, models
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tools.safe_eval import safe_eval
 
 _logger = logging.getLogger(__name__)
@@ -71,6 +86,51 @@ FIELD_CATALOGUE = [
 ]
 
 FIELD_KIND = {name: kind for name, _label, kind in FIELD_CATALOGUE}
+
+# Conditions « avancées » : leur valeur est une expression évaluée par safe_eval.
+ADVANCED_FIELDS = frozenset(
+    name for name, _label, kind in FIELD_CATALOGUE if kind == "expr")
+
+# Les expressions avancées que le MODULE écrit lui-même : recettes
+# « client_partner » et « vendor_partner » de ``RULE_RECIPES`` et
+# ``data/bf_email_rule_default.xml``. Ce sont des constantes du code, pas une
+# saisie : un employé peut donc toujours cocher ces recettes (assistant « règles
+# courantes », semis du premier compte, copie de sa règle). Un essai vérifie
+# que le catalogue n'en porte pas d'autre.
+CATALOGUE_EXPRESSIONS = frozenset({
+    ("partner_field", "(p.customer_rank or 0) > 0"),
+    ("partner_field", "(p.supplier_rank or 0) > 0"),
+})
+
+# Les seuls champs du contact qu'une expression « Champ du contact » peut lire,
+# copiés en VALEURS avant l'évaluation. Ce sont ceux que les conditions
+# existantes lisent réellement (les deux recettes du catalogue) ;
+# en ajouter un est un choix de sécurité, pas une commodité : jamais un champ
+# relationnel, qui rendrait un recordset.
+PARTNER_EXPRESSION_FIELDS = ("customer_rank", "supplier_rank")
+
+_PLAIN_TYPES = (str, int, float, bool, type(None))
+
+
+def _is_plain(value, depth=0):
+    """Vrai si ``value`` n'est fait que de valeurs simples (listes comprises).
+
+    Garde de sortie de safe_eval : un domaine qui porterait un objet (un
+    recordset, une fonction) n'est jamais passé à ``search_count``.
+    """
+    if depth > 32:
+        return False
+    if isinstance(value, _PLAIN_TYPES):
+        return True
+    if isinstance(value, (list, tuple)):
+        return all(_is_plain(v, depth + 1) for v in value)
+    return False
+
+
+def _needs_admin(field_name, value):
+    """Une condition avancée hors catalogue : réservée à base.group_system."""
+    return (field_name in ADVANCED_FIELDS
+            and (field_name, value or "") not in CATALOGUE_EXPRESSIONS)
 
 # Operators offered per kind. The form view hides the rest; ``_check_operator``
 # refuses them server-side, because a view constraint is a suggestion.
@@ -252,6 +312,43 @@ class BfEmailRuleCondition(models.Model):
     )
 
     # ------------------------------------------------------------------
+    # Garde : conditions avancées réservées aux administrateurs (41.5)
+    # ------------------------------------------------------------------
+    def _may_write_advanced(self):
+        return self.env.su or self.env.user.has_group("base.group_system")
+
+    def _refuse_advanced(self):
+        raise AccessError(_(
+            "Seul un administrateur peut créer, modifier ou copier une "
+            "condition avancée (« Champ du contact » ou « Domaine Odoo »)."))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        # Après super() : la ligne porte ses valeurs par défaut, y compris un
+        # `default_field_name` passé par le contexte. Couvre aussi la copie
+        # (`copy_data` → `create`), les commandes (0, 0, …) de la règle et
+        # `load`. Lever ici annule la création avec la transaction.
+        if not self._may_write_advanced():
+            for rec in records:
+                if _needs_admin(rec.field_name, rec.value):
+                    self._refuse_advanced()
+        return records
+
+    def write(self, vals):
+        # Avant super() : l'état AVANT (une condition avancée existante ne se
+        # retouche pas, pas même sa séquence ou sa règle, commande (4, id)
+        # comprise) et l'état APRÈS (on ne rend pas avancée une condition).
+        if not self._may_write_advanced():
+            for rec in self:
+                after_field = vals.get("field_name", rec.field_name)
+                after_value = vals.get("value", rec.value)
+                if (_needs_admin(rec.field_name, rec.value)
+                        or _needs_admin(after_field, after_value)):
+                    self._refuse_advanced()
+        return super().write(vals)
+
+    # ------------------------------------------------------------------
     # Computes
     # ------------------------------------------------------------------
     @api.depends("field_name")
@@ -409,25 +506,66 @@ class BfEmailRuleCondition(models.Model):
         return actual if self.operator == "is_true" else not actual
 
     def _match_expression(self, record):
+        if not self._expression_is_trusted():
+            # Défense si une telle ligne existe déjà (écrite avant 41.5, ou par
+            # un chemin sudo) : jamais évaluée, et on le dit.
+            _logger.warning(
+                "bf.email.rule.condition %s : expression avancée écrite par un "
+                "non-administrateur (création uid %s, modification uid %s), "
+                "ignorée (traitée comme fausse).",
+                self.id, self.sudo().create_uid.id, self.sudo().write_uid.id,
+            )
+            return False
         if self.field_name == "partner_field":
             partner = record.partner_id or record.author_id
             if not partner:
                 return False
+            values = self._partner_values(partner)
             return bool(safe_eval(self.value or "False", {
-                "partner": partner,
-                "p": partner,
+                "partner": values,
+                "p": values,
             }))
-        # odoo_domain: a list is re-searched against this row, anything else is
-        # taken for its truthiness — the semantics the old engine had.
-        result = safe_eval(self.value or "False", {
-            "record": record,
-            "rec": record,
-            "uid": self.env.uid,
-            "user": self.env.user,
-        })
+        # odoo_domain : une liste est re-cherchée contre cette ligne, toute
+        # autre valeur SIMPLE compte pour sa véracité (la sémantique de l'ancien
+        # moteur). Aucun recordset dans le contexte : seulement `uid`, un entier.
+        result = safe_eval(self.value or "False", {"uid": self.env.uid})
+        if not _is_plain(result):
+            _logger.warning(
+                "bf.email.rule.condition %s : l'expression a rendu autre chose "
+                "que des valeurs simples (%s), ignorée.",
+                self.id, type(result).__name__,
+            )
+            return False
         if isinstance(result, list):
-            return bool(record.search_count(result + [("id", "=", record.id)]))
+            # Sous les droits du propriétaire de la ligne, jamais en sudo :
+            # le moteur tourne parfois en sudo (collecte), et un domaine sur
+            # des champs reliés serait alors un oracle sur toute la base.
+            owner = record.user_id
+            rows = record.with_user(owner) if owner else record.sudo(False)
+            return bool(rows.search_count(result + [("id", "=", record.id)]))
         return bool(result)
+
+    def _partner_values(self, partner):
+        """Les champs lisibles du contact, en valeurs simples, sans recordset."""
+        partner.ensure_one()
+        values = {name: partner[name] for name in PARTNER_EXPRESSION_FIELDS}
+        if not _is_plain(list(values.values())):
+            raise ValueError("champ de contact non scalaire")
+        return types.SimpleNamespace(**values)
+
+    def _expression_is_trusted(self):
+        """Une expression avancée n'est évaluée que si un administrateur l'a
+        écrite, à la création ET à la dernière modification, ou si c'est une
+        expression du catalogue du module."""
+        self.ensure_one()
+        if (self.field_name, self.value or "") in CATALOGUE_EXPRESSIONS:
+            return True
+        cond = self.sudo()
+        return all(
+            author and (author.id == SUPERUSER_ID
+                        or author.has_group("base.group_system"))
+            for author in (cond.create_uid, cond.write_uid)
+        )
 
     # -- helpers -------------------------------------------------------
     def _haystack(self, record):

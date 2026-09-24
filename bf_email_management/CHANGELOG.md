@@ -4,6 +4,23 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.41.5] - 2026-09-23
+
+### Security
+
+- 🔴 **Advanced rule conditions no longer see ORM objects.** The « Champ du
+  contact (avancé) » and « Domaine Odoo (avancé) » conditions evaluate a Python
+  expression. That expression now receives plain values only
+  (`customer_rank`, `supplier_rank`, `uid`), never a recordset or an
+  environment, and a result that is not made of plain values is ignored. A
+  domain is searched under the rights of the rule's owner.
+- Only `base.group_system` can create, modify or copy an advanced condition,
+  except the two expressions the module writes itself (the « customer » and
+  « supplier » recipes). An advanced condition last written by a
+  non-administrator is never evaluated; it counts as false and is logged.
+- Upgrading is strongly recommended. No new column, no migration. The two
+  built-in recipes behave exactly as before.
+
 ## [18.0.11.41.4] - 2026-09-21
 
 ### Fixed
