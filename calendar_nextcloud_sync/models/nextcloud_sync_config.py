@@ -220,7 +220,7 @@ class NextcloudCalendarSyncConfig(models.Model):
         Configurable via system parameter
         `calendar_nextcloud_sync.event_uid_domain`. Falls back to the
         hostname from `web.base.url`. Avoids hardcoding a tenant domain
-        so the module is portable across BF, PME, and future tenants.
+        so the module is portable across tenants.
         """
         ICP = self.env["ir.config_parameter"].sudo()
         explicit = ICP.get_param("calendar_nextcloud_sync.event_uid_domain")
@@ -820,6 +820,117 @@ class NextcloudCalendarSyncConfig(models.Model):
             )
 
     # === CalDAV Full Pull Sync ===
+
+    def bf_ecarts_non_rapatries(self, horizon_jours=90):
+        """Ce que le serveur distant porte et qu'Odoo n'a pas vu passer.
+
+        Écrit pour le contrôle quotidien des avis de modification, et c'est sa
+        moitié INDÉPENDANTE. Lire la base d'Odoo répond à « reste-t-il
+        un avis dû que personne n'a envoyé ». Ça ne répond pas à la question qui
+        compte vraiment le jour où la chaîne casse : **est-ce qu'un changement a
+        eu lieu sans qu'Odoo l'apprenne**. Si le rapatriement ne tourne plus,
+        rien n'est dû côté Odoo, tout est vert, et personne n'est prévenu de
+        rien. Une sonde qui ne regarde que ce qu'elle juge rend le même vert
+        quand elle est aveugle et quand tout va bien.
+
+        Le contrôle est délibérément PAUVRE : un `REPORT` qui ne demande que
+        l'`etag` et la date de dernière modification, sur une fenêtre bornée. Il
+        ne rapatrie rien, ne modifie rien, et ne sait rien du contenu des
+        rencontres. Comparer des `etag` suffit à dire « le distant a bougé
+        depuis ce qu'Odoo a enregistré ».
+
+        Rend un dictionnaire :
+          ``mesure`` faux quand on n'a pas pu regarder (et ``erreur`` dit
+          pourquoi). ⚠️ Un relevé vide n'est PAS un vert : ne jamais confondre
+          « rien trouvé » et « rien regardé ».
+          ``ecarts`` : [{href, raison, modifie_le}] où ``raison`` vaut
+          ``absent`` (le distant l'a, Odoo pas) ou ``etag`` (les deux l'ont, le
+          distant a bougé après).
+        """
+        self.ensure_one()
+        vide = {"mesure": False, "erreur": None, "ecarts": [], "vus": 0}
+        if self.backend_type != "nextcloud":
+            vide["erreur"] = "Agenda non Nextcloud : rien à relire ici."
+            return vide
+        password = self.nextcloud_app_password
+        if not password or not self.nextcloud_user:
+            vide["erreur"] = "Identifiants Nextcloud absents sur cette fiche."
+            return vide
+        url = self.caldav_url
+        if not url:
+            vide["erreur"] = "URL CalDAV incalculable pour cette fiche."
+            return vide
+
+        debut = fields.Datetime.now()
+        fin = debut + timedelta(days=horizon_jours)
+        corps = (
+            '<?xml version="1.0" encoding="utf-8"?>'
+            '<c:calendar-query xmlns:d="DAV:" '
+            'xmlns:c="urn:ietf:params:xml:ns:caldav">'
+            "<d:prop><d:getetag/><d:getlastmodified/></d:prop>"
+            "<c:filter>"
+            '<c:comp-filter name="VCALENDAR">'
+            '<c:comp-filter name="VEVENT">'
+            '<c:time-range start="%s" end="%s"/>'
+            "</c:comp-filter></c:comp-filter>"
+            "</c:filter></c:calendar-query>"
+        ) % (debut.strftime("%Y%m%dT%H%M%SZ"), fin.strftime("%Y%m%dT%H%M%SZ"))
+
+        try:
+            reponse = requests.request(
+                "REPORT", url, data=corps,
+                headers={"Content-Type": "application/xml", "Depth": "1"},
+                auth=(self.nextcloud_user, password), timeout=30,
+            )
+            reponse.raise_for_status()
+        except Exception as e:  # noqa: BLE001 - un controle ne casse pas son appelant
+            vide["erreur"] = "%s : %s" % (type(e).__name__, str(e)[:200])
+            return vide
+
+        try:
+            racine = ElementTree.fromstring(reponse.content)
+        except ElementTree.ParseError as e:
+            vide["erreur"] = "Réponse CalDAV illisible : %s" % str(e)[:200]
+            return vide
+
+        ns = {"d": "DAV:"}
+        Event = self.env["calendar.event"]
+        distants = {}
+        for rep in racine.findall(".//d:response", ns):
+            href_el = rep.find("d:href", ns)
+            etag_el = rep.find(".//d:getetag", ns)
+            mod_el = rep.find(".//d:getlastmodified", ns)
+            if href_el is None or not href_el.text:
+                continue
+            href = href_el.text.strip()
+            if href.rstrip("/") == url.rstrip("/") or not href.endswith(".ics"):
+                continue
+            distants[href] = (
+                Event._normalize_caldav_etag(etag_el.text if etag_el is not None else None),
+                (mod_el.text or "").strip() if mod_el is not None else "",
+            )
+
+        if not distants:
+            return {"mesure": True, "erreur": None, "ecarts": [], "vus": 0}
+
+        locaux = Event.with_context(active_test=False).search([
+            ("x_caldav_href", "in", list(distants)),
+        ])
+        par_href = {
+            e.x_caldav_href: Event._normalize_caldav_etag(e.x_caldav_etag)
+            for e in locaux
+        }
+
+        ecarts = []
+        for href, (etag, modifie) in distants.items():
+            if href not in par_href:
+                ecarts.append({"href": href, "raison": "absent",
+                               "modifie_le": modifie})
+            elif etag and par_href[href] and etag != par_href[href]:
+                ecarts.append({"href": href, "raison": "etag",
+                               "modifie_le": modifie})
+        return {"mesure": True, "erreur": None, "ecarts": ecarts,
+                "vus": len(distants)}
 
     def action_pull_from_nextcloud(self):
         """Pull all events from Nextcloud via CalDAV REPORT and upsert."""
@@ -1808,15 +1919,97 @@ class NextcloudCalendarSyncConfig(models.Model):
         ⚠️ Ne lève jamais. Un `VTIMEZONE` malformé chez un expéditeur ne doit
         pas emporter la synchronisation de tout un agenda : on rend une table
         vide et l'appelant retombe sur ses autres résolutions.
+
+        🔴 Assainissement obligatoire avant `tzical` (2.17.0, relevé dans les
+        journaux). `dateutil.tz.tzical` lève sur toute propriété qu'il ne
+        connaît pas :
+
+            unsupported property: X-TZINFO        (Nextcloud / SOGo)
+            unsupported property: X-LIC-LOCATION  (Google)
+            not enough values to unpack           (ligne sans « : »)
+
+        Or ces `X-` sont explicitement autorisées par la RFC 5545 (§3.8.8.2) et
+        parfaitement banales. Le résultat était grave : **une seule** de ces
+        lignes faisait jeter la table VTIMEZONE *entière*, donc retomber sur le
+        repli qui prend l'heure murale pour de l'UTC — le décalage de douze
+        heures déjà corrigé ailleurs. Des centaines d'occurrences par jour sur
+        des bases réelles.
+
+        On déplie donc les lignes (RFC 5545 §3.1), on retire les `X-` et les
+        lignes sans séparateur, puis — si `tzical` bute encore — on retombe sur
+        une lecture **bloc par bloc** pour qu'un seul VTIMEZONE avarié n'emporte
+        pas les autres.
         """
         if not ics_text or "BEGIN:VTIMEZONE" not in ics_text:
             return {}
+        blocs = NextcloudCalendarSyncConfig._sanitize_vtimezones(ics_text)
+        if not blocs:
+            return {}
         try:
-            cal = tzical(io.StringIO(ics_text))
+            cal = tzical(io.StringIO("\r\n".join(blocs)))
             return {key: cal.get(key) for key in cal.keys()}
         except Exception as exc:  # noqa: BLE001 - voir docstring
-            _logger.warning("VTIMEZONE illisible, ignoré : %s", exc)
-            return {}
+            _logger.debug("VTIMEZONE en lot illisible (%s), reprise bloc par bloc", exc)
+
+        # Reprise individuelle : on garde ce qui se lit, on ne perd que le bloc
+        # réellement avarié.
+        table = {}
+        for bloc in blocs:
+            try:
+                cal = tzical(io.StringIO(bloc))
+                for key in cal.keys():
+                    table[key] = cal.get(key)
+            except Exception as exc:  # noqa: BLE001
+                tzid = next(
+                    (l.split(":", 1)[1] for l in bloc.splitlines()
+                     if l.upper().startswith("TZID:")),
+                    "(sans TZID)",
+                )
+                _logger.warning(
+                    "VTIMEZONE « %s » illisible, ignoré : %s", tzid, exc)
+        return table
+
+    @staticmethod
+    def _sanitize_vtimezones(ics_text):
+        """Rend les blocs VTIMEZONE lisibles par `tzical`, un par entrée.
+
+        Déplie les lignes repliées, retire les propriétés `X-` et les lignes
+        dépourvues de « : ». Chaque bloc rendu est un VCALENDAR complet et
+        autonome, pour pouvoir être analysé isolément.
+        """
+        # Dépliage RFC 5545 : une ligne commençant par espace ou tabulation est
+        # la suite de la précédente.
+        deplie = []
+        for brute in ics_text.replace("\r\n", "\n").replace("\r", "\n").split("\n"):
+            if brute[:1] in (" ", "\t") and deplie:
+                deplie[-1] += brute[1:]
+            else:
+                deplie.append(brute)
+
+        blocs, courant, dedans = [], None, False
+        for ligne in deplie:
+            nue = ligne.strip()
+            if not nue:
+                continue
+            haut = nue.upper()
+            if haut == "BEGIN:VTIMEZONE":
+                dedans, courant = True, [nue]
+                continue
+            if not dedans:
+                continue
+            if haut == "END:VTIMEZONE":
+                courant.append(nue)
+                blocs.append(
+                    "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//bf//sanitize//EN\r\n"
+                    + "\r\n".join(courant)
+                    + "\r\nEND:VCALENDAR"
+                )
+                dedans, courant = False, None
+                continue
+            if haut.startswith("X-") or ":" not in nue:
+                continue  # propriété d'extension ou ligne tronquée
+            courant.append(nue)
+        return blocs
 
     @staticmethod
     def _normalize_timezone(tzid):

@@ -312,6 +312,11 @@ class GoogleCalendarBackend(models.AbstractModel):
             "mail_create_nolog": True,
             "tracking_disable": True,
             "dont_notify": True,
+            # Meme raison que du cote Nextcloud : la poussee
+            # Google part deja en `sendUpdates="none"`, donc Google ne dit rien
+            # aux invites. Si Odoo se tait aussi en rapatriant, un deplacement
+            # fait dans Google Agenda ne rejoint plus personne.
+            "bf_remote_change": True,
         }
         if existing:
             # Un enregistrement archive l'a ete deliberement (doublon retire a

@@ -260,6 +260,21 @@ class CalDavBackend(models.AbstractModel):
             "SUMMARY:%s" % self._escape_ics(data.get("name")),
         ]
 
+        # 🔴 RFC 5545 §3.8.7.4. Ce VEVENT n'a longtemps porte AUCUN `SEQUENCE`,
+        # alors que le `.ics` des courriels en porte un depuis le 2026-09-09.
+        # Deux revisions de la meme rencontre arrivaient donc chez le serveur
+        # distant sans qu'aucune ne se declare plus recente que l'autre, et un
+        # client d'agenda qui les recoit dans le desordre n'a aucun moyen de
+        # dire laquelle garder.
+        #
+        # ⚠️ Lien MOU, comme `bf_event_status` plus bas : `bf_ics_sequence`
+        # appartient a `bf_calendar_invite`, et ce module tourne aussi chez des
+        # locataires qui ne l'ont pas. Absent, on n'ecrit rien plutot que
+        # d'ecrire un zero, parce qu'un `SEQUENCE:0` pose sur une rencontre
+        # deja revisee la ferait passer pour l'originale.
+        if "bf_ics_sequence" in event._fields:
+            lines.append("SEQUENCE:%d" % (event.bf_ics_sequence or 0))
+
         if data.get("allday"):
             # DTEND est EXCLUSIF en RFC 5545 alors que `stop_date` d'Odoo est le
             # dernier jour INCLUS : sans le +1 jour, un « toute la journée » se

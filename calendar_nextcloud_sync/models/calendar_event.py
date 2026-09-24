@@ -835,12 +835,25 @@ class CalendarEvent(models.Model):
             ]
 
         # Use context to suppress all email/notification side-effects
+        #
+        # ⚠️ `bf_remote_change` fait exception, et c'est tout le sujet de
+        # l'avis de modification de `bf_calendar_invite`. Les quatre autres clés éteignent les effets de bord
+        # d'Odoo parce que l'écriture n'est pas une décision d'ici : elle
+        # constate ce qu'un autre agenda a déjà fait. Mais tant que Nextcloud
+        # écrivait aux invités, ce silence était complet par accident ; le jour
+        # où c'est Odoo qui parle, il ne reste plus personne pour le dire.
+        #
+        # Lien MOU, exprès : `calendar_nextcloud_sync` ne dépend pas de
+        # `bf_calendar_invite`. Une clé de contexte qu'un locataire sans ce
+        # module ne lit pas ne coûte rien ; une dépendance dure lui imposerait
+        # toute une famille de courriels d'invitation.
         ctx = {
             "no_mail_to_attendees": True,
             "skip_nc_sync": True,
             "mail_create_nolog": True,
             "tracking_disable": True,
             "dont_notify": True,
+            "bf_remote_change": True,
         }
 
         rrule = data.get("rrule")

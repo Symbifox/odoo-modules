@@ -46,6 +46,21 @@
     #   événements-là — Odoo est leur source — et le prédicat
     #   `_bf_odoo_owns_attendees` est désormais le MÊME aux deux bouts, pour
     #   que les deux moitiés ne puissent plus diverger.
+    # 18.0.2.17.0: 🔴 une propriété `X-` faisait jeter TOUS les VTIMEZONE du
+    #   .ics. `dateutil.tz.tzical` lève sur toute propriété inconnue, et
+    #   Nextcloud écrit `X-TZINFO` dans chacun de ses blocs (Google écrit
+    #   `X-LIC-LOCATION`) — alors que la RFC 5545 §3.8.8.2 les autorise
+    #   explicitement. Une seule de ces lignes suffisait à vider la table des
+    #   fuseaux, donc à retomber sur le repli qui prend l'heure murale locale
+    #   pour de l'UTC : le décalage de douze heures des fuseaux Windows, par
+    #   une autre porte. Relevé dans les journaux, des centaines de fois par
+    #   jour sur des bases réelles.
+    #   Les blocs sont désormais assainis avant analyse (dépliage RFC 5545
+    #   §3.1, retrait des `X-` et des lignes sans « : »), et si l'analyse en
+    #   lot échoue encore on reprend BLOC PAR BLOC — un VTIMEZONE avarié chez
+    #   un expéditeur n'emporte plus les fuseaux valides du même fichier.
+    #   Le WARNING nomme maintenant le TZID fautif au lieu de la seule
+    #   exception.
     # 18.0.2.16.0: 🔴 un ETag entre guillemets tenait tout un agenda en passe
     #   COMPLÈTE, indéfiniment. Un serveur CalDAV rend son ETag cité (RFC 9110
     #   §8.8.3) et c'est cette forme que reçoit qui lit l'en-tête d'une réponse;
@@ -66,7 +81,7 @@
     #   l'avis à l'usager ne mente pas. Mesuré sur une base réelle : UN
     #   événement sur 841 tenait 837 événements en retéléchargement quatre fois
     #   par heure.
-    "version": "18.0.2.16.0",
+    "version": "18.0.2.19.0",
     "category": "Calendar",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
