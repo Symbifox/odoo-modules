@@ -6,13 +6,13 @@
                Roboto, Helvetica, Arial, sans-serif;
   background: #F8FAFC;
   min-height: 80vh;
-  color: #2E3132;
+  color: var(--brand-dark, #2E3132);
 
   .bf-support-title {
     font-family: "Lexend", sans-serif;
     font-weight: 700;
-    color: #2E3132;
-    border-left: 4px solid #29ABE2;
+    color: var(--brand-dark, #2E3132);
+    border-left: 4px solid var(--brand-primary, #29ABE2);
     padding-left: 16px;
     margin-bottom: 8px;
   }
@@ -25,7 +25,7 @@
 
   .bf-support-intro {
     background: #FFFFFF;
-    border-left: 4px solid #29ABE2;
+    border-left: 4px solid var(--brand-primary, #29ABE2);
     padding: 16px 20px;
     border-radius: 4px;
   }
@@ -38,7 +38,7 @@
 
     .form-label {
       font-weight: 500;
-      color: #2E3132;
+      color: var(--brand-dark, #2E3132);
     }
 
     .form-control {
@@ -48,19 +48,19 @@
       font-family: inherit;
 
       &:focus {
-        border-color: #29ABE2;
-        box-shadow: 0 0 0 3px rgba(41, 171, 225, 0.15);
+        border-color: var(--brand-primary, #29ABE2);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary, #29ABE2) 15%, transparent);
         outline: none;
       }
     }
 
     .bf-required {
-      color: #29ABE2;
+      color: var(--brand-primary, #29ABE2);
     }
   }
 
   .bf-support-submit {
-    background: #29ABE2;
+    background: var(--brand-primary, #29ABE2);
     color: #FFFFFF;
     border: none;
     padding: 12px 28px;

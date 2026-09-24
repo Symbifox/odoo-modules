@@ -42,7 +42,7 @@ is set, to avoid double notifications.
 | 18.0.2.1.0 | Spam honeypot + email regex + attachment caps + extension blocklist |
 | 18.0.2.2.0 | Knowledge matrix link with scope alignment badge |
 | 18.0.2.3.0 | Convert ticket → meeting record |
-| 18.0.2.4.0 | Triage IA (one-shot LLM call; now routed through the `bf_llm` gateway) |
+| 18.0.2.4.0 | Triage IA (one-shot LLM call; routed through the Blue Fox AI bridge, `bf_ai_bridge`, since 18.0.4.5.0) |
 
 ## Phase 3 features (shipped)
 
@@ -67,20 +67,38 @@ available stages, and team members to an LLM and asks for a categorization,
 suggested stage, suggested assignee, and a draft first response. The result is
 stored on `triage_suggestion_html` and shown in the "Triage IA" tab.
 
-The call is routed through the **`bf_llm`** gateway (a hard dependency):
-`bf_helpdesk` no longer holds an API URL, key, or HTTP transport. The provider
-(Anthropic, OpenAI, or an OpenAI-compatible/local server), the model, and the
-Fernet-encrypted key all live in *Settings › Technical › LLM Providers*. The
-triage model override is the provider's `model_triage` field. The Gen
-module (`bf_claude_chat`) is **not** a dependency and is no longer read; bf_llm
-provides its own encrypted key store.
+The call is routed through **`bf_ai_bridge`** (a hard dependency), the single
+transport every Symbifox module uses to reach the Blue Fox AI bridge service
+over a local Unix socket. `bf_helpdesk` holds no API URL, no key and no HTTP
+transport of its own.
+
+The bridge serves `POST /helpdesk/triage`: one pass, no session, no tools and no
+MCP server. The ticket is untrusted text written by a third party, so it is
+handed to a process that has nothing to reach for — a general-purpose agent,
+with its system prompt and its write access, is deliberately not used for an
+extraction that needs neither.
+
+The team's available stages and members travel with the ticket, and the bridge
+checks the answer against those two lists: a stage or an assignee the team does
+not carry is dropped rather than shown. A suggestion exists to be applied by
+someone in a hurry, which makes it the wrong place for a plausible invented
+name. The bridge returns **JSON**, and Odoo assembles and escapes the panel
+itself — model-authored HTML is never stored.
+
+**Requirement.** Triage only works where the AI bridge service is running and its
+socket is reachable from the Odoo container (system parameter
+`bf_ai_bridge.socket`, see the `bf_ai_bridge` README). Without it the button
+raises a configuration error; every other helpdesk feature keeps working.
 
 Behaviour when something is off:
-- **No LLM provider configured** → the button degrades gracefully with a soft,
-  non-blocking notification; the ticket state is untouched. Every other
-  helpdesk feature keeps working.
-- **Transient/model error** → persisted as a soft error on the ticket
-  (`triage_state=error`) without raising a popup, so the user can retry.
+- **Bridge socket absent** → configuration error: a popup names the system
+  parameter to fix, and the ticket is left exactly as it was.
+- **Transport or model error, or an empty answer** → persisted as a soft error on
+  the ticket (`triage_state=error`) without raising, so the user can retry.
+
+The Odoo-side timeout is `bf_helpdesk.triage_timeout` (default 120 s); it must
+stay above the bridge's own 90 s ceiling, or Odoo gives up on a pass that is
+still running.
 
 ## License
 
@@ -101,9 +119,12 @@ five modules. If that is what you need, [talk to us](https://symbifox.com).
 
 | Version | Change |
 |---|---|
+| 18.0.4.5.2 | The portal and public-form stylesheets read the tenant's brand colours (`--brand-primary`, `--brand-dark`) and fall back to the Symbifox palette, instead of a fixed hex value. |
+| 18.0.4.5.0 | AI triage moved onto **`bf_ai_bridge`** and the bridge endpoint `POST /helpdesk/triage`. Removed the in-module direct call to the Anthropic Messages API (`_call_anthropic_network`) and its key resolution (`_bf_helpdesk_get_anthropic_api_key`). The endpoint runs one pass with no session, no tools and no MCP server; the answer comes back as JSON, the stage and assignee are validated against the team's own lists, and Odoo renders and escapes the panel. Dropped `bf_claude_chat` from `depends`: nothing in the module read it any more. |
+| 18.0.4.4.5 | Brand colour hex values corrected (`#29ABE2` / `#2E3132`). |
 | 18.0.4.3.2 | Security: the public form at `/support/<slug>` accepted unlimited anonymous submissions, each one creating a ticket and sending an auto-acknowledgement, so a script could flood the desk and use it as a mail bomb aimed at a third party. Submissions are capped at **5 per IP per 10 minutes**, keyed on the ProxyFix-corrected address; an over-quota post renders the same thanks page, so a genuine over-eager user sees no error and a bot gets no signal. Correctness: `_cron_sla_breach_activity` searched on `sla_response_breach` / `sla_resolve_breach`, non-stored computed booleans that Odoo drops from a domain silently, so the cron was not selecting what it believed. It searches the stored deadline datetimes now and re-checks the breach in Python. The upload deny-list gains `.shtml`, `.xml`, `.xsl` and `.xslt`. |
 | 18.0.4.3.1 | Security hardening pass across the repo. |
 | 18.0.4.3.0 | Ticket timesheets (`account.analytic.line.ticket_id`, "Feuilles de temps" tab, one-click logging from the chatter; lines land on the ticket project so they deduct from the team hour bank). Branded client update: "Envoyer une mise à jour" preloads the composer with `mail_template_client_update`, editable, never auto-sent. Portal visibility: `/my/ticket` URL and a portal-access indicator on the form, plus "Abonner le client" subscribing the partner as a follower with no invite email. New dependencies: `helpdesk_mgmt_project`, `hr_timesheet`. |
 | 18.0.4.2.0 | The suite is decoupled from `bluefox_branding`: `report_brand_{primary,dark,logo}` move to `bf_onboarding_base`, so branded mails, reports and public pages render without the white-label panel installed. |
-| 18.0.4.1.2 | AI triage migrated onto the new **`bf_llm`** gateway (added as a hard dependency). Removed the in-module direct Anthropic HTTP call (`_call_anthropic_network`) and the plaintext `bf_helpdesk.anthropic_api_key` / `bf_claude_chat` key resolution (`_bf_helpdesk_get_anthropic_api_key`). Keys are now Fernet-encrypted in `bf.llm.provider`. When no provider is configured the triage button degrades gracefully with a soft notification instead of a hard popup; transient errors still land as `triage_state=error`. |
+| 18.0.4.1.2 | AI triage migrated onto the new **`bf_llm`** gateway (added as a hard dependency). Removed the in-module direct Anthropic HTTP call (`_call_anthropic_network`) and the plaintext `bf_helpdesk.anthropic_api_key` / `bf_claude_chat` key resolution (`_bf_helpdesk_get_anthropic_api_key`). Keys are now Fernet-encrypted in `bf.llm.provider`. When no provider is configured the triage button degrades gracefully with a soft notification instead of a hard popup; transient errors still land as `triage_state=error`. ⚠️ This refactor never reached the published code — 18.0.4.4.x still called the API directly — and it is superseded by 18.0.4.5.0, which routes triage through `bf_ai_bridge` instead. |
 | 18.0.4.1.1 | `bf_claude_chat` (Gen) downgraded from hard dependency to optional soft-dep — AI triage reads its config via `ir.config_parameter` and degrades gracefully when absent. README cleanup: removed the stale "Phase 3 (planned)" list (all items already shipped) and corrected the CSAT note (uses core `survey`, not `bf_survey_upload`). |

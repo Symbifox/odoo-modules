@@ -4,6 +4,8 @@ import urllib.error
 import urllib.request
 from datetime import timedelta
 
+from markupsafe import escape
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import html2plaintext
@@ -539,7 +541,7 @@ class HelpdeskTicket(models.Model):
         }
 
     # ------------------------------------------------------------------
-    # Triage IA via Claude — one-shot Anthropic API call
+    # Triage IA — une passe par le pont (bf_ai_bridge), sans outil
     # ------------------------------------------------------------------
     triage_state = fields.Selection(
         selection=[
@@ -563,120 +565,115 @@ class HelpdeskTicket(models.Model):
         copy=False,
     )
 
-    def _triage_prompt(self):
+    def _triage_payload(self):
+        """Le billet, tel qu'il part vers le pont.
+
+        Les stages et les membres voyagent avec le billet : le pont n'a aucun
+        accès à Odoo, c'est ce qui lui permet de trier sans serveur MCP et sans
+        outil. C'est aussi ce qui rend sa réponse vérifiable — une valeur qui
+        n'est dans aucune des deux listes est rejetée au retour.
+        """
         self.ensure_one()
-        team_stages = self.team_id._get_applicable_stages().mapped("name") or ["Nouveau", "En cours", "Terminé"]
-        team_users = self.team_id.user_ids.mapped("name") or ["—"]
-        partner = self.partner_name or (self.partner_id.name if self.partner_id else "Inconnu")
-        # Strip HTML from description to keep prompt small
-        desc = self.description or ""
-        desc_text = self.env["mail.render.mixin"]._replace_local_links(desc)
-        return (
-            "Tu es un.e adjoint.e helpdesk Blue Fox. Voici un nouveau ticket :\n\n"
-            f"# Ticket {self.number}\n"
-            f"**Sujet** : {self.name}\n"
-            f"**Client** : {partner}\n"
-            f"**Équipe** : {self.team_id.name}\n"
-            f"**Stages disponibles** : {', '.join(team_stages)}\n"
-            f"**Membres de l'équipe** : {', '.join(team_users)}\n\n"
-            f"**Description (HTML)** :\n{desc_text}\n\n"
-            "Réponds en français, en HTML simple (p, ul, li, strong), avec ces 3 sections :\n"
-            "1. **Catégorisation** — 1 phrase qui résume le type de demande.\n"
-            "2. **Stage suggéré** — 1 stage parmi la liste, avec justification.\n"
-            "3. **Assignation suggérée** — 1 membre de l'équipe (ou « non-assigné si X »), avec justification.\n"
-            "4. **Brouillon de première réponse** — 2-3 phrases qui acknowledge la demande "
-            "et indiquent les prochaines étapes. Ton chaleureux mais concis.\n"
-            "Pas de bla-bla. Pas d'introduction. Pas de conclusion."
+        partenaire = self.partner_name or (
+            self.partner_id.name if self.partner_id else ""
         )
-
-    def _call_anthropic_network(self, prompt):
-        """Call Anthropic Messages API directly. Returns assistant text.
-
-        Raises UserError for configuration issues (missing key) or HTTP errors.
-        Lets network exceptions propagate (caller catches and persists 'error').
-        """
-        IConf = self.env["ir.config_parameter"].sudo()
-        api_key = self._bf_helpdesk_get_anthropic_api_key()
-        if not api_key:
-            raise UserError(
-                "Clé API Anthropic non configurée. Voir Settings → Claude Chat ou paramètre "
-                "système 'bf_helpdesk.anthropic_api_key'."
-            )
-        model = IConf.get_param("bf_claude_chat.model", "claude-sonnet-4-6")
-        timeout = float(IConf.get_param("bf_helpdesk.triage_timeout", "30"))
-        payload = {
-            "model": model,
-            "max_tokens": 1024,
-            "messages": [{"role": "user", "content": prompt}],
+        return {
+            "numero": self.number or "",
+            "sujet": self.name or "",
+            "client": partenaire or "Inconnu",
+            "equipe": self.team_id.name or "",
+            "stages": self.team_id._get_applicable_stages().mapped("name"),
+            "membres": self.team_id.user_ids.mapped("name"),
+            "description": html2plaintext(self.description or ""),
         }
-        req = urllib.request.Request(
-            "https://api.anthropic.com/v1/messages",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={
-                "x-api-key": api_key,
-                "anthropic-version": "2023-06-01",
-                "content-type": "application/json",
-            },
-            method="POST",
-        )
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                body = resp.read().decode("utf-8", errors="replace")
-                data = json.loads(body)
-        except urllib.error.HTTPError as e:
-            raise UserError(f"Anthropic API a retourné HTTP {e.code} : {e.read()[:200].decode('utf-8', errors='replace')}")
-        # Extract text from content blocks
-        content = data.get("content") or []
-        parts = [c.get("text", "") for c in content if c.get("type") == "text"]
-        return "\n".join(parts).strip()
 
-    def _bf_helpdesk_get_anthropic_api_key(self):
-        """Resolve the Anthropic API key.
+    def _triage_html(self, donnees):
+        """Composer la suggestion affichée à partir du JSON rendu par le pont.
 
-        Priority:
-        1. ir.config_parameter 'bf_helpdesk.anthropic_api_key' (plain — for tests)
-        2. bf_claude_chat encrypted key, decrypted via the same Fernet pattern.
+        Le HTML se monte ici, il ne se demande pas au modèle. Un modèle à qui
+        on réclame du HTML en rend *presque* toujours : le jour où il rend
+        autre chose, ça atterrit tel quel dans un champ en lecture seule et
+        plus personne ne sait pourquoi la page est de travers.
         """
-        IConf = self.env["ir.config_parameter"].sudo()
-        plain = (IConf.get_param("bf_helpdesk.anthropic_api_key", "") or "").strip()
-        if plain:
-            return plain
-        encrypted = IConf.get_param("bf_claude_chat.api_key_encrypted", "")
-        if not encrypted:
-            return ""
-        try:
-            ResConfig = self.env["res.config.settings"]
-            return ResConfig._decrypt_api_key(self.env, encrypted)
-        except Exception:
-            _logger.exception("bf_helpdesk: cannot decrypt bf_claude_chat API key")
-            return ""
+        sections = (
+            ("categorisation", _("Catégorisation"), None),
+            ("stage", _("Stage suggéré"), "stage_motif"),
+            ("assignation", _("Assignation suggérée"), "assignation_motif"),
+            ("reponse", _("Brouillon de première réponse"), None),
+        )
+        morceaux = []
+        for cle, libelle, cle_motif in sections:
+            valeur = (donnees.get(cle) or "").strip()
+            motif = (donnees.get(cle_motif) or "").strip() if cle_motif else ""
+            if not valeur and not motif:
+                continue
+            if valeur and motif:
+                texte = "%s — %s" % (valeur, motif)
+            else:
+                texte = valeur or motif
+            morceaux.append("<p><strong>%s :</strong> %s</p>" % (
+                escape(libelle), escape(texte)))
+        confiance = donnees.get("confiance")
+        if isinstance(confiance, int) and confiance:
+            morceaux.append("<p><em>%s</em></p>" % escape(
+                _("Confiance : %s %%", confiance)))
+        if not morceaux:
+            return "<p>%s</p>" % escape(_("Le triage n'a rien proposé."))
+        return "".join(morceaux)
+
+    def _triage_echec(self, message):
+        """Déposer l'échec dans le billet au lieu de le perdre dans une fenêtre.
+
+        L'état passe à « erreur » et le bouton reste offert : un échec de
+        transport se réessaie, contrairement à une erreur de configuration qui,
+        elle, lève avant d'arriver ici.
+        """
+        self.write({
+            "triage_state": "error",
+            "triage_suggestion_html": "<p><strong>%s</strong> %s</p>" % (
+                escape(_("Erreur :")), escape(message)),
+            "triage_last_run": fields.Datetime.now(),
+        })
+        return True
 
     def action_triage_with_claude(self):
-        """Run Claude triage on this ticket.
+        """Trier le billet en passant par le pont IA.
 
-        - Configuration errors (missing API key, etc.) raise UserError and
-          surface as a popup; the form state is unchanged.
-        - Network/transient errors are caught, the suggestion field shows
-          the error, and the state goes to 'error' so the user can retry.
+        Le triage empruntait l'API Messages en direct, avec sa propre clé et
+        son propre modèle. Deux conséquences : la clé n'était posée sur aucun
+        locataire, donc le bouton ne faisait que lever ; et le module publié
+        portait une deuxième passerelle à côté de celle que tout le reste de la
+        maison utilise. Un seul chemin, désormais : ``bf_ai_bridge``.
         """
         self.ensure_one()
-        prompt = self._triage_prompt()
+        Pont = self.env["bf.ai.bridge"]
+        # Pont absent = erreur de configuration : elle lève, s'affiche en
+        # fenêtre, et laisse le billet exactement dans l'état où il était.
+        Pont.check_available(_("Le triage d'un billet passe par ce service."))
+        delai = int(self.env["ir.config_parameter"].sudo().get_param(
+            "bf_helpdesk.triage_timeout", "120"))
         try:
-            response_text = self._call_anthropic_network(prompt)
-        except (ConnectionError, urllib.error.URLError, TimeoutError, OSError) as e:
+            reponse = Pont.call(
+                "/helpdesk/triage", self._triage_payload(), timeout=delai
+            ) or {}
+        except Exception as e:  # noqa: BLE001
             _logger.warning(
-                "bf_helpdesk: triage network failure on ticket %s: %s",
+                "bf_helpdesk : le pont n'a pas trié le billet %s : %s",
                 self.number, e,
             )
-            self.write({
-                "triage_state": "error",
-                "triage_suggestion_html": f"<p><strong>Erreur réseau :</strong> {e}</p>",
-                "triage_last_run": fields.Datetime.now(),
-            })
-            return True
+            return self._triage_echec(str(e))
+        if reponse.get("error"):
+            _logger.warning(
+                "bf_helpdesk : triage refusé pour le billet %s : %s",
+                self.number, reponse["error"],
+            )
+            return self._triage_echec(str(reponse["error"]))
+        donnees = reponse.get("data") or {}
+        if not donnees:
+            return self._triage_echec(_("Le service de triage n'a rien rendu."))
         self.write({
             "triage_state": "done",
-            "triage_suggestion_html": response_text,
+            "triage_suggestion_html": self._triage_html(donnees),
             "triage_last_run": fields.Datetime.now(),
         })
         return True
