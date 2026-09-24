@@ -1,9 +1,12 @@
+import base64
 import logging
+import os
 from datetime import timedelta
 from urllib.parse import quote
 
 from odoo import api, fields, models, _
 from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tools import config
 
 from .otp_secret_guard import otp_secret_reason
 
@@ -285,50 +288,224 @@ class ProjectCredential(models.Model):
 
     # -------------------------------------------------------------------------
     # Méthodes de chiffrement
+    #
+    # La clé vit HORS de la base depuis la 18.0.3.0.0. Avant, elle était rangée
+    # dans `ir.config_parameter`, donc dans le MÊME pg_dump que les secrets
+    # qu'elle protège : le « chiffrement au repos » ne protégeait pas contre ce
+    # à quoi on croyait qu'il protégeait.
+    #
+    # Deux règles tiennent tout le reste :
+    #   1. On ne GÉNÈRE jamais de clé. Une clé qui apparaît toute seule, c'est
+    #      une clé que personne n'a rangée, donc une clé que personne ne pourra
+    #      remettre après un sinistre.
+    #   2. On n'écrit jamais en clair. L'ancien code retombait sur la valeur
+    #      nue quand le chiffrement échouait, avec un simple avertissement au
+    #      journal : une base pouvait se remplir de clair sans un seul message
+    #      d'erreur, et rien après coup ne distinguait les deux.
     # -------------------------------------------------------------------------
 
+    #: Le paramètre système historique. Gardé en LECTURE seulement, pour deux
+    #: cas : la migration 18.0.3.0.0, et la restauration d'un dump d'avant la
+    #: bascule (qui porte encore sa clé). Jamais écrit, jamais généré.
+    _CLE_PARAM_HERITE = 'project_credential.encryption_key'
+
+    #: Là où la clé se range vraiment.
+    _CLE_ENV = 'BF_CREDENTIALS_FERNET_KEY'
+    _CLE_CONF = 'bf_credentials_fernet_key'
+
+    #: Ce que le calcul affiche quand la valeur en base ne se déchiffre pas.
+    #: Voyant, et surtout refusé à l'écriture par les inverses : réenregistrer
+    #: une fiche illisible chiffrerait le chiffré une deuxième fois.
+    MARQUE_ILLISIBLE = '⚠️ déchiffrement impossible'
+
+    @api.model
+    def _cle_hors_base(self):
+        """La clé rangée hors de la base : variable d'environnement, puis conf.
+
+        Rend `bytes` ou None. Ne touche jamais à la base, donc utilisable depuis
+        une migration comme depuis un cron.
+        """
+        cle = os.environ.get(self._CLE_ENV)
+        if cle:
+            return cle.encode()
+        cle = config.get(self._CLE_CONF)
+        if cle:
+            return cle.encode()
+        return None
+
+    @api.model
+    def _cle_heritee(self):
+        """La clé de l'ancien paramètre système, en LECTURE seule.
+
+        Présente tant que la bascule n'est pas finie, et dans tout dump pris
+        avant elle. `get_param` et rien d'autre : surtout pas `set_param`.
+        """
+        cle = self.env['ir.config_parameter'].sudo().get_param(
+            self._CLE_PARAM_HERITE)
+        return cle.encode() if cle else None
+
     def _get_encryption_key(self):
-        """Obtenir ou générer la clé de chiffrement depuis les paramètres système."""
+        """La clé de chiffrement, cherchée hors de la base d'abord.
+
+        Ordre : variable d'environnement, `odoo.conf`, puis le paramètre système
+        hérité. Rend None si aucune des trois n'existe, et ne GÉNÈRE rien : les
+        appelants lèvent, ce qui est le seul comportement qui se remarque.
+        """
         if not Fernet:
             return None
-        ICP = self.env['ir.config_parameter'].sudo()
-        key = ICP.get_param('project_credential.encryption_key')
-        if not key:
-            key = Fernet.generate_key().decode()
-            ICP.set_param('project_credential.encryption_key', key)
-        return key.encode()
+        return self._cle_hors_base() or self._cle_heritee()
+
+    @api.model
+    def _exige_une_cle(self, pour_ecrire=False):
+        """Rend la clé, ou lève en disant où la ranger.
+
+        `pour_ecrire` refuse la clé héritée : chiffrer du neuf avec la clé qui
+        dort dans la base perpétuerait le défaut que la bascule ferme. Lire avec
+        elle reste permis, sinon un dump d'avant la bascule serait illisible.
+        """
+        if not Fernet:
+            raise UserError(_(
+                "Le paquet Python « cryptography » n'est pas installé : ce "
+                "module ne peut ni chiffrer ni déchiffrer. Aucun secret ne "
+                "sera écrit en clair."
+            ))
+        cle = self._cle_hors_base()
+        if cle:
+            return cle
+        if not pour_ecrire:
+            cle = self._cle_heritee()
+            if cle:
+                _logger.warning(
+                    "Clé de chiffrement lue dans le paramètre système hérité "
+                    "%s. La bascule de la clé hors de la base n'est pas terminée sur cette "
+                    "base.", self._CLE_PARAM_HERITE,
+                )
+                return cle
+        raise UserError(_(
+            "Aucune clé de chiffrement n'est configurée. Rangez-la dans la "
+            "variable d'environnement %(env)s ou dans %(conf)s de odoo.conf, "
+            "puis redémarrez Odoo.\n\n"
+            "Elle ne doit PAS vivre dans la base : un dump emporterait la clé "
+            "avec ce qu'elle protège.",
+            env=self._CLE_ENV, conf=self._CLE_CONF,
+        ))
+
+    @api.private
+    @api.model
+    def est_un_jeton_fernet(self, valeur):
+        """Dit si une valeur STOCKÉE a la forme d'un jeton Fernet.
+
+        Ne déchiffre rien et ne lit aucune clé : c'est ce qui permet de compter
+        le clair d'une base sans avoir le droit de l'ouvrir. Un jeton Fernet est
+        du base64 url-safe dont le premier octet est la version 0x80.
+        """
+        if not valeur:
+            return False
+        try:
+            brut = base64.urlsafe_b64decode(valeur.encode())
+        except (ValueError, TypeError):
+            return False
+        return len(brut) > 57 and brut[0] == 0x80
 
     def _encrypt_value(self, value):
-        """Chiffrer une valeur texte avec le chiffrement symétrique Fernet."""
+        """Chiffrer une valeur texte avec le chiffrement symétrique Fernet.
+
+        Lève plutôt que de rendre la valeur nue : c'est tout l'objet de la bascule.
+        """
         if not value:
             return False
-        key = self._get_encryption_key()
-        if not key:
-            _logger.warning('Clé de chiffrement non disponible, stockage en clair')
-            return value
+        cle = self._exige_une_cle(pour_ecrire=True)
         try:
-            f = Fernet(key)
-            return f.encrypt(value.encode()).decode()
+            return Fernet(cle).encrypt(value.encode()).decode()
         except Exception as e:
-            _logger.error('Échec du chiffrement : %s', e)
-            return value
+            _logger.error('Échec du chiffrement : %s', type(e).__name__)
+            raise UserError(_(
+                "Le chiffrement a échoué, rien n'a été enregistré. Vérifiez la "
+                "clé de chiffrement."
+            )) from e
 
     def _decrypt_value(self, encrypted_value):
-        """Déchiffrer une valeur chiffrée avec Fernet."""
+        """Déchiffrer une valeur chiffrée avec Fernet.
+
+        Lève sur une valeur illisible au lieu de la rendre telle quelle. Rendre
+        le jeton était le piège : à l'écran on lisait « gAAAAA… » comme si
+        c'était le mot de passe, et réenregistrer la fiche chiffrait le chiffré.
+        """
         if not encrypted_value:
             return False
-        key = self._get_encryption_key()
-        if not key:
-            return encrypted_value
+        cle = self._exige_une_cle()
         try:
-            f = Fernet(key)
-            return f.decrypt(encrypted_value.encode()).decode()
-        except InvalidToken:
-            _logger.debug("La valeur semble non chiffrée, retour en l'état")
-            return encrypted_value
+            return Fernet(cle).decrypt(encrypted_value.encode()).decode()
+        except InvalidToken as e:
+            raise UserError(_(
+                "Cette valeur ne se déchiffre pas avec la clé configurée. Soit "
+                "la clé n'est pas celle qui a servi à l'écrire, soit la valeur "
+                "n'a jamais été chiffrée. Dans les deux cas, ne réenregistrez "
+                "pas la fiche : cela chiffrerait le contenu une deuxième fois."
+            )) from e
         except Exception as e:
-            _logger.error('Échec du déchiffrement : %s', e)
-            return encrypted_value
+            _logger.error('Échec du déchiffrement : %s', type(e).__name__)
+            raise UserError(_(
+                "Le déchiffrement a échoué. Vérifiez la clé de chiffrement."
+            )) from e
+
+    def _dechiffre_pour_affichage(self, valeur_chiffree):
+        """Le déchiffrement des calculs : une marque voyante au lieu d'une erreur.
+
+        Un calcul qui lève rend la LISTE entière inouvrable, y compris les
+        fiches saines. La fiche fautive porte donc une marque, et les inverses
+        refusent de la réécrire.
+        """
+        if not valeur_chiffree:
+            return False
+        try:
+            return self._decrypt_value(valeur_chiffree)
+        except UserError:
+            _logger.error(
+                "Identifiant %s : valeur illisible avec la clé configurée.",
+                self.id,
+            )
+            return self.MARQUE_ILLISIBLE
+
+    @api.model
+    def verifier_chiffrement(self, domaine=None):
+        """Compte ce qui est chiffré, ce qui ne l'est pas, ce qui est illisible.
+
+        Le contrôle que la bascule réclamait : savoir s'il y a déjà du clair en base.
+        Aucune valeur déchiffrée n'est rendue ni journalisée, seulement des
+        comptes et des identifiants.
+
+        Publique à dessein, pour qu'un déploiement puisse la jouer par RPC et
+        prouver son résultat. D'où le verrou : elle ouvre chaque secret pour
+        savoir s'il s'ouvre, ce que seul un gestionnaire a le droit de faire.
+
+        `domaine` borne le balayage. Sans lui, le bilan porte sur TOUTE la base,
+        ce qui est le bon défaut pour un contrôle d'après-migration, mais faux
+        dès qu'une partie du coffre a été écrite avec une autre clé.
+        """
+        if not self._is_credential_manager():
+            raise AccessError(_(
+                "Seul un gestionnaire d'identifiants peut contrôler l'état du "
+                "chiffrement du coffre."
+            ))
+        bilan = {'total': 0, 'chiffres': 0, 'en_clair': [], 'illisibles': []}
+        for cred in self.sudo().search(domaine or []):
+            for champ in ('password_encrypted', 'api_key_encrypted'):
+                stocke = cred[champ]
+                if not stocke:
+                    continue
+                bilan['total'] += 1
+                repere = '%s.%s' % (cred.id, champ)
+                if not self.est_un_jeton_fernet(stocke):
+                    bilan['en_clair'].append(repere)
+                    continue
+                try:
+                    cred._decrypt_value(stocke)
+                except UserError:
+                    bilan['illisibles'].append(repere)
+                else:
+                    bilan['chiffres'] += 1
+        return bilan
 
     # -------------------------------------------------------------------------
     # Champ mot de passe
@@ -343,13 +520,21 @@ class ProjectCredential(models.Model):
             if record.restricted and not is_manager:
                 record.password = '********'
             else:
-                record.password = record._decrypt_value(record.password_encrypted)
+                record.password = record._dechiffre_pour_affichage(
+                    record.password_encrypted)
 
     def _inverse_password(self):
-        """Chiffrer le mot de passe à l'écriture."""
+        """Chiffrer le mot de passe à l'écriture.
+
+        Le masque et la marque d'illisibilité ne sont pas des mots de passe :
+        les réécrire remplacerait le secret par son propre voyant, ou
+        chiffrerait une deuxième fois ce qui l'est déjà.
+        """
         for record in self:
-            if record.password and record.password != '********':
-                record.password_encrypted = record._encrypt_value(record.password)
+            if record.password in (False, '', '********',
+                                   record.MARQUE_ILLISIBLE):
+                continue
+            record.password_encrypted = record._encrypt_value(record.password)
 
     # -------------------------------------------------------------------------
     # Champ clé API
@@ -364,13 +549,16 @@ class ProjectCredential(models.Model):
             if record.restricted and not is_manager:
                 record.api_key = '********'
             else:
-                record.api_key = record._decrypt_value(record.api_key_encrypted)
+                record.api_key = record._dechiffre_pour_affichage(
+                    record.api_key_encrypted)
 
     def _inverse_api_key(self):
-        """Chiffrer la clé API à l'écriture."""
+        """Chiffrer la clé API à l'écriture. Voir `_inverse_password`."""
         for record in self:
-            if record.api_key and record.api_key != '********':
-                record.api_key_encrypted = record._encrypt_value(record.api_key)
+            if record.api_key in (False, '', '********',
+                                  record.MARQUE_ILLISIBLE):
+                continue
+            record.api_key_encrypted = record._encrypt_value(record.api_key)
 
     # -------------------------------------------------------------------------
     # Contrôle d'accès — verrou « Restreint »

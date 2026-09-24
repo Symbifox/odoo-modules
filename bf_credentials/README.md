@@ -8,9 +8,10 @@ module stores secrets at rest — see [SECURITY.md](SECURITY.md) for the trust m
 including what Fernet here does **not** protect against.*
 
 > **Extracted from `project_knowledge_matrix` 18.0.13.0.0.** The models, their table
-> and their external IDs were **reassigned**, never recreated. The encryption key
-> lives in `ir.config_parameter`, not in module data, so stored secrets stay readable
-> across the move. See [Upgrading from project_knowledge_matrix](#upgrading-from-project_knowledge_matrix).
+> and their external IDs were **reassigned**, never recreated. Since 18.0.3.0.0 the
+> encryption key lives **outside the database** (environment or `odoo.conf`), so a
+> `pg_dump` no longer carries the key alongside the ciphertext it protects.
+> See [Configuring the encryption key](#configuring-the-encryption-key).
 
 ## Overview
 
@@ -60,8 +61,33 @@ estate under a project filter — which reads as a count *of* that project.
 3. Install **Blue Fox Credentials**
 
 Dependencies: `project_knowledge_matrix`, and the `cryptography` Python package.
-Without `cryptography`, `_encrypt_value` logs a warning and stores **plaintext** — it
-does not raise. The manifest declares it and a test asserts the declaration stays.
+Without `cryptography`, `_encrypt_value` **raises** and nothing is written; it never
+falls back to plaintext. The manifest declares the dependency and a test asserts the
+declaration stays.
+
+### Configuring the encryption key
+
+The key is **required** and is never generated for you. Put it in one of:
+
+```bash
+export BF_CREDENTIALS_FERNET_KEY='...'      # wins if both are set
+```
+
+```ini
+; odoo.conf
+bf_credentials_fernet_key = ...
+```
+
+Generate one with `python3 -c "from cryptography.fernet import Fernet; \
+print(Fernet.generate_key().decode())"`, and store it somewhere that is **not** this
+database, nor a backup of it. Losing it makes every stored secret unrecoverable.
+
+With no key configured, reads and writes raise a message naming both places. That is
+the intended behaviour: a module that quietly invents a key produces one nobody has
+put anywhere safe.
+
+Upgrading an existing database from 18.0.2.x re-encrypts every secret, so post the
+key **before** the upgrade. See [SECURITY.md](SECURITY.md#upgrading-to-180300).
 
 ## Upgrading from project_knowledge_matrix
 
@@ -91,7 +117,7 @@ The pass refuses to run rather than lose data:
 | Situation | What happens |
 |-----------|--------------|
 | This module present | External IDs reassigned; the table is untouched |
-| Absent, vault empty, nothing extends the models | The empty tables are removed cleanly; the key stays in `ir.config_parameter` |
+| Absent, vault empty, nothing extends the models | The empty tables are removed cleanly; the key is outside the database and unaffected |
 | Absent, credentials present | The upgrade stops with the record counts |
 
 Nothing else needs a `depends` change. Four Blue Fox modules reference
@@ -101,13 +127,15 @@ typed field or an external ID.
 
 ### Proving the secrets survived
 
-Do not take the round trip on faith. `_decrypt_value` catches `InvalidToken` and
-returns the ciphertext **unchanged**, so a wrong key produces no error — only a long
-`gAAAAA…` string where a password should be.
+Do not take the round trip on faith. Until 18.0.3.0.0, `_decrypt_value` caught
+`InvalidToken` and returned the ciphertext **unchanged**, so a wrong key produced no
+error, only a long `gAAAAA…` string where a password should be. It now raises.
 
 `tests/test_extraction.py::test_every_stored_secret_still_decrypts` reads every secret
-in the database and fails if any one comes back as its own ciphertext. No plaintext is
-compared or logged.
+in the database and fails on any that will not open. `verifier_chiffrement()` does the
+same on a live database, as a credential manager, and reports counts plus the
+references of anything left in the clear or no longer readable. No plaintext is
+compared or logged by either.
 
 Belt and braces, outside Odoo: hash each decrypted value before and after the move and
 diff the two lists. On the Blue Fox production copy, 76 credentials produced identical

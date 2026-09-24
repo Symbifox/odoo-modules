@@ -6,12 +6,13 @@ elle laisse un morceau du coffre sous le nom de l'ancien module, et Odoo
 efface ce morceau à la fin du chargement suivant, sans un mot.
 
 Ici s'ajoute une exigence que n'avait pas : les valeurs sont
-CHIFFRÉES. La clé vit dans ``ir.config_parameter`` et ne déménage pas avec le
-module — mais ça se prouve, ça ne se suppose pas.
+CHIFFRÉES. Depuis la 18.0.3.0.0 la clé vit HORS de la base, et elle ne
+déménage pas avec le module, mais ça se prouve, ça ne se suppose pas.
 """
 
 import os
 
+from odoo.exceptions import UserError
 from odoo.modules.module import get_manifest
 from odoo.tests import TransactionCase
 
@@ -69,14 +70,13 @@ class TestExtraction(TransactionCase):
     def test_every_stored_secret_still_decrypts(self):
         """Le contrôle qui décide si l'extraction tient.
 
-        Un jeton Fernet déchiffré avec la MAUVAISE clé lève ``InvalidToken``,
-        et ``_decrypt_value`` se replie alors en rendant le jeton TEL QUEL —
-        silencieusement. Un mot de passe illisible se lit donc à l'écran comme
-        une longue chaîne « gAAAAA… » plutôt que comme une erreur.
+        Depuis la 18.0.3.0.0, une valeur qui ne s'ouvre pas LÈVE : c'était le
+        piège d'avant, où ``_decrypt_value`` rendait le jeton tel quel et où un
+        secret illisible se lisait à l'écran comme une longue chaîne
+        « gAAAAA… » plutôt que comme une erreur.
 
-        Le contrôle : pour chaque secret en base, la valeur déchiffrée doit
-        DIFFÉRER de la valeur chiffrée. Aucun texte clair n'est comparé, ni
-        journalisé.
+        Le contrôle porte donc sur chaque secret en base, et aucun texte clair
+        n'est comparé ni journalisé.
         """
         Credential = self.env['project.credential']
         illisibles = []
@@ -85,23 +85,30 @@ class TestExtraction(TransactionCase):
                 chiffre = cred[champ]
                 if not chiffre:
                     continue
-                if Credential._decrypt_value(chiffre) == chiffre:
+                try:
+                    Credential._decrypt_value(chiffre)
+                except UserError:
                     illisibles.append('%s.%s' % (cred.id, champ))
         self.assertFalse(
             illisibles,
             'Secrets devenus illisibles après le déménagement : %s' % illisibles,
         )
 
-    def test_the_encryption_key_lives_in_a_system_parameter(self):
-        """La clé ne déménage pas avec le module.
+    def test_the_encryption_key_does_not_live_in_the_database(self):
+        """La clé ne vit ni dans le module, ni dans la base.
 
-        Si elle était une donnée du module, une désinstallation l'emporterait
-        et les 76 valeurs deviendraient illisibles d'un coup.
+        Donnée de module, une désinstallation l'emporterait et les secrets
+        deviendraient illisibles d'un coup. Paramètre système, elle voyage dans
+        le même ``pg_dump`` que ce qu'elle protège. Elle se range donc dans
+        l'environnement ou dans ``odoo.conf``, et le module n'en fabrique
+        jamais.
         """
-        self.env['project.credential']._get_encryption_key()
-        cle = self.env['ir.config_parameter'].sudo().get_param(
-            'project_credential.encryption_key')
-        self.assertTrue(cle, 'Aucune clé de chiffrement en paramètre système')
+        Credential = self.env['project.credential']
+        self.assertTrue(
+            Credential._cle_hors_base(),
+            "Aucune clé hors de la base : posez %s dans l'environnement ou %s "
+            "dans odoo.conf." % (Credential._CLE_ENV, Credential._CLE_CONF),
+        )
         self.assertFalse(
             self.env['ir.model.data'].search([
                 ('module', 'in', [MODULE, SOCLE]),
@@ -125,7 +132,7 @@ class TestExtraction(TransactionCase):
         type_id = self.env['project.credential.type'].create({
             'name': 'Type aller-retour', 'code': 'TEST-AR',
         })
-        secret = 'mot-de-passe-aller-retour-24658'
+        secret = 'mot-de-passe-aller-retour-essai'
         cred = Credential.create({
             'name': 'Identifiant aller-retour',
             'project_id': projet.id,

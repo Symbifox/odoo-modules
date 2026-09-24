@@ -33,44 +33,72 @@ project is visible to nobody. A secret attached to nothing has no legitimate hol
   exposed in any view**. The decrypted value is surfaced only through a masked
   "copy" widget, to users who already pass the record rule.
 - Key files are stored as **attachments**, never as a table column.
-- **The encryption key lives in `ir.config_parameter`** under
-  `project_credential.encryption_key`, auto-generated on first use. This is a
-  deliberate trust boundary: the key sits in the **same database** as the ciphertext,
-  so **anyone who can read that parameter — a system administrator
-  (`base.group_system`), or anyone with direct database or backup access — can
-  decrypt the vault.** Fernet here protects against casual row inspection and
-  ORM-level leakage, **not** against a privileged DB or system operator.
-- Hardening for deployers who need a stronger boundary:
-  - Restrict `base.group_system` membership tightly — it is the de-facto vault root.
-  - Source the key from outside the DB (env or secret manager) by overriding
-    `_get_encryption_key`.
-  - Encrypt database backups, since they contain both key and ciphertext.
+- **The encryption key lives outside the database** since 18.0.3.0.0: the
+  `BF_CREDENTIALS_FERNET_KEY` environment variable, or `bf_credentials_fernet_key`
+  in `odoo.conf`. **It is never generated automatically.** With no key configured,
+  the module raises; it does not invent one.
+- Until 18.0.3.0.0 the key was auto-generated into `ir.config_parameter`, which
+  put it in the **same `pg_dump`** as the ciphertext it protects. Encryption at
+  rest therefore did not protect against what people assumed it did: any copy of
+  the database carried its own key.
+- The old system parameter is still **read** as a last resort, so a dump taken
+  before the switchover stays readable. It is never written and never generated,
+  and it is refused for **writing** new secrets: encrypting fresh values with the
+  key that sleeps in the database would reopen the very hole this closes.
+- Remaining exposure, stated plainly: anyone who can read both the database and
+  the server's configuration can still decrypt the vault. What changed is that a
+  **database copy alone** is no longer enough, which is the case that actually
+  occurs (backups, refreshed benches, a dump handed to someone).
+- A useful side effect: a bench configured with its own key cannot read a
+  production blob restored onto it.
 
-### Why the key does not move with the module
+### Why the key is not module data either
 
 The extraction from `project_knowledge_matrix` reassigns the table and its external
-IDs. Had the key been a **module data record**, it would have been reassigned too —
+IDs. Had the key been a **module data record**, it would have been reassigned too,
 and uninstalling the module would have taken it along, turning every stored secret
-into an unreadable Fernet token in one step. Living in `ir.config_parameter`, it
-survives both the move and an uninstall.
+into an unreadable Fernet token in one step. Living outside the database entirely,
+it survives the move, an uninstall, and a restore.
 
 This is checked rather than assumed:
 `tests/test_extraction.py::test_every_stored_secret_still_decrypts` reads every
-secret in the database and fails if any one of them comes back **as its own
-ciphertext** — which is what `_decrypt_value` returns, silently, when the key does
-not match. No plaintext is ever compared or logged.
+secret in the database and fails if any one of them cannot be decrypted. No
+plaintext is ever compared or logged.
 
-## A silent failure mode worth knowing
+### Upgrading to 18.0.3.0.0
 
-`_decrypt_value` catches `InvalidToken` and returns the input unchanged. That is
-deliberate — it lets a database with pre-encryption plaintext keep working — but it
-means a **wrong key produces no error**: the UI simply shows a long `gAAAAA…` string
-where a password should be. If you see that, do not re-save the record: writing it
-back would encrypt the ciphertext a second time.
+The upgrade **re-encrypts** every stored secret with the new key, because moving
+the key is not enough on its own: every dump already taken still holds the old key
+and would still open today's ciphertext. Re-encrypting is what retires those dumps.
 
-Likewise, if `cryptography` is missing, `_encrypt_value` logs a warning and stores
-**plaintext**. The dependency is declared in the manifest, and
-`tests/test_module_boundaries.py` asserts that it stays declared.
+Post it before you upgrade. With no key outside the database, the migration raises
+and the upgrade stops with the database untouched, which is deliberate: an upgrade
+that "succeeds" while leaving the secrets under the database's own key would be a
+success in appearance only.
+
+The migration is re-runnable, and it keeps the legacy parameter (only that key
+opens backups taken before the switchover). Removing it is a separate, deliberate
+step once the upgrade has been proven.
+
+## Failures are loud, since 18.0.3.0.0
+
+Both silent failure modes are gone. They were the second half of the same fix.
+
+`_decrypt_value` used to catch `InvalidToken` and return its input unchanged, so a
+**wrong key produced no error**: the screen showed a long `gAAAAA…` string where a
+password should be, and re-saving the record encrypted the ciphertext a second
+time. It now raises. On screen, the computed field shows a visible marker instead
+of the value, and the inverse refuses to write that marker back, so a form save can
+no longer double-encrypt anything.
+
+`_encrypt_value` used to log a warning and store **plaintext** when `cryptography`
+was missing or encryption failed. It now raises, and nothing is written. The
+dependency is declared in the manifest, and `tests/test_module_boundaries.py`
+asserts that it stays declared.
+
+`verifier_chiffrement()` counts what is encrypted, what was left in the clear and
+what no longer opens, over the whole vault or a given domain. It returns counts and
+record references only, never a value. Credential managers only.
 
 ## General posture
 

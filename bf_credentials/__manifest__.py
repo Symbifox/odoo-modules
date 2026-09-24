@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox Credentials',
-    'version': '18.0.2.0.0',
+    'version': '18.0.3.0.0',
     'category': 'Services/Project',
     'summary': 'Coffre d\'identifiants chiffrés par projet, avec rotation et expiration',
     'description': """
@@ -14,11 +14,11 @@ Extrait de ``project_knowledge_matrix`` à la version 18.0.13.0.0 de
 celui-ci : les modèles, la table et leurs identifiants externes ont été
 RÉATTRIBUÉS, jamais recréés.
 
-**La clé de chiffrement ne déménage pas avec le module.** Elle vit dans
-``ir.config_parameter`` sous ``project_credential.encryption_key``, donc les
-valeurs déjà chiffrées restent lisibles après l'extraction. C'est vérifié :
-les 76 identifiants de la production Blue Fox rendent les mêmes empreintes
-avant et après le déménagement.
+**La clé de chiffrement vit hors de la base** depuis la 18.0.3.0.0 :
+variable d'environnement ``BF_CREDENTIALS_FERNET_KEY``, ou
+``bf_credentials_fernet_key`` dans ``odoo.conf``. Elle n'est jamais générée
+toute seule. Avant, elle était rangée dans ``ir.config_parameter``, donc dans
+le même ``pg_dump`` que les secrets qu'elle protège.
 
 Fonctionnalités:
 ----------------
@@ -36,6 +36,27 @@ Fonctionnalités:
   de bord, rapport courriel et forages ensemble — sans sortir de la
   démonstration elle-même
 * Bouton intelligent « Identifiants » sur la fiche projet
+
+La clé hors de la base (18.0.3.0.0)
+------------------------------------
+
+La clé Fernet se range dans l'environnement ou dans ``odoo.conf``, plus jamais
+dans la base. Trois conséquences :
+
+* **Rien n'est jamais écrit en clair.** Le chiffrement qui échoue lève une
+  erreur au lieu de ranger la valeur nue avec un avertissement au journal.
+* **Une valeur illisible se voit.** Le déchiffrement qui échoue lève, l'écran
+  affiche une marque, et l'enregistrement de la fiche ne rechiffre pas ce qui
+  est déjà chiffré.
+* **Un banc a sa propre clé**, donc une copie de production rafraîchie sur un
+  banc n'y rend aucun secret.
+
+``verifier_chiffrement()`` compte ce qui est chiffré, ce qui est resté en clair
+et ce qui ne s'ouvre plus, sans rendre ni journaliser aucune valeur.
+
+⚠️ La montée 18.0.3.0.0 rechiffre les secrets existants et **exige** que la
+nouvelle clé soit posée avant. Elle conserve l'ancien paramètre système, qui
+seul ouvre les sauvegardes prises avant la bascule.
 
 Registre du deuxième facteur (18.0.2.0.0)
 ------------------------------------------
