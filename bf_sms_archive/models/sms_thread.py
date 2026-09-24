@@ -8,7 +8,7 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 
 from markupsafe import Markup
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
@@ -118,10 +118,12 @@ class SmsArchiveThread(models.Model):
         compute="_compute_message_stats",
         store=True,
     )
+    # Calculé POUR LA PERSONNE qui lit, jamais stocké. Stocké, il porterait
+    # le dernier message du fil quelle que soit sa ligne, lignes privées et
+    # imports privés compris.
     last_message_preview = fields.Char(
         string="Aperçu",
-        compute="_compute_message_stats",
-        store=True,
+        compute="_compute_last_message_preview",
     )
 
     call_count = fields.Integer(
@@ -157,13 +159,16 @@ class SmsArchiveThread(models.Model):
         for thread in self:
             messages = thread.message_ids.sorted("date_sent", reverse=True)
             thread.message_count = len(messages)
-            if messages:
-                thread.last_message_date = messages[0].date_sent
-                preview = (messages[0].body or "")[:100]
-                thread.last_message_preview = preview
-            else:
-                thread.last_message_date = False
-                thread.last_message_preview = False
+            thread.last_message_date = messages[0].date_sent if messages else False
+
+    @api.depends("message_ids", "message_ids.body")
+    @api.depends_context("uid")
+    def _compute_last_message_preview(self):
+        """Le dernier message que la personne courante peut LIRE (ses règles)."""
+        reels = self.filtered("id")
+        stats = self._scoped_thread_stats(reels) if reels else {}
+        for thread in self:
+            thread.last_message_preview = (stats.get(thread.id) or {}).get("preview") or False
 
     @api.depends("call_ids", "call_ids.date")
     def _compute_call_stats(self):
@@ -379,8 +384,12 @@ class SmsArchiveThread(models.Model):
             "type": "binary",
             "datas": data,
             "mimetype": "text/csv",
-            "res_model": "sms.archive.thread" if res_id else False,
-            "res_id": res_id or False,
+            # Jamais rattachée au fil. Un fil se lit par tous ceux
+            # qui partagent sa ligne, alors que l'export porte TOUT ce que son
+            # auteur voit, lignes privées comprises. Sans res_model, la pièce ne
+            # se lit que par qui l'a créée (et l'administrateur).
+            "res_model": False,
+            "res_id": False,
         })
         return {
             "type": "ir.actions.act_url",
@@ -414,8 +423,12 @@ class SmsArchiveThread(models.Model):
             "type": "binary",
             "datas": data,
             "mimetype": "application/xml",
-            "res_model": "sms.archive.thread" if res_id else False,
-            "res_id": res_id or False,
+            # Jamais rattachée au fil. Un fil se lit par tous ceux
+            # qui partagent sa ligne, alors que l'export porte TOUT ce que son
+            # auteur voit, lignes privées comprises. Sans res_model, la pièce ne
+            # se lit que par qui l'a créée (et l'administrateur).
+            "res_model": False,
+            "res_id": False,
         })
         return {
             "type": "ir.actions.act_url",
@@ -1373,11 +1386,41 @@ class SmsArchiveThread(models.Model):
         phone_norm = self.normalize_phone(phone)
         if not phone_norm:
             raise UserError("Numéro invalide.")
+        if owner != self.env.uid and not self.env.su:
+            return self._fil_sur_la_ligne_d_autrui(
+                line, owner, phone_norm, phone, contact_name).id
         thread = self._get_or_create(
             phone_norm, owner, phone, contact_name,
             line_id=line.id if line.exists() else None,
         )
         return thread.id
+
+    @api.model
+    def _fil_sur_la_ligne_d_autrui(self, line, owner, phone_norm, phone, contact_name=None):
+        """Le fil où atterrit un appelant qui n'est pas propriétaire
+        de la ligne (ouvrir une conversation, envoyer).
+
+        * le fil du propriétaire existe et l'appelant peut déjà le LIRE (cette
+          ligne, non confidentiel) : c'est lui, mais on ne le désarchive ni ne
+          le rattache (fil d'autrui) ;
+        * il existe mais l'appelant ne peut pas le lire (ligne privée, import,
+          fil confidentiel) : on ne l'atteint JAMAIS ; l'appelant reçoit SON
+          propre fil pour ce numéro sur cette ligne (créé au besoin) ;
+        * il n'existe pas : comportement normal, fil du propriétaire sur cette
+          ligne.
+        ⚠️ Reste un bit : que le fil rendu appartienne à l'appelant plutôt qu'au
+        propriétaire dit qu'un fil illisible existe (fils uniques par numéro et
+        propriétaire). Jamais l'id, le contenu ni l'état de ce fil.
+        """
+        existant = self.sudo().with_context(active_test=False).search([
+            ("phone_normalized", "=", phone_norm), ("owner_id", "=", owner),
+        ], limit=1)
+        if not existant:
+            return self._get_or_create(phone_norm, owner, phone, contact_name, line_id=line.id)
+        lisible = self.with_context(active_test=False).search([("id", "=", existant.id)])
+        if lisible and existant.line_id == line and not existant.is_hidden:
+            return existant
+        return self._get_or_create(phone_norm, self.env.uid, phone, contact_name, line_id=line.id)
 
     @api.model
     def get_unread_summary(self):

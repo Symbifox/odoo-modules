@@ -6,8 +6,8 @@ from datetime import datetime, timezone
 
 import markupsafe
 
-from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -636,9 +636,15 @@ class SmsArchiveMessage(models.Model):
         dst_norm = Thread.normalize_phone(dst)
         if not dst_norm:
             raise UserError("Numéro destinataire invalide.")
-        thread = Thread._get_or_create(
-            dst_norm, line.owner_id.id, dst, None, line_id=line.id,
-        )
+        if line.owner_id.id != self.env.uid and not self.env.su:
+            # Même règle que `start_conversation` : un collègue
+            # n'atteint, ne désarchive ni ne rattache jamais le fil d'autrui.
+            thread = self.env["sms.archive.thread"]._fil_sur_la_ligne_d_autrui(
+                line, line.owner_id.id, dst_norm, dst).sudo()
+        else:
+            thread = Thread._get_or_create(
+                dst_norm, line.owner_id.id, dst, None, line_id=line.id,
+            )
 
         now = fields.Datetime.now()
         date_ms = int(now.replace(tzinfo=timezone.utc).timestamp() * 1000)
@@ -791,13 +797,51 @@ class SmsArchiveMessage(models.Model):
             "links": (link_map or {}).get(self.id, []),
         }
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Un message ne naît que dans un fil où l'on peut ÉCRIRE,
+        et sur une ligne qu'on peut LIRE. La règle de création ne regarde que
+        la ligne du message, pas son fil. Superutilisateur (ingestion, envoi) :
+        inchangé."""
+        if not self.env.su:
+            for vals in vals_list:
+                if vals.get("thread_id"):
+                    self.env["sms.archive.thread"].browse(vals["thread_id"]).check_access("write")
+                if vals.get("line_id"):
+                    self.env["sms.archive.line"].browse(vals["line_id"]).check_access("read")
+        return super().create(vals_list)
+
+    def write(self, vals):
+        """Un message ne change JAMAIS de fil hors superutilisateur.
+
+        Contrôler le fil d'arrivée ne suffit pas : une commande `(4, id)`
+        passée depuis son propre fil y rattacherait le message d'un autre fil.
+        Aucun chemin du module ne déplace un message."""
+        if not self.env.su and "thread_id" in vals:
+            cible = vals["thread_id"]
+            cible = cible.id if hasattr(cible, "id") else cible
+            if any(message.thread_id.id != cible for message in self):
+                raise AccessError(_("Un SMS ne change pas de conversation."))
+        return super().write(vals)
+
     def _notify_users(self):
         """Destinataires des notifications pour ce message : le propriétaire du
-        fil et, si la ligne est partagée, ses utilisateurs."""
+        fil et, si la ligne OÙ CE MESSAGE A VOYAGÉ est partagée, ses
+        utilisateurs.
+
+        🔴 c'était la ligne du FIL. Un fil est unique par (numéro,
+        propriétaire) : le même contact qui écrit sur la ligne privée et sur la
+        ligne partagée remplit un seul fil, rattaché à la ligne partagée, et le
+        message de la ligne privée partait en clair (bus, WebPush, UnifiedPush,
+        FCM) chez ceux qui partagent l'autre. On suit maintenant la même
+        frontière que la règle de lecture du message (`sms_message_rule_user`)."""
         self.ensure_one()
         thread = self.thread_id
-        users = thread._notify_users() if thread else self.env["res.users"].browse()
-        return users or (self.owner_id or thread.owner_id)
+        users = (thread.owner_id if thread else self.env["res.users"]) or self.owner_id
+        line = self.sudo().line_id
+        if line and thread and not thread.is_hidden:
+            users |= line.user_ids
+        return users.filtered(lambda u: u.active)
 
     def _notify_bus(self, kind="new"):
         """Pousse une notification temps réel aux ayants droit (systray + SPA).

@@ -63,6 +63,9 @@ class SmsArchiveDevice(models.Model):
 
     def action_regenerate_token(self):
         """Generate a new urlsafe token. Invalidates the previous one immediately."""
+        # Même motif que la ligne : l'écriture se fait en sudo, le droit se
+        # contrôle d'abord.
+        self.check_access("write")
         for device in self:
             device.sudo().write({"api_token": secrets.token_urlsafe(32)})
         return True

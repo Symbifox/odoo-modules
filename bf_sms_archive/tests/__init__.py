@@ -11,3 +11,6 @@ from . import test_mobile_tokens
 from . import test_appels_sans_conversation
 from . import test_webpush
 from . import test_mobile_consent
+from . import test_coupe_circuit
+from . import test_isolation_menage
+from . import test_isolation_adverse

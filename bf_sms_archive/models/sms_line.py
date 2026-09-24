@@ -14,8 +14,8 @@ import re
 import secrets
 from datetime import datetime, timedelta, timezone
 
-from odoo import api, fields, models
-from odoo.exceptions import UserError
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError, UserError
 
 from .voipms_time import voipms_date_to_ms
 
@@ -179,6 +179,14 @@ class SmsArchiveLine(models.Model):
             ]).write({"is_default": False})
 
     def action_regenerate_token(self):
+        # L'écriture se fait en sudo : le droit se contrôle donc ici, sans
+        # quoi le webhook d'une ligne pourrait être coupé par un tiers.
+        # Le propriétaire garde le geste (l'ACL usager est en lecture seule,
+        # c'est pour ça que la méthode passe en sudo), le gestionnaire aussi.
+        if not self.env.su and not self.env.user.has_group("bf_sms_archive.group_sms_manager"):
+            self.check_access("read")
+            if self.sudo().filtered(lambda l: l.owner_id != self.env.user):
+                raise AccessError(_("Seul le propriétaire d'une ligne peut en régénérer le jeton."))
         for line in self:
             line.sudo().write({"webhook_token": secrets.token_urlsafe(24)})
         return True

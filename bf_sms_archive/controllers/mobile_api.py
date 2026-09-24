@@ -34,6 +34,50 @@ from .voipms_webhook import _safe_media_url
 
 _logger = logging.getLogger(__name__)
 
+# ── Péremption locale : le coupe-circuit qui n'a besoin de personne ──────
+#
+# 🔴 Un jeton refusé rend 401, et l'application efface alors
+# tout ce qu'elle garde. Mais le 401 n'arrive qu'au PROCHAIN appel : un
+# téléphone en mode avion, ou une application jamais rouverte, garde ses
+# données indéfiniment. C'est le seul cas que ni le 401 ni un message poussé ne
+# couvrent, et c'est précisément celui d'un téléphone qui part avec la personne.
+#
+# Le serveur annonce donc un délai, et l'application s'efface d'elle-même au
+# bout de ce délai SANS contact authentifié réussi. Le compteur ne se remet à
+# zéro que sur une réponse authentifiée : `/ping` est public, le relire ne
+# prouve rien et ne doit rien rallonger.
+#
+# ⚠️ La clé est PARTAGÉE par les cinq surfaces mobiles de la maison et
+# recopiée dans chacune plutôt que mise en commun : aucun de ces modules ne
+# dépend des autres, et le coffre de tokens surtout pas. Une valeur, cinq
+# lecteurs, zéro dépendance.
+CLE_PEREMPTION = "bf_mobile.wipe_after_days"
+PEREMPTION_DEFAUT = 30
+
+
+def _peremption_locale(env):
+    """Jours sans contact authentifié au bout desquels l'app s'efface.
+
+    Rend 0 quand la garde est volontairement désarmée.
+
+    🔴 Clé ABSENTE n'est PAS zéro. Un paramètre jamais posé doit rendre le
+    défaut, sinon la garde serait désarmée partout où personne n'a rien
+    configuré, c'est-à-dire partout. L'état qu'on obtient sans rien faire doit
+    être l'état sûr.
+    """
+    brut = env["ir.config_parameter"].sudo().get_param(CLE_PEREMPTION)
+    if brut is None or brut is False or str(brut).strip() == "":
+        return PEREMPTION_DEFAUT
+    try:
+        jours = int(str(brut).strip())
+    except (TypeError, ValueError):
+        _logger.warning(
+            "Péremption locale : %r n'est pas un nombre de jours, "
+            "le défaut de %s s'applique.", brut, PEREMPTION_DEFAUT)
+        return PEREMPTION_DEFAUT
+    return max(jours, 0)
+
+
 BASE = "/bf_sms_archive/mobile/v1"
 SMS_USER_GROUP = "bf_sms_archive.group_sms_user"
 REDIRECT_SCHEMES_PARAM = "bf_sms_archive.mobile_redirect_schemes"
@@ -375,6 +419,8 @@ class BfSmsMobileApi(http.Controller):
         return _json({
             "ok": True,
             "module": "bf_sms_archive",
+            # Le délai de péremption locale : voir `_peremption_locale`.
+            "wipe_after_days": _peremption_locale(request.env),
             "api": 1,
             "version": module.installed_version or "",
             "branding": _branding(),

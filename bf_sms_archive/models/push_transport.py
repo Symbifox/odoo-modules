@@ -283,7 +283,9 @@ class SmsUnifiedPush(models.AbstractModel):
         """
         # « genfox » : bf_claude_chat pousse la réponse de Gen par ``_send``,
         # et par nul autre chemin.
-        return ["sms", "clear", "clear_all", "genfox"]
+        # « wake »: le réveil du coupe-circuit, poussé par
+        # ``_reveiller`` qui passe, lui aussi, par ``_envoyer_a``.
+        return ["sms", "clear", "clear_all", "genfox", "wake"]
 
     @api.model
     def _post(self, endpoint, payload, p256dh=None, auth=None, ttl=TTL_DEFAUT):
@@ -308,7 +310,17 @@ class SmsUnifiedPush(models.AbstractModel):
         Chiffré pour chaque appareil qui porte ses deux clés, en clair pour les
         autres : deux téléphones d'une même personne peuvent tourner deux
         versions de l'app."""
-        for dev in self._devices(owner):
+        return self._envoyer_a(self._devices(owner), payload)
+
+    @api.model
+    def _envoyer_a(self, appareils, payload):
+        """La même chose, vers des appareils NOMMÉS.
+
+        Extrait de ``_send`` pour le coupe-circuit : révoquer un téléphone
+        depuis « Mes appareils » doit réveiller CE téléphone, pas les trois
+        autres de la personne, qui eux fonctionnent encore.
+        """
+        for dev in appareils:
             # Revérifié à l'envoi, pas seulement à l'inscription : un nom peut
             # être repointé vers une adresse interne après coup (S-M4).
             if not safe_push_endpoint(dev.push_endpoint):
@@ -345,6 +357,58 @@ class SmsUnifiedPush(models.AbstractModel):
         for user in msg._notify_users():
             if self._devices(user):
                 self._send(user, dict(payload))
+
+    @api.model
+    def _reveiller(self, appareils):
+        """« Viens me parler. » Rien d'autre.
+
+        🔴 Le message ne porte PAS l'ordre d'effacer, et c'est tout le dessin.
+        Un endpoint UnifiedPush est une URL : qui l'a vue passer peut y poster.
+        Un push qui dirait « efface-toi » serait un effacement à distance
+        offert à qui connaît l'endpoint, sur le téléphone de quelqu'un qui
+        travaille encore. Celui-ci ne dit que « rappelle le serveur », et c'est
+        la RÉPONSE du serveur, un 401, qui coupe. Un faux réveil ne coûte donc
+        qu'un appel HTTP inutile.
+
+        ⚠️ Un appareil sans clés WebPush (app ≤ 2.41.0) refusera ce message,
+        puisque « wake » est annoncé comme toujours chiffré. Il n'est alors pas
+        réveillé, et c'est le 401 de son prochain appel qui le coupera : une
+        dégradation, pas une panne.
+        """
+        if not appareils:
+            return
+        # ⚠️ Le réveil respecte l'interrupteur de push du locataire, comme tout
+        # le reste. Un locataire qui a coupé les push ne doit pas en recevoir un
+        # qu'il n'attend pas, fût-il muet : les deux autres détentes du
+        # coupe-circuit (le 401 au prochain appel, la péremption locale) ne
+        # dépendent d'aucun réglage et couvrent le cas.
+        if not _truthy(self.env["ir.config_parameter"].sudo().get_param(
+                "bf_sms_archive.push_enabled"), defaut=True):
+            _logger.info("Coupe-circuit : réveil non poussé, push désactivé "
+                         "chez ce locataire.")
+            return
+        vivants = appareils.filtered(lambda d: d.push_endpoint)
+        if not vivants:
+            return
+        _logger.info("Coupe-circuit : réveil poussé vers %d appareil(s).",
+                     len(vivants))
+        self._envoyer_a(vivants, {"type": "wake"})
+
+    @api.model
+    def _reveiller_les_appareils_de(self, usagers):
+        """Réveille tous les appareils appariés de ces personnes.
+
+        ⚠️ Lecture en sudo et SANS ``_devices`` : ``_devices`` ne rend que les
+        appareils d'un usager qu'on peut lire, et l'appel vient d'un archivage
+        qui, lui, peut être fait par quelqu'un d'autre.
+        """
+        if not usagers:
+            return
+        appareils = self.env["sms.archive.mobile.device"].sudo().search([
+            ("user_id", "in", usagers.ids), ("active", "=", True),
+            ("push_endpoint", "!=", False),
+        ])
+        self._reveiller(appareils)
 
     @api.model
     def _notify_clear(self, owner, thread_id):

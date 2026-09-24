@@ -216,9 +216,12 @@ class TestWebpushAppareil(TransactionCase):
         l'ajoute. Appelée sur la définition de CE module, la liste ne doit pas
         l'annoncer, sinon un softphone d'avant le chiffrement verrait ses
         réveils en clair jetés par l'app."""
-        self.assertEqual(
-            SmsUnifiedPush._webpush_types(self.env["sms.archive.unifiedpush"]),
-            ["sms", "clear", "clear_all", "genfox"])
+        types = SmsUnifiedPush._webpush_types(
+            self.env["sms.archive.unifiedpush"])
+        # « wake » est à ce module (coupe-circuit); « call »
+        # est à bf_softphone et ne doit pas apparaître ici.
+        self.assertEqual(types, ["sms", "clear", "clear_all", "genfox", "wake"])
+        self.assertNotIn("call", types)
 
     def test_effacer_ou_remplacer_l_endpoint_emporte_les_cles(self):
         sub = abonnement()

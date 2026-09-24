@@ -495,6 +495,62 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 
 ## Changelog
 
+### Version 18.0.5.22.0
+
+- **SECURITY:** `action_send` on someone else's line follows the same rule as
+  `start_conversation`: the caller never reaches, unarchives nor attaches
+  another person's thread. When the owner's thread for that number exists but
+  the caller cannot read it (private line, import, confidential), the caller
+  gets their own thread for that number on that line, created if needed.
+  `start_conversation` now returns that thread instead of refusing, so nothing
+  about the other thread is exposed. A normal send on a shared thread is
+  unchanged.
+
+### Version 18.0.5.21.0
+
+- **SECURITY:** a message is only created in a thread the user can write, on a
+  line the user can read, and never changes thread outside superuser. No module
+  path moves a message.
+- **SECURITY:** `start_conversation` on someone else's line only reaches
+  threads the caller can already read; it never unarchives nor attaches
+  another person's thread.
+- **SECURITY:** `last_message_preview` is computed per reader and no longer
+  stored: it shows the last message the reader is allowed to read.
+
+### Version 18.0.5.20.0
+
+- **SECURITY:** a notification (bus, WebPush, UnifiedPush, FCM) follows the
+  line the *message* travelled on, not the line of the thread. A thread is
+  unique per (number, owner) and can mix a private and a shared line; the
+  boundary is now the same as the read rule `sms_message_rule_user`.
+- **SECURITY:** a push subscription cannot be reassigned to another user
+  outside superuser.
+- **SECURITY:** a message can only be moved to a thread the user can write to.
+- **SECURITY:** CSV/XML exports are no longer attached to the thread: they
+  carry everything their author can see, private lines included. The download
+  itself is unchanged.
+- **SECURITY:** `sms.archive.line.action_regenerate_token` checks for the line
+  owner or an SMS manager; `sms.archive.device` token regeneration checks
+  write access.
+- Tests: `tests/test_isolation_menage.py`, `tests/test_isolation_adverse.py`.
+
+### Version 18.0.5.18.0
+
+Off-boarding kill switch for Symbifox Mobile.
+
+- **NEW:** archiving a user sends a silent `wake` push to their paired phones.
+  The push carries no wipe order: it only asks the app to call the server,
+  whose 401 answer (the device token of an archived user is refused) makes the
+  app erase what it stores. A forged push can therefore never wipe a phone.
+- **NEW:** local expiry. `/ping` announces `wipe_after_days` (system parameter
+  `bf_mobile.wipe_after_days`, default 30, `0` disables it; a missing or
+  invalid value falls back to the default). The app erases its data on its own
+  after that many days without a successful authenticated call, which covers a
+  phone that stays offline.
+- The wake push goes through the same guards as any other push (endpoint
+  check, encryption).
+- Tests: `tests/test_coupe_circuit.py`.
+
 ### Version 18.0.5.17.0 (catch-up entry covering 18.0.5.14.0 – 18.0.5.17.0)
 
 Follow-up of the 2026-09-08 audit of the mobile app; pairs with Symbifox Mobile

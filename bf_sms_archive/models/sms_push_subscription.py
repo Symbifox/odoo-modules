@@ -14,7 +14,8 @@ import base64
 import json
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -58,6 +59,16 @@ class SmsPushSubscription(models.Model):
     _sql_constraints = [
         ("endpoint_uniq", "unique(endpoint)", "Cet abonnement push existe déjà."),
     ]
+
+    def write(self, vals):
+        """Un abonnement ne se réattribue pas hors superutilisateur.
+
+        Odoo ne rejoue pas la règle après un `write` : sans cette garde, un
+        abonnement pourrait être réattribué, et son navigateur recevrait les
+        SMS d'une autre personne."""
+        if not self.env.su and "user_id" in vals and vals["user_id"] != self.env.uid:
+            raise AccessError(_("Un abonnement push ne se donne pas à quelqu'un d'autre."))
+        return super().write(vals)
 
     # ── Gestion des clés VAPID ────────────────────────────────────────
     @api.model
