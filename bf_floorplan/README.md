@@ -75,6 +75,9 @@ hosting management module, placed on the plan.
 
 ## Changelog
 
+* **18.0.1.1.3** — the hover, selected and highlighted outlines in the viewer
+  follow the company's brand colour (`--brand-primary`) instead of a fixed
+  blue, which stays as the fallback. **18.0.1.1.1** corrected that fixed blue.
 * **18.0.1.1.0** — search box with highlighting, Escape key, zone highlight
   from its form, background thumbnails on plan cards, background copied with
   the plan, the day's diagrams.net export replaces the previous one instead

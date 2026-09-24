@@ -3,7 +3,7 @@
     "name": "Plans d'étage",
     "summary": "Le plan du bureau dessiné depuis les enregistrements : salles, "
                "postes, appareils et câbles, avec la fiche derrière chaque forme",
-    "version": "18.0.1.1.1",
+    "version": "18.0.1.1.3",
     "category": "Services",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
