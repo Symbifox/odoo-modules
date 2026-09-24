@@ -108,6 +108,30 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 
 ## Changelog
 
+### 18.0.3.0.3
+- **Security:** the "Notes" counter on a record depends on the current user
+  (`depends_context('uid')`): a count computed as superuser in the same
+  transaction is no longer served to another user.
+- **Security:** a note link (`bf.note.link`) cannot be moved to another note
+  outside superuser.
+
+### 18.0.3.0.2
+- **Security:** the author (`user_id`) of a note cannot be changed outside
+  superuser.
+- The `18.0.3.0.1` migration also recomputes `bf.note.res_name` (stored), not
+  only the link names.
+
+### 18.0.3.0.1
+- **Security:** the "Notes" counter of a shared record (contact, project…) is
+  counted with the user's rights, so it matches what the button opens and no
+  longer reveals how many private notes are attached.
+- **Security:** the name of a linked record (`bf.note.link.res_name`, a stored
+  field) is computed under the rights of the **note's author**, and the mobile
+  API resolves it under the rights of the **caller**. A migration recomputes
+  the names already stored.
+- Tests: `tests/test_isolation_menage.py`, `tests/test_isolation_mobile.py`,
+  `tests/test_isolation_adverse.py`.
+
 ### 18.0.3.0.0
 - **The note pad on the phone**: installable `/notes` page, offline queue, Android share target, quick actions, and a token API for Symbifox Mobile (see *On the phone*).
 - **Quick actions on the kanban card** at the desk: reminder today, reminder tomorrow, task, link, archive — without opening the note.

@@ -200,6 +200,24 @@ class BfNote(models.Model):
                 continue
         raise UserError(_("Unreadable date: %s", value))
 
+    def _mobile_link_name(self, link):
+        """Le nom de la fiche liée, SOUS LES DROITS DE L'APPELANT ; "" sinon.
+
+        Jamais `link.res_name`, qui est stocké et donc calculé pour
+        l'auteur de la note, pas pour qui la lit. Une fiche absente ou interdite
+        rendent la même chose.
+        """
+        if not (link.res_model and link.res_id and link.res_model in self.env):
+            return ""
+        try:
+            rec = self.env[link.res_model].sudo(False).browse(link.res_id).exists()
+            if not rec:
+                return ""
+            rec.check_access("read")
+            return rec.display_name or ""
+        except AccessError:
+            return ""
+
     def _mobile_payload(self):
         self.ensure_one()
         links = []
@@ -209,9 +227,12 @@ class BfNote(models.Model):
             links.append({
                 "model": link.res_model,
                 "id": link.res_id,
-                # `res_name` est calculé sous les droits de l'appelant : une
+                # 🔴 le nom se résout ICI, sous les droits de
+                # l'appelant. `res_name` est stocké (calculé sous les droits de
+                # l'auteur de la note) : sur une note PARTAGÉE, il rendait à un
+                # collègue le nom d'une fiche que lui ne peut pas ouvrir. Une
                 # fiche illisible arrive sans nom plutôt que révélée.
-                "name": link.res_name or "",
+                "name": self._mobile_link_name(link),
                 "url": "/odoo/%s/%s" % (link.res_model, link.res_id),
             })
         attachments = self.env["ir.attachment"].search_count([

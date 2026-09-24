@@ -135,6 +135,20 @@ class BfNote(models.Model):
             note.res_model = primary.res_model or False
             note.res_id = primary.res_id or 0
 
+    def write(self, vals):
+        """L'auteur d'une note ne change pas hors superutilisateur.
+
+        Odoo contrôle la règle d'écriture AVANT l'écriture, pas après : sans
+        cette garde, une note pouvait changer d'auteur, et le nom des fiches
+        liées, calculé sous les droits de l'auteur, se serait recalculé sous
+        ceux du nouvel auteur."""
+        if "user_id" in vals and not self.env.su:
+            cible = vals["user_id"]
+            cible = cible.id if hasattr(cible, "id") else cible
+            if any(note.user_id.id != cible for note in self):
+                raise AccessError(_("The author of a note cannot be changed."))
+        return super().write(vals)
+
     @api.depends("link_ids", "link_ids.res_name")
     def _compute_res_name(self):
         for note in self:

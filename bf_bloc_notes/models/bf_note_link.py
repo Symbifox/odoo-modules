@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 
 
@@ -50,6 +50,22 @@ class BfNoteLink(models.Model):
                     vals["res_id"] = int(rid)
         return super().create(vals_list)
 
+    def write(self, vals):
+        """Un lien ne change pas de note hors superutilisateur.
+
+        Le nom d'une fiche liée se calcule sous les droits de l'auteur de la
+        note : un lien déplacé vers la note d'une autre personne verrait son
+        nom recalculé sous les droits de celle-ci. Toutes les
+        commandes x2many de la note (1, id, {note_id}) passent par ici ; un
+        (4, id) écrit la note cible, gardée par sa règle d'écriture. Aucun
+        chemin du module ne déplace un lien."""
+        if "note_id" in vals and not self.env.su:
+            cible = vals["note_id"]
+            cible = cible.id if hasattr(cible, "id") else cible
+            if any(link.note_id.id != cible for link in self):
+                raise AccessError(_("A link cannot be moved to another note."))
+        return super().write(vals)
+
     @api.depends("res_model", "res_id")
     def _compute_target_ref(self):
         # Même garde que bf.note._compute_res_ref : une valeur hors sélection
@@ -67,14 +83,20 @@ class BfNoteLink(models.Model):
                 link.res_model = link.target_ref._name
                 link.res_id = link.target_ref.id
 
-    @api.depends("res_model", "res_id")
+    @api.depends("res_model", "res_id", "note_id.user_id")
     def _compute_res_name(self):
-        # Run as the calling user so ACL applies — sudo() here would leak
-        # display_name of records the author cannot otherwise read.
+        # 🔴 ce champ est STOCKÉ, et Odoo calcule les champs stockés
+        # en superutilisateur (`compute_sudo`). Le `check_access` ci-dessous ne
+        # refusait donc jamais rien : le nom d'une fiche illisible pour
+        # l'auteur de la note restait visible, au bureau comme par l'API
+        # mobile. Le nom se calcule
+        # maintenant sous les droits de l'AUTEUR de la note, explicitement,
+        # quel que soit l'environnement qui déclenche le calcul.
         for link in self:
-            if link.res_model and link.res_id and link.res_model in self.env:
+            auteur = link.note_id.user_id
+            if link.res_model and link.res_id and link.res_model in self.env and auteur:
                 try:
-                    rec = self.env[link.res_model].browse(link.res_id).exists()
+                    rec = self.env[link.res_model].with_user(auteur).browse(link.res_id).exists()
                     if not rec:
                         link.res_name = False
                         continue

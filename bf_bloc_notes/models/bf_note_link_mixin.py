@@ -16,12 +16,23 @@ class BfNoteLinkMixin(models.AbstractModel):
 
     bf_note_count = fields.Integer(compute="_compute_bf_note_count")
 
+    @api.depends_context("uid")
     def _compute_bf_note_count(self):
         if not self.ids:
             for rec in self:
                 rec.bf_note_count = 0
             return
-        rows = self.env["bf.note.link"].sudo().read_group(
+        # compté AVEC les droits de la personne. En sudo, le bouton
+        # d'une fiche partagée (contact, projet) annonçait aux autres le nombre
+        # de notes PRIVÉES qu'on y avait rattachées, qu'ils ne pouvaient pas
+        # ouvrir. Les règles de bf.note.link suivent celles de la note
+        # (auteur ou partagée) : le compte égale ce que le bouton ouvre.
+        Link = self.env["bf.note.link"]
+        if not Link.has_access("read"):
+            for rec in self:
+                rec.bf_note_count = 0
+            return
+        rows = Link.read_group(
             [("res_model", "=", self._name), ("res_id", "in", self.ids)],
             ["res_id"],
             ["res_id"],

@@ -7,7 +7,15 @@
     # 18.0.3.0.0: le bloc-notes au téléphone. Page installable
     #   /notes (saisie d'abord, file hors ligne, cible du menu Partager),
     #   API à jeton pour Symbifox Mobile, gestes rapides sur la carte kanban.
-    "version": "18.0.3.0.0",
+    # 18.0.3.0.1: le compteur « Notes » d'une fiche partagée se compte avec
+    #   les droits de la personne ; le nom d'une fiche liée se calcule sous
+    #   les droits de l'auteur de la note, et l'API mobile le résout sous
+    #   ceux de l'appelant. Migration : les noms déjà stockés sont recalculés.
+    # 18.0.3.0.2: l'auteur d'une note ne change plus hors superutilisateur ;
+    #   la migration recalcule aussi le nom stocké sur la note.
+    # 18.0.3.0.3: un lien ne change plus de note hors superutilisateur ; le
+    #   compteur « Notes » est calculé par personne.
+    "version": "18.0.3.0.3",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',
