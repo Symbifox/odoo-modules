@@ -105,6 +105,10 @@ Add the module to Odoo's `addons_path` and install it from the Apps menu. On fir
 
 ## Changelog
 
+### 18.0.3.3.1
+- Tests only: per-user isolation of desks and panels
+  (`tests/test_isolation_menage.py`). No code change.
+
 ### 18.0.3.3.0
 - **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read this module in French.
 - **Validation messages are translatable** (invalid slot, view type, domain or context): they were French f-strings.

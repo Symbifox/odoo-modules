@@ -5,7 +5,9 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.3.3.0",
+    # 18.0.3.3.1: essais d'isolation entre personnes seulement ; aucun code
+    #   changé.
+    "version": "18.0.3.3.1",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
