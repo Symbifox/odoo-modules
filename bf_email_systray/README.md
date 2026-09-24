@@ -49,6 +49,11 @@ mute leaves the inbox, so it must leave the badge too, or the count advertises
 work that was explicitly set aside. The pinning test in `bf_email_management` is
 what caught the drift when the leaf was added on the server side alone.
 
+Since 2.1.2 the badge, the button and the panel take their colours from the
+company's brand CSS variables (`--brand-primary`, `--brand-dark`) instead of
+fixed hex values, so each database shows its own palette. The previous colours
+remain as fallbacks when no brand variable is defined.
+
 ## Dependencies
 
 `web`, `bf_email_management`.

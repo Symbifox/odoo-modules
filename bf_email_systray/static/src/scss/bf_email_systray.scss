@@ -14,7 +14,7 @@
 // L'ancien `bg-dark` ne gagnait que par le `!important` de Bootstrap. Mesuré
 // au rendu le 2026-08-31, pas déduit.
 .o_main_navbar .o_menu_systray .badge.o_bf_email_systray_badge {
-    background-color: #29ABE2;
+    background-color: var(--brand-primary, #29ABE2);
     color: #fff;
     font-weight: 600;
 }
@@ -34,7 +34,7 @@
 
 // Le bouton reste allumé tant que le panneau est ouvert.
 .bf-email-systray.o_bf_email_systray_active {
-    color: #29ABE2;
+    color: var(--brand-primary, #29ABE2);
 }
 
 .o_bf_email_panel_root {
@@ -48,7 +48,7 @@
     position: fixed;
     inset: 0;
     pointer-events: auto;
-    background: rgba(45, 48, 49, 0.12);
+    background: color-mix(in srgb, var(--brand-dark, #2E3132) 12%, transparent);
 }
 
 .o_bf_email_panel {
@@ -59,7 +59,7 @@
     background: var(--o-view-background-color, #fff);
     border: 1px solid var(--border-color, #dee2e6);
     border-radius: 8px;
-    box-shadow: 0 12px 32px rgba(45, 48, 49, 0.28);
+    box-shadow: 0 12px 32px color-mix(in srgb, var(--brand-dark, #2E3132) 28%, transparent);
     overflow: hidden;
     animation: o_bf_email_panel_in 0.16s ease-out;
 
@@ -67,8 +67,8 @@
         flex: 0 0 auto;
         padding: 8px 12px;
         border-bottom: 1px solid var(--border-color, #dee2e6);
-        background: rgba(41, 171, 225, 0.08);
-        color: #2E3132;
+        background: color-mix(in srgb, var(--brand-primary, #29ABE2) 8%, transparent);
+        color: var(--brand-dark, #2E3132);
         font-family: "Lexend", var(--bs-body-font-family, sans-serif);
     }
 
@@ -87,7 +87,7 @@
     }
 
     .o_bf_email_panel_close {
-        color: #2E3132;
+        color: var(--brand-dark, #2E3132);
     }
 
     .o_bf_email_panel_body {
