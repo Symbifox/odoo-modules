@@ -4,6 +4,80 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.46.0] - 2026-09-23
+
+### Security
+
+- A sending identity is only seeded **verified** when its address is the
+  **login** of its holder and nobody else holds it. The email on the user's
+  own profile no longer counts as proof, since every user can edit it. An
+  address counts as "held by someone else" when it is another user's login or
+  email, the login of another user's IMAP account, or any identity of another
+  user, verified or not. Existing identities are not touched; an email
+  administrator can still verify an identity by hand.
+
+## [18.0.11.45.0] - 2026-09-23
+
+Includes the 18.0.11.41.5 fix for advanced rule conditions unchanged.
+
+### Security
+
+- Changing the address of a **verified** identity makes it unverified again
+  (email administrators excepted): verification belongs to an address, not to
+  a record.
+- An identity's forced outgoing server (`mail_server_id`) must accept the
+  identity's address (its sender filter covers it, or it has none).
+- New record rule `bf_email_mobile_send_rule_owner`: mobile send tokens are
+  readable by their owner only.
+- An out-of-office reply and a rule condition can only be attached to a parent
+  record (`absence_id`, `rule_id`, `absence_reply_id`) the user can write
+  (`models/owner_guard_parents.py`).
+
+### Fixed
+
+- The owner guard of 18.0.11.43.0 again lets an **email administrator**
+  reassign a rule, an absence, a mute, an account or a recipient group; only
+  system administrators could in 18.0.11.43.0.
+
+## [18.0.11.44.0] - 2026-09-22
+
+### Security
+
+- 🔴 **A forged Message-ID no longer attaches an IMAP message to someone
+  else's record.** `_ingest_rfc822` used to attach an incoming email to the
+  `mail.message` carrying the same Message-ID, found as superuser; the row's
+  body is computed from that message. The link is now made only when the
+  **owner of the mailbox** can read that message, under their own rights;
+  otherwise the email is stored as a new message with no thread link, and
+  ingestion carries on without an error. Legitimate replies and Odoo's
+  standard gateway (`message_route`) are unchanged
+  (`tests/test_isolation_messageid.py`).
+- Side effect: importing such an email by hand from the IMAP browser no longer
+  raises an `AccessError`; the row is created without a link.
+
+## [18.0.11.43.0] - 2026-09-22
+
+### Security
+
+Per-user isolation between internal users of the same database. Odoo checks
+record rules on a `write` **before** writing, never after, so a rule alone
+does not stop a record from being handed over to another user.
+
+- `models/owner_guard.py` (new): email rules, absences, thread mutes, IMAP
+  accounts and recipient groups no longer change owner outside superuser and
+  `base.group_system`.
+- A `bf.email` row can only be created or modified with a `mail_message_id`
+  the caller can read. The guard applies to calls carried by an HTTP request;
+  projection crons and the mail gateway are unchanged.
+- A sending identity is no longer seeded **verified** when its address is
+  already another user's login or another user's verified identity; it starts
+  unverified and an email administrator decides.
+- New record rule `bf_calendar_reminder_ack_rule_owner`: calendar reminder
+  acknowledgements (event name and time, private events included) are readable
+  by their owner only. Every module path uses `sudo`, so only direct RPC calls
+  are affected.
+- Tests: `tests/test_isolation_menage.py`, `tests/test_isolation_adverse.py`.
+
 ## [18.0.11.41.5] - 2026-09-23
 
 ### Security

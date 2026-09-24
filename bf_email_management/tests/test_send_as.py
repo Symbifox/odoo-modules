@@ -564,7 +564,11 @@ class SendAsCase(TransactionCase):
         self.assertEqual(before, after)
 
     def test_seeding_marks_proven_addresses_verified(self):
-        """L'adresse de la fiche et un login IMAP sont des possessions démontrées."""
+        """Seul le LOGIN de la titulaire est une possession démontrée.
+
+        L'adresse de la fiche se modifie par chacun et un login
+        IMAP se déclare sans connexion ; elles naissent non vérifiées, et un
+        administrateur courriel tranche."""
         Identity = self.env["bf.email.identity"]
         fresh = self.env["res.users"].with_context(
             no_reset_password=True).create({
@@ -576,7 +580,15 @@ class SendAsCase(TransactionCase):
         Identity._sync_from_accounts(fresh)
         seeded = Identity.sudo().search([("user_id", "=", fresh.id)])
         self.assertTrue(seeded)
-        self.assertTrue(all(seeded.mapped("verified")))
+        self.assertFalse(any(seeded.mapped("verified")),
+                         "le courriel de la fiche ne prouve rien")
+        prouvee = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Prouvée", "login": "neuve.prouvee@societe-a.invalid",
+            "email": "neuve.prouvee@societe-a.invalid",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])]})
+        Identity._sync_from_accounts(prouvee)
+        self.assertTrue(Identity.sudo().search([("user_id", "=", prouvee.id)]).verified,
+                        "le login de la titulaire est une preuve")
 
     def test_a_new_imap_account_gets_its_identity(self):
         self.env["bf.email.account"].sudo().create({

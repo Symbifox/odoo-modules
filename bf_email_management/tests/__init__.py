@@ -48,4 +48,7 @@ from . import test_mobile_compositeur_http
 from . import test_poste_abonnes
 from . import test_miroir_symetrique
 from . import test_assistant_comptes
+from . import test_isolation_menage
+from . import test_isolation_messageid
+from . import test_isolation_adverse
 from . import test_regle_expression_securite

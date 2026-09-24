@@ -45,6 +45,7 @@ import pytz
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import format_date, formataddr, html_escape
+from .owner_guard import garder_proprietaire
 
 _logger = logging.getLogger(__name__)
 
@@ -189,6 +190,12 @@ class BfEmailAbsence(models.Model):
     # ------------------------------------------------------------------
     # Computes
     # ------------------------------------------------------------------
+
+    def write(self, vals):
+        # Garde propriétaire : voir owner_guard.py.
+        garder_proprietaire(self, vals)
+        return super().write(vals)
+
     @api.depends("is_template", "active", "date_from", "date_to")
     def _compute_state(self):
         now = fields.Datetime.now()

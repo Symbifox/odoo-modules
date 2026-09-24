@@ -17,7 +17,8 @@ from email.utils import getaddresses, parseaddr
 from markupsafe import Markup
 
 from odoo import _, api, fields, models, tools
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
+from odoo.http import request
 
 from . import bf_email_imap
 from . import imip
@@ -1624,6 +1625,7 @@ class BfEmail(models.Model):
     # ------------------------------------------------------------------
     @api.model_create_multi
     def create(self, vals_list):
+        self._bf_garde_message_source(vals_list)
         records = super().create(vals_list)
         # : un message qui rejoint un fil déjà en sourdine naît en
         # sourdine. Sans ça, mettre un fil en sourdine ne tiendrait que
@@ -1651,6 +1653,7 @@ class BfEmail(models.Model):
         return records
 
     def write(self, vals):
+        self._bf_garde_message_source([vals])
         res = super().write(vals)
         # Only the fields that move a row between folders are worth a tick.
         # Everything else (body recompute, imap_uid bookkeeping) would wake
@@ -1658,6 +1661,39 @@ class BfEmail(models.Model):
         if BUS_TICK_FIELDS & set(vals):
             self._notify_inbox_changed("state")
         return res
+
+    @api.model
+    def _bf_proprietaire_lit(self, message, owner):
+        """``owner`` peut-il lire ``message``, sous SES droits ?
+
+        Jamais en superutilisateur : `with_user` retire le sudo. Un compte sans
+        propriétaire ne rattache rien.
+        """
+        if not owner or not message:
+            return False
+        try:
+            message.with_user(owner).check_access("read")
+        except AccessError:
+            return False
+        return True
+
+    def _bf_garde_message_source(self, vals_list):
+        """On ne rattache à sa ligne qu'un message qu'on peut lire.
+
+        `body_html`, `email_to`, les pièces jointes… se calculent depuis
+        `mail_message_id` en superutilisateur (calculs stockés). Le rattachement
+        doit donc exiger le droit de lire le message visé, sans quoi la ligne
+        en exposerait le contenu.
+
+        Borné aux appels portés par une requête HTTP (RPC, contrôleurs) : les
+        crons de projection et la passerelle, qui créent les lignes au nom du
+        propriétaire hors requête, ne changent pas de comportement.
+        """
+        if self.env.su or not request:
+            return
+        ids = {vals.get("mail_message_id") for vals in vals_list if vals.get("mail_message_id")}
+        if ids:
+            self.env["mail.message"].browse(list(ids)).check_access("read")
 
     def _notify_inbox_changed(self, reason):
         """Tell each owner's open windows that their inbox moved.
@@ -4817,6 +4853,19 @@ class BfEmail(models.Model):
         existing_msg = self.env["mail.message"].sudo().search([
             ("message_id", "=", message_id),
         ], limit=1)
+        # 🔴 Un Message-ID se FORGE : il ne prouve pas qu'un courriel appartient
+        # au fil du message qui porte le même. Le corps de la ligne se calcule
+        # en superutilisateur, et le cron ingère sans requête HTTP, donc hors
+        # de `_bf_garde_message_source`. Le
+        # rattachement n'a lieu que si le PROPRIÉTAIRE de la boîte peut lire le
+        # message, sous SES droits ; sinon le courriel se range comme un
+        # courriel neuf, sans lien au fil. Aucune erreur : l'ingestion continue.
+        if existing_msg and not self._bf_proprietaire_lit(existing_msg, account.user_id):
+            _logger.info(
+                "bf.email IMAP : Message-ID %s déjà porté par un message que "
+                "l'usager %s ne peut pas lire ; rangé sans lien au fil.",
+                message_id, account.user_id.id)
+            existing_msg = self.env["mail.message"]
         if existing_msg:
             chatter_vals = self._prepare_email_vals(existing_msg)
             if chatter_vals:

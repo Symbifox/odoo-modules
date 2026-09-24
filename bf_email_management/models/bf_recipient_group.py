@@ -31,6 +31,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 from odoo.osv import expression
 from odoo.tools.safe_eval import safe_eval
+from .owner_guard import garder_proprietaire
 
 # Même valeur que ``MAX_RECIPIENTS`` de l'API mobile : un envoi refusé sur le
 # téléphone n'a aucune raison de passer depuis le composeur.
@@ -290,6 +291,7 @@ class BfRecipientGroup(models.Model):
         return groups
 
     def write(self, vals):
+        garder_proprietaire(self, vals)  # Garde propriétaire : voir owner_guard.py.
         res = super().write(vals)
         if {"name", "active"} & set(vals):
             self._sync_proxy()

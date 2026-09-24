@@ -189,7 +189,7 @@ class TestAncrageDesLignesSansUid(MiroirCase):
     def test_a_row_following_another_account_is_left_alone(self):
         # ⚠️ Une même personne peut posséder deux boîtes, et une adresse
         # livrée aux deux y laisse deux copies pour une seule ligne. Écrire
-        # ici l'UID d'une autre boîte fabrique l'UID périmé de #24976.
+        # ici l'UID d'une autre boîte fabrique un UID périmé.
         autre = self.env["bf.email.account"].create({
             "name": "Seconde boîte", "user_id": self.owner.id,
             "host": "imap.test.invalid", "port": 993,

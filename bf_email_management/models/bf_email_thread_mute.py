@@ -20,6 +20,7 @@ import logging
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from .owner_guard import garder_proprietaire
 
 _logger = logging.getLogger(__name__)
 
@@ -55,6 +56,12 @@ class BfEmailThreadMute(models.Model):
          "unique(user_id, thread_root_id)",
          "Ce fil est déjà en sourdine."),
     ]
+
+
+    def write(self, vals):
+        # Garde propriétaire : voir owner_guard.py.
+        garder_proprietaire(self, vals)
+        return super().write(vals)
 
     @api.model
     def _muted_roots(self, user=None):

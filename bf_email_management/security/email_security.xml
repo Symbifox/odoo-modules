@@ -360,6 +360,27 @@
         <field name="perm_unlink" eval="True"/>
     </record>
 
+    <!-- Jetons d'envoi mobile : chacun les siens. L'ACL donne la lecture à
+         tout interne ; la règle la borne à la personne qui a émis le jeton. -->
+    <record id="bf_email_mobile_send_rule_owner" model="ir.rule">
+        <field name="name">Jeton d'envoi mobile : le mien</field>
+        <field name="model_id" ref="model_bf_email_mobile_send"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Accusés de rappel du calendrier : chacun les siens. Ils portent le nom
+         et l'heure des rencontres (event_name, occurrence_start), rencontres
+         privées comprises. Tous les chemins du module passent par sudo
+         (_bf_find, _bf_record, le ramasse-miettes) : la règle ne gêne qu'un
+         appel RPC direct. -->
+
+    <record id="bf_calendar_reminder_ack_rule_owner" model="ir.rule">
+        <field name="name">Accusé de rappel : le mien</field>
+        <field name="model_id" ref="model_bf_calendar_reminder_ack"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
     <!--
       Ne pas déranger  — la file de retenue.
 

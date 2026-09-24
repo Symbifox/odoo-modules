@@ -223,6 +223,36 @@ class BfEmailIdentity(models.Model):
                     "administrateurs courriel : c'est cette case qui autorise "
                     "à écrire sous ce nom."))
 
+    def _bf_admin_courriel(self):
+        return (self.env.su
+                or self.env.user.has_group("bf_email_management.group_email_admin")
+                or self.env.user.has_group("base.group_system"))
+
+    def write(self, vals):
+        """Changer l'adresse d'une identité VÉRIFIÉE la dévérifie.
+
+        La vérification porte sur une adresse, pas sur une fiche : elle ne
+        suit pas un changement d'adresse. Un administrateur courriel garde la
+        main."""
+        if "email" in vals and not self._bf_admin_courriel():
+            nouvelle = email_normalize(vals.get("email") or "")
+            if any(i.email_normalized != nouvelle for i in self):
+                vals = dict(vals, verified=False)
+        return super().write(vals)
+
+    @api.constrains("mail_server_id", "email")
+    def _check_mail_server_utilisable(self):
+        """On ne force qu'un serveur sortant que la personne peut
+        utiliser, c'est-à-dire dont le filtre d'expéditeur couvre l'adresse de
+        l'identité (ou qui n'en a pas)."""
+        if self._bf_admin_courriel():
+            return
+        for identity in self.filtered("mail_server_id"):
+            if not identity.mail_server_id.sudo()._bf_couvre(identity.email):
+                raise ValidationError(_(
+                    "Ce serveur sortant n'est pas prévu pour l'adresse « %s ».",
+                    identity.email or ""))
+
     @api.constrains("is_default", "user_id", "active")
     def _check_single_default(self):
         for identity in self.filtered(lambda i: i.is_default and i.active):
@@ -325,6 +355,39 @@ class BfEmailIdentity(models.Model):
             users = Users.search([("share", "=", False), ("active", "=", True)])
         created = self.browse()
 
+        def revendiquee(address, user):
+            """L'adresse est-elle déjà à quelqu'un d'autre ?
+
+            Ni le login d'un compte IMAP (le compte se crée sans aucune
+            connexion) ni l'adresse de la fiche (chacun modifie la sienne) ne
+            prouvent la possession quand une AUTRE personne tient déjà cette
+            adresse : on la sème alors NON vérifiée, et un administrateur
+            courriel tranche."""
+            autres = Users.with_context(active_test=False).search([("id", "!=", user.id)])
+            if any(email_normalize(u.login or "") == address
+                   or email_normalize(u.email or "") == address for u in autres):
+                return True
+            # Une boîte tenue par le compte IMAP d'une
+            # autre personne (factures@ de A), ou déjà déclarée comme identité
+            # par une autre personne — même NON vérifiée — n'est pas à soi.
+            comptes = self.env["bf.email.account"].sudo().with_context(active_test=False).search(
+                [("user_id", "!=", user.id)])
+            if any(email_normalize(c.login or "") == address for c in comptes):
+                return True
+            return bool(self.sudo().with_context(active_test=False).search_count([
+                ("user_id", "!=", user.id), ("email_normalized", "=", address)]))
+
+        def prouvee(address, user):
+            """La SEULE voie de vérification automatique.
+
+            Une identité ne naît vérifiée que si l'adresse est le LOGIN de sa
+            titulaire, et que personne d'autre ne la tient. Ni le courriel de la
+            fiche (chacun modifie le sien : adresse externe, boîte
+            partagée d'un collègue) ni le login d'un compte IMAP (il se crée sans
+            connexion) ne prouvent rien : ces adresses naissent non vérifiées, et
+            un administrateur courriel tranche."""
+            return address == email_normalize(user.login or "") and not revendiquee(address, user)
+
         for user in users:
             existing = self.sudo().with_context(active_test=False).search([
                 ("user_id", "=", user.id),
@@ -338,7 +401,7 @@ class BfEmailIdentity(models.Model):
                     "user_id": user.id,
                     "name": user.name or own,
                     "email": own,
-                    "verified": True,
+                    "verified": prouvee(own, user),
                     "is_default": not existing,
                     "sequence": 1,
                 })
@@ -356,7 +419,7 @@ class BfEmailIdentity(models.Model):
                     "name": user.name or login,
                     "email": login,
                     "account_id": account.id,
-                    "verified": True,
+                    "verified": prouvee(login, user),
                     "is_default": not existing and not vals_list,
                     "sequence": 10,
                 })
@@ -376,6 +439,15 @@ class IrMailServerFromCoverage(models.Model):
     """Savoir si un ``from_filter`` couvre une adresse, sans redire Odoo."""
 
     _inherit = "ir.mail_server"
+
+    def _bf_couvre(self, address):
+        """Ce serveur-ci accepte-t-il cette adresse ? Filtre vide = tout."""
+        self.ensure_one()
+        address = email_normalize(address or "")
+        entrees = [e.strip().lower() for e in (self.from_filter or "").split(",") if e.strip()]
+        if not entrees:
+            return True
+        return bool(address) and any(e in (address, address.split("@")[-1]) for e in entrees)
 
     @api.model
     def _bf_covers_from(self, address):

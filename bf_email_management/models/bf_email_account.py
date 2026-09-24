@@ -21,6 +21,7 @@ from datetime import timedelta
 from odoo import _, api, exceptions, fields, models
 
 from . import bf_email_imap
+from .owner_guard import garder_proprietaire
 
 _logger = logging.getLogger(__name__)
 
@@ -71,6 +72,12 @@ class BfEmailAccount(models.Model):
              "dans Odoo, qui n'appartient à aucun compte. Décocher n'enlève "
              "donc rien à personne, ça retire seulement une entrée du panneau.",
     )
+
+
+    def write(self, vals):
+        # Garde propriétaire : voir owner_guard.py.
+        garder_proprietaire(self, vals)
+        return super().write(vals)
 
     def _brand_colour(self):
         """La couleur de la société du compte, ou ``False``.

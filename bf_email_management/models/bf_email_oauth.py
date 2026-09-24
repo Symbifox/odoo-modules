@@ -5,7 +5,7 @@ Odoo sait déjà faire le ballet des jetons : `google_gmail` et
 réservé à l'administrateur (`groups='base.group_system'` sur les champs,
 `AccessError` explicite dans `open_google_gmail_uri`), parce que leur modèle
 est « un serveur de courriel pour la société ». Le nôtre est « une boîte par
-personne » depuis #24628. Le travail neuf n'est donc pas le protocole, c'est
+personne ». Le travail neuf n'est donc pas le protocole, c'est
 de rendre ce geste personnel sans ouvrir de droits.
 
 Pourquoi il le faut : mesuré le 2026-09-20, `outlook.office365.com` et
