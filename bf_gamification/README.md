@@ -528,6 +528,17 @@ bf_gamification/
 
 ## Changelog
 
+### v2.5.4
+
+- Avatars on the dashboard and the leaderboard now load through Odoo's
+  `/web/image/res.users/<id>/avatar_128` route instead of a
+  `data:image/png;base64,` URI. Odoo's default avatar is a generated SVG, so
+  the old URI showed a broken image for everyone without an uploaded photo;
+  the route serves the right content type, is cached by the browser and
+  removes several kilobytes of base64 from each leaderboard row.
+- The confirmation text of the "reset all progress" button in Settings is
+  reworded.
+
 ### v2.5.1
 
 - The maintenance badges watched `last_performed_date`, a field that no longer

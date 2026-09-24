@@ -54,7 +54,7 @@
                                         <div class="col-auto">
                                             <div class="bf-profile-avatar">
                                                 <img t-if="state.data.profile.avatar"
-                                                     t-att-src="'data:image/png;base64,' + state.data.profile.avatar"
+                                                     t-att-src="state.data.profile.avatar"
                                                      class="rounded-circle" width="80" height="80"
                                                      alt="Avatar"/>
                                                 <i t-else="" class="fa fa-user-circle fa-5x text-muted"/>
@@ -184,7 +184,7 @@
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <img t-if="player.avatar"
-                                                                 t-att-src="'data:image/png;base64,' + player.avatar"
+                                                                 t-att-src="player.avatar"
                                                                  class="rounded-circle me-2" width="28" height="28"/>
                                                             <div>
                                                                 <div t-esc="player.user_name"/>

@@ -1,7 +1,7 @@
 {
     "name": "Fox Quest",
     "summary": "Syst\u00e8me de gamification avec XP, niveaux, badges et r\u00e9compenses",
-    "version": "18.0.2.5.1",
+    "version": "18.0.2.5.4",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

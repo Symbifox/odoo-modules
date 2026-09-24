@@ -13,6 +13,25 @@ class GamificationDashboard(models.AbstractModel):
     # odoo.modules.registry: Model <ce modèle> has no table.` journalisé à chaque
     # passe du chargeur sur une base neuve.
 
+
+    @staticmethod
+    def _avatar_uri(user):
+        """L'adresse de l'avatar, par la route d'image d'Odoo.
+
+        🔴 Le gabarit envoyait `data:image/png;base64,` + le champ image. Or
+        l'avatar par defaut d'Odoo n'est pas un PNG : c'est un SVG genere
+        (initiales sur fond colore). Le navigateur refusait donc de le decoder,
+        et l'image paraissait cassee pour toute personne sans photo televersee,
+        c'est-a-dire presque tout le monde. Releve le 2026-09-19 en capturant
+        une base de demonstration.
+
+        ⚠️ Poser le bon type de contenu dans le data URI ne suffisait pas non
+        plus. On passe donc par `/web/image`, qui sert l'octet exact avec son
+        type, se met en cache cote navigateur, et retire au passage plusieurs
+        kilo-octets de base64 de chaque ligne du classement.
+        """
+        return "/web/image/res.users/%d/avatar_128" % user.id if user else False
+
     @api.model
     def get_dashboard_data(self):
         """Return all dashboard data for the OWL component."""
@@ -61,7 +80,7 @@ class GamificationDashboard(models.AbstractModel):
         return {
             'id': profile.id,
             'user_name': profile.user_id.name,
-            'avatar': profile.avatar or profile.user_id.avatar_128,
+            'avatar': self._avatar_uri(profile.user_id),
             'total_xp': profile.total_xp,
             'level_name': profile.level_id.name if profile.level_id else '',
             'level_title': profile.title or '',
@@ -86,7 +105,7 @@ class GamificationDashboard(models.AbstractModel):
             result.append({
                 'rank': idx + 1,
                 'user_name': p.user_id.name,
-                'avatar': p.user_id.avatar_128,
+                'avatar': self._avatar_uri(p.user_id),
                 'total_xp': p.total_xp,
                 'level_name': p.level_id.name if p.level_id else '',
                 'level_title': p.title or '',
