@@ -29,6 +29,15 @@ that.
 - **Branding before pairing**: the public `/ping` returns the company name,
   colours and logo URL, so the app is painted in the right colours before the
   person signs in.
+- **Local wipe deadline** (since 18.0.1.1.0): `/ping` also announces
+  `wipe_after_days`, the number of days without a successful authenticated call
+  after which the app erases its own data. A revoked token already makes the app
+  wipe itself on its next call (401), but a phone left in airplane mode or never
+  reopened would otherwise keep its data forever. Only an authenticated answer
+  resets the countdown; reading the public `/ping` does not. The delay is the
+  `bf_mobile.wipe_after_days` system parameter, shared with the other Symbifox
+  mobile modules: **30 days** when the parameter is absent, empty or not a
+  number, and `0` disarms the guard on purpose.
 
 ## Design rules
 
