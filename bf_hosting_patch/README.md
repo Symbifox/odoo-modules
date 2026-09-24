@@ -189,6 +189,18 @@ Someone without hosting access does not see the card at all. A collector that
 fails keeps the card in place and says its data is unavailable, following the
 `bf_home` contract, instead of letting it vanish.
 
+## Machine schedules in the hosting readers
+
+A maintenance schedule that targets a machine has no hosting service, and the
+base module's readers (dashboard counters, weekly digest, due and overdue
+lists, mobile alerts) used to keep only schedules whose service is active: a
+week-old security patch on a machine never showed up in them. Since 18.0.4.5.0
+the module extends the base module's `_target_active_domain()` hook, so a
+schedule counts when its service is active **or** its machine is neither
+archived nor retired, and `_target_display()` names the machine where the digest
+used to leave the service cell empty. Requires `hosting_management` 18.0.2.57.0
+or later, which introduced both hooks.
+
 ## Cadence
 
 | Gesture | Cadence |
@@ -221,7 +233,7 @@ odoo -d <db> -u bf_hosting_patch --test-enable --test-tags=/bf_hosting_patch \
      --stop-after-init --db-filter='^<db>$' --http-port=8169
 ```
 
-91 tests, weighted towards the unhappy paths: missing token, revoked token,
+97 tests, weighted towards the unhappy paths: missing token, revoked token,
 unreadable body, oversized body, invented selection value, duplicate machine-id,
 a hardware UUID already carried by another record (archived ones included), the
 flip to `stale` as time passes with nothing written, an order handed to the
@@ -232,6 +244,9 @@ On the tile side: the template anchor replayed against `bf_home`'s own template,
 the user without access who must neither see the card nor read a failure,
 per-client isolation of the counters, and each number matching the list its
 click opens.
+On the readers' side: every reader of the base module, called directly, must
+count a machine schedule and leave out an archived or retired machine and a
+service that is not active.
 
 ## Licence
 

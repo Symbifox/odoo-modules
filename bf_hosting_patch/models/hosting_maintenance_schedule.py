@@ -16,6 +16,7 @@ qui portent un service, et ne traitent elles-mêmes que le cas neuf.
 import logging
 
 from odoo import _, api, fields, models
+from odoo.osv import expression
 
 _logger = logging.getLogger(__name__)
 
@@ -117,6 +118,39 @@ class HostingMaintenanceSchedule(models.Model):
             "Un système visé suppose la machine qui le porte.",
         ),
     ]
+
+    # ------------------------------------------------------------------
+    # Les crochets de lecture du module de base
+    # ------------------------------------------------------------------
+    # Le parent ne compte que les planifications dont le SERVICE est actif.
+    # Une planification sur machine n'a pas de service : avant ce crochet, les
+    # onze lecteurs du module de base (tableau de bord, résumé hebdo, alertes
+    # mobiles) l'écartaient toutes, et des correctifs de sécurité en retard
+    # manquaient au compte du tableau de bord.
+
+    @api.model
+    def _target_active_domain(self):
+        """Service en service, OU machine ni archivée ni retirée.
+
+        Composé par `expression.AND` / `OR` et non à la main : le domaine du
+        parent peut porter plusieurs termes, et un « & » posé devant n'en
+        couvrirait que le premier. Une machine « Retirée » mais pas archivée
+        n'a plus de maintenance à faire : le module parc l'écarte déjà de ses
+        propres listes (état déployé ou en stock).
+        """
+        return expression.OR([
+            expression.AND([[("service_id", "!=", False)],
+                            super()._target_active_domain()]),
+            [("endpoint_id", "!=", False), ("endpoint_id.active", "=", True),
+             ("endpoint_id.lifecycle_state", "!=", "retired")],
+        ])
+
+    def _target_display(self):
+        self.ensure_one()
+        if self.service_id:
+            return super()._target_display()
+        code = self.endpoint_id.code
+        return self.target_label or "", code if code and code != "New" else ""
 
     @api.onchange("system_id")
     def _onchange_system_id(self):
