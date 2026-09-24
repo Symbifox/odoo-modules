@@ -660,8 +660,8 @@ class PrivacyPortal(CustomerPortal):
 
         Permet de renouveler les consentements accordés, expirés ou retirés.
 
-        ⚠ Un consentement REFUSÉ n'est PAS renouvelable ici — décision 50 du CR
-        PMEC #139 (2026-08-03). Le lien d'origine est consommé par le refus ;
+        ⚠ Un consentement REFUSÉ n'est PAS renouvelable ici — décision de
+        conception. Le lien d'origine est consommé par le refus ;
         seule une nouvelle demande émise par l'organisation rouvre la porte.
 
         ⚠ GET et POST partagent le MÊME gestionnaire et la MÊME URL : le
@@ -872,8 +872,8 @@ class PrivacyPortal(CustomerPortal):
     def public_consent_renew(self, consent_id, access_token, **kw):
         """Renouvellement depuis l'URL publique : confirmation puis octroi.
 
-        ⚠ Un consentement REFUSÉ n'est PAS renouvelable ici — décision 50 du CR
-        PMEC #139 (2026-08-03). C'est LE point de la décision : le lien reçu par
+        ⚠ Un consentement REFUSÉ n'est PAS renouvelable ici — décision de
+        conception. C'est LE point de la décision : le lien reçu par
         courriel restait « chaud » indéfiniment, et un refus se retournait en
         octroi d'un clic depuis la boîte de réception, sur le même lien. Il faut
         désormais une nouvelle demande, avec son propre jeton, émise par

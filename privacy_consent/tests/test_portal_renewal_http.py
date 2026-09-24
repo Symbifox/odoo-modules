@@ -364,8 +364,8 @@ class TestPortalRenewalHttp(HttpCase):
         self.assertIn(reponse.status_code, (302, 303))
 
         # ⚠ Suivre la chaîne, et non la seule première étape. Sur un site
-        # MULTILINGUE (Blue Fox a en_CA et fr_CA actives, contrairement à CQ et
-        # PME Conforme qui n'ont que fr_CA), la première redirection est celle
+        # MULTILINGUE (en_CA et fr_CA actives, là où une instance unilingue
+        # n'a que fr_CA), la première redirection est celle
         # de la langue — /privacy/... devient /en/privacy/... — et le
         # gestionnaire n'a pas encore vu la requête. Lire cette étape comme la
         # redirection métier fait échouer le test là où le produit est correct,

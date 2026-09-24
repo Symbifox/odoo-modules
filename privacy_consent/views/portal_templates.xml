@@ -655,8 +655,8 @@
                             </p>
                         </t>
                         <!-- ⚠ Pas de branche « refused » ici : cet écran n'est plus
-                             atteignable depuis un consentement refusé (décision 50 du CR
-                             PMEC #139). La laisser en place aurait décrit à un futur
+                             atteignable depuis un consentement refusé (décision de
+                             conception). La laisser en place aurait décrit à un futur
                              lecteur un chemin qui n'existe plus. -->
                         <t t-elif="consent.status == 'withdrawn'">
                             <p>
