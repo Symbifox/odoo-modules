@@ -17,6 +17,11 @@ a designated account, not for the person.
 
 Installs itself when both `bf_nfc` and `bf_meeting` are present.
 
+## Changelog
+
+- **18.0.1.0.2**: the two messages shown on the phone (no meeting in progress,
+  several meetings to choose from) are reworded in gender-neutral French.
+
 ## License
 
 Business Source License 1.1, see [LICENSE](LICENSE).

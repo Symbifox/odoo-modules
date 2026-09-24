@@ -57,7 +57,7 @@ class BfNfcGesture(models.Model):
             rencontres = proches.filtered(
                 lambda r: self._rencontre_en_cours(r, moment) and self._rencontre_invite(r, moi))
             if not rencontres:
-                raise UserError(_("Aucune rencontre en cours à laquelle vous êtes invité."))
+                raise UserError(_("Aucune rencontre en cours parmi vos invitations."))
 
         choix = params.get("choix")
         if len(rencontres) > 1:
@@ -65,7 +65,7 @@ class BfNfcGesture(models.Model):
             if not rencontre:
                 return {
                     "titre": _("Quelle rencontre ?"),
-                    "message": _("Vous êtes invité à plusieurs rencontres en ce moment."),
+                    "message": _("Plusieurs invitations vous attendent en ce moment."),
                     "choix": [{"cle": str(r.id), "libelle": "%s · %s" % (r.name, self._heure(r.date)),
                                "style": "secondaire", "saisie": None} for r in rencontres],
                 }

@@ -1,6 +1,6 @@
 {
     "name": "Pastilles NFC : la présence à une rencontre",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Productivity",
     "summary": "Taper la pastille de la salle note sa présence à la rencontre qui commence",
     "description": """
