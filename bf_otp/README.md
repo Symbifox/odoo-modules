@@ -171,6 +171,36 @@ des tokens au mauvais client sans que personne ne le voie.
 | Voir la liste des comptes protégés | **Oui.** Émetteur et compte sont en clair, à dessein : c'est ce qui permet de chercher et de trier. |
 | Voir les tokens d'autrui | **Non.** Une règle d'enregistrement limite chaque coffre à son propriétaire. |
 | Mentir sur la liste des clés d'accès | **Oui**, et ça peut empêcher d'ouvrir. Ça ne donne aucune graine. Le remède est la phrase de passe, qui ne dépend d'aucune liste. |
+| Déplacer une fiche dans le coffre d'autrui | **Non** depuis 18.0.12.2.0. |
+| Garder le coffre sur le téléphone d'une personne partie | **Non** depuis 18.0.12.0.0 : compte archivé, jeton refusé. |
+
+## Historique
+
+### 18.0.12.2.0
+
+Odoo ne rejoue pas les règles d'enregistrement après un `write`. Gardes `write`
+sur le token, la clé d'accès et le code de relève (`vault_id` exige le droit
+d'écrire le coffre visé), et sur le coffre (`user_id` ne change pas de main
+hors superutilisateur). Aucune graine n'était lisible ; c'était une question
+d'intégrité. Essais : `tests/test_isolation_menage.py`.
+
+### 18.0.12.0.0 — le coupe-circuit au départ d'un employé
+
+* **Jeton d'appareil en empreinte.** Le jeton porteur n'est plus gardé en
+  clair : l'application le reçoit une fois, la base n'en garde que l'empreinte
+  SHA-256. Une migration empreinte les jetons déjà émis, sans réappariement.
+* **Compte archivé, jeton refusé.** Le jeton d'un usager archivé, ou qui n'est
+  plus un interne, rend 401, et l'application efface ce qu'elle garde.
+* **Expiration.** Un appareil sans aucun appel pendant 90 jours est désactivé
+  (il reste visible, révoqué, dans « Mes appareils »).
+* **Champs protégés.** Le jeton et l'usager d'un appareil ne se modifient pas
+  à la main, et un appareil ne se crée qu'en s'appariant.
+* **Péremption locale.** `/ping` annonce `wipe_after_days` (paramètre
+  `bf_mobile.wipe_after_days`, 30 par défaut, `0` désarme) : l'application
+  s'efface d'elle-même après ce délai sans contact authentifié réussi.
+* « Vu la dernière fois » s'écrit hors de la transaction de la requête : deux
+  appels simultanés du même téléphone ne s'annulent plus.
+* Essais : `tests/test_coupe_circuit.py`.
 
 ## Licence
 

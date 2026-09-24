@@ -25,9 +25,17 @@ class TestAppariement(TransactionCase):
     def setUp(self):
         super().setUp()
         self.Appareil = self.env["bf.otp.device"]
+        # ⚠️ `base.group_user` n'est pas décoratif : un usager créé avec le SEUL
+        # groupe OTP est `share=True`, et `_resolve` refuse depuis le coupe-circuit
+        # le jeton d'un non-interne. En usage réel, les porteurs du groupe sont des
+        # internes ; c'est le montage d'essai qui doit être fidèle, pas la garde
+        # qui est trop stricte.
         self.personne = self.env["res.users"].create({
             "name": "Banc", "login": "banc-otp-api",
-            "groups_id": [(4, self.env.ref("bf_otp.group_otp_user").id)],
+            "groups_id": [
+                (4, self.env.ref("base.group_user").id),
+                (4, self.env.ref("bf_otp.group_otp_user").id),
+            ],
         })
 
     def test_le_code_ne_sert_qu_une_fois(self):

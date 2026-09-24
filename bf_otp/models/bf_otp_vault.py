@@ -76,6 +76,17 @@ class BfOtpVault(models.Model):
          "Une personne n'a qu'un seul coffre de tokens."),
     ]
 
+
+    def write(self, vals):
+        """Un coffre ne change pas de main hors superutilisateur.
+
+        Odoo ne rejoue pas les règles après un `write` : sans cette garde, un
+        coffre pourrait être donné à une personne qui en a déjà un, ou qui
+        n'en veut pas."""
+        if not self.env.su and 'user_id' in vals and vals['user_id'] != self.env.uid:
+            raise AccessError(_("Un coffre ne se donne pas à quelqu'un d'autre."))
+        return super().write(vals)
+
     @api.depends('token_ids')
     def _compute_token_count(self):
         comptes = dict(self.env['bf.otp.token']._read_group(

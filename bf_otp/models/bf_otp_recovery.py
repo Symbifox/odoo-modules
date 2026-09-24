@@ -73,6 +73,16 @@ class BfOtpRecovery(models.Model):
     wrapped_iv = fields.Char(string='Vecteur', required=True)
     last_used = fields.Datetime(string='Dernière ouverture')
 
+
+    def write(self, vals):
+        """On ne déplace pas une fiche dans le coffre de quelqu'un d'autre.
+
+        Odoo ne rejoue pas les règles d'enregistrement après un `write` : la
+        règle voit la fiche de départ, pas le coffre d'arrivée."""
+        if not self.env.su and vals.get('vault_id'):
+            self.env['bf.otp.vault'].browse(vals['vault_id']).check_access('write')
+        return super().write(vals)
+
     @api.constrains('wrapped_secret')
     def _check_not_a_seed(self):
         """Même garde que partout : ici, tout doit être du chiffré.

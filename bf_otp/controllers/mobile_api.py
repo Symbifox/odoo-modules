@@ -26,6 +26,50 @@ from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
+# ── Péremption locale : le coupe-circuit qui n'a besoin de personne ──────
+#
+# 🔴 Un jeton refusé rend 401, et l'application efface alors
+# tout ce qu'elle garde. Mais le 401 n'arrive qu'au PROCHAIN appel : un
+# téléphone en mode avion, ou une application jamais rouverte, garde ses
+# données indéfiniment. C'est le seul cas que ni le 401 ni un message poussé ne
+# couvrent, et c'est précisément celui d'un téléphone qui part avec la personne.
+#
+# Le serveur annonce donc un délai, et l'application s'efface d'elle-même au
+# bout de ce délai SANS contact authentifié réussi. Le compteur ne se remet à
+# zéro que sur une réponse authentifiée : `/ping` est public, le relire ne
+# prouve rien et ne doit rien rallonger.
+#
+# ⚠️ La clé est PARTAGÉE par les cinq surfaces mobiles de la maison et
+# recopiée dans chacune plutôt que mise en commun : aucun de ces modules ne
+# dépend des autres, et le coffre de tokens surtout pas. Une valeur, cinq
+# lecteurs, zéro dépendance.
+CLE_PEREMPTION = "bf_mobile.wipe_after_days"
+PEREMPTION_DEFAUT = 30
+
+
+def _peremption_locale(env):
+    """Jours sans contact authentifié au bout desquels l'app s'efface.
+
+    Rend 0 quand la garde est volontairement désarmée.
+
+    🔴 Clé ABSENTE n'est PAS zéro. Un paramètre jamais posé doit rendre le
+    défaut, sinon la garde serait désarmée partout où personne n'a rien
+    configuré, c'est-à-dire partout. L'état qu'on obtient sans rien faire doit
+    être l'état sûr.
+    """
+    brut = env["ir.config_parameter"].sudo().get_param(CLE_PEREMPTION)
+    if brut is None or brut is False or str(brut).strip() == "":
+        return PEREMPTION_DEFAUT
+    try:
+        jours = int(str(brut).strip())
+    except (TypeError, ValueError):
+        _logger.warning(
+            "Péremption locale : %r n'est pas un nombre de jours, "
+            "le défaut de %s s'applique.", brut, PEREMPTION_DEFAUT)
+        return PEREMPTION_DEFAUT
+    return max(jours, 0)
+
+
 BASE = "/bf_otp/mobile/v1"
 API_VERSION = 1
 
@@ -118,7 +162,11 @@ def _authentifie(fn):
         appareil = request.env["bf.otp.device"]._resolve(jeton)
         if not appareil:
             return _json({"error": "unauthorized"}, 401)
-        appareil.sudo().write({"last_seen": fields.Datetime.now()})
+        # 🔴 Battement hors transaction : voir ``_touch_last_seen``. Écrire
+        # ``last_seen`` ici mettait un UPDATE de la ligne d'appareil dans la
+        # transaction de CHAQUE requête, et deux appels simultanés du même
+        # téléphone s'annulaient l'un l'autre sous REPEATABLE READ.
+        appareil._touch_last_seen()
         request.update_env(user=appareil.user_id.id)
         try:
             # 🔴 Le point de reprise n'est PAS décoratif. Attraper une erreur
@@ -203,6 +251,8 @@ class BfOtpMobileApi(http.Controller):
         return _json({
             "ok": True,
             "module": "bf_otp",
+            # Le délai de péremption locale : voir `_peremption_locale`.
+            "wipe_after_days": _peremption_locale(request.env),
             "api": API_VERSION,
             "version": module.installed_version or "",
             "branding": _marque(),
@@ -277,11 +327,15 @@ class BfOtpMobileApi(http.Controller):
         if not appareil:
             return _json({"error": "invalid_or_expired_code"}, 401)
         request.update_env(user=appareil.user_id.id)
-        return _json({
+        reponse = _json({
             "token": appareil.sudo().device_token,
             "user_id": appareil.user_id.id,
             "user_name": appareil.user_id.name or "",
         })
+        # ⚠️ Scellé APRÈS la construction de la réponse, jamais avant : le clair
+        # n'existe plus que dans ce corps HTTP, l'empreinte suffit ensuite.
+        appareil._seal()
+        return reponse
 
     @http.route(f"{BASE}/logout", type="http", auth="public", methods=["POST"],
                 csrf=False, save_session=False)

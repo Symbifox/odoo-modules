@@ -159,6 +159,15 @@ class BfOtpToken(models.Model):
              "demande.",
     )
 
+    def write(self, vals):
+        """On ne déplace pas une fiche dans le coffre de quelqu'un d'autre.
+
+        Odoo ne rejoue pas les règles d'enregistrement après un `write` : la
+        règle voit la fiche de départ, pas le coffre d'arrivée."""
+        if not self.env.su and vals.get('vault_id'):
+            self.env['bf.otp.vault'].browse(vals['vault_id']).check_access('write')
+        return super().write(vals)
+
     # -------------------------------------------------------------------------
     # Le garde : du chiffré, jamais une graine
     # -------------------------------------------------------------------------
