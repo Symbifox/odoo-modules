@@ -16,7 +16,18 @@ activity entry carries their name.
 ## Features
 
 - **Embedded tab** *Fichiers Nextcloud* on `project.project` and `project.task`
-  forms — scoped to each record's Nextcloud folder.
+  forms, scoped to each record's Nextcloud folder. The tab only shows once the
+  project has a folder.
+- **Search the whole tree** (since 18.0.4.1.0): from three characters, the
+  filter box searches every folder under the root instead of filtering the
+  current one. Names only, without case or accents.
+- **Insert a Nextcloud link in a message** (since 18.0.4.1.0): a cloud button
+  in the chatter composer opens the browser as a picker; for the chosen file or
+  folder, the person picks an internal link or a share made with a preset.
+- **Files linked in a chatter** (since 18.0.4.1.0): a cloud button in the
+  chatter bar lists the Nextcloud links already cited in that record's
+  messages, with their state (file found, share expiry, password), and revokes
+  a cited share.
 - **Standalone app** — a top-level *Nextcloud* application that browses from a
   configured root prefix (no record context).
 - **Dolphin-style two-pane layout** — a lazy-loaded folder tree on the left and
@@ -30,7 +41,10 @@ activity entry carries their name.
   list) opens it directly in Nextcloud (e.g. Collabora) in a new tab.
 - **Sortable columns** — Name / Type / Modified / Size, folders pinned first.
 - **Public share links** — configurable presets (e.g. internal read/write,
-  external read-only with expiry and optional password).
+  external read-only with expiry and optional password). Since 18.0.4.1.0 the
+  share dialog lists the entry's existing shares and revokes them, rows carry
+  a badge when a file or folder is shared, and every row copies its internal
+  `/f/` link.
 - **Knowledge integration** — link a file to a Knowledge Matrix item
   (`project.knowledge.item`) or, where available, an Odoo Knowledge article.
 - **Systray launcher** — a toggleable button, carrying the Nextcloud logo,
@@ -171,6 +185,29 @@ configuration can actually be browsed (active, with a root prefix other than
 `/`) — for administrators too. Until then, administrators create or fix that
 configuration from *Knowledge → Configuration → Nextcloud Documents*.
 
+## Search, links and shares (since 18.0.4.1.0)
+
+- **Search** runs a WebDAV `SEARCH` as the person, scoped to the record folder
+  or to the root prefix, newest first, 100 results at most. The scope is sent
+  unencoded (Nextcloud 34 answers 404 to an encoded one); the term is
+  XML-escaped and its `%` and `_` wildcards are escaped.
+- **Internal link or share, chosen each time.** An internal link (`/f/<id>`)
+  opens only for someone who can already see the file in Nextcloud and
+  creates nothing. A share follows a preset; the dialog describes the rules it
+  will really get (a preset without expiry takes the configuration's default,
+  and the configuration's password switch adds a password). A share password
+  is never inserted in the message: it is shown apart, to be sent separately.
+  The root of the browser or of a record is never shared publicly.
+- **Files linked in a chatter** are read again from the record's messages each
+  time (1,000 newest messages, 200 links): nothing is stored. Internal links
+  are resolved by file id in the person's whole Nextcloud account (in practice
+  most cited files live outside the browser root), shares by the person's own
+  share list, each share read alone for its expiry. A cited share can be
+  revoked from there when Nextcloud lets the person delete it.
+- **Revocation from the browser** stays within the browser root.
+- **Other addresses of the same Nextcloud** go in *Autres adresses de ce
+  Nextcloud* on the configuration, so links written with them are recognised.
+
 ## Configuration
 
 1. Open **Nextcloud → Configuration** (admin only).
@@ -208,3 +245,10 @@ same path in each person's tree (see *Identity*).
   hatch — *Open in Nextcloud*, and office documents, which open in a tab.
 - Odoo Knowledge article linking is only available when the Knowledge app is
   installed; otherwise files link to the Knowledge Matrix.
+- Search covers file and folder names, not their content.
+- A name carrying a percent escape (`A%2012.odt`) is listed but refused for any
+  action, with a message: the path helpers url-decode once more on their way
+  out, so such a name would address another file (and did, silently, before
+  18.0.4.1.0). Such names do occur in real accounts.
+- The cloud button is in the chatter's quick composer, not in the full-page
+  email composer.

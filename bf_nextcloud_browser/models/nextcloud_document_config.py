@@ -13,7 +13,11 @@ other caller of the parent helpers keep the configuration's account, because a
 cron has no person to speak for.
 """
 
+import logging
 from urllib.parse import quote as url_quote
+from urllib.parse import unquote as url_unquote
+from urllib.parse import urlparse
+from xml.sax.saxutils import escape as xml_escape
 
 import requests
 
@@ -27,10 +31,67 @@ from odoo.addons.bf_document_nextcloud_sync.models.nextcloud_document_config imp
 from .bf_nc_user_credential import _server_key
 from .nc_identity import NcNotConnected, NcPersonAuth, NcTokenRejected
 
+_logger = logging.getLogger(__name__)
+
 # Fields whose change can make the browser appear or disappear for someone:
 # the menu and the systray button are computed from them, and Odoo caches the
 # menu tree per user.
 BROWSER_VISIBILITY_FIELDS = {"active", "browser_root_prefix", "nextcloud_base_url"}
+
+# Properties asked of every SEARCH hit: the same ones a listing reads, so the
+# parent module's PROPFIND parser turns a search answer into the same entries.
+SEARCH_PROPS = (
+    "<d:displayname/><d:getlastmodified/><d:getcontentlength/><d:getcontenttype/>"
+    "<d:resourcetype/><d:getetag/><oc:fileid/><oc:size/>"
+)
+SEARCH_MAX_RESULTS = 500
+
+OCS_SHARES = "/ocs/v2.php/apps/files_sharing/api/v1/shares"
+SHARE_TYPE_PUBLIC_LINK = 3
+
+
+def like_literal(term):
+    """A search term as the literal of a DAV `d:like`, matching it anywhere.
+
+    `%` and `_` are wildcards there, and Nextcloud honours a backslash escape
+    (measured on 34.0.4: `%100\\%%` finds the one name containing "100%").
+    Unescaped, they would only widen the match inside the person's own files,
+    so this is about correct results, not access. The XML escape is about the
+    request itself: the term goes into a request body.
+    """
+    escaped = term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    return xml_escape("%" + escaped + "%")
+
+
+def _share_payload(data):
+    """The fields of an OCS share the browser uses, with stable types."""
+    try:
+        permissions = int(data.get("permissions") or 0)
+    except (TypeError, ValueError):
+        permissions = 0
+    try:
+        share_type = int(data.get("share_type"))
+    except (TypeError, ValueError):
+        share_type = -1
+    expiration = data.get("expiration") or ""
+    return {
+        "id": int(data["id"]),
+        "share_type": share_type,
+        "token": data.get("token") or "",
+        "url": data.get("url") or "",
+        "path": data.get("path") or "",
+        "item_type": data.get("item_type") or "",
+        "permissions": permissions,
+        "expiration": expiration[:10],
+        "has_password": bool(data.get("password")),
+        "share_with": data.get("share_with_displayname") or data.get("share_with") or "",
+        "owner": data.get("displayname_owner") or data.get("uid_owner") or "",
+        "uid_owner": data.get("uid_owner") or "",
+        "uid_file_owner": data.get("uid_file_owner") or "",
+        "stime": int(data.get("stime") or 0),
+        # Nextcloud says whether the caller may delete it; older servers do not.
+        "can_delete": data.get("can_delete", True) is not False,
+    }
 
 
 class NextcloudDocumentConfig(models.Model):
@@ -84,6 +145,14 @@ class NextcloudDocumentConfig(models.Model):
         "l'identifiant de son utilisateur Odoo, que seul un administrateur peut "
         "changer. Sans cette verification, une page de connexion transmise a "
         "quelqu'un d'autre connecterait l'expediteur aux fichiers du destinataire.",
+    )
+
+    nc_link_hosts = fields.Char(
+        string="Autres adresses de ce Nextcloud",
+        help="Noms d'hôte supplémentaires, séparés par des virgules, sous lesquels ce "
+        "même Nextcloud est joint (par exemple un second domaine). Les liens des "
+        "chatters qui les utilisent sont reconnus dans « Fichiers liés ». L'adresse "
+        "de la configuration est toujours reconnue.",
     )
 
     nc_user_credential_ids = fields.One2many(
@@ -328,3 +397,168 @@ class NextcloudDocumentConfig(models.Model):
         if resp.status_code not in (201, 204):
             raise UserError(_("Erreur WebDAV MOVE: HTTP %s") % resp.status_code)
         return resp
+
+    # ------------------------------------------------------------------
+    # Links (18.0.4.1.0)
+    # ------------------------------------------------------------------
+    def _internal_link(self, file_id):
+        """The `/f/<id>` link: it opens only for someone who can already see the file."""
+        self.ensure_one()
+        return "%s/f/%d" % (self.nextcloud_base_url.rstrip("/"), int(file_id))
+
+    def _link_hosts(self):
+        """Lower-case host names under which links point at this Nextcloud."""
+        self.ensure_one()
+        hosts = set()
+        own = urlparse(self.nextcloud_base_url or "").hostname
+        if own:
+            hosts.add(own.lower())
+        for raw in (self.nc_link_hosts or "").replace(";", ",").split(","):
+            raw = raw.strip()
+            if not raw:
+                continue
+            host = urlparse(raw if "://" in raw else "https://" + raw).hostname
+            if host:
+                hosts.add(host.lower())
+        return hosts
+
+    # ------------------------------------------------------------------
+    # Search (18.0.4.1.0)
+    # ------------------------------------------------------------------
+    def _dav_search_target(self):
+        """(SEARCH endpoint, scope of the account) for whoever the call speaks as.
+
+        `webdav_url` already names the right account (the person's, or the
+        configuration's), as `<dav root>/files/<account>/`. SEARCH is sent to
+        the DAV root, and its scope is `/files/<account>/<path>`.
+        """
+        url = self.webdav_url.rstrip("/")
+        cut = url.rfind("/files/")
+        if cut < 0:
+            raise UserError(_(
+                "Le chemin WebDAV de la configuration doit se terminer par /files "
+                "pour que la recherche sache dans quels fichiers chercher."
+            ))
+        account = url_unquote(url[cut + len("/files/"):])
+        return url[: cut + 1], "/files/" + account
+
+    def _webdav_search(self, scope_path, where_xml, limit=100):
+        """Run a DAV SEARCH under `scope_path` and parse it like a listing.
+
+        `where_xml` is trusted: callers build it from escaped literals only.
+
+        ⚠️ The scope is sent as a plain path, NOT percent-encoded: Nextcloud
+        34.0.4 answers 404 to `/files/x/Blue%20Fox` and 207 to `/files/x/Blue Fox`.
+        It still goes through the XML escape, like any text in the body.
+        """
+        self.ensure_one()
+        scope_path = _sanitize_nc_path(scope_path or "/")
+        endpoint, account = self._dav_search_target()
+        scope = account + ("" if scope_path.rstrip("/") == "" else scope_path.rstrip("/"))
+        limit = max(1, min(int(limit), SEARCH_MAX_RESULTS))
+        body = (
+            '<?xml version="1.0" encoding="UTF-8"?>'
+            '<d:searchrequest xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">'
+            "<d:basicsearch>"
+            f"<d:select><d:prop>{SEARCH_PROPS}</d:prop></d:select>"
+            "<d:from><d:scope>"
+            f"<d:href>{xml_escape(scope)}</d:href><d:depth>infinity</d:depth>"
+            "</d:scope></d:from>"
+            f"<d:where>{where_xml}</d:where>"
+            "<d:orderby><d:order><d:prop><d:getlastmodified/></d:prop>"
+            "<d:descending/></d:order></d:orderby>"
+            f"<d:limit><d:nresults>{limit}</d:nresults></d:limit>"
+            "</d:basicsearch>"
+            "</d:searchrequest>"
+        )
+        try:
+            resp = requests.request(
+                "SEARCH",
+                endpoint,
+                data=body.encode("utf-8"),
+                headers={"Content-Type": "text/xml; charset=utf-8"},
+                auth=self._get_auth(),
+                timeout=30,
+                verify=self._tls_verify,
+            )
+        except requests.Timeout:
+            raise UserError(_("La recherche Nextcloud a pris trop de temps (30 s)."))
+        except requests.RequestException as e:
+            raise UserError(_("Erreur lors de la recherche Nextcloud : %s") % str(e))
+        if resp.status_code == 404:
+            # The scope itself does not exist in this account.
+            return []
+        if resp.status_code != 207:
+            _logger.warning("SEARCH %s returned %s", scope_path, resp.status_code)
+            raise UserError(_("Erreur de recherche Nextcloud : HTTP %s") % resp.status_code)
+        return self._parse_propfind_response(resp.text, scope_path)
+
+    # ------------------------------------------------------------------
+    # Shares (18.0.4.1.0)
+    # ------------------------------------------------------------------
+    def _ocs_request(self, method, path, params=None):
+        self.ensure_one()
+        url = self.nextcloud_base_url.rstrip("/") + OCS_SHARES + path
+        try:
+            return requests.request(
+                method,
+                url,
+                params={**(params or {}), "format": "json"},
+                headers={"OCS-APIRequest": "true", "Accept": "application/json"},
+                auth=self._get_auth(),
+                timeout=30,
+                verify=self._tls_verify,
+            )
+        except requests.RequestException as e:
+            raise UserError(_("Erreur OCS Nextcloud : %s") % str(e))
+
+    @staticmethod
+    def _ocs_data(resp):
+        try:
+            return resp.json()["ocs"]["data"]
+        except (ValueError, KeyError, TypeError):
+            raise UserError(_("Réponse illisible de Nextcloud (partages)."))
+
+    def _ocs_shares(self, path=None, subfiles=False):
+        """Shares on the caller's files: every one, or those of `path`.
+
+        `subfiles` asks for the shares of a folder's CHILDREN and leaves out the
+        folder's own share, which is
+        what a listing needs and nothing else does. `reshares` adds the shares
+        others made of the caller's files.
+        """
+        params = {"reshares": "true"}
+        if path:
+            params["path"] = _sanitize_nc_path(path)
+        if subfiles:
+            params["subfiles"] = "true"
+        resp = self._ocs_request("GET", "", params)
+        if resp.status_code == 404:
+            return []  # the path is not in this account
+        if resp.status_code != 200:
+            raise UserError(_("Erreur OCS (liste des partages) : HTTP %s") % resp.status_code)
+        data = self._ocs_data(resp)
+        return [_share_payload(d) for d in data if isinstance(d, dict) and d.get("id")]
+
+    def _ocs_share(self, share_id):
+        """One share, read alone: the list has already reported no expiration
+        for shares that had one (reference-nc-share-list-endpoint-omits-expiration)."""
+        resp = self._ocs_request("GET", "/%d" % int(share_id))
+        if resp.status_code in (403, 404):
+            return None
+        if resp.status_code != 200:
+            raise UserError(_("Erreur OCS (partage) : HTTP %s") % resp.status_code)
+        data = self._ocs_data(resp)
+        if isinstance(data, list):
+            data = data[0] if data else None
+        return _share_payload(data) if isinstance(data, dict) and data.get("id") else None
+
+    def _ocs_delete_share(self, share_id):
+        resp = self._ocs_request("DELETE", "/%d" % int(share_id))
+        if resp.status_code == 404:
+            return False  # already gone
+        if resp.status_code == 403:
+            raise UserError(_("Nextcloud refuse que vous retiriez ce partage."))
+        if resp.status_code != 200:
+            raise UserError(_("Erreur OCS (retrait du partage) : HTTP %s") % resp.status_code)
+        return True

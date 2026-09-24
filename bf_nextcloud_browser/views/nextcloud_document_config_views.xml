@@ -8,6 +8,7 @@
         <field name="arch" type="xml">
             <field name="webdav_path" position="after">
                 <field name="browser_root_prefix"/>
+                <field name="nc_link_hosts" placeholder="ex. nextcloud.autre-domaine.com"/>
                 <field name="nc_require_email_match"/>
                 <field name="nc_open_extensions"/>
                 <field name="nc_folder_color" widget="color"/>

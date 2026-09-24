@@ -6,7 +6,14 @@ model. Every entry point:
   * resolves the config + folder root from the *record* (project / task), never
     from a client-supplied path or config id (prevents IDOR);
   * forces every requested path to stay under that record root, which itself must
-    stay under the config browser_root_prefix.
+    stay under the config browser_root_prefix;
+  * refuses a path or a name that would still decode (see _plain).
+
+Two reads go wider than the root, on purpose, since 18.0.4.1.0: the files cited
+in a chatter are resolved in the person's whole Nextcloud account, and a share
+cited there can be revoked wherever its file lives (see _linked_files and
+linked_revoke_share). Both speak as the person, so Nextcloud shows and allows
+nothing it would not show or allow them for the same link.
 
 All actual WebDAV/OCS calls reuse the hardened helpers on
 nextcloud.document.config (PROPFIND/GET/PUT/MKCOL/DELETE/MOVE/share).
@@ -22,6 +29,8 @@ import base64
 import logging
 import mimetypes
 import posixpath
+import functools
+import re
 import secrets
 import string
 from datetime import datetime, timedelta
@@ -32,13 +41,15 @@ from urllib.parse import urlparse
 import pytz
 from markupsafe import Markup
 
-from odoo import _, api, models
+from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
 from odoo.addons.bf_document_nextcloud_sync.models.nextcloud_document_config import (
     _sanitize_nc_path,
     _validate_path_under_prefix,
 )
+
+from .nextcloud_document_config import SHARE_TYPE_PUBLIC_LINK, like_literal
 
 _logger = logging.getLogger(__name__)
 
@@ -48,6 +59,102 @@ ALLOWED_MODELS = ("project.project", "project.task")
 DEFAULT_TZ = "America/Montreal"
 # Cap RPC uploads (base64 in a single call) to protect the worker's memory.
 MAX_UPLOAD_BYTES = 64 * 1024 * 1024  # 64 MiB
+
+# Search: below two characters every name matches; a hundred answers came back
+# in under a second on a real server, a thousand could take many seconds under load.
+SEARCH_MIN_CHARS = 2
+SEARCH_MAX_CHARS = 100
+SEARCH_LIMIT = 100
+
+# Linked files: how much of a chatter is read, and how many links resolved.
+LINKED_MESSAGE_LIMIT = 1000
+LINKED_FILE_LIMIT = 200
+# Path segments that make an /f/ or /s/ something else than a Nextcloud link.
+NOT_A_LINK_PREFIX = {"apps", "remote.php", "public.php", "dav", "files", "ocs", "webdav"}
+
+
+@functools.lru_cache(maxsize=16)
+def link_re(hosts):
+    """A Nextcloud link to one of `hosts` (a sorted tuple) in a message body.
+
+    Groups: host, path before the link (a sub-path install), kind (f or s),
+    id or token. The scheme is optional: on a real database, a share of the
+    internal links cited in chatters were written without it.
+
+    Every repetition is bounded: an unbounded path group made the cost grow
+    with the square of a hostile body ("host/a," repeated: 100 KB in 8 s,
+    adversarial review). A sub-path install has one or two segments; a token
+    may carry dashes (custom share tokens), never at its ends.
+    """
+    alternatives = "|".join(re.escape(h) for h in sorted(hosts, key=len, reverse=True))
+    return re.compile(
+        r"(?<![A-Za-z0-9.@/?&=-])(?:https?://)?(%s)(?::\d{1,5})?((?:/[^\s\"'<>/]{1,64}){0,2}?)"
+        r"/(?:index\.php/)?(f|s)/([0-9]{1,19}|[A-Za-z0-9][A-Za-z0-9-]{6,62}[A-Za-z0-9])(?![A-Za-z0-9-])"
+        % alternatives,
+        re.IGNORECASE,
+    )
+
+# A message body longer than this is read up to it for links. Imported emails
+# quote whole threads: on a real database, share links sat past 200 KB, in
+# bodies several times that size. With the bounded pattern a hostile 200 KB body
+# costs ~30 ms.
+LINKED_BODY_MAX = 1_000_000
+# And no more than this many characters read in one call, all messages together.
+LINKED_SCAN_BUDGET = 20_000_000
+# Shares read alone for their expiry, at most, per call: the list is used past it.
+SHARE_REREAD_MAX = 20
+
+
+def _text(value, label):
+    """A client argument as text, or a clean refusal instead of a trace."""
+    if value is None:
+        return ""
+    if not isinstance(value, str):
+        raise UserError(_("%s invalide.") % label)
+    return value
+
+
+def _plain(value):
+    """`value` unchanged, or a refusal if it still decodes.
+
+    `_sanitize_nc_path` url-decodes a path before validating it, and every
+    WebDAV/OCS helper of bf_document_nextcloud_sync calls it AGAIN on the
+    validated path. A name like `%252e%252e` therefore passes the check as
+    `%2e%2e` and reaches Nextcloud as `..`, one folder up, outside the root.
+    Found by the adversarial review of 18.0.4.1.0; the flaw dates from 3.x, and
+    a colleague can create such a folder name in a shared folder. A real
+    Nextcloud name holding a percent escape is refused, with a message, instead
+    of being addressed to another file.
+    """
+    if isinstance(value, str) and value and url_unquote(value) != value:
+        raise UserError(
+            _("« %s » contient une séquence %%XX : le navigateur ne prend pas ce nom en charge.")
+            % value
+        )
+    return value
+
+
+def _xml_text(value):
+    """Only the characters XML 1.0 accepts (a lone surrogate or a control character
+    would make the request unencodable, or Nextcloud answer 400)."""
+    return "".join(
+        ch for ch in value
+        if ch in "\t\n\r" or (
+            ord(ch) >= 0x20 and not 0xD800 <= ord(ch) <= 0xDFFF and ord(ch) not in (0xFFFE, 0xFFFF)
+        )
+    )
+
+
+SHARE_KINDS = {
+    0: "Personne",
+    1: "Groupe",
+    3: "Lien public",
+    4: "Courriel",
+    6: "Fédéré",
+    7: "Cercle",
+    10: "Salon Talk",
+    12: "Équipe",
+}
 
 
 def _human_size(num):
@@ -126,7 +233,7 @@ class BfNcBrowser(models.TransientModel):
             raise UserError(
                 _("Aucun dossier Nextcloud n'est configure pour cet enregistrement.")
             )
-        root = _sanitize_nc_path(root)
+        root = _sanitize_nc_path(_plain(root))
         if posixpath.normpath(root) == "/":
             raise UserError(
                 _("Le dossier Nextcloud de l'enregistrement ne peut pas etre la racine '/'.")
@@ -141,13 +248,13 @@ class BfNcBrowser(models.TransientModel):
                 "« Prefixe racine (navigateur) » (ex: /Entreprise/) sur la "
                 "configuration Nextcloud."
             ))
-        _validate_path_under_prefix(root, _sanitize_nc_path(prefix))
+        _validate_path_under_prefix(root, _sanitize_nc_path(_plain(prefix)))
         return self._as_person(config), root
 
     def _resolve_path(self, model, res_id, rel_path):
         """Resolve a client relative path to a sanitised absolute NC path."""
         config, root = self._resolve_root(model, res_id)
-        rel = (rel_path or "").strip().lstrip("/")
+        rel = _plain(_text(rel_path, _("Chemin")).strip().lstrip("/"))
         abs_path = _sanitize_nc_path(posixpath.join(root, rel)) if rel else root
         _validate_path_under_prefix(abs_path, root)
         return config, abs_path, root
@@ -170,11 +277,11 @@ class BfNcBrowser(models.TransientModel):
                 "« Prefixe racine (navigateur) » (ex: /Entreprise/) sur la "
                 "configuration Nextcloud avant d'utiliser cette application."
             ))
-        return self._as_person(config), _sanitize_nc_path(prefix)
+        return self._as_person(config), _sanitize_nc_path(_plain(prefix))
 
     def _resolve_path_standalone(self, rel_path):
         config, root = self._resolve_root_standalone()
-        rel = (rel_path or "").strip().lstrip("/")
+        rel = _plain(_text(rel_path, _("Chemin")).strip().lstrip("/"))
         abs_path = _sanitize_nc_path(posixpath.join(root, rel)) if rel else root
         _validate_path_under_prefix(abs_path, root)
         return config, abs_path, root
@@ -316,23 +423,26 @@ class BfNcBrowser(models.TransientModel):
         config, abs_path, root = self._resolve_path(model, res_id, rel_path)
         return self._list_dir(config, abs_path, root)
 
-    def _list_dir(self, config, abs_path, root):
-        """Render one directory listing (shared by record + standalone scopes).
-        Inputs are already-resolved, validated absolute paths."""
-        raw = config._webdav_propfind(abs_path, depth="1")
-        dav_root = self._dav_root(config)
+    def _tz(self):
         try:
-            tz = pytz.timezone(self.env.user.tz or DEFAULT_TZ)
+            return pytz.timezone(self.env.user.tz or DEFAULT_TZ)
         except pytz.UnknownTimeZoneError:
-            tz = pytz.timezone(DEFAULT_TZ)
+            return pytz.timezone(DEFAULT_TZ)
 
-        abs_norm = posixpath.normpath(abs_path)
-        root_norm = posixpath.normpath(root)
+    def _entries(self, config, raw, root, skip=()):
+        """PROPFIND or SEARCH hits as browser entries, kept strictly under `root`.
+
+        `skip` lists absolute paths not to return (a listing's own folder).
+        """
+        dav_root = self._dav_root(config)
+        tz = self._tz()
+        skip = {posixpath.normpath(p) for p in skip}
+        base = (config.nextcloud_base_url or "").rstrip("/")
         entries = []
         for e in raw:
             nc_path = self._href_to_nc_path(config, e.get("href", ""), dav_root)
-            if posixpath.normpath(nc_path) == abs_norm:
-                continue  # the directory itself
+            if posixpath.normpath(nc_path) in skip:
+                continue
             try:
                 _validate_path_under_prefix(nc_path, root)
             except ValidationError:
@@ -350,9 +460,10 @@ class BfNcBrowser(models.TransientModel):
             is_dir = bool(e.get("is_dir"))
             fid = e.get("file_id")
             internal_url = ""
-            if fid and not is_dir and config.nextcloud_base_url:
-                internal_url = config.nextcloud_base_url.rstrip("/") + "/f/" + str(fid)
+            if fid and not is_dir and base:
+                internal_url = base + "/f/" + str(fid)
             name = e.get("name") or posixpath.basename(nc_path)
+            rel = posixpath.relpath(nc_path, root)
             entries.append({
                 "name": name,
                 # Nextcloud masque les fichiers points par defaut dans sa propre
@@ -364,10 +475,24 @@ class BfNcBrowser(models.TransientModel):
                 "size_display": "" if is_dir else _human_size(e.get("size", 0)),
                 "mtime": iso,
                 "content_type": e.get("content_type", ""),
-                "rel": posixpath.relpath(nc_path, root),
+                "rel": rel,
+                "parent_rel": "" if posixpath.dirname(rel) in ("", ".") else posixpath.dirname(rel),
                 "file_id": fid or 0,
                 "internal_url": internal_url,
+                # The internal link of a folder opens it in Nextcloud too; the
+                # listing keeps `internal_url` for files, which drives the
+                # Collabora click.
+                "link_url": (base + "/f/" + str(fid)) if (fid and base) else "",
             })
+        return entries
+
+    def _list_dir(self, config, abs_path, root):
+        """Render one directory listing (shared by record + standalone scopes).
+        Inputs are already-resolved, validated absolute paths."""
+        raw = config._webdav_propfind(abs_path, depth="1")
+        abs_norm = posixpath.normpath(abs_path)
+        root_norm = posixpath.normpath(root)
+        entries = self._entries(config, raw, root, skip=(abs_path,))
         entries.sort(key=lambda x: (not x["is_dir"], x["name"].lower()))
 
         cur_rel = "" if abs_norm == root_norm else posixpath.relpath(abs_norm, root)
@@ -389,18 +514,35 @@ class BfNcBrowser(models.TransientModel):
             "entries": entries,
             "open_extensions": config._open_extensions_list(),
             "folder_color": config.nc_folder_color or "#2E3132",
-            "presets": [
-                {"id": p.id, "name": p.name, "access": p.access}
-                for p in config.share_preset_ids
-            ],
+            "presets": self._preset_payload(config),
         }
+
+    def _preset_payload(self, config):
+        """Presets as the screen describes them: the rules a share will REALLY get.
+
+        A preset without expiry falls back to the configuration's default (at
+        least one day, enforced), and the configuration's password switch adds a
+        password to every share. When both apply, an « Interne » preset (0 day,
+        no password) gives a link that expires in 30 days, with a password.
+        """
+        return [
+            {
+                "id": p.id,
+                "name": p.name,
+                "access": p.access,
+                "expiry_days": p.expiry_days if p.expiry_days and p.expiry_days > 0
+                else (config.default_share_expiry_days or 0),
+                "password_protected": bool(p.password_protected or config.share_password_enabled),
+            }
+            for p in config.share_preset_ids
+        ]
 
     # ------------------------------------------------------------------
     # Mutations
     # ------------------------------------------------------------------
     @api.model
     def make_folder(self, model, res_id, rel_path, name):
-        name = (name or "").strip().strip("/")
+        name = _plain(_text(name, _("Nom de dossier")).strip().strip("/"))
         if not name or "/" in name:
             raise UserError(_("Nom de dossier invalide."))
         config, parent_abs, root = self._resolve_path(model, res_id, rel_path)
@@ -411,7 +553,7 @@ class BfNcBrowser(models.TransientModel):
 
     @api.model
     def rename_entry(self, model, res_id, rel_path, new_name):
-        new_name = (new_name or "").strip().strip("/")
+        new_name = _plain(_text(new_name, _("Nom")).strip().strip("/"))
         if not new_name or "/" in new_name:
             raise UserError(_("Nom invalide."))
         config, abs_path, root = self._resolve_path(model, res_id, rel_path)
@@ -443,7 +585,7 @@ class BfNcBrowser(models.TransientModel):
 
     @api.model
     def upload_file(self, model, res_id, rel_path, filename, data_b64):
-        filename = (filename or "").strip().strip("/")
+        filename = _plain(_text(filename, _("Nom de fichier")).strip().strip("/"))
         if not filename or "/" in filename:
             raise UserError(_("Nom de fichier invalide."))
         config, dir_abs, root = self._resolve_path(model, res_id, rel_path)
@@ -543,29 +685,27 @@ class BfNcBrowser(models.TransientModel):
         }
 
     @api.model
-    def link_to_knowledge_item(self, model, res_id, rel_path, item_id):
+    def link_to_knowledge_item(self, model, res_id, rel_path, item_id, mode="share", preset_id=None):
         config, abs_path, root = self._resolve_path(model, res_id, rel_path)
         item = self.env["project.knowledge.item"].browse(self._as_id(item_id))
         if not item.exists():
             raise UserError(_("Element de matrice introuvable."))
         item.check_access("write")
 
-        url = config._ocs_create_share(abs_path).get("url")
-        if not url:
-            raise UserError(_("Impossible de creer le lien de partage."))
+        link = self._make_link(config, abs_path, root, mode, preset_id)
         name = posixpath.basename(abs_path) or "Fichier Nextcloud"
         att = self.env["ir.attachment"].create({
             "name": name,
             "type": "url",
-            "url": url,
+            "url": link["url"],
             "res_model": "project.knowledge.item",
             "res_id": item.id,
         })
         item.write({"attachment_ids": [(4, att.id)]})
-        return {"ok": True, "label": item.display_name}
+        return {**link, "label": item.display_name}
 
     @api.model
-    def link_to_article(self, model, res_id, rel_path, article_id):
+    def link_to_article(self, model, res_id, rel_path, article_id, mode="share", preset_id=None):
         Article = self.env.get("knowledge.article")
         if Article is None:
             raise UserError(
@@ -577,9 +717,8 @@ class BfNcBrowser(models.TransientModel):
             raise UserError(_("Article introuvable."))
         article.check_access("write")
 
-        url = config._ocs_create_share(abs_path).get("url")
-        if not url:
-            raise UserError(_("Impossible de creer le lien de partage."))
+        link = self._make_link(config, abs_path, root, mode, preset_id)
+        url = link["url"]
         name = posixpath.basename(abs_path) or "Fichier Nextcloud"
         # Markup %-substitution HTML-escapes url + name (prevents stored XSS
         # from a crafted filename or share URL).
@@ -587,7 +726,358 @@ class BfNcBrowser(models.TransientModel):
             '<p>&#128206; <a href="%s" target="_blank" rel="noopener">%s</a></p>'
         ) % (url, name)
         article.write({"body": Markup(article.body or "") + snippet})
-        return {"ok": True, "label": article.display_name}
+        return {**link, "label": article.display_name}
+
+    # ------------------------------------------------------------------
+    # Search (18.0.4.1.0)
+    # ------------------------------------------------------------------
+    def _search(self, config, root, term):
+        """Names containing `term`, anywhere under `root`, as the person.
+
+        Nextcloud compares without case or accents ("ecole" finds "École").
+        Names only: the servers measured have no full-text search app.
+        """
+        term = _xml_text(_text(term, _("Terme de recherche"))).strip()[:SEARCH_MAX_CHARS]
+        if len(term) < SEARCH_MIN_CHARS:
+            return {"ok": True, "term": term, "too_short": True, "entries": [], "truncated": False}
+        where = (
+            "<d:like><d:prop><d:displayname/></d:prop>"
+            "<d:literal>%s</d:literal></d:like>" % like_literal(term)
+        )
+        # One more than shown, to know whether there were more.
+        raw = config._webdav_search(root, where, limit=SEARCH_LIMIT + 1)
+        entries = self._entries(config, raw, root, skip=(root,))
+        return {
+            "ok": True,
+            "term": term,
+            "too_short": False,
+            "entries": entries[:SEARCH_LIMIT],
+            "truncated": len(raw) > SEARCH_LIMIT,
+        }
+
+    @api.model
+    def search_entries(self, model, res_id, term):
+        config, root = self._resolve_root(model, res_id)
+        return self._search(config, root, term)
+
+    @api.model
+    def root_search_entries(self, term):
+        config, root = self._resolve_root_standalone()
+        return self._search(config, root, term)
+
+    # ------------------------------------------------------------------
+    # Links to paste in a message (18.0.4.1.0)
+    # ------------------------------------------------------------------
+    def _make_link(self, config, abs_path, root, mode, preset_id=None):
+        """An internal `/f/` link, or a share made with a preset.
+
+        The person chooses each time. An internal link opens only for someone
+        who can already see the file in Nextcloud; a share opens for anyone who
+        has the link, until it expires.
+        """
+        name = posixpath.basename(abs_path.rstrip("/")) or abs_path
+        if mode == "internal":
+            items = config._webdav_propfind(abs_path, depth="0")
+            fid = items[0].get("file_id") if items else None
+            if not fid:
+                raise UserError(_("Nextcloud n'a pas donné l'identifiant de « %s ».") % name)
+            return {"ok": True, "kind": "internal", "name": name, "url": config._internal_link(fid)}
+        if mode != "share":
+            raise UserError(_("Type de lien inconnu."))
+        if posixpath.normpath(abs_path) == posixpath.normpath(root):
+            # The root of a record, or of the whole browser: never public.
+            raise UserError(_("Le dossier racine ne se partage pas par lien public."))
+        result = config._ocs_create_share(
+            abs_path, **self._share_kwargs(config, preset_id, abs_path)
+        )
+        if not result.get("url"):
+            raise UserError(_("Impossible de creer le lien de partage."))
+        return {
+            "ok": True,
+            "kind": "share",
+            "name": name,
+            "url": result["url"],
+            "password": result.get("password"),
+            "expire_date": result.get("expire_date"),
+        }
+
+    @api.model
+    def make_link(self, model, res_id, rel_path, mode, preset_id=None):
+        config, abs_path, root = self._resolve_path(model, res_id, rel_path)
+        return self._make_link(config, abs_path, root, mode, preset_id)
+
+    @api.model
+    def root_make_link(self, rel_path, mode, preset_id=None):
+        config, abs_path, root = self._resolve_path_standalone(rel_path)
+        return self._make_link(config, abs_path, root, mode, preset_id)
+
+    # ------------------------------------------------------------------
+    # Shares: state and revocation (18.0.4.1.0)
+    # ------------------------------------------------------------------
+    def _rel_under(self, path, root):
+        """`path` relative to `root`, or None when it is outside."""
+        try:
+            _validate_path_under_prefix(path, root)
+        except ValidationError:
+            return None
+        rel = posixpath.relpath(posixpath.normpath(path), posixpath.normpath(root))
+        return "" if rel == "." else rel
+
+    def _share_view(self, share, root, me=None, expiry_checked=True):
+        rel = self._rel_under(share["path"], root) if share["path"] else None
+        is_public = share["share_type"] == SHARE_TYPE_PUBLIC_LINK
+        return {
+            **share,
+            # Nextcloud names a public link's recipient "(Shared link)": nobody.
+            "share_with": "" if is_public else share["share_with"],
+            "kind": SHARE_KINDS.get(share["share_type"], _("Autre")),
+            "is_public": is_public,
+            "writable": bool(share["permissions"] & (2 | 4 | 8)),
+            "rel": rel,
+            # Nextcloud's answer, narrowed to the person's own shares (made by
+            # them, or of their files): Nextcloud also lets anyone with the
+            # reshare right on a team folder delete a colleague's link, and
+            # Odoo does not offer that. The server checks it again (_mine).
+            "can_revoke": share["can_delete"] and (me is None or self._mine(share, me)),
+            # The share list does not always carry the expiry; past the reread
+            # cap the screen must not claim "no expiry" for a share that has one.
+            "expiry_checked": expiry_checked,
+        }
+
+    @staticmethod
+    def _mine(share, me):
+        return bool(me) and me in (share.get("uid_owner"), share.get("uid_file_owner"))
+
+    def _me(self, config):
+        cred = config._nc_person()
+        return cred.nc_user_id if cred else ""
+
+    def _share_states(self, config, abs_dir, root):
+        """Per child of a folder: how many public links, how many other shares."""
+        states = {}
+        for share in config._ocs_shares(path=abs_dir, subfiles=True):
+            rel = self._rel_under(share["path"], root)
+            if not rel:
+                continue
+            state = states.setdefault(rel, {"public": 0, "other": 0})
+            state["public" if share["share_type"] == SHARE_TYPE_PUBLIC_LINK else "other"] += 1
+        return {"ok": True, "states": states}
+
+    @api.model
+    def share_states(self, model, res_id, rel_path=""):
+        config, abs_path, root = self._resolve_path(model, res_id, rel_path)
+        return self._share_states(config, abs_path, root)
+
+    @api.model
+    def root_share_states(self, rel_path=""):
+        config, abs_path, root = self._resolve_path_standalone(rel_path)
+        return self._share_states(config, abs_path, root)
+
+    def _entry_shares(self, config, abs_path, root):
+        target = posixpath.normpath(abs_path)
+        me = self._me(config)
+        shares = []
+        for share in config._ocs_shares(path=abs_path):
+            if posixpath.normpath(share["path"] or "/") != target:
+                continue
+            # Read alone: the list is not trusted with expirations (a cap keeps
+            # a much-shared file from costing one call per share without end).
+            checked = len(shares) < SHARE_REREAD_MAX
+            if checked:
+                share = config._ocs_share(share["id"]) or share
+            shares.append(self._share_view(share, root, me, checked))
+        return {"ok": True, "shares": shares}
+
+    @api.model
+    def entry_shares(self, model, res_id, rel_path):
+        config, abs_path, root = self._resolve_path(model, res_id, rel_path)
+        return self._entry_shares(config, abs_path, root)
+
+    @api.model
+    def root_entry_shares(self, rel_path):
+        config, abs_path, root = self._resolve_path_standalone(rel_path)
+        return self._entry_shares(config, abs_path, root)
+
+    def _revoke(self, config, root, share_id):
+        share = config._ocs_share(self._as_id(share_id))
+        if not share:
+            # Deleted already, or not visible to this person: Nextcloud answers
+            # the same 404 for both, and nothing is sent. The screen says so
+            # instead of announcing a removal (seen on the bench: Bob "revoked"
+            # Alice's share, which was still there).
+            return {"ok": True, "gone": True}
+        if self._rel_under(share["path"], root) is None:
+            raise UserError(_("Ce partage est hors du dossier du navigateur."))
+        if not self._mine(share, self._me(config)):
+            raise UserError(_("Ce partage n'est pas le vôtre : retirez-le dans Nextcloud si vous en avez le droit."))
+        config._ocs_delete_share(share["id"])
+        return {"ok": True, "gone": False}
+
+    @api.model
+    def revoke_share(self, model, res_id, share_id):
+        config, root = self._resolve_root(model, res_id)
+        return self._revoke(config, root, share_id)
+
+    @api.model
+    def root_revoke_share(self, share_id):
+        config, root = self._resolve_root_standalone()
+        return self._revoke(config, root, share_id)
+
+    # ------------------------------------------------------------------
+    # Files linked from a chatter (18.0.4.1.0)
+    # ------------------------------------------------------------------
+    def _chatter_record(self, model, res_id):
+        """The record whose chatter is read, checked as the caller."""
+        if not isinstance(model, str) or model not in self.env:
+            raise ValidationError(_("Modele non supporte: %s") % model)
+        Model = self.env[model]
+        if Model._abstract or Model._transient or not hasattr(Model, "message_ids"):
+            raise ValidationError(_("Modele non supporte: %s") % model)
+        record = Model.browse(self._as_id(res_id))
+        if not record.exists():
+            raise UserError(_("Enregistrement introuvable."))
+        record.check_access("read")
+        return record
+
+    def _links_in_chatter(self, config, record):
+        """Every Nextcloud link of the record's messages, newest mention first."""
+        hosts = config._link_hosts()
+        pattern = link_re(tuple(sorted(hosts)))
+        budget = LINKED_SCAN_BUDGET
+        messages = self.env["mail.message"].search(
+            [("model", "=", record._name), ("res_id", "=", record.id)],
+            order="date desc, id desc",
+            limit=LINKED_MESSAGE_LIMIT,
+        )
+        links = {}
+        for message in messages:
+            if budget <= 0:
+                break
+            body = (message.body or "")[:LINKED_BODY_MAX]
+            budget -= len(body)
+            # One lowercase copy per body, not one per known host.
+            low = body.lower()
+            if not any(host in low for host in hosts):
+                continue
+            seen = set()
+            for _host, prefix, kind, key in pattern.findall(body):
+                kind = kind.lower()
+                # `/apps/polls/s/<token>` is a poll, and `/remote.php/dav/files/x/s/y`
+                # a folder named "s": neither is a link to a file or a share.
+                if set(prefix.lower().split("/")) & NOT_A_LINK_PREFIX or (kind == "f" and not key.isdigit()):
+                    continue
+                ident = (kind, key)
+                if ident in seen:
+                    continue  # the same link as href and as text
+                seen.add(ident)
+                link = links.get(ident)
+                if link is None:
+                    link = links[ident] = {
+                        "kind": "internal" if kind == "f" else "share",
+                        "key": key,
+                        "mentions": 0,
+                        "last_date": fields.Datetime.to_string(message.date),
+                        "last_author": message.author_id.display_name or "",
+                        "message_id": message.id,
+                    }
+                link["mentions"] += 1
+        return list(links.values())
+
+    def _linked_files(self, config, root, record):
+        """Resolved in the person's WHOLE account, not only under the browser root.
+
+        On a real database, most files cited in chatters that Nextcloud still
+        knows sit outside the browser root (Documents, Recordings, Notes).
+        Bounded to the root, the list would call most of them "not found".
+        Nothing is revealed that Nextcloud would not show this person for the
+        same link: the calls speak as them. `in_browser` says whether the file
+        can also be opened in the browser.
+        """
+        links = self._links_in_chatter(config, record)
+        truncated = len(links) > LINKED_FILE_LIMIT
+        links = links[:LINKED_FILE_LIMIT]
+        base = config.nextcloud_base_url.rstrip("/")
+
+        file_ids = [int(l["key"]) for l in links if l["kind"] == "internal"]
+        by_id = {}
+        if file_ids:
+            where = "<d:or>%s</d:or>" % "".join(
+                "<d:eq><d:prop><oc:fileid/></d:prop><d:literal>%d</d:literal></d:eq>" % fid
+                for fid in file_ids
+            ) if len(file_ids) > 1 else (
+                "<d:eq><d:prop><oc:fileid/></d:prop><d:literal>%d</d:literal></d:eq>" % file_ids[0]
+            )
+            raw = config._webdav_search("/", where, limit=len(file_ids))
+            by_id = {e["file_id"]: e for e in self._entries(config, raw, "/") if e["file_id"]}
+
+        shares = {}
+        me = self._me(config)
+        rereads = 0
+        if any(l["kind"] == "share" for l in links):
+            shares = {s["token"]: s for s in config._ocs_shares() if s["token"]}
+
+        out = []
+        for link in links:
+            if link["kind"] == "internal":
+                entry = by_id.get(int(link["key"]))
+                out.append({
+                    **link,
+                    "url": base + "/f/" + link["key"],
+                    "found": bool(entry),
+                    "in_browser": bool(entry) and self._rel_under("/" + entry["rel"], root) is not None,
+                    "entry": entry or False,
+                    "share": False,
+                })
+                continue
+            share = shares.get(link["key"])
+            if share:
+                checked = rereads < SHARE_REREAD_MAX
+                if checked:
+                    rereads += 1
+                    share = config._ocs_share(share["id"]) or share
+                share = self._share_view(share, "/", me, checked)
+            out.append({
+                **link,
+                "url": (share and share["url"]) or base + "/s/" + link["key"],
+                "found": bool(share),
+                "in_browser": bool(share) and self._rel_under(share["path"], root) is not None,
+                "entry": False,
+                "share": share or False,
+            })
+        return {"ok": True, "links": out, "truncated": truncated}
+
+    @api.model
+    def linked_files(self, model, res_id):
+        """Nextcloud files already linked in a record's chatter, with their state.
+
+        Nothing is stored: the links are read again from the messages each time,
+        so a link removed from a message disappears, and a file deleted in
+        Nextcloud shows as not found.
+        """
+        config, root = self._resolve_root_standalone()
+        record = self._chatter_record(model, res_id)
+        return self._linked_files(config, root, record)
+
+    @api.model
+    def linked_revoke_share(self, model, res_id, share_id):
+        """Revoke a share cited in this record's chatter, wherever the file lives.
+
+        Two conditions instead of the browser's root: the caller reads the
+        record and its messages cite this share's token, and Nextcloud lets the
+        caller delete it (the call speaks as them).
+        """
+        config, _root = self._resolve_root_standalone()
+        record = self._chatter_record(model, res_id)
+        share = config._ocs_share(self._as_id(share_id))
+        if not share:
+            return {"ok": True, "gone": True}
+        cited = {l["key"] for l in self._links_in_chatter(config, record) if l["kind"] == "share"}
+        if share["token"] not in cited:
+            raise UserError(_("Ce partage n'est pas cité dans ce fil."))
+        if not self._mine(share, self._me(config)):
+            raise UserError(_("Ce partage n'est pas le vôtre : retirez-le dans Nextcloud si vous en avez le droit."))
+        config._ocs_delete_share(share["id"])
+        return {"ok": True, "gone": False}
 
     # ------------------------------------------------------------------
     # Standalone (root-scoped) operations — same semantics as the record
@@ -601,7 +1091,7 @@ class BfNcBrowser(models.TransientModel):
 
     @api.model
     def root_make_folder(self, rel_path, name):
-        name = (name or "").strip().strip("/")
+        name = _plain(_text(name, _("Nom de dossier")).strip().strip("/"))
         if not name or "/" in name:
             raise UserError(_("Nom de dossier invalide."))
         config, parent_abs, root = self._resolve_path_standalone(rel_path)
@@ -612,7 +1102,7 @@ class BfNcBrowser(models.TransientModel):
 
     @api.model
     def root_rename_entry(self, rel_path, new_name):
-        new_name = (new_name or "").strip().strip("/")
+        new_name = _plain(_text(new_name, _("Nom")).strip().strip("/"))
         if not new_name or "/" in new_name:
             raise UserError(_("Nom invalide."))
         config, abs_path, root = self._resolve_path_standalone(rel_path)
@@ -644,7 +1134,7 @@ class BfNcBrowser(models.TransientModel):
 
     @api.model
     def root_upload_file(self, rel_path, filename, data_b64):
-        filename = (filename or "").strip().strip("/")
+        filename = _plain(_text(filename, _("Nom de fichier")).strip().strip("/"))
         if not filename or "/" in filename:
             raise UserError(_("Nom de fichier invalide."))
         config, dir_abs, root = self._resolve_path_standalone(rel_path)

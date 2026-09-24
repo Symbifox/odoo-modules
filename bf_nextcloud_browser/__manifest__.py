@@ -1,7 +1,7 @@
 {
     "name": "Nextcloud File Browser",
     "summary": "Navigateur WebDAV Nextcloud embarque dans les fiches Odoo (projets, taches) + application autonome",
-    "version": "18.0.4.0.4",
+    "version": "18.0.4.1.1",
     "category": "Services/Project",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -32,7 +32,9 @@
             "bf_nextcloud_browser/static/src/js/nc_browser.js",
             "bf_nextcloud_browser/static/src/js/nc_panel.js",
             "bf_nextcloud_browser/static/src/js/nc_systray.js",
+            "bf_nextcloud_browser/static/src/js/nc_links.js",
             "bf_nextcloud_browser/static/src/xml/nc_browser.xml",
+            "bf_nextcloud_browser/static/src/xml/nc_links.xml",
         ],
     },
 }

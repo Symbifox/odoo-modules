@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        Bouton du composeur, a cote du trombone. Le sous-gabarit `attachFiles`
+        est appele par les deux barres d'actions du composeur (normale et
+        « extra ») : l'heriter une fois couvre les deux.
+    -->
+    <t t-name="bf_nextcloud_browser.Composer.attachFiles" t-inherit="mail.Composer.attachFiles" t-inherit-mode="extension">
+        <xpath expr="//FileUploader" position="after">
+            <button t-if="bfNcVisible" type="button"
+                    class="o-bf-nc-insert btn border-0 rounded-circle p-0"
+                    t-att-disabled="!state.active"
+                    title="Insérer un lien Nextcloud" aria-label="Insérer un lien Nextcloud"
+                    t-on-click="onClickBfNcInsert">
+                <i class="fa fa-fw fa-lg fa-cloud"/>
+            </button>
+        </xpath>
+    </t>
+
+    <!-- Bouton de la barre du chatter, a cote de la loupe. -->
+    <t t-name="bf_nextcloud_browser.Chatter" t-inherit="mail.Chatter" t-inherit-mode="extension">
+        <xpath expr="//span[hasclass('o-mail-Chatter-topbarGrow')]" position="after">
+            <button t-if="bfNcLinksVisible" class="btn btn-link text-action o-bf-nc-linked"
+                    type="button" t-on-click="onClickBfNcLinkedFiles"
+                    aria-label="Fichiers Nextcloud liés" title="Fichiers Nextcloud liés dans ce fil">
+                <i class="fa fa-cloud" role="img"/>
+            </button>
+        </xpath>
+    </t>
+
+    <t t-name="bf_nextcloud_browser.NcPickerDialog">
+        <Dialog title="'Insérer un lien Nextcloud'" size="'xl'" contentClass="'o_nc_picker_dialog'">
+            <NcBrowserApp onPick.bind="onPick"/>
+            <t t-set-slot="footer">
+                <span class="text-muted small me-auto">Cliquez sur un fichier, ou sur « Insérer » pour un dossier.</span>
+                <button class="btn btn-secondary" t-on-click="() => props.close()">Fermer</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="bf_nextcloud_browser.NcLinkedFilesDialog">
+        <Dialog title="'Fichiers Nextcloud liés dans ce fil'" size="'lg'">
+            <div t-if="state.loading" class="text-muted p-2"><i class="fa fa-spinner fa-spin me-1"/>Lecture des messages et de Nextcloud…</div>
+            <div t-elif="state.error" class="alert alert-info mb-0" t-esc="state.error"/>
+            <div t-elif="!state.links.length" class="text-muted p-2">
+                Aucun lien Nextcloud dans les messages de cette fiche. Pour en ajouter un, utilisez le nuage du composeur.
+            </div>
+            <t t-else="">
+                <p t-if="state.truncated" class="text-muted small">Seuls les 200 liens les plus récents sont montrés.</p>
+                <table class="table table-sm align-middle o_nc_linked_table mb-0">
+                    <thead>
+                        <tr>
+                            <th>Fichier</th>
+                            <th>État</th>
+                            <th class="text-end">Cité</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="state.links" t-as="l" t-key="l.kind + ':' + l.key">
+                            <tr t-att-class="{ 'text-muted': !l.found }">
+                                <td>
+                                    <i class="fa me-1" t-att-class="l.kind === 'internal' ? 'fa-lock' : 'fa-globe'"/>
+                                    <span t-esc="label(l)"/>
+                                    <div t-if="where(l)" class="small text-muted text-truncate"><i class="fa fa-folder-o me-1"/><t t-esc="where(l)"/></div>
+                                </td>
+                                <td class="small">
+                                    <span t-if="l.found and l.share and l.share.is_public and !l.share.expiration and l.share.expiry_checked" class="badge text-bg-warning me-1">Sans expiration</span>
+                                    <t t-esc="stateLabel(l)"/>
+                                </td>
+                                <td class="text-end small text-nowrap">
+                                    <t t-esc="l.mentions"/> fois
+                                    <div class="text-muted" t-esc="l.last_date.slice(0, 10)"/>
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.open(l)" title="Ouvrir"><i class="fa fa-external-link"/></button>
+                                    <button class="btn btn-sm btn-link p-0 me-2" t-on-click="() => this.copy(l)" title="Copier le lien"><i class="fa fa-clipboard"/></button>
+                                    <button t-if="l.share and l.share.can_revoke" class="btn btn-sm btn-link text-danger p-0"
+                                            t-on-click="() => this.revoke(l)" title="Retirer ce partage"><i class="fa fa-ban"/></button>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+            <t t-set-slot="footer">
+                <button class="btn btn-secondary" t-on-click="() => this.load()" t-att-disabled="state.loading"><i class="fa fa-refresh me-1"/>Relire</button>
+                <button class="btn btn-primary" t-on-click="() => props.close()">Fermer</button>
+            </t>
+        </Dialog>
+    </t>
+
+</templates>

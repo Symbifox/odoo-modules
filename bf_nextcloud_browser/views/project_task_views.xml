@@ -7,8 +7,11 @@
         <field name="inherit_id" ref="project.view_task_form2"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
+                <!-- Masque tant que le projet de la tache n'a pas de dossier (voir la vue du projet). -->
                 <page string="Fichiers Nextcloud" name="nc_browser"
-                      groups="bf_nextcloud_browser.group_nc_browser_user">
+                      groups="bf_nextcloud_browser.group_nc_browser_user"
+                      invisible="not nc_documents_folder">
+                    <field name="nc_documents_folder" invisible="1"/>
                     <group>
                         <field name="nc_task_subfolder" placeholder="(optionnel) sous-dossier propre a la tache"/>
                     </group>

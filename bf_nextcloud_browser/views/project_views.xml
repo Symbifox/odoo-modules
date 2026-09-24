@@ -7,8 +7,15 @@
         <field name="inherit_id" ref="project.edit_project"/>
         <field name="arch" type="xml">
             <xpath expr="//notebook" position="inside">
+                <!-- Masque tant que le projet n'a pas de dossier : sans lui l'onglet
+                     n'affichait qu'un message d'erreur, et la plupart des projets
+                     actifs n'en ont pas. Le champ
+                     est repose ici : celui de bf_document_nextcloud_sync est reserve
+                     aux administrateurs, et la condition doit tenir pour tout le groupe. -->
                 <page string="Fichiers Nextcloud" name="nc_browser"
-                      groups="bf_nextcloud_browser.group_nc_browser_user">
+                      groups="bf_nextcloud_browser.group_nc_browser_user"
+                      invisible="not nc_documents_folder">
+                    <field name="nc_documents_folder" invisible="1"/>
                     <widget name="nc_browser_panel"/>
                 </page>
             </xpath>

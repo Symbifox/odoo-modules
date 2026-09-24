@@ -8,7 +8,7 @@
 
     .o_nc_toolbar {
         .o_nc_filter {
-            max-width: 220px;
+            max-width: 280px;
         }
         .btn-primary {
             background-color: var(--bf-accent);
@@ -315,4 +315,26 @@
 // Carte de connexion Nextcloud par personne (18.0.4.0.0).
 .o_nc_connect {
     max-width: 38rem;
+}
+
+// 18.0.4.1.0 : recherche, pastilles de partage, selection pour le composeur.
+.o_nc_browser {
+    .o_nc_parent {
+        max-width: 48ch;
+        padding-left: 1.6rem;
+    }
+    .o_nc_share_badge {
+        color: var(--bf-anthracite);
+        font-size: 0.8rem;
+        text-decoration: none;
+    }
+    .o_nc_search_banner {
+        color: var(--bf-anthracite);
+    }
+}
+.o_nc_picker_dialog .o_nc_browser {
+    padding: 0;
+}
+.o_nc_share_list li:last-child {
+    border-bottom: 0 !important;
 }

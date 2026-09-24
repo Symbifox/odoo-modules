@@ -22,6 +22,7 @@ export class NcLinkDialog extends Component {
         items: Array,
         articles: Array,
         hasArticles: Boolean,
+        presets: { type: Array, optional: true },
         onConfirm: Function,
     };
 
@@ -30,7 +31,14 @@ export class NcLinkDialog extends Component {
             target: this.props.items.length || !this.props.hasArticles ? "item" : "article",
             itemId: this.props.items[0] ? String(this.props.items[0].id) : false,
             articleId: this.props.articles[0] ? String(this.props.articles[0].id) : false,
+            // Un lien interne par defaut : l'element de matrice est lu dans Odoo,
+            // par des gens qui ont deja acces aux fichiers.
+            linkChoice: "internal",
         });
+    }
+
+    get presets() {
+        return this.props.presets || [];
     }
 
     get canConfirm() {
@@ -39,7 +47,10 @@ export class NcLinkDialog extends Component {
 
     confirm() {
         const id = this.state.target === "item" ? this.state.itemId : this.state.articleId;
-        this.props.onConfirm(this.state.target, id);
+        const choice = this.state.linkChoice;
+        const mode = choice === "internal" ? "internal" : "share";
+        const presetId = choice.startsWith("preset:") ? Number(choice.slice(7)) : false;
+        this.props.onConfirm(this.state.target, id, mode, presetId);
         this.props.close();
     }
 }
@@ -85,7 +96,11 @@ export class NcPromptDialog extends Component {
 }
 
 /**
- * Share modal: pick a configured share preset (Interne / Externe / ...).
+ * Share modal: the entry's existing shares (with their expiry, and a way to
+ * revoke them), then the presets to create a new one.
+ *
+ * The existing shares came with 18.0.4.1.0: on a real account, most public
+ * links had no expiry, and nothing in Odoo showed them.
  */
 export class NcShareDialog extends Component {
     static template = "bf_nextcloud_browser.NcShareDialog";
@@ -95,7 +110,100 @@ export class NcShareDialog extends Component {
         filename: String,
         presets: Array,
         onChoose: Function,
+        fetchShares: { type: Function, optional: true },
+        revokeShare: { type: Function, optional: true },
     };
+
+    setup() {
+        this.notification = useService("notification");
+        this.state = useState({ loading: !!this.props.fetchShares, shares: [], error: "" });
+        onWillStart(() => this.refresh());
+    }
+
+    async refresh() {
+        if (!this.props.fetchShares) {
+            return;
+        }
+        this.state.loading = true;
+        try {
+            const res = await this.props.fetchShares();
+            this.state.shares = (res && res.shares) || [];
+            this.state.error = "";
+        } catch (e) {
+            this.state.error = (e && e.data && e.data.message) || (e && e.message) || _t("Erreur.");
+        } finally {
+            this.state.loading = false;
+        }
+    }
+
+    presetLabel(p) {
+        const parts = [p.access === "read_write" ? _t("lecture / écriture") : _t("lecture seule")];
+        // Toujours une echeance : le serveur rend l'echeance reelle (celle du
+        // prereglage, ou la duree par defaut de la configuration).
+        parts.push(p.expiry_days ? _t("expire après %s jours", p.expiry_days) : _t("sans expiration"));
+        if (p.password_protected) {
+            parts.push(_t("mot de passe"));
+        }
+        return "(" + parts.join(", ") + ")";
+    }
+
+    async copy(share) {
+        try {
+            await navigator.clipboard.writeText(share.url);
+            this.notification.add(_t("Lien copié."), { type: "success" });
+        } catch {
+            this.notification.add(share.url, { title: _t("Lien de partage"), sticky: true });
+        }
+    }
+
+    async revoke(share) {
+        if (!this.props.revokeShare) {
+            return;
+        }
+        try {
+            const res = await this.props.revokeShare(share);
+            if (res && res.gone) {
+                this.notification.add(
+                    _t("Ce partage n'existe plus, ou Nextcloud ne vous le montre pas : rien n'a été retiré."),
+                    { type: "warning" }
+                );
+            } else {
+                this.notification.add(_t("Partage retiré."), { type: "success" });
+            }
+        } catch (e) {
+            this.notification.add(
+                (e && e.data && e.data.message) || (e && e.message) || _t("Erreur."),
+                { type: "danger" }
+            );
+        }
+        await this.refresh();
+    }
+}
+
+/**
+ * Which link to put in a message: the person chooses each time (decision of
+ * 2026-09-14). An internal link opens only for someone who can already see
+ * the file; a share opens for whoever has the link.
+ */
+export class NcInsertDialog extends Component {
+    static template = "bf_nextcloud_browser.NcInsertDialog";
+    static components = { Dialog };
+    static props = {
+        close: Function,
+        filename: String,
+        isDir: Boolean,
+        presets: Array,
+        onChoose: Function,
+    };
+
+    presetLabel(p) {
+        return NcShareDialog.prototype.presetLabel.call(this, p);
+    }
+
+    choose(mode, preset) {
+        this.props.onChoose(mode, preset || null);
+        this.props.close();
+    }
 }
 
 /**
@@ -126,6 +234,10 @@ export class NcBrowser extends Component {
     static template = "bf_nextcloud_browser.NcBrowser";
     static components = { NcTreeNode };
     static props = { ...standardWidgetProps };
+
+    /** Below this many characters the box filters the folder; from it on, it searches the tree. */
+    static SEARCH_MIN_CHARS = 3;
+    static SEARCH_DELAY_MS = 350;
 
     setup() {
         this.orm = useService("orm");
@@ -167,6 +279,11 @@ export class NcBrowser extends Component {
             folderColor: "#2E3132",
             presets: [],
             filter: "",
+            // Recherche dans l'arbre (18.0.4.1.0) : au-dela de quelques caracteres,
+            // la boite ne filtre plus le dossier, elle cherche sous la racine.
+            search: { term: "", loading: false, entries: [], truncated: false, done: false },
+            // Partages des enfants du dossier courant : { rel: { public, other } }.
+            shareStates: {},
             selected: [], // rels of checked entries
             // Connexion Nextcloud de la personne (18.0.4.0.0). Le navigateur
             // n'emprunte plus le compte de la configuration : sans connexion,
@@ -183,8 +300,14 @@ export class NcBrowser extends Component {
             },
         });
         this._pollTimer = null;
+        this._searchTimer = null;
+        this._searchSeq = 0;
+        this._shareSeq = 0;
         onWillStart(() => this._start());
-        onWillUnmount(() => this._stopPolling());
+        onWillUnmount(() => {
+            this._stopPolling();
+            browser.clearTimeout(this._searchTimer);
+        });
     }
 
     async _start() {
@@ -235,6 +358,10 @@ export class NcBrowser extends Component {
     }
     get showLink() {
         return true;
+    }
+    /** Picker mode: the composer's dialog passes `onPick`, rows get « Insérer ». */
+    get pickMode() {
+        return typeof this.props.onPick === "function";
     }
     _fileParams(entry) {
         return { model: this.model, res_id: this.resId, rel_path: entry.rel };
@@ -470,7 +597,9 @@ export class NcBrowser extends Component {
             this.state.error = "";
             this.state.selected = [];
             this.state.filter = "";
+            this._resetSearch();
             this._syncTree(res.rel_path, res.entries);
+            this._loadShareStates(res.rel_path);
         } catch (e) {
             if (this._handleConnectionError(e)) {
                 return;
@@ -635,10 +764,9 @@ export class NcBrowser extends Component {
             return (e.name || "").toLowerCase();
         };
         const q = (this.state.filter || "").trim().toLowerCase();
-        let list = this.state.showHidden
-            ? this.state.entries
-            : this.state.entries.filter((e) => !e.is_hidden);
-        if (q) {
+        const source = this.searching ? this.state.search.entries : this.state.entries;
+        let list = this.state.showHidden ? source : source.filter((e) => !e.is_hidden);
+        if (q && !this.searching) {
             list = list.filter((e) => (e.name || "").toLowerCase().includes(q));
         }
         return [...list].sort((a, b) => {
@@ -711,6 +839,123 @@ export class NcBrowser extends Component {
         return this.state.entries.filter((e) => e.is_hidden).length;
     }
 
+    // ----------------------------------------------------------------
+    // Recherche dans l'arbre (18.0.4.1.0)
+    // ----------------------------------------------------------------
+    /** Is the box asking for a search of the whole tree (rather than a filter)? */
+    get searching() {
+        return (this.state.filter || "").trim().length >= this.constructor.SEARCH_MIN_CHARS;
+    }
+
+    _resetSearch() {
+        browser.clearTimeout(this._searchTimer);
+        this._searchSeq++;
+        Object.assign(this.state.search, { term: "", loading: false, entries: [], truncated: false, done: false });
+    }
+
+    onFilterInput() {
+        this.state.selected = [];
+        browser.clearTimeout(this._searchTimer);
+        if (!this.searching) {
+            this._resetSearch();
+            return;
+        }
+        Object.assign(this.state.search, { loading: true, done: false });
+        this._searchTimer = browser.setTimeout(() => this._runSearch(), this.constructor.SEARCH_DELAY_MS);
+    }
+
+    async _runSearch() {
+        const term = (this.state.filter || "").trim();
+        const seq = ++this._searchSeq;
+        this.state.search.loading = true;
+        try {
+            const res = await this._call("search_entries", [term]);
+            if (seq !== this._searchSeq) {
+                return; // a later keystroke already asked something else
+            }
+            Object.assign(this.state.search, {
+                term: res.term,
+                entries: res.entries || [],
+                truncated: !!res.truncated,
+                done: true,
+            });
+        } catch (e) {
+            if (seq === this._searchSeq) {
+                this.state.search.done = false;
+                this._err(e);
+            }
+        } finally {
+            if (seq === this._searchSeq) {
+                this.state.search.loading = false;
+            }
+        }
+    }
+
+    clearSearch() {
+        this.state.filter = "";
+        this.state.selected = [];
+        this._resetSearch();
+    }
+
+    /** A search hit's folder, as shown under its name. */
+    parentLabel(entry) {
+        return entry.parent_rel ? entry.parent_rel : _t("Racine");
+    }
+
+    // ----------------------------------------------------------------
+    // Liens et partages (18.0.4.1.0)
+    // ----------------------------------------------------------------
+    async _loadShareStates(rel) {
+        const seq = ++this._shareSeq;
+        this.state.shareStates = {};
+        try {
+            const res = await this._call("share_states", [rel || ""]);
+            if (seq === this._shareSeq) {
+                this.state.shareStates = (res && res.states) || {};
+            }
+        } catch {
+            // Sans l'etat des partages, la liste reste utilisable : pas de pastille.
+        }
+    }
+
+    shareState(entry) {
+        return (!this.searching && this.state.shareStates[entry.rel]) || null;
+    }
+
+    async copyInternalLink(entry) {
+        if (!entry.link_url) {
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(entry.link_url);
+            this.notification.add(
+                _t("Lien interne copié : il s'ouvre pour qui a déjà accès au fichier dans Nextcloud."),
+                { type: "success" }
+            );
+        } catch {
+            this.notification.add(entry.link_url, { title: _t("Lien interne"), sticky: true });
+        }
+    }
+
+    pickEntry(entry) {
+        if (!this.pickMode) {
+            return;
+        }
+        this.dialog.add(NcInsertDialog, {
+            filename: entry.name,
+            isDir: !!entry.is_dir,
+            presets: this.state.presets,
+            onChoose: async (mode, preset) => {
+                try {
+                    const res = await this._call("make_link", [entry.rel, mode, preset ? preset.id : false]);
+                    this.props.onPick(res);
+                } catch (e) {
+                    this._err(e);
+                }
+            },
+        });
+    }
+
     // --- multi-selection + bulk actions ---
     isSelected(rel) {
         return this.state.selected.includes(rel);
@@ -724,12 +969,20 @@ export class NcBrowser extends Component {
         }
     }
 
+    /** Selection and bulk delete stay in one folder: search hits span the whole tree. */
+    get canSelect() {
+        return this.canMutate && !this.searching;
+    }
+
     get allVisibleSelected() {
         const vis = this.sortedEntries;
         return vis.length > 0 && vis.every((e) => this.isSelected(e.rel));
     }
 
     toggleSelectAll() {
+        if (!this.canSelect) {
+            return;
+        }
         if (this.allVisibleSelected) {
             this.state.selected = [];
         } else {
@@ -743,7 +996,7 @@ export class NcBrowser extends Component {
 
     bulkDelete() {
         const rels = [...this.state.selected];
-        if (!rels.length) {
+        if (!rels.length || !this.canSelect) {
             return;
         }
         this.dialog.add(ConfirmationDialog, {
@@ -811,6 +1064,10 @@ export class NcBrowser extends Component {
     onEntryClick(entry) {
         if (entry.is_dir) {
             this.load(entry.rel);
+            return;
+        }
+        if (this.pickMode) {
+            this.pickEntry(entry);
             return;
         }
         if (this.isOfficeFile(entry)) {
@@ -1060,6 +1317,14 @@ export class NcBrowser extends Component {
             filename: entry.name,
             presets: this.state.presets,
             onChoose: (preset) => this.share(entry, preset),
+            fetchShares: () => this._call("entry_shares", [entry.rel]),
+            revokeShare: async (share) => {
+                const res = await this._call("revoke_share", [share.id]);
+                if (!this.searching) {
+                    this._loadShareStates(this.state.relPath);
+                }
+                return res;
+            },
         });
     }
 
@@ -1072,6 +1337,9 @@ export class NcBrowser extends Component {
             ]);
             if (!res.url) {
                 return;
+            }
+            if (!this.searching) {
+                this._loadShareStates(this.state.relPath);
             }
             const body = res.password ? res.url + "\n" + _t("Mot de passe : ") + res.password : res.url;
             try {
@@ -1102,14 +1370,21 @@ export class NcBrowser extends Component {
             items: targets.items,
             articles: targets.articles,
             hasArticles: targets.has_articles,
-            onConfirm: async (target, id) => {
+            presets: this.state.presets,
+            onConfirm: async (target, id, mode, presetId) => {
                 try {
-                    if (target === "item") {
-                        await this._call("link_to_knowledge_item", [entry.rel, id]);
-                    } else {
-                        await this._call("link_to_article", [entry.rel, id]);
-                    }
+                    const res =
+                        target === "item"
+                            ? await this._call("link_to_knowledge_item", [entry.rel, id, mode, presetId || false])
+                            : await this._call("link_to_article", [entry.rel, id, mode, presetId || false]);
                     this.notification.add(_t("Fichier lie."), { type: "success" });
+                    if (res && res.password) {
+                        // Sinon personne ne connait le mot de passe du lien joint.
+                        this.notification.add(
+                            _t("Mot de passe du partage, à transmettre séparément : %s", res.password),
+                            { type: "warning", sticky: true }
+                        );
+                    }
                 } catch (e) {
                     this._err(e);
                 }
