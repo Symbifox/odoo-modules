@@ -13,7 +13,7 @@
 
     .o_bf_process_titre {
         font-weight: 600;
-        color: #2E3132;
+        color: var(--brand-dark, #2E3132);
     }
 
     .o_bf_process_zoom {
@@ -72,14 +72,14 @@
     cursor: pointer;
 
     &:hover {
-        fill: rgba(41, 171, 225, .12);
+        fill: color-mix(in srgb, var(--brand-primary, #29ABE2) 12%, transparent);
     }
 
     // l'origine d'un lien en cours reste visible tant que la cible n'est pas
     // choisie : sans ça, on ne sait plus d'où on part
     &.o_bf_process_pris {
-        fill: rgba(41, 171, 225, .22);
-        stroke: #29ABE2;
+        fill: color-mix(in srgb, var(--brand-primary, #29ABE2) 22%, transparent);
+        stroke: var(--brand-primary, #29ABE2);
         stroke-width: 1.4;
         stroke-dasharray: 4 3;
     }

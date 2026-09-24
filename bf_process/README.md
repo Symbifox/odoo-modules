@@ -428,3 +428,7 @@ this repository at all:
 - Text measurement covers the characters Lexend carries, plus a recorded
   fallback set. A character outside both — an emoji, say — makes the
   measurement refuse rather than guess.
+- The trace viewer reads the `--brand-dark` and `--brand-primary` CSS custom
+  properties for its text, selection and highlight colours, so it follows the
+  company's branding when a theme sets them. Without them it falls back to the
+  default palette.

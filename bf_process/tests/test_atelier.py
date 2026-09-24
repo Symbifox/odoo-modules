@@ -13,6 +13,17 @@ def _pages(octets):
     return octets.count(b"/Type /Page\n") or octets.count(b"/Type /Page")
 
 
+# ⚠️ Ce qui compte dans cette adresse est sa LONGUEUR, pas son domaine : c'est
+# le pire cas que la carte ait à encoder dans un code QR, et c'est la longueur
+# qui décide si le module reste lisible au format d'atelier.
+# La version d'avant nommait le domaine de Blue Fox, ce qui n'a rien à faire
+# dans un module du catalogue public. Le gabarit ci-dessous est plus long, donc
+# strictement plus exigeant, et un contrôle l'empêche de raccourcir en silence.
+_PIRE_ADRESSE = ("https://portail.un-client-au-nom-tres-long.example"
+                 "/carte/etape/999999?access_token=" + "8" * 36)
+_LONGUEUR_PLANCHER = 102
+
+
 @tagged("post_install", "-at_install")
 class TestCodeQr(TransactionCase):
 
@@ -36,8 +47,7 @@ class TestCodeQr(TransactionCase):
         collage : c'est ce qui garantit que chaque QR tient en entier sur au
         moins une feuille.
         """
-        pire = ("https://www.bluefoxconsultant.com/carte/etape/999999"
-                "?access_token=" + "8" * 36)
+        pire = _PIRE_ADRESSE
         cote, _module = qr.cote_lisible(pire, gen_pdf.QR_COTE)
         self.assertGreater(gen_pdf.RECOUVREMENT,
                            cote * gen_pdf.ECHELLE_ATELIER,
@@ -49,13 +59,25 @@ class TestCodeQr(TransactionCase):
         C'est ce que le contrôle hors serveur a montré : bien formé et illisible
         sont deux choses différentes, et seule la taille physique les sépare.
         """
-        pire = ("https://www.bluefoxconsultant.com/carte/etape/999999"
-                "?access_token=" + "8" * 36)
+        pire = _PIRE_ADRESSE
         _cote, module = qr.cote_lisible(pire, gen_pdf.QR_COTE)
         mm = module * gen_pdf.ECHELLE_ATELIER * 25.4 / 72
         self.assertGreaterEqual(round(mm, 2), 0.40,
                                 "module de %.2f mm : sous le seuil où un "
                                 "téléphone accroche" % mm)
+
+    def test_le_pire_cas_reste_au_moins_aussi_long(self):
+        """Garde-fou du gabarit ci-dessus.
+
+        Les deux tests de lisibilité ne mesurent que ce qu'on leur donne :
+        raccourcir `_PIRE_ADRESSE` les rendrait plus faciles sans qu'aucun ne
+        devienne rouge. Le plancher est la longueur du gabarit d'origine.
+        """
+        self.assertGreaterEqual(
+            len(_PIRE_ADRESSE), _LONGUEUR_PLANCHER,
+            "le pire cas a raccourci : les deux tests de lisibilité "
+            "au-dessus mesurent maintenant moins qu'avant",
+        )
 
     def test_la_matrice_encode_vraiment_l_adresse(self):
         courte = qr.matrice("https://exemple.test/c/a")
