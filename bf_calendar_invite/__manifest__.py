@@ -32,7 +32,19 @@
     #   `METHOD:CANCEL` .ics that really removes the entry. "Delete" comes back
     #   only on a meeting that is already cancelled. Also adds `STATUS` to every
     #   emitted .ics: the field existed and only the CalDAV push read it.
-    "version": "18.0.5.0.0",
+    # 18.0.6.0.0: 🔴 the only notice Odoo sent on its own was the only one never
+    #   dressed, and it looks at a single field. Core posts
+    #   `calendar_template_meeting_changedate` when `start` is in the values, and
+    #   NOTHING when a meeting is lengthened, changes room or changes its joining
+    #   link. Measured on a real calendar: a meeting with outside guests went from
+    #   30 to 60 minutes with nobody told, and most revised meetings were never
+    #   announced. Adds a branded notice showing BEFORE and AFTER, a record of
+    #   what the guests know (`bf_ics_sequence_notified` and a baseline of the
+    #   values they hold), stands core's notice down, and the sending rule: a
+    #   change coming from another calendar leaves on its own when the ICP
+    #   `bf_calendar_invite.auto_change_notice` is armed, a change made in Odoo
+    #   waits for the dialog.
+    "version": "18.0.6.0.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -49,6 +61,7 @@
         "data/mail_body.xml",
         "data/mail_template.xml",
         "views/calendar_event_cancel_views.xml",
+        "views/calendar_event_change_notice_views.xml",
         "views/calendar_event_views.xml",
     ],
     "assets": {

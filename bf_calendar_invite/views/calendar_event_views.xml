@@ -39,6 +39,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='current_status']" position="before">
                 <field name="bf_event_status" readonly="not user_can_edit"/>
+                <field name="bf_change_notice_due" invisible="1"/>
                 <field name="bf_cancellation_reason" readonly="1"
                        invisible="bf_event_status != 'cancelled' or not bf_cancellation_reason"/>
             </xpath>
@@ -49,10 +50,25 @@
             -->
             <xpath expr="//sheet" position="before">
                 <header>
+                    <!--
+                      Le bouton d'avis est en PREMIER et en `btn-primary`, et
+                      il n'apparaît que quand un avis est réellement dû. Un
+                      déplacement se fait en glissant un bloc dans la grille :
+                      un seul geste, aucune boîte de dialogue possible derrière.
+                      Ce qui reste, c'est de le dire ici, visiblement, à la
+                      personne qui vient de le faire.
+                    -->
+                    <button name="action_bf_change_notice" type="object"
+                            string="Tell the guests" class="btn-primary"
+                            invisible="not user_can_edit or not bf_change_notice_due"/>
                     <button name="action_bf_cancel" type="object"
                             string="Cancel the meeting" class="btn-secondary"
                             invisible="not user_can_edit or bf_event_status == 'cancelled'"/>
                 </header>
+                <div class="alert alert-warning mb-0" role="alert"
+                     invisible="not bf_change_notice_due">
+                    This meeting has changed since the guests were last written to.
+                </div>
             </xpath>
             <xpath expr="//widget[@name='web_ribbon']" position="before">
                 <widget name="web_ribbon" title="Cancelled" bg_color="text-bg-danger"
@@ -110,6 +126,8 @@
                         domain="[('bf_event_status', '=', 'tentative')]"/>
                 <filter name="bf_status_cancelled" string="Cancelled"
                         domain="[('bf_event_status', '=', 'cancelled')]"/>
+                <filter name="bf_change_notice_due" string="Guests not told"
+                        domain="[('bf_change_notice_due', '=', True)]"/>
                 <group expand="0" string="Group By">
                     <filter name="bf_group_status" string="Status"
                             context="{'group_by': 'bf_event_status'}"/>

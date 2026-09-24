@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      The change dialog. It shows three things and asks one question.
+
+      The three things are the meeting, what changed, and who would hear about
+      it. The before-and-after is read from the meeting rather than retyped
+      here, because the person pressing the button is about to promise a guest
+      that this is what their calendar said, and a summary written by hand in a
+      dialog is a promise nobody checked.
+
+      The guest list is read-only, like the cancellation dialog's, and for the
+      same reason: choosing who hears about a change is the composer's job, and
+      a dialog that let you drop one name would quietly become the place where
+      a guest is left behind.
+    -->
+    <record id="bf_calendar_event_change_notice_view_form" model="ir.ui.view">
+        <field name="name">bf.calendar.event.change.notice.form</field>
+        <field name="model">bf.calendar.event.change.notice</field>
+        <field name="arch" type="xml">
+            <form string="Tell the guests">
+                <field name="blocker" invisible="1"/>
+                <field name="recipient_warning" invisible="1"/>
+                <div class="alert alert-warning" role="alert" invisible="not blocker">
+                    <field name="blocker" nolabel="1" readonly="1"/>
+                </div>
+                <group invisible="blocker">
+                    <field name="event_ids" widget="many2many_tags" readonly="1"
+                           options="{'no_create': True}"/>
+                    <field name="change_summary" nolabel="1" colspan="2" readonly="1"/>
+                    <field name="recipient_ids" widget="many2many_tags" readonly="1"
+                           invisible="not recipient_ids"
+                           options="{'no_create': True}"/>
+                    <div class="text-muted" colspan="2"
+                         invisible="not recipient_warning">
+                        <field name="recipient_warning" nolabel="1" readonly="1"/>
+                    </div>
+                </group>
+                <footer>
+                    <button name="action_apply" type="object" string="Send the notice"
+                            class="btn-primary" invisible="blocker"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

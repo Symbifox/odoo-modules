@@ -14,8 +14,10 @@ This module points EMAIL at a template that carries both the link and the
 `.ics`, and prefills the SMS body.
 """
 
+import json
 import logging
 import uuid
+from datetime import timedelta
 from email.utils import parseaddr
 from urllib.parse import unquote
 
@@ -24,7 +26,7 @@ import pytz
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import html2plaintext
-from odoo.tools.misc import format_time
+from odoo.tools.misc import format_date, format_datetime, format_time
 
 # Core's public invitation page. It authenticates the visitor as one specific
 # attendee (`auth="calendar"` resolves the token to a calendar.attendee), which
@@ -519,25 +521,12 @@ class CalendarEvent(models.Model):
     def _bf_cancellation_recipients(self):
         """Partners a cancellation notice would go to.
 
-        Everyone invited except the organiser, who is the one cancelling and
-        does not need to be told by email. Attendees with no address are
-        dropped here rather than silently at send time, so the dialog can say
-        how many people will actually hear about it.
+        The same list as any other notice about the meeting, and deliberately
+        the same code: two copies of "everyone but the organiser" drift, and
+        the day they do, one of them leaves a guest out of a cancellation.
         """
         self.ensure_one()
-        # 🔴 `_origin` des deux côtés, et ce n'est pas une précaution de style.
-        # Quand la boîte de dialogue n'est pas encore enregistrée — c'est-à-dire
-        # TOUJOURS, au moment où quelqu'un la lit — le client web calcule ce
-        # champ sur un enregistrement neuf, et les participants remontent alors
-        # en `NewId(origin=3)`. La soustraction compare les identifiants :
-        # `NewId(origin=3) != 3`, donc elle ne retire rien, et l'organisateur
-        # se retrouve dans la liste des gens à prévenir de sa propre annulation.
-        #
-        # ⚠️ Aucun test Python ne voyait ça : un assistant CRÉÉ dans un test
-        # porte de vrais identifiants et la soustraction marche. C'est le banc
-        # navigateur qui l'a sorti, en lisant la boîte telle qu'elle s'affiche.
-        organiser = (self.user_id.partner_id | self.env.user.partner_id)._origin
-        return (self.partner_ids._origin - organiser).filtered("email")
+        return self._bf_notice_recipients()
 
     def _bf_send_cancellation_notice(self):
         """Send the branded cancellation notice, in the guests' language.
@@ -612,6 +601,402 @@ class CalendarEvent(models.Model):
             return self.location
         return False
 
+
+    # ------------------------------------------------------------
+    # Telling the guests that a meeting moved
+    # ------------------------------------------------------------
+    #
+    # Core has exactly one rule here, and it is `'start' in values`. A meeting
+    # that is lengthened, moved to another room or given a new joining link
+    # tells nobody, and the notice it does send is core's own template, the
+    # only one in this family that was never dressed.
+    #
+    # Measured on a real calendar before writing this: a meeting with outside
+    # guests went from thirty to sixty minutes and no one was written to, by
+    # Odoo or by anything else. Over the days before that, meetings carrying a
+    # material change far outnumbered the notices that went out.
+    #
+    # The revision counter below already knew about all eight material fields,
+    # so what was missing was not knowledge. It was three things: a message, a
+    # record of what the guests were last told, and a rule about when it leaves
+    # on its own.
+
+    bf_ics_sequence_notified = fields.Integer(
+        string="Revision announced",
+        default=0,
+        copy=False,
+        help="The revision of this meeting the guests were last told about. "
+             "Lower than the ICS revision means a change nobody has heard of.",
+    )
+    bf_change_baseline = fields.Text(
+        string="What the guests know",
+        copy=False,
+        help="The values of the meeting as of the last notice, in JSON. It is "
+             "what a change is described against, because the guest compares "
+             "the message to what is in their calendar, not to the value the "
+             "meeting held five minutes ago.",
+    )
+    bf_change_since = fields.Datetime(
+        string="Unannounced since",
+        copy=False,
+        help="When the first unannounced change was made. A change made five "
+             "minutes ago is waiting for someone; a change made yesterday that "
+             "nobody announced is a failure, and that is the difference the "
+             "daily watchdog needs.",
+    )
+    bf_change_notice_due = fields.Boolean(
+        string="Guests not told",
+        compute="_compute_bf_change_notice_due",
+        search="_search_bf_change_notice_due",
+        help="This meeting carries a change that has not been announced.",
+    )
+
+    # What each material field is called in a message to a guest. Keys are the
+    # fields of `_BF_ICS_MATERIAL_FIELDS`; `allday` is deliberately absent,
+    # because a meeting that becomes all-day also changes its dates and would
+    # otherwise be reported twice.
+    def _bf_change_labels(self):
+        return {
+            "start": _("Start"),
+            "stop": _("End"),
+            "start_date": _("Start"),
+            "stop_date": _("End"),
+            "name": _("Title"),
+            "location": _("Place"),
+            "videocall_location": _("Joining link"),
+        }
+
+    def _bf_change_format(self, fname, value):
+        """One side of one line, written the way a guest reads it.
+
+        Datetimes go through the same timezone as the rest of the message, and
+        say so. A bare "18:30" in a notice whose whole point is a time is the
+        one place where the reader must not have to guess.
+        """
+        self.ensure_one()
+        if value in (None, False, ""):
+            return _("(none)")
+        if fname in self._BF_ICS_DATETIME_FIELDS:
+            moment = fields.Datetime.to_datetime(value)
+            tz = self._bf_mail_tz()
+            return "%s, %s (%s)" % (
+                format_datetime(
+                    self.env, moment, tz=tz, dt_format="EEEE d MMMM y",
+                    lang_code=self.env.lang,
+                ),
+                format_time(
+                    self.env, moment, tz=tz, time_format="short",
+                    lang_code=self.env.lang,
+                ),
+                tz,
+            )
+        if fname in self._BF_ICS_DATE_FIELDS:
+            return format_date(
+                self.env, fields.Date.to_date(value), lang_code=self.env.lang,
+            )
+        return str(value)
+
+    def bf_change_lines(self):
+        """What changed since the guests were last told: [(label, before, after)].
+
+        ⚠️ **Public on purpose**, unlike its neighbours. The QWeb of a
+        `mail.template` is sandboxed and refuses any method whose name starts
+        with an underscore, rendering `'NoneType' object is not callable` and
+        sending nothing at all, to anyone. The rule cost a whole family of
+        appointment emails once; it is cheaper to obey it than to
+        re-establish where its edge is.
+
+        Empty when nothing differs any more. A meeting moved and moved back has
+        a higher revision and nothing to say: the baseline is what the guests
+        hold, and it matches again.
+        """
+        self.ensure_one()
+        baseline = self._bf_change_baseline_read()
+        if not baseline:
+            return []
+        labels = self._bf_change_labels()
+        lines = []
+        for fname in self._BF_ICS_MATERIAL_FIELDS:
+            if fname not in baseline or fname not in labels:
+                continue
+            if not self._bf_ics_changed(fname, baseline[fname]):
+                continue
+            lines.append({
+                "label": labels[fname],
+                "before": self._bf_change_format(fname, baseline[fname]),
+                "after": self._bf_change_format(fname, self[fname]),
+            })
+        return lines
+
+    def _bf_change_baseline_read(self):
+        self.ensure_one()
+        if not self.bf_change_baseline:
+            return {}
+        try:
+            return json.loads(self.bf_change_baseline) or {}
+        except ValueError:
+            # A baseline we cannot read is a baseline we do not have. Losing
+            # the "before" column of one notice is not a reason to lose the
+            # notice, and it is certainly not a reason to raise inside a write.
+            _logger.warning(
+                "bf_calendar_invite: unreadable change baseline on event %s.",
+                self.id,
+            )
+            return {}
+
+    def _bf_change_baseline_capture(self, fields_touched):
+        """Remember the values the guests hold, once per field.
+
+        Called from `_bf_ics_bump`, i.e. **before** the write, and it only ever
+        writes a field it does not already hold. That is the whole rule: after
+        two successive moves the guest must be shown the slot they had in their
+        calendar, not the intermediate one they were never told about.
+        """
+        self.ensure_one()
+        baseline = self._bf_change_baseline_read()
+        added = False
+        for fname in fields_touched:
+            if fname in baseline:
+                continue
+            value = self[fname]
+            if fname in self._BF_ICS_DATETIME_FIELDS:
+                value = fields.Datetime.to_string(value) if value else False
+            elif fname in self._BF_ICS_DATE_FIELDS:
+                value = fields.Date.to_string(value) if value else False
+            baseline[fname] = value
+            added = True
+        if added:
+            patch = {"bf_change_baseline": json.dumps(baseline)}
+            # ⚠️ Posé seulement au PREMIER changement non annoncé. Le repousser
+            # à chaque déplacement suivant remettrait le compteur à zéro, et une
+            # rencontre bousculée tous les matins ne franchirait jamais le délai
+            # de grâce : le seul cas où le contrôle doit crier serait le seul
+            # qu'il ne verrait pas.
+            if not self.bf_change_since:
+                patch["bf_change_since"] = fields.Datetime.now()
+            super(CalendarEvent, self.sudo()).write(patch)
+
+    @api.depends("bf_ics_sequence", "bf_ics_sequence_notified", "start",
+                 "bf_event_status", "partner_ids", "bf_change_baseline")
+    def _compute_bf_change_notice_due(self):
+        for event in self:
+            event.bf_change_notice_due = event._bf_change_notice_due()
+
+    def _bf_change_notice_due(self):
+        """Is a notice owed to the guests of this meeting, right now?
+
+        Five conditions, and each one has cost something somewhere:
+
+        * the meeting is **not cancelled**, since a cancellation has its own
+          notice and sending both would announce the new time of a meeting that
+          is off;
+        * it is **in the future**, the rule core applies too, because telling
+          someone that last Tuesday moved is noise;
+        * the revision **announced** is behind the revision **counted**;
+        * somebody would actually be written to;
+        * something still differs from what they hold.
+        """
+        self.ensure_one()
+        if self.bf_event_status == "cancelled":
+            return False
+        if not self.start or self.start <= fields.Datetime.now():
+            return False
+        if (self.bf_ics_sequence or 0) <= (self.bf_ics_sequence_notified or 0):
+            return False
+        if not self._bf_notice_recipients():
+            return False
+        return bool(self.bf_change_lines())
+
+    def _bf_notice_overdue(self, grace_hours=None):
+        """Les rencontres dont l'avis est dû ET qui ont dépassé le délai.
+
+        La différence avec `_bf_change_notice_due` est tout le sujet du filet :
+        un changement fait il y a cinq minutes attend légitimement que quelqu'un
+        presse le bouton, un changement d'hier que personne n'a annoncé est une
+        panne. Sans ce délai, le contrôle crierait sur le fonctionnement normal
+        et finirait désarmé.
+
+        ⚠️ `get_param` d'une clé absente rend `False`, et `float(False)` vaut
+        `0.0` sans lever : le `try/except` ne verrait rien et le délai
+        retomberait à zéro chez tous les locataires, exactement le piège qui a
+        failli faire taire les rappels de rendez-vous. D'où la garde avant le
+        `float()`, et « non réglé » qui retombe sur le défaut plutôt que sur
+        zéro.
+        """
+        if grace_hours is None:
+            brut = self.env["ir.config_parameter"].sudo().get_param(
+                "bf_calendar_invite.notice_grace_hours"
+            )
+            if brut in (None, False, ""):
+                grace_hours = 24.0
+            else:
+                try:
+                    grace_hours = float(brut)
+                except (TypeError, ValueError):
+                    grace_hours = 24.0
+        limite = fields.Datetime.now() - timedelta(hours=grace_hours)
+        candidats = self.sudo().search([
+            ("bf_ics_sequence", ">", 0),
+            ("start", ">", fields.Datetime.now()),
+            ("bf_event_status", "!=", "cancelled"),
+            ("bf_change_since", "!=", False),
+            ("bf_change_since", "<=", limite),
+        ])
+        return candidats.filtered(lambda e: e._bf_change_notice_due())
+
+    def _search_bf_change_notice_due(self, operator, value):
+        """Domain side of the same question, for the views and the watchdog.
+
+        ⚠️ Built by reading rather than by a domain, because the comparison is
+        between two columns and a domain cannot express one. The pre-filter on
+        the two counters keeps the read small: on a real calendar it takes the
+        candidate set from every meeting ever held to a handful.
+        """
+        if operator not in ("=", "!="):
+            raise UserError(_("Unsupported operator on this field."))
+        wanted = bool(value) if operator == "=" else not bool(value)
+        candidates = self.sudo().search([
+            ("bf_ics_sequence", ">", 0),
+            ("start", ">", fields.Datetime.now()),
+            ("bf_event_status", "!=", "cancelled"),
+        ])
+        due = candidates.filtered(lambda e: e._bf_change_notice_due())
+        if wanted:
+            return [("id", "in", due.ids)]
+        return [("id", "not in", due.ids)]
+
+    def _bf_auto_change_notice_enabled(self):
+        """Does a change learned from elsewhere leave on its own?
+
+        🔴 Off unless the parameter is explicitly true, and the shape matters:
+        `get_param` of a key nobody has set returns `False`, so "not configured"
+        and "turned off" land on the same safe answer. A module that starts
+        sending mail to clients the minute it is installed has no safe first
+        day.
+        """
+        value = self.env["ir.config_parameter"].sudo().get_param(
+            "bf_calendar_invite.auto_change_notice"
+        )
+        return str(value).strip().lower() in ("1", "true", "yes", "on")
+
+    def _bf_announce_remote_change(self):
+        """Tell the guests about a change that came from outside Odoo.
+
+        This is the half of the problem that matters most. A meeting
+        moved in Thunderbird, on a phone or in the Nextcloud web calendar
+        reaches Odoo through the pull, and the pull writes under
+        `no_mail_to_attendees`, `tracking_disable` and `dont_notify`: it is
+        silent by construction. Silence was right while Nextcloud was the one
+        writing to the guests. It stops being right the moment Odoo takes that
+        job over, and a system that is quiet on both sides is worse than the
+        one we started from.
+        """
+        if not self._bf_auto_change_notice_enabled():
+            return self.env["mail.mail"]
+        due = self.filtered(lambda e: e._bf_change_notice_due())
+        if not due:
+            return self.env["mail.mail"]
+        return due._bf_send_change_notice()
+
+    def _bf_send_change_notice(self):
+        """Send the branded notice and record that the guests now know.
+
+        ⚠️ One savepoint per meeting. This runs inside the calendar pull, which
+        walks every changed event of a calendar in one transaction: a single
+        meeting whose rendering raises must not take the other meetings' new
+        times down with it. The same shape, for the same reason, as the
+        appointment reminder cron after it spent a day sending nothing because
+        of one bad booking.
+
+        `force_send=False`: the notice joins the outgoing queue like every
+        other message, so a mail server that is down delays it instead of
+        rolling back the change it was announcing.
+        """
+        template = self.env.ref(
+            "bf_calendar_invite.mail_template_calendar_change",
+            raise_if_not_found=False,
+        )
+        if not template:
+            _logger.warning(
+                "bf_calendar_invite: change template missing; no notice sent "
+                "for %s.", self.ids,
+            )
+            return self.env["mail.mail"]
+        sent = self.env["mail.mail"].sudo().browse()
+        for event in self:
+            recipients = event._bf_notice_recipients()
+            if not recipients:
+                continue
+            try:
+                with self.env.cr.savepoint():
+                    mail_id = template.sudo().send_mail(
+                        event.id,
+                        force_send=False,
+                        email_values={"recipient_ids": [(6, 0, recipients.ids)]},
+                    )
+                    sent |= self.env["mail.mail"].sudo().browse(mail_id)
+                    # Written inside the same savepoint as the message: a
+                    # notice that went out and a counter that did not would
+                    # send it again at the next pull, and a counter that moved
+                    # without a message would hide the meeting from the
+                    # watchdog for good.
+                    super(CalendarEvent, event.sudo()).write({
+                        "bf_ics_sequence_notified": event.bf_ics_sequence or 0,
+                        "bf_change_baseline": False,
+                        "bf_change_since": False,
+                    })
+            except Exception:
+                _logger.exception(
+                    "bf_calendar_invite: could not send the change notice for "
+                    "event %s; the change stands and the meeting stays on the "
+                    "watchdog's list.", event.id,
+                )
+        return sent
+
+    def action_bf_change_notice(self):
+        """Open the dialog that proposes the notice.
+
+        A dialog rather than an automatic send, on this side, because someone
+        is at the keyboard: they have just moved the meeting and they are the
+        only one who knows whether the guests already heard it in the call
+        where it was decided. A notice that cannot be recalled is not a default.
+        """
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Tell the guests"),
+            "res_model": "bf.calendar.event.change.notice",
+            "view_mode": "form",
+            # 🔴 `views` et pas seulement `view_mode` : le client web
+            # préprocesse toute action par `action.views.map(...)`, et un
+            # dictionnaire qui n'a que `view_mode` rend la boîte « Oups ! »
+            # sans qu'aucun test Python ne puisse le voir.
+            "views": [(False, "form")],
+            "target": "new",
+            "context": {"default_event_ids": [(6, 0, self.ids)]},
+        }
+
+    def _bf_notice_recipients(self):
+        """Partners any notice about this meeting would go to.
+
+        Everyone invited except the organiser, who is the one making the
+        change. Attendees with no address are dropped here rather than silently
+        at send time, so a dialog can say how many people will actually hear
+        about it.
+        """
+        self.ensure_one()
+        # 🔴 `_origin` des deux côtés, et ce n'est pas une précaution de style.
+        # Quand la boîte de dialogue n'est pas encore enregistrée, c'est-à-dire
+        # TOUJOURS au moment où quelqu'un la lit, le client web calcule ce
+        # champ sur un enregistrement neuf, et les participants remontent alors
+        # en `NewId(origin=3)`. La soustraction compare les identifiants :
+        # `NewId(origin=3) != 3`, donc elle ne retire rien, et l'organisateur
+        # se retrouve dans la liste des gens à prévenir de son propre geste.
+        #
+        # ⚠️ Aucun test Python ne voyait ça : un assistant CRÉÉ dans un test
+        # porte de vrais identifiants et la soustraction marche. C'est le banc
+        # navigateur qui l'a sorti, en lisant la boîte telle qu'elle s'affiche.
+        organiser = (self.user_id.partner_id | self.env.user.partner_id)._origin
+        return (self.partner_ids._origin - organiser).filtered("email")
 
     # ------------------------------------------------------------
     # ICS identity — what makes an update an update
@@ -746,19 +1131,24 @@ class CalendarEvent(models.Model):
         return (current or False) != (value or False)
 
     def _bf_ics_bump(self, vals):
-        """Record a new revision, and the slot an occurrence is leaving.
+        """Record a new revision, the slot an occurrence is leaving, and what
+        the guests still believe. Returns the meetings that actually moved.
 
-        Both are captured **before** `super().write()`, because both are
-        statements about the value that is about to be replaced. The anchor in
-        particular is only knowable now: once `start` is overwritten, the slot
-        the occurrence used to hold is gone from the database.
+        All three are captured **before** `super().write()`, because all three
+        are statements about the value that is about to be replaced. The anchor
+        in particular is only knowable now: once `start` is overwritten, the
+        slot the occurrence used to hold is gone from the database, and so is
+        the time the guests have in their own calendars.
         """
         touched = [f for f in self._BF_ICS_MATERIAL_FIELDS if f in vals]
+        bumped = self.browse()
         if not touched:
-            return
+            return bumped
         for event in self:
-            if not any(event._bf_ics_changed(f, vals[f]) for f in touched):
+            really = [f for f in touched if event._bf_ics_changed(f, vals[f])]
+            if not really:
                 continue
+            event._bf_change_baseline_capture(really)
             patch = {"bf_ics_sequence": (event.bf_ics_sequence or 0) + 1}
             leaving_series = (
                 event.recurrence_id
@@ -770,15 +1160,25 @@ class CalendarEvent(models.Model):
             if leaving_series:
                 patch["bf_ics_recurrence_id"] = event.start
             super(CalendarEvent, event.sudo()).write(patch)
+            bumped |= event
+        return bumped
 
     def write(self, vals):
         # ⚠️ Guarded against its own writes: `_bf_ics_bump` writes through
         # `super()` precisely so it cannot come back through here and count a
         # revision as a second revision.
+        bumped = self.browse()
         if not self.env.context.get("bf_ics_skip_bump"):
-            self._bf_ics_bump(vals)
+            bumped = self._bf_ics_bump(vals)
         self._bf_couple_show_as(vals)
-        return super().write(vals)
+        result = super().write(vals)
+        # A change learned from another calendar announces itself; a change
+        # made here does not, and waits for the dialog. The flag is set by the
+        # puller, and it is a plain context key rather than a field because the
+        # module that sets it does not depend on this one.
+        if bumped and self.env.context.get("bf_remote_change"):
+            bumped._bf_announce_remote_change()
+        return result
 
     def _bf_couple_show_as(self, vals):
         """Cancelling a meeting frees its time, whoever wrote the status.

@@ -159,4 +159,57 @@
             <t t-call="bf_calendar_invite.mail_body_calendar_cancellation"/>
         </field>
     </record>
+    <!--
+      The change notice. Three records and one body again, same language
+      switch, and `report_template_ids` on: the attachment carries the same UID
+      with a bumped SEQUENCE, which is what moves the entry a guest already
+      holds instead of adding a second one beside it.
+
+      No `email_to`, for the same reason as the cancellation: the recipients
+      are decided at send time by `calendar.event._bf_send_change_notice`,
+      which drops the organiser and anyone with no address. Freezing an
+      expression here would write to the organiser about their own change.
+
+      ⚠️ The subject names the meeting and says it moved, in that order. A
+      guest scanning a full inbox recognises the meeting first; "Updated:" in
+      front of a title they do not read is a message they do not open.
+    -->
+    <record id="mail_template_calendar_change" model="mail.template">
+        <field name="name">Calendar: Meeting changed (with .ics)</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.name }} has changed</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang }}</field>
+        <field name="description">Tells the guests what changed, before and after, and carries the .ics that moves it. Written in the guests' language.</field>
+        <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_change"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_change_fr" model="mail.template">
+        <field name="name">Calendar: Meeting changed (with .ics) - Français</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.name }} a changé</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_fr }}</field>
+        <field name="description">The same notice, forced to French</field>
+        <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_change"/>
+        </field>
+    </record>
+
+    <record id="mail_template_calendar_change_en" model="mail.template">
+        <field name="name">Calendar: Meeting changed (with .ics) - English</field>
+        <field name="model_id" ref="calendar.model_calendar_event"/>
+        <field name="subject">{{ object.name }} has changed</field>
+        <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
+        <field name="lang">{{ object.bf_mail_lang_en }}</field>
+        <field name="description">The same notice, forced to English</field>
+        <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
+        <field name="body_html" type="html">
+            <t t-call="bf_calendar_invite.mail_body_calendar_change"/>
+        </field>
+    </record>
 </odoo>

@@ -744,3 +744,214 @@ msgstr "bureau"
 #: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_poke_fr
 msgid "{{ object.name }}"
 msgstr ""
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "(none)"
+msgstr "(aucun)"
+
+#. module: bf_calendar_invite
+#: model:mail.template,body_html:bf_calendar_invite.mail_template_calendar_change
+#: model:mail.template,body_html:bf_calendar_invite.mail_template_calendar_change_en
+#: model:mail.template,body_html:bf_calendar_invite.mail_template_calendar_change_fr
+msgid ""
+"<t t-call=\"bf_calendar_invite.mail_body_calendar_change\"/>\n"
+"        "
+msgstr ""
+
+#. module: bf_calendar_invite
+#: model:ir.model,name:bf_calendar_invite.model_calendar_attendee
+msgid "Calendar Attendee Information"
+msgstr "Informations des participants du calendrier"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_change
+msgid "Calendar: Meeting changed (with .ics)"
+msgstr "Agenda : rencontre modifiée (avec le .ics)"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_change_en
+msgid "Calendar: Meeting changed (with .ics) - English"
+msgstr "Agenda : rencontre modifiée (avec le .ics) - English"
+
+#. module: bf_calendar_invite
+#: model:mail.template,name:bf_calendar_invite.mail_template_calendar_change_fr
+msgid "Calendar: Meeting changed (with .ics) - Français"
+msgstr "Agenda : rencontre modifiée (avec le .ics) - Français"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "End"
+msgstr "Fin"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_change_notice_due
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_view_search_inherit_bf
+msgid "Guests not told"
+msgstr "Invités non prévenus"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+msgid "Here is what is different from the version you have."
+msgstr "Voici ce qui diffère de la version que vous avez."
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "Joining link"
+msgstr "Lien de la rencontre"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/wizard/calendar_event_change_notice.py:0
+msgid ""
+"Nobody would be written to: this meeting has no guest with an email address "
+"other than you."
+msgstr "Personne ne recevrait de message : cette rencontre n'a aucun invité avec une adresse courriel autre que la vôtre."
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "Place"
+msgstr "Lieu"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_bf_calendar_event_change_notice__change_summary
+msgid ""
+"Read from the meeting itself: the values the guests hold, against the values"
+" it holds now."
+msgstr "Lu depuis la rencontre elle-même : les valeurs que les invités tiennent, contre celles qu'elle porte maintenant."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_ics_sequence_notified
+msgid "Revision announced"
+msgstr "Révision annoncée"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.bf_calendar_event_change_notice_view_form
+msgid "Send the notice"
+msgstr "Envoyer l'avis"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+msgid "Start"
+msgstr "Début"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.bf_calendar_event_change_notice_view_form
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_view_form_inherit_bf
+msgid "Tell the guests"
+msgstr "Prévenir les invités"
+
+#. module: bf_calendar_invite
+#: model:ir.model,name:bf_calendar_invite.model_bf_calendar_event_change_notice
+msgid "Tell the guests a meeting moved"
+msgstr "Prévenir les invités qu'une rencontre a changé"
+
+#. module: bf_calendar_invite
+#: model:mail.template,description:bf_calendar_invite.mail_template_calendar_change
+msgid ""
+"Tells the guests what changed, before and after, and carries the .ics that "
+"moves it. Written in the guests' language."
+msgstr "Dit aux invités ce qui a changé, avant et après, et porte le .ics qui déplace l'entrée. Écrit dans la langue des invités."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+msgid ""
+"The attached file moves the meeting in your calendar. If your\n"
+"                                                calendar still shows the old time after opening the file, change\n"
+"                                                the entry by hand."
+msgstr "Le fichier joint déplace la rencontre dans votre agenda. S'il affiche encore l'ancienne heure après que vous l'avez ouvert, modifiez l'entrée à la main."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+msgid "The meeting below has changed."
+msgstr "La rencontre ci-dessous a changé."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_ics_sequence_notified
+msgid ""
+"The revision of this meeting the guests were last told about. Lower than the"
+" ICS revision means a change nobody has heard of."
+msgstr "La révision de cette rencontre dont les invités ont été prévenus la dernière fois. Plus basse que la révision du .ics, c'est un changement dont personne n'a entendu parler."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_change_baseline
+msgid ""
+"The values of the meeting as of the last notice, in JSON. It is what a "
+"change is described against, because the guest compares the message to what "
+"is in their calendar, not to the value the meeting held five minutes ago."
+msgstr "Les valeurs de la rencontre au moment du dernier avis, en JSON. C'est ce contre quoi un changement se décrit, parce que l'invité compare le message à ce qu'il a dans son agenda, pas à la valeur que la rencontre portait il y a cinq minutes."
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/wizard/calendar_event_change_notice.py:0
+msgid ""
+"There is nothing to tell the guests about this meeting: either it has not "
+"changed since they were last written to, it has already happened, or it is "
+"cancelled."
+msgstr "Il n'y a rien à dire aux invités sur cette rencontre : soit elle n'a pas changé depuis le dernier message, soit elle a déjà eu lieu, soit elle est annulée."
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,help:bf_calendar_invite.field_calendar_event__bf_change_notice_due
+msgid "This meeting carries a change that has not been announced."
+msgstr "Cette rencontre porte un changement qui n'a pas été annoncé."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.calendar_event_view_form_inherit_bf
+msgid "This meeting has changed since the guests were last written to."
+msgstr "Cette rencontre a changé depuis le dernier message aux invités."
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "Title"
+msgstr "Titre"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+msgid "Tuesday 4 May 2021, 11:00 AM"
+msgstr "mardi 4 mai 2021, 11 h 00"
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+msgid "Tuesday 4 May 2021, 11:30 AM"
+msgstr "mardi 4 mai 2021, 11 h 30"
+
+#. module: bf_calendar_invite
+#. odoo-python
+#: code:addons/bf_calendar_invite/models/calendar_event.py:0
+msgid "Unsupported operator on this field."
+msgstr "Opérateur non pris en charge sur ce champ."
+
+#. module: bf_calendar_invite
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
+msgid "Updated"
+msgstr "Modifiée"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_bf_calendar_event_change_notice__change_summary
+msgid "What changed"
+msgstr "Ce qui a changé"
+
+#. module: bf_calendar_invite
+#: model:ir.model.fields,field_description:bf_calendar_invite.field_calendar_event__bf_change_baseline
+msgid "What the guests know"
+msgstr "Ce que les invités savent"
+
+#. module: bf_calendar_invite
+#: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_change_fr
+msgid "{{ object.name }} a changé"
+msgstr "{{ object.name }} a changé"
+
+#. module: bf_calendar_invite
+#: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_change
+#: model:mail.template,subject:bf_calendar_invite.mail_template_calendar_change_en
+msgid "{{ object.name }} has changed"
+msgstr "{{ object.name }} a changé"

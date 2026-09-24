@@ -89,6 +89,36 @@ The SMS button opens the composer with an empty body.
   someone who cancels a meeting in their own calendar client has freed their
   time there, and Odoo now agrees. An explicit `show_as` in the same write
   still wins; the coupling is a default, not a lock.
+- **Telling the guests that a meeting changed** — from **v18.0.6.0.0**. Core
+  notifies on one rule, `'start' in values`, with its own undressed
+  `calendar_template_meeting_changedate`: a meeting that is lengthened, moved to
+  another room or given a new joining link tells nobody. The module now sends a
+  branded **change notice** that shows, line by line, the **before and after**
+  of every material field (start, end, title, place, joining link), in the
+  guests' language, with the `.ics` attached — same UID, bumped `SEQUENCE`, so
+  the guest's existing entry moves instead of a second one appearing. The
+  "before" is **what the guests hold**, not the previous value: each meeting
+  keeps a baseline captured before the first unannounced change
+  (`bf_change_baseline`) and the revision last announced
+  (`bf_ics_sequence_notified`), so two moves in a row make one message, and a
+  meeting moved and moved back has nothing to say. Core's own date-change mail
+  is stood down, so nobody is written to twice.
+
+  Who decides when it leaves depends on where the change came from. A change
+  made **in Odoo** waits for a person: the meeting shows a banner, "This meeting
+  has changed since the guests were last written to", and a **Tell the guests**
+  button that opens a dialog listing the changes and the recipients (the
+  organiser and guests without an address are dropped). Dragging a block across
+  the grid is a single gesture with no dialog behind it, which is why the
+  banner exists. A change **pulled from another calendar** (flagged by the
+  sync module with the `bf_remote_change` context key) is announced on its own,
+  but only when the system parameter `bf_calendar_invite.auto_change_notice` is
+  explicitly true — off by default, so installing the module sends nothing to
+  anyone. A **Guests not told** filter lists the meetings still owing a notice,
+  and `_bf_notice_overdue()` returns those left unannounced past a grace period
+  (`bf_calendar_invite.notice_grace_hours`, 24 h by default), for a monitoring
+  job to report. The upgrade migration declares every past revision
+  announced, so nothing is sent about old changes.
 - **A clickable location.** Where a meeting's location is a room URL — which is
   most of them, once one is filled in — following it took selecting the text by
   hand. The field stays a free `Char`; only the part actually recognised as a
