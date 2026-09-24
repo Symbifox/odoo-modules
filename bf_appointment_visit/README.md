@@ -53,7 +53,9 @@ the market carries is what a Québec broker must do around the appointment:
 - **Identity is recorded, never copied**: the kind of document seen, who checked
   it and when. No field can hold a document number.
 - **Open house**: several people per slot through `slot_capacity`, plus a
-  walk-in sign-in sheet behind a QR code for whoever shows up unannounced.
+  walk-in sign-in sheet behind a QR code for whoever shows up unannounced. The
+  sheet's thank-you message is worded without grammatical gender (v18.0.1.0.3),
+  since the French "vous êtes inscrit" assumed a masculine visitor.
 - **Feedback after the visit**, and an explicit switch before anything reaches
   the seller.
 

@@ -14,7 +14,7 @@
     #   l'étaient : la première publication passait, la seconde rendait une
     #   erreur de droits sur « Temps de travail de la ressource ». Trouvé en
     #   jouant le parcours comme un courtier, pas comme administrateur.
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.0.3",
     "category": "Appointments",
     "summary": "Faire visiter une propriété : plages du vendeur, registre des "
                "visites, approbation, logement occupé",

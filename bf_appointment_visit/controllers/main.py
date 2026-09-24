@@ -168,8 +168,8 @@ class VisitPublic(http.Controller):
             else:
                 self._inscrire_sur_place(inscription, kwargs, nom)
                 message = _(
-                    "Merci, vous êtes inscrit. Un courtier vous accueille dans "
-                    "un instant."
+                    "Merci, votre inscription est faite. Un courtier vous "
+                    "accueille dans un instant."
                 )
                 message_kind = "success"
                 termine = True
