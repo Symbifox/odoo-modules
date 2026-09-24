@@ -140,6 +140,19 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
   confirmation is sent as before), and the organizer receives a dedicated
   **"Rescheduled"** email showing the previous time, instead of "New booking" for
   a meeting that already existed.
+- **Staff can move a booking from the calendar or from the booking form**
+  (v18.0.2.62.0), and both behave the same. Moving a booking outside the hours
+  offered to clients used to fail with "Cannot schedule these bookings because
+  no resources are selected for them": automatic assignment found no free
+  resource at the new time, cleared the one in place, and the check then
+  refused a booking with no resource. The resource now stays in place. An
+  appointment manager (`resource_booking.group_manager`) can place the meeting
+  anywhere; anyone else is refused with the real reason, in their language.
+  The override applies to moves only: creating a booking outside the offered
+  hours is still refused, even for a manager, and the public booking pages stay
+  strict.
+- **"Appointment" button on the calendar event.** A calendar event that holds a
+  booking opens it from its smart-button area, cancelled bookings included.
 
 ## Notes on the confirmation links
 

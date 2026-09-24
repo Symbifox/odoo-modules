@@ -119,3 +119,43 @@ msgstr "Reschedule this appointment"
 #: code:addons/bf_appointment/models/resource_booking.py:0
 msgid "Choisissez un autre créneau. L'ancien se libère et vous recevez une confirmation de la nouvelle heure."
 msgstr "Pick another slot. The old one is released and you get a confirmation of the new time."
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid "aucune ressource n'est libre à cet horaire"
+msgstr "no resource is free at this time"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid "aucune ressource n'est attribuée"
+msgstr "no resource is assigned"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid ""
+"l'horaire sort des disponibilités du type ou de la ressource, ou la "
+"ressource est déjà prise"
+msgstr ""
+"the time falls outside the availability of the type or the resource, or the "
+"resource is already taken"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid ""
+"Ces rendez-vous ne peuvent pas être placés à cet horaire :\n"
+"\n"
+"%s"
+msgstr ""
+"These appointments cannot be placed at this time:\n"
+"\n"
+"%s"
+
+#. module: bf_appointment
+#. odoo-python
+#: code:addons/bf_appointment/models/resource_booking.py:0
+msgid "Un gestionnaire des rendez-vous peut les déplacer quand même."
+msgstr "An appointment manager can still move them."

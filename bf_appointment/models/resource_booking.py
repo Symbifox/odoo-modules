@@ -12,7 +12,11 @@ except ImportError:
 from markupsafe import Markup
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
+
+from odoo.addons.resource_booking.models.resource_booking import (
+    _availability_is_fitting,
+)
 
 # bf_securetransfer owns the VoIP.ms transport. This module deliberately does
 # not depend on it: the tenants carry different addon sets, and a booking page
@@ -641,6 +645,9 @@ class ResourceBooking(models.Model):
         est écrite sur un type à plusieurs places : la page publique, qui ne
         fait que regarder la grille, n'attend jamais.
         """
+        if self and {"start", "duration"} & set(vals) and self._bf_is_staff_user():
+            # Déplacement par l'équipe, voir `_bf_moved_by_staff`.
+            self = self.with_context(bf_staff_reschedule=True)
         if "start" in vals:
             types = self.mapped("type_id").filtered(
                 lambda t: (t.slot_capacity or 1) > 1
@@ -652,6 +659,146 @@ class ResourceBooking(models.Model):
                     (tuple(types.ids),),
                 )
         return super().write(vals)
+
+    # ------------------------------------------------------------------
+    # Déplacer par l'équipe, depuis l'agenda ou la fiche (2.62.0)
+    # ------------------------------------------------------------------
+
+    @api.model
+    def _bf_is_staff_user(self):
+        """L'utilisateur courant gère-t-il les rendez-vous, au back-office ?
+
+        ⚠️ `env.user` et non `env.su` : la page publique écrit en `sudo()`, et
+        `sudo()` garde l'utilisateur public. Un client ne passe donc jamais
+        par ici, pas plus que ce qui porte `using_portal`.
+        """
+        if self.env.context.get("using_portal"):
+            return False
+        user = self.env.user
+        return bool(user) and user._is_internal() and user.has_group(
+            "resource_booking.group_manager"
+        )
+
+    def _bf_moved_by_staff(self):
+        """Le contrôle en cours juge-t-il un DÉPLACEMENT fait par un gestionnaire ?
+
+        Les disponibilités d'un type disent ce qu'on OFFRE au client. Elles ne
+        disent pas où l'équipe a le droit de placer une rencontre qu'elle a
+        négociée elle-même. Mesuré en production : déplacer un rendez-vous hors
+        des heures offertes rendait « Cannot schedule these bookings because
+        no resources are selected for them », sans issue.
+
+        🔴 Le rôle ne suffit pas, il faut aussi le drapeau
+        `bf_staff_reschedule`, posé par les deux portes d'un déplacement : la
+        fiche (`write` ci-dessus) et l'agenda (`calendar.event.write`). Sans
+        lui, toute CRÉATION faite par un compte gestionnaire passerait outre
+        les disponibilités, et ces comptes-là ne sont pas tous des humains :
+        le super-utilisateur, les automatisations, les formulaires d'accueil.
+        """
+        return bool(self.env.context.get("bf_staff_reschedule")) and (
+            self._bf_is_staff_user()
+        )
+
+    def _get_best_combination(self):
+        """Ne jamais lâcher la ressource en place, hors de la page publique.
+
+        🔴 C'est ICI que naissait le faux motif. À chaque changement d'heure,
+        `_compute_combination_id` d'OCA repasse par cette méthode. Quand
+        aucune combinaison n'est libre au nouvel horaire, elle rend un vide et
+        la ressource est effacée. Ensuite, de deux choses l'une : la contrainte
+        Python refuse une réservation « sans ressource » (le message rencontré
+        en production), ou la contrainte SQL `combination_required_if_event` part
+        la première et l'écran montre une erreur de base de données.
+
+        Garder la combinaison ramène la décision là où elle doit se prendre,
+        dans `_check_scheduling`, qui laisse passer un gestionnaire et donne la
+        vraie raison aux autres. La page publique n'est pas touchée : OCA y
+        lève son propre refus avant d'arriver au vide.
+
+        La combinaison n'est gardée que si le type l'offre encore : après un
+        changement de type, une ressource étrangère au nouveau type n'a pas à
+        survivre.
+        """
+        best = super()._get_best_combination()
+        if best or not self.combination_id:
+            return best
+        if self.combination_id not in self.type_id.combination_rel_ids.combination_id:
+            return best
+        return self.combination_id
+
+    def _check_scheduling(self):
+        """Laisser passer un gestionnaire, et dire la vraie raison aux autres.
+
+        Un gestionnaire garde un seul contrôle : une rencontre planifiée doit
+        tenir une ressource, sinon plus rien ne la retient dans les créneaux.
+        Tout le reste (heures offertes, créneau déjà pris) est un choix qu'il
+        fait en connaissance de cause, et le suivi de `start` dit qui l'a fait.
+
+        Pour les autres, la décision reste celle d'OCA : on n'en réécrit que
+        le message, parce qu'il est en anglais (le fr.po d'OCA est vide) et
+        parce qu'une ressource vidée par l'attribution automatique veut dire
+        « personne n'est libre », pas « personne n'a été choisi ».
+        """
+        if self._bf_moved_by_staff():
+            sans_ressource = self.filtered("meeting_id") - self.with_context(
+                active_test=False,
+            ).filtered("combination_id.resource_ids")
+            if sans_ressource:
+                raise ValidationError(sans_ressource._bf_scheduling_message())
+            return
+        try:
+            return super()._check_scheduling()
+        except ValidationError:
+            message = self._bf_scheduling_message()
+            if not message:
+                # Notre lecture ne retrouve pas le refus d'OCA : son message
+                # vaut mieux qu'aucun.
+                raise
+            raise ValidationError(message) from None
+
+    def _bf_scheduling_problems(self):
+        """[(réservation, motif)] pour chaque réservation qui ne tient pas.
+
+        Même lecture que `_check_scheduling` d'OCA, pour que le motif affiché
+        soit celui qui a réellement bloqué.
+        """
+        problemes = []
+        now = fields.Datetime.now()
+        for booking in self.filtered("meeting_id"):
+            if not booking.with_context(active_test=False).combination_id.resource_ids:
+                if booking.combination_auto_assign:
+                    motif = _("aucune ressource n'est libre à cet horaire")
+                else:
+                    motif = _("aucune ressource n'est attribuée")
+                problemes.append((booking, motif))
+                continue
+            if booking.stop and booking.stop < now:
+                continue
+            start_dt = fields.Datetime.context_timestamp(booking, booking.start)
+            end_dt = fields.Datetime.context_timestamp(booking, booking.stop)
+            disponible = booking._get_intervals(start_dt, end_dt)
+            if not _availability_is_fitting(disponible, start_dt, end_dt):
+                problemes.append((booking, _(
+                    "l'horaire sort des disponibilités du type ou de la "
+                    "ressource, ou la ressource est déjà prise"
+                )))
+        return problemes
+
+    def _bf_scheduling_message(self):
+        problemes = self._bf_scheduling_problems()
+        if not problemes:
+            return ""
+        lignes = "\n".join(
+            "- %s : %s" % (booking.display_name, motif)
+            for booking, motif in problemes
+        )
+        message = _("Ces rendez-vous ne peuvent pas être placés à cet horaire :\n\n%s",
+                    lignes)
+        if not self._bf_is_staff_user():
+            message += "\n\n" + _(
+                "Un gestionnaire des rendez-vous peut les déplacer quand même."
+            )
+        return message
 
     def action_confirm(self):
         """Confirmer : salle visio, participants K-of-N, puis consentements.

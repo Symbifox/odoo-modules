@@ -1,13 +1,76 @@
 import logging
 from email.utils import parseaddr
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
 
 
 class CalendarEvent(models.Model):
     _inherit = "calendar.event"
+
+    bf_booking_count = fields.Integer(
+        string="Rendez-vous",
+        compute="_compute_bf_booking_count",
+    )
+
+    def _compute_bf_booking_count(self):
+        """Nombre de réservations qui tiennent cet événement, annulées comprises.
+
+        ⚠️ `active_test=False` : depuis la 2.57.0, une annulation archive la
+        réservation et GARDE l'événement, barré. Sans le drapeau, le bouton
+        disparaîtrait justement sur l'événement dont on cherche le dossier.
+        En `sudo()` parce qu'un compte agenda sans droit sur les rendez-vous
+        ouvre aussi ce formulaire : il voit un chiffre, pas les réservations.
+        """
+        compte = dict.fromkeys(self.ids, 0)
+        if self.ids:
+            groupes = self.env["resource.booking"].sudo().with_context(
+                active_test=False,
+            )._read_group(
+                [("meeting_id", "in", self.ids)], ["meeting_id"], ["__count"],
+            )
+            for evenement, nombre in groupes:
+                compte[evenement.id] = nombre
+        for evenement in self:
+            evenement.bf_booking_count = compte.get(evenement.id, 0)
+
+    def write(self, vals):
+        """Porte « agenda » d'un déplacement par l'équipe.
+
+        Glisser un rendez-vous dans l'agenda doit valoir la même chose que
+        changer son heure dans la fiche : même passe-droit pour un
+        gestionnaire, même refus motivé pour les autres. Le drapeau est lu par
+        `resource.booking._bf_moved_by_staff`.
+        """
+        if (
+            {"start", "stop", "duration", "start_date", "stop_date"} & set(vals)
+            and self.sudo().resource_booking_ids
+            and self.env["resource.booking"]._bf_is_staff_user()
+        ):
+            self = self.with_context(bf_staff_reschedule=True)
+        return super().write(vals)
+
+    def action_bf_open_bookings(self):
+        """Ouvrir la réservation derrière cet événement."""
+        self.ensure_one()
+        reservations = self.env["resource.booking"].with_context(
+            active_test=False,
+        ).search([("meeting_id", "=", self.id)])
+        action = {
+            "type": "ir.actions.act_window",
+            "name": _("Rendez-vous"),
+            "res_model": "resource.booking",
+            "context": {"active_test": False},
+        }
+        if len(reservations) == 1:
+            action.update(view_mode="form", res_id=reservations.id)
+        else:
+            action.update(
+                view_mode="list,form",
+                domain=[("id", "in", reservations.ids)],
+            )
+        return action
 
     @api.model
     def _cron_cleanup_orphan_booking_events(self):
