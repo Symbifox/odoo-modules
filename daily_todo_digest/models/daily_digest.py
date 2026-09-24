@@ -42,6 +42,42 @@ def _coerce_translatable(val):
     return val
 
 
+def _relative_luminance(hex_color):
+    """WCAG relative luminance of a #RRGGBB color."""
+    hex_color = hex_color.lstrip("#")
+    channels = []
+    for i in (0, 2, 4):
+        c = int(hex_color[i:i + 2], 16) / 255
+        channels.append(c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4)
+    r, g, b = channels
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def contrast_ratio(color_a, color_b):
+    la, lb = sorted((_relative_luminance(color_a), _relative_luminance(color_b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+def on_white(hex_color, target=4.5, backgrounds=("#FFFFFF", "#E8F6FD")):
+    """Darken a brand color until white text on it, and it on the light badge, read at AA.
+
+    A light brand accent fails behind white text: Blue Fox #29ABE1 gives 2.6:1.
+    The accent itself stays for bars and link colors; this variant is for the
+    table headers and the count badges, where the color carries text.
+    """
+    try:
+        base = hex_color.lstrip("#")
+        r, g, b = (int(base[i:i + 2], 16) for i in (0, 2, 4))
+    except (AttributeError, ValueError):
+        return hex_color
+    factor = 1.0
+    color = "#%02X%02X%02X" % (r, g, b)
+    while min(contrast_ratio(color, bg) for bg in backgrounds) < target and factor > 0:
+        factor -= 0.05
+        color = "#%02X%02X%02X" % (int(r * factor), int(g * factor), int(b * factor))
+    return color
+
+
 # Weather code descriptions (WMO codes), translated at rendering time in the
 # recipient's language.
 WEATHER_CODES = {
@@ -84,6 +120,7 @@ COLORS = {
     "bg_outer": "#212529",
     "header": "#212529",
     "accent": "#714B67",
+    "accent_on_white": "#714B67",
     "white": "#FFFFFF",
     "text_light": "#E6EDF3",
     "text_gray": "#6B7280",
@@ -203,6 +240,12 @@ class DailyDigestConfig(models.Model):
         help="Include upcoming meetings with an agenda to prepare and "
              "past meetings whose minutes are still to complete "
              "(bf_meeting cycle).",
+    )
+    include_calendar_events = fields.Boolean(
+        string="Calendar events",
+        default=True,
+        help="Include the events of the recipient's day that they attend "
+             "and have not declined, in their time zone.",
     )
 
     # Company filter
@@ -349,6 +392,7 @@ class DailyDigestConfig(models.Model):
             data.get("overdue_tasks"),
             data.get("today_tasks"),
             data.get("meetings_by_user"),
+            any((data.get("events_by_user") or {}).values()),
         ])
         if not has_content and not self.include_weather and not self.include_quote:
             _logger.info(
@@ -505,7 +549,65 @@ class DailyDigestConfig(models.Model):
         if self.include_meetings:
             data["meetings_by_user"] = self._get_meetings_buckets(user_ids)
 
+        if self.include_calendar_events:
+            tomorrow_start_utc = local_tz.localize(
+                fields.Datetime.to_datetime(f"{today + timedelta(days=1)} 00:00:00")
+            ).astimezone(pytz.UTC).replace(tzinfo=None)
+            data["events_by_user"] = self._get_calendar_events(
+                target_users, today, today_start_utc, tomorrow_start_utc
+            )
+
         return data
+
+    def _get_calendar_events(self, users, day, day_start_utc, day_end_utc):
+        """Return {uid: [event dicts]} for the events of the recipient's local day.
+
+        An event belongs to someone through their attendance, not its
+        organizer: events pulled from Nextcloud are organized by the system
+        user, so `user_id` misses most of them. Declined events are left out.
+
+        `day_start_utc` is included, `day_end_utc` (the next local midnight) is
+        not. All-day events are matched on their dates, which Odoo stores
+        without a time zone and with an inclusive end.
+
+        🔴 A cancelled meeting is not archived where bf_calendar_invite is
+        installed: it stays active, struck through in the calendar, with
+        `bf_event_status = "cancelled"` (Nextcloud's STATUS:CANCELLED lands there
+        too). It is left out when the field exists.
+        """
+        Event = self.env.get("calendar.event")
+        if Event is None or not users:
+            return {}
+        Event = Event.sudo()
+        result = {}
+        for user in users:
+            domain = [
+                ("attendee_ids", "any", [
+                    ("partner_id", "=", user.partner_id.id),
+                    ("state", "!=", "declined"),
+                ]),
+                "|",
+                "&", "&", ("allday", "=", True),
+                ("start_date", "<=", day), ("stop_date", ">=", day),
+                "&", "&", ("allday", "=", False),
+                ("start", "<", day_end_utc),
+                "|", ("stop", ">", day_start_utc), ("start", ">=", day_start_utc),
+            ]
+            if "bf_event_status" in Event._fields:
+                domain.append(("bf_event_status", "!=", "cancelled"))
+            events = Event.search(domain, order="allday desc, start, id")
+            result[user.id] = [{
+                "id": ev.id,
+                "name": ev.name,
+                "allday": ev.allday,
+                "start": ev.start,
+                "stop": ev.stop,
+                "start_date": ev.start_date,
+                "stop_date": ev.stop_date,
+                "location": ev.location or "",
+                "videocall": ev.videocall_location or "",
+            } for ev in events]
+        return result
 
     def _get_meetings_buckets(self, user_ids):
         """Delegate to meeting.dashboard so the bucket logic stays in one place."""
@@ -674,6 +776,7 @@ class DailyDigestConfig(models.Model):
         COLORS["bg_outer"] = getattr(co, "report_brand_dark", False) or "#212529"
         COLORS["header"] = getattr(co, "report_brand_dark", False) or "#212529"
         COLORS["accent"] = getattr(co, "report_brand_primary", False) or "#714B67"
+        COLORS["accent_on_white"] = on_white(COLORS["accent"])
 
         # Filter data for this specific user
         user_data = self._filter_data_for_user(data, user)
@@ -694,6 +797,10 @@ class DailyDigestConfig(models.Model):
         if weather:
             content_parts.append(self._render_weather_section(weather))
 
+        # The day's calendar, before what is due: it is what the day is made of.
+        if self.include_calendar_events and user_data.get("events"):
+            content_parts.append(self._render_calendar_section(user_data["events"], user, today))
+
         # Overdue activities
         if self.include_overdue_activities and user_data.get("overdue_activities"):
             content_parts.append(self._render_activity_section(
@@ -708,7 +815,7 @@ class DailyDigestConfig(models.Model):
             content_parts.append(self._render_activity_section(
                 self.env._("Today's activities"),
                 user_data["today_activities"],
-                COLORS["accent"],
+                COLORS["accent_on_white"],
                 is_overdue=False,
             ))
 
@@ -726,7 +833,7 @@ class DailyDigestConfig(models.Model):
             content_parts.append(self._render_task_section(
                 self.env._("Today's tasks"),
                 user_data["today_tasks"],
-                COLORS["accent"],
+                COLORS["accent_on_white"],
                 is_overdue=False,
             ))
 
@@ -778,6 +885,9 @@ class DailyDigestConfig(models.Model):
         overdue_count = len(user_data.get("overdue_activities", [])) + len(user_data.get("overdue_tasks", []))
         today_count = len(user_data.get("today_activities", [])) + len(user_data.get("today_tasks", []))
         meetings_count = len(user_data.get("meetings_odj", [])) + len(user_data.get("meetings_cr", []))
+        events_count = len(user_data.get("events", [])) if self.include_calendar_events else 0
+        if events_count > 0:
+            preheader_parts.append(self.env._("%s event(s)", events_count))
         if overdue_count > 0:
             preheader_parts.append(self.env._("%s overdue", overdue_count))
         if today_count > 0:
@@ -846,6 +956,8 @@ class DailyDigestConfig(models.Model):
         bucket = meetings.get(user.id) or {"odj": [], "cr": []}
         user_data["meetings_odj"] = bucket.get("odj", [])
         user_data["meetings_cr"] = bucket.get("cr", [])
+
+        user_data["events"] = (data.get("events_by_user") or {}).get(user.id, [])
 
         return user_data
 
@@ -1202,9 +1314,129 @@ class DailyDigestConfig(models.Model):
                 </div>
             """
 
-        odj_block = _block("📋 " + env._("Agendas to prepare (next 7 days)"), odj_rows, COLORS["accent"], "#e8f6fd")
+        odj_block = _block("📋 " + env._("Agendas to prepare (next 7 days)"), odj_rows, COLORS["accent_on_white"], "#e8f6fd")
         cr_block = _block("📝 " + env._("Minutes to complete"), cr_rows, COLORS["red"], "#f8d7da")
         return f'<div style="margin:0 0 24px 0;">{odj_block}{cr_block}</div>'
+
+    @staticmethod
+    def _event_join_url(event):
+        """The event's call or location, when it is a web address; empty otherwise."""
+        for candidate in (event.get("videocall"), event.get("location")):
+            candidate = (candidate or "").strip()
+            if candidate.lower().startswith(("https://", "http://")) and not any(c.isspace() for c in candidate):
+                return candidate
+        return ""
+
+    def _tz_city(self, tz_name):
+        """City label of a time zone ("Montréal"), in the house wording when bf_timezone is there."""
+        BfTimezone = self.env.get("bf.timezone")
+        if BfTimezone is not None:
+            return BfTimezone.tz_city(tz_name)
+        return tz_name.rsplit("/", 1)[-1].replace("_", " ")
+
+    def _render_calendar_section(self, events, user, day):
+        """Render the events of the recipient's day.
+
+        Times read in the recipient's time zone. When the recipient set a
+        secondary time zone for their calendar (web_calendar_secondary_timezone),
+        a second line gives the same times there.
+        """
+        env = self.env
+        base_url = (env["ir.config_parameter"].sudo().get_param("web.base.url") or "").rstrip("/")
+        tz_name = user.tz or DEFAULT_TZ
+        second_tz = getattr(user, "secondary_tz", False) or False
+        if second_tz == tz_name:
+            second_tz = False
+
+        def _local_date(dt, tz):
+            return pytz.UTC.localize(dt).astimezone(pytz.timezone(tz)).date()
+
+        def _time_range(start, stop, tz):
+            # The day is named only when it is not the recipient's day: an event
+            # that began yesterday, ends tomorrow, or falls on another date in
+            # the secondary time zone.
+            start_date, stop_date = _local_date(start, tz), _local_date(stop, tz)
+            start_str = format_datetime(env, start, tz=tz, dt_format="HH:mm")
+            stop_str = format_datetime(env, stop, tz=tz, dt_format="HH:mm")
+            if start_date != day:
+                start_str = f"{format_date(env, start_date, date_format='EEE')} {start_str}"
+            if stop_date != start_date:
+                stop_str = f"{format_date(env, stop_date, date_format='EEE')} {stop_str}"
+            return start_str if start == stop else f"{start_str} – {stop_str}"
+
+        rows_html = ""
+        for ev in events:
+            meta_bits = []
+            second = ""
+            if ev["allday"]:
+                when = escape(env._("All day"))
+                if ev["stop_date"] and ev["stop_date"] > day:
+                    meta_bits.append(escape(env._(
+                        "until %s", format_date(env, ev["stop_date"], date_format="EEE d/MM")
+                    )))
+            else:
+                when = escape(_time_range(ev["start"], ev["stop"], tz_name))
+                if second_tz:
+                    second = escape(f"{_time_range(ev['start'], ev['stop'], second_tz)} {self._tz_city(second_tz)}")
+            join_url = self._event_join_url(ev)
+            if ev["location"] and ev["location"].strip() != join_url:
+                meta_bits.append(escape(ev["location"]))
+            # A call field that is not a web address is still what the person wrote.
+            videocall = (ev["videocall"] or "").strip()
+            if videocall and videocall != join_url and videocall != (ev["location"] or "").strip():
+                meta_bits.append(escape(videocall))
+            if join_url:
+                meta_bits.append(
+                    f'<a href="{escape(join_url)}" style="color:{COLORS["accent"]};text-decoration:none;">'
+                    f'{escape(env._("Join"))}</a>'
+                )
+            meta = " · ".join(str(b) for b in meta_bits)
+            second_html = (
+                f'<br/><span style="font-size:11px;color:{COLORS["text_gray"]};">{second}</span>'
+                if second else ""
+            )
+            rows_html += f"""
+                <tr>
+                    <td style="padding:12px;border-bottom:1px solid {COLORS['border']};font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:14px;">
+                        <a href="{base_url}/odoo/calendar/{ev['id']}" style="color:{COLORS['accent']};text-decoration:none;font-weight:500;">{escape(ev['name'] or env._('(no name)'))}</a>
+                        {f'<br/><span style="font-size:12px;color:{COLORS["text_gray"]};">{meta}</span>' if meta else ''}
+                    </td>
+                    <td style="padding:12px;border-bottom:1px solid {COLORS['border']};font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:13px;color:{COLORS['text_dark']};white-space:nowrap;">
+                        {when}{second_html}
+                    </td>
+                </tr>
+            """
+
+        color = COLORS["accent_on_white"]
+        return f"""
+            <div style="margin:0 0 24px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;">
+                    <tr>
+                        <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:16px;font-weight:600;color:{COLORS['header']};">
+                            🗓️ {env._("Today's calendar")}
+                        </td>
+                        <td align="right">
+                            <span style="display:inline-block;background-color:#e8f6fd;color:{color};font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;padding:4px 10px;border-radius:12px;">
+                                {len(events)}
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid {COLORS['border']};border-radius:8px;overflow:hidden;">
+                    <thead>
+                        <tr style="background-color:{color};">
+                            <th style="padding:10px 12px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:{COLORS['white']};text-transform:uppercase;">
+                                {env._("Event")}
+                            </th>
+                            <th style="padding:10px 12px;text-align:left;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;font-weight:600;color:{COLORS['white']};text-transform:uppercase;width:140px;">
+                                {env._("Time")}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>{rows_html}</tbody>
+                </table>
+            </div>
+        """
 
     def _render_quote_section(self, quote):
         """Render the inspirational quote section."""

@@ -5,7 +5,12 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    "version": "18.0.2.2.0",
+    # 18.0.2.3.0: les événements du calendrier de la journée, lus par la
+    #   présence (pas par l'organisateur : la synchro Nextcloud pose
+    #   __system__), dans le fuseau du destinataire et dans son fuseau
+    #   secondaire. Les en-têtes et pastilles de couleur d'accent prennent une
+    #   variante assombrie : un bleu de marque clair sous du texte blanc rendait 2,6:1.
+    "version": "18.0.2.3.0",
     "category": "Productivity",
     "summary": "Daily email digest with overdue and today's activities, tasks, and subtasks",
     "description": """
@@ -17,6 +22,7 @@ Sends a daily email at 4 AM with:
 - Today's activities
 - Overdue project tasks and subtasks
 - Today's project tasks and subtasks
+- Today's calendar events (those the recipient attends)
 - Upcoming tasks preview (configurable 1-7 days)
 - 7-day week preview with daily task/activity counts
 - Clickable links to each item

@@ -2,7 +2,7 @@
 # The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: daily_todo_digest 18.0.2.2.0\n"
+"Project-Id-Version: daily_todo_digest 18.0.2.3.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-14 06:18+0000\n"
 "PO-Revision-Date: 2026-09-14 06:18+0000\n"
@@ -17,6 +17,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid " and "
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "%s event(s)"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -54,6 +60,15 @@ msgstr ""
 msgid ""
 "<strong>Activities:</strong> activities (mail.activity) assigned to the "
 "recipients are included."
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid ""
+"<strong>Calendar events:</strong> the events of the recipient's day that "
+"they attend and have not declined, whoever organized them, with their times "
+"in the recipient's time zone (and in their secondary calendar time zone, "
+"when they set one)."
 msgstr ""
 
 #. module: daily_todo_digest
@@ -205,6 +220,12 @@ msgid "Albert Einstein"
 msgstr ""
 
 #. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "All day"
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:daily.digest.quote,quote:daily_todo_digest.quote_61
 msgid "Alone we go faster, together we go further."
 msgstr ""
@@ -317,6 +338,16 @@ msgstr ""
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_94
 msgid "Burmese proverb"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model_terms:ir.ui.view,arch_db:daily_todo_digest.view_daily_digest_config_form
+msgid "Calendar"
+msgstr ""
+
+#. module: daily_todo_digest
+#: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_calendar_events
+msgid "Calendar events"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -533,6 +564,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "Error"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Event"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -800,6 +837,13 @@ msgid ""
 msgstr ""
 
 #. module: daily_todo_digest
+#: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_calendar_events
+msgid ""
+"Include the events of the recipient's day that they attend and have not "
+"declined, in their time zone."
+msgstr ""
+
+#. module: daily_todo_digest
 #: model:ir.model.fields,help:daily_todo_digest.field_daily_digest_config__include_upcoming_tasks
 msgid "Include the tasks of the next days"
 msgstr ""
@@ -864,6 +908,12 @@ msgstr ""
 #. module: daily_todo_digest
 #: model:daily.digest.quote,author:daily_todo_digest.quote_56
 msgid "Jean-Jacques Rousseau"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Join"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1638,8 +1688,20 @@ msgstr ""
 #. module: daily_todo_digest
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Time"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
 #: model:ir.model.fields,field_description:daily_todo_digest.field_daily_digest_config__include_today_activities
 msgid "Today's activities"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "Today's calendar"
 msgstr ""
 
 #. module: daily_todo_digest
@@ -1866,6 +1928,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/daily_todo_digest/models/daily_digest.py:0
 msgid "subtask"
+msgstr ""
+
+#. module: daily_todo_digest
+#. odoo-python
+#: code:addons/daily_todo_digest/models/daily_digest.py:0
+msgid "until %s"
 msgstr ""
 
 #. module: daily_todo_digest

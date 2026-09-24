@@ -49,6 +49,9 @@
                                 </group>
                             </group>
                             <group>
+                                <group string="Calendar">
+                                    <field name="include_calendar_events"/>
+                                </group>
                                 <group string="Meetings">
                                     <field name="include_meetings"/>
                                 </group>
@@ -72,6 +75,7 @@
                                     <li><strong>Sending time:</strong> the scheduled job checks every hour. The digest goes out at the configured hour <strong>in each recipient's time zone</strong> (Timezone field of their user record).</li>
                                     <li><strong>Activities:</strong> activities (mail.activity) assigned to the recipients are included.</li>
                                     <li><strong>Tasks:</strong> project tasks assigned to the recipients are included (subtasks included). The "today" window is computed in each recipient's time zone.</li>
+                                    <li><strong>Calendar events:</strong> the events of the recipient's day that they attend and have not declined, whoever organized them, with their times in the recipient's time zone (and in their secondary calendar time zone, when they set one).</li>
                                     <li><strong>Upcoming tasks:</strong> preview of the tasks of the next days (1 to 7 days, configurable).</li>
                                     <li><strong>Weather:</strong> uses the free Open-Meteo API. The default city and coordinates above apply, but each recipient can set their own city in their preferences (Weather city (digest)).</li>
                                     <li><strong>Quotes:</strong> a random quote is picked from the collection.</li>

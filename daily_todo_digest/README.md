@@ -10,6 +10,7 @@ user's activities and tasks, the local weather and an inspirational quote.
 | Section | Description |
 |---------|-------------|
 | **Weather** | Current temperature with emoji, min/max, precipitation for the configured city (default: Montreal) |
+| **Today's calendar** | `calendar.event` records of the recipient's day that they attend (declined and cancelled events left out), with times in their time zone and in their secondary calendar time zone |
 | **Overdue activities** | `mail.activity` records with a past due date |
 | **Today's activities** | `mail.activity` records due today |
 | **Overdue tasks** | `project.task` records with a past deadline |
@@ -58,6 +59,7 @@ docker exec <container> odoo -d <database> -i daily_todo_digest --stop-after-ini
 
 | Widget | Description |
 |--------|-------------|
+| Calendar events | Include the day's calendar events |
 | Overdue activities | Include past activities |
 | Today's activities | Include today's activities |
 | Overdue tasks | Include past tasks |
@@ -137,6 +139,7 @@ Daily digest configuration.
 | `include_today_activities` | Boolean | Include today's activities |
 | `include_overdue_tasks` | Boolean | Include overdue tasks |
 | `include_today_tasks` | Boolean | Include today's tasks |
+| `include_calendar_events` | Boolean | Include the recipient's calendar events of the day (default: on) |
 | `include_weather` | Boolean | Include weather |
 | `weather_city` | Char | City name |
 | `weather_latitude` | Float | Latitude |
@@ -224,6 +227,10 @@ env.cr.commit()
 - `requests` (ships with Odoo)
 
 ## Changelog
+
+### 18.0.2.3.0
+- **Today's calendar.** A new section, placed before what is due, lists the events of the recipient's local day. An event belongs to someone through their **attendance**, not its organizer: events synchronised from Nextcloud are organized by the system user and would otherwise be missed. Declined events are left out, and so are meetings marked cancelled when `bf_calendar_invite` is installed. Times read in the recipient's time zone, with a second line in their secondary calendar time zone when they set one; all-day and multi-day events are handled, and a web address in the call or location field becomes a **Join** link. The preheader counts the events. Toggle: `include_calendar_events`. The section is skipped when the Calendar app is not installed.
+- **Readable accent colour.** Table headers and count badges now use a darkened variant of the brand accent, computed to reach WCAG AA (4.5:1) under white text and on the light badge background. A light brand blue behind white text read at about 2.6:1; the plain accent stays for bars and links.
 
 ### 18.0.2.2.0
 - **The email is written in each recipient's language.** It was assembled in hard-coded French for everybody: day and month names, weather, section titles. Texts now go through the catalogue, dates are formatted by the recipient's locale, and the scheduled job renders each recipient in their own language.
