@@ -218,9 +218,52 @@ class HostingSoftware(models.Model):
         if not self.github_repo:
             raise ValueError("GitHub repository not configured")
 
-        url = f"https://api.github.com/repos/{self.github_repo}/releases/latest"
         headers = {"Accept": "application/vnd.github.v3+json"}
 
+        # 🔴 NE PAS se fier à `/releases/latest` seul.
+        #
+        # GitHub y met la parution NON-préversion la plus RÉCEMMENT PUBLIÉE, ce
+        # qui n'est pas la plus haute quand un projet entretient plusieurs
+        # branches en parallèle et les publie le même jour. Nextcloud publie
+        # 32.0.15, 33.0.9 et 34.0.4 le 2026-09-10 : `/releases/latest` rend
+        # 32.0.15, la branche la PLUS ANCIENNE.
+        #
+        # Conséquence : le traqueur portait 32.0.15 pendant que les Nextcloud
+        # suivis tournaient en 34.0.4.
+        # Une version installée plus récente que la cible ne déclenche jamais
+        # `update_available` — les mises à jour Nextcloud étaient donc
+        # INVISIBLES, sans la moindre erreur de vérification pour le dire.
+        # Collabora avait la même forme, son `/releases/latest` datant de
+        # décembre 2025 alors que la 26.04 était installée.
+        #
+        # On classe donc les parutions récentes par semver, comme
+        # `_check_docker_hub_version` le fait déjà pour les tags Docker Hub.
+        # `/releases/latest` ne sert plus que de repli.
+        url = f"https://api.github.com/repos/{self.github_repo}/releases"
+        response = requests.get(
+            url, headers=headers, params={"per_page": 30}, timeout=10
+        )
+        if response.status_code == 200:
+            parutions = response.json() or []
+            stables = [
+                r for r in parutions
+                if not r.get("prerelease") and not r.get("draft")
+            ]
+            best = self._pick_highest_semver_tag(
+                r.get("tag_name", "") for r in stables
+            )
+            if best:
+                release_date = None
+                for r in stables:
+                    if self._extract_version(r.get("tag_name", "")) == best:
+                        publie = r.get("published_at", "")
+                        if publie:
+                            release_date = fields.Date.to_date(publie[:10])
+                        break
+                self._update_latest_version(best, release_date)
+                return
+
+        url = f"https://api.github.com/repos/{self.github_repo}/releases/latest"
         response = requests.get(url, headers=headers, timeout=10)
 
         if response.status_code == 404:

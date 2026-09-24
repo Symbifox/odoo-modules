@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hosting_saas_reading_view_list" model="ir.ui.view">
+        <field name="name">hosting.saas.backup.reading.view.list</field>
+        <field name="model">hosting.saas.backup.reading</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="saturated" decoration-warning="error_count &gt; 0">
+                <field name="period_end" string="Fin de période"/>
+                <field name="period_start" string="Début" optional="hide"/>
+                <field name="seats_used" string="Comptes utilisés"/>
+                <field name="seats_total" string="Achetés"/>
+                <field name="seats_free" string="Libres"/>
+                <field name="license_expiry" string="Expiration"/>
+                <field name="error_count" string="Erreurs"/>
+                <field name="index_free_pct" string="Index libre (%)"/>
+                <field name="storage_location" string="Seau" optional="hide"/>
+                <field name="provider" widget="badge" optional="hide"/>
+                <field name="ingest_source" string="Lu par" optional="hide"/>
+                <field name="saturated" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hosting_saas_reading_view_form" model="ir.ui.view">
+        <field name="name">hosting.saas.backup.reading.view.form</field>
+        <field name="model">hosting.saas.backup.reading</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="not saturated">
+                        Licence saturée à ce relevé : aucun compte de plus ne rentre.
+                    </div>
+                    <group>
+                        <group string="Licence">
+                            <field name="seats_used"/>
+                            <field name="seats_total"/>
+                            <field name="seats_free"/>
+                            <field name="license_expiry"/>
+                        </group>
+                        <group string="Stockage">
+                            <field name="storage_kind"/>
+                            <field name="storage_location"/>
+                            <field name="storage_available"/>
+                            <field name="index_path"/>
+                            <field name="index_free_display"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Période">
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="provider"/>
+                        </group>
+                        <group string="Provenance">
+                            <field name="ingest_source"/>
+                            <field name="source_ref"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Par organisation" name="organizations">
+                            <field name="line_ids" readonly="1">
+                                <list>
+                                    <field name="organization_name"/>
+                                    <field name="service_id"/>
+                                    <field name="errors"/>
+                                    <field name="items"/>
+                                    <field name="size_display"/>
+                                </list>
+                            </field>
+                            <p class="text-muted">
+                                Ces chiffres sont ceux du fournisseur. Les exécutions
+                                versées depuis le journal comptent de leur côté : deux
+                                sources qui divergent, ça se remarque.
+                            </p>
+                        </page>
+                    </notebook>
+                    <field name="saturated" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hosting_saas_reading_view_search" model="ir.ui.view">
+        <field name="name">hosting.saas.backup.reading.view.search</field>
+        <field name="model">hosting.saas.backup.reading</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="period_end"/>
+                <field name="storage_location"/>
+                <filter name="filter_saturated" string="Licence saturée"
+                        domain="[('saturated', '=', True)]"/>
+                <filter name="filter_errors" string="Avec des erreurs"
+                        domain="[('error_count', '&gt;', 0)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_provider" string="Produit"
+                            context="{'group_by': 'provider'}"/>
+                    <filter name="group_month" string="Mois"
+                            context="{'group_by': 'period_end:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hosting_saas_reading_action" model="ir.actions.act_window">
+        <field name="name">Relevés infonuagiques</field>
+        <field name="res_model">hosting.saas.backup.reading</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_saas_reading_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun relevé versé</p>
+            <p>
+                Un relevé porte ce que le fournisseur affirme sur une période :
+                licence, stockage, compteurs par organisation. C'est la seule
+                source pour la licence et le stockage, que le journal ne porte pas.
+            </p>
+        </field>
+    </record>
+
+    <!-- La licence montre ce que le fournisseur affirme, daté -->
+    <record id="hosting_license_view_form_saas" model="ir.ui.view">
+        <field name="name">hosting.license.view.form.saas</field>
+        <field name="model">hosting.license</field>
+        <field name="inherit_id" ref="hosting_management.hosting_license_view_form"/>
+        <field name="arch" type="xml">
+            <field name="expiry_date" position="after">
+                <field name="saas_provider"/>
+                <field name="reported_seats_used" invisible="not saas_provider"/>
+                <field name="reported_seats_date" invisible="not saas_provider"/>
+                <field name="reported_saturated" invisible="not saas_provider"
+                       widget="boolean_toggle" readonly="1"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

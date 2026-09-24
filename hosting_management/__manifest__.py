@@ -2,7 +2,7 @@
 {
     "name": "Gestion d'hébergement",
     "summary": "Gérer les services d'hébergement pour les clients avec suivi de versions et facturation",
-    "version": "18.0.2.51.5",
+    "version": "18.0.2.57.0",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -55,6 +55,7 @@
         "views/hosting_backup_repository_views.xml",
         "views/hosting_backup_snapshot_views.xml",
         "views/hosting_backup_views.xml",
+        "views/hosting_saas_backup_views.xml",
         "views/hosting_domain_views.xml",
         "views/hosting_dmarc_report_views.xml",
         "views/hosting_audit_log_views.xml",
@@ -62,6 +63,7 @@
         "views/hosting_endpoint_views.xml",
         "views/hosting_endpoint_group_views.xml",
         "views/hosting_license_views.xml",
+        "views/hosting_saas_reading_views.xml",  # inherits the license view: must come after it
         "views/hosting_voip_did_views.xml",
         "views/hosting_voip_cdr_views.xml",
         "views/hosting_voip_transaction_views.xml",

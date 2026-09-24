@@ -6,6 +6,15 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import api, fields, models
 
+FREQUENCY_DELTAS = {
+    "weekly": relativedelta(weeks=1),
+    "biweekly": relativedelta(weeks=2),
+    "monthly": relativedelta(months=1),
+    "quarterly": relativedelta(months=3),
+    "biannually": relativedelta(months=6),
+    "yearly": relativedelta(years=1),
+}
+
 
 class HostingMaintenanceSchedule(models.Model):
     _name = "hosting.maintenance.schedule"
@@ -155,22 +164,42 @@ class HostingMaintenanceSchedule(models.Model):
                 user_id=record.user_id.id or self.env.user.id,
             )
 
+    # ------------------------------------------------------------ crochets
+    # Tous les lecteurs de ce modèle (tableau de bord, résumé, alertes mobiles,
+    # échéancier) passent par ces trois méthodes au lieu de recopier leur
+    # propre filtre. Il y en avait onze copies de
+    # ("service_id.state", "=", "active"), et une planification qui vise une
+    # machine plutôt qu'un service (bf_hosting_patch) n'a pas de service, donc
+    # ces onze lecteurs l'écartaient en silence : des correctifs de sécurité en
+    # retard manquaient au compte du tableau de bord.
+
+    @api.model
+    def _target_active_domain(self):
+        """Domaine : la cible de la planification est en service.
+
+        Le module de base ne connaît que les services. Un module qui ajoute une
+        autre sorte de cible étend ce domaine au lieu de le remplacer.
+        """
+        return [("service_id.state", "=", "active")]
+
+    def _target_display(self):
+        """(libellé, code) de ce que la planification vise, pour l'affichage."""
+        self.ensure_one()
+        return self.service_id.name or "", self.service_id.code or ""
+
+    @api.model
+    def _frequency_delta(self, frequency):
+        """L'intervalle d'une fréquence, le même pour le calcul et la projection."""
+        return FREQUENCY_DELTAS.get(frequency, relativedelta(months=3))
+
     @api.depends("last_performed", "frequency")
     def _compute_next_due(self):
         """Calculer la prochaine date d'échéance selon la fréquence et la dernière exécution."""
-        frequency_deltas = {
-            "weekly": relativedelta(weeks=1),
-            "biweekly": relativedelta(weeks=2),
-            "monthly": relativedelta(months=1),
-            "quarterly": relativedelta(months=3),
-            "biannually": relativedelta(months=6),
-            "yearly": relativedelta(years=1),
-        }
         today = fields.Date.today()
 
         for record in self:
             if record.last_performed and record.frequency:
-                delta = frequency_deltas.get(record.frequency, relativedelta(months=3))
+                delta = self._frequency_delta(record.frequency)
                 record.next_due = record.last_performed + delta
             elif record.frequency:
                 # Si jamais exécuté, fixer la prochaine échéance à aujourd'hui
@@ -281,7 +310,7 @@ class HostingMaintenanceSchedule(models.Model):
         return self.search([
             ("active", "=", True),
             ("next_due", "<=", cutoff_date),
-            ("service_id.state", "=", "active"),
+            *self._target_active_domain(),
         ], order="next_due, service_id")
 
     @api.model
@@ -296,7 +325,7 @@ class HostingMaintenanceSchedule(models.Model):
         return self.search([
             ("active", "=", True),
             ("next_due", "<", today),
-            ("service_id.state", "=", "active"),
+            *self._target_active_domain(),
         ], order="next_due, service_id")
 
     def _get_type_display(self):

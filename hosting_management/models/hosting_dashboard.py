@@ -393,7 +393,7 @@ class HostingDashboard(models.AbstractModel):
             "domain": [
                 ("active", "=", True),
                 ("next_due", "<", str(today)),
-                ("service_id.state", "=", "active"),
+                *self.env["hosting.maintenance.schedule"]._target_active_domain(),
             ],
             "context": {"search_default_group_by_service": 1},
         }
@@ -410,7 +410,7 @@ class HostingDashboard(models.AbstractModel):
                 ("active", "=", True),
                 ("next_due", ">=", str(today)),
                 ("next_due", "<=", str(today + timedelta(days=7))),
-                ("service_id.state", "=", "active"),
+                *self.env["hosting.maintenance.schedule"]._target_active_domain(),
             ],
             "context": {"search_default_group_by_service": 1},
         }
@@ -427,7 +427,7 @@ class HostingDashboard(models.AbstractModel):
                 ("active", "=", True),
                 ("next_due", ">=", str(today)),
                 ("next_due", "<=", str(today + timedelta(days=30))),
-                ("service_id.state", "=", "active"),
+                *self.env["hosting.maintenance.schedule"]._target_active_domain(),
             ],
             "context": {"search_default_group_by_service": 1},
         }
@@ -787,19 +787,19 @@ class HostingDashboard(models.AbstractModel):
             "overdue": MaintenanceSchedule.search_count([
                 ("active", "=", True),
                 ("next_due", "<", today),
-                ("service_id.state", "=", "active"),
+                *MaintenanceSchedule._target_active_domain(),
             ]),
             "due_week": MaintenanceSchedule.search_count([
                 ("active", "=", True),
                 ("next_due", ">=", today),
                 ("next_due", "<=", today + timedelta(days=7)),
-                ("service_id.state", "=", "active"),
+                *MaintenanceSchedule._target_active_domain(),
             ]),
             "due_month": MaintenanceSchedule.search_count([
                 ("active", "=", True),
                 ("next_due", ">=", today),
                 ("next_due", "<=", today + timedelta(days=30)),
-                ("service_id.state", "=", "active"),
+                *MaintenanceSchedule._target_active_domain(),
             ]),
         }
 

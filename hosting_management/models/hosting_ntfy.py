@@ -47,16 +47,27 @@ class HostingNtfy(models.AbstractModel):
             headers["Click"] = click
 
         try:
-            requests.post(
+            rep = requests.post(
                 f"{cfg['url']}/{cfg['topic']}",
                 data=(body or "").encode("utf-8"),
                 headers=headers,
                 timeout=10,
             )
-            return True
         except Exception:
             _logger.exception("Erreur lors de l'envoi de la notification ntfy")
             return False
+        # ⚠️ On rendait True dès que la requête n'avait pas LEVÉ. Un jeton
+        # périmé ou une ACL manquante rend un 403 bien poli, et l'appelant
+        # lisait « envoyé » sur une alerte que personne n'a reçue. Un contrôle
+        # qui ment coûte plus cher qu'un contrôle absent : au moins l'absence
+        # se voit. Relevé en écrivant la sonde du réveil, qui s'est fait
+        # refuser exactement comme ça.
+        if not rep.ok:
+            _logger.warning(
+                "ntfy a REFUSÉ la publication sur « %s » (HTTP %s) : "
+                "l'alerte n'est pas partie.", cfg["topic"], rep.status_code)
+            return False
+        return True
 
     @api.model
     def record_url(self, record):

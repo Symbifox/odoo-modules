@@ -59,6 +59,10 @@
                                 invisible="not server_url" icon="fa-heartbeat">
                             <field name="health_check_count" widget="statinfo" string="Santé"/>
                         </button>
+                        <button name="action_view_saas_backup_runs" type="object" class="oe_stat_button"
+                                invisible="not saas_backup_ref" icon="fa-cloud-download">
+                            <field name="saas_backup_run_count" widget="statinfo" string="Sauvegardes M365"/>
+                        </button>
                         <button name="action_view_maintenance_schedules" type="object" class="oe_stat_button" icon="fa-wrench">
                             <div class="o_stat_info">
                                 <field name="maintenance_schedule_count" class="o_stat_value"/>
@@ -101,10 +105,14 @@
 
                     <group>
                         <group string="Connexion">
+                            <field name="health_kind" string="Nature du contrôle"/>
                             <field name="server_url" string="URL du serveur" widget="url"/>
                             <field name="accepted_http_code_ids" widget="many2many_tags"
                                    string="Codes HTTP acceptés"
-                                   invisible="not server_url"/>
+                                   invisible="not server_url or health_kind != 'http'"/>
+                            <field name="watchdog_project_id" string="Projet des constats"
+                                   invisible="health_kind == 'http'"
+                                   options="{'no_create': True}"/>
                             <field name="domain_id" string="Domaine"/>
                             <field name="domain_name" string="Nom de domaine"/>
                             <field name="server_id" string="Serveur"/>
@@ -231,6 +239,25 @@
                                     <field name="size_human" string="Taille"/>
                                 </list>
                             </field>
+                        </page>
+                        <page string="Sauvegarde infonuagique" name="saas_backup"
+                              invisible="not saas_backup_ref and saas_backup_run_count == 0">
+                            <group>
+                                <group>
+                                    <field name="saas_backup_ref"/>
+                                    <field name="saas_backup_last_date"/>
+                                    <field name="saas_backup_last_result" widget="badge"
+                                           decoration-success="saas_backup_last_result == 'succeeded'"
+                                           decoration-warning="saas_backup_last_result == 'with_errors'"
+                                           decoration-danger="saas_backup_last_result in ('failed', 'canceled')"/>
+                                </group>
+                            </group>
+                            <p class="text-muted">
+                                La sonde de santé dit que la console répond. Ces
+                                trois champs disent si la sauvegarde a tourné, et
+                                bien. Un service peut être parfaitement vivant et
+                                ne plus rien faire.
+                            </p>
                         </page>
                     </notebook>
 

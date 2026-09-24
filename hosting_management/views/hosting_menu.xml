@@ -313,6 +313,27 @@
         sequence="25"/>
 
     <menuitem
+        id="hosting_menu_reporting_saas_backups"
+        name="Sauvegardes infonuagiques"
+        parent="hosting_menu_reporting"
+        action="hosting_saas_backup_run_action"
+        sequence="28"/>
+
+    <menuitem
+        id="hosting_menu_reporting_saas_readings"
+        name="Relevés infonuagiques"
+        parent="hosting_menu_reporting"
+        action="hosting_saas_reading_action"
+        sequence="30"/>
+
+    <menuitem
+        id="hosting_menu_reporting_saas_backup_failures"
+        name="Échecs infonuagiques"
+        parent="hosting_menu_reporting"
+        action="hosting_saas_backup_failure_action"
+        sequence="29"/>
+
+    <menuitem
         id="hosting_menu_reporting_backup_repos"
         name="Dépôts Restic"
         parent="hosting_menu_reporting"

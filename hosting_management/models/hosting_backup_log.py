@@ -28,8 +28,15 @@ def _icp_truthy(value, default=True):
     utilisent souvent `"1"` / `"0"`. On accepte les deux pour éviter qu'un simple
     enregistrement du formulaire de configuration ne désactive silencieusement
     l'envoi du rapport (cf. incident BKP-00168, 2026-06-30).
+
+    ⚠️ `get_param(cle)` SANS second argument rend le booléen `False` quand la
+    clé est absente — pas `None`, pas la chaîne vide. Sans le cas ajouté plus
+    bas, `False` tombait dans `str(False).lower() == "false"`, donc hors de la
+    liste, et la fonction rendait `False` au lieu du `default` demandé. Les
+    trois appels existants passent tous un défaut à `get_param` et n'y
+    touchaient pas ; le piège attendait le prochain appelant.
     """
-    if value is None or value == "":
+    if value is None or value is False or value == "":
         return default
     return str(value).strip().lower() in ("1", "true", "yes", "on", "t")
 

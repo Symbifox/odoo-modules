@@ -13,6 +13,14 @@ from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
+# Intervalle minimal entre deux VRAIES mesures de la sonde du réveil softphone.
+# Le cron de santé bat à la minute ; cette sonde-là n'a pas besoin de ce rythme
+# et sortirait 1 440 fois par jour vers l'extérieur. Voir _do_softphone_wake_check.
+CADENCE_REVEIL_S = 15 * 60
+# Le contrôle des avis de rendez-vous sort vers Nextcloud et juge une question
+# qui se pose à la journée : la mesurer 1 440 fois par jour ne la précise pas.
+CADENCE_AVIS_S = 24 * 60 * 60
+
 try:
     import pytz
 except ImportError:
@@ -118,6 +126,34 @@ class HostingService(models.Model):
         comodel_name="hosting.accepted.http.code",
         string="Codes HTTP acceptés",
         help="Codes HTTP (ex. 404) considérés comme 'en ligne' pour ce service.",
+    )
+    # 🔴 Toutes les pannes ne se voient pas dans un code HTTP.
+    #
+    # Le réveil par push du softphone a répondu « 200 {"ok": true, "sent": 0} »
+    # pendant huit jours : une sonde qui regarde le
+    # statut serait restée verte du premier au dernier jour. Un service peut
+    # être PARFAITEMENT VIVANT et ne plus rien faire.
+    #
+    # Ce champ dit donc COMMENT éprouver, pas seulement OÙ. Tout le reste de la
+    # boucle — reprises rapprochées, amortissement des battements entre cycles,
+    # alerte à la transition, historique, tableau de bord — vaut pour les deux
+    # natures sans une ligne de plus.
+    health_kind = fields.Selection(
+        selection=[
+            ("http", "Requête HTTP"),
+            ("softphone_wake", "Réveil push du softphone"),
+            ("calendar_notices", "Avis de modification de rendez-vous"),
+        ],
+        string="Nature du contrôle",
+        default="http",
+        required=True,
+        help="« Requête HTTP » interroge l'URL et juge sur le code de statut. "
+             "« Réveil push du softphone » éprouve la chaîne de réveil de bout "
+             "en bout — interrupteur, appareils inscrits, jeton et serveur ntfy "
+             "— sans faire sonner de téléphone. « Avis de modification de "
+             "rendez-vous » vérifie chaque jour que tout ce qui devait partir "
+             "aux invités est bien parti, des deux côtés : le registre d'Odoo "
+             "et la copie de l'agenda distant.",
     )
     domain_id = fields.Many2one(
         comodel_name="hosting.domain",
@@ -379,6 +415,69 @@ class HostingService(models.Model):
             dates = [d for d in repos.mapped("latest_snapshot_date") if d]
             s.restic_last_backup = max(dates) if dates else False
             s.restic_is_stale = any(repos.mapped("is_stale"))
+
+    # ── Sauvegarde infonuagique (produit tiers) ───────────────────────────
+    # La sonde HTTP dit que la console répond. Elle ne dit pas que la
+    # sauvegarde a tourné : un service peut être parfaitement vivant et ne plus
+    # rien faire. Ces trois champs portent la seule question qui compte pour un
+    # client, « est-ce que ma sauvegarde a tourné cette nuit, et bien ? ».
+    saas_backup_ref = fields.Char(
+        string="Identifiant de sauvegarde infonuagique",
+        index=True,
+        copy=False,
+        help="Identifiant de l'organisation chez le produit de sauvegarde "
+             "(un UUID chez CubeBackup). C'est la clé qui rattache les "
+             "exécutions versées à ce service. Sans lui, les exécutions sont "
+             "gardées mais orphelines.",
+    )
+    saas_backup_last_date = fields.Datetime(
+        string="Dernière sauvegarde infonuagique",
+        readonly=True,
+        copy=False,
+        help="Posé à l'arrivée de chaque exécution. Lit la plus récente par "
+             "date de départ, pas la dernière versée : un rattrapage arrive "
+             "dans le désordre.",
+    )
+    saas_backup_last_result = fields.Selection(
+        selection=[
+            ("succeeded", "Réussie"),
+            ("with_errors", "Réussie avec erreurs"),
+            ("canceled", "Annulée"),
+            ("failed", "Échouée"),
+            ("unknown", "Indéterminée"),
+        ],
+        string="Résultat de la dernière sauvegarde",
+        readonly=True,
+        copy=False,
+    )
+    saas_backup_run_count = fields.Integer(
+        string="Exécutions infonuagiques",
+        compute="_compute_saas_backup_run_count",
+    )
+
+    def _compute_saas_backup_run_count(self):
+        Run = self.env["hosting.saas.backup.run"]
+        if not self.ids:
+            for s in self:
+                s.saas_backup_run_count = 0
+            return
+        grouped = Run._read_group(
+            [("service_id", "in", self.ids)], ["service_id"], ["__count"],
+        )
+        counts = {svc.id: n for svc, n in grouped}
+        for s in self:
+            s.saas_backup_run_count = counts.get(s.id, 0)
+
+    def action_view_saas_backup_runs(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Sauvegardes infonuagiques",
+            "res_model": "hosting.saas.backup.run",
+            "view_mode": "list,form",
+            "domain": [("service_id", "=", self.id)],
+            "context": {"default_service_id": self.id},
+        }
 
     _sql_constraints = [
         ("code_uniq", "UNIQUE(code)", "La référence du service doit être unique !"),
@@ -1090,6 +1189,289 @@ class HostingService(models.Model):
         except Exception as e:
             return "down", None, None, f"Erreur inattendue : {str(e)[:450]}"
 
+    def _do_softphone_wake_check(self, force=False):
+        """Éprouver la chaîne de réveil du softphone. Même contrat de retour que
+        ``_do_health_check`` : (statut, ms, code HTTP, message d'erreur).
+
+        Deux moitiés, parce qu'elles meurent séparément :
+
+        1. **la logique**, par la sonde canari de `bf_softphone` — interrupteur,
+           usager, appareils inscrits, jeton et serveur ntfy. Elle publie sur un
+           sujet canari, donc aucun téléphone ne sonne ;
+        2. **la route HTTP et son jeton**, par un appel DÉLIBÉRÉMENT mal
+           authentifié dont on attend un 403.
+
+        ⚠️ La seconde moitié se vérifie par un mauvais jeton, jamais par le bon :
+        ça prouve à la fois que la route est montée et que sa porte est fermée,
+        sans avoir à ranger le secret partagé avec le PBX dans un champ de la
+        base — où il serait lisible par quiconque ouvre la fiche.
+        Un 404 dirait que la route a disparu (module non rechargé) ; un 200
+        dirait que la porte s'ouvre sans jeton, ce qui est pire qu'une panne.
+        """
+        import time as _t
+
+        debut = _t.monotonic()
+
+        # ⚠️ CADENCE PROPRE. Le cron de santé bat à la minute, ce qui convient à
+        # un GET sur une URL mais pas ici : cette sonde sort DEUX fois vers
+        # l'extérieur (publication ntfy + appel volontairement mal authentifié
+        # sur la route publique). À 1 440 passages par jour, un pare-feu
+        # applicatif finit par étrangler une adresse qui lui envoie un flot de
+        # 403 — et la sonde se mettrait à crier au loup sur sa propre insistance.
+        # Un contrôle qui se trompe finit désarmé, et c'est la passe entière qui
+        # meurt avec lui.
+        #
+        # Toutes les 15 minutes suffisent largement : la panne qu'on guette a mis
+        # HUIT JOURS à se voir. Entre deux vraies mesures on répète la dernière,
+        # ce qui laisse intact l'amortissement des battements du cron — un vrai
+        # « hors ligne » persiste donc et alerte au cycle suivant, comme prévu.
+        # ⚠️ `force` court-circuite la cadence, et le bouton s'en sert. Un bouton
+        # « vérifier maintenant » qui renvoie la mesure d'il y a quatorze minutes
+        # ment à celui qui le presse — or on le presse justement quand on doute.
+        derniere = self.env["hosting.health.check"].search(
+            [("service_id", "=", self.id)], order="check_date desc", limit=1)
+        if not force and derniere and derniere.check_date:
+            age = (fields.Datetime.now() - derniere.check_date).total_seconds()
+            if age < CADENCE_REVEIL_S:
+                return (derniere.status, derniere.response_time_ms, None,
+                        derniere.error_message or None)
+
+        Users = self.env["res.users"]
+        if not hasattr(Users, "softphone_wake_selftest"):
+            return ("degraded", None, None,
+                    "bf_softphone n'est pas installé sur ce locataire : "
+                    "rien à éprouver.")
+
+        try:
+            verdict = Users.softphone_wake_selftest()
+        except Exception as e:  # noqa: BLE001 — une sonde ne doit jamais casser le cron
+            _logger.exception("Sonde du réveil softphone : levée inattendue")
+            return ("down", None, None,
+                    f"La sonde elle-même a levé : {type(e).__name__} — {e}"[:500])
+
+        etat = verdict.get("etat", "down")
+        detail = verdict.get("detail", "")
+        ms = verdict.get("ms")
+
+        porte = self._sonder_porte_reveil()
+        if porte and etat == "up":
+            etat, detail = "down", porte
+
+        ms = ms or int((_t.monotonic() - debut) * 1000)
+        return (etat, ms, None, detail if etat != "up" else None)
+
+    # ------------------------------------------------------------
+    # Le contrôle quotidien des avis de modification de rendez-vous
+    # ------------------------------------------------------------
+
+    watchdog_project_id = fields.Many2one(
+        comodel_name="project.project",
+        string="Projet des constats",
+        help="Où ce service ouvre une tâche quand un contrôle trouve un écart. "
+             "Vide, le contrôle alerte comme d'habitude et n'ouvre rien : une "
+             "tâche qui tombe dans un projet choisi au hasard est une tâche que "
+             "personne ne lit.",
+    )
+
+    def _bf_ouvrir_tache_de_veille(self, cle, titre, corps):
+        """Ouvrir UNE tâche par écart, et pas une par passage du cron.
+
+        Le cron de santé bat à la minute. Un contrôle qui crée une tâche à
+        chaque fois qu'il trouve quelque chose n'a pas produit un constat, il a
+        produit un déni de service contre la personne qui lit les tâches.
+
+        La déduplication se fait sur un marqueur inscrit dans le NOM, parce
+        qu'il est lisible : quelqu'un qui tombe sur la tâche voit d'où elle
+        vient, et quelqu'un qui cherche pourquoi il n'en reçoit plus la trouve
+        du premier coup. Tant que la tâche est ouverte, la suivante ne naît pas.
+
+        Rend la tâche (neuve ou déjà là), ou un recordset vide quand aucun
+        projet n'est désigné.
+        """
+        self.ensure_one()
+        if not self.watchdog_project_id:
+            _logger.info(
+                "Service %s : écart constaté (%s) mais aucun projet de "
+                "constats n'est désigné, aucune tâche ouverte.", self.name, cle,
+            )
+            return self.env["project.task"].browse()
+        marqueur = "[veille:%s]" % cle
+        Task = self.env["project.task"].sudo()
+        existante = Task.search([
+            ("project_id", "=", self.watchdog_project_id.id),
+            ("name", "like", marqueur),
+            ("state", "not in", ("1_done", "1_canceled")),
+        ], limit=1)
+        if existante:
+            existante.message_post(body=corps)
+            return existante
+        return Task.create({
+            "name": "%s %s" % (marqueur, titre),
+            "project_id": self.watchdog_project_id.id,
+            "description": corps,
+        })
+
+    def _do_calendar_notices_check(self, force=False):
+        """Tout ce qui devait partir aux invités est-il bien parti ?
+
+        Même contrat de retour que ``_do_health_check`` : (statut, ms, code
+        HTTP, message d'erreur).
+
+        🔴 **Deux moitiés, et il en faut deux.** La première lit le registre
+        d'Odoo : reste-t-il une rencontre à venir dont la révision comptée
+        dépasse la révision annoncée, depuis plus longtemps que le délai de
+        grâce. La seconde relit la copie de l'agenda distant et la compare à ce
+        qu'Odoo croit en savoir.
+
+        Sans la seconde, la sonde dépend de ce qu'elle juge. Le jour où le
+        rapatriement s'arrête, Odoo n'apprend plus aucun changement, donc plus
+        aucun avis n'est dû, donc le registre est vert, donc la sonde est
+        verte, et personne n'est prévenu de rien. C'est exactement la panne
+        qu'on guette, et la première moitié ne la voit pas.
+
+        ⚠️ Cadence d'une journée. Le cron bat à la minute ; la seconde moitié
+        sort vers Nextcloud. Entre deux vraies mesures on répète la dernière,
+        ce qui laisse intact l'amortissement des battements du cron. ``force``
+        court-circuite, et le bouton s'en sert : un bouton « vérifier
+        maintenant » qui rend la mesure d'hier ment à celui qui le presse.
+        """
+        self.ensure_one()
+        import time as _t
+
+        debut = _t.monotonic()
+
+        derniere = self.env["hosting.health.check"].search(
+            [("service_id", "=", self.id)], order="check_date desc", limit=1)
+        if not force and derniere and derniere.check_date:
+            age = (fields.Datetime.now() - derniere.check_date).total_seconds()
+            if age < CADENCE_AVIS_S:
+                return (derniere.status, derniere.response_time_ms, None,
+                        derniere.error_message or None)
+
+        Event = self.env["calendar.event"].sudo()
+        if "bf_change_notice_due" not in Event._fields:
+            return ("degraded", None, None,
+                    "bf_calendar_invite n'est pas installé sur ce locataire : "
+                    "rien à contrôler.")
+
+        griefs = []
+        statut = "up"
+
+        # --- Moitié 1 : le registre d'Odoo ---------------------------------
+        try:
+            en_retard = Event._bf_notice_overdue()
+        except Exception as e:  # noqa: BLE001 - une sonde ne casse pas le cron
+            _logger.exception("Contrôle des avis : le registre a levé")
+            return ("down", None, None,
+                    "Le registre des avis a levé : "
+                    f"{type(e).__name__} : {e}"[:500])
+        if en_retard:
+            statut = "degraded"
+            griefs.append(
+                "%d rencontre(s) à venir portent un changement que personne "
+                "n'a annoncé : %s." % (
+                    len(en_retard),
+                    ", ".join(
+                        "%s (%s)" % (e.name or "?", e.start)
+                        for e in en_retard[:5]
+                    ),
+                )
+            )
+
+        # --- Moitié 2 : la copie distante, lue du dehors --------------------
+        Config = self.env["nextcloud.calendar.sync.config"].sudo()
+        if "nextcloud.calendar.sync.config" not in self.env:
+            configs = None
+        else:
+            configs = Config.search([
+                ("active", "=", True), ("backend_type", "=", "nextcloud"),
+                ("sync_direction", "in", ("both", "nc_to_odoo")),
+            ])
+        if configs is None or not hasattr(Config, "bf_ecarts_non_rapatries"):
+            griefs.append(
+                "⚠️ La moitié indépendante n'a PAS été mesurée : "
+                "calendar_nextcloud_sync est absent ou trop ancien. Un relevé "
+                "vide ne vaut pas un vert."
+            )
+            statut = "degraded" if statut == "up" else statut
+        else:
+            for config in configs:
+                releve = config.bf_ecarts_non_rapatries()
+                if not releve.get("mesure"):
+                    statut = "down"
+                    griefs.append(
+                        "Agenda « %s » : impossible de relire la copie "
+                        "distante (%s). Tant qu'on ne peut pas regarder, on ne "
+                        "sait pas." % (config.display_name,
+                                       releve.get("erreur") or "raison inconnue")
+                    )
+                    continue
+                ecarts = releve.get("ecarts") or []
+                if ecarts:
+                    statut = "down"
+                    griefs.append(
+                        "Agenda « %s » : %d rencontre(s) ont bougé chez "
+                        "Nextcloud sans qu'Odoo l'apprenne (sur %d regardées). "
+                        "Le rapatriement ne fait plus son travail, donc aucun "
+                        "avis ne peut partir." % (
+                            config.display_name, len(ecarts),
+                            releve.get("vus", 0),
+                        )
+                    )
+
+        ms = int((_t.monotonic() - debut) * 1000)
+        if statut == "up":
+            return ("up", ms, None, None)
+
+        detail = " ".join(griefs)[:500]
+        self._bf_ouvrir_tache_de_veille(
+            cle="avis-rdv:%s" % (self.code or self.id),
+            titre="Des avis de modification de rendez-vous ne sont pas partis",
+            corps=(
+                "<p>Le contrôle quotidien du service <b>%s</b> a trouvé ceci :</p>"
+                "<ul>%s</ul>"
+                "<p>Cette tâche ne se rouvrira pas tant qu'elle est ouverte ; "
+                "les passages suivants s'y ajoutent en commentaire.</p>"
+            ) % (self.name, "".join("<li>%s</li>" % g for g in griefs)),
+        )
+        return (statut, ms, None, detail)
+
+    def _sonder_porte_reveil(self):
+        """Rend un message d'erreur si la route de réveil ne se comporte pas.
+
+        Rend None quand tout va bien — c'est-à-dire quand un jeton invalide se
+        fait refuser par un 403.
+        """
+        try:
+            import requests  # noqa: PLC0415
+        except ImportError:
+            return None
+        base = (self.env["ir.config_parameter"].sudo()
+                .get_param("web.base.url", "") or "").rstrip("/")
+        if not base:
+            return None
+        url = f"{base}/bf_softphone/pbx/v1/wake"
+        try:
+            rep = requests.post(
+                url,
+                data={"token": "canari-jeton-invalide", "ext": "0000"},
+                timeout=8,
+                headers={"User-Agent": "Odoo-Hosting-Health-Check/1.0"},
+            )
+        except requests.RequestException as e:
+            return (f"Route de réveil injoignable ({url}) : "
+                    f"{type(e).__name__}.")
+        if rep.status_code == 404:
+            return ("La route de réveil rend 404 : elle n'est plus montée. Le "
+                    "processus Odoo n'a probablement pas rechargé bf_softphone.")
+        if rep.status_code < 400:
+            return (f"⚠️ La route de réveil a ACCEPTÉ un jeton invalide "
+                    f"(HTTP {rep.status_code}). La porte est ouverte.")
+        if rep.status_code != 403:
+            return (f"La route de réveil rend {rep.status_code} sur un jeton "
+                    f"invalide, au lieu du 403 attendu.")
+        return None
+
     @api.model
     def _cron_health_check(self):
         """Vérifier la santé de tous les services actifs avec URL."""
@@ -1099,9 +1481,12 @@ class HostingService(models.Model):
             _logger.warning("Bibliothèque requests non installée, vérifications de santé ignorées")
             return
 
+        # ⚠️ Un contrôle non-HTTP n'a pas d'URL à interroger : sans cette
+        # alternative, la sonde du réveil serait filtrée hors de la boucle et
+        # ne tournerait jamais — en silence, comme d'habitude.
         services = self.search([
             ("state", "=", "active"),
-            ("server_url", "!=", False),
+            "|", ("server_url", "!=", False), ("health_kind", "!=", "http"),
         ])
 
         response_time_threshold = int(
@@ -1129,20 +1514,32 @@ class HostingService(models.Model):
         services_recovered = []
         services_slow = []
 
-        for service in services:
-            accepted_codes = set(service.accepted_http_code_ids.mapped("code"))
-            status, response_time_ms, http_code, error_message = self._do_health_check(
-                requests, service.server_url, accepted_codes or None,
+        def _sonder(service):
+            """Aiguiller vers le contrôle qui convient à CE service.
+
+            ⚠️ Défini une fois et réutilisé par la reprise plus bas : deux
+            aiguillages recopiés divergeraient, et la reprise finirait par
+            éprouver autre chose que la première tentative — donc par
+            « confirmer » une panne qu'elle n'a pas mesurée.
+            """
+            if service.health_kind == "softphone_wake":
+                return service._do_softphone_wake_check()
+            if service.health_kind == "calendar_notices":
+                return service._do_calendar_notices_check()
+            codes = set(service.accepted_http_code_ids.mapped("code"))
+            return self._do_health_check(
+                requests, service.server_url, codes or None,
             )
+
+        for service in services:
+            status, response_time_ms, http_code, error_message = _sonder(service)
 
             # On failure, do rapid retries to confirm it's a real outage
             if status in ("down", "timeout", "degraded"):
                 confirmed_down = True
                 for attempt in range(1, retry_count):
                     time.sleep(retry_delay)
-                    r_status, r_time, r_code, r_err = self._do_health_check(
-                        requests, service.server_url, accepted_codes or None,
-                    )
+                    r_status, r_time, r_code, r_err = _sonder(service)
                     if r_status == "up":
                         _logger.info(
                             "Service %s : échec initial mais retry %d/%d réussi, faux positif évité",
@@ -1403,6 +1800,48 @@ class HostingService(models.Model):
     def action_run_health_check(self):
         """Exécuter manuellement la vérification de santé pour ce service."""
         self.ensure_one()
+        # ⚠️ AVANT la garde « pas d'URL » : un contrôle non-HTTP n'en a pas, et
+        # la garde le renvoyait « aucune URL » sans rien éprouver. Le bouton doit
+        # faire la même chose que le cron — c'est justement celui qu'on presse
+        # quand on doute du cron.
+        if self.health_kind == "calendar_notices":
+            statut, ms, code, erreur = self._do_calendar_notices_check(force=True)
+            vals = {"service_id": self.id, "status": statut}
+            if ms is not None:
+                vals["response_time_ms"] = ms
+            if erreur:
+                vals["error_message"] = erreur
+            self.env["hosting.health.check"].create(vals)
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Contrôle des avis terminé",
+                    "message": erreur or (
+                        f"État : {statut.upper()}. Tout ce qui devait partir "
+                        f"aux invités est parti."),
+                    "type": "success" if statut == "up" else "warning",
+                },
+            }
+        if self.health_kind == "softphone_wake":
+            statut, ms, code, erreur = self._do_softphone_wake_check(force=True)
+            vals = {"service_id": self.id, "status": statut}
+            if ms is not None:
+                vals["response_time_ms"] = ms
+            if erreur:
+                vals["error_message"] = erreur
+            self.env["hosting.health.check"].create(vals)
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Vérification du réveil terminée",
+                    "message": erreur or (
+                        f"État : {statut.upper()} — chaîne de réveil éprouvée, "
+                        f"aucun téléphone n'a sonné."),
+                    "type": "success" if statut == "up" else "warning",
+                },
+            }
         if not self.server_url:
             return {
                 "type": "ir.actions.client",

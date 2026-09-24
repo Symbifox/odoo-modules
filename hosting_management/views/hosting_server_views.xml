@@ -38,7 +38,7 @@
                     <button name="action_set_maintenance" string="Maintenance" type="object"
                             invisible="state == 'maintenance'"/>
                     <button name="action_decommission" string="Désactiver" type="object"
-                            invisible="state == 'decommissioned'" confirm="Êtes-vous sûr de vouloir désactiver ce serveur?"/>
+                            invisible="state == 'decommissioned'" confirm="Désactiver ce serveur ?"/>
                     <field name="state" widget="statusbar" statusbar_visible="active,maintenance,decommissioned"/>
                 </header>
                 <sheet>

@@ -26,6 +26,15 @@
             <field name="company_id" eval="False"/>
         </record>
 
+        <!-- Séquence des sauvegardes infonuagiques (produit tiers) -->
+        <record id="seq_hosting_saas_backup_run" model="ir.sequence">
+            <field name="name">Exécution de sauvegarde infonuagique</field>
+            <field name="code">hosting.saas.backup.run</field>
+            <field name="prefix">SBK-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
         <!-- Séquence des postes du parc -->
         <record id="seq_hosting_endpoint" model="ir.sequence">
             <field name="name">Poste du parc</field>

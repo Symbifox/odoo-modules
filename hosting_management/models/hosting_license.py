@@ -92,6 +92,40 @@ class HostingLicense(models.Model):
 
     expiry_date = fields.Date(string="Date d'expiration", tracking=True)
 
+    # ── Relevé du fournisseur ────────────────────────────────────────────
+    # « Sièges activés » se calcule sur les enregistrements de siège. Pour une
+    # licence infonuagique, personne ne saisit de siège : l'occupation réelle
+    # n'est connue que du fournisseur, qui l'écrit dans son rapport périodique.
+    # Ces trois champs portent ce qu'il AFFIRME, daté, sans inventer de siège
+    # pour faire coïncider le chiffre.
+    saas_provider = fields.Selection(
+        selection=[("cubebackup", "CubeBackup")],
+        string="Produit infonuagique",
+        help="Rattache cette licence aux relevés du produit. Vide = aucun "
+             "relevé ne la touchera.",
+    )
+    reported_seats_used = fields.Integer(
+        string="Comptes utilisés (relevé)",
+        readonly=True,
+        help="Dernier chiffre affirmé par le fournisseur.",
+    )
+    reported_seats_date = fields.Date(
+        string="Date du relevé",
+        readonly=True,
+    )
+    reported_saturated = fields.Boolean(
+        string="Saturée au dernier relevé",
+        compute="_compute_reported_saturated",
+        store=True,
+    )
+
+    @api.depends("reported_seats_used", "seats_total")
+    def _compute_reported_saturated(self):
+        for lic in self:
+            lic.reported_saturated = bool(
+                lic.seats_total and lic.reported_seats_used >= lic.seats_total
+            )
+
     # JWT (champs sensibles)
     jwt_token = fields.Char(
         string="JWT (token signé)",

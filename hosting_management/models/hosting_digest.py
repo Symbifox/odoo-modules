@@ -162,14 +162,14 @@ class HostingDigest(models.Model):
             data["maintenance_overdue"] = MaintenanceSchedule.search([
                 ("active", "=", True),
                 ("next_due", "<", today),
-                ("service_id.state", "=", "active"),
+                *MaintenanceSchedule._target_active_domain(),
             ], order="next_due, service_id")
 
             data["maintenance_due_soon"] = MaintenanceSchedule.search([
                 ("active", "=", True),
                 ("next_due", ">=", today),
                 ("next_due", "<=", warning_date),
-                ("service_id.state", "=", "active"),
+                *MaintenanceSchedule._target_active_domain(),
             ], order="next_due, service_id")
 
         return data
@@ -303,8 +303,9 @@ class HostingDigest(models.Model):
                 days_style = f"color:{danger['texte']}; font-weight:600;"
                 maint_type = schedule._get_type_display()
                 assigned = _esc(schedule.user_id.name) if schedule.user_id else "Non assigné"
+                cible, code = schedule._target_display()
                 rows.append([
-                    f"{_esc(schedule.service_id.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(schedule.service_id.code)}</span>",
+                    f"{_esc(cible)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(code)}</span>",
                     f"<span style='font-weight:600;'>{_esc(schedule.name)}</span><br/><span style='color:#6B7280; font-size:12px;'>{_esc(maint_type)}</span>",
                     str(schedule.next_due),
                     f"<span style='{days_style}'>{days} j de retard</span>",
@@ -328,8 +329,9 @@ class HostingDigest(models.Model):
                     days_style = "color:#6B7280;"
                 maint_type = schedule._get_type_display()
                 assigned = _esc(schedule.user_id.name) if schedule.user_id else "Non assigné"
+                cible, code = schedule._target_display()
                 rows.append([
-                    f"{_esc(schedule.service_id.name)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(schedule.service_id.code)}</span>",
+                    f"{_esc(cible)}<br/><span style='color:#6B7280; font-size:12px;'>{_esc(code)}</span>",
                     f"<span style='font-weight:600;'>{_esc(schedule.name)}</span><br/><span style='color:#6B7280; font-size:12px;'>{_esc(maint_type)}</span>",
                     str(schedule.next_due),
                     f"<span style='{days_style}'>{days} jours</span>",

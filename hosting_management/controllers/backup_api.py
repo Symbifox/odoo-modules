@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from odoo import fields, http
 from odoo.http import request
 
+from ..models.hosting_backup_log import _icp_truthy
+
 _logger = logging.getLogger(__name__)
 
 
@@ -110,6 +112,8 @@ class BackupAPIController(http.Controller):
         try:
             if report_type == "restic":
                 return self._handle_restic_report(data)
+            if report_type == "saas":
+                return self._handle_saas_report(data)
             return self._handle_legacy_report(data)
         except Exception:
             _logger.exception(
@@ -290,11 +294,15 @@ class BackupAPIController(http.Controller):
             len(data.get("results", [])),
         )
 
-        send_email = (
+        # ⚠️ Lecture TOLÉRANTE : voir `_icp_truthy`. Un `== "1"` ici rendait le
+        # rapport muet dès qu'on enregistrait la page des réglages, qui écrit la
+        # chaîne « True ». Même famille que le piège décrit dans `_icp_truthy`,
+        # et que le réveil du softphone, éteint huit jours par un seul clic.
+        send_email = _icp_truthy(
             request.env["ir.config_parameter"]
             .sudo()
-            .get_param("hosting.restic_send_email_report", "0")
-            == "1"
+            .get_param("hosting.restic_send_email_report"),
+            default=False,
         )
         if send_email:
             try:
@@ -312,6 +320,241 @@ class BackupAPIController(http.Controller):
             "lines_created": len(data.get("results", [])),
             "unknown_destinations": sorted(unknown_destinations),
         })
+
+    # ── Sauvegardes infonuagiques (produit tiers) ────────────────────────
+
+    #: Les verdicts que les produits écrivent, ramenés aux nôtres. Un mot
+    #: inconnu ne devient pas « Réussie » par défaut : il tombe sur
+    #: « Indéterminée » et le mot d'origine est gardé dans `result_raw`.
+    _SAAS_RESULT_MAP = {
+        "succeeded": "succeeded",
+        "success": "succeeded",
+        "finishedwitherrors": "with_errors",
+        "finished_with_errors": "with_errors",
+        "with_errors": "with_errors",
+        "canceled": "canceled",
+        "cancelled": "canceled",
+        "failed": "failed",
+        "error": "failed",
+    }
+
+    def _handle_saas_report(self, data):
+        """Verser l'état d'un produit de sauvegarde tiers, une entrée par
+        organisation et par exécution.
+
+        ⚠️ Ce gestionnaire n'écrit RIEN dans `hosting.backup.run` : trois
+        lecteurs y prennent « la dernière exécution » sans filtrer le type, et
+        une nuit infonuagique versée là les ferait noter la mauvaise. Voir
+        `models/hosting_saas_backup.py`.
+
+        Il n'envoie ni courriel ni ntfy : l'alerte n'est pas encore
+        décidée. Un lecteur qui verse trois mois d'archives d'un coup ne doit
+        réveiller personne.
+        """
+        provider = (data.get("provider") or "cubebackup").strip()
+        hostname = data.get("hostname") or "unknown"
+        ingest_source = data.get("source") or "log"
+        _logger.info(
+            "Rapport de sauvegarde infonuagique reçu de %s (produit=%s, source=%s)",
+            hostname, provider, ingest_source,
+        )
+
+        Run = request.env["hosting.saas.backup.run"].sudo()
+        Failure = request.env["hosting.saas.backup.failure"].sudo()
+        Service = request.env["hosting.service"].sudo()
+
+        created, updated, skipped = 0, 0, 0
+        unmatched = set()
+        touched = Run.browse()
+
+        for item in data.get("runs") or []:
+            org_ref = (item.get("organization_ref") or "").strip()
+            external_id = str(item.get("external_id") or "").strip()
+            if not org_ref or not external_id:
+                skipped += 1
+                _logger.warning(
+                    "Exécution ignorée : organisation ou tâche sans identifiant "
+                    "(org=%r, tâche=%r)", org_ref, external_id,
+                )
+                continue
+
+            raw_result = (item.get("result") or "").strip()
+            result = self._SAAS_RESULT_MAP.get(raw_result.lower(), "unknown")
+
+            service = Service.search(
+                [("saas_backup_ref", "=", org_ref)], limit=1,
+            )
+            if not service:
+                unmatched.add(org_ref)
+
+            vals = {
+                "provider": provider,
+                "organization_ref": org_ref,
+                "organization_name": item.get("organization_name") or "",
+                "service_id": service.id if service else False,
+                "external_id": external_id,
+                "run_date": _parse_iso8601(item.get("started_at")) or fields.Datetime.now(),
+                "end_date": _parse_iso8601(item.get("finished_at")),
+                "duration_sec": float(item.get("duration_sec") or 0.0),
+                "result": result,
+                "result_raw": raw_result,
+                "apps_total": int(item.get("apps_total") or 0),
+                "apps_failed": int(item.get("apps_failed") or 0),
+                "ingest_source": ingest_source,
+                "hostname": hostname,
+            }
+
+            existing = Run.search([
+                ("provider", "=", provider),
+                ("organization_ref", "=", org_ref),
+                ("external_id", "=", external_id),
+            ], limit=1)
+            if existing:
+                existing.write(vals)
+                existing.failure_ids.unlink()
+                run = existing
+                updated += 1
+            else:
+                run = Run.create(vals)
+                created += 1
+            touched |= run
+
+            for failure in item.get("failures") or []:
+                Failure.create({
+                    "run_id": run.id,
+                    "app_type": (failure.get("app_type") or "")[:64],
+                    "subject_name": (failure.get("subject_name") or "")[:256],
+                    "subject_login": (failure.get("subject_login") or "")[:256],
+                    "subject_ref": (failure.get("subject_ref") or "")[:128],
+                    "error_code": (failure.get("error_code") or "")[:128],
+                    "http_code": str(failure.get("http_code") or "")[:16],
+                    "error_message": (failure.get("error_message") or "")[:512],
+                })
+
+        readings = self._handle_saas_readings(data, provider)
+
+        if touched:
+            touched._sync_service_state()
+
+        if unmatched:
+            _logger.warning(
+                "Organisations sans fiche de service : %s", sorted(unmatched),
+            )
+
+        return request.make_json_response({
+            "success": True,
+            "report_type": "saas",
+            "provider": provider,
+            "created": created,
+            "updated": updated,
+            "skipped": skipped,
+            "unmatched_organizations": sorted(unmatched),
+            "readings_created": readings["created"],
+            "readings_updated": readings["updated"],
+            "readings_unmatched": sorted(readings["unmatched"]),
+        })
+
+    def _handle_saas_readings(self, data, provider):
+        """Verser les relevés périodiques (licence, stockage, compteurs).
+
+        Un relevé n'est pas une exécution : c'est ce que le fournisseur AFFIRME
+        sur une période. Il vit à côté, il ne corrige jamais une exécution, et
+        il ne sert jamais à conclure qu'une nuit a tourné.
+        """
+        Reading = request.env["hosting.saas.backup.reading"].sudo()
+        Line = request.env["hosting.saas.backup.reading.line"].sudo()
+        Run = request.env["hosting.saas.backup.run"].sudo()
+        License = request.env["hosting.license"].sudo()
+
+        created = updated = 0
+        unmatched = set()
+        latest = None
+
+        for item in data.get("readings") or []:
+            period_end = item.get("period_end")
+            if not period_end:
+                continue
+            vals = {
+                "provider": provider,
+                "period_start": item.get("period_start") or False,
+                "period_end": period_end,
+                "seats_total": int(item.get("seats_total") or 0),
+                "seats_used": int(item.get("seats_used") or 0),
+                "license_expiry": item.get("license_expiry") or False,
+                "storage_kind": (item.get("storage_kind") or "")[:128],
+                "storage_location": (item.get("storage_location") or "")[:256],
+                "storage_available": (item.get("storage_available") or "")[:128],
+                "index_path": (item.get("index_path") or "")[:256],
+                "index_free_display": (item.get("index_free_display") or "")[:128],
+                "index_free_pct": float(item.get("index_free_pct") or 0.0),
+                "ingest_source": item.get("source") or "email",
+                "source_ref": str(item.get("source_ref") or "")[:64],
+            }
+            existing = Reading.search([
+                ("provider", "=", provider), ("period_end", "=", period_end),
+            ], limit=1)
+            if existing:
+                existing.write(vals)
+                existing.line_ids.unlink()
+                reading = existing
+                updated += 1
+            else:
+                reading = Reading.create(vals)
+                created += 1
+
+            for line in item.get("organizations") or []:
+                name = (line.get("organization_name") or "").strip()
+                if not name:
+                    continue
+                # ⚠️ Le rapport ne porte que le NOM. On le rattache par la
+                # dernière exécution qui portait ce nom, parce qu'elle, elle a
+                # les deux. Sans correspondance, la ligne reste non rattachée :
+                # une ligne orpheline se voit, une ligne mal rattachée ment.
+                run = Run.search([
+                    ("provider", "=", provider),
+                    ("organization_name", "=", name),
+                    ("service_id", "!=", False),
+                ], order="run_date desc", limit=1)
+                if not run:
+                    unmatched.add(name)
+                Line.create({
+                    "reading_id": reading.id,
+                    "organization_name": name[:256],
+                    "service_id": run.service_id.id if run else False,
+                    "errors": int(line.get("errors") or 0),
+                    "items": int(line.get("items") or 0),
+                    "size_display": (line.get("size_display") or "")[:64],
+                })
+
+            # ⚠️ Comparer les CHAMPS, pas la charge : `period_end` arrive en
+            # chaîne et le champ rend une date. `"2026-07-27" > date(...)`
+            # lève un TypeError, et le versement entier tombe en 500 dès qu'un
+            # rattrapage envoie plus d'une semaine à la fois.
+            if latest is None or reading.period_end > latest.period_end:
+                latest = reading
+
+        # La fiche de licence porte ce que le fournisseur affirme, daté. On ne
+        # touche à `seats_total` et à l'expiration que s'ils ont bougé, pour ne
+        # pas noyer le suivi de la fiche à chaque relevé.
+        if latest:
+            lic = License.search([("saas_provider", "=", provider)], limit=1)
+            if lic:
+                lic_vals = {
+                    "reported_seats_used": latest.seats_used,
+                    "reported_seats_date": latest.period_end,
+                }
+                if latest.seats_total and lic.seats_total != latest.seats_total:
+                    lic_vals["seats_total"] = latest.seats_total
+                if latest.license_expiry and lic.expiry_date != latest.license_expiry:
+                    lic_vals["expiry_date"] = latest.license_expiry
+                lic.write(lic_vals)
+            else:
+                _logger.info(
+                    "Relevé %s : aucune licence n'est rattachée au produit %s",
+                    latest.period_end, provider,
+                )
+
+        return {"created": created, "updated": updated, "unmatched": unmatched}
 
     # ── Watchdog endpoint ────────────────────────────────────────────────
 

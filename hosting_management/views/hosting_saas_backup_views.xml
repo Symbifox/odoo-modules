@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ══ Exécutions ══════════════════════════════════════════════════ -->
+
+    <record id="hosting_saas_backup_run_view_list" model="ir.ui.view">
+        <field name="name">hosting.saas.backup.run.view.list</field>
+        <field name="model">hosting.saas.backup.run</field>
+        <field name="arch" type="xml">
+            <list decoration-success="result == 'succeeded'"
+                  decoration-warning="result == 'with_errors'"
+                  decoration-danger="result in ('failed', 'canceled')"
+                  decoration-muted="result == 'unknown'">
+                <field name="run_date" string="Départ"/>
+                <field name="organization_name" string="Organisation"/>
+                <field name="service_id" string="Service" optional="show"/>
+                <field name="partner_id" string="Client" optional="hide"/>
+                <field name="result" widget="badge"
+                       decoration-success="result == 'succeeded'"
+                       decoration-warning="result == 'with_errors'"
+                       decoration-danger="result in ('failed', 'canceled')"/>
+                <field name="apps_failed" string="En échec"/>
+                <field name="apps_total" string="Applications" optional="show"/>
+                <field name="duration_display" string="Durée"/>
+                <field name="provider" widget="badge" optional="hide"/>
+                <field name="ingest_source" string="Lu par" optional="hide"/>
+                <field name="external_id" string="Tâche" optional="hide"/>
+                <field name="name" string="Référence" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hosting_saas_backup_run_view_form" model="ir.ui.view">
+        <field name="name">hosting.saas.backup.run.view.form</field>
+        <field name="model">hosting.saas.backup.run</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="organization_name" readonly="1"/></h2>
+                    </div>
+                    <group>
+                        <group string="Exécution">
+                            <field name="run_date"/>
+                            <field name="end_date"/>
+                            <field name="duration_display"/>
+                            <field name="result" widget="badge"/>
+                            <field name="result_raw"
+                                   invisible="result != 'unknown'"/>
+                        </group>
+                        <group string="Rattachement">
+                            <field name="provider"/>
+                            <field name="service_id"/>
+                            <field name="partner_id"/>
+                            <field name="organization_ref"/>
+                            <field name="external_id"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="service_id">
+                        Cette organisation n'est rattachée à aucun service.
+                        L'exécution est gardée quand même. Pour la rattacher :
+                        poser son identifiant dans « Identifiant de sauvegarde
+                        infonuagique » sur la fiche du service.
+                    </div>
+                    <group>
+                        <group string="Applications">
+                            <field name="apps_total"/>
+                            <field name="apps_failed"/>
+                        </group>
+                        <group string="Provenance">
+                            <field name="ingest_source"/>
+                            <field name="hostname"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Échecs" name="failures">
+                            <field name="failure_ids" readonly="1">
+                                <list>
+                                    <field name="app_type"/>
+                                    <field name="subject_name"/>
+                                    <field name="subject_login"/>
+                                    <field name="http_code"/>
+                                    <field name="error_code"/>
+                                    <field name="error_message"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Notes internes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="hosting_saas_backup_run_view_search" model="ir.ui.view">
+        <field name="name">hosting.saas.backup.run.view.search</field>
+        <field name="model">hosting.saas.backup.run</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="organization_name"/>
+                <field name="service_id"/>
+                <field name="partner_id"/>
+                <field name="external_id"/>
+                <filter name="filter_not_clean" string="Pas propre"
+                        domain="[('result', '!=', 'succeeded')]"/>
+                <filter name="filter_with_failures" string="Avec des échecs"
+                        domain="[('apps_failed', '&gt;', 0)]"/>
+                <filter name="filter_unmatched" string="Sans service"
+                        domain="[('service_id', '=', False)]"/>
+                <separator/>
+                <filter name="filter_last_7" string="7 derniers jours"
+                        domain="[('run_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_last_30" string="30 derniers jours"
+                        domain="[('run_date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_organization" string="Organisation"
+                            context="{'group_by': 'organization_name'}"/>
+                    <filter name="group_service" string="Service"
+                            context="{'group_by': 'service_id'}"/>
+                    <filter name="group_result" string="Résultat"
+                            context="{'group_by': 'result'}"/>
+                    <filter name="group_date" string="Départ"
+                            context="{'group_by': 'run_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hosting_saas_backup_run_action" model="ir.actions.act_window">
+        <field name="name">Sauvegardes infonuagiques</field>
+        <field name="res_model">hosting.saas.backup.run</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hosting_saas_backup_run_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune exécution versée</p>
+            <p>
+                Les exécutions arrivent par
+                <code>/api/hosting/backup/report/public</code> avec
+                <code>report_type: "saas"</code>. Le module ne sait pas comment
+                l'état a été lu : journal du conteneur, API de la console ou
+                rapport par courriel, la charge est la même.
+            </p>
+        </field>
+    </record>
+
+    <!-- ══ Échecs ═════════════════════════════════════════════════════ -->
+
+    <record id="hosting_saas_backup_failure_view_list" model="ir.ui.view">
+        <field name="name">hosting.saas.backup.failure.view.list</field>
+        <field name="model">hosting.saas.backup.failure</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="run_date" string="Départ"/>
+                <field name="organization_name" string="Organisation"/>
+                <field name="app_type" string="Application"/>
+                <field name="subject_name" string="Personne ou site"/>
+                <field name="subject_login" string="Compte" optional="show"/>
+                <field name="http_code" string="HTTP"/>
+                <field name="error_code" string="Code"/>
+                <field name="error_message" string="Cause"/>
+                <field name="run_id" string="Exécution" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="hosting_saas_backup_failure_view_search" model="ir.ui.view">
+        <field name="name">hosting.saas.backup.failure.view.search</field>
+        <field name="model">hosting.saas.backup.failure</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="subject_name"/>
+                <field name="subject_login"/>
+                <field name="error_code"/>
+                <field name="organization_name"/>
+                <filter name="filter_last_30" string="30 derniers jours"
+                        domain="[('run_date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_code" string="Code"
+                            context="{'group_by': 'error_code'}"/>
+                    <filter name="group_subject" string="Personne ou site"
+                            context="{'group_by': 'subject_name'}"/>
+                    <filter name="group_organization" string="Organisation"
+                            context="{'group_by': 'organization_name'}"/>
+                    <filter name="group_app" string="Application"
+                            context="{'group_by': 'app_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="hosting_saas_backup_failure_action" model="ir.actions.act_window">
+        <field name="name">Échecs de sauvegarde infonuagique</field>
+        <field name="res_model">hosting.saas.backup.failure</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="hosting_saas_backup_failure_view_search"/>
+        <field name="context">{'search_default_filter_last_30': 1, 'search_default_group_subject': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun échec</p>
+            <p>Une ligne par application en échec : une boîte, un site, une équipe.</p>
+        </field>
+    </record>
+
+</odoo>

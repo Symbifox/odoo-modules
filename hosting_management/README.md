@@ -649,7 +649,10 @@ Hosting
 │   ├── Dashboard
 │   ├── Update History
 │   ├── Health Checks
-│   └── Backup Runs
+│   ├── Backup Runs
+│   ├── Cloud Backups
+│   ├── Cloud Backup Failures
+│   └── Cloud Readings
 └── Configuration
     ├── Service Tags
     ├── Email Digests
@@ -657,6 +660,15 @@ Hosting
 ```
 
 ## Changelog
+
+### Version 18.0.2.57.0
+- New: cloud backup tracking for a third-party backup product (CubeBackup to start). The backup report endpoint accepts a `saas` report type that records one run per organisation and per night, with the failing mailboxes or sites and the provider's error code, never the backed-up content. Runs live in their own models (`hosting.saas.backup.run`, `hosting.saas.backup.failure`), so nothing that reads `hosting.backup.run` can mistake a cloud night for the latest restic run. The service form shows the last cloud backup date and result, and a replayed or out-of-order backfill never moves them backwards.
+- New: periodic provider readings (`hosting.saas.backup.reading`): licence seats and expiry, storage, and per-organisation counters, as the provider reports them. A licence linked to the product shows the reported seat usage and whether it was saturated at the last reading, without inventing seat records to match.
+- New: health checks that are not HTTP requests. A service's check kind can test the softphone push wake-up chain end to end (no phone rings, and the wake route must refuse an invalid token), or verify once a day that every appointment change notice actually went out, reading both Odoo's register and the remote calendar copy. A discrepancy opens one task in a designated project and comments on it afterwards, instead of one task per cron pass.
+- Change: every maintenance reader (dashboard, digest, due and overdue lists) now goes through `_target_active_domain()` and `_target_display()` on `hosting.maintenance.schedule` instead of its own copy of the filter, so a module that adds another kind of target, such as a machine rather than a service, extends a single domain.
+- Fix: GitHub version checks rank recent releases by semantic version instead of trusting `/releases/latest`, which returns the most recently published release rather than the highest when a project ships several branches on the same day.
+- Fix: a ntfy publication refused by the server (for example an HTTP 403) is reported as not sent instead of sent.
+- Fix: the restic email report switch is read tolerantly, so saving the settings page, which writes "True", no longer silences it; `_icp_truthy` also honours its default when the parameter is absent.
 
 ### Version 18.0.2.51.4
 - Fix: on a multi-company database, the logo in branded emails and public pages now goes through `/brand/logo/<company>[/<variant>]` (bf_onboarding_base) instead of `/web/image/res.company/...`. The latter only serves the real image for the company of the website and returns Odoo's grey placeholder **with an HTTP 200** for every other one, so a secondary company's logo vanished from emails with no error code to show for it. No functional change elsewhere.
