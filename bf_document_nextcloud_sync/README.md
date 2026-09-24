@@ -88,7 +88,9 @@ bf_document_nextcloud_sync/
 +-- data/
 |   +-- nextcloud_sync_cron.xml            # Daily modification check cron
 +-- security/
-    +-- ir.model.access.csv                # ACL: read for doc users, full for admins
+|   +-- ir.model.access.csv                # ACL: read for doc users, full for admins
++-- tests/
+    +-- test_paths.py                      # Path sanitizer and prefix boundary (no network)
 ```
 
 ## Installation
@@ -292,7 +294,7 @@ Each file entry contains:
 
 | Constraint | Field | Validation |
 |------------|-------|------------|
-| Path traversal | `nc_file_path` | Rejects `..`, null bytes, control chars |
+| Path traversal | `nc_file_path` | Rejects `..`, null bytes, control chars, percent escapes (`%XX`) |
 | Path prefix | `nc_file_path` | Must be under project's `nc_documents_folder` |
 | Filename chars | `nc_file_path` | Rejects `<`, `>` in filename |
 | HTTPS | `nc_share_url` | Must start with `https://` |
@@ -366,7 +368,7 @@ This module was designed with a security audit of the existing `calendar_nextclo
 | 3 | Fernet key in database | HIGH | Key read from `NC_DOC_SYNC_FERNET_KEY` env var or `odoo.conf` first; DB fallback logs a warning |
 | 4 | Permissive config ACL | HIGH | Config model: read-only for Document Users, full CRUD for System only; password fields restricted to `base.group_system` |
 | 5 | No explicit TLS verification | HIGH | `verify=True` explicit on every `requests` call; optional `ca_bundle_path` for custom CAs; `allow_insecure` flag (default False) for dev only |
-| 6 | Path traversal | HIGH | `_sanitize_nc_path()` rejects `..`, null bytes, control chars; `_validate_path_under_prefix()` enforces project folder boundary |
+| 6 | Path traversal | HIGH | `_sanitize_nc_path()` rejects `..`, null bytes, control chars and percent escapes that would decode (`%2e%2e`), so the check and the request always see the same path; `_validate_path_under_prefix()` enforces project folder boundary |
 | 7 | Unprotected share links | HIGH | Default 30-day expiry; random 16-char password; read-only permissions; password never in chatter |
 | 11 | Filename injection | MODERATE | `@api.constrains` rejects `<`, `>` in filenames |
 | 12 | Share URL injection | MODERATE | `@api.constrains` enforces HTTPS on share URLs |
@@ -394,7 +396,7 @@ The same audit revealed weaknesses in `calendar_nextcloud_sync` and `contacts_ne
 | Share link creation fails | `files_sharing` app enabled on NC? User has share permissions? |
 | Modification cron does nothing | Documents need both `nc_config_id` and `nc_file_path` set; first run stores ETags silently |
 | Encryption errors | `cryptography` library installed? Check env var / odoo.conf / `ir.config_parameter` for key |
-| Path validation rejects valid path | Check for `..` segments, null bytes, or `<>` in filename |
+| Path validation rejects valid path | Check for `..` segments, null bytes, `<>` in filename, or a percent escape such as `%20` (names carrying `%XX` sequences cannot be addressed from Odoo) |
 | NC fields not visible on document form | Module installed? Check for XML view inheritance errors in Odoo logs |
 | Settings page empty | Admin access required; look under Knowledge Matrix > Nextcloud Documents |
 | Chatter shows double-escaped HTML | Ensure `body_is_html=True` on all `message_post` calls |
@@ -421,6 +423,7 @@ The same audit revealed weaknesses in `calendar_nextcloud_sync` and `contacts_ne
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 18.0.1.5.0 | 2026-09-15 | Path hardening: `_sanitize_nc_path()` now **refuses** any path containing a percent escape that would decode (`%2e%2e`, `%2F`, `%20`…) instead of decoding it. Decoding made the function non-idempotent: each WebDAV/OCS helper sanitized the already-sanitized path again, so a value could pass the check in one form and reach Nextcloud in another, escaping the project folder. A literal `%` that does not form an escape (`Invoice 100%.txt`) is still accepted. New `tests/test_paths.py` covers refusal, idempotence, the prefix boundary and proves no request leaves with an encoded path. |
 | 18.0.1.3.0 | 2026-06-21 | Synchronisation documentation et métadonnées (licence/LICENSE). Voir l'historique git pour le détail des correctifs intermédiaires. |
 | 18.0.1.1.0 | 2026-03-08 | "Lien interne NC" replaces "Ouvrir dans Nextcloud"; share password removed from chatter (notification only); folder browse opens NC directly; NC file changes create draft version records with changelog; fix double HTML escaping in chatter (`body_is_html=True`); relax filename constraint (allow `'` and `&`); LGPL-3 license |
 | 18.0.1.0.0 | 2026-03-07 | Initial release: config model, WebDAV PROPFIND/GET/PUT/MKCOL, OCS share API, document form integration, upload wizard, daily modification cron, project folder mapping, security hardening |

@@ -72,11 +72,34 @@ def _validate_nc_url(url):
 
 
 def _sanitize_nc_path(path):
-    """Sanitize a Nextcloud file path against traversal attacks."""
+    """Sanitize a Nextcloud file path against traversal attacks.
+
+    🔴 A path that would DECODE is refused, it is not decoded.
+
+    This function used to url-decode first, so that `%2e%2e` was caught as
+    `..`. But every WebDAV/OCS helper calls it again on the path it has just
+    validated, so the decoding happened twice: a value passed the check under
+    one form and reached Nextcloud under another (`%252e%252e` in the browser,
+    a plain `%2e%2e` through `project_document.nc_file_path`, whose constraint
+    validates the undecoded value against the project folder). Those calls
+    speak with the configuration's service account, so the project folder was
+    the only boundary, and it was escapable. Found by the adversarial review of
+    bf_nextcloud_browser 18.0.4.1.0.
+
+    Refusing instead of decoding makes the function idempotent, which is what
+    its callers assume. The price: a real Nextcloud name carrying a percent
+    escape cannot be addressed from Odoo, and says so. It could not be
+    addressed before either, it just failed silently on another file. Checked
+    before the change: no stored path on the databases in use carried such an
+    escape.
+    """
     if not path:
         return path
-    # URL-decode first to catch %2e%2e (%2F, etc.) bypass attempts
-    path = url_unquote(path)
+    if url_unquote(path) != path:
+        raise ValidationError(
+            _("Le chemin contient une sequence %%XX et n'est pas pris en charge : %s")
+            % path
+        )
     # Reject null bytes and control characters
     if "\x00" in path or any(ord(c) < 32 for c in path):
         raise ValidationError(
