@@ -6,7 +6,7 @@ class FederationAcceptWizard(models.TransientModel):
     _name = "federation.accept.wizard"
     _description = "Accepter une invitation de fédération"
 
-    base_url = fields.Char(string="Adresse du pair", required=True, help="https://… de l'instance qui vous a invité")
+    base_url = fields.Char(string="Adresse du pair", required=True, help="https://… de l'instance qui vous invite")
     code = fields.Char(string="Code d'invitation", required=True)
     name = fields.Char(string="Nom du pair", help="Laissez vide pour prendre le nom que le pair annonce.")
     mirror_user_id = fields.Many2one("res.users", string="Assigner les tâches reçues à", required=True,
