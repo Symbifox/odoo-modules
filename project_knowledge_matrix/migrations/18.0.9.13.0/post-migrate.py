@@ -5,13 +5,12 @@ res.company branding fields (bluefox_branding) instead of hardcoded Blue Fox
 values. Re-import body_html for every active language so existing translations
 pick up the new dynamic markup.
 
-RÉCUPÉRÉE le 2026-08-23. Cette passe n'existait plus que dans les arbres de PME
-Conforme : l'arbre de Blue Fox l'avait perdue en cours de route, et Blue Fox
-étant passé bien au-delà, rien ne le signalait. Un locataire aligné en copiant
-l'arbre de Blue Fox l'aurait donc SAUTÉE sans un mot, et ses gabarits de
-courriel seraient restés sur les valeurs Blue Fox codées en dur. Deux locataires
-sont encore en dessous de cette version au moment de la récupération :
-``ma-maison`` (18.0.9.8.0) et ``moijevends-demo`` (18.0.9.9.0).
+RÉCUPÉRÉE le 2026-08-23. Cette passe n'existait plus que dans certains arbres :
+celui de référence l'avait perdue en cours de route, et étant passé bien au-delà,
+rien ne le signalait. Un déploiement aligné en copiant l'arbre de référence
+l'aurait donc SAUTÉE sans un mot, et ses gabarits de courriel seraient restés sur
+des valeurs codées en dur. Deux instances étaient encore en dessous de cette
+version au moment de la récupération.
 
 Elle ne rejoue pas sur une base déjà passée en 18.0.9.13.1 : Odoo ne joue une
 passe que pour une version STRICTEMENT supérieure à celle installée.
