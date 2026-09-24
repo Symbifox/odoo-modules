@@ -24,7 +24,7 @@ class BfBudget(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date_start desc, id desc"
 
-    name = fields.Char(required=True, tracking=True)
+    name = fields.Char(string="Nom", required=True, tracking=True)
     company_id = fields.Many2one(
         "res.company",
         required=True,

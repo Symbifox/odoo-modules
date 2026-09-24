@@ -62,7 +62,7 @@ class BfBudgetLine(models.Model):
         "la distribution analytique nomme un de ces comptes. Obligatoire pour une "
         "ligne de coût interne, où c'est le seul axe disponible.",
     )
-    name = fields.Char(compute="_compute_name", store=True)
+    name = fields.Char(string="Poste", compute="_compute_name", store=True)
 
     amount_planned = fields.Monetary(
         string="Prévu",

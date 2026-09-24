@@ -13,7 +13,7 @@
                 <field name="amount_actual" sum="Réalisé"/>
                 <field name="amount_committed" sum="Engagé"/>
                 <field name="amount_drift" sum="Écart au théorique"/>
-                <field name="drift_pct" widget="percentage" optional="show"/>
+                <field name="drift_pct" optional="show"/>
                 <field name="is_alert" optional="hide"/>
                 <field name="overrun_accepted" optional="hide"/>
                 <field name="currency_id" column_invisible="True"/>

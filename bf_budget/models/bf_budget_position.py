@@ -17,7 +17,7 @@ class BfBudgetPosition(models.Model):
     _description = "Poste budgétaire"
     _order = "budget_type, code, name"
 
-    name = fields.Char(required=True, translate=True)
+    name = fields.Char(string="Nom", required=True, translate=True)
     code = fields.Char(help="Code court, utilisé pour l'ordre d'affichage et les rapports.")
     active = fields.Boolean(default=True)
     company_id = fields.Many2one(
