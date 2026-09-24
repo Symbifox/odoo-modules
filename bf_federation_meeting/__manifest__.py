@@ -1,6 +1,6 @@
 {
     "name": "Fédération : ordres du jour",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.0",
     "category": "Project",
     "summary": "L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet",
     "description": """
@@ -21,6 +21,16 @@ vraiment des deux côtés : il se construit avant la rencontre, et les deux
   `bf_meeting` ouvre déjà par lien public, servie là où le pair travaille.
 * **Ce qui ne traverse jamais** : les notes en direct, le verbatim, l'état du
   raffinage, la banque d'heures et les feuilles de temps.
+
+Le compte rendu, lui aussi
+--------------------------
+
+* **Le compte rendu voyage en lecture**, avec la charge que le module d'échange
+  produit déjà : ce que le PDF montre, et rien d'autre.
+* **Le statut suit l'objet.** Envoyé, terminé, annulé chez celui qui anime la
+  rencontre : le pair le voit, sans avoir à le recopier à la main.
+* 🔴 **L'état du miroir reste « Brouillon ».** Le receveur n'a rien envoyé à
+  personne, et son portail client reste fermé par construction.
 """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -29,6 +39,7 @@ vraiment des deux côtés : il se construit avant la rencontre, et les deux
     "data": [
         "security/ir.model.access.csv",
         "views/meeting_agenda_views.xml",
+        "views/meeting_record_views.xml",
     ],
     "installable": True,
     "application": False,

@@ -33,6 +33,13 @@
                 <div class="alert alert-info" role="status" invisible="not federation_is_mirror">
                     Ordre du jour reçu de <field name="federation_peer_id" readonly="1" class="oe_inline"/>.
                     Il se lit ici. Pour y ajouter quelque chose, proposez un sujet : il partira chez lui à examiner.
+                    <span invisible="not federation_peer_send_state">
+                        <br/>Chez lui, l'envoi est
+                        <field name="federation_peer_send_state" readonly="1" class="oe_inline"/><span
+                            invisible="not federation_peer_sent_date">, depuis le <field
+                            name="federation_peer_sent_date" readonly="1" class="oe_inline"/></span>.
+                        Rien n'est parti d'ici.
+                    </span>
                 </div>
             </xpath>
             <xpath expr="//header" position="inside">

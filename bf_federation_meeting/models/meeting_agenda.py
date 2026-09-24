@@ -42,11 +42,32 @@ class MeetingAgenda(models.Model):
     _inherit = ["meeting.agenda", "federation.federable"]
 
     _federation_kind = "agenda"
-    _federation_verbs = ("card", "topic")
+    _federation_verbs = ("card", "topic", "state")
 
     federation_is_mirror = fields.Boolean(
         string="Ordre du jour reçu d'un pair", compute="_compute_federation_is_mirror", store=True,
         help="Un miroir se lit, il ne se raffine pas et il ne s'envoie pas.")
+
+    # --- Le statut du pair --------------------------------------------------------
+    # 🔴 `send_state` est CALCULÉ et stocké, à partir de `sent_date`, `email_sent_date` et
+    # `sent_manually` : il n'a pas d'inverse. Le reproduire chez le pair voudrait dire poser
+    # ses ingrédients, donc écrire chez le receveur une date d'envoi qui n'a jamais eu lieu.
+    # Deux dégâts, mesurés sur des miroirs d'un pair corrigés à
+    # la main : le miroir affiche « Envoyé à la main », qui veut dire dans `bf_meeting`
+    # « parti par un autre canal qu'Odoo », alors que l'ordre du jour est bien parti d'Odoo
+    # chez l'émetteur ; et un `email_sent_date` sans instantané rend `sent_baseline_missing`
+    # vrai, donc le compteur « X changements depuis l'envoi » répond 0 en voulant dire
+    # « je ne sais pas ».
+    # L'envoi de l'ÉMETTEUR vit donc dans deux champs à lui. Le `send_state` du miroir reste
+    # « Non envoyé », qui est vrai chez lui : il n'a envoyé de courriel à personne.
+    federation_peer_send_state = fields.Selection(
+        selection=[("not_sent", "Non envoyé"), ("prepared", "Envoi non confirmé"),
+                   ("sent", "Envoyé"), ("manual", "Envoyé à la main")],
+        string="Envoi chez le pair", readonly=True, copy=False,
+        help="Où en est l'envoi de cet ordre du jour chez le pair qui l'anime. "
+             "Rien n'est parti d'ici.")
+    federation_peer_sent_date = fields.Datetime(
+        string="Envoyé par le pair le", readonly=True, copy=False)
 
     @api.depends("federation_peer_id")
     def _compute_federation_is_mirror(self):
@@ -67,8 +88,12 @@ class MeetingAgenda(models.Model):
         return _("cet ordre du jour")
 
     def _federation_watched(self):
+        # ⚠️ `send_state` est calculé : il n'apparaît JAMAIS dans le `vals` d'une écriture, et
+        # `_federation_hook_before_write` sort quand aucun champ surveillé n'y est. Surveiller
+        # ses trois ingrédients est donc la seule façon qu'un envoi parte chez le pair.
         return ("name", "date", "objectives", "context_html", "location", "duration_planned",
-                "state", "active", "federation_peer_id")
+                "state", "active", "federation_peer_id",
+                "sent_date", "email_sent_date", "sent_manually")
 
     def _federation_mirror_name(self):
         self.ensure_one()
@@ -95,6 +120,10 @@ class MeetingAgenda(models.Model):
             "location": self.location or "",
             "duration": self.duration_planned or 0,
             "state": self.state or "draft",
+            "send_state": self.send_state or "not_sent",
+            # L'instant de l'envoi réel, jamais l'instantané qui va avec : `sent_snapshot_json`
+            # reste dans JAMAIS, et c'est bien : le pair n'a pas à porter notre repère de diff.
+            "sent_at": fields.Datetime.to_string(self.email_sent_date or self.sent_date) or "",
             "objectives_text": self.objectives or "",
             "context_text": transport.html_to_text(self.context_html) if self.context_html else "",
             "topics": [{
@@ -130,6 +159,19 @@ class MeetingAgenda(models.Model):
             "duration_planned": transport.as_int(card.get("duration")),
             "company_id": peer.company_id.id,
         }
+        # 🔴 Le statut voyageait déjà dans la carte depuis le premier jour, et c'est ICI qu'il
+        # se faisait jeter : le miroir naissait en « Brouillon » et y restait, même quand
+        # l'émetteur avait terminé ou ANNULÉ sa rencontre. `action_cancel` n'archive pas, donc
+        # rien d'autre ne l'aurait dit au pair.
+        etat = card.get("state")
+        if etat in dict(self._fields["state"].selection):
+            vals["state"] = etat
+        envoi = card.get("send_state")
+        if envoi in dict(self._fields["federation_peer_send_state"].selection):
+            vals["federation_peer_send_state"] = envoi
+        # Non borné : les ordres du jour partagés remontent à plus d'un an, et une borne de
+        # 30 jours effacerait la date de tous les anciens en silence.
+        vals["federation_peer_sent_date"] = transport.valid_datetime(card.get("sent_at")) or False
         if day:
             vals["date"] = transport.noon_in_zone_utc(day, tz)
         if project is not None:
@@ -257,8 +299,13 @@ class MeetingAgenda(models.Model):
         """Un miroir se lit. On ne raffine pas, on n'envoie pas l'ordre du jour d'un autre."""
         if self.env.context.get("federation_inbound") or self.env.su:
             return
+        # ⚠️ La garde ne protégeait que le champ CALCULÉ `send_state`, et laissait passer
+        # `email_sent_date`, `sent_date` et `sent_manually`, qui le fabriquent : c'est par là
+        # qu'une passe manuelle est entrée sur des miroirs. Une garde qui nomme
+        # le résultat sans nommer ses ingrédients promet ce qu'elle ne tient pas.
         interdits = {"name", "date", "objectives", "context_html", "preparation_html", "topic_ids",
-                     "send_state", "auto_send_on_confirm"} & set(vals)
+                     "state", "send_state", "sent_date", "email_sent_date", "sent_manually",
+                     "auto_send_on_confirm"} & set(vals)
         if not interdits:
             return
         for agenda in self:
@@ -267,16 +314,69 @@ class MeetingAgenda(models.Model):
                     _("Cet ordre du jour est reçu de %s : il se lit ici. Pour y ajouter quelque chose, "
                       "utilisez « Proposer un sujet ».") % agenda.federation_peer_id.name)
 
+    def _federation_repere_etat(self):
+        """Ce qui, chez l'émetteur, décrit « où en est » cet ordre du jour."""
+        self.ensure_one()
+        return "|".join((
+            self.state or "draft",
+            self.send_state or "not_sent",
+            fields.Datetime.to_string(self.email_sent_date or self.sent_date) or "",
+        ))
+
+    def _federation_remember_sent(self, link):
+        """Au partage, la carte porte déjà l'état : le noter évite un verbe pour rien."""
+        self.ensure_one()
+        link.last_state_sent = self._federation_repere_etat()
+
     def _federation_after_write(self, vals, before, link):
         self.ensure_one()
         if link.origin != "local":
             return
         card = self._federation_card()
         fp = self.env["federation.link"]._card_fingerprint(card)
-        if fp == link.fingerprint:
-            return
-        link.fingerprint = fp
-        link.peer_id._enqueue("agenda.card", card, link)
+        if fp != link.fingerprint:
+            link.fingerprint = fp
+            link.peer_id._enqueue("agenda.card", card, link)
+        # 🔴 L'état ne peut PAS voyager par la carte, et c'est voulu par le socle :
+        # `_card_fingerprint` écarte explicitement `state`, `day`, `url` et `tz`, « ceux-là
+        # ont leurs propres verbes et ne doivent pas faire repartir la carte ». Une carte
+        # rejouée sur un changement d'état réécrirait tout le contenu du miroir pour une
+        # seule valeur. L'état a donc son verbe, comme `task.state` avant lui.
+        repere = self._federation_repere_etat()
+        if repere != (link.last_state_sent or ""):
+            link.last_state_sent = repere
+            etat, envoi, quand = repere.split("|", 2)
+            link.peer_id._enqueue("agenda.state",
+                                  {"state": etat, "send_state": envoi, "sent_at": quand}, link)
+
+    def _federation_apply_state(self, link, data):
+        """Chez le receveur : l'état de l'émetteur, et le repère de son envoi.
+
+        🔴 Rien n'est écrit dans `send_state`, ni dans ses ingrédients. Le receveur n'a
+        envoyé de courriel à personne, et son champ doit continuer de le dire.
+        """
+        self.ensure_one()
+        if link.origin != "remote":
+            return False
+        vals = {}
+        etat = data.get("state")
+        if etat in dict(self._fields["state"].selection):
+            vals["state"] = etat
+        envoi = data.get("send_state")
+        if envoi in dict(self._fields["federation_peer_send_state"].selection):
+            vals["federation_peer_send_state"] = envoi
+        vals["federation_peer_sent_date"] = transport.valid_datetime(data.get("sent_at")) or False
+        avant = self.state
+        self._federation_silent().write(vals)
+        nouvel_etat = vals.get("state")
+        if nouvel_etat and nouvel_etat != avant:
+            libelle = dict(self._fields["state"].selection).get(nouvel_etat, nouvel_etat)
+            note = link._note(Markup(_("<p>Chez %s, cet ordre du jour est maintenant "
+                                       "<b>%s</b>.</p>")) % (link.peer_id.name, libelle))
+            # Une annulation change l'agenda de quelqu'un : elle se signale, les autres non.
+            if nouvel_etat == "cancelled":
+                link._inbox_notify(note)
+        return True
 
     def _federation_share_note(self, peer):
         self.ensure_one()

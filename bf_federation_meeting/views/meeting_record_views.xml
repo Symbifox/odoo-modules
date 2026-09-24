@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_meeting_record_form_federation" model="ir.ui.view">
+        <field name="name">meeting.record.form.federation</field>
+        <field name="model">meeting.record</field>
+        <field name="inherit_id" ref="bf_meeting.meeting_record_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <div class="alert alert-info" role="status" invisible="not federation_is_mirror">
+                    Compte rendu reçu de <field name="federation_peer_id" readonly="1" class="oe_inline"/>.
+                    Il se lit ici, et les corrections se font chez lui.
+                    <span invisible="not federation_peer_report_state">
+                        Chez lui, il est
+                        <field name="federation_peer_report_state" readonly="1" class="oe_inline"/><span
+                            invisible="not federation_peer_sent_date">, depuis le <field
+                            name="federation_peer_sent_date" readonly="1" class="oe_inline"/></span>.
+                    </span>
+                    <br/>
+                    Son état ici reste « Brouillon » : rien n'est parti d'ici, et rien ne partira.
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='project_id'][1]" position="after">
+                <field name="federation_is_mirror" invisible="1"/>
+                <field name="federation_possible" invisible="1"/>
+                <field name="federation_allowed_peer_ids" invisible="1"/>
+                <field name="federation_peer_id"
+                       invisible="federation_is_mirror or not federation_possible"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_meeting_record_list_federation" model="ir.ui.view">
+        <field name="name">meeting.record.list.federation</field>
+        <field name="model">meeting.record</field>
+        <field name="inherit_id" ref="bf_meeting.meeting_record_view_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='report_state']" position="after">
+                <field name="federation_peer_report_state" string="Chez le pair"
+                       optional="hide" widget="badge"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
