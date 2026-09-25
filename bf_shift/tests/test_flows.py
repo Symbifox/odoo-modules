@@ -672,6 +672,34 @@ class TestFlows(TransactionCase):
                                               "requester_id": self.e1.id,
                                               "target_id": stranger_emp.id})
 
+    def test_manager_without_email_address(self):
+        """Odoo refuses a message whose author has no address, and the refusal
+        would undo the publication. Found on the demo, with real data."""
+        mgr = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "No Address", "login": "shift_noaddress",
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("bf_shift.group_shift_manager").id])]})
+        self.assertFalse(mgr.partner_id.email)
+        self.env.company.partner_id.email = "company@example.com"
+        sched = self.schedule()
+        self.shift(sched, self.e1, self.sunday + timedelta(days=1))
+        sched.with_user(mgr).action_publish()
+        sched.with_user(mgr)._do_publish(notify=True)
+        self.assertEqual(sched.state, "published")
+        notice = self.env["mail.message"].sudo().search([
+            ("model", "=", "bf.shift.schedule"), ("res_id", "=", sched.id),
+            ("message_type", "=", "user_notification")])
+        self.assertEqual(notice.author_id, self.env.company.partner_id, "signed by the company")
+        # Without any address at all, the action still goes through, silently.
+        self.env.company.partner_id.email = False
+        sched2 = self.schedule(start=self.sunday + timedelta(days=7))
+        a = self.shift(sched2, self.e1, self.sunday + timedelta(days=8))
+        sched2.with_user(mgr).action_publish()
+        sched2.with_user(mgr)._do_publish(notify=True)
+        self.assertEqual(sched2.state, "published")
+        a.with_user(mgr).write({"end": a.end + timedelta(hours=1)})
+        self.assertEqual(len(a.change_ids), 1)
+
     def test_floor_warning(self):
         weak = self.env["bf.shift.agreement"].create({
             "name": "Weak", "callback_min_hours": 2.0, "notice_days": 5.0})

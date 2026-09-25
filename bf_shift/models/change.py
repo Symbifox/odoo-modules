@@ -1,6 +1,8 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
+from .tools import post
+
 CONSENT_FIELDS = {"consent", "consent_at", "consent_recorded_by", "consent_note"}
 
 
@@ -81,7 +83,7 @@ class BfShiftChange(models.Model):
                 "consent_recorded_by": self.env.user.id,
                 "consent_note": note or (role == "manager" and _("Recorded by a manager")) or False,
             })
-            rec.schedule_id.sudo().message_post(body=_(
+            post(rec.schedule_id.sudo(), body=_(
                 "%(employee)s %(answer)s the change: %(after)s",
                 employee=rec.employee_id.name,
                 answer=_("accepted") if answer == "given" else _("refused"),

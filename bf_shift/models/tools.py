@@ -5,9 +5,12 @@ Conversions go through the employee's time zone, then the company's, then
 Montréal's (America/Toronto shares its rules).
 """
 
+import logging
 from datetime import datetime, time, timedelta
 
 import pytz
+
+_logger = logging.getLogger(__name__)
 
 DEFAULT_TZ = "America/Toronto"
 
@@ -116,6 +119,36 @@ def lang_of(env, partner=None, user=None):
     return lang or env.company.partner_id.lang or env.lang or "en_US"
 
 
+def _author(record):
+    """Who signs a chatter message. Odoo refuses a message whose author has no
+    email address, even an internal note, and the refusal would undo the
+    action that posts it (a publication, a swap). The company signs instead;
+    None when it has no address either."""
+    if record.env.user.partner_id.email:
+        return {}
+    company = record.env.company.partner_id
+    if company.email:
+        return {"author_id": company.id}
+    return None
+
+
+def post(record, **kwargs):
+    """``message_post`` that never undoes the action it reports."""
+    author = _author(record)
+    if author is None:
+        _logger.warning("bf_shift: message not posted on %s, no sender address", record)
+        return record.env["mail.message"]
+    return record.message_post(**kwargs, **author)
+
+
+def schedule_activity(record, *args, **kwargs):
+    """``activity_schedule`` that never undoes the action it follows: without a
+    sender address, the activity is created without its email notice."""
+    if _author(record) != {}:
+        record = record.with_context(mail_activity_quick_update=True)
+    return record.activity_schedule(*args, **kwargs)
+
+
 def notify_each_in_their_language(record, partners, build):
     """Post one notification per language, each written in that language.
 
@@ -127,11 +160,15 @@ def notify_each_in_their_language(record, partners, build):
     for partner in partners.sudo():
         groups.setdefault(lang_of(record.env, partner=partner), record.env["res.partner"])
         groups[lang_of(record.env, partner=partner)] |= partner
+    author = _author(record)
+    if author is None:
+        _logger.warning("bf_shift: notice not sent on %s, no sender address", record)
+        return
     for lang, group in groups.items():
         rec = record.with_context(lang=lang)
         body, subject, description = build(rec.env)
         rec.message_notify(partner_ids=group.ids, body=body, subject=subject,
-                           model_description=description)
+                           model_description=description, **author)
 
 
 # Internal flags (skip the log, stay silent, consent already given, why)

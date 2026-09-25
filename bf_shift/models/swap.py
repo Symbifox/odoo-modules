@@ -5,7 +5,7 @@ from odoo.exceptions import UserError, ValidationError
 
 from ..lib import engine
 from .tools import (check_own, guard_employee_vals, internal, is_shift_manager,
-                    notify_each_in_their_language, to_local, tz_of)
+                    notify_each_in_their_language, post, to_local, tz_of)
 
 EMPLOYEE_FIELDS = {"requester_id", "assignment_id", "target_id", "target_assignment_id", "reason"}
 
@@ -144,7 +144,7 @@ class BfShiftSwap(models.Model):
             if rec.state != "colleague":
                 raise UserError(_("This request is not waiting for the colleague."))
             rec.sudo().state = "refused"
-            rec.sudo().message_post(body=_("The colleague refused."))
+            post(rec.sudo(), body=_("The colleague refused."))
         return True
 
     def action_approve(self):
@@ -187,7 +187,7 @@ class BfShiftSwap(models.Model):
         if taken:
             internal(taken, consent="given", reason=reason).write({"employee_id": self.requester_id.id})
         self.write({"state": "done", "approved_by": self.env.user.id})
-        self.message_post(body=_("Swap applied."))
+        post(self, body=_("Swap applied."))
 
     def _simulate(self):
         """Warnings the swap would raise for each of the two people."""

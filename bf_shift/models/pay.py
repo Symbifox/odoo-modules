@@ -7,7 +7,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 from ..lib import engine
-from .tools import to_local, tz_of
+from .tools import post, to_local, tz_of
 
 
 def code_labels(env):
@@ -232,7 +232,7 @@ class BfShiftPayPeriod(models.Model):
             "mimetype": "text/csv",
         })
         self.write({"state": "exported", "export_attachment_id": attachment.id})
-        self.message_post(body=_("Exported for payroll."), attachment_ids=attachment.ids)
+        post(self, body=_("Exported for payroll."), attachment_ids=attachment.ids)
         return {
             "type": "ir.actions.act_url",
             "url": "/web/content/%s?download=true" % attachment.id,
@@ -242,7 +242,7 @@ class BfShiftPayPeriod(models.Model):
     def action_reset(self):
         for period in self:
             period.write({"state": "draft"})
-            period.message_post(body=_("Period reopened: the exported file no longer matches "
+            post(period, body=_("Period reopened: the exported file no longer matches "
                                        "if the lines are recomputed."))
         return True
 

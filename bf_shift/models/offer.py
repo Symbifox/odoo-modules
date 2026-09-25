@@ -4,7 +4,8 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
 from ..lib import engine
-from .tools import flag, internal, is_shift_manager, lang_of, to_local, tz_of
+from .tools import (flag, internal, is_shift_manager, lang_of, post, schedule_activity,
+                    to_local, tz_of)
 
 LINE_STATES = [
     ("waiting", "Waiting"),
@@ -86,7 +87,7 @@ class BfShiftOffer(models.Model):
                 raise UserError(_("The shift is no longer open."))
             offer._build_candidates()
             offer.state = "running"
-            offer.message_post(body=_("Offer started with %(count)s candidate(s), order: %(method)s.",
+            post(offer, body=_("Offer started with %(count)s candidate(s), order: %(method)s.",
                                       count=len(offer.line_ids.filtered(
                                           lambda l: l.state == "waiting")),
                                       method=dict(offer.pool_id._fields["method"]._description_selection(
@@ -146,12 +147,12 @@ class BfShiftOffer(models.Model):
         nxt = self.line_ids.filtered(lambda l: l.state == "waiting").sorted("rank")[:1]
         if not nxt:
             self.state = "unfilled"
-            self.message_post(body=_("Nobody took the shift: the list is exhausted."))
+            post(self, body=_("Nobody took the shift: the list is exhausted."))
             responsible = self.schedule_id.user_id
             if responsible:
                 env = self.with_context(lang=lang_of(self.env, user=responsible)).env
-                self.activity_schedule(
-                    "mail.mail_activity_data_todo", user_id=responsible.id,
+                schedule_activity(
+                    self, "mail.mail_activity_data_todo", user_id=responsible.id,
                     summary=env._("Open shift still unfilled"))
             return
         now = fields.Datetime.now()
@@ -161,8 +162,8 @@ class BfShiftOffer(models.Model):
         if user:
             env = self.with_context(lang=lang_of(self.env, user=user)).env
             deadline = to_local(nxt.response_deadline, tz_of(nxt.employee_id, self.env))
-            self.sudo().activity_schedule(
-                "mail.mail_activity_data_todo", user_id=user.id,
+            schedule_activity(
+                self.sudo(), "mail.mail_activity_data_todo", user_id=user.id,
                 date_deadline=fields.Date.context_today(self),
                 summary=env._("Answer by %(time)s", time=deadline.strftime("%Y-%m-%d %H:%M")))
 
@@ -287,7 +288,7 @@ class BfShiftOfferLine(models.Model):
                               "hours_accepted": member.hours_accepted + hours})
             offer.line_ids.filtered(lambda l: l.state == "waiting").write({"state": "withdrawn"})
             offer.write({"state": "filled", "filled_by": line.employee_id.id})
-            offer.message_post(body=_("%(name)s accepted the shift.", name=line.employee_id.name))
+            post(offer, body=_("%(name)s accepted the shift.", name=line.employee_id.name))
             return
         if member:
             vals = {}
@@ -300,7 +301,7 @@ class BfShiftOfferLine(models.Model):
             if answer == "refused" and agreement.max_refusals and \
                     member.refusal_count >= agreement.max_refusals and member.active:
                 member._withdraw("refusals")
-        offer.message_post(body=_("%(name)s: %(answer)s.", name=line.employee_id.name,
+        post(offer, body=_("%(name)s: %(answer)s.", name=line.employee_id.name,
                                   answer=dict(line._fields["state"]._description_selection(
                                       self.env))[answer]))
         offer._offer_next()

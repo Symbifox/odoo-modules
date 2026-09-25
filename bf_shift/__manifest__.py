@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Quarts de travail",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Human Resources/Employees",
     "summary": "Shift scheduling for regular and unionised employees: labour standards checks, "
                "premiums, call lists, swaps, taxable benefits, payroll export",

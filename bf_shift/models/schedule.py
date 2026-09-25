@@ -4,7 +4,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 from ..lib import engine
-from .tools import internal, notify_each_in_their_language, to_local, tz_of
+from .tools import internal, notify_each_in_their_language, post, to_local, tz_of
 
 
 class BfShiftSchedule(models.Model):
@@ -171,7 +171,7 @@ class BfShiftSchedule(models.Model):
             if warnings:
                 body += " " + _("%(count)s warning(s) were reviewed before publishing.",
                                 count=len(warnings))
-            sched.message_post(body=body)
+            post(sched, body=body)
             if notify:
                 sched._notify_employees(live.employee_id)
         return True
@@ -198,7 +198,7 @@ class BfShiftSchedule(models.Model):
                 raise UserError(_("Only a closed schedule can be reopened."))
         self.write({"state": "published"})
         for sched in self:
-            sched.message_post(body=_("Schedule reopened."))
+            post(sched, body=_("Schedule reopened."))
         return True
 
     def action_copy_next(self):

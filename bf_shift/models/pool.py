@@ -1,6 +1,8 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
+from .tools import post
+
 from .agreement import OFFER_METHODS
 
 
@@ -37,7 +39,7 @@ class BfShiftPool(models.Model):
             members = pool.with_context(active_test=False).member_ids
             members.write({"hours_offered": 0.0, "hours_accepted": 0.0, "refusal_count": 0})
             pool.counters_since = fields.Date.context_today(self)
-            pool.message_post(body=_("Counters reset."))
+            post(pool, body=_("Counters reset."))
         return True
 
 
@@ -89,7 +91,7 @@ class BfShiftPoolMember(models.Model):
         self.ensure_one()
         self.sudo().write({"active": False, "withdrawn_on": fields.Date.context_today(self),
                            "withdraw_reason": reason})
-        self.pool_id.sudo().message_post(body=_(
+        post(self.pool_id.sudo(), body=_(
             "%(name)s is removed from the list (%(reason)s).",
             name=self.employee_id.name,
             reason=dict(self._fields["withdraw_reason"]._description_selection(self.env))[reason]))
@@ -100,6 +102,6 @@ class BfShiftPoolMember(models.Model):
                 raise UserError(_("%(name)s is already on the list.", name=rec.employee_id.name))
             rec.write({"active": True, "withdrawn_on": False, "withdraw_reason": False,
                        "registered_on": fields.Date.context_today(self)})
-            rec.pool_id.message_post(body=_("%(name)s is back on the list.",
+            post(rec.pool_id, body=_("%(name)s is back on the list.",
                                             name=rec.employee_id.name))
         return True
