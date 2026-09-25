@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="gamification_reward_view_form" model="ir.ui.view">
+        <field name="name">bf.gamification.reward.form.inherit.bf_avatar_gamification</field>
+        <field name="model">bf.gamification.reward</field>
+        <field name="inherit_id" ref="bf_gamification.view_gamification_reward_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Avatar parts" name="bf_avatar_parts">
+                    <field name="avatar_style"/>
+                    <field name="avatar_parts" invisible="not avatar_style"
+                           placeholder="head:mohawk&#10;accessories:sunglasses"/>
+                    <field name="avatar_part_count" invisible="not avatar_style"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

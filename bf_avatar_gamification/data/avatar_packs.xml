@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- What says who you are is free (hair textures, head coverings, glasses,
+         beards). What is decoration is earned. Prices can be changed in the
+         reward shop; one of each per person. -->
+    <record id="pack_open_peeps_expressions" model="bf.gamification.reward">
+        <field name="name">Avatar : expressions</field>
+        <field name="category">custom</field>
+        <field name="xp_cost">25</field>
+        <field name="limit_per_user">1</field>
+        <field name="avatar_style">open_peeps</field>
+        <field name="avatar_parts">face:angryWithFang face:cyclops face:monster face:rage face:veryAngry face:contempt face:fear face:concernedFear face:hectic face:suspicious face:eatingHappy face:blank face:tired face:eyesClosed face:concerned face:old</field>
+    </record>
+    <record id="pack_open_peeps_sunglasses" model="bf.gamification.reward">
+        <field name="name">Avatar : verres fumés et bandeau</field>
+        <field name="category">custom</field>
+        <field name="xp_cost">25</field>
+        <field name="limit_per_user">1</field>
+        <field name="avatar_style">open_peeps</field>
+        <field name="avatar_parts">accessories:sunglasses accessories:sunglasses2 accessories:eyepatch</field>
+    </record>
+    <record id="pack_open_peeps_hats" model="bf.gamification.reward">
+        <field name="name">Avatar : chapeaux et coupes audacieuses</field>
+        <field name="category">custom</field>
+        <field name="xp_cost">50</field>
+        <field name="limit_per_user">1</field>
+        <field name="avatar_style">open_peeps</field>
+        <field name="avatar_parts">head:hatBeanie head:hatHip head:mohawk head:mohawk2 head:pomp head:bear</field>
+    </record>
+    <record id="pack_notionists_outfits" model="bf.gamification.reward">
+        <field name="name">Avatar : tenues</field>
+        <field name="category">custom</field>
+        <field name="xp_cost">25</field>
+        <field name="limit_per_user">1</field>
+        <field name="avatar_style">notionists</field>
+        <field name="avatar_parts">body:variant10 body:variant11 body:variant12 body:variant13 body:variant14 body:variant15 body:variant16 body:variant17 body:variant18 body:variant19 body:variant20 body:variant21 body:variant22 body:variant23 body:variant24 body:variant25</field>
+    </record>
+    <record id="pack_notionists_gestures" model="bf.gamification.reward">
+        <field name="name">Avatar : gestes et chapeau</field>
+        <field name="category">custom</field>
+        <field name="xp_cost">50</field>
+        <field name="limit_per_user">1</field>
+        <field name="avatar_style">notionists</field>
+        <field name="avatar_parts">gesture:wavePointLongArms gesture:waveOkLongArms gesture:waveLongArms gesture:waveLongArm gesture:pointLongArm gesture:okLongArm gesture:point gesture:ok gesture:hand gesture:handPhone hair:hat</field>
+    </record>
+    <record id="pack_notionists_badges" model="bf.gamification.reward">
+        <field name="name">Avatar : écussons</field>
+        <field name="category">custom</field>
+        <field name="xp_cost">100</field>
+        <field name="limit_per_user">1</field>
+        <field name="avatar_style">notionists</field>
+        <field name="avatar_parts">bodyIcon:electric bodyIcon:saturn bodyIcon:galaxy</field>
+    </record>
+</odoo>

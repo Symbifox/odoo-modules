@@ -1,0 +1,103 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_avatar_gamification
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-25 08:13+0000\n"
+"PO-Revision-Date: 2026-09-25 08:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_avatar_gamification
+#: model:ir.model.fields,field_description:bf_avatar_gamification.field_bf_gamification_reward__avatar_parts
+#: model_terms:ir.ui.view,arch_db:bf_avatar_gamification.gamification_reward_view_form
+msgid "Avatar parts"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model.fields,field_description:bf_avatar_gamification.field_bf_gamification_reward__avatar_style
+msgid "Avatar style"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model.fields.selection,name:bf_avatar_gamification.selection__bf_gamification_reward__avatar_style__notionists
+msgid "Character: Notionists (line art)"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model.fields.selection,name:bf_avatar_gamification.selection__bf_gamification_reward__avatar_style__open_peeps
+msgid "Character: Open Peeps (hand drawn, in colour)"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model,name:bf_avatar_gamification.model_bf_avatar
+msgid "Generated avatars"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model.fields,help:bf_avatar_gamification.field_bf_gamification_reward__avatar_parts
+msgid "One \"part:variant\" per line, for example \"head:mohawk\"."
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model.fields,field_description:bf_avatar_gamification.field_bf_gamification_reward__avatar_part_count
+msgid "Parts"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#. odoo-python
+#: code:addons/bf_avatar_gamification/models/gamification_reward.py:0
+msgid "Pick the avatar style these parts belong to."
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model,name:bf_avatar_gamification.model_bf_gamification_reward_claim
+msgid "Réclamation de récompense"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model,name:bf_avatar_gamification.model_bf_gamification_reward
+msgid "Récompense Fox Quest"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#. odoo-python
+#: code:addons/bf_avatar_gamification/models/gamification_reward.py:0
+msgid "These avatar parts belong to a style this database does not use."
+msgstr ""
+
+#. module: bf_avatar_gamification
+#. odoo-python
+#: code:addons/bf_avatar_gamification/models/res_users.py:0
+msgid "This avatar pack does not exist."
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model.fields,help:bf_avatar_gamification.field_bf_gamification_reward__avatar_style
+msgid "This reward unlocks avatar parts in this style."
+msgstr ""
+
+#. module: bf_avatar_gamification
+#. odoo-python
+#: code:addons/bf_avatar_gamification/models/gamification_reward.py:0
+msgid "Unknown avatar parts: %s"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model:ir.model,name:bf_avatar_gamification.model_res_users
+msgid "User"
+msgstr ""
+
+#. module: bf_avatar_gamification
+#: model_terms:ir.ui.view,arch_db:bf_avatar_gamification.gamification_reward_view_form
+msgid ""
+"head:mohawk\n"
+"accessories:sunglasses"
+msgstr ""
