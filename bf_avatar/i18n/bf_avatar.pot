@@ -1,0 +1,397 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_avatar
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-25 08:14+0000\n"
+"PO-Revision-Date: 2026-09-25 08:14+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_avatar
+#: model_terms:ir.ui.view,arch_db:bf_avatar.res_config_settings_view_form
+msgid "#1f84af, #729daf"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "%(cost)s XP"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/res_config_settings.py:0
+msgid "%s generated avatar(s) redrawn. Uploaded pictures were left alone."
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model,name:bf_avatar.model_avatar_mixin
+msgid "Avatar Mixin"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields,field_description:bf_avatar.field_res_config_settings__bf_avatar_palette
+#: model_terms:ir.ui.view,arch_db:bf_avatar.res_config_settings_view_form
+msgid "Avatar colours"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields,field_description:bf_avatar.field_res_users__bf_avatar_config
+msgid "Avatar composition"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+msgid "Avatar preview"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields,field_description:bf_avatar.field_res_config_settings__bf_avatar_style
+#: model_terms:ir.ui.view,arch_db:bf_avatar.res_config_settings_view_form
+msgid "Avatar style"
+msgstr ""
+
+#. module: bf_avatar
+#: model_terms:ir.ui.view,arch_db:bf_avatar.res_config_settings_view_form
+msgid "Avatars"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields,field_description:bf_avatar.field_res_config_settings__bf_avatar_contacts
+msgid "Avatars for contacts too"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid ""
+"Avatars in this database are not characters: there is nothing to compose."
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "Back to the drawn avatar?"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Badge"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Beard"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields.selection,name:bf_avatar.selection__res_config_settings__bf_avatar_style__notionists
+msgid "Character: Notionists (line art)"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields.selection,name:bf_avatar.selection__res_config_settings__bf_avatar_style__open_peeps
+msgid "Character: Open Peeps (hand drawn, in colour)"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Clothing"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+msgid "Colours"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model,name:bf_avatar.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model,name:bf_avatar.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields,help:bf_avatar.field_res_config_settings__bf_avatar_contacts
+#: model_terms:ir.ui.view,arch_db:bf_avatar.res_config_settings_view_form
+msgid ""
+"Contacts without a picture get a generated avatar instead of a grey "
+"silhouette."
+msgstr ""
+
+#. module: bf_avatar
+#: model_terms:ir.ui.view,arch_db:bf_avatar.res_config_settings_view_form
+msgid ""
+"Drawn for anyone who has not set a picture. Uploaded pictures are never "
+"replaced."
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Expression"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Eyebrows"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Eyes"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Facial hair"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model,name:bf_avatar.model_bf_avatar
+msgid "Generated avatars"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Gesture"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Glasses"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model,name:bf_avatar.model_ir_http
+msgid "HTTP Routing"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Hair"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Hair colour"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields,help:bf_avatar.field_res_config_settings__bf_avatar_palette
+msgid "Hex colours separated by commas. Empty: the main company's colours."
+msgstr ""
+
+#. module: bf_avatar
+#: model_terms:ir.ui.view,arch_db:bf_avatar.res_config_settings_view_form
+msgid ""
+"Hex colours separated by commas. Leave empty to use the main company's "
+"colours."
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields,help:bf_avatar.field_res_config_settings__bf_avatar_style
+msgid "How an avatar is drawn for someone who has not set a picture."
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields.selection,name:bf_avatar.selection__res_config_settings__bf_avatar_style__initials
+msgid "Initials in the house colours"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+msgid "Loading…"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Mask"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Mouth"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/user_menu.js:0
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+#: model:ir.actions.client,name:bf_avatar.action_bf_avatar_composer
+msgid "My avatar"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+msgid "None"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Nose"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+msgid "Not enough XP yet."
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields.selection,name:bf_avatar.selection__res_config_settings__bf_avatar_style__odoo
+msgid "Odoo default (initial on a random colour)"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Outfit"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "Replace it"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "Replace your picture?"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+msgid "Save"
+msgstr ""
+
+#. module: bf_avatar
+#: model_terms:ir.ui.view,arch_db:bf_avatar.res_config_settings_view_form
+msgid "Save and redraw the generated avatars"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "Skin"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/res_users.py:0
+msgid "Some parts are not unlocked yet: %s"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+msgid "Some parts you are trying on are locked."
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+msgid "Start over"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "Style: %(style)s"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "Style: %(style)s · Fox Quest balance: %(balance)s XP"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py:0
+msgid "The avatar composer is for internal users."
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model.fields,help:bf_avatar.field_res_users__bf_avatar_config
+msgid "The parts a person picked in the avatar composer."
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/res_users.py:0
+msgid "Unknown part: %s"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "Unlock “%(name)s” for %(cost)s XP"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "Unlocked: %s"
+msgstr ""
+
+#. module: bf_avatar
+#: model:ir.model,name:bf_avatar.model_res_users
+msgid "User"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml:0
+msgid "You have an uploaded picture. Saving an avatar replaces it."
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "Your avatar is saved."
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid ""
+"Your choices are forgotten and the avatar drawn from your name comes back."
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js:0
+msgid "Your current picture was uploaded. Saving the avatar replaces it."
+msgstr ""

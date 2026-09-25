@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf_avatar</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='contacts_setting_container']" position="after">
+                <block title="Avatars" name="bf_avatar_setting_container">
+                    <setting id="bf_avatar_style" string="Avatar style"
+                             help="Drawn for anyone who has not set a picture. Uploaded pictures are never replaced.">
+                        <field name="bf_avatar_style"/>
+                        <div class="mt8">
+                            <button name="action_bf_avatar_redraw" type="object" icon="oi-arrow-right"
+                                    string="Save and redraw the generated avatars" class="btn-link"/>
+                        </div>
+                    </setting>
+                    <setting id="bf_avatar_palette" string="Avatar colours"
+                             help="Hex colours separated by commas. Leave empty to use the main company's colours."
+                             invisible="bf_avatar_style == 'odoo'">
+                        <field name="bf_avatar_palette" placeholder="#1f84af, #729daf"/>
+                    </setting>
+                    <setting id="bf_avatar_contacts" invisible="bf_avatar_style == 'odoo'"
+                             help="Contacts without a picture get a generated avatar instead of a grey silhouette.">
+                        <field name="bf_avatar_contacts"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bf_avatar_composer" model="ir.actions.client">
+        <field name="name">My avatar</field>
+        <field name="tag">bf_avatar.composer</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

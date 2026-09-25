@@ -1,0 +1,373 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * bf_avatar
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-25 08:14+0000\n"
+"PO-Revision-Date: 2026-09-25 08:14+0000\n"
+"Last-Translator: \n"
+"Language: fr_CA\n"
+"Language-Team: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#. module: bf_avatar
+msgid "#1f84af, #729daf"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+#, python-format
+msgid "%(cost)s XP"
+msgstr "%(cost)s XP"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/res_config_settings.py
+#, python-format
+msgid "%s generated avatar(s) redrawn. Uploaded pictures were left alone."
+msgstr "%s avatar(s) générés redessinés. Les photos téléversées n'ont pas été touchées."
+
+#. module: bf_avatar
+msgid "Avatar Mixin"
+msgstr ""
+
+#. module: bf_avatar
+msgid "Avatar colours"
+msgstr "Couleurs des avatars"
+
+#. module: bf_avatar
+msgid "Avatar composition"
+msgstr "Composition de l'avatar"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "Avatar preview"
+msgstr "Aperçu de l'avatar"
+
+#. module: bf_avatar
+msgid "Avatar style"
+msgstr "Style des avatars"
+
+#. module: bf_avatar
+msgid "Avatars"
+msgstr "Avatars"
+
+#. module: bf_avatar
+msgid "Avatars for contacts too"
+msgstr "Avatars pour les contacts aussi"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Avatars in this database are not characters: there is nothing to compose."
+msgstr "Les avatars de cette base ne sont pas des personnages : il n'y a rien à composer."
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+msgid "Back to the drawn avatar?"
+msgstr "Revenir à l'avatar dessiné?"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Badge"
+msgstr "Écusson"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Beard"
+msgstr "Barbe"
+
+#. module: bf_avatar
+msgid "Character: Notionists (line art)"
+msgstr "Personnage : Notionists (au trait)"
+
+#. module: bf_avatar
+msgid "Character: Open Peeps (hand drawn, in colour)"
+msgstr "Personnage : Open Peeps (dessiné à la main, en couleur)"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Clothing"
+msgstr "Vêtements"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "Colours"
+msgstr "Couleurs"
+
+#. module: bf_avatar
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_avatar
+msgid "Contact"
+msgstr ""
+
+#. module: bf_avatar
+msgid "Contacts without a picture get a generated avatar instead of a grey silhouette."
+msgstr "Les contacts sans image reçoivent un avatar généré plutôt qu'une silhouette grise."
+
+#. module: bf_avatar
+msgid "Drawn for anyone who has not set a picture. Uploaded pictures are never replaced."
+msgstr "Dessiné pour qui n'a pas posé d'image. Une photo téléversée n'est jamais remplacée."
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Expression"
+msgstr "Expression"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Eyebrows"
+msgstr "Sourcils"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Eyes"
+msgstr "Yeux"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Facial hair"
+msgstr "Pilosité faciale"
+
+#. module: bf_avatar
+msgid "Generated avatars"
+msgstr "Avatars générés"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Gesture"
+msgstr "Geste"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Glasses"
+msgstr "Lunettes"
+
+#. module: bf_avatar
+msgid "HTTP Routing"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Hair"
+msgstr "Cheveux"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Hair colour"
+msgstr "Couleur des cheveux"
+
+#. module: bf_avatar
+msgid "Hex colours separated by commas. Empty: the main company's colours."
+msgstr "Couleurs hexadécimales séparées par des virgules. Vide : les couleurs de la société principale."
+
+#. module: bf_avatar
+msgid "Hex colours separated by commas. Leave empty to use the main company's colours."
+msgstr "Couleurs hexadécimales séparées par des virgules. Laisser vide pour prendre les couleurs de la société principale."
+
+#. module: bf_avatar
+msgid "How an avatar is drawn for someone who has not set a picture."
+msgstr "Comment on dessine l'avatar de qui n'a pas posé d'image."
+
+#. module: bf_avatar
+msgid "Initials in the house colours"
+msgstr "Initiales aux couleurs de la maison"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "Loading…"
+msgstr "Chargement…"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Mask"
+msgstr "Masque"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Mouth"
+msgstr "Bouche"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/user_menu.js
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "My avatar"
+msgstr "Mon avatar"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "None"
+msgstr "Aucun"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Nose"
+msgstr "Nez"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "Not enough XP yet."
+msgstr "Pas encore assez d'XP."
+
+#. module: bf_avatar
+msgid "Odoo default (initial on a random colour)"
+msgstr "Défaut d'Odoo (initiale sur une couleur au hasard)"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Outfit"
+msgstr "Tenue"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+msgid "Replace it"
+msgstr "La remplacer"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+msgid "Replace your picture?"
+msgstr "Remplacer votre photo?"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "Save"
+msgstr "Enregistrer"
+
+#. module: bf_avatar
+msgid "Save and redraw the generated avatars"
+msgstr "Enregistrer et redessiner les avatars générés"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "Skin"
+msgstr "Peau"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/res_users.py
+#, python-format
+msgid "Some parts are not unlocked yet: %s"
+msgstr "Certaines pièces ne sont pas encore débloquées : %s"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "Some parts you are trying on are locked."
+msgstr "Certaines pièces que vous essayez sont verrouillées."
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "Start over"
+msgstr "Recommencer"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+#, python-format
+msgid "Style: %(style)s"
+msgstr "Style : %(style)s"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+#, python-format
+msgid "Style: %(style)s · Fox Quest balance: %(balance)s XP"
+msgstr "Style : %(style)s · Solde Fox Quest : %(balance)s XP"
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/bf_avatar.py
+msgid "The avatar composer is for internal users."
+msgstr "Le compositeur d'avatar est réservé aux usagers internes."
+
+#. module: bf_avatar
+msgid "The parts a person picked in the avatar composer."
+msgstr "Les pièces choisies dans le compositeur d'avatar."
+
+#. module: bf_avatar
+#. odoo-python
+#: code:addons/bf_avatar/models/res_users.py
+#, python-format
+msgid "Unknown part: %s"
+msgstr "Pièce inconnue : %s"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+#, python-format
+msgid "Unlock “%(name)s” for %(cost)s XP"
+msgstr "Débloquer « %(name)s » pour %(cost)s XP"
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+#, python-format
+msgid "Unlocked: %s"
+msgstr "Débloqué : %s"
+
+#. module: bf_avatar
+msgid "User"
+msgstr ""
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/xml/avatar_composer.xml
+msgid "You have an uploaded picture. Saving an avatar replaces it."
+msgstr "Vous avez une photo téléversée. Enregistrer un avatar la remplace."
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+msgid "Your avatar is saved."
+msgstr "Votre avatar est enregistré."
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+msgid "Your choices are forgotten and the avatar drawn from your name comes back."
+msgstr "Vos choix sont oubliés et l'avatar dessiné à partir de votre nom revient."
+
+#. module: bf_avatar
+#. odoo-javascript
+#: code:addons/bf_avatar/static/src/js/avatar_composer.js
+msgid "Your current picture was uploaded. Saving the avatar replaces it."
+msgstr "Votre image actuelle a été téléversée. Enregistrer l'avatar la remplace."
+

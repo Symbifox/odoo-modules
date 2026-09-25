@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_avatar.AvatarComposer">
+        <div class="o_bf_avatar_composer o_action h-100 overflow-auto">
+            <div t-if="state.error" class="alert alert-warning m-4" role="alert" t-esc="state.error"/>
+            <div t-elif="state.data" class="container-fluid py-4 px-3 px-md-4">
+                <h2 class="mb-1">My avatar</h2>
+                <p class="text-muted mb-4 o_bf_avatar_summary" t-esc="summaryLine"/>
+                <div class="row g-4">
+                    <div class="col-12 col-md-4 col-xl-3">
+                        <div class="o_bf_avatar_preview mx-auto">
+                            <img t-att-src="dataUri(state.preview)" alt="Avatar preview"/>
+                        </div>
+                        <div t-if="lockedRewards.length" class="alert alert-info mt-3 mb-0">
+                            <p class="mb-2">Some parts you are trying on are locked.</p>
+                            <t t-foreach="lockedRewards" t-as="reward" t-key="reward.reward_id">
+                                <button class="btn btn-sm btn-primary d-block w-100 mb-1"
+                                        t-att-disabled="state.busy or !reward.affordable"
+                                        t-on-click="() => this.unlock(reward)">
+                                    <i class="fa fa-unlock me-1"/>
+                                    <t t-esc="unlockLabel(reward)"/>
+                                </button>
+                                <small t-if="!reward.affordable" class="text-muted d-block mb-1">
+                                    Not enough XP yet.
+                                </small>
+                            </t>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 mt-3">
+                            <button class="btn btn-primary" t-att-disabled="state.busy or lockedChoices.length"
+                                    t-on-click="save">Save</button>
+                            <button class="btn btn-secondary" t-att-disabled="state.busy"
+                                    t-if="state.data.customised" t-on-click="reset">Start over</button>
+                        </div>
+                        <p t-if="state.data.has_photo" class="small text-muted mt-2 mb-0">
+                            You have an uploaded picture. Saving an avatar replaces it.
+                        </p>
+                    </div>
+                    <div class="col-12 col-md-8 col-xl-9">
+                        <ul class="nav nav-tabs flex-nowrap overflow-auto mb-3" role="tablist">
+                            <li t-foreach="slots" t-as="slot" t-key="slot.name" class="nav-item">
+                                <a href="#" role="tab" class="nav-link text-nowrap"
+                                   t-att-class="{ active: state.tab === slot.name }"
+                                   t-on-click.prevent="() => this.selectTab(slot.name)" t-esc="slot.label"/>
+                            </li>
+                            <li t-if="state.data.colours.length" class="nav-item">
+                                <a href="#" role="tab" class="nav-link text-nowrap"
+                                   t-att-class="{ active: state.tab === COLOURS_TAB }"
+                                   t-on-click.prevent="() => this.selectTab(COLOURS_TAB)">Colours</a>
+                            </li>
+                        </ul>
+                        <div t-if="state.tab === COLOURS_TAB">
+                            <div t-foreach="state.data.colours" t-as="colour" t-key="colour.name" class="mb-3">
+                                <h6 t-esc="colour.label"/>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button t-foreach="colour.values" t-as="value" t-key="value"
+                                            class="o_bf_avatar_swatch"
+                                            t-att-class="{ selected: state.config.colors[colour.name] === value }"
+                                            t-att-style="'background-color: #' + value"
+                                            t-att-title="'#' + value"
+                                            t-on-click="() => this.chooseColour(colour.name, value)"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div t-else="" class="o_bf_avatar_grid">
+                            <t t-set="thumbs" t-value="state.thumbnails[state.tab]"/>
+                            <div t-if="!thumbs" class="text-muted">Loading…</div>
+                            <t t-else="">
+                                <button t-foreach="currentVariants" t-as="variant" t-key="variant.key"
+                                        class="o_bf_avatar_choice"
+                                        t-att-class="{ selected: isSelected(variant.key), locked: variant.locked }"
+                                        t-att-title="variant.none ? 'None' : variant.key"
+                                        t-on-click="() => this.choose(variant.key)">
+                                    <img t-att-src="dataUri(thumbs[variant.key])" alt=""/>
+                                    <span t-if="variant.none" class="o_bf_avatar_badge">None</span>
+                                    <span t-if="variant.locked" class="o_bf_avatar_badge">
+                                        <i class="fa fa-lock me-1"/><t t-esc="costLabel(variant.locked)"/>
+                                    </span>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
