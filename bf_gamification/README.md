@@ -220,11 +220,20 @@ Managers can create rewards that users redeem by spending XP:
 
 **Workflow:** Pending -> Approved -> Consumed (or Refused with XP refund)
 
+**Earned XP and balance are two numbers.** *Total XP* is everything a
+person has earned: it sets the level, the rank and the XP-threshold badges.
+*XP balance* is what is left to spend. A claim draws on the balance only, so
+buying a reward never costs a level.
+
 **Safeguards:**
 - XP balance check before claiming
 - Optional stock limits (0 = unlimited)
 - Optional per-user claim limits
-- Full XP refund on refusal
+- Full refund to the balance on refusal
+
+With `bf_avatar` installed, `bf_avatar_gamification` adds six packs of
+decorative avatar parts as ordinary rewards, approved as soon as they are
+claimed.
 
 ---
 
@@ -527,6 +536,24 @@ bf_gamification/
 ---
 
 ## Changelog
+
+### v2.6.1
+
+- XP earned and XP balance are separated. `total_xp` now sums every
+  transaction except rewards and still drives the level, the rank and the
+  threshold badges; the new stored `xp_balance` (earned minus rewards
+  claimed) is what a claim checks and draws on. Before, a claim was taken out
+  of `total_xp`, so buying a reward could lower a person's level. The upgrade
+  recomputes both numbers for every profile.
+- The dashboard shows the balance under the rank; the profile form and the
+  leaderboard list show it too.
+- A user can no longer set the state, the approver, the processing date or
+  the price of their own claim, nor claim for someone else: those values are
+  ignored unless the caller is a Fox Quest manager.
+- Users no longer have write access to profiles, their own included, so the
+  stored XP total cannot be edited by its owner. XP credits from everyday
+  work run as sudo, which also lets an action by one person credit another.
+- First tests for the module (`tests/test_xp_balance.py`).
 
 ### v2.5.4
 

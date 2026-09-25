@@ -57,9 +57,19 @@ class GamificationRewardClaim(models.Model):
     approved_by = fields.Many2one('res.users', string="Approuvé par")
     refusal_reason = fields.Text(string="Raison du refus")
 
+    # Ce qu'un usager ne décide pas lui-même en réclamant : l'état,
+    # l'approbation et le prix payé. Un gestionnaire, lui, peut tout poser.
+    _CLAIM_PRIVILEGED = ('state', 'approved_by', 'date_processed', 'xp_spent')
+
     @api.model_create_multi
     def create(self, vals_list):
+        manager = self.env.su or self.env.user.has_group(
+            'bf_gamification.group_gamification_manager')
         for vals in vals_list:
+            if not manager:
+                for key in self._CLAIM_PRIVILEGED:
+                    vals.pop(key, None)
+                vals['user_id'] = self.env.user.id
             reward = self.env['bf.gamification.reward'].browse(vals.get('reward_id'))
             user = self.env['res.users'].browse(vals.get('user_id', self.env.user.id))
 
@@ -88,10 +98,11 @@ class GamificationRewardClaim(models.Model):
 
             # Check XP balance
             profile = self.env['bf.gamification.profile']._get_or_create_profile(user)
-            if profile.total_xp < reward.xp_cost:
+            profile._compute_xp()
+            if profile.xp_balance < reward.xp_cost:
                 raise UserError(
-                    "XP insuffisant. Vous avez %d XP, il en faut %d." % (
-                        profile.total_xp, reward.xp_cost))
+                    "XP insuffisant. Votre solde est de %d XP, il en faut %d." % (
+                        profile.xp_balance, reward.xp_cost))
 
             vals['xp_spent'] = reward.xp_cost
 
@@ -107,6 +118,7 @@ class GamificationRewardClaim(models.Model):
                 'description': 'Récompense : %s' % claim.reward_id.name,
                 'reference': 'bf.gamification.reward.claim,%s' % claim.id,
             })
+            profile._compute_xp()
 
         return claims
 
@@ -129,6 +141,7 @@ class GamificationRewardClaim(models.Model):
                 'description': 'Remboursement : %s' % claim.reward_id.name,
                 'reference': 'bf.gamification.reward.claim,%s' % claim.id,
             })
+            self.env['bf.gamification.profile']._get_or_create_profile(claim.user_id)._compute_xp()
 
     def action_consume(self):
         self.filtered(lambda c: c.state == 'approved').write({'state': 'consumed'})

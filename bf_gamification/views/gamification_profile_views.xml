@@ -20,6 +20,7 @@
                     <group>
                         <group string="Progression">
                             <field name="total_xp"/>
+                            <field name="xp_balance"/>
                             <field name="xp_to_next_level"/>
                             <field name="progress_percent" widget="progressbar"/>
                             <field name="rank"/>
@@ -52,6 +53,7 @@
                 <field name="title"/>
                 <field name="level_id"/>
                 <field name="total_xp"/>
+                <field name="xp_balance" optional="show"/>
                 <field name="badge_count"/>
                 <field name="current_streak" string="Streak"/>
                 <field name="xp_this_week"/>

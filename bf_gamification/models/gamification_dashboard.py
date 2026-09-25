@@ -82,6 +82,7 @@ class GamificationDashboard(models.AbstractModel):
             'user_name': profile.user_id.name,
             'avatar': self._avatar_uri(profile.user_id),
             'total_xp': profile.total_xp,
+            'xp_balance': profile.xp_balance,
             'level_name': profile.level_id.name if profile.level_id else '',
             'level_title': profile.title or '',
             'level_css_class': profile.level_id.css_class if profile.level_id else '',

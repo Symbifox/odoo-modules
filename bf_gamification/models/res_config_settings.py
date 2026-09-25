@@ -53,6 +53,7 @@ class ResConfigSettings(models.TransientModel):
         cr.execute("""
             UPDATE bf_gamification_profile
             SET total_xp = 0,
+                xp_balance = 0,
                 current_streak = 0,
                 longest_streak = 0,
                 last_activity_date = NULL,

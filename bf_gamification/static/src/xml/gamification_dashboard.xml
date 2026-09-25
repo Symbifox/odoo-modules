@@ -74,6 +74,9 @@
                                             <div class="text-muted">
                                                 Rang #<t t-esc="state.data.profile.rank"/>
                                             </div>
+                                            <div class="text-muted small o_bf_fq_balance">
+                                                Solde : <t t-esc="state.data.profile.xp_balance"/> XP
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- Progress bar -->

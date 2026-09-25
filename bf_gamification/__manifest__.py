@@ -1,7 +1,11 @@
 {
     "name": "Fox Quest",
     "summary": "Syst\u00e8me de gamification avec XP, niveaux, badges et r\u00e9compenses",
-    "version": "18.0.2.5.4",
+    # 18.0.2.6.1: XP earned and XP balance are two numbers. Level, rank and
+    #   threshold badges follow the XP earned; a reward draws on the balance.
+    #   A user no longer sets the state or approval of their own claim, and no
+    #   longer writes profiles (XP credits run as sudo).
+    "version": "18.0.2.6.1",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

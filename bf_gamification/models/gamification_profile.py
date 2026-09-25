@@ -18,7 +18,13 @@ class GamificationProfile(models.Model):
     user_id = fields.Many2one('res.users', string="Utilisateur", required=True,
                               ondelete='cascade', index=True)
     avatar = fields.Image(string="Avatar", max_width=256, max_height=256)
-    total_xp = fields.Integer(string="XP total", compute='_compute_xp', store=True)
+    # total_xp est l'XP GAGNÉ : il fixe le niveau, le classement et les badges à
+    # seuil. Ce qu'on dépense à la boutique sort de xp_balance seulement : une
+    # récompense ne coûte jamais un niveau.
+    total_xp = fields.Integer(string="XP total", compute='_compute_xp', store=True,
+                              help="XP gagné. Fixe le niveau, le classement et les badges à seuil.")
+    xp_balance = fields.Integer(string="Solde XP", compute='_compute_xp', store=True,
+                                help="XP gagné moins les récompenses réclamées : ce qu'on peut encore dépenser.")
     level_id = fields.Many2one('bf.gamification.level', string="Niveau",
                                compute='_compute_level', store=True)
     xp_to_next_level = fields.Integer(string="XP avant prochain niveau",
@@ -55,13 +61,12 @@ class GamificationProfile(models.Model):
 
     @api.depends('user_id')
     def _compute_xp(self):
+        Txn = self.env['bf.gamification.xp.transaction']
         for profile in self:
-            total = sum(
-                self.env['bf.gamification.xp.transaction'].search([
-                    ('user_id', '=', profile.user_id.id),
-                ]).mapped('xp_amount')
-            )
-            profile.total_xp = max(total, 0)
+            transactions = Txn.search([('user_id', '=', profile.user_id.id)])
+            earned = sum(t.xp_amount for t in transactions if t.source != 'reward')
+            profile.total_xp = max(earned, 0)
+            profile.xp_balance = max(sum(transactions.mapped('xp_amount')), 0)
 
     @api.depends('total_xp')
     def _compute_level(self):
@@ -115,9 +120,14 @@ class GamificationProfile(models.Model):
 
     def _get_or_create_profile(self, user):
         """Get or create a gamification profile for the given user."""
-        profile = self.search([('user_id', '=', user.id)], limit=1)
+        # En sudo : les points se créditent depuis le travail de n'importe qui
+        # (l'auteur d'un message, le responsable d'une tâche), et un usager n'a
+        # plus le droit d'écrire un profil, pas même le sien (il pouvait
+        # réécrire son XP total stocké).
+        Profile = self.sudo()
+        profile = Profile.search([('user_id', '=', user.id)], limit=1)
         if not profile:
-            profile = self.sudo().create({'user_id': user.id})
+            profile = Profile.create({'user_id': user.id})
         return profile
 
     def _award_xp(self, amount, source, description, reference=None):
