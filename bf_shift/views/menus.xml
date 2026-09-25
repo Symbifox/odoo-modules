@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_shift_root" name="Shifts" sequence="75"
+              web_icon="bf_shift,static/description/icon.png"
+              groups="bf_shift.group_shift_user"/>
+
+    <menuitem id="menu_bf_shift_mine" name="Me" parent="menu_bf_shift_root" sequence="10"/>
+    <menuitem id="menu_bf_shift_my_shifts" parent="menu_bf_shift_mine" sequence="10"
+              action="bf_shift_assignment_action_mine"/>
+    <menuitem id="menu_bf_shift_my_offers" parent="menu_bf_shift_mine" sequence="20"
+              action="bf_shift_offer_line_action_mine"/>
+    <menuitem id="menu_bf_shift_swaps" parent="menu_bf_shift_mine" sequence="30"
+              action="bf_shift_swap_action"/>
+    <menuitem id="menu_bf_shift_availability" parent="menu_bf_shift_mine" sequence="40"
+              action="bf_shift_availability_action"/>
+    <menuitem id="menu_bf_shift_benefits" parent="menu_bf_shift_mine" sequence="50"
+              action="bf_shift_benefit_event_action"/>
+    <menuitem id="menu_bf_shift_my_changes" parent="menu_bf_shift_mine" sequence="60"
+              action="bf_shift_change_action"/>
+
+    <menuitem id="menu_bf_shift_planning" name="Scheduling" parent="menu_bf_shift_root"
+              sequence="20"/>
+    <menuitem id="menu_bf_shift_schedules" parent="menu_bf_shift_planning" sequence="10"
+              action="bf_shift_schedule_action"/>
+    <menuitem id="menu_bf_shift_all_shifts" parent="menu_bf_shift_planning" sequence="20"
+              action="bf_shift_assignment_action" groups="bf_shift.group_shift_manager"/>
+    <menuitem id="menu_bf_shift_offers" parent="menu_bf_shift_planning" sequence="30"
+              action="bf_shift_offer_action" groups="bf_shift.group_shift_manager"/>
+    <menuitem id="menu_bf_shift_pools" parent="menu_bf_shift_planning" sequence="40"
+              action="bf_shift_pool_action"/>
+
+    <menuitem id="menu_bf_shift_payroll" name="Payroll" parent="menu_bf_shift_root"
+              sequence="30" groups="bf_shift.group_shift_manager"/>
+    <menuitem id="menu_bf_shift_pay_periods" parent="menu_bf_shift_payroll" sequence="10"
+              action="bf_shift_pay_period_action"/>
+    <menuitem id="menu_bf_shift_pay_lines" parent="menu_bf_shift_payroll" sequence="20"
+              action="bf_shift_pay_line_action"/>
+
+    <menuitem id="menu_bf_shift_config" name="Configuration" parent="menu_bf_shift_root"
+              sequence="90" groups="bf_shift.group_shift_manager"/>
+    <menuitem id="menu_bf_shift_agreements" parent="menu_bf_shift_config" sequence="10"
+              action="bf_shift_agreement_action"/>
+    <menuitem id="menu_bf_shift_templates" parent="menu_bf_shift_config" sequence="20"
+              action="bf_shift_template_action"/>
+    <menuitem id="menu_bf_shift_weekdays" parent="menu_bf_shift_config" sequence="30"
+              action="bf_shift_weekday_action"/>
+</odoo>

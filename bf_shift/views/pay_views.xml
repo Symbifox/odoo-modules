@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Benefit events -->
+    <record id="bf_shift_benefit_event_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.benefit.event.list</field>
+        <field name="model">bf.shift.benefit.event</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="kind"/>
+                <field name="amount" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="has_receipt"/>
+                <field name="quebec_status" widget="badge"
+                       decoration-success="quebec_status == 'not_taxable'"
+                       decoration-warning="quebec_status == 'check'"/>
+                <field name="federal_status" widget="badge"
+                       decoration-success="federal_status == 'not_taxable'"
+                       decoration-warning="federal_status == 'check'"/>
+                <field name="state" widget="badge" decoration-info="state == 'submitted'"
+                       decoration-success="state == 'approved'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_benefit_event_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.benefit.event.form</field>
+        <field name="model">bf.shift.benefit.event</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                            invisible="state != 'submitted'" groups="bf_shift.group_shift_manager"/>
+                    <button name="action_refuse" type="object" string="Refuse"
+                            invisible="state != 'submitted'" groups="bf_shift.group_shift_manager"/>
+                    <button name="action_draft" type="object" string="Back to draft"
+                            invisible="state not in ('submitted', 'refused')"
+                            groups="bf_shift.group_shift_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"
+                                   groups="bf_shift.group_shift_manager"/>
+                            <field name="kind"/>
+                            <field name="date"/>
+                            <field name="assignment_id"/>
+                            <field name="amount"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="overtime_hours" widget="float_time"
+                                   invisible="kind not in ('overtime_meal', 'taxi')"/>
+                            <field name="employer_requested"
+                                   invisible="kind not in ('overtime_meal', 'taxi')"/>
+                            <field name="no_transit_or_safety" invisible="kind != 'taxi'"/>
+                            <field name="parking_exception" invisible="kind != 'parking'"/>
+                            <field name="times_this_week"
+                                   invisible="kind not in ('overtime_meal', 'taxi')"/>
+                        </group>
+                    </group>
+                    <group string="Receipts">
+                        <field name="attachment_ids" widget="many2many_binary" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Tax treatment">
+                        <group>
+                            <field name="quebec_status"/>
+                            <field name="federal_status"/>
+                        </group>
+                        <group>
+                            <field name="verdict_note"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        An indication for payroll, from the Revenu Québec and CRA guides. The
+                        payroll service computes the deductions; "to check" goes to a tax specialist.
+                    </p>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_benefit_event_action" model="ir.actions.act_window">
+        <field name="name">Benefits</field>
+        <field name="res_model">bf.shift.benefit.event</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Declare a meal, a taxi or parking</p>
+            <p>Attach the receipt: Revenu Québec requires one for an overtime meal to stay
+                non-taxable.</p>
+        </field>
+    </record>
+
+    <!-- Pay periods -->
+    <record id="bf_shift_pay_period_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.pay.period.list</field>
+        <field name="model">bf.shift.pay.period</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="total_hours" widget="float_time"/>
+                <field name="total_amount"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge" decoration-info="state == 'computed'"
+                       decoration-success="state == 'exported'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_pay_period_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.pay.period.form</field>
+        <field name="model">bf.shift.pay.period</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_compute" type="object" string="Compute"
+                            class="btn-primary" invisible="state == 'exported'"/>
+                    <button name="action_export" type="object" string="Export for payroll"
+                            invisible="state != 'computed'"/>
+                    <button name="action_reset" type="object" string="Reopen"
+                            invisible="state != 'exported'"
+                            confirm="Reopen an exported period? The file already sent to payroll will no longer match if you recompute."/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not missing_rate_count">
+                        <field name="missing_rate_count"/> employee(s) have no usual hourly rate: their
+                        lines carry hours only, and percentage premiums use the floor per hour.
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Pay 2026-20"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_from" readonly="state == 'exported'"/>
+                            <field name="date_to" readonly="state == 'exported'"/>
+                            <field name="agreement_ids" widget="many2many_tags"
+                                   readonly="state == 'exported'"/>
+                        </group>
+                        <group>
+                            <field name="total_hours" widget="float_time"/>
+                            <field name="total_amount"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="computed_at"/>
+                            <field name="export_attachment_id" invisible="not export_attachment_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" readonly="1">
+                        <list>
+                            <field name="employee_id"/>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="hours" widget="float_time" sum="Total"/>
+                            <field name="multiplier"/>
+                            <field name="amount" sum="Total"/>
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="taxable_quebec" optional="show"/>
+                            <field name="taxable_federal" optional="show"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_pay_period_action" model="ir.actions.act_window">
+        <field name="name">Pay periods</field>
+        <field name="res_model">bf.shift.pay.period</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Compute a pay period</p>
+            <p>Regular hours, overtime, premiums and benefits, coded and exported for the
+                payroll service. Deductions stay with the payroll service.</p>
+        </field>
+    </record>
+
+    <record id="bf_shift_pay_line_view_pivot" model="ir.ui.view">
+        <field name="name">bf.shift.pay.line.pivot</field>
+        <field name="model">bf.shift.pay.line</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="employee_id" type="row"/>
+                <field name="code" type="col"/>
+                <field name="hours" type="measure"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bf_shift_pay_line_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.pay.line.list</field>
+        <field name="model">bf.shift.pay.line</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0">
+                <field name="period_id"/>
+                <field name="employee_id"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="hours" widget="float_time" sum="Total"/>
+                <field name="multiplier"/>
+                <field name="amount" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_pay_line_action" model="ir.actions.act_window">
+        <field name="name">Pay lines</field>
+        <field name="res_model">bf.shift.pay.line</field>
+        <field name="view_mode">pivot,list</field>
+    </record>
+
+    <!-- Wizards -->
+    <record id="bf_shift_publish_wizard_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.publish.wizard.form</field>
+        <field name="model">bf.shift.publish.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <div invisible="warning_count">
+                    <p>No warning. The schedule meets the labour standards and the working conditions.</p>
+                </div>
+                <div invisible="not warning_count">
+                    <p>
+                        <strong><field name="warning_count" class="oe_inline"/> warning(s).</strong>
+                        Publishing is still possible: the employees concerned may refuse the shifts
+                        flagged, and the refusal cannot be held against them.
+                    </p>
+                    <field name="warning_ids" readonly="1">
+                        <list>
+                            <field name="employee_id"/>
+                            <field name="code"/>
+                            <field name="message"/>
+                        </list>
+                    </field>
+                </div>
+                <group>
+                    <field name="notify"/>
+                    <field name="schedule_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Publish" class="btn-primary"/>
+                    <button special="cancel" string="Back to the schedule"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_generate_wizard_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.generate.wizard.form</field>
+        <field name="model">bf.shift.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="schedule_id" readonly="1"/>
+                        <field name="template_id"/>
+                        <field name="employee_ids" widget="many2many_tags"/>
+                        <field name="open_count" invisible="employee_ids"/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="weekday_ids" widget="many2many_tags"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate" type="object" string="Add" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_shift_agreement_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.agreement.list</field>
+        <field name="model">bf.shift.agreement</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="union_name" optional="show"/>
+                <field name="date_from" optional="show"/>
+                <field name="date_to" optional="show"/>
+                <field name="ot_weekly_threshold" optional="hide"/>
+                <field name="employee_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_agreement_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.agreement.form</field>
+        <field name="model">bf.shift.agreement</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_employees" type="object" class="oe_stat_button"
+                                icon="fa-users" groups="hr.group_hr_user">
+                            <field name="employee_count" widget="statinfo" string="Employees"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="alert alert-warning" role="alert" invisible="not floor_warning">
+                        <field name="floor_warning" nolabel="1"/>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Collective agreement 2024-2028"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="union_name" invisible="kind != 'collective'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Hours and overtime" name="hours">
+                            <group>
+                                <group string="Overtime">
+                                    <field name="week_start"/>
+                                    <field name="ot_weekly_threshold"/>
+                                    <field name="ot_daily_threshold"/>
+                                    <field name="ot_multiplier"/>
+                                </group>
+                                <group string="Double time">
+                                    <field name="dt_weekly_threshold"/>
+                                    <field name="dt_multiplier"/>
+                                    <field name="dt_seventh_day"/>
+                                    <field name="dt_weekday_ids" widget="many2many_tags"/>
+                                </group>
+                                <group string="Time bank">
+                                    <field name="bank_allowed"/>
+                                    <field name="bank_multiplier" invisible="not bank_allowed"/>
+                                    <field name="bank_cap_hours" invisible="not bank_allowed"/>
+                                </group>
+                                <group string="Holidays">
+                                    <field name="holiday_indemnity"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Scheduling" name="scheduling">
+                            <group>
+                                <group string="Notice and call-back">
+                                    <field name="notice_days"/>
+                                    <field name="callback_min_hours"/>
+                                    <field name="min_rest_between"/>
+                                </group>
+                                <group string="Right to refuse (LNT art. 59.0.1)">
+                                    <field name="max_extra_daily"/>
+                                    <field name="max_24h"/>
+                                    <field name="max_24h_flexible"/>
+                                    <field name="max_weekly"/>
+                                </group>
+                                <group string="Breaks and rest">
+                                    <field name="meal_after_hours"/>
+                                    <field name="meal_minutes"/>
+                                    <field name="weekly_rest_hours"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Premiums" name="premiums">
+                            <field name="premium_rule_ids">
+                                <list>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="applies_on"/>
+                                    <field name="hour_from" widget="float_time"
+                                           invisible="applies_on != 'window'"/>
+                                    <field name="hour_to" widget="float_time"
+                                           invisible="applies_on != 'window'"/>
+                                    <field name="weekday_ids" widget="many2many_tags"/>
+                                    <field name="method"/>
+                                    <field name="percent" invisible="method != 'percent'"/>
+                                    <field name="floor" invisible="method != 'percent'"/>
+                                    <field name="amount" invisible="method != 'amount'"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="name"/>
+                                            <field name="code"/>
+                                            <field name="applies_on"/>
+                                            <field name="hour_from" widget="float_time"
+                                                   invisible="applies_on != 'window'"/>
+                                            <field name="hour_to" widget="float_time"
+                                                   invisible="applies_on != 'window'"/>
+                                            <field name="weekday_ids" widget="many2many_tags"/>
+                                            <field name="majority"/>
+                                        </group>
+                                        <group>
+                                            <field name="method"/>
+                                            <field name="percent" invisible="method != 'percent'"/>
+                                            <field name="floor" invisible="method != 'percent'"/>
+                                            <field name="amount" invisible="method != 'amount'"/>
+                                            <field name="enhanced_percent"
+                                                   invisible="method != 'percent'"/>
+                                            <field name="enhanced_threshold"
+                                                   invisible="not enhanced_percent"/>
+                                            <field name="enhanced_period_days"
+                                                   invisible="not enhanced_percent"/>
+                                            <field name="date_from"/>
+                                            <field name="date_to"/>
+                                            <field name="currency_id" invisible="1"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Offers and swaps" name="offers">
+                            <group>
+                                <group>
+                                    <field name="offer_method"/>
+                                    <field name="offer_response_minutes"/>
+                                    <field name="refusal_counts_as_offered"/>
+                                    <field name="max_refusals"/>
+                                </group>
+                                <group>
+                                    <field name="swap_requires_approval"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Taxable benefits" name="benefits">
+                            <group>
+                                <field name="qc_meal_reasonable"/>
+                                <field name="cra_meal_limit"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_agreement_action" model="ir.actions.act_window">
+        <field name="name">Working conditions</field>
+        <field name="res_model">bf.shift.agreement</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Set the working conditions</p>
+            <p>The labour standards are the floor. Add a collective agreement to raise it:
+                overtime, premiums, notice, call-back, order of offers.</p>
+        </field>
+    </record>
+
+    <record id="bf_shift_template_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.template.list</field>
+        <field name="model">bf.shift.template</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="kind"/>
+                <field name="hour_from" widget="float_time"/>
+                <field name="hour_to" widget="float_time"/>
+                <field name="break_minutes"/>
+                <field name="break_paid" optional="show"/>
+                <field name="duration" widget="float_time"/>
+                <field name="job_id" optional="show"/>
+                <field name="department_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_template_action" model="ir.actions.act_window">
+        <field name="name">Shift templates</field>
+        <field name="res_model">bf.shift.template</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add a shift template</p>
+            <p>Day, evening, night: hours, break and position, reused to fill schedules.</p>
+        </field>
+    </record>
+
+    <record id="bf_shift_weekday_action" model="ir.actions.act_window">
+        <field name="name">Days of the week</field>
+        <field name="res_model">bf.shift.weekday</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="view_employee_form_bf_shift" model="ir.ui.view">
+        <field name="name">hr.employee.form.bf_shift</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Shifts" name="bf_shift" groups="bf_shift.group_shift_manager">
+                    <group>
+                        <group>
+                            <field name="shift_agreement_id"/>
+                            <field name="shift_seniority_date"/>
+                            <field name="shift_pay_ref"/>
+                        </group>
+                        <group>
+                            <field name="shift_hourly_rate"/>
+                            <field name="shift_currency_id" invisible="1"/>
+                            <field name="shift_flexible_hours"/>
+                            <field name="shift_availability_required"/>
+                            <field name="shift_bank_balance"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

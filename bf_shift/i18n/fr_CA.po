@@ -1,0 +1,3780 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_shift
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-25 08:06+0000\n"
+"PO-Revision-Date: 2026-09-25 08:06+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "%(a)s → %(b)s"
+msgstr "%(a)s → %(b)s"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "%(count)s warning(s) were reviewed before publishing."
+msgstr "%(count)s alerte(s) ont été passées en revue avant la publication."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/change.py:0
+msgid "%(employee)s %(answer)s the change: %(after)s"
+msgstr "%(employee)s a %(answer)s le changement : %(after)s"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "%(label)s (enhanced)"
+msgstr "%(label)s (bonifiée)"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "%(name)s (next)"
+msgstr "%(name)s (suivant)"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "%(name)s accepted the shift."
+msgstr "%(name)s a accepté le quart."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "%(name)s asks you to take a shift: %(when)s"
+msgstr "%(name)s vous demande de prendre un quart : %(when)s"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pool.py:0
+msgid "%(name)s is already on the list."
+msgstr "%(name)s est déjà sur la liste."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pool.py:0
+msgid "%(name)s is back on the list."
+msgstr "%(name)s est de retour sur la liste."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pool.py:0
+msgid "%(name)s is removed from the list (%(reason)s)."
+msgstr "%(name)s quitte la liste (%(reason)s)."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "%(name)s: %(answer)s."
+msgstr "%(name)s : %(answer)s."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "%(when)s falls in a declared unavailability."
+msgstr "%(when)s tombe dans une indisponibilité déclarée."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "%(when)s overlaps another shift of the same person."
+msgstr "%(when)s chevauche un autre quart de la même personne."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"%(when)s: %(hours)s h of rest since the previous shift, the agreement asks "
+"for %(limit)s h."
+msgstr ""
+"%(when)s : %(hours)s h de repos depuis le quart précédent, la convention en "
+"demande %(limit)s."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"%(when)s: %(hours)s h that day, beyond the usual day plus 2 hours (%(limit)s"
+" h). The employee may refuse (LNT art. 59.0.1)."
+msgstr ""
+"%(when)s : %(hours)s h ce jour-là, au-delà de la journée habituelle plus 2 "
+"heures (%(limit)s h). La personne peut refuser (LNT, art. 59.0.1)."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"%(when)s: %(hours)s h within 24 hours, more than %(limit)s. The employee may"
+" refuse (LNT art. 59.0.1)."
+msgstr ""
+"%(when)s : %(hours)s h en 24 heures, plus de %(limit)s. La personne peut "
+"refuser (LNT, art. 59.0.1)."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"%(when)s: no %(minutes)s-minute meal break after %(after)s hours (LNT art. "
+"79)."
+msgstr ""
+"%(when)s : pas de pause repas de %(minutes)s minutes après %(after)s heures "
+"(LNT, art. 79)."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"%(when)s: told %(days)s day(s) ahead, fewer than %(limit)s. The employee may"
+" refuse it (LNT art. 59.0.1)."
+msgstr ""
+"%(when)s : avisé %(days)s jour(s) d'avance, moins de %(limit)s. La personne "
+"peut refuser ce quart (LNT, art. 59.0.1)."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__max_refusals
+msgid "0 means never."
+msgstr "0 veut dire jamais."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__bank_cap_hours
+msgid "0 means no cap."
+msgstr "0 veut dire aucun plafond."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__dt_weekly_threshold
+msgid "0 means none."
+msgstr "0 veut dire aucun."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__ot_daily_threshold
+msgid "0 means none: the labour standards only count by the week."
+msgstr ""
+"0 veut dire aucun : les normes du travail ne comptent qu'à la semaine."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__min_rest_between
+msgid "0 means none: the labour standards set none."
+msgstr "0 veut dire aucun : les normes du travail n'en fixent pas."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "3 times or more this week"
+msgstr "3 fois ou plus cette semaine"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/template.py:0
+msgid "A break cannot be negative."
+msgstr "Une pause ne peut pas être négative."
+
+#. module: bf_shift
+#: model:ir.model.constraint,message:bf_shift.constraint_bf_shift_pool_member_employee_unique
+msgid "A person is on a list once."
+msgstr "Une personne n'est qu'une fois sur une liste."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+msgid "A premium cannot be negative."
+msgstr "Une prime ne peut pas être négative."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid ""
+"A published schedule is kept: close it instead. Its changes are the evidence"
+" in a grievance."
+msgstr ""
+"Un horaire publié est conservé : fermez-le plutôt. Ses changements font "
+"preuve en cas de grief."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "A published shift is not deleted: cancel it, so the change is kept."
+msgstr ""
+"Un quart publié ne se supprime pas : annulez-le, pour que le changement "
+"reste consigné."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__refusal_counts_as_offered
+msgid "A refusal counts as hours offered"
+msgstr "Un refus compte comme heures offertes"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+msgid "A rule value cannot be negative."
+msgstr "Une valeur de règle ne peut pas être négative."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "A shift ends after it starts."
+msgstr "Un quart se termine après son début."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "A submitted event is kept: refuse it instead."
+msgstr "Un événement envoyé est conservé : refusez-le plutôt."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "A swap is between two different people."
+msgstr "Un échange se fait entre deux personnes différentes."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "A swap moves on with its buttons."
+msgstr "Un échange avance avec ses boutons."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__qc_meal_reasonable
+msgid ""
+"Above this amount, Revenu Québec treats the meal as taxable. 0 means no "
+"limit is set."
+msgstr ""
+"Au-delà de ce montant, Revenu Québec considère le repas comme imposable. 0 "
+"veut dire qu'aucune limite n'est fixée."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_list
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_line_view_list_mine
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_form
+msgid "Accept"
+msgstr "Accepter"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_form
+msgid "Accept the change"
+msgstr "Accepter le changement"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_change__consent__given
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__state__accepted
+msgid "Accepted"
+msgstr "Accepté"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_needaction
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_needaction
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_needaction
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_needaction
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_needaction
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_needaction
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_needaction
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__active
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__active
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__active
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__active
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_ids
+msgid "Activities"
+msgstr "Activités"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Décoration d'exception d'activité"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_state
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_state
+msgid "Activity State"
+msgstr "État de l'activité"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_type_icon
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icône de type d'activité"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__actual_break_minutes
+msgid "Actual break (min)"
+msgstr "Pause réelle (min)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__actual_end
+msgid "Actual end"
+msgstr "Fin réelle"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+msgid "Actual hours"
+msgstr "Heures réelles"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__worked_hours
+msgid "Actual hours when entered, planned hours otherwise."
+msgstr "Heures réelles quand elles sont saisies, heures prévues sinon."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__actual_start
+msgid "Actual start"
+msgstr "Début réel"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_generate_wizard_view_form
+msgid "Add"
+msgstr "Ajouter"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_template_action
+msgid "Add a shift template"
+msgstr "Ajoutez un gabarit de quart"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Add shifts"
+msgstr "Ajouter des quarts"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_generate_wizard
+msgid "Add shifts from a template"
+msgstr "Ajouter des quarts à partir d'un gabarit"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_schedule_action
+msgid ""
+"Add shifts from templates, check them against the labour standards and the\n"
+"                agreement, then publish. Every change after publishing is logged."
+msgstr ""
+"Ajoutez des quarts à partir de gabarits, vérifiez-les au regard des normes "
+"du travail et de la convention, puis publiez. Chaque changement après la "
+"publication est consigné."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_change__change_type__create
+msgid "Added"
+msgstr "Ajouté"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__after
+msgid "After"
+msgstr "Après"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__agreement_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__agreement_id
+msgid "Agreement"
+msgstr "Convention"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "Already sent."
+msgstr "Déjà envoyée."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "Already submitted."
+msgstr "Déjà envoyé."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__skip_reason__conflict
+msgid "Already working then"
+msgstr "Déjà au travail à ce moment"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__amount
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__amount
+msgid "Amount"
+msgstr "Montant"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__amount
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_premium_rule__method__amount
+msgid "Amount per hour"
+msgstr "Montant par heure"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_template__hour_to
+msgid "An end before the start is on the next day (night shift)."
+msgstr "Une fin avant le début tombe le lendemain (quart de nuit)."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_premium_rule__hour_to
+msgid "An end before the start wraps past midnight (23:00 to 07:00)."
+msgstr "Une fin avant le début passe minuit (23 h à 7 h)."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "An exported period is kept."
+msgstr "Une période exportée est conservée."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "An exported period is not recomputed."
+msgstr "Une période exportée ne se recalcule pas."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_benefit_event_view_form
+msgid ""
+"An indication for payroll, from the Revenu Québec and CRA guides. The\n"
+"                        payroll service computes the deductions; \"to check\" goes to a tax specialist."
+msgstr ""
+"Une indication pour la paie, tirée des guides de Revenu Québec et de l'ARC. "
+"Le service de paie calcule les retenues; « à valider » va à un fiscaliste."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__response_deadline
+msgid "Answer by"
+msgstr "Répondre avant"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__consent_note
+msgid "Answer note"
+msgstr "Note de réponse"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_search
+msgid "Answer to record"
+msgstr "Réponse à consigner"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Answered"
+msgstr "Répondu"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__consent_at
+msgid "Answered on"
+msgstr "Répondu le"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Answers to an offer are recorded with the Accept and Refuse buttons."
+msgstr ""
+"Les réponses à une offre se consignent avec les boutons Accepter et Refuser."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_premium_rule__enhanced_percent
+msgid "Applied instead when the employee works enough hours in the block."
+msgstr ""
+"Appliqué à la place quand la personne travaille assez d'heures dans le bloc."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__applies_on
+msgid "Applies On"
+msgstr "S'applique sur"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_benefit_event_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_form
+msgid "Approve"
+msgstr "Approuver"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__state__approved
+msgid "Approved"
+msgstr "Approuvé"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__approved_by
+msgid "Approved By"
+msgstr "Approuvé par"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_swap_action
+msgid "Ask to swap a shift"
+msgstr "Demandez à échanger un quart"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_list
+msgid "Asked on"
+msgstr "Demandé le"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__assignment_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__assignment_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__assignment_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__assignment_id
+msgid "Assignment"
+msgstr "Quart"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__assignment_count
+msgid "Assignment Count"
+msgstr "Nombre de quarts"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pool_member__withdraw_reason__own
+msgid "At the employee's request"
+msgstr "À la demande de la personne"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_benefit_event_action
+msgid ""
+"Attach the receipt: Revenu Québec requires one for an overtime meal to stay\n"
+"                non-taxable."
+msgstr ""
+"Joignez le reçu : Revenu Québec en exige un pour qu'un repas lors d'heures "
+"supplémentaires reste non imposable."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_attachment_count
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_attachment_count
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_attachment_count
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_attachment_count
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_attachment_count
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_attachment_count
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_attachment_count
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_availability_action
+#: model:ir.model,name:bf_shift.model_bf_shift_availability
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_availability
+msgid "Availability"
+msgstr "Disponibilités"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_availability__kind__available
+msgid "Available"
+msgstr "Disponible"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_refuse_wizard_view_form
+msgid "Back"
+msgstr "Retour"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_benefit_event_view_form
+msgid "Back to draft"
+msgstr "Remettre en brouillon"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_publish_wizard_view_form
+msgid "Back to the schedule"
+msgstr "Retour à l'horaire"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__bank_cap_hours
+msgid "Bank cap (h)"
+msgstr "Plafond de la banque (h)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__bank_multiplier
+msgid "Bank credit rate"
+msgstr "Taux de crédit à la banque"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__before
+msgid "Before"
+msgstr "Avant"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__benefit_event_id
+msgid "Benefit Event"
+msgstr "Événement d'avantage"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_benefit_event
+msgid "Benefit event"
+msgstr "Événement d'avantage"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_benefit_event_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_benefits
+msgid "Benefits"
+msgstr "Avantages"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__enhanced_period_days
+msgid "Block length (days)"
+msgstr "Durée du bloc (jours)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__break_minutes
+msgid "Break (min)"
+msgstr "Pause (min)"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Breaks and rest"
+msgstr "Pauses et repos"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_schedule_action
+msgid "Build a schedule"
+msgstr "Bâtissez un horaire"
+
+#. module: bf_shift
+#: model:res.groups,comment:bf_shift.group_shift_manager
+msgid ""
+"Builds and publishes schedules, sets the working conditions,\n"
+"            approves swaps and benefits, computes and exports the pay periods."
+msgstr ""
+"Bâtit et publie les horaires, fixe les conditions de travail, approuve les "
+"échanges et les avantages, calcule et exporte les périodes de paie."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__response_channel__self
+msgid "By the employee"
+msgstr "Par la personne"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_pool
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__pool_id
+msgid "Call list"
+msgstr "Liste de rappel"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_pool_member
+msgid "Call list member"
+msgstr "Membre d'une liste de rappel"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_pool_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_pools
+msgid "Call lists"
+msgstr "Listes de rappel"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__kind__callback
+msgid "Call-back"
+msgstr "Rappel au travail"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "Call-back minimum, top-up"
+msgstr "Minimum de rappel, complément"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_generate_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_form
+msgid "Cancel the request"
+msgstr "Annuler la demande"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+msgid "Cancel the shift"
+msgstr "Annuler le quart"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+msgid "Cancel this shift? The change is logged and the employee is told."
+msgstr ""
+"Annuler ce quart? Le changement est consigné et la personne en est avisée."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__state__cancelled
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_change__change_type__cancel
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer__state__cancelled
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_swap__state__cancelled
+msgid "Cancelled"
+msgstr "Annulé"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__line_ids
+msgid "Candidates"
+msgstr "Candidats"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__change_count
+msgid "Change Count"
+msgstr "Nombre de changements"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__change_type
+msgid "Change Type"
+msgstr "Type de changement"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_change_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_my_changes
+msgid "Change log"
+msgstr "Journal des changements"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_change__change_type__modify
+msgid "Changed"
+msgstr "Modifié"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__user_id
+msgid "Changed by"
+msgstr "Modifié par"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__change_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__change_ids
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Changes"
+msgstr "Changements"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Check"
+msgstr "Vérifier"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__checked_at
+msgid "Checked At"
+msgstr "Vérifié le"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__check_summary
+msgid "Checks"
+msgstr "Vérifications"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/availability.py:0
+msgid "Choose the day of the week."
+msgstr "Choisissez le jour de la semaine."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_schedule__state__closed
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_search
+msgid "Closed"
+msgstr "Fermé"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__code
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__code
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__target_id
+msgid "Colleague"
+msgstr "Collègue"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__kind__collective
+msgid "Collective agreement"
+msgstr "Convention collective"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__color
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__color
+msgid "Color"
+msgstr "Couleur"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pay_period_view_form
+msgid "Compute"
+msgstr "Calculer"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_pay_period_action
+msgid "Compute a pay period"
+msgstr "Calculez une période de paie"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "Compute the period first."
+msgstr "Calculez d'abord la période."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pay_period__state__computed
+msgid "Computed"
+msgstr "Calculée"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__computed_at
+msgid "Computed At"
+msgstr "Calculée le"
+
+#. module: bf_shift
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__consent
+msgid "Consent"
+msgstr "Réponse"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__consent_recorded_by
+msgid "Consent Recorded By"
+msgstr "Réponse consignée par"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Copy to the next period"
+msgstr "Copier sur la période suivante"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pool.py:0
+msgid "Counters reset."
+msgstr "Compteurs remis à zéro."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__counters_since
+msgid "Counters since"
+msgstr "Compteurs depuis"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_pool_action
+msgid "Create a call list"
+msgstr "Créez une liste de rappel"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__currency_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__currency_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__currency_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__currency_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__currency_id
+msgid "Currency"
+msgstr "Devise"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_search
+msgid "Current and upcoming"
+msgstr "En cours et à venir"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__ot_daily_threshold
+msgid "Daily overtime threshold (h)"
+msgstr "Seuil quotidien d'heures supplémentaires (h)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_availability__recurrence__dates
+msgid "Dates"
+msgstr "Dates"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__weekday_id
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_template__kind__day
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
+msgid "Day"
+msgstr "Jour"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_weekday
+msgid "Day of the week"
+msgstr "Jour de la semaine"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_template_action
+msgid ""
+"Day, evening, night: hours, break and position, reused to fill schedules."
+msgstr ""
+"Jour, soir, nuit : heures, pause et poste, réutilisés pour remplir les "
+"horaires."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__weekday_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__weekday_ids
+msgid "Days"
+msgstr "Jours"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_weekday_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_weekdays
+msgid "Days of the week"
+msgstr "Jours de la semaine"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__response_channel__system
+msgid "Deadline passed"
+msgstr "Délai écoulé"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_benefit_event_action
+msgid "Declare a meal, a taxi or parking"
+msgstr "Déclarez un repas, un taxi ou un stationnement"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_availability_action
+msgid "Declare when you cannot work"
+msgstr "Déclarez quand vous ne pouvez pas travailler"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__skip_reason__unavailable
+msgid "Declared unavailable"
+msgstr "Déclaré indisponible"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_form
+msgid "Decline"
+msgstr "Décliner"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__department_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__department_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__department_id
+msgid "Department"
+msgstr "Service"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__state__done
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_swap__state__done
+msgid "Done"
+msgstr "Fait"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Double time"
+msgstr "Taux double"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__dt_weekly_threshold
+msgid "Double time beyond (h per week)"
+msgstr "Taux double au-delà de (h par semaine)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__dt_multiplier
+msgid "Double time rate"
+msgstr "Taux double"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__state__draft
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer__state__draft
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pay_period__state__draft
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_schedule__state__draft
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_swap__state__draft
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_search
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_availability_required
+msgid "Duties require availability"
+msgstr "Fonctions exigeant la disponibilité"
+
+#. module: bf_shift
+#: model:ir.model.constraint,message:bf_shift.constraint_bf_shift_weekday_code_unique
+msgid "Each day of the week exists once."
+msgstr "Chaque jour de la semaine n'existe qu'une fois."
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_hr_employee
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__employee_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__employee_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__employee_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__employee_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__employee_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__employee_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__employee_id
+#: model:res.groups,name:bf_shift.group_shift_user
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_search
+msgid "Employee"
+msgstr "Employé"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__employee_count
+msgid "Employee Count"
+msgstr "Nombre d'employés"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__employee_user_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__employee_user_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__employee_user_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__employee_user_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__employee_user_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__employee_user_id
+msgid "Employee User"
+msgstr "Usager de l'employé"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__employee_id
+msgid "Employee concerned"
+msgstr "Personne concernée"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__informed_at
+msgid "Employee informed on"
+msgstr "Personne avisée le"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__employee_ids
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Employees"
+msgstr "Employés"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__missing_rate_count
+msgid "Employees without an hourly rate"
+msgstr "Employés sans taux horaire"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_premium_rule__weekday_ids
+msgid "Empty means every day."
+msgstr "Vide veut dire tous les jours."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__employee_id
+msgid "Empty: an open shift, to be offered."
+msgstr "Vide : un quart à combler, à offrir."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_generate_wizard__weekday_ids
+msgid "Empty: every day."
+msgstr "Vide : tous les jours."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pay_period__agreement_ids
+msgid "Empty: every employee with shifts in the period."
+msgstr "Vide : tous les employés qui ont des quarts dans la période."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_availability__date_to
+msgid "Empty: no end (weekly only)."
+msgstr "Vide : sans fin (chaque semaine seulement)."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_generate_wizard__employee_ids
+msgid "Empty: open shifts, to be offered."
+msgstr "Vide : des quarts à combler, à offrir."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_swap__target_assignment_id
+msgid "Empty: the colleague takes the shift without giving one back."
+msgstr "Vide : le ou la collègue prend le quart sans en rendre un."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__method
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pool__method
+msgid "Empty: the order set in the working conditions."
+msgstr "Vide : l'ordre fixé dans les conditions de travail."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__end
+msgid "End"
+msgstr "Fin"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__hour_to
+msgid "Ends at"
+msgstr "Finit à"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__enhanced_threshold
+msgid "Enhanced from (h in the block)"
+msgstr "Bonifié à partir de (h dans le bloc)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__enhanced_percent
+msgid "Enhanced percentage"
+msgstr "Pourcentage bonifié"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__refusal_counts_as_offered
+msgid ""
+"Equity rule: the hours refused are added to the person's counter, as if "
+"worked, so the rotation moves on."
+msgstr ""
+"Règle d'équité : les heures refusées s'ajoutent au compteur de la personne, "
+"comme si elles avaient été travaillées, et la rotation avance."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_template__kind__evening
+msgid "Evening"
+msgstr "Soir"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__dt_seventh_day
+msgid ""
+"Every hour worked on the seventh day worked in the same week is paid at the "
+"double time rate."
+msgstr ""
+"Chaque heure travaillée le septième jour travaillé de la même semaine est "
+"payée à taux double."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_availability__recurrence__weekly
+msgid "Every week"
+msgstr "Chaque semaine"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__export_attachment_id
+msgid "Export Attachment"
+msgstr "Fichier exporté"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pay_period_view_form
+msgid "Export for payroll"
+msgstr "Exporter pour la paie"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pay_period__state__exported
+msgid "Exported"
+msgstr "Exportée"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "Exported for payroll."
+msgstr "Exportée pour la paie."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__federal_status
+msgid "Federal"
+msgstr "Fédéral"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer__state__filled
+msgid "Filled"
+msgstr "Comblée"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__filled_by
+msgid "Filled By"
+msgstr "Comblée par"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_flexible_hours
+msgid "Flexible hours"
+msgstr "Horaire flexible"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_hr_employee__shift_flexible_hours
+msgid ""
+"Flexible or no fixed hours: the refusal limit is 12 hours per 24 hours "
+"instead of 14."
+msgstr ""
+"Horaire flexible ou sans heures fixes : la limite de refus est de 12 heures "
+"par 24 heures au lieu de 14."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__floor_warning
+msgid "Floor Warning"
+msgstr "Alerte de plancher"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_follower_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_follower_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_follower_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_follower_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_follower_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_follower_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_follower_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_partner_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_partner_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_partner_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_partner_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_partner_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_partner_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_partner_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__activity_type_icon
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icône Font Awesome, p. ex. fa-tasks"
+
+#. module: bf_shift
+#: model:bf.shift.weekday,name:bf_shift.weekday_4
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__week_start__4
+msgid "Friday"
+msgstr "Vendredi"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__date_from
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__date_from
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__date_from
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__hour_from
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__date_from
+msgid "From"
+msgstr "Du"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__hour_from
+msgid "From (hour)"
+msgstr "De (heure)"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_swap_action
+msgid ""
+"Give a shift to a colleague, or exchange it for one of theirs. The colleague\n"
+"                accepts, then a manager approves when the working conditions ask for it."
+msgstr ""
+"Cédez un quart à un ou une collègue, ou échangez-le contre un des siens. Le "
+"ou la collègue accepte, puis un gestionnaire approuve quand les conditions "
+"de travail l'exigent."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/availability.py:0
+msgid "Give the first and the last day."
+msgstr "Indiquez le premier et le dernier jour."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/availability.py:0
+msgid "Give the hours, or tick the whole day."
+msgstr "Indiquez les heures, ou cochez la journée entière."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_form
+msgid "Gives"
+msgstr "Cède"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__has_message
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__has_message
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__has_message
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__has_message
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__has_message
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__has_message
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__has_message
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__has_receipt
+msgid "Has Receipt"
+msgstr "Reçu joint"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "Holiday indemnity"
+msgstr "Indemnité de férié"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__holiday_indemnity
+msgid "Holiday indemnity (1/20)"
+msgstr "Indemnité de férié (1/20)"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Holidays"
+msgstr "Fériés"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__hours
+msgid "Hours"
+msgstr "Heures"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__hours_accepted
+msgid "Hours Accepted"
+msgstr "Heures acceptées"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__hours_offered
+msgid "Hours Offered"
+msgstr "Heures offertes"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Hours and overtime"
+msgstr "Heures et heures supplémentaires"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+#: code:addons/bf_shift/models/template.py:0
+msgid "Hours go from 0 to 24."
+msgstr "Les heures vont de 0 à 24."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__max_24h
+msgid "Hours in 24 hours"
+msgstr "Heures en 24 heures"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__weekly_max
+msgid "Hours in the week"
+msgstr "Heures dans la semaine"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_premium_rule__applies_on__window
+msgid "Hours of the day"
+msgstr "Heures de la journée"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__hours_offered_before
+msgid "Hours offered before"
+msgstr "Heures offertes avant"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pool_member__hours_offered
+msgid ""
+"Hours offered since the counters were reset, refusals included when the "
+"agreement says so."
+msgstr ""
+"Heures offertes depuis la remise à zéro des compteurs, refus compris quand "
+"la convention le prévoit."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_exception_icon
+msgid "Icon"
+msgstr "Icône"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__activity_exception_icon
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icône signalant une activité en exception."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__message_needaction
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__message_needaction
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__message_needaction
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__message_needaction
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pay_period__message_needaction
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pool__message_needaction
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__message_needaction
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_swap__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__message_has_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__message_has_sms_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__message_has_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__message_has_sms_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__message_has_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__message_has_sms_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__message_has_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__message_has_sms_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pay_period__message_has_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pay_period__message_has_sms_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pool__message_has_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pool__message_has_sms_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__message_has_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__message_has_sms_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_swap__message_has_error
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_swap__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur d'envoi."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__date_from
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__date_from
+msgid "In force from"
+msgstr "En vigueur du"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__date_to
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__date_to
+msgid "In force until"
+msgstr "En vigueur jusqu'au"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__offer_method__inverse_seniority
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pool__method__inverse_seniority
+msgid "Inverse seniority (least senior first)"
+msgstr "Ancienneté inverse (le moins ancien d'abord)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_is_follower
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_is_follower
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_is_follower
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_is_follower
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_is_follower
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_is_follower
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_is_follower
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__kind
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__kind
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__kind
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__kind
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__name
+msgid "Label"
+msgstr "Libellé"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__kind__lnt
+msgid "Labour standards only"
+msgstr "Normes du travail seulement"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_hr_employee__shift_agreement_id
+msgid ""
+"Labour standards or collective agreement that applies to this person's "
+"shifts."
+msgstr ""
+"Normes du travail ou convention collective qui s'applique aux quarts de "
+"cette personne."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__line_ids
+msgid "Lines"
+msgstr "Lignes"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__date
+msgid "Local date the shift starts on."
+msgstr "Date locale à laquelle le quart commence."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__daily_extra
+msgid "Long day"
+msgstr "Longue journée"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_change__late
+msgid ""
+"Made fewer days ahead than the notice rule: the employee may refuse it."
+msgstr ""
+"Fait moins de jours d'avance que la règle de préavis : la personne peut le "
+"refuser."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__majority
+msgid "Majority rule"
+msgstr "Règle de majorité"
+
+#. module: bf_shift
+#: model:res.groups,name:bf_shift.group_shift_manager
+msgid "Manager"
+msgstr "Gestionnaire"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+msgid "Mark as done"
+msgstr "Marquer comme fait"
+
+#. module: bf_shift
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_mine
+msgid "Me"
+msgstr "Moi"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__meal
+msgid "Meal break"
+msgstr "Pause repas"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__meal_minutes
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__break_minutes
+msgid "Meal break (min)"
+msgstr "Pause repas (min)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__meal_after_hours
+msgid "Meal break after (h)"
+msgstr "Pause repas après (h)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__member_id
+msgid "Member"
+msgstr "Membre"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__member_ids
+msgid "Members"
+msgstr "Membres"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__message
+msgid "Message"
+msgstr "Message"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_has_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_has_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_has_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_has_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_has_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_has_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_has_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__method
+msgid "Method"
+msgstr "Méthode"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__callback_min_hours
+msgid "Minimum call-back (h)"
+msgstr "Rappel minimum (h)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__floor
+msgid "Minimum per hour"
+msgstr "Minimum par heure"
+
+#. module: bf_shift
+#: model:bf.shift.weekday,name:bf_shift.weekday_0
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__week_start__0
+msgid "Monday"
+msgstr "Lundi"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Échéance de mon activité"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_assignment_action_mine
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_my_shifts
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
+msgid "My shifts"
+msgstr "Mes quarts"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Échéance de la prochaine activité"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_summary
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_summary
+msgid "Next Activity Summary"
+msgstr "Résumé de la prochaine activité"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_type_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_type_id
+msgid "Next Activity Type"
+msgstr "Type de la prochaine activité"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_template__kind__night
+msgid "Night"
+msgstr "Nuit"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__state__no_answer
+msgid "No answer"
+msgstr "Aucune réponse"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/change.py:0
+msgid "No answer is expected for this change."
+msgstr "Aucune réponse n'est attendue pour ce changement."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__state__withdrawn
+msgid "No longer needed"
+msgstr "Plus nécessaire"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__no_transit_or_safety
+msgid "No public transit, or safety at risk"
+msgstr "Pas de transport en commun, ou sécurité en jeu"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_offer_line_action_mine
+msgid "No shift offered to you"
+msgstr "Aucun quart ne vous est offert"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_assignment_action_mine
+msgid "No shift yet"
+msgstr "Aucun quart pour l'instant"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "No warning."
+msgstr "Aucune alerte."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_publish_wizard_view_form
+msgid ""
+"No warning. The schedule meets the labour standards and the working "
+"conditions."
+msgstr ""
+"Aucune alerte. L'horaire respecte les normes du travail et les conditions de"
+" travail."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Nobody took the shift: the list is exhausted."
+msgstr "Personne n'a pris le quart : la liste est épuisée."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
+msgid "Not cancelled"
+msgstr "Non annulés"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_change__consent__na
+msgid "Not needed"
+msgstr "Sans objet"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__federal_status__not_taxable
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__quebec_status__not_taxable
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pay_line__taxable_federal__not_taxable
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pay_line__taxable_quebec__not_taxable
+msgid "Not taxable"
+msgstr "Non imposable"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__note
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__note
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__note
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__notes
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Notice and call-back"
+msgstr "Préavis et rappel"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__message_needaction_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__message_needaction_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__message_needaction_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__message_needaction_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pay_period__message_needaction_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pool__message_needaction_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__message_needaction_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_swap__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__message_has_error_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__message_has_error_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__message_has_error_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__message_has_error_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pay_period__message_has_error_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pool__message_has_error_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__message_has_error_counter
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_swap__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur d'envoi"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__offer_id
+msgid "Offer"
+msgstr "Offre"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__offer_line_id
+msgid "Offer Line"
+msgstr "Ligne d'offre"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Offer accepted from the call list"
+msgstr "Offre acceptée à partir de la liste de rappel"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Offer started with %(count)s candidate(s), order: %(method)s."
+msgstr "Offre lancée avec %(count)s candidat(s), ordre : %(method)s."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+msgid "Offer this shift"
+msgstr "Offrir ce quart"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Offer: %(when)s"
+msgstr "Offre : %(when)s"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__state__offered
+msgid "Offered"
+msgstr "Offert"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__offered_at
+msgid "Offered At"
+msgstr "Offert le"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__offer_ids
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+msgid "Offers"
+msgstr "Offres"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Offers and swaps"
+msgstr "Offres et échanges"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_template__kind__on_call
+msgid "On call"
+msgstr "De garde"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__kind__on_call
+msgid "On call at home"
+msgstr "De garde à domicile"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "Only a closed schedule can be reopened."
+msgstr "Seul un horaire fermé peut être rouvert."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "Only a draft can be changed; send it with its button."
+msgstr "Seul un brouillon peut être modifié; envoyez-le avec son bouton."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "Only a draft schedule can be published."
+msgstr "Seul un horaire en brouillon peut être publié."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "Only a published schedule can be closed."
+msgstr "Seul un horaire publié peut être fermé."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "Only a shift manager approves a swap."
+msgstr "Seul un gestionnaire des quarts approuve un échange."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "Only a shift manager can do this."
+msgstr "Seul un gestionnaire des quarts peut faire cela."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "Only a shift manager refuses a swap."
+msgstr "Seul un gestionnaire des quarts refuse un échange."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "Only an open shift is offered."
+msgstr "Seul un quart à combler s'offre."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "Only the colleague asked can accept."
+msgstr "Seule la personne sollicitée peut accepter."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "Only the colleague asked can refuse."
+msgstr "Seule la personne sollicitée peut refuser."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "Only the employee concerned or a shift manager can do this."
+msgstr ""
+"Seule la personne concernée ou un gestionnaire des quarts peut faire cela."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "Only the requester cancels the request."
+msgstr "Seule la personne qui demande annule la demande."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "Only the requester sends the request."
+msgstr "Seule la personne qui demande envoie la demande."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__is_open
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__open
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+msgid "Open shift"
+msgstr "Quart à combler"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_offer
+msgid "Open shift offer"
+msgstr "Offre de quart à combler"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_offer_line
+msgid "Open shift offer, one candidate"
+msgstr "Offre de quart à combler, un candidat"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_offer_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_offers
+msgid "Open shift offers"
+msgstr "Offres de quarts à combler"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Open shift still unfilled"
+msgstr "Quart à combler toujours vacant"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "Open shift: %(when)s has nobody yet."
+msgstr "Quart à combler : %(when)s n'a encore personne."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__open_count
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
+msgid "Open shifts"
+msgstr "Quarts à combler"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__open_count
+msgid "Open shifts per day"
+msgstr "Quarts à combler par jour"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_refuse_wizard_view_form
+msgid "Optional"
+msgstr "Facultatif"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__offer_method
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__method
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__method
+msgid "Order of offers"
+msgstr "Ordre des offres"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pool_view_form
+msgid "Order set in the working conditions"
+msgstr "Ordre fixé dans les conditions de travail"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__kind__other
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pool_member__withdraw_reason__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__overlap
+msgid "Overlap"
+msgstr "Chevauchement"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Overtime"
+msgstr "Heures supplémentaires"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__overtime_hours
+msgid "Overtime (h)"
+msgstr "Heures supplémentaires (h)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__dt_weekday_ids
+msgid "Overtime at double time on"
+msgstr "Heures supplémentaires à taux double le"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"Overtime goes to the bank only at the employee's request: the employer "
+"cannot impose it."
+msgstr ""
+"Les heures supplémentaires vont à la banque seulement à la demande de la "
+"personne : l'employeur ne peut pas l'imposer."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__kind__overtime_meal
+msgid "Overtime meal"
+msgstr "Repas lors d'heures supplémentaires"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__cra_meal_limit
+msgid "Overtime meal limit, CRA"
+msgstr "Plafond du repas lors d'heures supplémentaires, ARC"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__ot_multiplier
+msgid "Overtime rate"
+msgstr "Taux des heures supplémentaires"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__employer_requested
+msgid "Overtime requested by the employer"
+msgstr "Heures supplémentaires demandées par l'employeur"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__to_bank
+msgid "Overtime to the bank"
+msgstr "Heures supplémentaires à la banque"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__dt_weekday_ids
+msgid ""
+"Overtime worked on these days is paid at the double time rate (e.g. Sunday)."
+msgstr ""
+"Les heures supplémentaires faites ces jours-là sont payées à taux double (p."
+" ex. le dimanche)."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__break_paid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__break_paid
+msgid "Paid break"
+msgstr "Pause payée"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__duration
+msgid "Paid hours"
+msgstr "Heures payées"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__kind__leave
+msgid "Paid leave or holiday"
+msgstr "Congé payé ou férié"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_template__break_paid
+msgid "Paid when the employee cannot leave the workstation."
+msgstr "Payée quand la personne ne peut pas quitter son poste de travail."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__kind__parking
+msgid "Parking"
+msgstr "Stationnement"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__parking_exception
+msgid "Parking exception"
+msgstr "Exception de stationnement"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__pay_code
+msgid "Pay Code"
+msgstr "Code de paie"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_pay_line_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_pay_lines
+msgid "Pay lines"
+msgstr "Lignes de paie"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_pay_period_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_pay_periods
+msgid "Pay periods"
+msgstr "Périodes de paie"
+
+#. module: bf_shift
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_payroll
+msgid "Payroll"
+msgstr "Paie"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__code
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__code
+msgid "Payroll code"
+msgstr "Code de paie"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_pay_ref
+msgid "Payroll number"
+msgstr "Numéro de paie"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__percent
+msgid "Percentage"
+msgstr "Pourcentage"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_premium_rule__method__percent
+msgid "Percentage of the hourly rate"
+msgstr "Pourcentage du taux horaire"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__period_id
+msgid "Period"
+msgstr "Période"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid ""
+"Period reopened: the exported file no longer matches if the lines are "
+"recomputed."
+msgstr ""
+"Période rouverte : le fichier exporté ne correspond plus si les lignes sont "
+"recalculées."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__state__planned
+msgid "Planned"
+msgstr "Prévu"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__planned_hours
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__hours
+msgid "Planned Hours"
+msgstr "Heures prévues"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__pool_id
+msgid "Pool"
+msgstr "Liste"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__job_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__job_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__job_id
+msgid "Position"
+msgstr "Poste"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__premium_rule_ids
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Premiums"
+msgstr "Primes"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__previous_user_id
+msgid "Previous User"
+msgstr "Usager précédent"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__previous_employee_id
+msgid "Previous employee"
+msgstr "Personne précédente"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_premium_rule__applies_on__holidays
+msgid "Public holidays"
+msgstr "Jours fériés"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_publish_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Publish"
+msgstr "Publier"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_publish_wizard
+msgid "Publish a schedule"
+msgstr "Publier un horaire"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "Publish the schedule"
+msgstr "Publier l'horaire"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "Publish the schedule before offering its open shifts."
+msgstr "Publiez l'horaire avant d'offrir ses quarts à combler."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_schedule__state__published
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_search
+msgid "Published"
+msgstr "Publié"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__published_at
+msgid "Published At"
+msgstr "Publié le"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_publish_wizard_view_form
+msgid ""
+"Publishing is still possible: the employees concerned may refuse the shifts\n"
+"                        flagged, and the refusal cannot be held against them."
+msgstr ""
+"La publication reste possible : les personnes concernées peuvent refuser les"
+" quarts signalés, et ce refus ne peut pas leur être reproché."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pool_view_form
+msgid "Put back"
+msgstr "Remettre"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_weekday__code
+msgid "Python weekday: Monday = 0, Sunday = 6."
+msgstr "Jour de semaine Python : lundi = 0, dimanche = 6."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__quebec_status
+msgid "Québec"
+msgstr "Québec"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__rank
+msgid "Rank"
+msgstr "Rang"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__multiplier
+msgid "Rate"
+msgstr "Taux"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__reason
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__reason
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__reason
+msgid "Reason"
+msgstr "Motif"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__qc_meal_reasonable
+msgid "Reasonable overtime meal, Québec"
+msgstr "Repas raisonnable lors d'heures supplémentaires, Québec"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_change__change_type__reassign
+msgid "Reassigned"
+msgstr "Réaffecté"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__attachment_ids
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_benefit_event_view_form
+msgid "Receipts"
+msgstr "Reçus"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__recorded_by
+msgid "Recorded By"
+msgstr "Consigné par"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/change.py:0
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__response_channel__manager
+msgid "Recorded by a manager"
+msgstr "Consigné par un gestionnaire"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__recurrence
+msgid "Recurrence"
+msgstr "Récurrence"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__refusal_reason
+msgid "Refusal Reason"
+msgstr "Motif du refus"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__max_24h
+msgid "Refusal beyond (h per 24 h)"
+msgstr "Refus au-delà de (h par 24 h)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__max_weekly
+msgid "Refusal beyond (h per week)"
+msgstr "Refus au-delà de (h par semaine)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__max_extra_daily
+msgid "Refusal beyond the usual day (+h)"
+msgstr "Refus au-delà de la journée habituelle (+h)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__max_24h_flexible
+msgid "Refusal beyond, flexible hours (h per 24 h)"
+msgstr "Refus au-delà de, horaire flexible (h par 24 h)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__refusal_count
+msgid "Refusals"
+msgstr "Refus"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_benefit_event_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_list
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_line_view_list_mine
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_refuse_wizard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_form
+msgid "Refuse"
+msgstr "Refuser"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_refuse_wizard
+msgid "Refuse an offered shift"
+msgstr "Refuser un quart offert"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_form
+msgid "Refuse the change"
+msgstr "Refuser le changement"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Refuse the shift"
+msgstr "Refuser le quart"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__state__refused
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_change__consent__refused
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__state__refused
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_swap__state__refused
+msgid "Refused"
+msgstr "Refusé"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__registered_on
+msgid "Registered On"
+msgstr "Inscrit le"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "Regular hours"
+msgstr "Heures régulières"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_pay_period_action
+msgid ""
+"Regular hours, overtime, premiums and benefits, coded and exported for the\n"
+"                payroll service. Deductions stay with the payroll service."
+msgstr ""
+"Heures régulières, supplémentaires, primes et avantages, codés et exportés "
+"pour le service de paie. Les retenues restent au service de paie."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pool_view_form
+msgid "Remove"
+msgstr "Retirer"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__max_refusals
+msgid "Removed from the list after (refusals)"
+msgstr "Retiré de la liste après (refus)"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pay_period_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Reopen"
+msgstr "Rouvrir"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pay_period_view_form
+msgid ""
+"Reopen an exported period? The file already sent to payroll will no longer "
+"match if you recompute."
+msgstr ""
+"Rouvrir une période exportée? Le fichier déjà envoyé à la paie ne "
+"correspondra plus si vous recalculez."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__bank_requested_by_employee
+msgid "Requested by the employee"
+msgstr "Demandé par la personne"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__requester_id
+msgid "Requester"
+msgstr "Demandeur"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__requester_user_id
+msgid "Requester User"
+msgstr "Usager du demandeur"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pool_view_form
+msgid "Reset the counters"
+msgstr "Remettre les compteurs à zéro"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pool_view_form
+msgid "Reset the hours offered, accepted and the refusals of every member?"
+msgstr ""
+"Remettre à zéro les heures offertes, acceptées et les refus de chaque "
+"membre?"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__responded_at
+msgid "Responded At"
+msgstr "Répondu le"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__response_channel
+msgid "Response Channel"
+msgstr "Canal de réponse"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__user_id
+msgid "Responsible"
+msgstr "Responsable"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_user_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_user_id
+msgid "Responsible User"
+msgstr "Usager responsable"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__rest_between
+msgid "Rest between shifts"
+msgstr "Repos entre les quarts"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__min_rest_between
+msgid "Rest between shifts (h)"
+msgstr "Repos entre les quarts (h)"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Right to refuse (LNT art. 59.0.1)"
+msgstr "Droit de refus (LNT, art. 59.0.1)"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__offer_method__rotation
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pool__method__rotation
+msgid "Rotation (fewest hours offered first)"
+msgstr "Rotation (le moins d'heures offertes d'abord)"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer__state__running
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_view_search
+msgid "Running"
+msgstr "En cours"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi du SMS"
+
+#. module: bf_shift
+#: model:bf.shift.weekday,name:bf_shift.weekday_5
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__week_start__5
+msgid "Saturday"
+msgstr "Samedi"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__schedule_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__schedule_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__schedule_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__schedule_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__schedule_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_warning__schedule_id
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
+msgid "Schedule"
+msgstr "Horaire"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_change
+msgid "Schedule change"
+msgstr "Changement d'horaire"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__notice_days
+msgid "Schedule notice (days)"
+msgstr "Préavis de l'horaire (jours)"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "Schedule published with %(count)s shift(s)."
+msgstr "Horaire publié avec %(count)s quart(s)."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "Schedule reopened."
+msgstr "Horaire rouvert."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__schedule_state
+msgid "Schedule status"
+msgstr "État de l'horaire"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_warning
+msgid "Schedule warning"
+msgstr "Alerte d'horaire"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_schedule_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_schedules
+msgid "Schedules"
+msgstr "Horaires"
+
+#. module: bf_shift
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_planning
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Scheduling"
+msgstr "Planification"
+
+#. module: bf_shift
+#: model:res.groups,comment:bf_shift.group_shift_user
+msgid ""
+"Sees the published schedules and the call lists, answers the\n"
+"            offers, asks for swaps, declares availability and benefit events."
+msgstr ""
+"Voit les horaires publiés et les listes de rappel, répond aux offres, "
+"demande des échanges, déclare ses disponibilités et ses avantages."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_form
+msgid "Send to the colleague"
+msgstr "Envoyer la demande"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__offer_method__seniority
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pool__method__seniority
+msgid "Seniority (most senior first)"
+msgstr "Ancienneté (le plus ancien d'abord)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__seniority_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__seniority_date
+msgid "Seniority Date"
+msgstr "Date d'ancienneté"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_seniority_date
+msgid "Seniority date"
+msgstr "Date d'ancienneté"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__sequence
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__sequence
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__sequence
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__sequence
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_agreement_action
+msgid "Set the working conditions"
+msgstr "Fixez les conditions de travail"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__dt_seventh_day
+msgid "Seventh day at double time"
+msgstr "Septième jour à taux double"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+#: model:ir.model,name:bf_shift.model_bf_shift_assignment
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__assignment_id
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__kind__work
+msgid "Shift"
+msgstr "Quart"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "Shift changed: %(after)s"
+msgstr "Quart modifié : %(after)s"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_currency_id
+msgid "Shift currency"
+msgstr "Devise des quarts"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__assignment_id
+msgid "Shift given"
+msgstr "Quart cédé"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_pay_line
+msgid "Shift pay line"
+msgstr "Ligne de paie des quarts"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_pay_period
+msgid "Shift pay period"
+msgstr "Période de paie des quarts"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_premium_rule
+msgid "Shift premium"
+msgstr "Prime de quart"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+#: model:ir.model,name:bf_shift.model_bf_shift_swap
+msgid "Shift swap"
+msgstr "Échange de quart"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__target_assignment_id
+msgid "Shift taken in return"
+msgstr "Quart pris en retour"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_template
+msgid "Shift template"
+msgstr "Gabarit de quart"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_template_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_templates
+msgid "Shift templates"
+msgstr "Gabarits de quart"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_assignment_action
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__assignment_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__assignment_ids
+#: model:ir.module.category,name:bf_shift.module_category_bf_shift
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_all_shifts
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_root
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_list
+#: model_terms:ir.ui.view,arch_db:bf_shift.view_employee_form_bf_shift
+msgid "Shifts"
+msgstr "Quarts"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_offer_line_action_mine
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_my_offers
+msgid "Shifts offered to me"
+msgstr "Quarts qui me sont offerts"
+
+#. module: bf_shift
+#: model:ir.actions.server,name:bf_shift.cron_offer_expire_ir_actions_server
+msgid "Shifts: offers not answered in time"
+msgstr "Quarts : offres sans réponse dans le délai"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__late_notice
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__late
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__notice
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_search
+msgid "Short notice"
+msgstr "Préavis court"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__skip_reason
+msgid "Skip Reason"
+msgstr "Motif du saut"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__state__skipped
+msgid "Skipped"
+msgstr "Sauté"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Someone else already took this shift."
+msgstr "Quelqu'un d'autre a déjà pris ce quart."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__start
+msgid "Start"
+msgstr "Début"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_view_form
+msgid "Start offering"
+msgstr "Lancer l'offre"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_view_list
+msgid "Started"
+msgstr "Lancée le"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__hour_from
+msgid "Starts at"
+msgstr "Commence à"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__state
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__state
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__state
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__state
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__state
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__state
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__activity_state
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"État selon les activités\n"
+"En retard : l'échéance est déjà passée\n"
+"Aujourd'hui : l'activité est prévue aujourd'hui\n"
+"Prévue : activités à venir."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_benefit_event_view_form
+msgid "Submit"
+msgstr "Envoyer"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__state__submitted
+msgid "Submitted"
+msgstr "Envoyé"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__kind__subsidized_meal
+msgid "Subsidised meal"
+msgstr "Repas subventionné"
+
+#. module: bf_shift
+#: model:bf.shift.weekday,name:bf_shift.weekday_6
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__week_start__6
+msgid "Sunday"
+msgstr "Dimanche"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "Swap %(name)s"
+msgstr "Échange %(name)s"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "Swap applied."
+msgstr "Échange appliqué."
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_swap_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_swaps
+msgid "Swaps"
+msgstr "Échanges"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__swap_requires_approval
+msgid "Swaps need approval"
+msgstr "Les échanges demandent une approbation"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__target_user_id
+msgid "Target User"
+msgstr "Usager de l'autre personne"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_benefit_event_view_form
+msgid "Tax treatment"
+msgstr "Traitement fiscal"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__federal_status__taxable
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__quebec_status__taxable
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pay_line__taxable_federal__taxable
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pay_line__taxable_quebec__taxable
+msgid "Taxable"
+msgstr "Imposable"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Taxable benefits"
+msgstr "Avantages imposables"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__taxable_quebec
+msgid "Taxable, Québec"
+msgstr "Imposable, Québec"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__taxable_federal
+msgid "Taxable, federal"
+msgstr "Imposable, fédéral"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__kind__taxi
+msgid "Taxi home"
+msgstr "Taxi du retour"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__notify
+msgid "Tell the employees"
+msgstr "Aviser les employés"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__template_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__template_id
+msgid "Template"
+msgstr "Gabarit"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_hr_employee__shift_availability_required
+msgid "The 5-day notice rule does not apply to this person (LNT art. 59.0.1)."
+msgstr ""
+"La règle du préavis de 5 jours ne s'applique pas à cette personne (LNT, art."
+" 59.0.1)."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "The actual end comes after the actual start."
+msgstr "La fin réelle vient après le début réel."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/change.py:0
+msgid "The answer to this change is already recorded."
+msgstr "La réponse à ce changement est déjà consignée."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/change.py:0
+msgid "The change log cannot be deleted."
+msgstr "Le journal des changements ne se supprime pas."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/change.py:0
+msgid "The change log cannot be edited."
+msgstr "Le journal des changements ne se modifie pas."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "The colleague refused."
+msgstr "Le ou la collègue a refusé."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/wizard/generate_wizard.py:0
+msgid "The dates must fall within the schedule."
+msgstr "Les dates doivent tomber dans l'horaire."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__bank_allowed
+msgid ""
+"The employee may ask to bank overtime instead of being paid. The labour "
+"standards let the employee ask; the employer cannot impose it."
+msgstr ""
+"La personne peut demander de mettre ses heures supplémentaires en banque au "
+"lieu d'être payée. Les normes du travail laissent la personne le demander; "
+"l'employeur ne peut pas l'imposer."
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_agreement_action
+msgid ""
+"The labour standards are the floor. Add a collective agreement to raise it:\n"
+"                overtime, premiums, notice, call-back, order of offers."
+msgstr ""
+"Les normes du travail sont le plancher. Ajoutez une convention collective "
+"pour le relever : heures supplémentaires, primes, préavis, rappel, ordre des"
+" offres."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__bank_requested_by_employee
+msgid ""
+"The labour standards let the employee choose the bank; the employer cannot "
+"impose it."
+msgstr ""
+"Les normes du travail laissent la personne choisir la banque; l'employeur ne"
+" peut pas l'imposer."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/availability.py:0
+msgid "The last day comes after the first."
+msgstr "Le dernier jour vient après le premier."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "The period ends before it starts."
+msgstr "La période se termine avant de commencer."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "The schedule %(name)s is closed."
+msgstr "L'horaire %(name)s est fermé."
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_availability_action
+msgid "The schedule check and the call lists take it into account."
+msgstr ""
+"La vérification de l'horaire et les listes de rappel en tiennent compte."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "The schedule ends before it starts."
+msgstr "L'horaire se termine avant de commencer."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "The schedule has no shift."
+msgstr "L'horaire n'a aucun quart."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"The schedule is closed: only the actual hours can still change. Reopen it to"
+" change a shift."
+msgstr ""
+"L'horaire est fermé : seules les heures réelles peuvent encore changer. "
+"Rouvrez-le pour modifier un quart."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "The shift given must be the requester's."
+msgstr "Le quart cédé doit être celui de la personne qui demande."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "The shift is no longer open."
+msgstr "Le quart n'est plus à combler."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "The shift taken in return must be the colleague's."
+msgstr "Le quart pris en retour doit être celui du ou de la collègue."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "The shifts changed since the request: it cannot be applied."
+msgstr ""
+"Les quarts ont changé depuis la demande : elle ne peut pas être appliquée."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid ""
+"The warnings do not block publishing: the labour standards give the\n"
+"                                employee a right to refuse, they do not forbid asking."
+msgstr ""
+"Les alertes n'empêchent pas de publier : les normes du travail donnent à la "
+"personne un droit de refus, elles n'interdisent pas de demander."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_premium_rule__majority
+msgid ""
+"The whole shift earns the premium when most of its hours fall in the window,"
+" and none of it otherwise."
+msgstr ""
+"Tout le quart donne droit à la prime quand la plupart de ses heures tombent "
+"dans la plage, et aucune heure sinon."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "The working conditions of %(name)s have no time bank."
+msgstr ""
+"Les conditions de travail de %(name)s ne prévoient pas de banque de temps."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+msgid ""
+"These values are less favourable than the labour standards. The labour "
+"standards apply instead:"
+msgstr ""
+"Ces valeurs sont moins favorables que les normes du travail. Les normes du "
+"travail s'appliquent à leur place :"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "This offer has already started."
+msgstr "Cette offre est déjà lancée."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "This offer is not waiting for an answer."
+msgstr "Cette offre n'attend pas de réponse."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "This request is closed."
+msgstr "Cette demande est fermée."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "This request is not waiting for approval."
+msgstr "Cette demande n'attend pas d'approbation."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "This request is not waiting for the colleague."
+msgstr "Cette demande n'attend pas le ou la collègue."
+
+#. module: bf_shift
+#: model:bf.shift.weekday,name:bf_shift.weekday_3
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__week_start__3
+msgid "Thursday"
+msgstr "Jeudi"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__bank_allowed
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Time bank"
+msgstr "Banque de temps"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_bank_balance
+msgid "Time bank (h)"
+msgstr "Banque de temps (h)"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__kind__bank_leave
+msgid "Time taken from the bank"
+msgstr "Temps pris dans la banque"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__response_minutes
+msgid "Time to answer (min)"
+msgstr "Délai de réponse (min)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__offer_response_minutes
+msgid "Time to answer an offer (min)"
+msgstr "Délai pour répondre à une offre (min)"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__times_this_week
+msgid "Times This Week"
+msgstr "Fois cette semaine"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__date_to
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_generate_wizard__date_to
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__date_to
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__hour_to
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__date_to
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_form
+msgid "To"
+msgstr "Au"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__hour_to
+msgid "To (hour)"
+msgstr "À (heure)"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pay_line__taxable_federal__check
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pay_line__taxable_quebec__check
+msgid "To check"
+msgstr "À valider"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__federal_status__check
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__quebec_status__check
+msgid "To check with a tax specialist"
+msgstr "À valider par un fiscaliste"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_change__consent__pending
+msgid "To record"
+msgstr "À consigner"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__late_notice
+msgid ""
+"Told fewer days ahead than the notice rule: the employee may refuse it."
+msgstr ""
+"Avisé moins de jours d'avance que la règle de préavis : la personne peut le "
+"refuser."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+msgid ""
+"Told fewer days ahead than the notice rule: the employee may refuse this "
+"shift."
+msgstr ""
+"Avisé moins de jours d'avance que la règle de préavis : la personne peut "
+"refuser ce quart."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pool_member__withdraw_reason__refusals
+msgid "Too many refusals"
+msgstr "Trop de refus"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_list
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_benefit_event_view_list
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pay_line_view_list
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pay_period_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__total_amount
+msgid "Total Amount"
+msgstr "Montant total"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__total_hours
+msgid "Total Hours"
+msgstr "Heures totales"
+
+#. module: bf_shift
+#: model:bf.shift.weekday,name:bf_shift.weekday_1
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__week_start__1
+msgid "Tuesday"
+msgstr "Mardi"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_search
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__activity_exception_decoration
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Type de l'activité en exception sur la fiche."
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_availability__kind__unavailable
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__unavailable
+msgid "Unavailable"
+msgstr "Indisponible"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer__state__unfilled
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_view_search
+msgid "Unfilled"
+msgstr "Non comblée"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__kind__uniform
+msgid "Uniform or protective clothing"
+msgstr "Uniforme ou vêtements de protection"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__union_name
+msgid "Union"
+msgstr "Syndicat"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
+msgid "Upcoming"
+msgstr "À venir"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_hr_employee__shift_hourly_rate
+msgid ""
+"Used to compute premiums and amounts. Without it, the export carries hours "
+"only."
+msgstr ""
+"Sert à calculer les primes et les montants. Sans lui, l'export ne porte que "
+"des heures."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_hourly_rate
+msgid "Usual hourly rate"
+msgstr "Taux horaire habituel"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer_line__state__waiting
+msgid "Waiting"
+msgstr "En attente"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_swap__state__approval
+msgid "Waiting for approval"
+msgstr "En attente d'approbation"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_swap__state__colleague
+msgid "Waiting for the colleague"
+msgstr "En attente de l'autre personne"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__warning_count
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__warning_count
+msgid "Warning Count"
+msgstr "Nombre d'alertes"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__warning_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__warning_ids
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "Warnings"
+msgstr "Alertes"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__website_message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__website_message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__website_message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__website_message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__website_message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__website_message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__website_message_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site Web"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__website_message_ids
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__website_message_ids
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__website_message_ids
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__website_message_ids
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pay_period__website_message_ids
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_pool__website_message_ids
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__website_message_ids
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_swap__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des échanges sur le site Web"
+
+#. module: bf_shift
+#: model:bf.shift.weekday,name:bf_shift.weekday_2
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__week_start__2
+msgid "Wednesday"
+msgstr "Mercredi"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"Week of %(when)s: %(hours)s h, more than %(limit)s. The employee may refuse "
+"(LNT art. 59.0.1)."
+msgstr ""
+"Semaine du %(when)s : %(hours)s h, plus de %(limit)s. La personne peut "
+"refuser (LNT, art. 59.0.1)."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"Week of %(when)s: the longest rest is %(hours)s h, fewer than %(limit)s "
+"consecutive hours (LNT art. 78)."
+msgstr ""
+"Semaine du %(when)s : le plus long repos est de %(hours)s h, moins de "
+"%(limit)s heures consécutives (LNT, art. 78)."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__week_start
+msgid "Week starts on"
+msgstr "La semaine commence le"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_template__kind__weekend
+msgid "Weekend"
+msgstr "Fin de semaine"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__ot_weekly_threshold
+msgid "Weekly overtime threshold (h)"
+msgstr "Seuil hebdomadaire d'heures supplémentaires (h)"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__weekly_rest
+msgid "Weekly rest"
+msgstr "Repos hebdomadaire"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__weekly_rest_hours
+msgid "Weekly rest (consecutive h)"
+msgstr "Repos hebdomadaire (h consécutives)"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_availability__date_from
+msgid "Weekly: first week it applies. Dates: first day."
+msgstr "Chaque semaine : première semaine visée. Dates : premier jour."
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_list
+msgid "When"
+msgstr "Quand"
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_offer_line_action_mine
+msgid "When an open shift reaches your turn on a call list, it appears here."
+msgstr ""
+"Quand un quart à combler arrive à votre tour sur une liste de rappel, il "
+"apparaît ici."
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__informed_at
+msgid ""
+"When the employee was told of this shift as it stands: at publication, then "
+"at each change."
+msgstr ""
+"Quand la personne a été avisée de ce quart tel qu'il est : à la publication,"
+" puis à chaque changement."
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_pool_action
+msgid ""
+"Who is offered open shifts and overtime, and in what order: seniority,\n"
+"                rotation or inverse seniority."
+msgstr ""
+"À qui s'offrent les quarts à combler et les heures supplémentaires, et dans "
+"quel ordre : ancienneté, rotation ou ancienneté inverse."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__whole_day
+msgid "Whole Day"
+msgstr "Journée entière"
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_premium_rule__applies_on__weekdays
+msgid "Whole days"
+msgstr "Journées entières"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__verdict_note
+msgid "Why"
+msgstr "Pourquoi"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__withdraw_reason
+msgid "Withdraw Reason"
+msgstr "Motif du retrait"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__withdrawn_on
+msgid "Withdrawn On"
+msgstr "Retiré le"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_schedule
+msgid "Work schedule"
+msgstr "Horaire de travail"
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__worked_hours
+msgid "Worked Hours"
+msgstr "Heures travaillées"
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_agreement_action
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__agreement_ids
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_agreement_id
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_agreements
+msgid "Working conditions"
+msgstr "Conditions de travail"
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_agreement
+msgid "Working conditions (labour standards or collective agreement)"
+msgstr "Conditions de travail (normes du travail ou convention collective)"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "You can only ask to swap your own shifts."
+msgstr "Vous ne pouvez demander à échanger que vos propres quarts."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "Your schedule %(name)s is published."
+msgstr "Votre horaire %(name)s est publié."
+
+#. module: bf_shift
+#: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_assignment_action_mine
+msgid "Your shifts appear here once a schedule is published."
+msgstr "Vos quarts apparaissent ici une fois un horaire publié."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "above the CRA limit"
+msgstr "au-delà du plafond de l'ARC"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "above the reasonable amount set for Québec"
+msgstr "au-delà du montant raisonnable fixé pour le Québec"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/change.py:0
+msgid "accepted"
+msgstr "accepté"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "cancelled"
+msgstr "annulé"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "e.g. Collective agreement 2024-2028"
+msgstr "p. ex. Convention collective 2024-2028"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pool_view_form
+msgid "e.g. Overtime, attendants, evening"
+msgstr "p. ex. Heures supplémentaires, préposés, soir"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pay_period_view_form
+msgid "e.g. Pay 2026-20"
+msgstr "p. ex. Paie 2026-20"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+msgid "e.g. Weeks of October 4 and 11"
+msgstr "p. ex. Semaines du 4 et du 11 octobre"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_pay_period_view_form
+msgid ""
+"employee(s) have no usual hourly rate: their\n"
+"                        lines carry hours only, and percentage premiums use the floor per hour."
+msgstr ""
+"employé(s) n'ont pas de taux horaire habituel : leurs lignes ne portent que "
+"des heures, et les primes en pourcentage prennent le minimum par heure."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "fewer than 2 hours of overtime"
+msgstr "moins de 2 heures supplémentaires"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "no receipt"
+msgstr "aucun reçu"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "parking exception (value cannot be set, or shared spaces)"
+msgstr ""
+"exception de stationnement (valeur indéterminable, ou places partagées)"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "public transit available and no safety issue"
+msgstr "transport en commun disponible et aucun enjeu de sécurité"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/change.py:0
+msgid "refused"
+msgstr "refusé"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "the overtime was not requested by the employer"
+msgstr "les heures supplémentaires n'ont pas été demandées par l'employeur"
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_publish_wizard_view_form
+msgid "warning(s)."
+msgstr "alerte(s)."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/tools.py:0
+msgid "This record must stay yours."
+msgstr "Cette fiche doit rester la vôtre."
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__verdict_codes
+msgid "Verdict Codes"
+msgstr "Codes du verdict"
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__verdict_note
+msgid "Why, in the reader's language: the reasons are stored as codes."
+msgstr ""
+"Pourquoi, dans la langue de la personne qui lit : les motifs sont conservés "
+"sous forme de codes."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/tools.py:0
+msgid "You cannot set these fields yourself: %(fields)s"
+msgstr "Vous ne pouvez pas remplir ces champs vous-même : %(fields)s"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Answer by %(time)s"
+msgstr "Répondre avant le %(time)s"
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "A swap stays within one company."
+msgstr "Un échange se fait au sein d'une même société."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "An exported period is locked: reopen it first."
+msgstr "Une période exportée est verrouillée : rouvrez-la d'abord."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/change.py:0
+msgid "The change log is written by the module only."
+msgstr "Le journal des changements est écrit par le module seulement."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "The time to answer this offer has passed."
+msgstr "Le délai pour répondre à cette offre est passé."
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Only a shift manager cancels an offer."
+msgstr "Seul un gestionnaire des quarts annule une offre."

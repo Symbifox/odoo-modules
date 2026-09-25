@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Call lists -->
+    <record id="bf_shift_pool_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.pool.list</field>
+        <field name="model">bf.shift.pool</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="agreement_id"/>
+                <field name="job_id" optional="show"/>
+                <field name="department_id" optional="show"/>
+                <field name="method" optional="show"/>
+                <field name="counters_since" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_pool_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.pool.form</field>
+        <field name="model">bf.shift.pool</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_reset_counters" type="object" string="Reset the counters"
+                            groups="bf_shift.group_shift_manager"
+                            confirm="Reset the hours offered, accepted and the refusals of every member?"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Overtime, attendants, evening"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="agreement_id"/>
+                            <field name="method" placeholder="Order set in the working conditions"/>
+                        </group>
+                        <group>
+                            <field name="job_id"/>
+                            <field name="department_id"/>
+                            <field name="counters_since"/>
+                        </group>
+                    </group>
+                    <field name="member_ids" context="{'active_test': False}">
+                        <list editable="bottom" decoration-muted="not active">
+                            <field name="sequence" widget="handle"/>
+                            <field name="employee_id"/>
+                            <field name="seniority_date"/>
+                            <field name="registered_on"/>
+                            <field name="hours_offered"/>
+                            <field name="hours_accepted"/>
+                            <field name="refusal_count"/>
+                            <field name="active" column_invisible="1"/>
+                            <field name="withdrawn_on" optional="show"/>
+                            <field name="withdraw_reason" optional="show"/>
+                            <button name="action_withdraw" type="object" string="Remove"
+                                    icon="fa-user-times" invisible="not active"/>
+                            <button name="action_reinstate" type="object" string="Put back"
+                                    icon="fa-user-plus" invisible="active"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_pool_action" model="ir.actions.act_window">
+        <field name="name">Call lists</field>
+        <field name="res_model">bf.shift.pool</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a call list</p>
+            <p>Who is offered open shifts and overtime, and in what order: seniority,
+                rotation or inverse seniority.</p>
+        </field>
+    </record>
+
+    <!-- Offers -->
+    <record id="bf_shift_offer_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.offer.list</field>
+        <field name="model">bf.shift.offer</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="create_date" string="Started"/>
+                <field name="name"/>
+                <field name="pool_id"/>
+                <field name="hours" widget="float_time"/>
+                <field name="filled_by" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'running'"
+                       decoration-success="state == 'filled'" decoration-danger="state == 'unfilled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_offer_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.offer.form</field>
+        <field name="model">bf.shift.offer</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="Start offering"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="bf_shift.group_shift_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state not in ('draft', 'running')"
+                            groups="bf_shift.group_shift_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,running,filled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="assignment_id" readonly="state != 'draft'"/>
+                            <field name="pool_id" readonly="state != 'draft'"/>
+                            <field name="hours" widget="float_time"/>
+                        </group>
+                        <group>
+                            <field name="response_minutes" readonly="state != 'draft'"/>
+                            <field name="filled_by" invisible="not filled_by"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" readonly="1">
+                        <list decoration-muted="state in ('skipped', 'withdrawn')"
+                              decoration-success="state == 'accepted'"
+                              decoration-danger="state in ('refused', 'no_answer')"
+                              decoration-bf="state == 'offered'">
+                            <field name="rank"/>
+                            <field name="employee_id"/>
+                            <field name="seniority_date" optional="show"/>
+                            <field name="hours_offered_before" optional="show"/>
+                            <field name="state"/>
+                            <field name="skip_reason" optional="show"/>
+                            <field name="offered_at" optional="show"/>
+                            <field name="response_deadline" optional="show"/>
+                            <field name="responded_at" optional="show"/>
+                            <field name="response_channel" optional="hide"/>
+                            <field name="recorded_by" optional="hide"/>
+                            <field name="refusal_reason" optional="show"/>
+                            <button name="action_accept" type="object" string="Accept"
+                                    icon="fa-check" invisible="state != 'offered'"/>
+                            <button name="action_refuse" type="object" string="Refuse"
+                                    icon="fa-times" invisible="state != 'offered'"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_offer_view_search" model="ir.ui.view">
+        <field name="name">bf.shift.offer.search</field>
+        <field name="model">bf.shift.offer</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="pool_id"/>
+                <filter name="running" string="Running" domain="[('state', '=', 'running')]"/>
+                <filter name="unfilled" string="Unfilled" domain="[('state', '=', 'unfilled')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_shift_offer_action" model="ir.actions.act_window">
+        <field name="name">Open shift offers</field>
+        <field name="res_model">bf.shift.offer</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="bf_shift_offer_line_view_list_mine" model="ir.ui.view">
+        <field name="name">bf.shift.offer.line.list.mine</field>
+        <field name="model">bf.shift.offer.line</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" decoration-bf="state == 'offered'"
+                  decoration-muted="state in ('skipped', 'withdrawn')">
+                <field name="assignment_id"/>
+                <field name="rank"/>
+                <field name="state"/>
+                <field name="offered_at"/>
+                <field name="response_deadline"/>
+                <field name="responded_at" optional="show"/>
+                <button name="action_accept" type="object" string="Accept" icon="fa-check"
+                        class="btn-primary" invisible="state != 'offered'"/>
+                <button name="action_refuse" type="object" string="Refuse" icon="fa-times"
+                        invisible="state != 'offered'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_offer_line_action_mine" model="ir.actions.act_window">
+        <field name="name">Shifts offered to me</field>
+        <field name="res_model">bf.shift.offer.line</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="bf_shift_offer_line_view_list_mine"/>
+        <field name="domain">[('employee_user_id', '=', uid), ('state', 'not in', ('waiting', 'skipped'))]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No shift offered to you</p>
+            <p>When an open shift reaches your turn on a call list, it appears here.</p>
+        </field>
+    </record>
+
+    <record id="bf_shift_refuse_wizard_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.refuse.wizard.form</field>
+        <field name="model">bf.shift.refuse.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="offer_line_id" readonly="1"/>
+                    <field name="reason" placeholder="Optional"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Refuse" class="btn-primary"/>
+                    <button special="cancel" string="Back"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Swaps -->
+    <record id="bf_shift_swap_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.swap.list</field>
+        <field name="model">bf.shift.swap</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="create_date" string="Asked on"/>
+                <field name="requester_id"/>
+                <field name="assignment_id"/>
+                <field name="target_id"/>
+                <field name="target_assignment_id" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state in ('colleague', 'approval')"
+                       decoration-success="state == 'done'" decoration-danger="state == 'refused'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_swap_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.swap.form</field>
+        <field name="model">bf.shift.swap</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object" string="Send to the colleague"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_colleague_accept" type="object" string="Accept"
+                            class="btn-primary" invisible="state != 'colleague'"/>
+                    <button name="action_colleague_refuse" type="object" string="Decline"
+                            invisible="state != 'colleague'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                            invisible="state != 'approval'" groups="bf_shift.group_shift_manager"/>
+                    <button name="action_refuse" type="object" string="Refuse"
+                            invisible="state not in ('colleague', 'approval')"
+                            groups="bf_shift.group_shift_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel the request"
+                            invisible="state in ('done', 'refused', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,colleague,approval,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Gives">
+                            <field name="requester_id" readonly="state != 'draft'"/>
+                            <field name="assignment_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="To">
+                            <field name="target_id" readonly="state != 'draft'"/>
+                            <field name="target_assignment_id" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="reason"/>
+                        <field name="check_summary" invisible="not check_summary"/>
+                        <field name="approved_by" invisible="not approved_by"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_swap_action" model="ir.actions.act_window">
+        <field name="name">Swaps</field>
+        <field name="res_model">bf.shift.swap</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ask to swap a shift</p>
+            <p>Give a shift to a colleague, or exchange it for one of theirs. The colleague
+                accepts, then a manager approves when the working conditions ask for it.</p>
+        </field>
+    </record>
+
+    <!-- Availability -->
+    <record id="bf_shift_availability_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.availability.list</field>
+        <field name="model">bf.shift.availability</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="employee_id" groups="bf_shift.group_shift_manager"/>
+                <field name="kind"/>
+                <field name="recurrence"/>
+                <field name="weekday_id" required="recurrence == 'weekly'"
+                       invisible="recurrence != 'weekly'"/>
+                <field name="date_from" required="recurrence == 'dates'"/>
+                <field name="date_to" required="recurrence == 'dates'"/>
+                <field name="whole_day"/>
+                <field name="hour_from" widget="float_time" invisible="whole_day"/>
+                <field name="hour_to" widget="float_time" invisible="whole_day"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_availability_action" model="ir.actions.act_window">
+        <field name="name">Availability</field>
+        <field name="res_model">bf.shift.availability</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Declare when you cannot work</p>
+            <p>The schedule check and the call lists take it into account.</p>
+        </field>
+    </record>
+</odoo>

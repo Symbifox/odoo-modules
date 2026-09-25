@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_bf_shift" model="ir.module.category">
+        <field name="name">Shifts</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="group_shift_user" model="res.groups">
+        <field name="name">Employee</field>
+        <field name="category_id" ref="module_category_bf_shift"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Sees the published schedules and the call lists, answers the
+            offers, asks for swaps, declares availability and benefit events.</field>
+    </record>
+
+    <record id="group_shift_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_bf_shift"/>
+        <field name="implied_ids" eval="[(4, ref('group_shift_user'))]"/>
+        <field name="comment">Builds and publishes schedules, sets the working conditions,
+            approves swaps and benefits, computes and exports the pay periods.</field>
+    </record>
+
+    <record id="base.user_admin" model="res.users">
+        <field name="groups_id" eval="[(4, ref('group_shift_manager'))]"/>
+    </record>
+
+    <!-- Employees: their own records, and whatever is posted. -->
+    <record id="rule_schedule_user" model="ir.rule">
+        <field name="name">Shifts: published schedules</field>
+        <field name="model_id" ref="model_bf_shift_schedule"/>
+        <field name="groups" eval="[(4, ref('group_shift_user'))]"/>
+        <field name="domain_force">[('state', 'in', ('published', 'closed'))]</field>
+    </record>
+    <record id="rule_assignment_user" model="ir.rule">
+        <field name="name">Shifts: own shifts and published schedules</field>
+        <field name="model_id" ref="model_bf_shift_assignment"/>
+        <field name="groups" eval="[(4, ref('group_shift_user'))]"/>
+        <field name="domain_force">['|', ('employee_user_id', '=', user.id), ('schedule_state', 'in', ('published', 'closed'))]</field>
+    </record>
+    <record id="rule_change_user" model="ir.rule">
+        <field name="name">Shifts: own changes</field>
+        <field name="model_id" ref="model_bf_shift_change"/>
+        <field name="groups" eval="[(4, ref('group_shift_user'))]"/>
+        <field name="domain_force">['|', ('employee_user_id', '=', user.id), ('previous_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_offer_user" model="ir.rule">
+        <field name="name">Shifts: offers made to me</field>
+        <field name="model_id" ref="model_bf_shift_offer"/>
+        <field name="groups" eval="[(4, ref('group_shift_user'))]"/>
+        <field name="domain_force">[('line_ids.employee_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_offer_line_user" model="ir.rule">
+        <field name="name">Shifts: own offer lines</field>
+        <field name="model_id" ref="model_bf_shift_offer_line"/>
+        <field name="groups" eval="[(4, ref('group_shift_user'))]"/>
+        <field name="domain_force">[('employee_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_swap_user" model="ir.rule">
+        <field name="name">Shifts: own swaps</field>
+        <field name="model_id" ref="model_bf_shift_swap"/>
+        <field name="groups" eval="[(4, ref('group_shift_user'))]"/>
+        <field name="domain_force">['|', ('requester_user_id', '=', user.id), ('target_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_availability_user" model="ir.rule">
+        <field name="name">Shifts: own availability</field>
+        <field name="model_id" ref="model_bf_shift_availability"/>
+        <field name="groups" eval="[(4, ref('group_shift_user'))]"/>
+        <field name="domain_force">[('employee_user_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_benefit_user" model="ir.rule">
+        <field name="name">Shifts: own benefit events</field>
+        <field name="model_id" ref="model_bf_shift_benefit_event"/>
+        <field name="groups" eval="[(4, ref('group_shift_user'))]"/>
+        <field name="domain_force">[('employee_user_id', '=', user.id)]</field>
+    </record>
+
+    <!-- Managers: everything. -->
+    <record id="rule_schedule_manager" model="ir.rule">
+        <field name="name">Shifts: all schedules</field>
+        <field name="model_id" ref="model_bf_shift_schedule"/>
+        <field name="groups" eval="[(4, ref('group_shift_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_assignment_manager" model="ir.rule">
+        <field name="name">Shifts: all shifts</field>
+        <field name="model_id" ref="model_bf_shift_assignment"/>
+        <field name="groups" eval="[(4, ref('group_shift_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_change_manager" model="ir.rule">
+        <field name="name">Shifts: all changes</field>
+        <field name="model_id" ref="model_bf_shift_change"/>
+        <field name="groups" eval="[(4, ref('group_shift_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_offer_manager" model="ir.rule">
+        <field name="name">Shifts: all offers</field>
+        <field name="model_id" ref="model_bf_shift_offer"/>
+        <field name="groups" eval="[(4, ref('group_shift_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_offer_line_manager" model="ir.rule">
+        <field name="name">Shifts: all offer lines</field>
+        <field name="model_id" ref="model_bf_shift_offer_line"/>
+        <field name="groups" eval="[(4, ref('group_shift_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_swap_manager" model="ir.rule">
+        <field name="name">Shifts: all swaps</field>
+        <field name="model_id" ref="model_bf_shift_swap"/>
+        <field name="groups" eval="[(4, ref('group_shift_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_availability_manager" model="ir.rule">
+        <field name="name">Shifts: all availability</field>
+        <field name="model_id" ref="model_bf_shift_availability"/>
+        <field name="groups" eval="[(4, ref('group_shift_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_benefit_manager" model="ir.rule">
+        <field name="name">Shifts: all benefit events</field>
+        <field name="model_id" ref="model_bf_shift_benefit_event"/>
+        <field name="groups" eval="[(4, ref('group_shift_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Companies. -->
+    <record id="rule_schedule_company" model="ir.rule">
+        <field name="name">Shifts: schedules of my companies</field>
+        <field name="model_id" ref="model_bf_shift_schedule"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_assignment_company" model="ir.rule">
+        <field name="name">Shifts: shifts of my companies</field>
+        <field name="model_id" ref="model_bf_shift_assignment"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_pay_period_company" model="ir.rule">
+        <field name="name">Shifts: pay periods of my companies</field>
+        <field name="model_id" ref="model_bf_shift_pay_period"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_agreement_company" model="ir.rule">
+        <field name="name">Shifts: working conditions of my companies</field>
+        <field name="model_id" ref="model_bf_shift_agreement"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_pool_company" model="ir.rule">
+        <field name="name">Shifts: call lists of my companies</field>
+        <field name="model_id" ref="model_bf_shift_pool"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_pool_member_company" model="ir.rule">
+        <field name="name">Shifts: call list members of my companies</field>
+        <field name="model_id" ref="model_bf_shift_pool_member"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_offer_company" model="ir.rule">
+        <field name="name">Shifts: offers of my companies</field>
+        <field name="model_id" ref="model_bf_shift_offer"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_offer_line_company" model="ir.rule">
+        <field name="name">Shifts: offer lines of my companies</field>
+        <field name="model_id" ref="model_bf_shift_offer_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_swap_company" model="ir.rule">
+        <field name="name">Shifts: swaps of my companies</field>
+        <field name="model_id" ref="model_bf_shift_swap"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_change_company" model="ir.rule">
+        <field name="name">Shifts: changes of my companies</field>
+        <field name="model_id" ref="model_bf_shift_change"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_pay_line_company" model="ir.rule">
+        <field name="name">Shifts: pay lines of my companies</field>
+        <field name="model_id" ref="model_bf_shift_pay_line"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_availability_company" model="ir.rule">
+        <field name="name">Shifts: availability of my companies</field>
+        <field name="model_id" ref="model_bf_shift_availability"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_benefit_company" model="ir.rule">
+        <field name="name">Shifts: benefit events of my companies</field>
+        <field name="model_id" ref="model_bf_shift_benefit_event"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_template_company" model="ir.rule">
+        <field name="name">Shifts: templates of my companies</field>
+        <field name="model_id" ref="model_bf_shift_template"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

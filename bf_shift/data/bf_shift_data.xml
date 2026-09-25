@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="agreement_lnt" model="bf.shift.agreement">
+            <field name="name">Labour standards (Québec)</field>
+            <field name="kind">lnt</field>
+            <field name="notes" type="html">
+                <p>The floor set by the Act respecting labour standards (LNT). A collective
+                agreement can only improve on it: where it is less favourable, the labour
+                standards apply.</p>
+            </field>
+        </record>
+    </data>
+    <data>
+        <record id="cron_offer_expire" model="ir.cron">
+            <field name="name">Shifts: offers not answered in time</field>
+            <field name="model_id" ref="model_bf_shift_offer"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_expire()</field>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

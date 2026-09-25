@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Schedules -->
+    <record id="bf_shift_schedule_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.schedule.list</field>
+        <field name="model">bf.shift.schedule</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'" decoration-info="state == 'draft'">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="department_id" optional="show"/>
+                <field name="assignment_count" string="Shifts"/>
+                <field name="open_count" optional="show"/>
+                <field name="warning_count" optional="show" groups="bf_shift.group_shift_manager"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-success="state == 'published'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_schedule_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.schedule.form</field>
+        <field name="model">bf.shift.schedule</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate" type="object" string="Add shifts"
+                            class="btn-secondary" invisible="state == 'closed'"
+                            groups="bf_shift.group_shift_manager"/>
+                    <button name="action_check" type="object" string="Check"
+                            invisible="state == 'closed'" groups="bf_shift.group_shift_manager"/>
+                    <button name="action_publish" type="object" string="Publish"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="bf_shift.group_shift_manager"/>
+                    <button name="action_close" type="object" string="Close"
+                            invisible="state != 'published'" groups="bf_shift.group_shift_manager"/>
+                    <button name="action_reopen" type="object" string="Reopen"
+                            invisible="state != 'closed'" groups="bf_shift.group_shift_manager"/>
+                    <button name="action_copy_next" type="object" string="Copy to the next period"
+                            groups="bf_shift.group_shift_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_assignments" type="object" class="oe_stat_button"
+                                icon="fa-calendar">
+                            <field name="assignment_count" widget="statinfo" string="Shifts"/>
+                        </button>
+                        <button name="action_view_changes" type="object" class="oe_stat_button"
+                                icon="fa-history" invisible="not change_count">
+                            <field name="change_count" widget="statinfo" string="Changes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Weeks of October 4 and 11"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                            <field name="department_id"/>
+                        </group>
+                        <group>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="published_at" invisible="not published_at"/>
+                            <field name="open_count"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Shifts" name="shifts">
+                            <field name="assignment_ids" readonly="state == 'closed'"
+                                   context="{'default_schedule_id': id}">
+                                <list decoration-muted="state == 'cancelled'"
+                                      decoration-warning="is_open" decoration-danger="late_notice">
+                                    <field name="employee_id" widget="many2one_avatar_employee"/>
+                                    <field name="template_id" optional="show"/>
+                                    <field name="job_id" optional="hide"/>
+                                    <field name="kind" optional="show"/>
+                                    <field name="start"/>
+                                    <field name="end"/>
+                                    <field name="break_minutes" optional="hide"/>
+                                    <field name="planned_hours" widget="float_time" sum="Total"/>
+                                    <field name="worked_hours" widget="float_time" optional="hide"/>
+                                    <field name="late_notice" optional="show"/>
+                                    <field name="is_open" column_invisible="1"/>
+                                    <field name="state" widget="badge" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Warnings" name="warnings" invisible="not warning_ids"
+                              groups="bf_shift.group_shift_manager">
+                            <p class="text-muted">
+                                The warnings do not block publishing: the labour standards give the
+                                employee a right to refuse, they do not forbid asking.
+                            </p>
+                            <field name="checked_at" readonly="1"/>
+                            <field name="warning_ids" readonly="1">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="code"/>
+                                    <field name="message"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_schedule_view_search" model="ir.ui.view">
+        <field name="name">bf.shift.schedule.search</field>
+        <field name="model">bf.shift.schedule</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="department_id"/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="published" string="Published" domain="[('state', '=', 'published')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter name="current" string="Current and upcoming"
+                        domain="[('date_to', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_shift_schedule_action" model="ir.actions.act_window">
+        <field name="name">Schedules</field>
+        <field name="res_model">bf.shift.schedule</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_current': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Build a schedule</p>
+            <p>Add shifts from templates, check them against the labour standards and the
+                agreement, then publish. Every change after publishing is logged.</p>
+        </field>
+    </record>
+
+    <!-- Shifts -->
+    <record id="bf_shift_assignment_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.assignment.list</field>
+        <field name="model">bf.shift.assignment</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'" decoration-warning="is_open"
+                  decoration-danger="late_notice">
+                <field name="date"/>
+                <field name="employee_id" widget="many2one_avatar_employee"/>
+                <field name="template_id" optional="show"/>
+                <field name="kind" optional="show"/>
+                <field name="start"/>
+                <field name="end"/>
+                <field name="planned_hours" widget="float_time" sum="Total"/>
+                <field name="worked_hours" widget="float_time" sum="Total" optional="show"/>
+                <field name="schedule_id" optional="show"/>
+                <field name="late_notice" optional="hide"/>
+                <field name="is_open" column_invisible="1"/>
+                <field name="state" widget="badge" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_assignment_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.assignment.form</field>
+        <field name="model">bf.shift.assignment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_offer" type="object" string="Offer this shift"
+                            class="btn-primary" invisible="not is_open or schedule_state != 'published'"
+                            groups="bf_shift.group_shift_manager"/>
+                    <button name="action_done" type="object" string="Mark as done"
+                            invisible="state != 'planned' or is_open"
+                            groups="bf_shift.group_shift_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel the shift"
+                            invisible="state == 'cancelled'" groups="bf_shift.group_shift_manager"
+                            confirm="Cancel this shift? The change is logged and the employee is told."/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" role="alert" invisible="not late_notice">
+                        Told fewer days ahead than the notice rule: the employee may refuse this shift.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="schedule_id"/>
+                            <field name="schedule_state" invisible="1"/>
+                            <field name="is_open" invisible="1"/>
+                            <field name="employee_id" widget="many2one_avatar_employee"
+                                   placeholder="Open shift"/>
+                            <field name="template_id"/>
+                            <field name="date"/>
+                            <field name="job_id"/>
+                            <field name="kind"/>
+                        </group>
+                        <group>
+                            <field name="start"/>
+                            <field name="end"/>
+                            <field name="break_minutes"/>
+                            <field name="break_paid"/>
+                            <field name="planned_hours" widget="float_time"/>
+                            <field name="informed_at"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Actual hours" name="actual" groups="bf_shift.group_shift_manager">
+                            <group>
+                                <group>
+                                    <field name="actual_start"/>
+                                    <field name="actual_end"/>
+                                    <field name="actual_break_minutes"/>
+                                    <field name="worked_hours" widget="float_time"/>
+                                </group>
+                                <group>
+                                    <field name="to_bank"/>
+                                    <field name="bank_requested_by_employee"
+                                           invisible="not to_bank"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Changes" name="changes" invisible="not change_ids">
+                            <field name="change_ids" readonly="1">
+                                <list>
+                                    <field name="create_date" string="When"/>
+                                    <field name="change_type"/>
+                                    <field name="before"/>
+                                    <field name="after"/>
+                                    <field name="user_id"/>
+                                    <field name="late"/>
+                                    <field name="consent"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Offers" name="offers" invisible="not offer_ids"
+                              groups="bf_shift.group_shift_manager">
+                            <field name="offer_ids" readonly="1">
+                                <list>
+                                    <field name="create_date" string="Started"/>
+                                    <field name="pool_id"/>
+                                    <field name="state"/>
+                                    <field name="filled_by"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_assignment_view_calendar" model="ir.ui.view">
+        <field name="name">bf.shift.assignment.calendar</field>
+        <field name="model">bf.shift.assignment</field>
+        <field name="arch" type="xml">
+            <calendar date_start="start" date_stop="end" color="employee_id" mode="week"
+                      event_open_popup="1" quick_create="0">
+                <field name="employee_id" filters="1" avatar_field="avatar_128"/>
+                <field name="template_id"/>
+                <field name="kind"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="bf_shift_assignment_view_pivot" model="ir.ui.view">
+        <field name="name">bf.shift.assignment.pivot</field>
+        <field name="model">bf.shift.assignment</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="employee_id" type="row"/>
+                <field name="date" interval="week" type="col"/>
+                <field name="worked_hours" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="bf_shift_assignment_view_search" model="ir.ui.view">
+        <field name="name">bf.shift.assignment.search</field>
+        <field name="model">bf.shift.assignment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="schedule_id"/>
+                <field name="template_id"/>
+                <filter name="mine" string="My shifts" domain="[('employee_user_id', '=', uid)]"/>
+                <filter name="open" string="Open shifts" domain="[('is_open', '=', True)]"/>
+                <filter name="late" string="Short notice" domain="[('late_notice', '=', True)]"/>
+                <separator/>
+                <filter name="active_shifts" string="Not cancelled"
+                        domain="[('state', '!=', 'cancelled')]"/>
+                <filter name="upcoming" string="Upcoming"
+                        domain="[('date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="by_schedule" string="Schedule" context="{'group_by': 'schedule_id'}"/>
+                    <filter name="by_date" string="Day" context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_shift_assignment_action" model="ir.actions.act_window">
+        <field name="name">Shifts</field>
+        <field name="res_model">bf.shift.assignment</field>
+        <field name="view_mode">calendar,list,pivot,form</field>
+        <field name="context">{'search_default_active_shifts': 1}</field>
+    </record>
+
+    <record id="bf_shift_assignment_action_mine" model="ir.actions.act_window">
+        <field name="name">My shifts</field>
+        <field name="res_model">bf.shift.assignment</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('employee_user_id', '=', uid), ('schedule_state', 'in', ('published', 'closed'))]</field>
+        <field name="context">{'search_default_active_shifts': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No shift yet</p>
+            <p>Your shifts appear here once a schedule is published.</p>
+        </field>
+    </record>
+
+    <!-- Change log -->
+    <record id="bf_shift_change_view_list" model="ir.ui.view">
+        <field name="name">bf.shift.change.list</field>
+        <field name="model">bf.shift.change</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" decoration-danger="consent == 'pending'">
+                <field name="create_date" string="When"/>
+                <field name="schedule_id" optional="show"/>
+                <field name="employee_id"/>
+                <field name="change_type"/>
+                <field name="before" optional="show"/>
+                <field name="after"/>
+                <field name="reason" optional="show"/>
+                <field name="user_id" optional="show"/>
+                <field name="late"/>
+                <field name="consent" widget="badge" decoration-warning="consent == 'pending'"
+                       decoration-success="consent == 'given'" decoration-danger="consent == 'refused'"/>
+                <button name="action_accept" type="object" string="Accept" icon="fa-check"
+                        invisible="consent != 'pending'"/>
+                <button name="action_refuse" type="object" string="Refuse" icon="fa-times"
+                        invisible="consent != 'pending'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_shift_change_view_form" model="ir.ui.view">
+        <field name="name">bf.shift.change.form</field>
+        <field name="model">bf.shift.change</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_accept" type="object" string="Accept the change"
+                            class="btn-primary" invisible="consent != 'pending'"/>
+                    <button name="action_refuse" type="object" string="Refuse the change"
+                            invisible="consent != 'pending'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="create_date" string="When"/>
+                            <field name="schedule_id"/>
+                            <field name="assignment_id"/>
+                            <field name="change_type"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="previous_employee_id" invisible="not previous_employee_id"/>
+                            <field name="late"/>
+                            <field name="consent"/>
+                            <field name="consent_at" invisible="not consent_at"/>
+                            <field name="consent_recorded_by" invisible="not consent_recorded_by"/>
+                            <field name="consent_note" invisible="not consent_note"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="before"/>
+                        <field name="after"/>
+                        <field name="reason"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_change_view_search" model="ir.ui.view">
+        <field name="name">bf.shift.change.search</field>
+        <field name="model">bf.shift.change</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="schedule_id"/>
+                <filter name="pending" string="Answer to record" domain="[('consent', '=', 'pending')]"/>
+                <filter name="late" string="Short notice" domain="[('late', '=', True)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="by_type" string="Type" context="{'group_by': 'change_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_shift_change_action" model="ir.actions.act_window">
+        <field name="name">Change log</field>
+        <field name="res_model">bf.shift.change</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
