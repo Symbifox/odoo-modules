@@ -1,0 +1,122 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_employee_photo_age
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-25 08:13+0000\n"
+"PO-Revision-Date: 2026-09-25 08:13+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py:0
+msgid "A new photo is on file."
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model:ir.model,name:bf_employee_photo_age.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model:ir.model,name:bf_employee_photo_age.model_hr_employee
+msgid "Employee"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model:ir.actions.server,name:bf_employee_photo_age.ir_cron_photo_reminders_ir_actions_server
+msgid "Employees: remind to update an old photo"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model_terms:ir.ui.view,arch_db:bf_employee_photo_age.hr_employee_view_search
+msgid "No photo on file"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model_terms:ir.ui.view,arch_db:bf_employee_photo_age.hr_employee_view_form
+msgid "Photo"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model:ir.model.fields,field_description:bf_employee_photo_age.field_hr_employee__photo_age_months
+msgid "Photo age (months)"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model_terms:ir.ui.view,arch_db:bf_employee_photo_age.res_config_settings_view_form
+msgid "Photo reminder"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model:ir.model.fields,field_description:bf_employee_photo_age.field_res_config_settings__bf_photo_months
+msgid "Photo reminder after (months)"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model:ir.model.fields,field_description:bf_employee_photo_age.field_hr_employee__photo_date
+msgid "Photo taken on"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model:ir.model.fields,field_description:bf_employee_photo_age.field_hr_employee__photo_is_stale
+#: model_terms:ir.ui.view,arch_db:bf_employee_photo_age.hr_employee_view_search
+msgid "Photo to update"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py:0
+msgid ""
+"Put a recent one in your preferences: your avatar at the top right, then "
+"Preferences."
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model:ir.model.fields,help:bf_employee_photo_age.field_res_config_settings__bf_photo_months
+msgid ""
+"Remind an employee to update a photo older than this. 0 turns the reminder "
+"off."
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model_terms:ir.ui.view,arch_db:bf_employee_photo_age.res_config_settings_view_form
+msgid ""
+"Remind an employee whose photo is older than this many months. 0 turns it "
+"off."
+msgstr ""
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py:0
+msgid ""
+"Send a recent one to the person in charge of HR, who will put it on file."
+msgstr ""
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py:0
+#: model:mail.activity.type,name:bf_employee_photo_age.mail_activity_type_photo_update
+msgid "Update your photo"
+msgstr ""
+
+#. module: bf_employee_photo_age
+#: model:ir.model.fields,help:bf_employee_photo_age.field_hr_employee__photo_date
+msgid ""
+"When the current photo was put on file. Empty when there is no photo, only a"
+" drawn avatar."
+msgstr ""
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py:0
+msgid "Your photo on file dates from %(date)s (%(months)s months)."
+msgstr ""

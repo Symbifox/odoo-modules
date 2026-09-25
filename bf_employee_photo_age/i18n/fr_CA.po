@@ -1,0 +1,102 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * bf_employee_photo_age
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-25 08:13+0000\n"
+"PO-Revision-Date: 2026-09-25 08:13+0000\n"
+"Last-Translator: \n"
+"Language: fr_CA\n"
+"Language-Team: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py
+msgid "A new photo is on file."
+msgstr "Une nouvelle photo est au dossier."
+
+#. module: bf_employee_photo_age
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_employee_photo_age
+msgid "Employee"
+msgstr ""
+
+#. module: bf_employee_photo_age
+msgid "Employees: remind to update an old photo"
+msgstr "Employés : rappeler de mettre à jour une vieille photo"
+
+#. module: bf_employee_photo_age
+msgid "No photo on file"
+msgstr "Aucune photo au dossier"
+
+#. module: bf_employee_photo_age
+msgid "Photo"
+msgstr "Photo"
+
+#. module: bf_employee_photo_age
+msgid "Photo age (months)"
+msgstr "Âge de la photo (mois)"
+
+#. module: bf_employee_photo_age
+msgid "Photo reminder"
+msgstr "Rappel de photo"
+
+#. module: bf_employee_photo_age
+msgid "Photo reminder after (months)"
+msgstr "Rappel de photo après (mois)"
+
+#. module: bf_employee_photo_age
+msgid "Photo taken on"
+msgstr "Photo prise le"
+
+#. module: bf_employee_photo_age
+msgid "Photo to update"
+msgstr "Photo à mettre à jour"
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py
+msgid "Put a recent one in your preferences: your avatar at the top right, then Preferences."
+msgstr "Posez-en une récente dans vos préférences : votre avatar en haut à droite, puis Préférences."
+
+#. module: bf_employee_photo_age
+msgid "Remind an employee to update a photo older than this. 0 turns the reminder off."
+msgstr "Rappeler à un employé de mettre à jour une photo plus vieille que ceci. 0 coupe le rappel."
+
+#. module: bf_employee_photo_age
+msgid "Remind an employee whose photo is older than this many months. 0 turns it off."
+msgstr "Rappeler à un employé dont la photo a plus que ce nombre de mois. 0 le coupe."
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py
+msgid "Send a recent one to the person in charge of HR, who will put it on file."
+msgstr "Envoyez-en une récente à la personne responsable des RH, qui la mettra au dossier."
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py
+msgid "Update your photo"
+msgstr "Mettez votre photo à jour"
+
+#. module: bf_employee_photo_age
+msgid "When the current photo was put on file. Empty when there is no photo, only a drawn avatar."
+msgstr "Quand la photo actuelle a été mise au dossier. Vide s'il n'y a pas de photo, seulement un avatar dessiné."
+
+#. module: bf_employee_photo_age
+#. odoo-python
+#: code:addons/bf_employee_photo_age/models/hr_employee.py
+#, python-format
+msgid "Your photo on file dates from %(date)s (%(months)s months)."
+msgstr "Votre photo au dossier date du %(date)s (%(months)s mois)."
+

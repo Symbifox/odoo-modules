@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_activity_type_photo_update" model="mail.activity.type">
+            <field name="name">Update your photo</field>
+            <field name="icon">fa-camera</field>
+            <field name="res_model">res.partner</field>
+            <field name="delay_count">14</field>
+        </record>
+    </data>
+    <record id="ir_cron_photo_reminders" model="ir.cron">
+        <field name="name">Employees: remind to update an old photo</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_photo_reminders()</field>
+        <field name="interval_number">7</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

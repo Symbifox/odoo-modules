@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_employee_view_form" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.bf_employee_photo_age</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='hr_settings']/group" position="inside">
+                <group string="Photo" name="bf_photo_age">
+                    <field name="photo_date"/>
+                    <field name="photo_age_months" invisible="not photo_date"/>
+                    <field name="photo_is_stale" invisible="not photo_date" widget="boolean"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_employee_view_search" model="ir.ui.view">
+        <field name="name">hr.employee.search.inherit.bf_employee_photo_age</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <filter name="photo_is_stale" string="Photo to update" domain="[('photo_is_stale', '=', True)]"
+                        groups="hr.group_hr_user"/>
+                <filter name="photo_missing" string="No photo on file" domain="[('photo_date', '=', False)]"
+                        groups="hr.group_hr_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf_employee_photo_age</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='employees_setting_container']" position="inside">
+                <setting id="bf_photo_months" string="Photo reminder"
+                         help="Remind an employee whose photo is older than this many months. 0 turns it off.">
+                    <field name="bf_photo_months"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
