@@ -1249,6 +1249,19 @@ class TestBfSign(BaseNeuve, TransactionCase):
         self.env["bf.sign.request"]._cron_send_reminders()
         self.assertEqual(s.reminder_count, 0)
 
+    def test_reminder_date_follows_the_text_not_the_creator(self):
+        """The reminder is written in French: its expiry date must be too, even
+        when whoever created the request works in English (it read « 26 October
+        2026 » in a French sentence)."""
+        self.env.user.lang = "en_US"
+        req = self._sent_request()
+        req.expiry_date = fields.Datetime.to_datetime("2026-10-26 15:00:00")
+        s = req.signer_ids[0]
+        tpl = self.env.ref("bf_sign.mail_template_sign_reminder")
+        body = str(tpl._render_field("body_html", s.ids, compute_lang=True)[s.id])
+        self.assertIn("octobre", body)
+        self.assertNotIn("October", body)
+
     def test_last_call_before_expiry(self):
         self.env["ir.config_parameter"].sudo().set_param("bf_sign.reminder_days", "")
         req = self._sent_request()

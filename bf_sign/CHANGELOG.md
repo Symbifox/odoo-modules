@@ -2,6 +2,13 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.26.2
+
+- La date d'expiration du rappel s'écrivait dans la langue de la personne qui a
+  CRÉÉ la demande (le gabarit rend dans `create_uid.lang`), au milieu d'un texte
+  rédigé en français : « Ce lien cesse de fonctionner le 26 October 2026. » quand
+  cette personne travaille en anglais. La date suit maintenant la langue du texte.
+
 ## 18.0.3.26.1
 
 - 🔴 Correctif de la 26.0 : la page de signature montrait le pavé sur son numéro

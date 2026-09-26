@@ -69,7 +69,7 @@
                         <p>Le document <strong t-out="object.request_id.name"/> attend toujours votre
                             signature.</p>
                         <p t-if="object.request_id.expiry_date">Ce lien cesse de fonctionner le
-                            <strong t-out="format_datetime(object.request_id.expiry_date, tz=user.tz, dt_format='d MMMM y')"/>.</p>
+                            <strong t-out="format_datetime(object.request_id.expiry_date, tz=user.tz, dt_format='d MMMM y', lang_code='fr_CA')"/>.</p>
                         <p style="margin:24px 0;">
                             <a t-att-href="object._signing_url()"
                                t-attf-style="background:#{primary}; color:#ffffff; text-decoration:none; padding:12px 26px; border-radius:8px; font-weight:600; display:inline-block;">
