@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- ================= Org defaults ================= -->
+  <record id="view_bf_policy_org_form" model="ir.ui.view">
+    <field name="name">bf.policy.org.form</field>
+    <field name="model">bf.policy.org</field>
+    <field name="arch" type="xml">
+      <form string="Policy — Organization Defaults">
+        <sheet>
+          <group>
+            <field name="company_id"/>
+            <field name="domain" placeholder="example.com"/>
+            <field name="active"/>
+          </group>
+          <notebook>
+            <page string="Authorization">
+              <group>
+                <field name="provision_mode"/>
+                <field name="provision_group_ids" widget="many2many_tags"
+                       invisible="provision_mode != 'group'"/>
+                <field name="provision_user_ids" widget="many2many_tags"
+                       invisible="provision_mode != 'allowlist'"/>
+                <field name="authentik_userinfo_url"/>
+                <field name="identity_claim"/>
+                <field name="token_audience_check"/>
+              </group>
+            </page>
+            <page string="Install">
+              <group>
+                <group string="Regional">
+                  <field name="locale"/>
+                  <field name="timezone"/>
+                  <field name="hostname_pattern"/>
+                  <field name="root_mode"/>
+                </group>
+                <group string="Keyboard">
+                  <div class="alert alert-info" role="status" colspan="2">
+                    The console keymap and the desktop layout are two separate
+                    settings. Set both, or the terminal and the graphical
+                    session end up on different layouts.
+                  </div>
+                  <field name="keymap"/>
+                  <field name="x_layout" placeholder="ca"/>
+                  <field name="x_variant" placeholder="multix"/>
+                  <field name="x_options"/>
+                </group>
+              </group>
+            </page>
+            <page string="Zero-Touch">
+              <div class="alert alert-info" role="status">
+                Served anonymously at
+                <code>https://&lt;domain&gt;/blue-fox-install.ks</code> when the
+                operator picks the zero-touch GRUB entry. Locale, keymap and
+                timezone come from the <b>Install</b> tab; the policy URL is
+                derived from the routing domain. Leave the OCI image blank to
+                disable zero-touch for this org.
+              </div>
+              <group>
+                <group string="Install image">
+                  <field name="tenant_name" placeholder="Example Inc."/>
+                  <field name="slug" placeholder="bf"/>
+                  <field name="oci_image_ref"
+                         placeholder="ghcr.io/example/blue-fox-os:latest"/>
+                  <field name="addsupport"/>
+                  <field name="keyboard_x"/>
+                </group>
+                <group string="OIDC device-flow bootstrap">
+                  <field name="authentik_device_url"/>
+                  <field name="authentik_token_url"/>
+                  <field name="oidc_client_id"/>
+                  <field name="nextcloud_url"
+                         placeholder="https://nextcloud.example.com"/>
+                  <field name="nextcloud_oidc_client_id"
+                         placeholder="client_id du fournisseur Nextcloud dans Authentik"/>
+                </group>
+              </group>
+            </page>
+            <page string="Login">
+              <group>
+                <field name="login_mode"/>
+                <field name="break_glass_account"/>
+                <field name="ldap_uri" invisible="login_mode != 'sssd'"/>
+                <field name="ldap_base_dn" invisible="login_mode != 'sssd'"/>
+                <field name="ldap_bind_dn" invisible="login_mode != 'sssd'"/>
+                <field name="ldap_bind_password" password="True"
+                       invisible="login_mode != 'sssd'"
+                       placeholder="saisir pour remplacer"/>
+              </group>
+            </page>
+            <page string="Policies">
+              <group>
+                <field name="offline_login"/>
+                <field name="offline_max_days" invisible="not offline_login"/>
+                <field name="mfa_required"/>
+                <field name="auto_lock_minutes"/>
+                <field name="tpm_autounlock"/>
+                <field name="tpm_pcrs" invisible="not tpm_autounlock"/>
+                <field name="disk_escrow"/>
+              </group>
+              <div class="text-muted" invisible="not disk_escrow">
+                Le sequestre exige une cle de chiffrement posee HORS de la base,
+                dans la variable d'environnement <code>BF_POLICY_ESCROW_KEY</code>
+                ou dans <code>odoo.conf</code> sous <code>bf_policy_escrow_key</code>.
+                Sans elle, l'installateur ne tente rien et fait taper la phrase
+                de passe comme avant. La lire ensuite demande le droit dedie
+                « Peut reveler les phrases de passe de disque », que
+                l'administration d'Odoo n'accorde pas d'office.
+              </div>
+            </page>
+            <page string="Session">
+              <group>
+                <field name="accent_color"/>
+                <field name="wallpaper_url"/>
+                <field name="clock_format"/>
+              </group>
+              <separator string="Default mounts"/>
+              <field name="mount_ids">
+                <list editable="bottom">
+                  <field name="name"/>
+                  <field name="remote_path"/>
+                  <field name="mount_point"/>
+                </list>
+              </field>
+              <separator string="Default PWAs"/>
+              <field name="pwa_ids">
+                <list editable="bottom">
+                  <field name="name"/>
+                  <field name="url"/>
+                  <field name="pinned"/>
+                </list>
+              </field>
+            </page>
+            <page string="Apps">
+              <div class="alert alert-info" role="status">
+                Ces listes s'ajoutent à la base déjà présente dans l'image
+                (Brave, Thunderbird, Nextcloud, Bitwarden) : « Default apps »
+                installe en plus, « Apps to remove » retire de la base. En cas
+                de conflit, le retrait l'emporte. La sélection filtre par défaut
+                sur les applications recommandées ; retirer le filtre donne
+                accès à tout Flathub.
+              </div>
+              <separator string="Default apps"/>
+              <field name="app_ids" widget="many2many_tags"
+                     context="{'search_default_recommended': 1}"
+                     placeholder="Brave, LibreOffice…"/>
+              <separator string="Apps to remove"/>
+              <field name="app_remove_ids" widget="many2many_tags"
+                     placeholder="Thunderbird…"/>
+            </page>
+            <page string="Browser">
+              <div class="alert alert-info" role="status">
+                Extensions installées d'office dans Brave sur les postes
+                Blue Fox OS de l'organisation. La personne ne peut pas les
+                retirer. Les extensions Symbifox sont servies par cette
+                instance ; les autres viennent de la boutique Chrome.
+              </div>
+              <field name="extension_ids" widget="many2many_tags"
+                     placeholder="Symbifox Signets, Bitwarden…"/>
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_bf_policy_org_list" model="ir.ui.view">
+    <field name="name">bf.policy.org.list</field>
+    <field name="model">bf.policy.org</field>
+    <field name="arch" type="xml">
+      <list string="Org Policies">
+        <field name="company_id"/>
+        <field name="domain"/>
+        <field name="provision_mode"/>
+        <field name="login_mode"/>
+        <field name="mfa_required"/>
+        <field name="offline_login"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_bf_policy_org" model="ir.actions.act_window">
+    <field name="name">Org Defaults</field>
+    <field name="res_model">bf.policy.org</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- ================= Per-user overrides ================= -->
+  <record id="view_bf_policy_user_form" model="ir.ui.view">
+    <field name="name">bf.policy.user.form</field>
+    <field name="model">bf.policy.user</field>
+    <field name="arch" type="xml">
+      <form string="Policy — Per-User Override">
+        <sheet>
+          <group>
+            <field name="user_id"/>
+            <field name="company_id"/>
+          </group>
+          <div class="alert alert-info" role="status">
+            Every field below is blank by default and falls back to the org
+            defaults. The timezone additionally falls back to the user's own
+            Odoo preference before the org value — fill it in only to pin a
+            machine to a timezone that isn't its operator's.
+          </div>
+          <group>
+            <group string="Session">
+              <field name="accent_color"/>
+              <field name="wallpaper_url"/>
+              <field name="tpm_autounlock_override"/>
+              <field name="clock_format"/>
+            </group>
+            <group string="Install">
+              <field name="locale" placeholder="fr_CA.UTF-8"/>
+              <field name="timezone" placeholder="America/Montreal"/>
+              <field name="keymap" placeholder="ca"/>
+              <field name="x_layout" placeholder="ca"/>
+              <field name="x_variant" placeholder="multix"/>
+              <field name="x_options"/>
+            </group>
+          </group>
+          <separator string="Extra mounts"/>
+          <field name="mount_ids">
+            <list editable="bottom">
+              <field name="name"/>
+              <field name="remote_path"/>
+              <field name="mount_point"/>
+            </list>
+          </field>
+          <separator string="Extra PWAs"/>
+          <field name="pwa_ids">
+            <list editable="bottom">
+              <field name="name"/>
+              <field name="url"/>
+              <field name="pinned"/>
+            </list>
+          </field>
+          <separator string="Extra apps"/>
+          <field name="app_ids" widget="many2many_tags"
+                 context="{'search_default_recommended': 1}"/>
+          <separator string="Apps to remove"/>
+          <field name="app_remove_ids" widget="many2many_tags"/>
+          <separator string="Extra browser extensions"/>
+          <field name="extension_ids" widget="many2many_tags"/>
+          <separator string="Browser extensions to skip"/>
+          <field name="extension_remove_ids" widget="many2many_tags"/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Catalogue d'extensions de navigateur -->
+  <record id="view_bf_policy_extension_list" model="ir.ui.view">
+    <field name="name">bf.policy.extension.list</field>
+    <field name="model">bf.policy.extension</field>
+    <field name="arch" type="xml">
+      <list string="Browser extensions" editable="bottom">
+        <field name="recommended" widget="boolean_toggle"/>
+        <field name="name"/>
+        <field name="extension_id"/>
+        <field name="source"/>
+        <field name="managed_instance" optional="show"/>
+        <field name="note" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_bf_policy_extension" model="ir.actions.act_window">
+    <field name="name">Browser Extensions</field>
+    <field name="res_model">bf.policy.extension</field>
+    <field name="view_mode">list</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">Aucune extension au catalogue</p>
+      <p>L'identifiant d'une extension de la boutique Chrome est la fin de
+        l'adresse de sa fiche (32 lettres).</p>
+    </field>
+  </record>
+
+  <!-- Catalogue Flathub -->
+  <record id="view_bf_policy_app_list" model="ir.ui.view">
+    <field name="name">bf.policy.app.list</field>
+    <field name="model">bf.policy.app</field>
+    <field name="arch" type="xml">
+      <list string="Flatpak applications" editable="bottom">
+        <field name="recommended" widget="boolean_toggle"/>
+        <field name="flatpak_id"/>
+        <field name="name"/>
+        <field name="summary" optional="show"/>
+        <field name="categories" optional="hide"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_bf_policy_app_form" model="ir.ui.view">
+    <field name="name">bf.policy.app.form</field>
+    <field name="model">bf.policy.app</field>
+    <field name="arch" type="xml">
+      <form string="Flatpak application">
+        <sheet>
+          <group>
+            <group>
+              <field name="flatpak_id" placeholder="com.brave.Browser"/>
+              <field name="name"/>
+              <field name="recommended"/>
+            </group>
+            <group>
+              <field name="categories"/>
+              <field name="active"/>
+            </group>
+          </group>
+          <field name="summary"/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_bf_policy_app_search" model="ir.ui.view">
+    <field name="name">bf.policy.app.search</field>
+    <field name="model">bf.policy.app</field>
+    <field name="arch" type="xml">
+      <search string="Flatpak applications">
+        <field name="flatpak_id"/>
+        <field name="name"/>
+        <field name="summary"/>
+        <field name="categories"/>
+        <!-- Filtre par defaut des champs de selection (voir le context des
+             vues org/user). Il se retire d'un clic pour choisir n'importe
+             quelle application de Flathub. -->
+        <filter name="recommended" string="Recommandées BF"
+                domain="[('recommended','=',True)]"/>
+        <group expand="0" string="Regrouper par">
+          <filter name="group_recommended" string="Recommandée"
+                  context="{'group_by': 'recommended'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_bf_policy_app" model="ir.actions.act_window">
+    <field name="name">Flatpak Catalogue</field>
+    <field name="res_model">bf.policy.app</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_bf_policy_app_search"/>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">Catalogue vide</p>
+      <p>
+        Lancer « Synchroniser Flathub » pour peupler le catalogue
+        (~3 300 applications, un seul téléchargement), puis cocher
+        « Recommandée BF » sur celles qu'on propose par défaut.
+      </p>
+    </field>
+  </record>
+
+  <record id="action_bf_policy_app_sync" model="ir.actions.server">
+    <field name="name">Synchroniser Flathub</field>
+    <field name="model_id" ref="model_bf_policy_app"/>
+    <field name="binding_model_id" ref="model_bf_policy_app"/>
+    <field name="binding_view_types">list</field>
+    <field name="state">code</field>
+    <field name="code">action = model.action_sync_flathub()</field>
+  </record>
+
+  <record id="view_bf_policy_user_list" model="ir.ui.view">
+    <field name="name">bf.policy.user.list</field>
+    <field name="model">bf.policy.user</field>
+    <field name="arch" type="xml">
+      <list string="User Overrides">
+        <field name="user_id"/>
+        <field name="company_id"/>
+        <field name="accent_color"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_bf_policy_user" model="ir.actions.act_window">
+    <field name="name">User Overrides</field>
+    <field name="res_model">bf.policy.user</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+  <!-- ================= Machines enrolees ================= -->
+  <record id="view_bf_policy_machine_list" model="ir.ui.view">
+    <field name="name">bf.policy.machine.list</field>
+    <field name="model">bf.policy.machine</field>
+    <field name="arch" type="xml">
+      <list string="Machines enrolees">
+        <field name="hostname"/>
+        <field name="user_id"/>
+        <field name="org_id"/>
+        <field name="last_seen"/>
+        <field name="sync_count"/>
+        <field name="disk_escrowed" widget="boolean_toggle" readonly="1"
+               optional="show"/>
+        <field name="os_version" optional="hide"/>
+        <field name="last_seen_ip" optional="hide"/>
+        <field name="enrolled_on" optional="hide"/>
+        <field name="disk_escrowed_on" optional="hide"/>
+        <field name="active" column_invisible="True"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_bf_policy_machine_form" model="ir.ui.view">
+    <field name="name">bf.policy.machine.form</field>
+    <field name="model">bf.policy.machine</field>
+    <field name="arch" type="xml">
+      <form string="Machine enrolee">
+        <header>
+          <button name="action_revoke" type="object" string="Revoquer"
+                  class="btn-danger" invisible="not active"
+                  confirm="Revoquer ce poste ? Il gardera sa derniere politique connue, mais ne pourra plus la re-tirer ni se re-enroler."/>
+          <button name="action_reveal_passphrase" type="object"
+                  string="Reveler la phrase de passe"
+                  groups="bf_policy.group_disk_escrow_read"
+                  invisible="not disk_escrowed"
+                  confirm="Cette lecture sera comptee, horodatee et attribuee a votre compte sur la fiche de ce poste. Continuer ?"/>
+          <button name="action_forget_passphrase" type="object"
+                  string="Retirer le sequestre" class="btn-secondary"
+                  groups="bf_policy.group_disk_escrow_read"
+                  invisible="not disk_escrowed"
+                  confirm="Retirer la phrase de passe du depot ? Elle est irrecuperable ensuite. A ne faire que si le disque a ete detruit ou reinitialise."/>
+        </header>
+        <sheet>
+          <widget name="web_ribbon" title="Revoquee" bg_color="text-bg-danger"
+                  invisible="active"/>
+          <div class="oe_title">
+            <h1><field name="hostname" readonly="1"/></h1>
+          </div>
+          <group>
+            <group string="Identite">
+              <field name="user_id" readonly="1"/>
+              <field name="org_id" readonly="1"/>
+              <field name="machine_uuid"/>
+              <field name="os_version"/>
+              <field name="active" invisible="1"/>
+            </group>
+            <group string="Synchronisation">
+              <field name="enrolled_on"/>
+              <field name="last_seen"/>
+              <field name="last_seen_ip"/>
+              <field name="sync_count"/>
+            </group>
+          </group>
+          <group string="Sequestre du disque">
+            <field name="disk_escrowed" readonly="1"/>
+            <field name="disk_escrowed_on" invisible="not disk_escrowed"/>
+            <field name="disk_reveal_count" invisible="not disk_escrowed"/>
+            <field name="disk_last_revealed_on"
+                   invisible="not disk_reveal_count"/>
+            <field name="disk_last_revealed_by"
+                   invisible="not disk_reveal_count"/>
+          </group>
+          <div class="text-muted mt-3">
+            Le jeton de cette machine n'est rendu qu'une fois, a l'enrolement :
+            Odoo n'en conserve que l'empreinte. Un poste qui doit retrouver un
+            jeton se reinstalle.
+          </div>
+          <div class="text-muted mt-2" invisible="disk_escrowed">
+            Aucune phrase de passe de disque en depot pour ce poste. Soit il a
+            ete installe avant l'activation du sequestre, soit le depot a echoue
+            et la phrase a ete tapee a la main : dans les deux cas, elle
+            n'existe que chez la personne qui l'a saisie. Le sequestre ne
+            s'ajoute pas apres coup, il faudrait reinstaller.
+          </div>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_bf_policy_machine_search" model="ir.ui.view">
+    <field name="name">bf.policy.machine.search</field>
+    <field name="model">bf.policy.machine</field>
+    <field name="arch" type="xml">
+      <search string="Machines enrolees">
+        <field name="hostname"/>
+        <field name="user_id"/>
+        <field name="machine_uuid"/>
+        <filter name="filter_active" string="Actives" domain="[('active','=',True)]"/>
+        <filter name="filter_revoked" string="Revoquees" domain="[('active','=',False)]"/>
+        <separator/>
+        <filter name="filter_never_seen" string="Jamais synchronisee"
+                domain="[('last_seen','=',False)]"/>
+        <group expand="0" string="Regrouper par">
+          <filter name="group_user" string="Usager" context="{'group_by':'user_id'}"/>
+          <filter name="group_org" string="Organisation" context="{'group_by':'org_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_bf_policy_machine" model="ir.actions.act_window">
+    <field name="name">Machines enrolees</field>
+    <field name="res_model">bf.policy.machine</field>
+    <field name="view_mode">list,form</field>
+    <field name="search_view_id" ref="view_bf_policy_machine_search"/>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">Aucune machine enrolee</p>
+      <p>
+        Une machine s'enrole toute seule pendant son installation zero-touch,
+        au moment ou l'operateur s'authentifie. Elle re-tire ensuite sa
+        politique une fois par jour, sans que personne n'ait a intervenir.
+      </p>
+    </field>
+  </record>
+
+  <!-- Ecran jetable de revelation d'une phrase de passe sequestree.
+       Pas de bouton « Copier » maison : le champ est selectionnable, et un
+       raccourci de copie qui passe par un widget custom serait un chemin de
+       plus par ou la valeur transite. -->
+  <record id="view_bf_policy_machine_reveal_form" model="ir.ui.view">
+    <field name="name">bf.policy.machine.reveal.form</field>
+    <field name="model">bf.policy.machine.reveal</field>
+    <field name="arch" type="xml">
+      <form string="Phrase de passe du disque">
+        <group>
+          <field name="machine_id" readonly="1"/>
+          <field name="passphrase" readonly="1" class="fw-bold"/>
+        </group>
+        <div class="alert alert-warning mt-2" role="alert">
+          Cette lecture vient d'etre inscrite sur la fiche du poste, avec
+          l'heure et votre nom. Refermez des que vous avez ce qu'il vous faut :
+          la valeur reste affichee tant que la fenetre est ouverte.
+        </div>
+        <footer>
+          <button string="Fermer" class="btn-primary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+</odoo>

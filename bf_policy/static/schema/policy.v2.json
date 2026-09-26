@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://symbifox.com/schema/bf-policy.v2.json",
+  "title": "Blue Fox OS policy payload",
+  "description": "Merged org-defaults + per-user overrides returned by GET /api/v1/policy/me. The Anaconda %pre script consumes install + policies; the firstboot welcome agent consumes session.",
+  "type": "object",
+  "required": [
+    "schema",
+    "org",
+    "user",
+    "install",
+    "policies",
+    "session"
+  ],
+  "properties": {
+    "schema": {
+      "const": "bf-policy/v2"
+    },
+    "org": {
+      "type": "object",
+      "required": [
+        "company"
+      ],
+      "properties": {
+        "company": {
+          "type": "string"
+        },
+        "domain": {
+          "type": "string"
+        }
+      }
+    },
+    "user": {
+      "type": "object",
+      "required": [
+        "login"
+      ],
+      "properties": {
+        "login": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "display_name": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": "string",
+          "description": "base64 PNG or JPEG, optional"
+        }
+      }
+    },
+    "install": {
+      "type": "object",
+      "required": [
+        "locale",
+        "keymap",
+        "timezone",
+        "hostname",
+        "root",
+        "login"
+      ],
+      "properties": {
+        "locale": {
+          "type": "string"
+        },
+        "keymap": {
+          "type": "string",
+          "description": "Console keymap (/etc/vconsole.conf). Does NOT set the desktop layout — see x_layout."
+        },
+        "x_layout": {
+          "type": "string",
+          "description": "Desktop (XKB) layout, e.g. 'ca'. Optional; absent means the installer falls back to keymap."
+        },
+        "x_variant": {
+          "type": "string",
+          "description": "XKB variant, e.g. 'multix' for CSA Canadian Multilingual. Optional."
+        },
+        "x_options": {
+          "type": "string",
+          "description": "Comma-separated XKB options, e.g. 'grp:alt_shift_toggle'. Optional."
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "hostname": {
+          "type": "string"
+        },
+        "root": {
+          "enum": [
+            "locked",
+            "enabled"
+          ]
+        },
+        "login": {
+          "type": "object",
+          "required": [
+            "mode"
+          ],
+          "properties": {
+            "mode": {
+              "enum": [
+                "local",
+                "sssd"
+              ]
+            },
+            "ldap_uri": {
+              "type": "string"
+            },
+            "ldap_base_dn": {
+              "type": "string"
+            },
+            "bind_dn": {
+              "type": "string"
+            },
+            "bind_password": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "policies": {
+      "type": "object",
+      "required": [
+        "offline_login",
+        "mfa_required",
+        "auto_lock_minutes"
+      ],
+      "properties": {
+        "offline_login": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "max_offline_days"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "max_offline_days": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "mfa_required": {
+          "type": "boolean"
+        },
+        "auto_lock_minutes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "session": {
+      "type": "object",
+      "required": [
+        "accent_color",
+        "mounts",
+        "pwas"
+      ],
+      "properties": {
+        "accent_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "wallpaper_url": {
+          "type": "string"
+        },
+        "mounts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "remote_path",
+              "mount_point"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "remote_path": {
+                "type": "string"
+              },
+              "mount_point": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "pwas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "url"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "pinned": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "clock": {
+          "type": "object",
+          "required": [
+            "format"
+          ],
+          "properties": {
+            "format": {
+              "type": "string",
+              "enum": [
+                "24h",
+                "12h"
+              ]
+            },
+            "second_timezone": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "apps": {
+      "type": "object",
+      "description": "Applications Flatpak choisies dans la politique. Traduites sur la machine en /etc/bluebuild/default-flatpaks/system/{install,remove}, que system-flatpak-setup combine avec la liste bakee dans l'image : (image install - etc remove) + etc install. Bloc additif : un agent anterieur l'ignore sans erreur, d'ou l'absence de bump de schema.",
+      "properties": {
+        "install": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "IDs Flatpak a installer EN PLUS de la base de l'image."
+        },
+        "remove": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "IDs Flatpak a retirer de la base de l'image. Le retrait l'emporte sur l'ajout en cas de conflit."
+        }
+      },
+      "required": [
+        "install",
+        "remove"
+      ]
+    }
+  }
+}

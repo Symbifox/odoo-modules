@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <!-- Catalogue de depart. noupdate : un responsable peut le
+       modifier sans qu'une montee du module l'ecrase. Aucune organisation
+       n'est cochee d'office : l'imposition se decide par locataire. -->
+  <record id="extension_symbifox_signets" model="bf.policy.extension">
+    <field name="name">Symbifox Signets</field>
+    <field name="extension_id">nhekfepjhpbbnpjocfhflekddijjfmjm</field>
+    <field name="source">symbifox</field>
+    <field name="managed_instance" eval="True"/>
+    <field name="recommended" eval="True"/>
+    <field name="note">Signets d'entreprise, d'equipe et perso (module de signets Symbifox)</field>
+  </record>
+  <record id="extension_symbifox_tokens" model="bf.policy.extension">
+    <field name="name">Symbifox Tokens</field>
+    <field name="extension_id">ccpcbipmbbnlmpoaailjgfffhbbpmecn</field>
+    <field name="source">symbifox</field>
+    <field name="recommended" eval="True"/>
+    <field name="note">Codes a usage unique (bf_otp). L'instance s'ajoute a la main, par securite.</field>
+  </record>
+  <record id="extension_bitwarden" model="bf.policy.extension">
+    <field name="name">Bitwarden</field>
+    <field name="extension_id">nngceckbapebfimnlniiiahkandclblb</field>
+    <field name="source">store</field>
+    <field name="recommended" eval="True"/>
+    <field name="note">Gestionnaire de mots de passe (Vaultwarden compatible)</field>
+  </record>
+</odoo>

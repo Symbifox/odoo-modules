@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <menuitem id="menu_bf_policy_root" name="Policy" sequence="90"
+            web_icon="bf_policy,static/description/icon.png"
+            groups="base.group_system"/>
+  <menuitem id="menu_bf_policy_org" name="Org Defaults"
+            parent="menu_bf_policy_root" action="action_bf_policy_org"
+            sequence="10"/>
+  <menuitem id="menu_bf_policy_user" name="User Overrides"
+            parent="menu_bf_policy_root" action="action_bf_policy_user"
+            sequence="20"/>
+  <menuitem id="menu_bf_policy_app" name="Flatpak Catalogue"
+            parent="menu_bf_policy_root" action="action_bf_policy_app"
+            sequence="30"/>
+  <menuitem id="menu_bf_policy_extension" name="Browser Extensions"
+            parent="menu_bf_policy_root" action="action_bf_policy_extension"
+            sequence="35"/>
+  <menuitem id="menu_bf_policy_machine" name="Machines"
+            parent="menu_bf_policy_root" action="action_bf_policy_machine"
+            sequence="40"/>
+</odoo>

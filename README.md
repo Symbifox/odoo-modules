@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**163 modules are BUSL-1.1.** The source is published and auditable, and **you
+**165 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -237,6 +237,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.0.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
 | `bf_persona` | Persona des contacts | 18.0.3.1.0 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
 | `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.0.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
+| `bf_policy` | Symbifox — Blue Fox OS Policy | 18.0.2.11.0 | BUSL-1.1 | Manage Blue Fox OS workstations from Odoo: install, sign-in, disk encryption, apps and browser policy served to each machine, with machine enrolment and disk-passphrase escrow |
 | `bf_process` | Cartographie de processus | 18.0.5.0.4 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.5 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |
@@ -288,6 +289,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_training_sign` | Registre de formation : accusé signé par module | 18.0.1.0.0 | BUSL-1.1 | Lire une politique et le confirmer par écrit devient une ligne du registre, datée et rattachée à la version lue |
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.1 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
+| `bf_zerotouch_install` | Symbifox — Blue Fox OS Zero-Touch Install | 18.0.4.0.2 | BUSL-1.1 | The kickstart a Blue Fox OS installer fetches from its boot menu, rendered from the company's policy, with an OIDC device flow approved on a second device |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.22.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.19.0 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
@@ -321,7 +323,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **163 modules: BUSL-1.1.** Production use for your own internal business
+- **165 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

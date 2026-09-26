@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!--
+    Droit de lecture des phrases de passe de disque sequestrees.
+
+    ⚠️ VOLONTAIREMENT PAS IMPLIQUE PAR base.group_system.
+
+    Tout le reste du module est reserve aux administrateurs, et c'est tres bien :
+    la politique d'un parc EST une tache d'administration. Une phrase de passe de
+    disque, non. La confondre avec le reste ferait de « qui peut administrer
+    Odoo » un synonyme de « qui peut ouvrir n'importe quel portable du parc »,
+    ce que personne n'a decide et que personne ne verrait passer.
+
+    Corollaire assume : apres l'installation du module, PERSONNE ne porte ce
+    droit, pas meme l'administrateur qui vient de l'installer. Il faut se
+    l'attribuer explicitement, et ce geste-la se voit dans le journal d'audit
+    d'Odoo. C'est le comportement voulu, pas un oubli de configuration.
+  -->
+  <record id="group_disk_escrow_read" model="res.groups">
+    <field name="name">Blue Fox OS — Peut reveler les phrases de passe de disque</field>
+    <field name="comment">Autorise la lecture des phrases de passe de disque mises en depot a l'installation, ainsi que leur retrait. Chaque lecture est comptee et horodatee sur la fiche de la machine. Ce droit ne decoule pas de l'administration d'Odoo : il s'attribue a la piece.</field>
+  </record>
+
+</odoo>

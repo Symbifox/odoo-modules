@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_policy_org,bf.policy.org,model_bf_policy_org,base.group_system,1,1,1,1
+access_bf_policy_user,bf.policy.user,model_bf_policy_user,base.group_system,1,1,1,1
+access_bf_policy_mount,bf.policy.mount,model_bf_policy_mount,base.group_system,1,1,1,1
+access_bf_policy_pwa,bf.policy.pwa,model_bf_policy_pwa,base.group_system,1,1,1,1
+access_bf_policy_app,bf.policy.app,model_bf_policy_app,base.group_system,1,1,1,1
+access_bf_policy_extension,bf.policy.extension,model_bf_policy_extension,base.group_system,1,1,1,1
+access_bf_policy_machine,bf.policy.machine,model_bf_policy_machine,base.group_system,1,1,1,1
+access_bf_policy_machine_reveal,bf.policy.machine.reveal,model_bf_policy_machine_reveal,bf_policy.group_disk_escrow_read,1,0,0,0

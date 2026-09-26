@@ -1,0 +1,414 @@
+# Blue Fox OS zero-touch kickstart template.
+# Canonical source. Renderers : an offline renderer in the Blue Fox OS
+# repository + the bf_zerotouch_install Odoo controller. See those for the list
+# of supported placeholders and tenant config.
+
+# Tenant: {{TENANT_NAME}}
+# Slug: {{TENANT_SLUG}}
+# Generated: {{GENERATED_AT}}
+
+# Pull the per-tenant OCI image directly. Anaconda's bootc support reads
+# ostreecontainer and pulls + commits in one shot, no post-install rebase
+# needed. Kickstart syntax has no line continuation — keep on one line.
+ostreecontainer --url={{OCI_IMAGE_REF}} --transport=registry --no-signature-verification
+
+# Installer-environment locale + keyboard (fallback defaults). The *installed*
+# system's locale / keymap / timezone / hostname / login come from the policy
+# JSON applied in %post (bfos_apply.py) ; these values also seed the %pre
+# fallback if the device flow can't reach the org.
+lang {{LANG}} --addsupport={{ADDSUPPORT}}
+keyboard --vckeymap={{KEYBOARD_VC}} --xlayouts={{KEYBOARD_X}} --switch=grp:alt_shift_toggle
+
+# Timezone (installer default ; policy may override on the installed system).
+timezone {{TIMEZONE}} --utc
+
+# Network : DHCP. Anaconda's dracut already brought the link up to fetch this
+# kickstart, so DHCP is known good.
+network --bootproto=dhcp --activate
+
+# Comptes : root verrouille. La politique peut le re-affirmer (mode 'locked')
+# ou, en mode 'enabled', le laisser tel quel. Jamais de credentials hardcoded.
+rootpw --lock
+
+# Compte de secours local, ecrit par le %pre (voir le filet plus bas).
+#
+# POURQUOI IL EXISTE. En login_mode=sssd le compte de siege vient de l'annuaire,
+# et une machine qui ne le joint pas a son PREMIER demarrage n'a AUCUNE porte
+# d'entree : le cache hors ligne de sssd ne sert qu'apres une premiere connexion
+# en ligne. Un portable en avion, un avant-poste en panne, et la machine se
+# reinstalle. Ce compte est cette porte.
+#
+# ⚠️ Son mot de passe est la PHRASE DU DISQUE, donc
+# deja sequestree dans Odoo, deja revelable par le seul groupe qui en a le
+# droit, et deja tracee nominativement. Un seul secret pour deux usages :
+# quiconque peut reveler la phrase peut de toute facon ouvrir la machine.
+%include /tmp/bfos-compte.ks
+
+# Disque : btrfs sur LUKS.
+#
+# La ligne autopart n'est PAS ecrite ici : elle vient d'un fichier que le %pre
+# depose. Deux formes possibles, et une seule difference entre elles :
+#   - sans sequestre, la forme historique, et Anaconda demande la phrase ;
+#   - avec sequestre, la meme ligne plus --passphrase, une phrase tiree par la
+#     machine et deja deposee dans Odoo au moment de l'enrolement.
+#
+# ⚠️ Le %pre ecrit la forme SANS phrase en tout premier, avant de tenter quoi
+# que ce soit. Il ne la remplace qu'une fois qu'Odoo a CONFIRME detenir la
+# phrase. Toute panne — reseau, authentification, sequestre non configure,
+# depot refuse — laisse donc le fichier tel quel et fait retomber l'install sur
+# la saisie manuelle. C'est ce qui garantit qu'aucun disque ne se ferme sur une
+# phrase que personne ne possede.
+zerombr
+clearpart --all --initlabel
+%include /tmp/bfos-autopart.ks
+
+# Bootloader : EFI vs BIOS auto-detect.
+# `rhgb quiet splash` : sans ces kargs, Plymouth ne demarre PAS le splash de
+# boot — on voit le journal brut, alors que le splash d'arret s'affiche quand
+# meme (il ne depend pas de rhgb). C'etait la derive entre ce template et
+# le kickstart de l'ISO locale, qui les porte : une install zero-touch
+# sortait sans splash de boot, une install par ISO locale l'avait. Garder les
+# deux kickstarts alignes.
+bootloader --timeout=3 --append="rhgb quiet splash"
+
+# Securite.
+selinux --enforcing
+firewall --enabled
+
+# Reboot apres install.
+reboot --eject
+
+# ---------------------------------------------------------------------------
+# %pre : OIDC device-flow authentication + policy fetch, BEFORE the install is
+# underway. The operator authorizes on a second device (2FA preserved), then we
+# pull the org's policy JSON and stage it at /tmp/bfos-provision.json. Never
+# aborts the install: bfos_provision.py writes an org-default fallback on any
+# failure. Script is embedded verbatim from install/bfos_provision.py.
+# ---------------------------------------------------------------------------
+%pre --interpreter=/bin/bash --log=/tmp/bfos-provision-pre.log
+export BFOS_OIDC_DEVICE_URL="{{AUTHENTIK_DEVICE_URL}}"
+export BFOS_OIDC_TOKEN_URL="{{AUTHENTIK_TOKEN_URL}}"
+export BFOS_OIDC_CLIENT_ID="{{OIDC_CLIENT_ID}}"
+export BFOS_POLICY_URL="{{POLICY_URL}}"
+export BFOS_FALLBACK_LANG="{{LANG}}"
+export BFOS_FALLBACK_KEYMAP="{{KEYBOARD_VC}}"
+export BFOS_FALLBACK_TIMEZONE="{{TIMEZONE}}"
+# La ligne autopart par defaut, AVANT tout le reste : c'est le filet. Si la
+# suite de ce bloc meurt pour n'importe quelle raison, Anaconda lit ce
+# fichier-ci et demande la phrase de passe comme il l'a toujours fait.
+# bfos_provision.py ne le reecrit qu'apres confirmation d'Odoo.
+# ⚠️ CE FILET A CHANGE DE NATURE, ET C'EST DELIBERE.
+#
+# Il portait `autopart --type=btrfs --encrypted --nohome`, c'est-a-dire
+# EFFACER LE DISQUE. Sur une machine vierge c'etait le bon defaut. Sur une
+# machine qui porte deja Windows ou un autre Linux, c'etait une perte de
+# donnees des que le %pre mourait en chemin — et le %pre a le droit de mourir,
+# c'est tout l'interet d'avoir un filet. Ce filet n'en etait un que pour la
+# moitie des machines.
+#
+# Le defaut est donc renverse : AUCUNE ligne de partitionnement. Anaconda
+# ouvre son volet et demande. C'est le seul etat qui ne peut rien detruire.
+# bfos_provision.py le remplace apres avoir INSPECTE les disques : disque
+# vierge -> autopart comme avant ; systeme present avec de la place ->
+# retrecissement et cohabitation ; doute quelconque -> on laisse ceci.
+#
+# CE QUE CA COUTE, dit franchement : si le %pre meurt sur une machine vierge,
+# l'installation n'est plus zero-touche, elle attend quelqu'un. On echange de
+# la robustesse d'automatisation contre l'impossibilite d'effacer le systeme
+# de quelqu'un. Une question posee se rattrape ; un disque efface, non.
+# Le texte evite volontairement tout caractere de section : ce fichier est
+# relu par le parseur de kickstart, et un mot-clef de section dans un
+# commentaire est un pari inutile a prendre.
+printf '%s\n' '# Partitionnement non decide : la preparation a echoue avant cette etape.' \
+    > /tmp/bfos-autopart.ks
+chmod 600 /tmp/bfos-autopart.ks
+# Meme filet pour le compte de secours. Anaconda REFUSE de commencer quand root
+# est verrouille et qu'aucun usager n'existe : sans cette ligne, il ouvre son
+# volet de creation d'usager et attend quelqu'un. C'est ce qui arrivait,
+# et c'est ce qui faisait creer un compte local hors annuaire.
+# La forme par defaut est VERROUILLEE : elle satisfait Anaconda sans ouvrir
+# quoi que ce soit. bfos_provision.py ne lui donne un mot de passe qu'une fois
+# la phrase du disque confirmee par Odoo, donc revelable et tracee.
+printf '%s\n' 'user --name=bfos-secours --groups=wheel --lock' > /tmp/bfos-compte.ks
+chmod 600 /tmp/bfos-compte.ks
+cat > /tmp/bfos_provision.py <<'BFOSPROVISIONEOF'
+{{PROVISION_SCRIPT}}
+BFOSPROVISIONEOF
+python3 /tmp/bfos_provision.py || true
+%end
+
+# ---------------------------------------------------------------------------
+# %post --nochroot : copy the staged policy JSON into the freshly installed
+# system so the chrooted %post and the firstboot agent can read it. Same for
+# the machine secret written by the enrolment, which is what lets
+# bluefox-policy-sync.timer re-fetch the policy later with nobody present.
+# Absent when the enrolment was skipped or failed: the install proceeds, the
+# machine simply won't follow later policy changes on its own.
+# ---------------------------------------------------------------------------
+%post --nochroot --log=/tmp/bfos-provision-copy.log
+for ROOT in /mnt/sysroot /mnt/sysimage; do
+  if [ -d "$ROOT" ]; then
+    mkdir -p "$ROOT/var/lib/bluefox-welcome"
+    cp /tmp/bfos-provision.json "$ROOT/var/lib/bluefox-welcome/provisioning.json" 2>/dev/null || true
+    chmod 600 "$ROOT/var/lib/bluefox-welcome/provisioning.json" 2>/dev/null || true
+    if [ -f /tmp/bfos-machine.json ]; then
+      mkdir -p "$ROOT/etc/bluefox"
+      chmod 700 "$ROOT/etc/bluefox" 2>/dev/null || true
+      cp /tmp/bfos-machine.json "$ROOT/etc/bluefox/machine.json" 2>/dev/null || true
+      # 0600 root : c'est un secret. Le poser avant tout autre traitement.
+      chmod 600 "$ROOT/etc/bluefox/machine.json" 2>/dev/null || true
+    fi
+
+    # --- Identifiants Nextcloud obtenus en %pre ----------------------------
+    # Frappes pendant que le porteur de l'operateur valait encore, pour que le
+    # premier demarrage n'ait pas a redemander un SSO a la personne qui vient
+    # d'autoriser l'installation. Absent = degradation prevue : l'agent
+    # d'accueil retombe sur le parcours navigateur d'avant.
+    #
+    # 0600 root ICI, puis remis a l'usager du siege au premier demarrage par
+    # bluefox-seat-credentials.service : l'uid vient de l'annuaire et n'est pas
+    # connaissable a cet instant. L'agent tourne EN TANT QUE l'usager ; un
+    # 0644 le rendrait lisible par n'importe quel compte de la machine.
+    if [ -f /tmp/bfos-nc-credentials.json ]; then
+      cp /tmp/bfos-nc-credentials.json \
+         "$ROOT/var/lib/bluefox-welcome/nc-credentials.json" 2>/dev/null || true
+      chmod 600 "$ROOT/var/lib/bluefox-welcome/nc-credentials.json" 2>/dev/null || true
+    fi
+
+    # --- L'etat de l'installateur, grave dans le systeme installe ----------
+    # ⚠️ CES LECTURES NE SE FONT QU'ICI. Le %pre a tourne, le systeme n'a pas
+    # encore redemarre : c'est le seul instant ou le swap de l'installateur et
+    # les droits de /tmp/bfos-autopart.ks sont observables. Elles exigeaient
+    # jusqu'ici d'attraper Ctrl-Alt-F2 a la main avant le redemarrage — une
+    # fenetre unique, facile a rater, et dont l'oubli coute une
+    # reinstallation complete pour la seule raison qu'on n'etait pas devant
+    # l'ecran au bon moment. On la grave donc, et elle se relit a froid.
+    #
+    # ⚠️ AUCUN SECRET ICI. On note la PRESENCE du motif --passphrase=, jamais
+    # sa valeur : ce fichier atterrit dans /var/log/anaconda, qui n'est pas
+    # protege, et il est fait pour etre recopie tel quel dans un chatter.
+    BFL4="$ROOT/var/log/anaconda/bfosl4-installateur.log"
+    mkdir -p "$ROOT/var/log/anaconda" 2>/dev/null || true
+    {
+      echo "=== Etat de l'installateur, lu pendant l'installation ==="
+      echo "date : $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      echo
+      echo "--- surface 5 : swap actif pendant le %pre ---"
+      echo "\$ swapon --show"
+      swapon --show 2>&1 || echo "(swapon indisponible)"
+      echo "\$ cat /proc/swaps"
+      cat /proc/swaps 2>&1 || true
+      echo "  [COMMENT LIRE : la question n'est pas"
+      echo "   « y a-t-il du swap » mais « une page peut-elle atterrir sur un"
+      echo "   support PERSISTANT non chiffre ». Rien du tout, ou uniquement"
+      echo "   /dev/zram*, ferme la surface : zram est de la RAM compressee,"
+      echo "   volatile, elle ne touche aucun disque. Une ligne nommant un"
+      echo "   /dev/vd*, /dev/sd* ou /dev/nvme* l'ouvre, elle.]"
+      echo
+      echo "--- surface 3 : droits de /tmp/bfos-autopart.ks ---"
+      ls -l /tmp/bfos-autopart.ks 2>&1 || echo "(absent)"
+      echo "  [attendu : -rw------- root root, cree en 0600 par os.open]"
+      if [ -f /tmp/bfos-autopart.ks ]; then
+        if grep -q -- '--passphrase=' /tmp/bfos-autopart.ks 2>/dev/null; then
+          echo "  la ligne autopart PORTE une phrase : le sequestre a fourni une valeur"
+        else
+          echo "  la ligne autopart NE PORTE PAS de phrase : c'est le repli, donc"
+          echo "  Anaconda a demande la phrase a l'ecran et le sequestre n'a pas joue."
+        fi
+      fi
+      echo
+      echo "--- surface 2 : phrase en argument de commande ---"
+      ps auxww 2>/dev/null | grep -i cryptsetup | grep -v grep \
+        || echo "  (aucun cryptsetup dans ps : conforme, blivet passe par la librairie)"
+      echo
+      echo "=== fin ==="
+    } > "$BFL4" 2>&1 || true
+    chmod 644 "$BFL4" 2>/dev/null || true
+
+    # --- ET UNE COPIE HORS LUKS --------------------------------------------
+    # ⚠️ La gravure ci-dessus vit dans /var/log/anaconda, donc SOUS le
+    # chiffrement. Le jour ou une phrase sequestree n'ouvre pas le disque, la
+    # lecture existe mais reste illisible precisement dans le cas
+    # ou elle sert. Une lecture qu'on ne peut consulter que si tout va bien ne
+    # sert a rien.
+    #
+    # La partition EFI n'est pas chiffree, elle. On y depose la meme gravure et
+    # le journal du %pre. Ni l'un ni l'autre ne porte de secret : la gravure
+    # note la PRESENCE du motif --passphrase=, et aucun `out()` de
+    # bfos_provision.py n'interpole la phrase — ce sont des messages a
+    # l'operateur, pas la valeur. Le journal du %pre dit quelle branche le
+    # sequestre a prise, ce qui est exactement la question ouverte.
+    if [ -d "$ROOT/boot/efi" ]; then
+      cp "$BFL4" "$ROOT/boot/efi/bfosl4-installateur.log" 2>/dev/null || true
+      cp /tmp/bfos-provision-pre.log \
+         "$ROOT/boot/efi/bfosl4-provision-pre.log" 2>/dev/null || true
+    fi
+
+    # --- vconsole.keymap= VIDE dans l'entree BLS -----------------------------
+    # Constate sur une installation, lue a froid sur /boot :
+    #
+    #   options ... rhgb quiet root=UUID=... vconsole.keymap= rootflags=...
+    #
+    # Le kickstart pose pourtant `keyboard --vckeymap={{KEYBOARD_VC}}`. Anaconda
+    # ecrit quand meme la cle vide, et l'initramfs ne porte AUCUN
+    # /etc/vconsole.conf (verifie par lsinitrd) : la console demarre donc sur la
+    # table US integree au noyau, pas sur le clavier de l'organisation. Ca vaut
+    # pour l'invite LUKS et pour le shell d'urgence, c'est-a-dire exactement les
+    # deux moments ou on ne peut pas se rattraper autrement.
+    #
+    # ⚠️ On corrige l'ENTREE, pas `bootloader --append`. Dans l'entree observee,
+    # les arguments d'Anaconda arrivent APRES ceux de --append : sa cle vide
+    # gagnerait, puisque systemd retient la derniere occurrence.
+    for BLS in "$ROOT"/boot/loader/entries/*.conf; do
+      [ -f "$BLS" ] || continue
+      sed -i -E 's/(^|[[:space:]])vconsole\.keymap=([[:space:]]|$)/\1vconsole.keymap={{KEYBOARD_VC}}\2/g' "$BLS" 2>/dev/null || true
+      # Copie a froid : les kargs d'une installation se relisent alors sans
+      # ouvrir le disque, comme la gravure ci-dessus.
+      cp "$BLS" "$ROOT/boot/efi/bfosl4-bls-$(basename "$BLS")" 2>/dev/null || true
+    done
+  fi
+done
+
+# ---------------------------------------------------------------------------
+# Enrolement TPM2 du volume LUKS, decide par le %pre.
+#
+# POURQUOI ICI ET PAS AU PREMIER DEMARRAGE
+# bluefox-tpm-enroll.service s'ordonnait sur graphical.target, atteint quand
+# SDDM demarre et NON quand une session existe : systemd-ask-password n'avait
+# alors aucun agent KDE pour afficher son invite, elle partait sur une console
+# que personne ne regarde, et l'enrolement n'avait jamais lieu.
+#
+# Le faire ici est desormais possible, et ca ne l'etait pas avant le sequestre :
+# systemd-cryptenroll exige la phrase EXISTANTE, et c'est l'installateur qui la
+# tire depuis le sequestre. Elle est dans /tmp/bfos-autopart.ks, en 0600, dans le
+# systeme de fichiers de l'installateur — d'ou --nochroot.
+#
+# ⚠️ La phrase reste enrolee comme methode de secours : --tpm2-device AJOUTE un
+# emplacement de cle, il n'en retire jamais. Une machine dont le Secure Boot
+# change redemande simplement sa phrase.
+# ---------------------------------------------------------------------------
+if [ -f /tmp/bfos-tpm-enrol ] && [ -f /tmp/bfos-autopart.ks ]; then
+  for ROOT in /mnt/sysroot /mnt/sysimage; do
+    [ -d "$ROOT" ] || continue
+    GRAVURE="$ROOT/var/log/anaconda/bfosl4-installateur.log"
+    mkdir -p "$(dirname "$GRAVURE")" 2>/dev/null || true
+    PHRASE=$(sed -n 's/.*--passphrase=\([^ ][^ ]*\).*/\1/p' /tmp/bfos-autopart.ks)
+    if [ -z "$PHRASE" ]; then
+      echo "--- TPM2 : pas de phrase dans la ligne autopart, rien a enroler ---" >> "$GRAVURE"
+      break
+    fi
+    # Le volume, lu dans le crypttab du systeme installe : 2e champ, en general
+    # UUID=<...>. On ne devine pas le nom du peripherique.
+    SRC=$(awk '$0 !~ /^[[:space:]]*#/ && NF >= 2 {print $2; exit}' "$ROOT/etc/crypttab" 2>/dev/null)
+    case "$SRC" in
+      UUID=*) DEV="/dev/disk/by-uuid/${SRC#UUID=}" ;;
+      /dev/*) DEV="$SRC" ;;
+      *)      DEV="" ;;
+    esac
+    if [ -z "$DEV" ] || [ ! -e "$DEV" ]; then
+      echo "--- TPM2 : volume introuvable (crypttab dit '$SRC') ---" >> "$GRAVURE"
+      break
+    fi
+    # Les PCR viennent de la politique ; 7 = etat du Secure Boot, le defaut.
+    PCRS=$(python3 -c "import json,sys;d=json.load(open('/tmp/bfos-provision.json'));print((((d.get('policies') or {}).get('tpm_autounlock') or {}).get('pcrs')) or '7')" 2>/dev/null || echo 7)
+    if PASSWORD="$PHRASE" systemd-cryptenroll --tpm2-device=auto \
+           --tpm2-pcrs="$PCRS" "$DEV" >> "$GRAVURE" 2>&1; then
+      # Sans cette option, l'emplacement de cle existe et l'initramfs ne s'en
+      # sert pas : la machine redemanderait sa phrase malgre l'enrolement.
+      awk 'BEGIN{OFS="\t"} $0 ~ /^[[:space:]]*#/ || NF < 3 {print; next}
+           {if ($4 == "") $4 = "tpm2-device=auto"; else $4 = $4 ",tpm2-device=auto"; print}' \
+          "$ROOT/etc/crypttab" > "$ROOT/etc/crypttab.tpm" 2>/dev/null \
+          && mv "$ROOT/etc/crypttab.tpm" "$ROOT/etc/crypttab"
+      touch "$ROOT/var/lib/bluefox-welcome/tpm-enrolled" 2>/dev/null || true
+      echo "--- TPM2 : volume enrole sur PCR $PCRS, crypttab mis a jour ---" >> "$GRAVURE"
+    else
+      echo "--- TPM2 : enrolement REFUSE (voir ci-dessus) ; la phrase reste la seule cle ---" >> "$GRAVURE"
+    fi
+    break
+  done
+fi
+
+%end
+
+# ---------------------------------------------------------------------------
+# %post (chroot) : auto-updates, tenant.json (back-compat), apply the policy
+# install block (hostname / locale / timezone / sssd login / root), rebase
+# sentinel. bfos_apply.py is embedded verbatim from install/bfos_apply.py.
+# ---------------------------------------------------------------------------
+%post --erroronfail --log=/var/log/bf-zerotouch-post.log
+# Activer les MAJ rpm-ostree automatiques.
+systemctl enable rpm-ostreed-automatic.timer
+
+# tenant.json : conserve pour compat ; provisioning.json (policy) prime.
+mkdir -p /var/lib/bluefox-welcome
+cat > /var/lib/bluefox-welcome/tenant.json <<'JSON'
+{
+  "slug": "{{TENANT_SLUG}}",
+  "tenant_name": "{{TENANT_NAME}}",
+  "tenant_domain": "{{TENANT_DOMAIN}}",
+  "image_ref": "{{OCI_IMAGE_REF}}",
+  "provisioned_via": "zerotouch-v1",
+  "provisioned_at": "{{GENERATED_AT}}"
+}
+JSON
+
+# Apply the policy install block if a provisioning.json was staged.
+cat > /tmp/bfos_apply.py <<'BFOSAPPLYEOF'
+{{APPLY_SCRIPT}}
+BFOSAPPLYEOF
+if [ -f /var/lib/bluefox-welcome/provisioning.json ]; then
+  python3 /tmp/bfos_apply.py /var/lib/bluefox-welcome/provisioning.json || true
+fi
+
+# Sentinel du rebase de premier demarrage.
+# ⚠️ CORRIGE : ce commentaire disait que « le welcome agent
+# verifie qu'il est sur l'image attendue, si oui bluefox-rebase est un no-op ».
+# Rien ne faisait cette verification. Une installation zero-touch tirant deja
+# son image du registre, le rebase la repointait sur elle-meme, en
+# ostree-unverified-image, et redemarrait la machine pour rien. C'est
+# desormais bluefox-rebase lui-meme qui compare avant d'agir.
+touch /var/lib/bluefox-welcome/needs-rebase
+%end
+
+# ---------------------------------------------------------------------------
+# Applications installees PENDANT l'installation
+# ---------------------------------------------------------------------------
+# Exigence de depart : les installations doivent etre completees au premier
+# demarrage. Jusqu'ici les Flatpak arrivaient APRES le demarrage, par le
+# minuteur de system-flatpak-setup, en arriere-plan et sans aucun signe
+# visible. Un usager qui ouvrait sa session tout de suite trouvait une machine
+# sans navigateur, sans Nextcloud, sans Bitwarden — et concluait a une panne.
+#
+# On appelle ICI le meme script que le demarrage, plutot que de reimplementer
+# l'installation : meme liste (celle de l'image combinee a celle de la
+# politique, que bfos_apply.py vient d'ecrire dans /etc), meme depot Flathub
+# (preconfigure dans /etc/flatpak/remotes.d/), memes retraits.
+#
+# ⚠️ POURQUOI UN %post A PART, SANS --erroronfail. Le bloc precedent echoue
+# l'installation entiere sur la moindre erreur. Un telechargement Flathub qui
+# rate — reseau lent, Flathub indisponible — ne doit JAMAIS couter une
+# machine : le script est idempotent (il n'installe que ce qui manque, par
+# `comm -23` entre la liste voulue et `flatpak list`), donc le minuteur au
+# demarrage rattrape exactement ce qui n'est pas passe ici. Ce bloc accelere ;
+# il ne remplace pas le filet.
+#
+# Plafonne a 30 minutes : 1 a 2 Go de runtimes et d'applications au premier
+# passage. Au-dela on rend la main a Anaconda plutot que de le figer.
+%post --log=/var/log/bfos-flatpaks-install.log
+echo "[bfos-flatpaks] debut $(date -Is)"
+if [ -x /usr/bin/system-flatpak-setup ]; then
+  # ⚠️ Le code de sortie du script amont ne dit rien : il sort en succes meme
+  # quand `flatpak install` echoue (constate a l'essai). On verifie le
+  # resultat avant d'ecrire « termine ».
+  timeout 1800 /usr/bin/system-flatpak-setup
+  if [ ! -x /usr/libexec/bluefox-flatpaks-verify ] || /usr/libexec/bluefox-flatpaks-verify; then
+    echo "[bfos-flatpaks] termine"
+  else
+    echo "[bfos-flatpaks] incomplet : bluefox-flatpaks-verify.timer reprendra ce qui manque, toutes les heures"
+  fi
+else
+  echo "[bfos-flatpaks] system-flatpak-setup absent de l'image : rien a faire ici"
+fi
+flatpak list --system --app --columns=application 2>/dev/null | sed 's/^/[bfos-flatpaks] installe : /'
+echo "[bfos-flatpaks] fin $(date -Is)"
+%end

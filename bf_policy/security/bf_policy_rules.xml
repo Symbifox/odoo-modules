@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!--
+    Un ecran de revelation n'est lisible que par la personne qui l'a ouvert.
+
+    Les ecrans ne se creent que par le bouton de la fiche du poste, qui compte
+    et attribue chaque lecture ; le droit d'acces du groupe dedie est en
+    lecture seule. Cette regle ajoute qu'un autre porteur du meme droit ne
+    relit pas l'ecran d'un collegue en devinant son identifiant : la lecture
+    se ferait alors hors comptage, sous le nom de quelqu'un d'autre.
+  -->
+  <record id="rule_bf_policy_machine_reveal_own" model="ir.rule">
+    <field name="name">bf.policy.machine.reveal : ecrans ouverts par soi</field>
+    <field name="model_id" ref="model_bf_policy_machine_reveal"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('bf_policy.group_disk_escrow_read'))]"/>
+  </record>
+
+</odoo>
