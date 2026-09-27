@@ -116,6 +116,24 @@
             },
             "bind_password": {
               "type": "string"
+            },
+            "allow_groups": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Shared seat: directory groups allowed to log in (sssd simple_allow_groups)."
+            },
+            "allow_users": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Shared seat: borrowers allowed to log in (sssd simple_allow_users)."
+            },
+            "deny_if_empty": {
+              "type": "boolean",
+              "description": "Shared seat: when both allow lists are empty, nobody but the break-glass account logs in."
             }
           }
         }
@@ -261,6 +279,37 @@
         "install",
         "remove"
       ]
+    },
+    "seat": {
+      "type": "object",
+      "description": "Present only on a shared seat (18.0.2.12.0). The user block is then empty.",
+      "required": [
+        "profile",
+        "kind"
+      ],
+      "properties": {
+        "profile": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "lab",
+            "loan"
+          ]
+        },
+        "ephemeral_home": {
+          "type": "boolean"
+        },
+        "borrowers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     }
   }
 }

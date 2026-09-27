@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_school_account_user,bf.school.account staff,model_bf_school_account,bf_school_core.group_school_user,1,0,0,0
+access_school_account_manager,bf.school.account administration,model_bf_school_account,bf_school_core.group_school_manager,1,1,1,0
+access_school_device_loan_user,bf.school.device.loan staff,model_bf_school_device_loan,bf_school_core.group_school_user,1,0,0,0
+access_school_device_loan_manager,bf.school.device.loan administration,model_bf_school_device_loan,bf_school_core.group_school_manager,1,1,1,1
+access_school_account_password_manager,bf.school.account.password administration,model_bf_school_account_password,bf_school_core.group_school_manager,1,1,1,0
+access_policy_machine_school_manager,bf.policy.machine administration,bf_policy.model_bf_policy_machine,bf_school_core.group_school_manager,1,0,0,0
+access_policy_seat_profile_school_manager,bf.policy.seat.profile administration,bf_policy.model_bf_policy_seat_profile,bf_school_core.group_school_manager,1,0,0,0

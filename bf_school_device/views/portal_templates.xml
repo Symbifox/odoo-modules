@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- On each child's card: the computer the school lent them, and when it comes back. -->
+    <template id="portal_my_school_device" name="School: lent computer on the child's card"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_child')]/div[hasclass('card-body')]" position="inside">
+            <div t-foreach="card.get('loans', [])" t-as="loan" class="mt-3 o_school_device_loan">
+                <i class="fa fa-laptop me-1" title="Computer"/>
+                <span>Computer lent by the school: <strong t-out="loan.machine_id.hostname"/></span>
+                <div class="text-muted small">
+                    Lent on <t t-out="loan.date_out" t-options="{'widget': 'date'}"/>,
+                    due back on <t t-out="loan.date_due" t-options="{'widget': 'date'}"/>.
+                    <span t-if="loan.is_overdue" class="badge text-bg-danger ms-1">Overdue</span>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>

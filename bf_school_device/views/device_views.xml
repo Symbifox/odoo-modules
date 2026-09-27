@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- School: the directory and its buttons -->
+    <record id="bf_school_view_form_device" model="ir.ui.view">
+        <field name="name">bf.school.form.device</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_device_accounts" type="object" class="oe_stat_button"
+                        icon="fa-id-card-o" groups="bf_school_core.group_school_manager">
+                    <field name="device_account_count" widget="statinfo" string="Accounts"/>
+                </button>
+                <button name="action_view_device_loans" type="object" class="oe_stat_button"
+                        icon="fa-laptop" groups="bf_school_core.group_school_manager">
+                    <field name="device_loan_count" widget="statinfo" string="Lent"/>
+                </button>
+            </div>
+            <notebook position="inside">
+                <page string="Computers" name="devices" groups="bf_school_core.group_school_manager">
+                    <group>
+                        <group string="Directory">
+                            <field name="directory_url" placeholder="https://auth.school.example" groups="base.group_system"/>
+                            <field name="directory_token" password="True" groups="base.group_system"
+                                   placeholder="Paste a new token to replace the current one"/>
+                            <field name="directory_token_set" readonly="1"/>
+                            <field name="directory_student_group" groups="base.group_system"/>
+                            <field name="directory_user_path" groups="base.group_system"/>
+                        </group>
+                        <group string="Student accounts">
+                            <div colspan="2" class="text-muted">
+                                One account per student enrolled this year opens a session
+                                on the school's Blue Fox OS computers. The accounts follow
+                                the enrolments by themselves: a student who leaves is
+                                suspended at the next synchronisation.
+                            </div>
+                            <button name="action_school_create_accounts" type="object"
+                                    string="Create this year's accounts" class="btn-primary"
+                                    colspan="2"/>
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Student accounts -->
+    <record id="bf_school_account_view_list" model="ir.ui.view">
+        <field name="name">bf.school.account.list</field>
+        <field name="model">bf.school.account</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'suspended'" decoration-danger="sync_error">
+                <field name="username"/>
+                <field name="student_id"/>
+                <field name="school_id" optional="hide"/>
+                <field name="directory_group_names" optional="show"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'"/>
+                <field name="sync_needed" optional="show"/>
+                <field name="last_sync" optional="hide"/>
+                <field name="sync_error" optional="show"/>
+                <field name="password_set_on" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_account_view_form" model="ir.ui.view">
+        <field name="name">bf.school.account.form</field>
+        <field name="model">bf.school.account</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_new_password" type="object" string="New password"
+                            class="btn-primary" invisible="state != 'active'"
+                            groups="bf_school_core.group_school_manager"
+                            confirm="The current password stops working. The new one is shown once. Continue?"/>
+                    <button name="action_sync" type="object" string="Synchronise now"
+                            groups="bf_school_core.group_school_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="username" readonly="1" placeholder="Drawn when saved"/></h1>
+                        <h3><field name="student_id" options="{'no_create': True}"/></h3>
+                    </div>
+                    <group>
+                        <group string="Directory">
+                            <field name="school_id" options="{'no_create': True}"/>
+                            <field name="directory_group_names"/>
+                            <field name="directory_pk"/>
+                        </group>
+                        <group string="Synchronisation">
+                            <field name="sync_needed"/>
+                            <field name="last_sync"/>
+                            <field name="sync_error" invisible="not sync_error"/>
+                            <field name="password_set_on"/>
+                        </group>
+                    </group>
+                    <field name="loan_ids" readonly="1">
+                        <list>
+                            <field name="machine_id"/>
+                            <field name="date_out"/>
+                            <field name="date_due"/>
+                            <field name="date_returned"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_account_view_search" model="ir.ui.view">
+        <field name="name">bf.school.account.search</field>
+        <field name="model">bf.school.account</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="username"/>
+                <field name="student_id"/>
+                <filter name="filter_active" string="Active" domain="[('state', '=', 'active')]"/>
+                <filter name="filter_suspended" string="Suspended" domain="[('state', '=', 'suspended')]"/>
+                <separator/>
+                <filter name="filter_sync" string="Waiting for the directory" domain="[('sync_needed', '=', True)]"/>
+                <filter name="filter_error" string="Synchronisation error" domain="[('sync_error', '!=', False)]"/>
+                <filter name="filter_no_password" string="No password yet"
+                        domain="[('password_set_on', '=', False), ('state', '=', 'active')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_school_account" model="ir.actions.act_window">
+        <field name="name">Student accounts</field>
+        <field name="res_model">bf.school.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No student account yet</p>
+            <p>From the school, "Create this year's accounts" gives every enrolled student
+               an account in the school's directory. It opens a session on the lab
+               computers and on a computer lent to the student.</p>
+        </field>
+    </record>
+
+    <record id="bf_school_account_password_view_form" model="ir.ui.view">
+        <field name="name">bf.school.account.password.form</field>
+        <field name="model">bf.school.account.password</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="student_id" readonly="1"/>
+                    <field name="username" readonly="1"/>
+                    <field name="password" readonly="1" class="fs-3 font-monospace"
+                           invisible="expired"/>
+                </group>
+                <div class="alert alert-warning" role="alert" invisible="expired">
+                    Write it down or give it to the student now: it is not kept anywhere and
+                    will not be shown again. It works at once on the school's computers. On a
+                    lent computer, the first login must be made while it is online.
+                </div>
+                <div class="alert alert-secondary" role="alert" invisible="not expired">
+                    This password is no longer shown. Draw a new one if it was lost.
+                </div>
+                <footer>
+                    <button string="Done" name="action_done" type="object" class="btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Loans -->
+    <record id="bf_school_device_loan_view_list" model="ir.ui.view">
+        <field name="name">bf.school.device.loan.list</field>
+        <field name="model">bf.school.device.loan</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_overdue" decoration-muted="state != 'out'">
+                <field name="machine_id"/>
+                <field name="student_id"/>
+                <field name="account_id" optional="hide"/>
+                <field name="date_out"/>
+                <field name="date_due"/>
+                <field name="date_returned" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'out'"
+                       decoration-danger="state == 'lost'"/>
+                <field name="is_overdue" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_device_loan_view_form" model="ir.ui.view">
+        <field name="name">bf.school.device.loan.form</field>
+        <field name="model">bf.school.device.loan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_return" type="object" string="Returned"
+                            class="btn-primary" invisible="state != 'out' or not id"/>
+                    <button name="action_mark_lost" type="object" string="Lost or damaged"
+                            invisible="state != 'out' or not id"
+                            confirm="The student can no longer log in on this computer. Continue?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Overdue" bg_color="text-bg-danger"
+                            invisible="not is_overdue"/>
+                    <group>
+                        <group>
+                            <field name="school_id" options="{'no_create': True}"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="machine_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="state != 'out'"/>
+                            <field name="student_id" options="{'no_create': True}"
+                                   readonly="state != 'out'"/>
+                            <field name="account_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date_out"/>
+                            <field name="date_due"/>
+                            <field name="date_returned" invisible="state == 'out'"/>
+                            <field name="is_overdue" invisible="1"/>
+                            <field name="notice_out_on" invisible="not notice_out_on"/>
+                            <field name="notice_reminder_on" invisible="not notice_reminder_on"/>
+                            <field name="notice_overdue_on" invisible="not notice_overdue_on"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="condition_out" placeholder="Charger, case, visible damage"/>
+                        <field name="condition_in" invisible="state == 'out' and not condition_in"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_device_loan_view_search" model="ir.ui.view">
+        <field name="name">bf.school.device.loan.search</field>
+        <field name="model">bf.school.device.loan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="machine_id"/>
+                <field name="student_id"/>
+                <filter name="filter_out" string="Lent" domain="[('state', '=', 'out')]"/>
+                <filter name="filter_overdue" string="Overdue" domain="[('is_overdue', '=', True)]"/>
+                <filter name="filter_left" string="Student no longer enrolled"
+                        domain="[('state', '=', 'out'), ('account_id.state', '=', 'suspended')]"/>
+                <filter name="filter_closed" string="Returned or lost" domain="[('state', '!=', 'out')]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_due" string="Due back" context="{'group_by': 'date_due:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_school_device_loan" model="ir.actions.act_window">
+        <field name="name">Lent computers</field>
+        <field name="res_model">bf.school.device.loan</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_out': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No computer lent</p>
+            <p>A computer installed under a loan profile can be lent to a student who has a
+               directory account. The computer lets the student in at its next policy
+               synchronisation (within the hour, while online); returning it closes it again.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_school_devices" name="Computers" parent="bf_school_core.menu_school_root"
+              sequence="40" groups="bf_school_core.group_school_manager"/>
+    <menuitem id="menu_school_device_loans" name="Lent computers" parent="menu_school_devices"
+              action="action_school_device_loan" sequence="10"/>
+    <menuitem id="menu_school_accounts" name="Student accounts" parent="menu_school_devices"
+              action="action_school_account" sequence="20"/>
+</odoo>

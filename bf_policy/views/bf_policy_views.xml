@@ -377,6 +377,93 @@
     <field name="view_mode">list,form</field>
   </record>
 
+
+  <!-- ================= Postes partages (18.0.2.12.0) ================= -->
+  <record id="view_bf_policy_seat_profile_list" model="ir.ui.view">
+    <field name="name">bf.policy.seat.profile.list</field>
+    <field name="model">bf.policy.seat.profile</field>
+    <field name="arch" type="xml">
+      <list string="Shared seat profiles">
+        <field name="name"/>
+        <field name="code"/>
+        <field name="kind"/>
+        <field name="org_id"/>
+        <field name="login_groups"/>
+        <field name="machine_count"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_bf_policy_seat_profile_form" model="ir.ui.view">
+    <field name="name">bf.policy.seat.profile.form</field>
+    <field name="model">bf.policy.seat.profile</field>
+    <field name="arch" type="xml">
+      <form string="Shared seat profile">
+        <sheet>
+          <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                  invisible="active"/>
+          <div class="oe_title">
+            <h1><field name="name" placeholder="e.g. Library lab"/></h1>
+          </div>
+          <group>
+            <group string="Profile">
+              <field name="code"/>
+              <field name="kind" widget="radio"/>
+              <field name="org_id"/>
+              <field name="hostname_pattern"/>
+              <field name="next_number"/>
+              <field name="active" invisible="1"/>
+            </group>
+            <group string="Who logs in">
+              <field name="login_groups" placeholder="e.g. students it-staff"/>
+              <div colspan="2" class="text-muted" invisible="kind != 'loan'">
+                A lent machine also opens to its borrower, written on the machine
+                when the loan is recorded. Back on the shelf, it opens to these
+                groups only.
+              </div>
+            </group>
+          </group>
+          <group>
+            <group string="Session">
+              <field name="ephemeral_home" invisible="1"/>
+              <field name="auto_lock_minutes"/>
+              <field name="offline_login"/>
+              <field name="offline_max_days" invisible="not offline_login"/>
+            </group>
+            <group string="Applications">
+              <field name="app_ids" widget="many2many_tags"/>
+              <field name="app_remove_ids" widget="many2many_tags"/>
+              <field name="extension_ids" widget="many2many_tags"/>
+            </group>
+          </group>
+          <field name="machine_ids" readonly="1">
+            <list>
+              <field name="hostname"/>
+              <field name="seat_allowed_users"/>
+              <field name="last_seen"/>
+              <field name="os_version" optional="hide"/>
+            </list>
+          </field>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_bf_policy_seat_profile" model="ir.actions.act_window">
+    <field name="name">Shared seat profiles</field>
+    <field name="res_model">bf.policy.seat.profile</field>
+    <field name="view_mode">list,form</field>
+    <field name="context">{'active_test': False}</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">No shared seat profile</p>
+      <p>
+        A shared seat belongs to a profile instead of a person: a lab where many
+        people log in, or a machine lent to one borrower at a time. Type the
+        profile code at install time to enrol a machine under it.
+      </p>
+    </field>
+  </record>
+
   <!-- ================= Machines enrolees ================= -->
   <record id="view_bf_policy_machine_list" model="ir.ui.view">
     <field name="name">bf.policy.machine.list</field>
@@ -385,6 +472,8 @@
       <list string="Machines enrolees">
         <field name="hostname"/>
         <field name="user_id"/>
+        <field name="seat_profile_id" optional="show"/>
+        <field name="seat_allowed_users" optional="hide"/>
         <field name="org_id"/>
         <field name="last_seen"/>
         <field name="sync_count"/>
@@ -427,7 +516,10 @@
           </div>
           <group>
             <group string="Identite">
-              <field name="user_id" readonly="1"/>
+              <field name="user_id" readonly="1" invisible="seat_profile_id"/>
+              <field name="seat_profile_id" readonly="1" invisible="not seat_profile_id"/>
+              <field name="seat_allowed_users" invisible="not seat_profile_id"/>
+              <field name="enrolled_by_id"/>
               <field name="org_id" readonly="1"/>
               <field name="machine_uuid"/>
               <field name="os_version"/>
@@ -474,6 +566,9 @@
         <field name="hostname"/>
         <field name="user_id"/>
         <field name="machine_uuid"/>
+        <field name="seat_profile_id"/>
+        <field name="seat_allowed_users"/>
+        <filter name="filter_shared" string="Shared seats" domain="[('seat_profile_id','!=',False)]"/>
         <filter name="filter_active" string="Actives" domain="[('active','=',True)]"/>
         <filter name="filter_revoked" string="Revoquees" domain="[('active','=',False)]"/>
         <separator/>
@@ -481,6 +576,7 @@
                 domain="[('last_seen','=',False)]"/>
         <group expand="0" string="Regrouper par">
           <filter name="group_user" string="Usager" context="{'group_by':'user_id'}"/>
+          <filter name="group_seat" string="Shared seat profile" context="{'group_by':'seat_profile_id'}"/>
           <filter name="group_org" string="Organisation" context="{'group_by':'org_id'}"/>
         </group>
       </search>

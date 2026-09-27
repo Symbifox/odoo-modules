@@ -166,6 +166,49 @@ def _seat_username(policy) -> str:
     return login.split("@")[0]
 
 
+# Nom d'annuaire admis dans une regle d'acces. sssd decoupe simple_allow_* sur
+# les virgules : une virgule dans un nom ajouterait une entree. Meme motif que
+# bf_policy (seat.py), qui refuse deja ces noms a la saisie.
+_NOM_ANNUAIRE_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._@-]{0,63}$")
+
+
+def _noms_annuaire(valeurs) -> list:
+    if not isinstance(valeurs, list):
+        return []
+    noms = (str(v).strip() for v in valeurs)
+    return [n for n in dict.fromkeys(noms) if _NOM_ANNUAIRE_RE.match(n)]
+
+
+def render_access(policy) -> tuple:
+    """(access_provider, lignes simple_allow_*) pour sssd.conf.
+
+    Poste personnel : le compte de siege, et lui seul.
+
+    Poste partage (bloc « seat », bf_policy 18.0.2.12.0) : les groupes du profil
+    et les emprunteurs inscrits sur le poste. 🔴 Sans regle, `access_provider =
+    simple` laisse entrer TOUT l'annuaire : c'est ce que ferait un poste partage
+    dont le login est vide. Un poste partage sans groupe ni emprunteur (un poste
+    de pret revenu sur la tablette) passe donc en `deny` : personne de
+    l'annuaire, le compte de secours local reste la seule porte. On ferme meme
+    si la politique ne le demande pas : ouvrir a tous n'est jamais le bon repli.
+    """
+    seat = policy.get("seat")
+    if not isinstance(seat, dict):
+        username = _ini_safe(_seat_username(policy))
+        return "simple", (f"simple_allow_users = {username}\n" if username else "")
+    login = (policy.get("install") or {}).get("login") or {}
+    groupes = _noms_annuaire(login.get("allow_groups"))
+    usagers = _noms_annuaire(login.get("allow_users"))
+    if not groupes and not usagers:
+        return "deny", ""
+    lignes = ""
+    if groupes:
+        lignes += f"simple_allow_groups = {', '.join(groupes)}\n"
+    if usagers:
+        lignes += f"simple_allow_users = {', '.join(usagers)}\n"
+    return "simple", lignes
+
+
 def render_sssd_conf(policy) -> str:
     """Render /etc/sssd/sssd.conf binding the seat login to the Authentik LDAP
     outpost, with offline credential caching gated by the org policy."""
@@ -173,7 +216,7 @@ def render_sssd_conf(policy) -> str:
     login = install.get("login", {})
     pol = policy.get("policies", {})
     offline = pol.get("offline_login", {}) if isinstance(pol, dict) else {}
-    username = _ini_safe(_seat_username(policy))
+    access_provider, allow_line = render_access(policy)
 
     uri = _ini_safe(login.get("ldap_uri", ""))
     cache = "true" if offline.get("enabled", True) else "false"
@@ -197,7 +240,6 @@ def render_sssd_conf(policy) -> str:
         if bind_pw:
             bind_lines += f"ldap_default_authtok = {bind_pw}\n"
 
-    allow_line = f"simple_allow_users = {username}\n" if username else ""
     return (
         "[sssd]\n"
         "config_file_version = 2\n"
@@ -207,7 +249,7 @@ def render_sssd_conf(policy) -> str:
         "[domain/bluefox]\n"
         "id_provider = ldap\n"
         "auth_provider = ldap\n"
-        "access_provider = simple\n"
+        f"access_provider = {access_provider}\n"
         f"ldap_uri = {uri}\n"
         f"ldap_search_base = {_ini_safe(login.get('ldap_base_dn', ''))}\n"
         "ldap_schema = rfc2307bis\n"
@@ -454,10 +496,11 @@ def apply(policy, root="/", run=subprocess.run, writer=None):
                 mode=0o440))
     # Le mot de passe de liaison n'a plus rien a faire dans la politique stagee une
     # fois sssd.conf ecrit : bluefox-tpm-enroll, bluefox-seat-credentials
-    # et l'agent d'accueil n'en lisent pas le bloc login, et la synchro
-    # quotidienne ne reapplique pas sssd. On la reecrit donc sans lui, toujours
-    # en 0600. Si l'ecriture de sssd.conf a echoue, on le garde : c'est ce qui
-    # permet de rejouer ce script a la main pour reparer la machine.
+    # et l'agent d'accueil n'en lisent pas le bloc login, et la synchro ne
+    # reapplique sssd que sur un poste partage, en reprenant le mot de passe de
+    # sssd.conf. On la reecrit donc sans lui, toujours en 0600. Si l'ecriture de
+    # sssd.conf a echoue, on le garde : c'est ce qui permet de rejouer ce script
+    # a la main pour reparer la machine.
     sssd_rate = login.get("mode") == "sssd" and not any(
         a == "sssd-conf" and ok for a, ok, _d in results)
     if login.get("bind_password") and not sssd_rate:

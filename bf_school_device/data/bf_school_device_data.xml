@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_school_account" model="ir.sequence">
+        <field name="name">Student directory user names</field>
+        <field name="code">bf.school.account</field>
+        <field name="prefix">e</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="cron_school_account_sync" model="ir.cron">
+        <field name="name">School: carry student accounts to the directory</field>
+        <field name="model_id" ref="model_bf_school_account"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

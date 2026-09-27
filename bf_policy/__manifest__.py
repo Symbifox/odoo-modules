@@ -1,6 +1,6 @@
 {
     "name": "Symbifox — Blue Fox OS Policy",
-    "version": "18.0.2.11.2",
+    "version": "18.0.2.12.0",
     "category": "Tools",
     "summary": "Group-policy plane for Blue Fox OS endpoints — single source of "
                "truth for zero-touch install + config + policies",
@@ -73,6 +73,15 @@ passphrase is never overwritten. A disk passphrase can only be read through the
 counted Reveal button, by the person who pressed it, for five minutes. Service
 methods are not callable over RPC. The LDAP bind password is only served to
 orgs in sssd login mode.
+
+Shared seats (18.0.2.12.0): a machine can belong to a seat profile instead of a
+person — a lab where many people log in, or a machine lent to one borrower at a
+time. The installer authenticates as usual and passes the profile code; the
+machine is enrolled for the profile, named from the profile's counter, and
+receives no one's personal settings. The policy lists who may open a session
+(the profile's directory groups, plus the borrowers written on the machine),
+and a shared seat is refused unless the org uses the directory login (sssd).
+Archiving the profile stops serving its machines at their next sync.
     """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

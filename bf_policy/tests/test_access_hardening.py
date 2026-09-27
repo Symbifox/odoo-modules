@@ -273,6 +273,30 @@ class TestBearerIdentity(_HttpBase):
         self.assertEqual(bind(self._jwt({"aud": "install-client"})),
                          "mdp-essai-annuaire")
 
+    def test_seat_policy_follows_the_same_bind_password_rule(self):
+        # /me?seat= sert la politique d'un poste partage : meme regle.
+        with self._with_key():
+            self.org.write({"login_mode": "sssd", "oidc_client_id": "install-client",
+                            "ldap_uri": "ldaps://ldap.example.test:636",
+                            "ldap_bind_dn": "cn=svc,dc=example,dc=test"})
+            self.org.ldap_bind_password = "mdp-essai-annuaire"
+        self.env["bf.policy.seat.profile"].create({
+            "name": "Lab", "code": "lab", "org_id": self.org.id,
+            "kind": "lab", "login_groups": "students"})
+        claims = {"email": "jane.doe@example.test"}
+
+        def bind(bearer):
+            resp = self._call("/api/v1/policy/me?seat=lab", claims, bearer=bearer)
+            self.assertEqual(resp.status_code, 200)
+            login = resp.json()["install"]["login"]
+            self.assertEqual(login["allow_groups"], ["students"])
+            return login["bind_password"]
+
+        self.assertEqual(bind(self._jwt({"aud": "another-client",
+                                         "azp": "another-client"})), "")
+        self.assertEqual(bind(self._jwt({"azp": "install-client"})),
+                         "mdp-essai-annuaire")
+
 
 @tagged("post_install", "-at_install")
 class TestEnrolTakeover(_HttpBase):

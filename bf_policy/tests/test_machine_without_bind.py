@@ -43,3 +43,23 @@ class TestMachineSansLiaison(HttpCase):
         self.assertEqual(login["ldap_uri"], "ldaps://ldap.l.example")
         self.assertFalse(login.get("bind_password"))
         self.assertNotIn(_MDP, resp.text)
+
+    def test_un_poste_partage_non_plus(self):
+        # La synchro d'un poste partage reecrit sssd.conf avec le mot de passe
+        # deja en place sur le poste : il ne repasse pas sur le reseau.
+        profile = self.env["bf.policy.seat.profile"].create({
+            "name": "Labo", "code": "labo", "org_id": self.org.id,
+            "login_groups": "eleves"})
+        seat, token = self.env["bf.policy.machine"]._enrol(
+            self.org, self.machine.user_id, "http-uuid-poste-partage", "x",
+            seat_profile=profile)
+        self.env.flush_all()
+        with patch.dict(os.environ, {escrow.ENV_VAR: self.key}):
+            resp = self.url_open("/api/v1/policy/machine", headers={
+                "Host": "l.example", "Authorization": f"Bearer bfos-machine {token}"})
+        self.assertEqual(resp.status_code, 200)
+        login = resp.json()["install"]["login"]
+        self.assertEqual(resp.json()["seat"]["profile"], "labo")
+        self.assertEqual(login["allow_groups"], ["eleves"])
+        self.assertFalse(login.get("bind_password"))
+        self.assertNotIn(_MDP, resp.text)

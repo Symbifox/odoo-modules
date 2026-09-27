@@ -35,6 +35,11 @@ class TestKickstart(TransactionCase):
             "authentik_token_url": "https://auth.acme.example/application/o/token/",
             "oidc_client_id": "blue-fox-os",
         })
+        # "Several tenants" made explicit: the routing tests used to lean on an org
+        # already present in the database (Blue Fox's own) and failed on a fresh one,
+        # where a single org is served to any host by design.
+        other_company = cls.env["res.company"].create({"name": "Other Tenant Co."})
+        cls.other = cls.Org.create({"company_id": other_company.id, "domain": "other.example"})
 
     # ----------------------------------------------------------------- helpers
     def test_kickstart_vars_complete(self):

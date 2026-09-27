@@ -1,0 +1,921 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_device
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 11:02+0000\n"
+"PO-Revision-Date: 2026-09-27 11:02+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "%(machine)s is already lent to %(student)s."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/school.py:0
+msgid ""
+"%(new)s accounts created, %(old)s already existed. They reach the directory "
+"at the next synchronisation."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "%(notice)s: %(who)s"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/account.py:0
+msgid ""
+"%(user)s already exists in the directory outside the %(path)s folder: it is "
+"not a student account, it is left alone."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "%s belongs to another organisation."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid ""
+"%s has no active directory account: create it from the school (Student "
+"accounts) before lending a computer."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "%s is not a computer for lending: enrol it under a loan profile."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "%s is revoked."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "%s's account belongs to another school."
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.portal_my_school_device
+msgid ""
+",\n"
+"                    due back on"
+msgstr ""
+
+#. module: bf_school_device
+#: model:mail.template,body_html:bf_school_device.mail_template_loan_reminder
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The computer <strong t-out=\"object.machine_id.hostname or ''\"/> lent to <strong t-out=\"object.student_id.name or ''\"/> is due back at the school office on <strong t-out=\"format_date(object.date_due) or ''\"/>, with its charger.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Work kept only on the computer stays on it: save what matters in the school's online storage before bringing it back.</p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_device
+#: model:mail.template,body_html:bf_school_device.mail_template_loan_overdue
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The computer <strong t-out=\"object.machine_id.hostname or ''\"/> lent to <strong t-out=\"object.student_id.name or ''\"/> was due back on <t t-out=\"format_date(object.date_due) or ''\"/> and the school office has not received it.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Please bring it back, or contact the school office if it was lost or damaged.</p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_device
+#: model:mail.template,body_html:bf_school_device.mail_template_loan_out
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The school lends a computer to <strong t-out=\"object.student_id.name or ''\"/>: <strong t-out=\"object.machine_id.hostname or ''\"/>, lent on <t t-out=\"format_date(object.date_out) or ''\"/> and due back on <strong t-out=\"format_date(object.date_due) or ''\"/>.</p>\n"
+"    <p t-if=\"object.condition_out\" style=\"margin:0 0 12px 0;\">Condition noted when lent: <t t-out=\"object.condition_out or ''\"/></p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Your child logs in with their school account. The first login must be made while the computer is online. Please take care of it and bring it back to the school office by the due date.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            See it in the family portal\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.portal_my_school_device
+msgid "<i class=\"fa fa-laptop me-1\" title=\"Computer\"/>"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "A closed loan cannot change computer or student."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid ""
+"A closed loan is a record: only the condition when returned can still be "
+"noted."
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.actions.act_window,help:bf_school_device.action_school_device_loan
+msgid ""
+"A computer installed under a loan profile can be lent to a student who has a\n"
+"               directory account. The computer lets the student in at its next policy\n"
+"               synchronisation (within the hour, while online); returning it closes it again."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "A loan cannot change student: return the computer and lend it again."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__account_id
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__account_id
+msgid "Account"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_view_form_device
+msgid "Accounts"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_needaction
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields.selection,name:bf_school_device.selection__bf_school_account__state__active
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_search
+msgid "Active"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_account__state
+msgid ""
+"Active while the student is enrolled in the school's current year. A "
+"suspended account cannot log in anywhere; nothing is deleted."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school__directory_url
+msgid ""
+"Address of the school's Authentik, for example https://auth.school.example. "
+"Student accounts are created there; the school's computers log in against "
+"it."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school__directory_token
+msgid ""
+"Authentik API token of a service account allowed to manage users and groups."
+" Stored encrypted; never shown again."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model,name:bf_school_device.model_bf_policy_machine
+msgid "Blue Fox Policy — Machine enrolee"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_form
+msgid "Charger, case, visible damage"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_device_loan__condition_out
+msgid "Charger, case, visible damage."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__company_id
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__machine_id
+msgid "Computer"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.portal_my_school_device
+msgid "Computer lent by the school:"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model,name:bf_school_device.model_bf_school_device_loan
+msgid "Computer lent to a student"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.ui.menu,name:bf_school_device.menu_school_devices
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_view_form_device
+msgid "Computers"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__condition_out
+msgid "Condition when lent"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__condition_in
+msgid "Condition when returned"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_view_form_device
+msgid "Create this year's accounts"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__create_uid
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__create_uid
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__create_date
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__create_date
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school__device_account_count
+msgid "Device Account Count"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school__device_loan_count
+msgid "Device Loan Count"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_view_form_device
+msgid "Directory"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school__directory_url
+msgid "Directory (Authentik) URL"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school__directory_token
+msgid "Directory API token"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school__directory_token_enc
+msgid "Directory Token Enc"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school__directory_token_set
+msgid "Directory Token Set"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school__directory_user_path
+msgid "Directory folder"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school__directory_student_group
+msgid ""
+"Directory group of every student with an account. Level and class groups are"
+" named after it: students-sec1, students-301."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__directory_group_names
+msgid "Directory groups"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__directory_pk
+msgid "Directory id"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/school.py:0
+msgid "Directory refused %(method)s %(path)s (%(code)s): %(detail)s"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/school.py:0
+msgid "Directory unreachable: %s"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__display_name
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__display_name
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_password_view_form
+msgid "Done"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_form
+msgid "Drawn when saved"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__date_due
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_search
+msgid "Due back"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__expired
+msgid "Expired"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__notice_out_on
+msgid "Family told of the loan"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school__directory_user_path
+msgid "Folder (path) where Authentik files the student accounts."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.actions.act_window,help:bf_school_device.action_school_account
+msgid ""
+"From the school, \"Create this year's accounts\" gives every enrolled student\n"
+"               an account in the school's directory. It opens a session on the lab\n"
+"               computers and on a computer lent to the student."
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__has_message
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__id
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__id
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_account__message_needaction
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_device_loan__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_account__message_has_error
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_account__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_device_loan__message_has_error
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_device_loan__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__is_overdue
+msgid "Is Overdue"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__last_sync
+msgid "Last Sync"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__write_uid
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__write_uid
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__write_date
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__write_date
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields.selection,name:bf_school_device.selection__bf_school_device_loan__state__out
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_view_form_device
+msgid "Lent"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.actions.act_window,name:bf_school_device.action_school_device_loan
+#: model:ir.ui.menu,name:bf_school_device.menu_school_device_loans
+msgid "Lent computers"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__date_out
+#: model_terms:ir.ui.view,arch_db:bf_school_device.portal_my_school_device
+msgid "Lent on"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_policy_machine__school_loan_ids
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__loan_ids
+msgid "Loans"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields.selection,name:bf_school_device.selection__bf_school_device_loan__state__lost
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_form
+msgid "Lost or damaged"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_has_error
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_ids
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_form
+msgid "New password"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/account.py:0
+msgid "New password drawn and shown to %s."
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.actions.act_window,help:bf_school_device.action_school_device_loan
+msgid "No computer lent"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_search
+msgid "No password yet"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.actions.act_window,help:bf_school_device.action_school_account
+msgid "No student account yet"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/school.py:0
+msgid "Nobody is enrolled this year."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_account__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_device_loan__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_account__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_device_loan__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_view_form_device
+msgid ""
+"One account per student enrolled this year opens a session\n"
+"                                on the school's Blue Fox OS computers. The accounts follow\n"
+"                                the enrolments by themselves: a student who leaves is\n"
+"                                suspended at the next synchronisation."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/account.py:0
+msgid "Only the school administration manages student accounts."
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_device.portal_my_school_device
+msgid "Overdue"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__notice_overdue_on
+msgid "Overdue notice sent"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__password
+msgid "Password"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/account.py:0
+msgid "Password of %s"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__password_set_on
+msgid "Password set on"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_view_form_device
+msgid "Paste a new token to replace the current one"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__rating_ids
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__notice_reminder_on
+msgid "Reminder sent"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "Return the computer (or mark it lost) instead of deleting the loan."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields.selection,name:bf_school_device.selection__bf_school_device_loan__state__returned
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_form
+msgid "Returned"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__date_returned
+msgid "Returned on"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_search
+msgid "Returned or lost"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model,name:bf_school_device.model_bf_school
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__school_id
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__school_id
+msgid "School"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.actions.server,name:bf_school_device.cron_school_account_sync_ir_actions_server
+msgid "School: carry student accounts to the directory"
+msgstr ""
+
+#. module: bf_school_device
+#: model:mail.template,name:bf_school_device.mail_template_loan_out
+msgid "School: computer lent"
+msgstr ""
+
+#. module: bf_school_device
+#: model:mail.template,name:bf_school_device.mail_template_loan_reminder
+msgid "School: lent computer due back soon"
+msgstr ""
+
+#. module: bf_school_device
+#: model:mail.template,name:bf_school_device.mail_template_loan_overdue
+msgid "School: lent computer overdue"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.actions.server,name:bf_school_device.cron_school_loan_notices_ir_actions_server
+msgid "School: lent computers due back soon or overdue"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__state
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__state
+msgid "State"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_search
+msgid "Status"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__student_id
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__student_id
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__student_id
+msgid "Student"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.actions.act_window,name:bf_school_device.action_school_account
+#: model:ir.ui.menu,name:bf_school_device.menu_school_accounts
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_view_form_device
+msgid "Student accounts"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model,name:bf_school_device.model_bf_school_account
+msgid "Student directory account"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school__directory_student_group
+msgid "Student group"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_search
+msgid "Student no longer enrolled"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model,name:bf_school_device.model_bf_school_account_password
+msgid "Student password, shown once"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields.selection,name:bf_school_device.selection__bf_school_account__state__suspended
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_search
+msgid "Suspended"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__sync_error
+msgid "Sync Error"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__sync_needed
+msgid "Sync Needed"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__sync_signature
+msgid "Sync Signature"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__synced_signature
+msgid "Synced Signature"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_form
+msgid "Synchronisation"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_search
+msgid "Synchronisation error"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_form
+msgid "Synchronise now"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/account.py:0
+msgid "The account is not in the directory yet: %s"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "The computer cannot be due back before it is lent."
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_form
+msgid ""
+"The current password stops working. The new one is shown once. Continue?"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/account.py:0
+#: code:addons/bf_school_device/models/school.py:0
+msgid "The school's directory is not configured."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid ""
+"The status, the return date and the notices of a loan move through its "
+"buttons."
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_device_loan_view_form
+msgid "The student can no longer log in on this computer. Continue?"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/school.py:0
+msgid ""
+"The token cannot be stored: no encryption key is configured on this server "
+"(%s)."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/account.py:0
+msgid "These fields of a student account are kept by the system."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/account.py:0
+msgid "This account is suspended: the student is not enrolled this year."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "This computer is already lent."
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_password_view_form
+msgid "This password is no longer shown. Draw a new one if it was lost."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.constraint,message:bf_school_device.constraint_bf_school_account_student_uniq
+msgid "This student already has an account."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.constraint,message:bf_school_device.constraint_bf_school_account_username_uniq
+msgid "This user name is already taken."
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "Unsupported search."
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__username
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account_password__username
+msgid "Username"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_view_search
+msgid "Waiting for the directory"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_account__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_device.field_bf_school_device_loan__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_school_device
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_account__website_message_ids
+#: model:ir.model.fields,help:bf_school_device.field_bf_school_device_loan__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_account_password_view_form
+msgid ""
+"Write it down or give it to the student now: it is not kept anywhere and\n"
+"                    will not be shown again. It works at once on the school's computers. On a\n"
+"                    lent computer, the first login must be made while it is online."
+msgstr ""
+
+#. module: bf_school_device
+#: model_terms:ir.ui.view,arch_db:bf_school_device.bf_school_view_form_device
+msgid "https://auth.school.example"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/loan.py:0
+msgid "nobody (no adult receives notices with an email)"
+msgstr ""
+
+#. module: bf_school_device
+#. odoo-python
+#: code:addons/bf_school_device/models/account.py:0
+msgid "synchronisation pending"
+msgstr ""
+
+#. module: bf_school_device
+#: model:mail.template,subject:bf_school_device.mail_template_loan_out
+msgid "{{ object.student_id.name }}: a computer lent by the school"
+msgstr ""
+
+#. module: bf_school_device
+#: model:mail.template,subject:bf_school_device.mail_template_loan_overdue
+msgid "{{ object.student_id.name }}: the school's computer has not come back"
+msgstr ""
+
+#. module: bf_school_device
+#: model:mail.template,subject:bf_school_device.mail_template_loan_reminder
+msgid ""
+"{{ object.student_id.name }}: the school's computer is due back on {{ "
+"format_date(object.date_due) }}"
+msgstr ""

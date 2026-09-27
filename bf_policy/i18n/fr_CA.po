@@ -1637,8 +1637,8 @@ msgid ""
 " Several matching users, or none, means refusal."
 msgstr ""
 "Revendication userinfo comparée (exactement, sans égard à la casse) à "
-"l'identifiant de connexion Odoo. Plusieurs usagers correspondants, ou aucun, "
-"valent refus."
+"l'identifiant de connexion Odoo. Plusieurs usagers correspondants, ou aucun,"
+" valent refus."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__token_audience_check
@@ -1652,9 +1652,9 @@ msgid ""
 "above (checked on the token's aud/azp claims). Needs the identity provider "
 "to issue JWT access tokens."
 msgstr ""
-"Refuser un porteur dont le jeton d'accès n'a pas été émis pour l'identifiant "
-"de client OIDC ci-dessus (vérifié sur les revendications aud/azp du jeton). "
-"Le fournisseur d'identité doit émettre des jetons d'accès JWT."
+"Refuser un porteur dont le jeton d'accès n'a pas été émis pour l'identifiant"
+" de client OIDC ci-dessus (vérifié sur les revendications aud/azp du jeton)."
+" Le fournisseur d'identité doit émettre des jetons d'accès JWT."
 
 #. module: bf_policy
 #. odoo-python
@@ -1665,3 +1665,297 @@ msgid ""
 msgstr ""
 "Une phrase de passe de disque ne se révèle que par le bouton « Révéler la "
 "phrase de passe » de la fiche du poste."
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/seat.py:0
+msgid ""
+"%s is not a valid code: 2 to 32 lowercase letters, digits or dashes, "
+"starting with a letter or a digit."
+msgstr ""
+"%s n'est pas un code valide : de 2 à 32 lettres minuscules, chiffres ou "
+"tirets, commençant par une lettre ou un chiffre."
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/seat.py:0
+msgid "%s is not a valid group name."
+msgstr "%s n'est pas un nom de groupe valide."
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/bf_policy.py:0
+msgid "%s is not a valid user name."
+msgstr "%s n'est pas un nom d'usager valide."
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
+msgid ""
+"A lent machine also opens to its borrower, written on the machine\n"
+"                when the loan is recorded. Back on the shelf, it opens to these\n"
+"                groups only."
+msgstr ""
+"Un poste prêté s'ouvre aussi à son emprunteur, inscrit sur le poste\n"
+"                quand le prêt est enregistré. Revenu sur la tablette, il ne s'ouvre\n"
+"                qu'à ces groupes."
+
+#. module: bf_policy
+#: model:ir.model.constraint,message:bf_policy.constraint_bf_policy_machine_owner_xor_seat
+msgid "A machine belongs either to a person or to a shared seat profile."
+msgstr ""
+"Un poste appartient soit à une personne, soit à un profil de poste partagé."
+
+#. module: bf_policy
+#: model_terms:ir.actions.act_window,help:bf_policy.action_bf_policy_seat_profile
+msgid ""
+"A shared seat belongs to a profile instead of a person: a lab where many\n"
+"        people log in, or a machine lent to one borrower at a time. Type the\n"
+"        profile code at install time to enrol a machine under it."
+msgstr ""
+"Un poste partagé appartient à un profil plutôt qu'à une personne : un laboratoire\n"
+"        où plusieurs personnes ouvrent une session, ou un poste prêté à un emprunteur\n"
+"        à la fois. Tapez le code du profil à l'installation pour y enrôler le poste."
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/seat.py:0
+msgid ""
+"A shared seat needs the directory login (sssd): with local accounts the "
+"machine would only know the person who installed it."
+msgstr ""
+"Un poste partagé exige l'ouverture de session par l'annuaire (sssd) : avec "
+"des comptes locaux, le poste ne connaîtrait que la personne qui l'a "
+"installé."
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_seat_profile__active
+msgid ""
+"An archived profile stops serving its machines at their next sync, and no "
+"new machine can enrol under it."
+msgstr ""
+"Un profil archivé cesse de servir ses postes à leur prochaine "
+"synchronisation, et aucun nouveau poste ne peut s'y enrôler."
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
+msgid "Applications"
+msgstr "Applications"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__app_remove_ids
+msgid "Applications to remove"
+msgstr "Applications à retirer"
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_policy
+#: model:ir.model,name:bf_policy.model_bf_policy_seat_profile
+msgid "Blue Fox Policy — Shared seat profile"
+msgstr "Blue Fox Policy — Profil de poste partagé"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__seat_allowed_users
+msgid "Borrowers allowed to log in"
+msgstr "Emprunteurs autorisés à ouvrir une session"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_seat_profile__login_groups
+msgid ""
+"Directory (Authentik) group names, separated by commas or spaces. Everyone "
+"in one of these groups may open a session on these seats. For a loan "
+"profile, keep it to the IT staff: the borrower is added per machine."
+msgstr ""
+"Noms de groupes de l'annuaire (Authentik), séparés par des virgules ou des "
+"espaces. Toute personne membre d'un de ces groupes peut ouvrir une session "
+"sur ces postes. Pour un profil de prêt, limitez-le au personnel TI : "
+"l'emprunteur s'ajoute poste par poste."
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_machine__seat_allowed_users
+msgid ""
+"Directory user names that may open a session on this shared seat, on top of "
+"the profile's groups. Written by whoever records a loan; empty = only the "
+"profile's groups."
+msgstr ""
+"Noms d'usager de l'annuaire autorisés à ouvrir une session sur ce poste "
+"partagé, en plus des groupes du profil. Inscrits par la personne qui "
+"enregistre un prêt; vide = seulement les groupes du profil."
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__enrolled_by_id
+msgid "Enrolled by"
+msgstr "Enrôlé par"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__app_ids
+msgid "Extra applications"
+msgstr "Applications ajoutées"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__login_groups
+msgid "Groups allowed to log in"
+msgstr "Groupes autorisés à ouvrir une session"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__seat_kind
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__kind
+msgid "Kind"
+msgstr "Type"
+
+#. module: bf_policy
+#: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_seat_profile__kind__lab
+msgid "Lab (many people)"
+msgstr "Laboratoire (plusieurs personnes)"
+
+#. module: bf_policy
+#: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_seat_profile__kind__loan
+msgid "Loan (one borrower)"
+msgstr "Prêt (un emprunteur)"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__machine_count
+msgid "Machine Count"
+msgstr "Nombre de postes"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__next_number
+msgid "Next Number"
+msgstr "Prochain numéro"
+
+#. module: bf_policy
+#: model_terms:ir.actions.act_window,help:bf_policy.action_bf_policy_seat_profile
+msgid "No shared seat profile"
+msgstr "Aucun profil de poste partagé"
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_seat_profile__offline_login
+msgid ""
+"Off for a lab (always on the school network), on for a machine that goes "
+"home."
+msgstr ""
+"Désactivé pour un laboratoire (toujours sur le réseau de l'école), activé "
+"pour un poste qui va à la maison."
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/bf_policy.py:0
+msgid ""
+"Only a shared seat takes borrowers; a personal machine is already its "
+"owner's."
+msgstr ""
+"Seul un poste partagé prend des emprunteurs; un poste personnel est déjà à "
+"son propriétaire."
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_machine__enrolled_by_id
+msgid "Person who authenticated at install time."
+msgstr "Personne qui s'est authentifiée à l'installation."
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_machine__user_id
+msgid ""
+"Personne dont la politique fusionnee est servie a ce poste. Vide pour un "
+"poste partage, qui recoit celle de son profil."
+msgstr ""
+"Personne dont la politique fusionnée est servie à ce poste. Vide pour un "
+"poste partagé, qui reçoit celle de son profil."
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
+msgid "Profile"
+msgstr "Profil"
+
+#. module: bf_policy
+#: model:ir.ui.menu,name:bf_policy.menu_bf_policy_seat_profile
+msgid "Shared Seats"
+msgstr "Postes partagés"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__seat_profile_id
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_search
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
+msgid "Shared seat profile"
+msgstr "Profil de poste partagé"
+
+#. module: bf_policy
+#: model:ir.actions.act_window,name:bf_policy.action_bf_policy_seat_profile
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_list
+msgid "Shared seat profiles"
+msgstr "Profils de postes partagés"
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_seat_profile__code
+msgid ""
+"Short code typed or chosen at install time to enrol a machine under this "
+"profile: lowercase letters, digits and dashes (e.g. lab-library)."
+msgstr ""
+"Code court tapé ou choisi à l'installation pour enrôler un poste sous ce "
+"profil : lettres minuscules, chiffres et tirets (p. ex. labo-biblio)."
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/seat.py:0
+msgid ""
+"The hostname pattern must contain {n}, or every machine of the profile would"
+" get the same name."
+msgstr ""
+"Le modèle de nom d'hôte doit contenir {n}, sinon tous les postes du profil "
+"porteraient le même nom."
+
+#. module: bf_policy
+#. odoo-python
+#: code:addons/bf_policy/models/bf_policy.py:0
+msgid "The shared seat profile belongs to another organisation."
+msgstr "Le profil de poste partagé appartient à une autre organisation."
+
+#. module: bf_policy
+#: model:ir.model.constraint,message:bf_policy.constraint_bf_policy_seat_profile_code_org_uniq
+msgid "This code is already used by another profile of the same organisation."
+msgstr "Ce code est déjà pris par un autre profil de la même organisation."
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
+msgid "Who logs in"
+msgstr "Qui ouvre une session"
+
+#. module: bf_policy
+#: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__ephemeral_home
+msgid "Wipe the session at logout"
+msgstr "Effacer la session à la fermeture"
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
+msgid "e.g. Library lab"
+msgstr "p. ex. Laboratoire de la bibliothèque"
+
+#. module: bf_policy
+#: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
+msgid "e.g. students it-staff"
+msgstr "p. ex. eleves personnel-ti"
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_seat_profile__hostname_pattern
+msgid ""
+"{code} is the profile code, {n} a number that grows with each enrolled "
+"machine (3 digits)."
+msgstr ""
+"{code} est le code du profil, {n} un numéro qui augmente à chaque poste "
+"enrôlé (3 chiffres)."
+
+#. module: bf_policy
+#: model:ir.model.fields,help:bf_policy.field_bf_policy_seat_profile__ephemeral_home
+msgid ""
+"Not applied by Blue Fox OS yet. Meant for labs: nothing a person leaves on "
+"the machine would survive their logout."
+msgstr ""
+"Pas encore appliqué par Blue Fox OS. Pensé pour les laboratoires : rien de "
+"ce qu'une personne laisse sur le poste ne survivrait à sa fermeture de "
+"session."

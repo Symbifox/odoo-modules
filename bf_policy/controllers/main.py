@@ -1,6 +1,8 @@
 """Public controllers serving the Blue Fox OS policy plane.
 
 GET  /api/v1/policy/me        merged policy for an authenticated *person*
+                              (?seat=<code>: the shared seat profile's, for the
+                              person installing it)
 POST /api/v1/policy/enroll    give the machine an identity of its own
 GET  /api/v1/policy/machine   merged policy for an enrolled *machine*
 GET  /bf_policy/extensions/update.xml
@@ -15,6 +17,12 @@ match or several matches is a refusal. This is the path used by the Anaconda
 
 Whoever the bearer resolves to must then pass ``org.is_user_authorized``,
 which refuses portal, archived and out-of-company users in every mode.
+
+Shared seats (18.0.2.12.0): the installer passes a seat profile code (``?seat=``
+on /me, ``seat_profile`` in the /enroll body). The person authenticating must
+still pass ``is_user_authorized``: they are the installer, not the owner. The
+machine is enrolled for the profile, and /machine then serves the profile's
+policy for as long as the profile is active and the org stays in sssd mode.
 
 /machine is different by design: no human is present when the re-sync timer
 fires, so it authenticates with the per-machine secret issued at enrolment
@@ -64,6 +72,24 @@ _MACHINE_PREFIX = "bfos-machine "
 _MACHINE_UUID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{7,63}$")
 
 _MAX_ENROL_BODY = 4096  # de quoi porter 3 champs courts, pas un televersement
+
+
+def _seat_profile(org, code):
+    """Active seat profile ``code`` of ``org``, or ``(None, error_response)``.
+
+    Returns ``(profile, error)``; ``(empty, None)`` when no code was given.
+    Unknown, archived and other-org codes get the same answer."""
+    Profile = request.env["bf.policy.seat.profile"].sudo()
+    code = str(code or "").strip()
+    if not code:
+        return Profile, None
+    profile = Profile.search([("org_id", "=", org.id), ("code", "=", code)], limit=1)
+    if not profile:
+        return None, _json_response({"error": "unknown seat profile"}, 404)
+    if org.login_mode != "sssd":
+        return None, _json_response(
+            {"error": "shared seats need the directory login (sssd)"}, 409)
+    return profile, None
 
 
 def _json_response(payload: dict, status: int = 200):
@@ -245,9 +271,19 @@ class BfPolicyController(http.Controller):
         # Le mot de passe de liaison LDAP ne part qu'a un jeton emis au client
         # d'installation, meme quand la verification d'audience est coupee :
         # un jeton d'une autre application du meme fournisseur obtient la
-        # politique, pas le compte de service de l'annuaire.
+        # politique, pas le compte de service de l'annuaire. Vaut aussi pour la
+        # politique d'un poste partage (?seat=).
         credential = _authorization()[len("Bearer "):].strip()
         own_client = _issued_to(_jwt_claims(credential), org.oidc_client_id or "")
+        profile, error = _seat_profile(org, kwargs.get("seat"))
+        if error:
+            return error
+        if profile:
+            _logger.info("[bf_policy] served seat policy %s to installer=%s ip=%s bind=%s",
+                         profile.code, user.login, _client_ip(),
+                         "oui" if own_client else "non")
+            return _json_response(org.get_policy_json(
+                user, bind_password=own_client, seat_profile=profile), 200)
         _logger.info("[bf_policy] served policy for user=%s ip=%s bind=%s",
                      user.login, _client_ip(), "oui" if own_client else "non")
         return _json_response(
@@ -281,6 +317,9 @@ class BfPolicyController(http.Controller):
         machine_uuid = str(payload.get("machine_uuid") or "").strip()
         if not _MACHINE_UUID_RE.match(machine_uuid):
             return _json_response({"error": "invalid machine_uuid"}, 400)
+        profile, error = _seat_profile(org, payload.get("seat_profile"))
+        if error:
+            return error
 
         try:
             machine, token = request.env["bf.policy.machine"].sudo()._enrol(
@@ -288,13 +327,14 @@ class BfPolicyController(http.Controller):
                 machine_uuid=machine_uuid,
                 hostname=str(payload.get("hostname") or "")[:253],
                 os_version=str(payload.get("os_version") or "")[:128],
+                seat_profile=profile or None,
             )
         except EnrolConflict:
             _logger.warning(
                 "[bf_policy] enrol conflict for uuid=%r user=%s ip=%s",
                 machine_uuid, user.login, _client_ip())
             return _json_response(
-                {"error": "machine already enrolled for another user"}, 409)
+                {"error": "machine already enrolled for another user or seat"}, 409)
         if not machine:
             # Seul cas restant : UUID d'une machine revoquee (cf. _enrol).
             _logger.warning("[bf_policy] enrol refused for uuid=%r ip=%s",
@@ -330,6 +370,7 @@ class BfPolicyController(http.Controller):
             "endpoint": f"https://{org._effective_domain()}/api/v1/policy/machine",
             "hostname": machine.hostname,
             "user": user.login,
+            "seat_profile": profile.code if profile else "",
             # ⚠️ Contrat avec le %pre : tant que ce drapeau n'est pas vrai, la
             # phrase generee cote machine ne doit servir a rien.
             "disk_escrowed": disk_escrowed,
@@ -363,6 +404,23 @@ class BfPolicyController(http.Controller):
                             _client_ip(), _request_host())
             return _json_response({"error": "invalid machine token"}, 401)
 
+        if machine.seat_profile_id:
+            profile = machine.seat_profile_id
+            # Profil archive ou organisation repassee en comptes locaux : le
+            # poste garde sa derniere politique connue et ne recoit plus rien.
+            if not profile.active or org.login_mode != "sssd":
+                _logger.warning("[bf_policy] machine=%s : seat profile %s inactive",
+                                machine.hostname, profile.code)
+                return _json_response({"error": "seat profile inactive"}, 403)
+            machine._touch(_client_ip())
+            _logger.info("[bf_policy] served seat policy %s to machine=%s ip=%s",
+                         profile.code, machine.hostname, _client_ip())
+            # Pas de mot de passe de liaison non plus : la synchro d'un poste
+            # partage reecrit sssd.conf avec le mot de passe deja en place.
+            return _json_response(org.get_policy_json(
+                request.env["res.users"], bind_password=False,
+                seat_profile=profile, machine=machine), 200)
+
         user = machine.user_id
         if not user or not org.is_user_authorized(user):
             # L'autorisation se rejoue a chaque synchronisation : sortir
@@ -375,9 +433,10 @@ class BfPolicyController(http.Controller):
         machine._touch(_client_ip())
         _logger.info("[bf_policy] served policy to machine=%s user=%s ip=%s",
                      machine.hostname, user.login, _client_ip())
-        # Sans le mot de passe de liaison LDAP : la synchro quotidienne ne
-        # reapplique pas sssd, elle ne fait que reecrire provisioning.json.
-        # L'y remettre chaque jour defaisait le retrait fait a l'installation.
+        # Sans le mot de passe de liaison LDAP : sur un poste personnel, la
+        # synchro ne reapplique pas sssd, elle ne fait que reecrire
+        # provisioning.json. L'y remettre a chaque passage defaisait le retrait
+        # fait a l'installation.
         return _json_response(org.get_policy_json(user, bind_password=False), 200)
 
     # --- Extensions Symbifox hors boutique --------------------------------

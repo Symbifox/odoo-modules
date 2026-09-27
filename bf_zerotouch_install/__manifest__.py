@@ -1,6 +1,6 @@
 {
     "name": "Symbifox — Blue Fox OS Zero-Touch Install",
-    "version": "18.0.4.0.4",
+    "version": "18.0.4.1.0",
     "category": "Tools",
     "summary": "Serve /blue-fox-install.ks for Blue Fox OS zero-touch (rendered from bf.policy.org)",
     "description": """

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_school_account_company" model="ir.rule">
+        <field name="name">Student account: my companies</field>
+        <field name="model_id" ref="model_bf_school_account"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_school_device_loan_company" model="ir.rule">
+        <field name="name">Computer loan: my companies</field>
+        <field name="model_id" ref="model_bf_school_device_loan"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- A password is read by the person who drew it, nobody else. -->
+    <record id="rule_school_account_password_own" model="ir.rule">
+        <field name="name">Student password: the person who drew it</field>
+        <field name="model_id" ref="model_bf_school_account_password"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+
+    <!-- The office sees the computers it lends, not the whole fleet: loan seats of
+         its companies only. The disk passphrase and the token hash keep their own
+         groups= and stay out of reach. -->
+    <record id="rule_policy_machine_school_manager" model="ir.rule">
+        <field name="name">Machines: loan computers of my companies (school office)</field>
+        <field name="model_id" ref="bf_policy.model_bf_policy_machine"/>
+        <field name="groups" eval="[(4, ref('bf_school_core.group_school_manager'))]"/>
+        <field name="domain_force">[('seat_profile_id.kind', '=', 'loan'), ('org_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_policy_seat_profile_school_manager" model="ir.rule">
+        <field name="name">Seat profiles: my companies (school office)</field>
+        <field name="model_id" ref="bf_policy.model_bf_policy_seat_profile"/>
+        <field name="groups" eval="[(4, ref('bf_school_core.group_school_manager'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- 🔴 Group rules add up by OR over the groups that HAVE one: without these two,
+         a system administrator who is also in the school office would only see the
+         loan computers in the Policy menu. -->
+    <record id="rule_policy_machine_system_all" model="ir.rule">
+        <field name="name">Machines: all (system)</field>
+        <field name="model_id" ref="bf_policy.model_bf_policy_machine"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_policy_seat_profile_system_all" model="ir.rule">
+        <field name="name">Seat profiles: all (system)</field>
+        <field name="model_id" ref="bf_policy.model_bf_policy_seat_profile"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

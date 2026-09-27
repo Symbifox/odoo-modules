@@ -7,6 +7,8 @@ bf.policy.mount  : a Nextcloud/WebDAV mount, owned by an org (default) or a user
 bf.policy.pwa    : a pinned progressive web app, owned by an org or a user.
 bf.policy.machine: an installed endpoint, enrolled at install time so it can
                    re-fetch its policy later without a human present.
+bf.policy.seat.profile (seat.py): a shared seat (lab, loan) — a machine that
+                   belongs to a profile instead of a person.
 
 `bf.policy.org.get_policy_json(user)` produces the merged payload returned by
 the /api/v1/policy/me controller (schema: static/schema/policy.v2.json).
@@ -21,9 +23,10 @@ import secrets
 from datetime import timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 from . import escrow
+from .seat import _NAME_RE, split_names
 
 _logger = logging.getLogger(__name__)
 
@@ -579,13 +582,23 @@ class BfPolicyOrg(models.Model):
                 if ext.id not in skip]
 
     @api.private
-    def get_policy_json(self, user, bind_password=True) -> dict:
+    def get_policy_json(self, user, bind_password=True, seat_profile=None,
+                        machine=None) -> dict:
         """Merged org-defaults + per-user overrides payload for /api/v1/policy/me.
 
         ``bind_password=False`` retient le mot de passe de liaison LDAP : /me le
         passe a faux quand le jeton n'a pas ete emis au client d'installation.
+
+        Shared seat (``seat_profile``, 18.0.2.12.0): nobody's personal settings.
+        ``user`` is ignored and an EMPTY user is used, so no override, no photo
+        and no personal timezone leak onto a machine thirty people use. ⚠️ Do
+        not pass an empty user to the personal path instead: ``_avatar_for``
+        would search employees with ``user_id = False`` and serve a stranger's
+        face. ``machine`` (a seat machine) adds its borrowers and its hostname.
         """
         self.ensure_one()
+        if seat_profile:
+            user = self.env["res.users"]
         # Une politique en mode sssd sans annuaire ni compte de liaison produit
         # une machine qui n'ouvre AUCUNE session. On le dit dans le
         # journal plutot que par une contrainte : une contrainte casserait la
@@ -599,7 +612,7 @@ class BfPolicyOrg(models.Model):
                 "ldap_uri" if not self.ldap_uri else "ldap_bind_dn")
         override = self.env["bf.policy.user"].sudo().search(
             [("user_id", "=", user.id), ("company_id", "=", self.company_id.id)],
-            limit=1)
+            limit=1) if user else self.env["bf.policy.user"]
         accent = (override.accent_color if override and override.accent_color
                   else self.accent_color)
         wallpaper = (override.wallpaper_url if override and override.wallpaper_url
@@ -625,14 +638,23 @@ class BfPolicyOrg(models.Model):
         # TPM : la surcharge par personne est tri-etat, « inherit » retombe sur
         # la valeur de l'organisation.
         install_prefs = self._install_prefs(user, override)
-        user_block = {
-            "login": user.login,
-            "email": user.email or user.login,
-            "display_name": user.name,
-        }
-        avatar = self._avatar_for(user)
-        if avatar:
-            user_block["avatar"] = avatar
+        if seat_profile:
+            # The schema requires user.login: an empty one says « nobody ».
+            user_block = {"login": ""}
+            seat_apps = seat_profile.app_ids.mapped("flatpak_id")
+            seat_remove = seat_profile.app_remove_ids.mapped("flatpak_id")
+            app_remove = list(dict.fromkeys(app_remove + seat_remove))
+            app_install = [fid for fid in dict.fromkeys(app_install + seat_apps)
+                           if fid not in app_remove]
+        else:
+            user_block = {
+                "login": user.login,
+                "email": user.email or user.login,
+                "display_name": user.name,
+            }
+            avatar = self._avatar_for(user)
+            if avatar:
+                user_block["avatar"] = avatar
         tpm_override = override.tpm_autounlock_override if override else "inherit"
         if tpm_override == "on":
             tpm_enabled = True
@@ -640,7 +662,7 @@ class BfPolicyOrg(models.Model):
             tpm_enabled = False
         else:
             tpm_enabled = bool(self.tpm_autounlock)
-        return {
+        payload = {
             "schema": "bf-policy/v2",
             "org": {
                 "company": self.company_id.name,
@@ -726,6 +748,47 @@ class BfPolicyOrg(models.Model):
                 "extensions": self._extensions_for(override),
             },
             "generated_at": fields.Datetime.now().isoformat() + "Z",
+        }
+        if seat_profile:
+            self._apply_seat(payload, seat_profile, machine)
+        return payload
+
+    def _apply_seat(self, payload, profile, machine=None):
+        """Turn an org payload into a shared seat's. Additive for old agents:
+        the new ``seat`` block and ``login.allow_*`` keys are ignored by an agent
+        that predates them, which is why a shared seat also needs a recent
+        image (see the README)."""
+        self.ensure_one()
+        groups = split_names(profile.login_groups)
+        borrowers = split_names(machine.seat_allowed_users) if machine else []
+        install = payload["install"]
+        install["hostname"] = (machine.hostname if machine
+                               else profile._hostname_preview())
+        # sssd: access_provider = simple, simple_allow_groups / simple_allow_users.
+        # ⚠️ An EMPTY simple_allow_* list lets EVERYONE in. The agent must write
+        # a deny-all rule when both lists are empty: a loan machine back on the
+        # shelf opens to nobody but the break-glass account.
+        install["login"]["allow_groups"] = groups
+        install["login"]["allow_users"] = borrowers
+        install["login"]["deny_if_empty"] = True
+        policies = payload["policies"]
+        policies["offline_login"] = {
+            "enabled": bool(profile.offline_login),
+            "max_offline_days": profile.offline_max_days,
+        }
+        policies["auto_lock_minutes"] = profile.auto_lock_minutes
+        extensions = payload["browser"]["extensions"]
+        known = {e.get("id") for e in extensions}
+        domain = self._effective_domain()
+        extensions.extend(
+            ext._policy_entry(domain) for ext in profile.extension_ids
+            if ext.extension_id not in known)
+        payload["seat"] = {
+            "profile": profile.code,
+            "name": profile.name,
+            "kind": profile.kind,
+            "ephemeral_home": bool(profile.ephemeral_home),
+            "borrowers": borrowers,
         }
 
 
@@ -1031,8 +1094,24 @@ class BfPolicyMachine(models.Model):
     org_id = fields.Many2one(
         "bf.policy.org", required=True, ondelete="cascade", index=True)
     user_id = fields.Many2one(
-        "res.users", required=True, ondelete="cascade", index=True,
-        help="Personne dont la politique fusionnee est servie a ce poste.")
+        "res.users", ondelete="cascade", index=True,
+        help="Personne dont la politique fusionnee est servie a ce poste. Vide "
+             "pour un poste partage, qui recoit celle de son profil.")
+    # --- Poste partage (18.0.2.12.0) ---------------------------------------
+    # Un poste partage n'a pas de proprietaire : il appartient a un profil
+    # (laboratoire, pret). Exactement l'un des deux est rempli.
+    seat_profile_id = fields.Many2one(
+        "bf.policy.seat.profile", string="Shared seat profile",
+        ondelete="restrict", index=True)
+    seat_kind = fields.Selection(related="seat_profile_id.kind")
+    seat_allowed_users = fields.Char(
+        "Borrowers allowed to log in",
+        help="Directory user names that may open a session on this shared seat, "
+             "on top of the profile's groups. Written by whoever records a loan; "
+             "empty = only the profile's groups.")
+    enrolled_by_id = fields.Many2one(
+        "res.users", string="Enrolled by", readonly=True, ondelete="set null",
+        help="Person who authenticated at install time.")
     # groups= : le hash n'a rien a faire dans une exportation ou un rapport.
     token_hash = fields.Char(
         "Empreinte du jeton", required=True, index=True, copy=False,
@@ -1078,7 +1157,31 @@ class BfPolicyMachine(models.Model):
     _sql_constraints = [
         ("machine_uuid_uniq", "unique(machine_uuid)",
          "Cette machine est deja enrolee."),
+        # Un poste est a une personne OU a un profil, jamais aux deux ni a
+        # personne : sans ca, /machine ne saurait pas quelle politique servir.
+        ("owner_xor_seat",
+         "CHECK((user_id IS NULL) != (seat_profile_id IS NULL))",
+         "A machine belongs either to a person or to a shared seat profile."),
     ]
+
+    @api.constrains("seat_allowed_users", "seat_profile_id")
+    def _check_seat_allowed_users(self):
+        for rec in self:
+            names = split_names(rec.seat_allowed_users)
+            if names and not rec.seat_profile_id:
+                raise ValidationError(_(
+                    "Only a shared seat takes borrowers; a personal machine is "
+                    "already its owner's."))
+            for name in names:
+                if not _NAME_RE.match(name):
+                    raise ValidationError(_("%s is not a valid user name.", name))
+
+    @api.constrains("seat_profile_id", "org_id")
+    def _check_seat_profile_org(self):
+        for rec in self.filtered("seat_profile_id"):
+            if rec.seat_profile_id.org_id != rec.org_id:
+                raise ValidationError(_(
+                    "The shared seat profile belongs to another organisation."))
 
     # ------------------------------------------------------------------ jeton
     @staticmethod
@@ -1086,7 +1189,8 @@ class BfPolicyMachine(models.Model):
         return hashlib.sha256((token or "").encode()).hexdigest()
 
     @api.model
-    def _enrol(self, org, user, machine_uuid, hostname, os_version=""):
+    def _enrol(self, org, user, machine_uuid, hostname, os_version="",
+               seat_profile=None):
         """Enrole une machine et rend ``(machine, token)``.
 
         Le jeton en clair n'est rendu qu'ici. Un ré-enrolement avec le meme
@@ -1103,6 +1207,12 @@ class BfPolicyMachine(models.Model):
         de faire tourner le jeton d'un poste d'autrui ni de se le faire
         reassigner. Seuls le meme usager et la meme organisation rejouent un
         enrolement.
+
+        Poste partage (``seat_profile``, 18.0.2.12.0) : ``user`` est alors la
+        personne qui installe, gardee dans ``enrolled_by_id``, pas le
+        proprietaire. Le nom d'hote vient du profil (compteur), pas du
+        client. Un rejeu doit viser le MEME profil ; le nom d'hote deja donne
+        est garde.
         """
         uuid = (machine_uuid or "").strip()
         if not uuid:
@@ -1115,7 +1225,21 @@ class BfPolicyMachine(models.Model):
             _logger.warning(
                 "[bf_policy] enrolement refuse : machine %s revoquee", uuid)
             return None, None
-        if existing and (existing.user_id != user or existing.org_id != org):
+        if seat_profile and (seat_profile.org_id != org or not seat_profile.active):
+            raise EnrolConflict(uuid)
+        # Poste partage : pas de proprietaire, donc c'est la personne qui l'a
+        # enrole (ou un administrateur) qui peut rejouer. Sans ca, n'importe quel
+        # installateur autorise qui lit l'UUID sur une fiche faisait tourner le
+        # jeton d'un labo : le vrai poste tombait en 401 et gardait l'ancien
+        # emprunteur (found in QA, 2026-09-27).
+        seat_replay_refused = bool(
+            existing and seat_profile and existing.enrolled_by_id != user
+            and not user.has_group("base.group_system"))
+        if existing and (
+                existing.org_id != org
+                or existing.seat_profile_id != (seat_profile or self.env["bf.policy.seat.profile"])
+                or (not seat_profile and existing.user_id != user)
+                or seat_replay_refused):
             _logger.warning(
                 "[bf_policy] enrolement refuse : machine %s deja enrolee pour "
                 "un autre usager ou une autre organisation", uuid)
@@ -1129,14 +1253,20 @@ class BfPolicyMachine(models.Model):
             "token_hash": self._hash_token(token),
             "os_version": (os_version or "").strip(),
             "enrolled_on": fields.Datetime.now(),
+            "enrolled_by_id": user.id,
         }
+        if seat_profile:
+            vals.update(user_id=False, seat_profile_id=seat_profile.id)
+            vals["hostname"] = (existing.hostname if existing
+                                else seat_profile._take_hostname())
         if existing:
             existing.write(vals)
             machine = existing
         else:
             machine = self.create(dict(vals, machine_uuid=uuid))
         _logger.info("[bf_policy] machine enrolee : %s (%s) pour %s",
-                     machine.hostname, uuid, user.login)
+                     machine.hostname, uuid,
+                     f"profil {seat_profile.code}" if seat_profile else user.login)
         return machine, token
 
     @api.model

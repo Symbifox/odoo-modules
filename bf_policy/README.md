@@ -153,6 +153,13 @@ Linux, which is why this catalogue targets Blue Fox OS machines.
 
 ## Changelog
 
+- **18.0.2.12.0** — Shared seats: a machine belongs to a person or to a seat
+  profile (lab or loan), enforced in the database. The profile names the
+  directory groups allowed to log in; a lent machine also opens to its
+  borrowers, and a seat nobody may use is denied. The installer is kept as
+  "enrolled by", not as the owner. The seat payload carries nobody's personal
+  settings; the directory bind password follows the rules of `/me` and
+  `/machine`.
 - **18.0.2.11.2** — The org is chosen from the host Odoo itself kept: under
   `proxy_mode` the one ProxyFix folded in (the last X-Forwarded-Host hop), and
   without it the header's last hop, never the first one a client can write.

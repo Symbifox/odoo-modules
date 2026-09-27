@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- To the adults who receive the school's notices, one email each, in their
+             language, in the school's layout (bf_school_core, school_lang).
+             🔴 No gender agreement: the texts speak of the computer and of "your child",
+             never "X est parti·e": a contact carries no gender. -->
+        <record id="mail_template_loan_out" model="mail.template">
+            <field name="name">School: computer lent</field>
+            <field name="model_id" ref="model_bf_school_device_loan"/>
+            <field name="subject">{{ object.student_id.name }}: a computer lent by the school</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The school lends a computer to <strong t-out="object.student_id.name or ''"/>: <strong t-out="object.machine_id.hostname or ''"/>, lent on <t t-out="format_date(object.date_out) or ''"/> and due back on <strong t-out="format_date(object.date_due) or ''"/>.</p>
+    <p t-if="object.condition_out" style="margin:0 0 12px 0;">Condition noted when lent: <t t-out="object.condition_out or ''"/></p>
+    <p style="margin:0 0 12px 0;">Your child logs in with their school account. The first login must be made while the computer is online. Please take care of it and bring it back to the school office by the due date.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            See it in the family portal
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_loan_reminder" model="mail.template">
+            <field name="name">School: lent computer due back soon</field>
+            <field name="model_id" ref="model_bf_school_device_loan"/>
+            <field name="subject">{{ object.student_id.name }}: the school's computer is due back on {{ format_date(object.date_due) }}</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The computer <strong t-out="object.machine_id.hostname or ''"/> lent to <strong t-out="object.student_id.name or ''"/> is due back at the school office on <strong t-out="format_date(object.date_due) or ''"/>, with its charger.</p>
+    <p style="margin:0 0 12px 0;">Work kept only on the computer stays on it: save what matters in the school's online storage before bringing it back.</p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_loan_overdue" model="mail.template">
+            <field name="name">School: lent computer overdue</field>
+            <field name="model_id" ref="model_bf_school_device_loan"/>
+            <field name="subject">{{ object.student_id.name }}: the school's computer has not come back</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The computer <strong t-out="object.machine_id.hostname or ''"/> lent to <strong t-out="object.student_id.name or ''"/> was due back on <t t-out="format_date(object.date_due) or ''"/> and the school office has not received it.</p>
+    <p style="margin:0 0 12px 0;">Please bring it back, or contact the school office if it was lost or damaged.</p>
+</div>
+            </field>
+        </record>
+
+        <record id="cron_school_loan_notices" model="ir.cron">
+            <field name="name">School: lent computers due back soon or overdue</field>
+            <field name="model_id" ref="model_bf_school_device_loan"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_loan_notices()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

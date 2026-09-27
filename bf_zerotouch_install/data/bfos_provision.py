@@ -21,6 +21,14 @@ rendered template:
     BFOS_OIDC_CLIENT_ID    public client id (e.g. 'blue-fox-os')
     BFOS_POLICY_URL        e.g. https://<domain>/api/v1/policy/me
     BFOS_ENROLL_URL        optional; defaults to the policy URL with /me → /enroll
+    BFOS_SEAT              optional shared seat profile code; else bfos.poste=<code>
+                           on the kernel command line (GRUB 'e')
+
+Shared seat (bf_policy 18.0.2.12.0): with a seat profile code, the operator
+still authenticates as usual, but the policy fetched is the profile's
+(/me?seat=<code>) and the enrolment names the profile, not the operator: the
+machine belongs to the lab or the loan pool, and nobody's personal settings
+land on it.
     BFOS_FALLBACK_LANG / BFOS_FALLBACK_KEYMAP / BFOS_FALLBACK_TIMEZONE
                            org defaults used if the flow fails
 
@@ -1436,6 +1444,38 @@ def write_autopart(passphrase=None, path=None, chiffrer=True, plan=None):
     return path
 
 
+# Code de profil de poste partage : meme motif que bf.policy.seat.profile.code.
+_SEAT_RE = re.compile(r"^[a-z0-9][a-z0-9-]{1,31}$")
+
+
+def seat_code(env=None, cmdline="/proc/cmdline") -> str:
+    """Code du profil de poste partage demande pour cette installation, ou "".
+
+    BFOS_SEAT d'abord, sinon `bfos.poste=<code>` sur la ligne du noyau. Un code
+    mal forme est ignore (installation personnelle) plutot que d'aller jusqu'au
+    serveur : il y serait refuse de toute facon, apres l'authentification.
+    """
+    env = env if env is not None else os.environ
+    code = (env.get("BFOS_SEAT") or "").strip()
+    if not code:
+        try:
+            with open(cmdline, encoding="utf-8") as fh:
+                for jeton in fh.read().split():
+                    if jeton.startswith("bfos.poste="):
+                        code = jeton.split("=", 1)[1].strip()
+        except OSError:
+            code = ""
+    return code if _SEAT_RE.match(code) else ""
+
+
+def policy_url_for_seat(policy_url, code) -> str:
+    """/me?seat=<code> pour un poste partage, l'URL telle quelle sinon."""
+    if not code:
+        return policy_url
+    sep = "&" if "?" in policy_url else "?"
+    return f"{policy_url}{sep}{urllib.parse.urlencode({'seat': code})}"
+
+
 def enrol_machine(enroll_url, token, policy, post=_post_json,
                   new_uuid=None, os_version=None, disk_passphrase=""):
     """Register this machine and return the staged dict, or raise ProvisionError.
@@ -1455,6 +1495,9 @@ def enrol_machine(enroll_url, token, policy, post=_post_json,
     }
     if disk_passphrase:
         payload["disk_passphrase"] = disk_passphrase
+    seat = policy.get("seat") if isinstance(policy.get("seat"), dict) else {}
+    if seat.get("profile"):
+        payload["seat_profile"] = str(seat["profile"])
     try:
         status, raw = post(enroll_url, payload, token)
     except Exception as exc:  # noqa: BLE001
@@ -1477,6 +1520,7 @@ def enrol_machine(enroll_url, token, policy, post=_post_json,
         "token": d["token"],
         "hostname": d.get("hostname") or hostname,
         "user": d.get("user", ""),
+        "seat_profile": d.get("seat_profile", "") or "",
         "enrolled_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         # Odoo's answer to "do you hold this passphrase?". ⚠️ The flag, never
         # the passphrase: this dict is what gets written to /etc/bluefox/
@@ -1745,6 +1789,10 @@ def run(env=None, post=_post_form, get=_get, sleep=time.sleep, out=None,
     policy_url = env.get("BFOS_POLICY_URL", "")
     if not all([device_url, token_url, client_id, policy_url]):
         raise ProvisionError("missing BFOS_OIDC_* / BFOS_POLICY_URL config")
+    code = seat_code(env)
+    if code:
+        out(f"[bfos] shared seat profile requested: {code}")
+    policy_url = policy_url_for_seat(policy_url, code)
     d = device_authorize(device_url, client_id, post=post)
     announce(d, out)
     token = poll_token(

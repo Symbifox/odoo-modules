@@ -9,3 +9,4 @@ from . import test_browser_extensions
 from . import test_access_hardening
 from . import test_forwarded_host
 from . import test_machine_without_bind
+from . import test_seat
