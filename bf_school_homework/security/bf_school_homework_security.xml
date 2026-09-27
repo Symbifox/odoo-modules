@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A teacher manages the homework of the groups they teach. The office sees all. -->
+    <record id="rule_homework_teacher" model="ir.rule">
+        <field name="name">Homework: the groups I teach</field>
+        <field name="model_id" ref="model_bf_school_homework"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('group_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_homework_manager" model="ir.rule">
+        <field name="name">Homework: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_homework"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

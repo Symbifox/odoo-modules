@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_medication_request" model="mail.template">
+            <field name="name">School: medication authorisation to sign</field>
+            <field name="model_id" ref="model_bf_school_medication"/>
+            <field name="subject">{{ object.student_id.name }}: medication authorisation to sign</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The school asks for your written authorisation to give a prescribed medication at school: <strong t-out="object.name or ''"/>.</p>
+    <p style="margin:0 0 12px 0;">Read the details and answer in the family portal.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/health"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            Read and answer
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <!-- Sent at once (force_send): the family must know without waiting for a queue. -->
+        <record id="mail_template_epinephrine" model="mail.template">
+            <field name="name">School: epinephrine given</field>
+            <field name="model_id" ref="model_bf_school_medication_administration"/>
+            <field name="subject">URGENT, {{ object.student_id.name }}: epinephrine given at school</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">During a severe allergic reaction, the school gave epinephrine to <strong t-out="object.student_id.name or ''"/>.</p>
+    <p style="margin:0 0 12px 0;"><strong>Call the school office now.</strong></p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Health Canada's priority food allergens. -->
+    <data noupdate="1">
+        <record id="allergen_peanut" model="bf.school.allergen"><field name="name">Peanuts</field><field name="sequence">1</field></record>
+        <record id="allergen_tree_nut" model="bf.school.allergen"><field name="name">Tree nuts</field><field name="sequence">2</field></record>
+        <record id="allergen_sesame" model="bf.school.allergen"><field name="name">Sesame</field><field name="sequence">3</field></record>
+        <record id="allergen_milk" model="bf.school.allergen"><field name="name">Milk</field><field name="sequence">4</field></record>
+        <record id="allergen_egg" model="bf.school.allergen"><field name="name">Eggs</field><field name="sequence">5</field></record>
+        <record id="allergen_fish" model="bf.school.allergen"><field name="name">Fish</field><field name="sequence">6</field></record>
+        <record id="allergen_shellfish" model="bf.school.allergen"><field name="name">Crustaceans and molluscs</field><field name="sequence">7</field></record>
+        <record id="allergen_soy" model="bf.school.allergen"><field name="name">Soy</field><field name="sequence">8</field></record>
+        <record id="allergen_wheat" model="bf.school.allergen"><field name="name">Wheat and gluten</field><field name="sequence">9</field></record>
+        <record id="allergen_sulphite" model="bf.school.allergen"><field name="name">Sulphites</field><field name="sequence">10</field></record>
+        <record id="allergen_mustard" model="bf.school.allergen"><field name="name">Mustard</field><field name="sequence">11</field></record>
+    </data>
+
+    <record id="ir_cron_school_meal_monthly" model="ir.cron">
+        <field name="name">School: monthly meal invoices</field>
+        <field name="model_id" ref="model_bf_school_meal_account"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_monthly_invoices()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">months</field>
+        <field name="nextcall" eval="(DateTime.today().replace(day=1) + relativedelta(months=1)).strftime('%Y-%m-%d 06:00:00')"/>
+    </record>
+    <record id="ir_cron_school_meal_invoice_pdf" model="ir.cron">
+        <field name="name">School: official PDF of meal top-up invoices</field>
+        <field name="model_id" ref="model_bf_school_meal_account"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_invoice_pdf()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+    </record>
+</odoo>

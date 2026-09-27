@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_admission_campaign_view_form" model="ir.ui.view">
+        <field name="name">bf.school.admission.campaign.form</field>
+        <field name="model">bf.school.admission.campaign</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open" type="object" string="Open" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_close" type="object" string="Close" invisible="state != 'open'"/>
+                    <button name="action_purge" type="object" string="Purge the applications not enrolled"
+                            invisible="state != 'closed'"
+                            confirm="The documents, the student's identity and the evaluation of every application that did not lead to an enrolment will be destroyed. The fee invoices are kept. This cannot be undone. Continue?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" placeholder="Admission 2027-2028"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="school_id"/>
+                            <field name="target_year"/>
+                            <field name="level_ids" widget="many2many_tags"/>
+                            <field name="date_open"/>
+                            <field name="date_close"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="fee_amount"/>
+                            <field name="fee_label"/>
+                            <field name="exam_datetime" invisible="kind != 'admission'"/>
+                            <field name="exam_location" invisible="kind != 'admission'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Applications" name="applications">
+                            <field name="application_ids" readonly="1">
+                                <list decoration-muted="state in ('refused', 'withdrawn')"
+                                      decoration-success="state in ('accepted', 'enrolled', 'confirmed')">
+                                    <field name="name"/>
+                                    <field name="display_name" string="Student"/>
+                                    <field name="level_id"/>
+                                    <field name="fee_paid"/>
+                                    <field name="score"/>
+                                    <field name="rank"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Public form" name="public" invisible="kind != 'admission'">
+                            <field name="intro_html" placeholder="What the families read above the form."/>
+                        </page>
+                        <page string="Exam instructions" name="exam" invisible="kind != 'admission'">
+                            <field name="exam_instructions"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_admission_campaign_view_list" model="ir.ui.view">
+        <field name="name">bf.school.admission.campaign.list</field>
+        <field name="model">bf.school.admission.campaign</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="target_year"/>
+                <field name="date_open"/>
+                <field name="date_close"/>
+                <field name="application_count"/>
+                <field name="state" widget="badge" decoration-success="state == 'open'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_admission_view_form" model="ir.ui.view">
+        <field name="name">bf.school.admission.form</field>
+        <field name="model">bf.school.admission</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_convene" type="object" string="Convene to the exam" class="btn-primary"
+                            invisible="state != 'submitted' or kind != 'admission'"/>
+                    <button name="action_mark_evaluated" type="object" string="Evaluated"
+                            invisible="state not in ('submitted', 'convened') or kind != 'admission'"/>
+                    <button name="action_accept" type="object" string="Accept" class="btn-primary"
+                            invisible="state not in ('evaluated', 'waitlisted') or kind != 'admission'"/>
+                    <button name="action_waitlist" type="object" string="Waiting list"
+                            invisible="state != 'evaluated' or kind != 'admission'"/>
+                    <button name="action_refuse" type="object" string="Refuse"
+                            invisible="state not in ('evaluated', 'waitlisted') or kind != 'admission'"/>
+                    <button name="action_enroll" type="object" string="Enrol" class="btn-primary"
+                            invisible="state != 'accepted'"/>
+                    <button name="action_withdraw" type="object" string="Withdrawn"
+                            invisible="state in ('enrolled', 'confirmed', 'withdrawn', 'refused')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="awaiting_fee,submitted,convened,evaluated,accepted,enrolled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Student">
+                            <field name="campaign_id"/>
+                            <field name="kind" invisible="1"/>
+                            <field name="student_id" invisible="not student_id"/>
+                            <field name="student_firstname" invisible="student_id"/>
+                            <field name="student_lastname" invisible="student_id"/>
+                            <field name="student_birthdate" invisible="student_id"/>
+                            <field name="current_school" invisible="student_id"/>
+                            <field name="level_id"/>
+                        </group>
+                        <group string="Family and fee">
+                            <field name="guardian_ids" widget="many2many_tags"/>
+                            <field name="payer_id"/>
+                            <field name="invoice_id"/>
+                            <field name="fee_paid"/>
+                            <field name="submitted_on"/>
+                        </group>
+                    </group>
+                    <group string="Evaluation" invisible="kind != 'admission'">
+                        <group>
+                            <field name="score"/>
+                            <field name="rank"/>
+                        </group>
+                        <group>
+                            <field name="decided_by_id"/>
+                            <field name="decided_on"/>
+                        </group>
+                        <field name="evaluation_note" colspan="2"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_admission_view_list" model="ir.ui.view">
+        <field name="name">bf.school.admission.list</field>
+        <field name="model">bf.school.admission</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('refused', 'withdrawn')"
+                  decoration-success="state in ('accepted', 'enrolled', 'confirmed')">
+                <field name="name"/>
+                <field name="display_name" string="Student"/>
+                <field name="campaign_id"/>
+                <field name="level_id"/>
+                <field name="fee_paid"/>
+                <field name="score"/>
+                <field name="rank"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_admission_view_search" model="ir.ui.view">
+        <field name="name">bf.school.admission.search</field>
+        <field name="model">bf.school.admission</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="student_lastname"/>
+                <field name="campaign_id"/>
+                <filter name="to_decide" string="To decide" domain="[('state', 'in', ('evaluated', 'waitlisted'))]"/>
+                <filter name="unpaid" string="Awaiting payment" domain="[('state', '=', 'awaiting_fee')]"/>
+                <group>
+                    <filter name="by_campaign" string="Campaign" context="{'group_by': 'campaign_id'}"/>
+                    <filter name="by_level" string="Level" context="{'group_by': 'level_id'}"/>
+                    <filter name="by_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_admission_action" model="ir.actions.act_window">
+        <field name="name">Applications</field>
+        <field name="res_model">bf.school.admission</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="bf_school_admission_campaign_action" model="ir.actions.act_window">
+        <field name="name">Campaigns</field>
+        <field name="res_model">bf.school.admission.campaign</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_school_admission" name="Admission" parent="bf_school_core.menu_school_root"
+              sequence="35" groups="bf_school_core.group_school_manager"/>
+    <menuitem id="menu_school_admission_applications" name="Applications" parent="menu_school_admission"
+              action="bf_school_admission_action" sequence="10"/>
+    <menuitem id="menu_school_admission_campaigns" name="Campaigns" parent="menu_school_admission"
+              action="bf_school_admission_campaign_action" sequence="20"/>
+</odoo>

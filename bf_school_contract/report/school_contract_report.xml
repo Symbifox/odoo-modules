@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_school_contract" model="ir.actions.report">
+        <field name="name">Contract for educational services</field>
+        <field name="model">bf.school.contract</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_school_contract.report_school_contract_document</field>
+        <field name="report_file">bf_school_contract.report_school_contract_document</field>
+        <field name="print_report_name">'Contrat - %s' % object.name</field>
+        <field name="binding_model_id" ref="model_bf_school_contract"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!--
+        🔴 The document is written in French on purpose, and is not translated: a
+        contract of adhesion is given in French first (Charter of the French language,
+        s. 55), and the texts of the Act and the regulation are reproduced word for word
+        (straight apostrophes instead of the official curly ones), as
+        read on LégisQuébec (E-9.1 up to date on 2026-06-10, E-9.1 r. 1 on 2026-05-01).
+        Regulation E-9.1, r. 1, s. 20 lists what it must contain; each block below
+        names the paragraph it answers.
+    -->
+    <template id="report_school_contract_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-set="school" t-value="o.school_id"/>
+                    <t t-set="addr" t-value="school.partner_id"/>
+                    <div class="page" style="font-size: 10pt;">
+                        <h3>Contrat de services éducatifs <t t-out="o.name"/></h3>
+
+                        <!-- s. 17 and 19: the school, as on its permit, and the language. -->
+                        <p>
+                            <strong t-out="school.name"/><br/>
+                            <t t-if="addr">
+                                <t t-out="addr.contact_address or ''"/><br/>
+                                <t t-if="addr.email">Courriel : <t t-out="addr.email"/> · </t>
+                                <t t-if="addr.website">Site : <t t-out="addr.website"/> · </t>
+                                <t t-if="addr.phone">Téléphone : <t t-out="addr.phone"/></t>
+                            </t>
+                        </p>
+                        <p t-if="school.contract_programs"><strong>Services éducatifs visés :</strong>
+                            <t t-out="school.contract_programs"/></p>
+                        <p><strong>Langue d'enseignement :</strong> <t t-out="school.contract_teaching_language or 'Français'"/></p>
+
+                        <!-- s. 20, 2° and s. 17.1, 1° and 2°: dates and school year. -->
+                        <p>
+                            <strong>Élève :</strong> <t t-out="o.student_id.name"/><br/>
+                            <strong>Client(s) :</strong> <t t-out="', '.join(o.client_ids.mapped('name'))"/><br/>
+                            <strong>Année scolaire :</strong> <t t-out="o.year_id.name"/><br/>
+                            <strong>Début du contrat et de la prestation des services :</strong>
+                            <span t-field="o.date_start"/> · <strong>Fin :</strong> <span t-field="o.date_end"/>
+                        </p>
+
+                        <!-- s. 17.1, 6° and s. 20, 4°: total price, detailed. -->
+                        <table class="table table-sm">
+                            <tr><td>Droits d'admission ou d'inscription</td>
+                                <td class="text-end"><span t-field="o.admission_fee"/></td></tr>
+                            <tr><td>Services éducatifs</td>
+                                <td class="text-end"><span t-field="o.tuition"/></td></tr>
+                            <tr t-foreach="o.accessory_ids" t-as="acc">
+                                <td>Service accessoire : <t t-out="acc.name"/></td>
+                                <td class="text-end"><span t-field="acc.price"/></td></tr>
+                            <tr><td><strong>Prix total</strong></td>
+                                <td class="text-end"><strong><span t-field="o.total_price"/></strong></td></tr>
+                        </table>
+                        <p t-if="o.eligibility_fee">Frais pour la détermination de l'admissibilité (payés à part) :
+                            <span t-field="o.eligibility_fee"/></p>
+
+                        <p><strong>Versements</strong> (le solde après les droits d'admission ou d'inscription) :</p>
+                        <ul>
+                            <li t-foreach="o._installments()" t-as="line">
+                                <span t-out="line[0].strftime('%Y-%m-%d')"/> :
+                                <t t-out="line[1]" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                            </li>
+                        </ul>
+
+                        <!-- s. 17.1, 7° -->
+                        <p>Sauf dans le cas d'une bourse, le paiement des droits à l'établissement ne peut être fait que par l'élève, un parent ou un allié.</p>
+
+                        <!-- Act s. 68.1 (L.Q. 2025, c. 29): mandatory clause, on pain of nullity. -->
+                        <p><strong>Visage découvert.</strong> L'élève a l'obligation d'avoir le visage découvert lorsqu'il se
+                        trouve sur les lieux, tel un local ou un immeuble, de l'établissement ainsi que lors de la
+                        prestation de tout service qui lui est rendu par l'établissement, y compris des services rendus
+                        pour le compte de celui-ci ou ceux rendus dans le cadre de la réalisation d'un projet pédagogique
+                        particulier, sauf lorsque le visage doit être couvert en raison d'un motif de santé, d'un handicap
+                        ou des exigences propres à l'exécution de certaines tâches. Aucun accommodement ni aucune autre
+                        dérogation ou adaptation, à l'exception de ceux prévus par la Loi sur l'enseignement privé, ne
+                        peut être accordé en ce qui a trait à l'obligation des élèves d'avoir le visage découvert.</p>
+
+                        <!-- s. 20, 1°: section 14 of the regulation, when it applies. -->
+                        <div t-if="school.contract_art14">
+                            <p><strong>Article 14 du Règlement d'application de la Loi sur l'enseignement privé</strong></p>
+                            <p>Lorsqu'un établissement ne rembourse pas un élève ou un client à qui il doit une somme
+                            d'argent parce qu'il n'a pas observé ses obligations prévues au chapitre IV de la Loi sur
+                            l'enseignement privé (chapitre E-9.1), le ministre fait lui-même ce remboursement à même le
+                            cautionnement selon les modalités suivantes: 1° si le cautionnement a été fourni au moyen
+                            d'une police de garantie, le ministre avise la caution de lui transmettre, dans les 60 jours
+                            de l'avis, la somme nécessaire pour assurer le remboursement jusqu'à concurrence du montant
+                            du cautionnement; 2° si le cautionnement a été fourni au moyen d'une obligation ou autre titre
+                            de créance, le ministre demande au Bureau général de dépôts pour le Québec de réaliser cette
+                            obligation ou ce titre de créance et de lui transmettre, à même le produit de cette
+                            réalisation, la somme nécessaire pour assurer le remboursement jusqu'à concurrence du montant
+                            du cautionnement; 3° si le cautionnement a été fourni en espèces, au moyen d'un chèque visé,
+                            d'un mandat-poste, d'un mandat de banque ou d'un ordre de paiement visé tiré sur une
+                            coopérative de services financiers, le ministre demande au Bureau général de dépôts pour le
+                            Québec de lui transmettre la somme nécessaire pour assurer le remboursement jusqu'à
+                            concurrence du montant du cautionnement.</p>
+                        </div>
+
+                        <!-- s. 20, 5°: the full text of sections 70 to 75 of the Act. -->
+                        <p><strong>Articles 70 à 75 de la Loi sur l'enseignement privé (chapitre E-9.1)</strong></p>
+                        <p><strong>70.</strong> L'établissement ne peut exiger de paiement d'un client avant de commencer à
+                        exécuter son obligation, sauf le paiement de droits d'admission ou d'inscription n'excédant pas le
+                        montant déterminé selon les règlements du ministre. Il ne peut exiger le paiement de l'obligation du
+                        client ou, si des droits d'admission ou d'inscription ont été versés, de son solde en moins de deux
+                        versements sensiblement égaux. Les dates d'échéance des versements doivent être fixées de telle
+                        sorte qu'elles se situent approximativement au début de chaque moitié, calculée en mois, en leçons
+                        ou en unités, de la durée des services éducatifs auxquels l'élève est inscrit.</p>
+                        <p><strong>71.</strong> Le client peut, à tout moment et à sa discrétion, résilier le contrat en
+                        donnant avis à cet effet par poste recommandée. Le contrat est résilié de plein droit à compter de
+                        la réception de l'avis.</p>
+                        <p><strong>72.</strong> Si le client résilie le contrat avant que la prestation des services n'ait
+                        été entreprise, l'établissement ne peut exiger qu'une indemnité n'excédant pas le montant obtenu en
+                        soustrayant les droits d'admission ou d'inscription du moins élevé des montants suivants: le montant
+                        maximal déterminé selon les règlements du ministre ou un montant représentant au plus 1/10 du prix
+                        total convenu pour ces services.</p>
+                        <p><strong>73.</strong> Si le client résilie le contrat après que la prestation des services ait été
+                        entreprise, l'établissement ne peut exiger du client que les montants suivants: 1° le prix des
+                        services qui lui ont été fournis calculés en mois, en leçons ou en unités et stipulé dans le
+                        contrat; 2° à titre de pénalité, le montant obtenu en soustrayant les droits d'admission ou
+                        d'inscription du moins élevé des montants suivants: le montant maximal déterminé selon les
+                        règlements du ministre ou un montant représentant au plus 1/10 du prix total convenu pour ces
+                        services.</p>
+                        <p><strong>74.</strong> Dans les dix jours qui suivent la résiliation du contrat, l'établissement
+                        doit restituer au client les montants qu'il a reçus en excédent de ceux auxquels il a droit.</p>
+                        <p><strong>75.</strong> Le client peut demander la nullité du contrat, s'il constate que l'élève a
+                        été admis aux services éducatifs en cause en contravention des dispositions régissant l'admission à
+                        ces services.</p>
+
+                        <!-- s. 20, 6° and the signature space immediately after it. -->
+                        <p><strong>L'établissement s'engage à ne pas céder ou vendre le présent contrat.</strong></p>
+                        <table style="width: 100%; margin-top: 12px;">
+                            <tr>
+                                <td t-foreach="o.client_ids" t-as="client" style="padding-right: 24px; vertical-align: bottom;">
+                                    <div style="height: 60px; border-bottom: 1px solid #000;"/>
+                                    <div>Signature du client : <t t-out="client.name"/></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_school_user,bf.school staff,model_bf_school,group_school_user,1,0,0,0
+access_bf_school_manager,bf.school administration,model_bf_school,group_school_manager,1,1,1,1
+access_bf_school_year_user,bf.school.year staff,model_bf_school_year,group_school_user,1,0,0,0
+access_bf_school_year_manager,bf.school.year administration,model_bf_school_year,group_school_manager,1,1,1,1
+access_bf_school_level_user,bf.school.level staff,model_bf_school_level,group_school_user,1,0,0,0
+access_bf_school_level_manager,bf.school.level administration,model_bf_school_level,group_school_manager,1,1,1,1
+access_bf_school_group_user,bf.school.group staff,model_bf_school_group,group_school_user,1,0,0,0
+access_bf_school_group_manager,bf.school.group administration,model_bf_school_group,group_school_manager,1,1,1,1
+access_bf_school_enrollment_user,bf.school.enrollment staff,model_bf_school_enrollment,group_school_user,1,0,0,0
+access_bf_school_enrollment_manager,bf.school.enrollment administration,model_bf_school_enrollment,group_school_manager,1,1,1,1
+access_bf_school_guardian_link_user,bf.school.guardian.link staff,model_bf_school_guardian_link,group_school_user,1,0,0,0
+access_bf_school_guardian_link_manager,bf.school.guardian.link administration,model_bf_school_guardian_link,group_school_manager,1,1,1,1

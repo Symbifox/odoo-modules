@@ -1,0 +1,876 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 22:30+0000\n"
+"PO-Revision-Date: 2026-09-26 22:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_core
+#. odoo-python
+#: code:addons/bf_school_core/models/guardian_link.py:0
+msgid ""
+"%(adult)s signs for %(student)s without parental authority. Only a holder of"
+" parental authority or a tutor signs for a minor."
+msgstr ""
+"%(adult)s signe pour %(student)s sans autorité parentale. Seul un titulaire "
+"de l'autorité parentale ou un tuteur signe pour un mineur."
+
+#. module: bf_school_core
+#. odoo-python
+#: code:addons/bf_school_core/models/school.py:0
+msgid "%s already has a current school year. Close it first."
+msgstr "%s a déjà une année scolaire en cours. Fermez-la d'abord."
+
+#. module: bf_school_core
+#. odoo-python
+#: code:addons/bf_school_core/models/res_partner.py:0
+msgid ""
+"%s is not a permanent code: four letters then eight digits, for example "
+"ABCD12345678."
+msgstr ""
+"%s n'est pas un code permanent : quatre lettres puis huit chiffres, par "
+"exemple ABCD12345678."
+
+#. module: bf_school_core
+#. odoo-python
+#: code:addons/bf_school_core/models/enrollment.py:0
+msgid "%s is not marked as a student."
+msgstr "%s n'est pas marqué comme élève."
+
+#. module: bf_school_core
+#: model:ir.model.constraint,message:bf_school_core.constraint_bf_school_group_name_year_unique
+msgid "A group name is used only once per school year."
+msgstr "Un nom de groupe ne sert qu'une fois par année scolaire."
+
+#. module: bf_school_core
+#: model:ir.model.constraint,message:bf_school_core.constraint_bf_school_level_code_unique
+msgid "A level code is used only once."
+msgstr "Un code de niveau ne sert qu'une fois."
+
+#. module: bf_school_core
+#. odoo-python
+#: code:addons/bf_school_core/models/school.py:0
+msgid "A school year ends after it starts."
+msgstr "Une année scolaire se termine après son début."
+
+#. module: bf_school_core
+#: model:ir.model.constraint,message:bf_school_core.constraint_bf_school_year_name_school_unique
+msgid "A school year name is used only once per school."
+msgstr "Un nom d'année scolaire ne sert qu'une fois par école."
+
+#. module: bf_school_core
+#: model:ir.model.constraint,message:bf_school_core.constraint_bf_school_enrollment_student_group_unique
+msgid "A student is enrolled only once in a group."
+msgstr "Un élève n'est inscrit qu'une fois dans un groupe."
+
+#. module: bf_school_core
+#. odoo-python
+#: code:addons/bf_school_core/models/guardian_link.py:0
+msgid "A student is not their own guardian."
+msgstr "Un élève n'est pas son propre responsable."
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_needaction
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__active
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__active
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__partner_id
+msgid "Address"
+msgstr "Adresse"
+
+#. module: bf_school_core
+#: model:res.groups,name:bf_school_core.group_school_manager
+msgid "Administration"
+msgstr "Administration"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__guardian_id
+msgid "Adult"
+msgstr "Adulte"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_res_partner__student_age
+#: model:ir.model.fields,field_description:bf_school_core.field_res_users__student_age
+msgid "Age"
+msgstr "Âge"
+
+#. module: bf_school_core
+#: model:ir.model.constraint,message:bf_school_core.constraint_bf_school_guardian_link_student_guardian_unique
+msgid "An adult is linked only once to a student. Tick several roles instead."
+msgstr ""
+"Un adulte n'est lié qu'une fois à un élève. Cochez plutôt plusieurs rôles."
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_group_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_view_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_res_partner__student_birthdate
+#: model:ir.model.fields,field_description:bf_school_core.field_res_users__student_birthdate
+msgid "Birth date"
+msgstr "Date de naissance"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_res_partner__guardian_student_link_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_res_users__guardian_student_link_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_school
+msgid "Children at school"
+msgstr "Enfants à l'école"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_year__state__closed
+msgid "Closed"
+msgstr "Fermée"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__company_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__company_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__company_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__company_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_core
+#: model:ir.ui.menu,name:bf_school_core.menu_school_config
+msgid "Configuration"
+msgstr "Configuration"
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__create_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__create_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__create_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__create_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__create_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__create_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__create_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__create_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__create_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__create_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_year__state__current
+msgid "Current"
+msgstr "En cours"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_res_partner__student_group_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_res_users__student_group_ids
+msgid "Current groups"
+msgstr "Groupes actuels"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__current_year_id
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_group_view_search
+msgid "Current year"
+msgstr "Année en cours"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__display_name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__display_name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__display_name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__display_name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__display_name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_level__stage__elementary
+msgid "Elementary"
+msgstr "Primaire"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__is_emergency_contact
+msgid "Emergency contact"
+msgstr "Contact d'urgence"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__date_end
+msgid "End"
+msgstr "Fin"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_enrollment__state__active
+msgid "Enrolled"
+msgstr "Inscrit"
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_bf_school_enrollment
+msgid "Enrolment"
+msgstr "Inscription"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__enrollment_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_res_partner__student_enrollment_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_res_users__student_enrollment_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_school
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_student
+msgid "Enrolments"
+msgstr "Inscriptions"
+
+#. module: bf_school_core
+#: model:ir.ui.menu,name:bf_school_core.menu_school_families
+msgid "Families"
+msgstr "Familles"
+
+#. module: bf_school_core
+#: model:ir.actions.act_window,name:bf_school_core.bf_school_guardian_link_action
+#: model:ir.ui.menu,name:bf_school_core.menu_school_guardian_links
+msgid "Family links"
+msgstr "Liens familiaux"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_guardian_link__relationship__father
+msgid "Father"
+msgstr "Père"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_year__name
+msgid "For example 2026-2027."
+msgstr "Par exemple 2026-2027."
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_group__name
+msgid "For example 301 or Les Hiboux."
+msgstr "Par exemple 301 ou Les Hiboux."
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_e1
+msgid "Grade 1"
+msgstr "1re année"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_e2
+msgid "Grade 2"
+msgstr "2e année"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_e3
+msgid "Grade 3"
+msgstr "3e année"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_e4
+msgid "Grade 4"
+msgstr "4e année"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_e5
+msgid "Grade 5"
+msgstr "5e année"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_e6
+msgid "Grade 6"
+msgstr "6e année"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_guardian_link__relationship__grandparent
+msgid "Grandparent"
+msgstr "Grand-parent"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__group_id
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_search_student
+msgid "Group"
+msgstr "Groupe"
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_group_view_form
+msgid "Group name"
+msgstr "Nom du groupe"
+
+#. module: bf_school_core
+#: model:ir.actions.act_window,name:bf_school_core.bf_school_group_action
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__group_ids
+#: model:ir.ui.menu,name:bf_school_core.menu_school_groups
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_view_form
+msgid "Groups"
+msgstr "Groupes"
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_bf_school_guardian_link
+msgid "Guardian of a student"
+msgstr "Responsable d'un élève"
+
+#. module: bf_school_core
+#: model:ir.actions.act_window,name:bf_school_core.action_school_guardians
+#: model:ir.model.fields,field_description:bf_school_core.field_res_partner__student_guardian_link_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_res_users__student_guardian_link_ids
+#: model:ir.ui.menu,name:bf_school_core.menu_school_guardians
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_school
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_student
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_search_student
+msgid "Guardians"
+msgstr "Responsables"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__has_message
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_guardian_link__has_parental_authority
+msgid ""
+"Holds parental authority or tutorship. Only these adults consent and sign "
+"for a minor."
+msgstr ""
+"Détient l'autorité parentale ou la tutelle. Seuls ces adultes consentent et "
+"signent pour un mineur."
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school__message_needaction
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_group__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school__message_has_error
+#: model:ir.model.fields,help:bf_school_core.field_bf_school__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_group__message_has_error
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_group__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_k5
+msgid "Kindergarten (5 years)"
+msgstr "Maternelle 5 ans"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__write_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__write_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__write_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__write_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__write_uid
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__write_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__write_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__write_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__write_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__write_date
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_group_view_form
+msgid "Leaves"
+msgstr "Quitte"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_enrollment__state__left
+msgid "Left"
+msgstr "Parti"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__date_end
+msgid "Left on"
+msgstr "Parti le"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_guardian_link__relationship__tutor
+msgid "Legal tutor"
+msgstr "Tuteur légal"
+
+#. module: bf_school_core
+#: model:ir.actions.act_window,name:bf_school_core.bf_school_level_action
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__level_ids
+#: model:ir.ui.menu,name:bf_school_core.menu_school_levels
+msgid "Levels"
+msgstr "Niveaux"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__lives_with
+msgid "Lives with"
+msgstr "Habite avec"
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_view_form
+msgid "Make current"
+msgstr "Rendre courante"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__can_pickup
+msgid "May pick up"
+msgstr "Peut venir chercher"
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_guardian_link__can_pickup
+msgid "May pick up the student at school."
+msgstr "Peut venir chercher l'élève à l'école."
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_guardian_link__can_sign
+msgid "May sign authorisations and forms for this student."
+msgstr "Peut signer les autorisations et les formulaires de cet élève."
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_has_error
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__code
+msgid "Ministry code"
+msgstr "Code du ministère"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_guardian_link__relationship__mother
+msgid "Mother"
+msgstr "Mère"
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_group_view_search
+msgid "My groups"
+msgstr "Mes groupes"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__name
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_student
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_res_partner__guardian_student_count
+#: model:ir.model.fields,field_description:bf_school_core.field_res_users__guardian_student_count
+msgid "Number of children at school"
+msgstr "Nombre d'enfants à l'école"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_group__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_group__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_school_core
+#: model:res.groups,comment:bf_school_core.group_school_manager
+msgid ""
+"Office and management: they create schools, years, groups,\n"
+"            enrolments and guardian links."
+msgstr ""
+"Secrétariat et direction : ils créent les écoles, les années, les groupes,\n"
+"            les inscriptions et les liens familiaux."
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_guardian_link__relationship__other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_guardian_link__relationship__parent
+msgid "Parent"
+msgstr "Parent"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__has_parental_authority
+msgid "Parental authority"
+msgstr "Autorité parentale"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__is_payer
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_guardian_link_view_search
+msgid "Pays"
+msgstr "Paie"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_res_partner__student_permanent_code
+#: model:ir.model.fields,field_description:bf_school_core.field_res_users__student_permanent_code
+msgid "Permanent code"
+msgstr "Code permanent"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_prek4
+msgid "Pre-K (4 years)"
+msgstr "Maternelle 4 ans"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_level__stage__preschool
+msgid "Preschool"
+msgstr "Préscolaire"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__rating_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_guardian_link__is_payer
+msgid "Receives and pays the invoices for this student."
+msgstr "Reçoit et paie les factures de cet élève."
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_guardian_link_view_search
+msgid "Receives no notices"
+msgstr "Ne reçoit pas les avis"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__receives_notices
+msgid "Receives notices"
+msgstr "Reçoit les avis"
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_guardian_link__receives_notices
+msgid "Receives the school's announcements and messages about this student."
+msgstr "Reçoit les annonces et les messages de l'école au sujet de cet élève."
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__relationship
+msgid "Relationship"
+msgstr "Lien"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_bf_school
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__school_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__school_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__school_id
+#: model:ir.module.category,name:bf_school_core.module_category_school
+#: model:ir.ui.menu,name:bf_school_core.menu_school_root
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_group_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_school
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_bf_school_group
+msgid "School group"
+msgstr "Groupe"
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_bf_school_level
+msgid "School level"
+msgstr "Niveau scolaire"
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_view_form
+msgid "School name"
+msgstr "Nom de l'école"
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_bf_school_year
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__year_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__year_id
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_group_view_search
+msgid "School year"
+msgstr "Année scolaire"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__year_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_view_form
+msgid "School years"
+msgstr "Années scolaires"
+
+#. module: bf_school_core
+#: model:ir.actions.server,name:bf_school_core.ir_cron_school_sync_minors_ir_actions_server
+msgid "School: students who reach the age of consent"
+msgstr "École : élèves qui atteignent l'âge du consentement"
+
+#. module: bf_school_core
+#: model:ir.actions.act_window,name:bf_school_core.bf_school_action
+#: model:ir.ui.menu,name:bf_school_core.menu_school_schools
+msgid "Schools"
+msgstr "Écoles"
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_level__stage__secondary
+msgid "Secondary"
+msgstr "Secondaire"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_s1
+msgid "Secondary I"
+msgstr "Secondaire 1"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_s2
+msgid "Secondary II"
+msgstr "Secondaire 2"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_s3
+msgid "Secondary III"
+msgstr "Secondaire 3"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_s4
+msgid "Secondary IV"
+msgstr "Secondaire 4"
+
+#. module: bf_school_core
+#: model:bf.school.level,name:bf_school_core.level_s5
+msgid "Secondary V"
+msgstr "Secondaire 5"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__sequence
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__can_sign
+msgid "Signs"
+msgstr "Signe"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__date_start
+msgid "Since"
+msgstr "Depuis"
+
+#. module: bf_school_core
+#: model:res.groups,name:bf_school_core.group_school_user
+msgid "Staff"
+msgstr "Personnel"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_level__stage
+msgid "Stage"
+msgstr "Étape"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__date_start
+msgid "Start"
+msgstr "Début"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__state
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_year__state
+msgid "State"
+msgstr "Statut"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_enrollment__student_id
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__student_id
+#: model:ir.model.fields,field_description:bf_school_core.field_res_partner__is_student
+#: model:ir.model.fields,field_description:bf_school_core.field_res_users__is_student
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_guardian_link_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_student
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_student
+msgid "Student name"
+msgstr "Nom de l'élève"
+
+#. module: bf_school_core
+#. odoo-python
+#: code:addons/bf_school_core/models/school.py:0
+#: model:ir.actions.act_window,name:bf_school_core.action_school_students
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__student_count
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__student_count
+#: model:ir.ui.menu,name:bf_school_core.menu_school_students
+#: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_group_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_search_student
+msgid "Students"
+msgstr "Élèves"
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__teacher_ids
+msgid "Teachers"
+msgstr "Enseignants"
+
+#. module: bf_school_core
+#: model:res.groups,comment:bf_school_core.group_school_user
+msgid ""
+"Teachers and staff: they read schools, groups, students and\n"
+"            families, and change nothing."
+msgstr ""
+"Enseignants et personnel : ils consultent les écoles, les groupes, les élèves et\n"
+"            les familles, et ne modifient rien."
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_res_partner__student_permanent_code
+#: model:ir.model.fields,help:bf_school_core.field_res_users__student_permanent_code
+msgid ""
+"The code the Ministry of Education gives every student: four letters then "
+"eight digits."
+msgstr ""
+"Le code que le ministère de l'Éducation attribue à chaque élève : quatre "
+"lettres puis huit chiffres."
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school__code
+msgid ""
+"The code the Ministry of Education gives the school (code d'organisme)."
+msgstr ""
+"Le code que le ministère de l'Éducation attribue à l'école (code "
+"d'organisme)."
+
+#. module: bf_school_core
+#. odoo-python
+#: code:addons/bf_school_core/models/school.py:0
+msgid "The school year belongs to another school."
+msgstr "L'année scolaire appartient à une autre école."
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school__partner_id
+msgid "The school's own contact card: address, phone, email."
+msgstr "La fiche de l'école elle-même : adresse, téléphone, courriel."
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_group__teacher_ids
+msgid ""
+"The staff members who teach this group. They see its students and families."
+msgstr ""
+"Les membres du personnel qui enseignent à ce groupe. Ils voient ses élèves "
+"et ses familles."
+
+#. module: bf_school_core
+#: model:ir.model.constraint,message:bf_school_core.constraint_res_partner_student_permanent_code_unique
+msgid "This permanent code already belongs to another student."
+msgstr "Ce code permanent appartient déjà à un autre élève."
+
+#. module: bf_school_core
+#: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_year__state__draft
+msgid "Upcoming"
+msgstr "À venir"
+
+#. module: bf_school_core
+#: model_terms:ir.ui.view,arch_db:bf_school_core.view_partner_form_student
+msgid "Visible to the school staff only."
+msgstr "Visible par le personnel de l'école seulement."
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_guardian_link__note
+msgid "Visible to the school staff only. Never shown to families."
+msgstr ""
+"Visible par le personnel de l'école seulement. Jamais montré aux familles."
+
+#. module: bf_school_core
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_core.field_bf_school_group__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_core
+#: model:ir.model.fields,help:bf_school_core.field_bf_school__website_message_ids
+#: model:ir.model.fields,help:bf_school_core.field_bf_school_group__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_mail_template
+msgid "Email Templates"
+msgstr "Modèles de courriel"

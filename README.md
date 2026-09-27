@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**190 modules are BUSL-1.1.** The source is published and auditable, and **you
+**203 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -279,6 +279,19 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_rental_privacy` | Locatif : pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Record in the Law 25 register what a termination notice says about the tenant |
 | `bf_rental_rent` | Locatif : loyer et arrérages | 18.0.1.2.0 | BUSL-1.1 | Rent instalments, what remains due, and what the module refuses to conclude from it |
 | `bf_scan` | Numériser depuis le téléphone | 18.0.1.2.0 | BUSL-1.1 | An installable phone page with three tiles: a business card becomes a contact, an invoice becomes a draft vendor bill with its photo, and a document goes to the note pad with a reminder or straight into any record's thread |
+| `bf_school_admission` | Symbifox École : admission et réinscription | 18.0.1.0.0 | BUSL-1.1 | Admission of new students (public form, fee, exam, waiting list, decision by a person) and re-enrolment from the family portal |
+| `bf_school_attendance` | Symbifox École : présences | 18.0.1.0.0 | BUSL-1.1 | Roll call by half-day or period, absences declared and justified by the families on the portal, same-day notice of an unjustified absence |
+| `bf_school_conduct` | Symbifox École : conduite et suivi mensuel | 18.0.1.0.0 | BUSL-1.1 | Breaches of the rules of conduct with graduated sanctions, parents' notices under the law, and the monthly news of Régime pédagogique s. 29.2 |
+| `bf_school_contract` | Symbifox École : contrat de services éducatifs | 18.0.1.0.0 | BUSL-1.1 | Québec private school contract for educational services: the Act's caps enforced, mandatory mentions printed, signed with Symbifox Sign |
+| `bf_school_core` | Symbifox École | 18.0.1.0.0 | BUSL-1.1 | Schools, school years, levels, groups, students and their guardians, with roles for shared custody |
+| `bf_school_forms` | Symbifox École : autorisations | 18.0.1.0.0 | BUSL-1.1 | Field trip and activity authorisations: one click per guardian, dated evidence, a refusal always wins |
+| `bf_school_health` | Symbifox École : santé | 18.0.1.0.0 | BUSL-1.1 | Health alerts for every staff member, detailed health records and medication for a restricted group, parents' authorisations signed on the portal |
+| `bf_school_homework` | Symbifox École : devoirs et agenda | 18.0.1.0.0 | BUSL-1.1 | Homework, studies, projects and announced tests per group, on the family portal and in the parents' own calendar (iCal) |
+| `bf_school_meal` | Symbifox École : repas | 18.0.1.0.0 | BUSL-1.1 | Caterer menus, meal orders on the family portal, prepaid balance or monthly invoice, food allergies checked at the order and on the kitchen list |
+| `bf_school_meeting` | Symbifox École : rencontres de parents | 18.0.1.0.0 | BUSL-1.1 | Parent-teacher meetings: the office sets each teacher's hours, parents book a slot with each teacher of their child, without overlaps |
+| `bf_school_message` | Symbifox École : annonces aux familles | 18.0.1.0.0 | BUSL-1.1 | School announcements to families, by school or group, with an email that names the children and a dated read receipt on the portal |
+| `bf_school_portal` | Symbifox École : portail des familles | 18.0.1.0.0 | BUSL-1.1 | One portal account per adult for all their children: groups, teachers, and what the school allows them to do |
+| `bf_school_privacy` | Symbifox École : consentements | 18.0.1.0.0 | BUSL-1.1 | Law 25 consents for a school: photos, publication, family contact list, educational platforms, asked each year of the right person |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.21.4 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.2.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
 | `bf_security_awareness` | Security Awareness | 18.0.2.0.0 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
@@ -350,7 +363,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **190 modules: BUSL-1.1.** Production use for your own internal business
+- **203 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A contract is the family's money: the school office only. Teachers have no
+         access right at all. -->
+    <record id="rule_school_contract_company" model="ir.rule">
+        <field name="name">School contract: my companies</field>
+        <field name="model_id" ref="model_bf_school_contract"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- 🔴 The office sends the contract for signature: without the signature user group,
+         the request could not be created (found in QA, 2026-09-27). -->
+    <record id="bf_school_core.group_school_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('bf_sign.group_sign_user'))]"/>
+    </record>
+</odoo>

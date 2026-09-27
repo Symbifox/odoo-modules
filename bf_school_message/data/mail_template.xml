@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- The body only: the banner and brand footer come from the layout passed at
+             send time, as for the noticeboard's own email. The context carries the
+             children's first names, the portal link and the recipient's language:
+             one email per adult, never one per child. -->
+        <record id="mail_template_school_news" model="mail.template">
+            <field name="name">School: announcement to families</field>
+            <field name="model_id" ref="bf_babillard.model_bf_babillard_post"/>
+            <field name="subject">{{ ctx.get('school_children') }}: {{ object.name }}</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <t t-set="societe" t-value="object.company_id"/>
+    <t t-set="accent" t-value="('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'"/>
+    <p style="margin:0 0 4px 0;font-size:13px;color:#6B7280;">
+        <t t-out="object.school_id.name or ''"/> · <t t-out="ctx.get('school_children') or ''"/>
+    </p>
+    <h2 style="margin:0 0 16px 0;" t-out="object.name or ''"/>
+    <div t-if="not is_html_empty(object.corps_html)" style="margin:0 0 16px 0;" t-out="object.corps_html"/>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}{{ ctx.get('school_url') }}"
+           t-attf-style="background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            <t t-if="object.lecture_requise">Read and confirm</t>
+            <t t-else="">Open in the family portal</t>
+        </a>
+    </p>
+    <p t-if="object.lecture_requise" style="margin:0;font-size:13px;color:#6B7280;">
+        The school asks you to confirm that you have read this announcement. The
+        confirmation is given in the family portal, after you sign in: opening this
+        email or its link does not count.
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

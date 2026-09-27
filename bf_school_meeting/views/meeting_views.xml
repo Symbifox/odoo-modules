@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_meeting_session_view_form" model="ir.ui.view">
+        <field name="name">bf.school.meeting.session.form</field>
+        <field name="model">bf.school.meeting.session</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_slots" type="object" string="Generate the slots"
+                            invisible="state == 'closed'" groups="bf_school_core.group_school_manager"/>
+                    <button name="action_open" type="object" string="Open the booking" class="btn-primary"
+                            invisible="state != 'draft'" groups="bf_school_core.group_school_manager"/>
+                    <button name="action_close" type="object" string="Close"
+                            invisible="state != 'open'" groups="bf_school_core.group_school_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" placeholder="Meetings of the first report card"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="school_id"/>
+                            <field name="group_ids" widget="many2many_tags"/>
+                            <field name="location"/>
+                        </group>
+                        <group>
+                            <field name="slot_minutes"/>
+                            <field name="booking_open"/>
+                            <field name="booking_close"/>
+                            <field name="slot_count"/>
+                            <field name="booked_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Teachers' hours" name="hours">
+                            <field name="availability_ids">
+                                <list editable="bottom">
+                                    <field name="teacher_id"/>
+                                    <field name="start"/>
+                                    <field name="stop"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Slots" name="slots">
+                            <field name="slot_ids" readonly="1">
+                                <list decoration-success="student_id">
+                                    <field name="teacher_id"/>
+                                    <field name="start"/>
+                                    <field name="stop"/>
+                                    <field name="student_id"/>
+                                    <field name="partner_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_meeting_session_view_list" model="ir.ui.view">
+        <field name="name">bf.school.meeting.session.list</field>
+        <field name="model">bf.school.meeting.session</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="school_id"/>
+                <field name="booking_close"/>
+                <field name="booked_count"/>
+                <field name="slot_count"/>
+                <field name="state" widget="badge" decoration-success="state == 'open'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- A teacher's evening: their own slots, with the child's name. -->
+    <record id="bf_school_meeting_slot_view_list" model="ir.ui.view">
+        <field name="name">bf.school.meeting.slot.list</field>
+        <field name="model">bf.school.meeting.slot</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" decoration-muted="not student_id">
+                <field name="session_id"/>
+                <field name="start"/>
+                <field name="stop"/>
+                <field name="teacher_id" optional="hide"/>
+                <field name="student_id"/>
+                <field name="partner_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_meeting_slot_view_search" model="ir.ui.view">
+        <field name="name">bf.school.meeting.slot.search</field>
+        <field name="model">bf.school.meeting.slot</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="teacher_id"/>
+                <filter name="mine" string="My meetings" domain="[('teacher_id', '=', uid)]"/>
+                <filter name="booked" string="Booked" domain="[('student_id', '!=', False)]"/>
+                <group>
+                    <filter name="by_session" string="Meetings" context="{'group_by': 'session_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_meeting_session_action" model="ir.actions.act_window">
+        <field name="name">Parent-teacher meetings</field>
+        <field name="res_model">bf.school.meeting.session</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="bf_school_meeting_slot_action" model="ir.actions.act_window">
+        <field name="name">My meeting schedule</field>
+        <field name="res_model">bf.school.meeting.slot</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_mine': 1}</field>
+    </record>
+
+    <menuitem id="menu_school_meetings" name="Parent-teacher meetings" parent="bf_school_core.menu_school_root" sequence="30"/>
+    <menuitem id="menu_school_meeting_sessions" name="Meetings" parent="menu_school_meetings"
+              action="bf_school_meeting_session_action" sequence="10" groups="bf_school_core.group_school_manager"/>
+    <menuitem id="menu_school_meeting_schedule" name="My schedule" parent="menu_school_meetings"
+              action="bf_school_meeting_slot_action" sequence="20"/>
+</odoo>

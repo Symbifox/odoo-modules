@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_school_conduct_rule_user,bf.school.conduct.rule staff,model_bf_school_conduct_rule,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_conduct_rule_manager,bf.school.conduct.rule administration,model_bf_school_conduct_rule,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_sanction_user,bf.school.sanction staff,model_bf_school_sanction,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_sanction_manager,bf.school.sanction administration,model_bf_school_sanction,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_incident_user,bf.school.incident staff,model_bf_school_incident,bf_school_core.group_school_user,1,1,1,0
+access_bf_school_incident_manager,bf.school.incident administration,model_bf_school_incident,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_followup_user,bf.school.followup staff,model_bf_school_followup,bf_school_core.group_school_user,1,1,1,0
+access_bf_school_followup_manager,bf.school.followup administration,model_bf_school_followup,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_followup_communication_user,bf.school.followup.communication staff,model_bf_school_followup_communication,bf_school_core.group_school_user,1,0,1,0
+access_bf_school_followup_communication_manager,bf.school.followup.communication administration,model_bf_school_followup_communication,bf_school_core.group_school_manager,1,1,1,1

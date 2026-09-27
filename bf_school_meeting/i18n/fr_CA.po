@@ -1,0 +1,488 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 00:41+0000\n"
+"PO-Revision-Date: 2026-09-27 00:41+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_meeting
+#: model:mail.template,body_html:bf_school_meeting.mail_template_meeting_booked
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Your meeting is booked:\n"
+"        <strong t-out=\"format_datetime(object.start, tz=object.company_id.partner_id.tz or 'America/Toronto', dt_format='d MMMM, HH:mm') or ''\"/>,\n"
+"        with <t t-out=\"object.teacher_id.name or ''\"/>, about <t t-out=\"object.student_id.name or ''\"/>.</p>\n"
+"    <p t-if=\"object.session_id.location\" style=\"margin:0 0 12px 0;\">Place: <t t-out=\"object.session_id.location\"/></p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/meetings\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            My meetings\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Bonjour,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Votre rencontre est réservée :\n"
+"        <strong t-out=\"format_datetime(object.start, tz=object.company_id.partner_id.tz or 'America/Toronto', dt_format='d MMMM, HH:mm') or ''\"/>,\n"
+"        avec <t t-out=\"object.teacher_id.name or ''\"/>, au sujet de <t t-out=\"object.student_id.name or ''\"/>.</p>\n"
+"    <p t-if=\"object.session_id.location\" style=\"margin:0 0 12px 0;\">Lieu : <t t-out=\"object.session_id.location\"/></p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/meetings\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Mes rencontres\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_my_school_meetings_link
+msgid "<i class=\"fa fa-calendar me-1\"/>Parent-teacher meetings"
+msgstr "<i class=\"fa fa-calendar me-1\"/>Rencontres de parents"
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "A meeting with this teacher is already booked for this child."
+msgstr "Une rencontre avec cet enseignant est déjà réservée pour cet enfant."
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "A slot lasts at least 5 minutes."
+msgstr "Un créneau dure au moins 5 minutes."
+
+#. module: bf_school_meeting
+#: model:ir.model.constraint,message:bf_school_meeting.constraint_bf_school_meeting_slot_one_per_student_teacher
+msgid "A student meets each teacher once per session."
+msgstr "Un élève rencontre chaque enseignant une seule fois par séance."
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_my_home_school_meetings
+msgid "Book a slot with each of your child's teachers"
+msgstr "Réservez un créneau avec chaque enseignant de votre enfant"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__booked_count
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_slot_view_search
+msgid "Booked"
+msgstr "Réservé"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__booked_on
+msgid "Booked On"
+msgstr "Réservé le"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__partner_id
+msgid "Booked by"
+msgstr "Réservé par"
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_school_meetings
+msgid "Booked:"
+msgstr "Réservé :"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__booking_close
+msgid "Booking closes"
+msgstr "Fermeture des réservations"
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "Booking closes after it opens."
+msgstr "Les réservations ferment après leur ouverture."
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "Booking is closed."
+msgstr "Les réservations sont fermées."
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "Booking is closed: contact the school office to cancel."
+msgstr ""
+"Les réservations sont fermées : contactez le secrétariat pour annuler."
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__booking_open
+msgid "Booking opens"
+msgstr "Ouverture des réservations"
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_school_meetings
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_session_view_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields.selection,name:bf_school_meeting.selection__bf_school_meeting_session__state__closed
+msgid "Closed"
+msgstr "Fermée"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__company_id
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__company_id
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__create_uid
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__create_uid
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__create_date
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__create_date
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__display_name
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__display_name
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields.selection,name:bf_school_meeting.selection__bf_school_meeting_session__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,help:bf_school_meeting.field_bf_school_meeting_session__booking_close
+msgid "Families book and cancel until then."
+msgstr "Les familles réservent et annulent jusque-là."
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,help:bf_school_meeting.field_bf_school_meeting_session__name
+msgid "For example: Meetings of the first report card."
+msgstr "Par exemple : rencontres du premier bulletin."
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_session_view_form
+msgid "Generate the slots"
+msgstr "Générer les créneaux"
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "Generate the slots before opening the booking."
+msgstr "Générez les créneaux avant d'ouvrir les réservations."
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__group_ids
+msgid "Groups"
+msgstr "Groupes"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__id
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__id
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,help:bf_school_meeting.field_bf_school_meeting_session__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,help:bf_school_meeting.field_bf_school_meeting_session__message_has_error
+#: model:ir.model.fields,help:bf_school_meeting.field_bf_school_meeting_session__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__write_uid
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__write_uid
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__write_date
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__write_date
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__location
+msgid "Location"
+msgstr "Emplacement"
+
+#. module: bf_school_meeting
+#: model:ir.ui.menu,name:bf_school_meeting.menu_school_meeting_sessions
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_slot_view_search
+msgid "Meetings"
+msgstr "Réunions"
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_session_view_form
+msgid "Meetings of the first report card"
+msgstr "Rencontres du premier bulletin"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_meeting
+#: model:ir.actions.act_window,name:bf_school_meeting.bf_school_meeting_slot_action
+msgid "My meeting schedule"
+msgstr "Mon horaire de rencontres"
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_slot_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_school_meetings
+msgid "My meetings"
+msgstr "Mes rencontres"
+
+#. module: bf_school_meeting
+#: model:ir.ui.menu,name:bf_school_meeting.menu_school_meeting_schedule
+msgid "My schedule"
+msgstr "Mon horaire"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_school_meetings
+msgid "No meeting to book for now."
+msgstr "Aucune rencontre à réserver pour le moment."
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_school_meetings
+msgid "No slot left: contact the school office."
+msgstr "Plus aucun créneau : contactez le secrétariat."
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,help:bf_school_meeting.field_bf_school_meeting_session__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,help:bf_school_meeting.field_bf_school_meeting_session__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "Only the adult who booked cancels."
+msgstr "Seul l'adulte qui a réservé peut annuler."
+
+#. module: bf_school_meeting
+#: model:ir.model.fields.selection,name:bf_school_meeting.selection__bf_school_meeting_session__state__open
+msgid "Open"
+msgstr "Ouvrir"
+
+#. module: bf_school_meeting
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_session_view_form
+msgid "Open the booking"
+msgstr "Ouvrir les réservations"
+
+#. module: bf_school_meeting
+#: model:ir.model,name:bf_school_meeting.model_bf_school_meeting_slot
+msgid "Parent-teacher meeting slot"
+msgstr "Créneau de rencontre de parents"
+
+#. module: bf_school_meeting
+#: model:ir.actions.act_window,name:bf_school_meeting.bf_school_meeting_session_action
+#: model:ir.model,name:bf_school_meeting.model_bf_school_meeting_session
+#: model:ir.ui.menu,name:bf_school_meeting.menu_school_meetings
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_breadcrumbs_school_meetings
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_my_home_school_meetings
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.portal_school_meetings
+msgid "Parent-teacher meetings"
+msgstr "Rencontres de parents"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_meeting
+#: model:mail.template,name:bf_school_meeting.mail_template_meeting_booked
+msgid "School: parent-teacher meeting booked"
+msgstr "École : rencontre de parents réservée"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__session_id
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__session_id
+msgid "Session"
+msgstr "Session"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__slot_count
+msgid "Slot Count"
+msgstr "Nombre de créneaux"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__slot_minutes
+msgid "Slot length (minutes)"
+msgstr "Durée d'un créneau (minutes)"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__slot_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_session_view_form
+msgid "Slots"
+msgstr "Créneaux"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__start
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__start
+msgid "Start"
+msgstr "Début"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__state
+msgid "State"
+msgstr "Statut"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__stop
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__stop
+msgid "Stop"
+msgstr "Arrêter"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__student_id
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_availability__teacher_id
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_slot__teacher_id
+msgid "Teacher"
+msgstr "Professeur"
+
+#. module: bf_school_meeting
+#: model:ir.model,name:bf_school_meeting.model_bf_school_meeting_availability
+msgid "Teacher's hours for parent-teacher meetings"
+msgstr "Plages d'un enseignant pour les rencontres de parents"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__availability_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_session_view_form
+msgid "Teachers' hours"
+msgstr "Plages des enseignants"
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "The hours end after they start."
+msgstr "Les plages se terminent après leur début."
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "This slot was just taken. Choose another one."
+msgstr "Ce créneau vient d'être pris. Choisissez-en un autre."
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "This teacher does not teach this child in these meetings."
+msgstr "Cet enseignant n'enseigne pas à cet enfant dans ces rencontres."
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_meeting
+#: model:ir.model.fields,help:bf_school_meeting.field_bf_school_meeting_session__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_school_meeting
+#. odoo-python
+#: code:addons/bf_school_meeting/models/meeting.py:0
+msgid "You already have a meeting at that time."
+msgstr "Vous avez déjà une rencontre à cette heure."
+
+#. module: bf_school_meeting
+#: model:mail.template,subject:bf_school_meeting.mail_template_meeting_booked
+msgid ""
+"{{ object.student_id.name }}: meeting with {{ object.teacher_id.name }}"
+msgstr ""
+"{{ object.student_id.name }} : rencontre avec {{ object.teacher_id.name }}"

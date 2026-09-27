@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_school_news" name="Announcements" parent="bf_school_core.menu_school_root"
+              action="action_school_news" sequence="25"
+              groups="bf_babillard.group_babillard_redacteur,bf_school_core.group_school_user"/>
+</odoo>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Applications carry a child's documents and a family's contact information: the
+         school office only. Teachers and families have no access right; families follow
+         their application through its personal link. -->
+    <record id="rule_school_admission_campaign_company" model="ir.rule">
+        <field name="name">Admission campaign: my companies</field>
+        <field name="model_id" ref="model_bf_school_admission_campaign"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_school_admission_company" model="ir.rule">
+        <field name="name">Admission application: my companies</field>
+        <field name="model_id" ref="model_bf_school_admission"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

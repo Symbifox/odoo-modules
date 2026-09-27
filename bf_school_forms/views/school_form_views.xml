@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_form_view_form" model="ir.ui.view">
+        <field name="name">bf.school.form.form</field>
+        <field name="model">bf.school.form</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send" type="object" string="Send to families" class="btn-primary"
+                            invisible="state != 'draft'" groups="bf_school_core.group_school_manager"
+                            confirm="Every guardian who signs for a student of these groups will receive an email. The text can no longer be edited afterwards. Send?"/>
+                    <button name="action_remind" type="object" string="Remind those who have not answered"
+                            invisible="state != 'sent' or not count_pending"
+                            groups="bf_school_core.group_school_manager"/>
+                    <button name="action_close" type="object" string="Close"
+                            invisible="state != 'sent'" groups="bf_school_core.group_school_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box" invisible="state == 'draft'">
+                        <button class="oe_stat_button" icon="fa-check" disabled="1">
+                            <field name="count_accepted" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-times" disabled="1">
+                            <field name="count_refused" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-hourglass-half" disabled="1">
+                            <field name="count_pending" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" placeholder="Museum trip" readonly="state != 'draft'"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="type_id" readonly="state != 'draft'"/>
+                            <field name="school_id" readonly="state != 'draft'"/>
+                            <field name="group_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+                            <field name="requires_all_signers" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="event_date" readonly="state != 'draft'"/>
+                            <field name="deadline"/>
+                            <field name="sent_on" invisible="state == 'draft'"/>
+                            <field name="body_hash" invisible="state == 'draft'" groups="bf_school_core.group_school_manager"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Text" name="text">
+                            <field name="body_html" readonly="state != 'draft'"
+                                   placeholder="What, where, when, what to bring, what it costs."/>
+                        </page>
+                        <page string="Answers" name="answers" invisible="state == 'draft'">
+                            <field name="response_ids" readonly="1">
+                                <list decoration-success="state == 'accepted'" decoration-danger="state == 'refused'"
+                                      decoration-muted="state in ('expired', 'no_signer')">
+                                    <field name="student_id"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'accepted'" decoration-danger="state == 'refused'"
+                                           decoration-warning="state == 'pending'"/>
+                                    <field name="answer_ids" widget="many2many_tags"
+                                           groups="bf_school_core.group_school_manager"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_form_view_list" model="ir.ui.view">
+        <field name="name">bf.school.form.list</field>
+        <field name="model">bf.school.form</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'closed'">
+                <field name="name"/>
+                <field name="type_id"/>
+                <field name="group_ids" widget="many2many_tags"/>
+                <field name="event_date"/>
+                <field name="deadline"/>
+                <field name="count_accepted"/>
+                <field name="count_refused"/>
+                <field name="count_pending"/>
+                <field name="state" widget="badge" decoration-info="state == 'sent'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_form_answer_view_list" model="ir.ui.view">
+        <field name="name">bf.school.form.answer.list</field>
+        <field name="model">bf.school.form.answer</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="form_id"/>
+                <field name="student_id"/>
+                <field name="partner_id"/>
+                <field name="decision" widget="badge" decoration-success="decision == 'accepted'"
+                       decoration-danger="decision == 'refused'"/>
+                <field name="answered_on"/>
+                <field name="channel"/>
+                <field name="answered_by_user_id" optional="hide"/>
+                <field name="ip_address" optional="hide"/>
+                <field name="user_agent" optional="hide"/>
+                <field name="body_hash" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_form_action" model="ir.actions.act_window">
+        <field name="name">Authorisations</field>
+        <field name="res_model">bf.school.form</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="bf_school_form_answer_action" model="ir.actions.act_window">
+        <field name="name">Guardians' answers (evidence)</field>
+        <field name="res_model">bf.school.form.answer</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <record id="bf_school_form_type_action" model="ir.actions.act_window">
+        <field name="name">Authorisation types</field>
+        <field name="res_model">bf.school.form.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_school_forms" name="Authorisations" parent="bf_school_core.menu_school_root"
+              action="bf_school_form_action" sequence="27"/>
+    <menuitem id="menu_school_form_answers" name="Answers (evidence)" parent="bf_school_core.menu_school_config"
+              action="bf_school_form_answer_action" sequence="30"/>
+    <menuitem id="menu_school_form_types" name="Authorisation types" parent="bf_school_core.menu_school_config"
+              action="bf_school_form_type_action" sequence="40"/>
+</odoo>

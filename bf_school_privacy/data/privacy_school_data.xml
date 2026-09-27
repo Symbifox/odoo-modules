@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        School consents under Law 25. Each purpose is separate (CAI criterion
+        "granulaire"): a family may accept the class photo board and refuse the
+        website. Under 14, the holder of parental authority consents (Private Sector
+        Act s. 4.1 and 14; Access Act s. 53.1 and 64.1); from 14, the student.
+        The texts name "the school": each school adapts them (name of the person in
+        charge of personal information, platforms used) before the first request.
+    -->
+
+    <record id="purpose_school_photo_internal" model="privacy.purpose">
+        <field name="code">school_photo_internal</field>
+        <field name="name">Photos and videos inside the school</field>
+        <field name="default_validity_days">365</field>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="plain_language_summary"><![CDATA[<p>Photos and videos of your child taken during school activities, shown only inside the school: classroom boards, the family portal, the yearbook given to families.</p>]]></field>
+    </record>
+
+    <record id="purpose_school_photo_public" model="privacy.purpose">
+        <field name="code">school_photo_public</field>
+        <field name="name">Photos and videos published outside the school</field>
+        <field name="default_validity_days">365</field>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="plain_language_summary"><![CDATA[<p>Photos and videos of your child published where anyone can see them: the school's website, its social media accounts, local newspapers.</p>]]></field>
+    </record>
+
+    <record id="purpose_school_directory" model="privacy.purpose">
+        <field name="code">school_directory</field>
+        <field name="name">Family contact list of the group</field>
+        <field name="default_validity_days">365</field>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="plain_language_summary"><![CDATA[<p>Your name and email shared with the other families of your child's group, for carpooling and birthday invitations.</p>]]></field>
+    </record>
+
+    <record id="purpose_school_edtech" model="privacy.purpose">
+        <field name="code">school_edtech</field>
+        <field name="name">Educational platforms outside the school</field>
+        <field name="default_validity_days">365</field>
+        <field name="requires_express_opt_in" eval="True"/>
+        <field name="plain_language_summary"><![CDATA[<p>An account for your child on educational platforms chosen by the school (reading, mathematics, languages). Some are hosted outside Québec: the school assessed them before choosing them.</p>]]></field>
+    </record>
+
+    <record id="notice_school_photo_internal" model="privacy.notice">
+        <field name="name">School: photos and videos inside the school</field>
+        <field name="purpose_id" ref="purpose_school_photo_internal"/>
+        <field name="body_fr"><![CDATA[<div class="privacy-notice">
+<p>L'école prend des photos et des vidéos lors des activités scolaires. Avec votre accord, celles où votre enfant paraît sont montrées <strong>seulement à l'intérieur de l'école</strong> : tableaux de la classe, portail des familles, album remis aux familles.</p>
+<p>Ce consentement est facultatif. Le refuser ne change rien aux services que reçoit votre enfant. Il vaut pour l'année scolaire en cours et vous pouvez le retirer en tout temps depuis le portail ou en écrivant à l'école.</p>
+<p>Questions : la personne responsable de la protection des renseignements personnels de l'école.</p>
+</div>]]></field>
+        <field name="body_en"><![CDATA[<div class="privacy-notice">
+<p>The school takes photos and videos during school activities. With your agreement, those showing your child are displayed <strong>only inside the school</strong>: classroom boards, the family portal, the yearbook given to families.</p>
+<p>This consent is optional. Refusing it changes nothing to the services your child receives. It is valid for the current school year and you may withdraw it at any time from the portal or by writing to the school.</p>
+<p>Questions: the school's person in charge of the protection of personal information.</p>
+</div>]]></field>
+    </record>
+
+    <record id="notice_school_photo_public" model="privacy.notice">
+        <field name="name">School: photos and videos published outside the school</field>
+        <field name="purpose_id" ref="purpose_school_photo_public"/>
+        <field name="body_fr"><![CDATA[<div class="privacy-notice">
+<p>Avec votre accord, des photos ou des vidéos où votre enfant paraît peuvent être <strong>publiées là où tout le monde peut les voir</strong> : site Web de l'école, ses comptes de médias sociaux, journaux locaux. Le nom de votre enfant n'est jamais publié avec son image.</p>
+<p>Une image publiée sur Internet peut être copiée par d'autres et ne se retire pas toujours complètement. Ce consentement est facultatif, distinct de celui pour l'intérieur de l'école, et vaut pour l'année scolaire en cours. Vous pouvez le retirer en tout temps : l'école cesse alors de publier et retire ce qu'elle a publié et qu'elle contrôle.</p>
+</div>]]></field>
+        <field name="body_en"><![CDATA[<div class="privacy-notice">
+<p>With your agreement, photos or videos showing your child may be <strong>published where anyone can see them</strong>: the school's website, its social media accounts, local newspapers. Your child's name is never published with their image.</p>
+<p>An image published on the Internet may be copied by others and cannot always be fully removed. This consent is optional, separate from the one for inside the school, and valid for the current school year. You may withdraw it at any time: the school then stops publishing and removes what it published and controls.</p>
+</div>]]></field>
+    </record>
+
+    <record id="notice_school_directory" model="privacy.notice">
+        <field name="name">School: family contact list of the group</field>
+        <field name="purpose_id" ref="purpose_school_directory"/>
+        <field name="body_fr"><![CDATA[<div class="privacy-notice">
+<p>Avec votre accord, <strong>votre nom et votre adresse courriel</strong> sont communiqués aux autres familles du groupe de votre enfant, pour le covoiturage et les invitations. Aucune autre information n'est communiquée : ni adresse, ni téléphone, ni renseignement sur votre enfant.</p>
+<p>Ce consentement est facultatif et vaut pour l'année scolaire en cours. Vous pouvez le retirer en tout temps; l'école ne peut toutefois pas reprendre une liste déjà remise.</p>
+</div>]]></field>
+        <field name="body_en"><![CDATA[<div class="privacy-notice">
+<p>With your agreement, <strong>your name and email address</strong> are shared with the other families of your child's group, for carpooling and invitations. Nothing else is shared: no address, no phone number, no information about your child.</p>
+<p>This consent is optional and valid for the current school year. You may withdraw it at any time; the school cannot, however, take back a list already handed out.</p>
+</div>]]></field>
+    </record>
+
+    <record id="notice_school_edtech" model="privacy.notice">
+        <field name="name">School: educational platforms outside the school</field>
+        <field name="purpose_id" ref="purpose_school_edtech"/>
+        <field name="body_fr"><![CDATA[<div class="privacy-notice">
+<p>Avec votre accord, l'école crée un compte à votre enfant sur des plateformes éducatives qu'elle a choisies (lecture, mathématiques, langues). Seuls le prénom, le nom, le groupe et le niveau sont communiqués.</p>
+<p>Certaines de ces plateformes sont <strong>hébergées à l'extérieur du Québec</strong>. Avant de les choisir, l'école a évalué la protection qu'elles offrent (Loi 25). La liste des plateformes et le lieu de leur hébergement vous sont remis sur demande.</p>
+<p>Ce consentement est facultatif. Sans lui, l'enseignant offre à votre enfant une activité équivalente. Il vaut pour l'année scolaire en cours et se retire en tout temps.</p>
+</div>]]></field>
+        <field name="body_en"><![CDATA[<div class="privacy-notice">
+<p>With your agreement, the school creates an account for your child on educational platforms it has chosen (reading, mathematics, languages). Only the first name, last name, group and level are shared.</p>
+<p>Some of these platforms are <strong>hosted outside Québec</strong>. Before choosing them, the school assessed the protection they offer (Law 25). The list of platforms and where they are hosted is given to you on request.</p>
+<p>This consent is optional. Without it, the teacher gives your child an equivalent activity. It is valid for the current school year and may be withdrawn at any time.</p>
+</div>]]></field>
+    </record>
+
+    <record id="consent_group_school_year" model="privacy.consent.group">
+        <field name="name">School: this year's consents</field>
+        <field name="notice_ids" eval="[(6, 0, [ref('notice_school_photo_internal'), ref('notice_school_photo_public'), ref('notice_school_directory'), ref('notice_school_edtech')])]"/>
+    </record>
+</odoo>

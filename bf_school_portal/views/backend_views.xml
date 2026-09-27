@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_school_portal" model="ir.ui.view">
+        <field name="name">res.partner.form.school.portal</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="bf_school_core.view_partner_form_school"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='student_guardian_link_ids']" position="before">
+                <div class="d-flex justify-content-end" groups="bf_school_core.group_school_manager">
+                    <button name="action_school_invite_guardians" type="object" icon="fa-envelope"
+                            class="btn-link" string="Invite these guardians to the portal"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_form_student_portal" model="ir.ui.view">
+        <field name="name">res.partner.form.student.portal</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="bf_school_core.view_partner_form_student"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='student_guardian_link_ids']" position="before">
+                <div class="d-flex justify-content-end" groups="bf_school_core.group_school_manager">
+                    <button name="action_school_invite_guardians" type="object" icon="fa-envelope"
+                            class="btn-link" string="Invite these guardians to the portal"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_school_view_form_portal" model="ir.ui.view">
+        <field name="name">bf.school.form.portal</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_school_invite_families" type="object"
+                            string="Invite families to the portal" class="btn-secondary"
+                            groups="bf_school_core.group_school_manager"
+                            confirm="Every guardian who receives notices for a student enrolled this year and has no portal access yet will receive an invitation by email. Continue?"/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

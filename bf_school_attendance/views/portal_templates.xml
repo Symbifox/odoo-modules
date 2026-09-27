@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_attendance_link" name="School: link to attendance"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a href="/my/school/attendance" class="btn btn-secondary">
+                <i class="fa fa-user-times me-1"/>Absences</a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_attendance" name="School: attendance breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="34">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_attendance'" class="breadcrumb-item active">Absences</li>
+        </xpath>
+    </template>
+
+    <template id="portal_school_attendance" name="School: absences">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Absences</t>
+            </t>
+            <div t-if="message" class="alert alert-info mt-3" t-out="message"/>
+            <div t-if="not children" class="alert alert-info mt-3">The school has not linked any child to your account yet.</div>
+            <t t-if="children">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5>Declare an absence</h5>
+                        <p class="text-muted small">Today or later, or to justify an absence already noted.</p>
+                        <form method="post" action="/my/school/attendance/declare" class="row g-2">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="col-md-4"><label class="form-label">Child</label>
+                                <select class="form-select" name="student_id" required="1">
+                                    <option t-foreach="children" t-as="child" t-att-value="child.id" t-out="child.name"/>
+                                </select></div>
+                            <div class="col-md-4"><label class="form-label">From</label>
+                                <input class="form-control" type="date" name="date_from" required="1" t-att-value="today"/></div>
+                            <div class="col-md-4"><label class="form-label">To</label>
+                                <input class="form-control" type="date" name="date_to" t-att-value="today"/></div>
+                            <div class="col-md-4"><label class="form-label">When</label>
+                                <select class="form-select" name="part">
+                                    <option value="full">Whole day</option>
+                                    <option value="am">Morning</option>
+                                    <option value="pm">Afternoon</option>
+                                </select></div>
+                            <div class="col-md-8"><label class="form-label">Reason</label>
+                                <select class="form-select" name="reason_id" required="1">
+                                    <option t-foreach="reasons" t-as="reason" t-att-value="reason.id" t-out="reason.name"/>
+                                </select></div>
+                            <div class="col-12"><label class="form-label">Comment (optional)</label>
+                                <input class="form-control" name="comment" maxlength="1000"/></div>
+                            <div class="col-12"><button type="submit" class="btn btn-primary">Declare</button></div>
+                        </form>
+                    </div>
+                </div>
+                <h5 class="mt-4">Last 30 days</h5>
+                <div t-if="not lines" class="text-muted">No absence or lateness.</div>
+                <div class="list-group">
+                    <div t-foreach="lines" t-as="line" class="list-group-item d-flex justify-content-between align-items-center gap-2">
+                        <div>
+                            <strong t-out="line.student_id.name"/> ·
+                            <span t-field="line.date"/> · <t t-out="line.session_id._slot_label()"/>
+                            <span t-if="line.status == 'late'"> · late<t t-if="line.minutes_late"> (<t t-out="line.minutes_late"/> min)</t></span>
+                            <small t-if="line.reason_id" class="text-muted"> · <t t-out="line.reason_id.name"/></small>
+                        </div>
+                        <span t-if="line.justified" class="badge text-bg-success">Justified</span>
+                        <span t-else="" class="badge text-bg-warning">To justify</span>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

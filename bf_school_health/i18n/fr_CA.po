@@ -1,0 +1,778 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 03:21+0000\n"
+"PO-Revision-Date: 2026-09-27 03:21+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_health
+#: model:mail.template,body_html:bf_school_health.mail_template_epinephrine
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">During a severe allergic reaction, the school gave epinephrine to <strong t-out=\"object.student_id.name or ''\"/>.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\"><strong>Call the school office now.</strong></p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Bonjour,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Lors d'une réaction allergique grave, l'école a donné de l'épinéphrine à <strong t-out=\"object.student_id.name or ''\"/>.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\"><strong>Appelez le secrétariat de l'école maintenant.</strong></p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_school_health
+#: model:mail.template,body_html:bf_school_health.mail_template_medication_request
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The school asks for your written authorisation to give a prescribed medication at school: <strong t-out=\"object.name or ''\"/>.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Read the details and answer in the family portal.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/health\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Read and answer\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Bonjour,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">L'école demande votre autorisation écrite pour donner un médicament prescrit à l'école : <strong t-out=\"object.name or ''\"/>.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Lisez les détails et répondez dans le portail des familles.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/health\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Lire et répondre\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_my_school_health_link
+msgid "<i class=\"fa fa-medkit me-1\"/>Health"
+msgstr "<i class=\"fa fa-medkit me-1\"/>Santé"
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid ""
+"A medication sent to the family is not edited: revoke it and create a new "
+"one."
+msgstr ""
+"Un médicament envoyé à la famille ne se modifie pas : révoquer "
+"l'autorisation et en créer une nouvelle."
+
+#. module: bf_school_health
+#: model:ir.model.constraint,message:bf_school_health.constraint_bf_school_health_record_one_per_student
+msgid "A student has one health record."
+msgstr "Un élève a un seul dossier de santé."
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__access_token
+msgid "Access Token"
+msgstr "Jeton d'accès"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_needaction
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_res_partner__health_alert_level
+#: model:ir.model.fields,field_description:bf_school_health.field_res_users__health_alert_level
+msgid "Alert level"
+msgstr "Niveau d'alerte"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__allergies
+msgid "Allergies and reactions"
+msgstr "Allergies et réactions"
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__as_needed_conditions
+msgid "An as-needed medication needs clear conditions of use."
+msgstr "Un médicament au besoin exige des conditions d'utilisation claires."
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "An authorisation ends after it starts."
+msgstr "Une autorisation se termine après son début."
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication_administration__emergency_epinephrine
+msgid ""
+"Anyone may give epinephrine for a severe allergic reaction, without written "
+"authorisation. The family is told at once."
+msgstr ""
+"Toute personne peut donner l'épinéphrine lors d'une réaction allergique "
+"grave, sans autorisation écrite. La famille est avisée sur-le-champ."
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__as_needed
+msgid "As needed (PRN)"
+msgstr "Au besoin (PRN)"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "As needed:"
+msgstr "Au besoin :"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.bf_school_medication_view_form
+msgid "Ask the family to sign"
+msgstr "Demander la signature de la famille"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__medication_id
+msgid "Authorisation"
+msgstr "Autorisation"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "Authorisations to sign"
+msgstr "Autorisations à signer"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__state__active
+msgid "Authorised"
+msgstr "Autorisé"
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__storage
+msgid ""
+"Auto-injectors are kept unlocked and reachable; other medication as the "
+"school decides."
+msgstr ""
+"Les auto-injecteurs restent accessibles, sans cadenas; les autres "
+"médicaments, selon la décision de l'école."
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__company_id
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__company_id
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_health
+#: model:ir.model,name:bf_school_health.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__create_uid
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__create_uid
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__create_date
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__create_date
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__display_name
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__display_name
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__self_administered
+msgid "Distribution, not administration: the staff only hands it over."
+msgstr ""
+"Distribution, et non administration : le personnel ne fait que le remettre."
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__dosage
+msgid "Dosage"
+msgstr "Posologie"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "Dosage:"
+msgstr "Posologie :"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__dose
+msgid "Dose"
+msgstr "Dose"
+
+#. module: bf_school_health
+#: model:ir.actions.act_window,name:bf_school_health.bf_school_medication_administration_action
+#: model:ir.ui.menu,name:bf_school_health.menu_school_doses
+msgid "Doses given"
+msgstr "Doses données"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_school_health
+#: model:ir.actions.act_window,name:bf_school_health.bf_school_epinephrine_action
+#: model:ir.ui.menu,name:bf_school_health.menu_school_epinephrine
+msgid "Emergency epinephrine"
+msgstr "Épinéphrine d'urgence"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__enteral
+msgid "Enteral"
+msgstr "Entérale"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "Epinephrine (emergency)"
+msgstr "Épinéphrine (urgence)"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__epinephrine
+msgid "Epinephrine auto-injector"
+msgstr "Auto-injecteur d'épinéphrine"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__emergency_epinephrine
+msgid "Epinephrine in an emergency"
+msgstr "Épinéphrine en urgence"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid ""
+"Every staff member of the school sees this alert. To change it, write to the"
+" school office."
+msgstr ""
+"Tout le personnel de l'école voit cette alerte. Pour la changer, écrire au "
+"secrétariat."
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__text_hash
+msgid "Fingerprint of the text signed"
+msgstr "Empreinte du texte signé"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__administration_ids
+msgid "Given"
+msgstr "Données"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__given_on
+msgid "Given On"
+msgstr "Donné le"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "Given at school (last 60 days)"
+msgstr "Donné à l'école (60 derniers jours)"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__given_by_id
+msgid "Given by"
+msgstr "Donné par"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__has_message
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_health
+#: model:ir.ui.menu,name:bf_school_health.menu_school_health_root
+#: model:res.groups,name:bf_school_health.group_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_breadcrumbs_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.view_partner_form_student_health
+msgid "Health"
+msgstr "Santé"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__health_problem
+msgid "Health Problem"
+msgstr "Problème de santé"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_res_partner__health_alert
+#: model:ir.model.fields,field_description:bf_school_health.field_res_users__health_alert
+msgid "Health alert"
+msgstr "Alerte de santé"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__conditions
+msgid "Health conditions"
+msgstr "Problèmes de santé"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__updated_on
+msgid "Health form updated on"
+msgstr "Fiche de santé mise à jour le"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_res_partner__health_record_ids
+#: model:ir.model.fields,field_description:bf_school_health.field_res_users__health_record_ids
+msgid "Health record"
+msgstr "Dossier de santé"
+
+#. module: bf_school_health
+#: model:ir.actions.act_window,name:bf_school_health.bf_school_health_record_action
+#: model:ir.ui.menu,name:bf_school_health.menu_school_health_records
+msgid "Health records"
+msgstr "Dossiers de santé"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "I authorise"
+msgstr "J'autorise"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "I refuse"
+msgstr "Je refuse"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__id
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__id
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__signed_ip
+msgid "IP address"
+msgstr "Adresse IP"
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_health_record__message_needaction
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_health_record__message_has_error
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_health_record__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__message_has_error
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__emergency_plan
+msgid "Individual emergency plan"
+msgstr "Plan d'urgence individuel"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.bf_school_health_record_view_form
+msgid "Individual emergency plan written by the nurse."
+msgstr "Plan d'urgence individuel rédigé par le personnel infirmier."
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__inhalation
+msgid "Inhalation"
+msgstr "Inhalation"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__insulin_sc
+msgid "Insulin, subcutaneous"
+msgstr "Insuline, sous-cutanée"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__write_uid
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__write_uid
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__write_date
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__write_date
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__name
+#: model_terms:ir.ui.view,arch_db:bf_school_health.bf_school_medication_view_form
+msgid "Medication"
+msgstr "Médicament"
+
+#. module: bf_school_health
+#: model:ir.model,name:bf_school_health.model_bf_school_medication
+msgid "Medication authorisation"
+msgstr "Autorisation de médicament"
+
+#. module: bf_school_health
+#: model:ir.actions.act_window,name:bf_school_health.bf_school_medication_action
+#: model:ir.ui.menu,name:bf_school_health.menu_school_medications
+msgid "Medication authorisations"
+msgstr "Autorisations de médicaments"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "Medication authorised at school"
+msgstr "Médicaments autorisés à l'école"
+
+#. module: bf_school_health
+#: model:ir.model,name:bf_school_health.model_bf_school_medication_administration
+msgid "Medication given at school"
+msgstr "Médicament donné à l'école"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_has_error
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_ids
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__nasal
+msgid "Nasal"
+msgstr "Nasale"
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "No medication is given without the family's written authorisation."
+msgstr ""
+"Aucun médicament n'est donné sans l'autorisation écrite de la famille."
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_health_record__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_health_record__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "Only a draft authorisation is sent."
+msgstr "Seule une autorisation en brouillon s'envoie."
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "Only a guardian who signs for this student answers."
+msgstr "Seules les personnes qui signent pour cet élève répondent."
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__prescriber
+msgid ""
+"Only a prescribed medication may be given by school staff (C-26 s. 39.8)."
+msgstr ""
+"Le personnel scolaire ne donne qu'un médicament prescrit (C-26, art. 39.8)."
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "Only the people authorised by the school give medication."
+msgstr "Seules les personnes autorisées par l'école donnent des médicaments."
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__ophthalmic
+msgid "Ophthalmic"
+msgstr "Ophtalmique"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__oral
+msgid "Oral"
+msgstr "Orale"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__otic
+msgid "Otic"
+msgstr "Otique"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__prescriber
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "Prescribed by"
+msgstr "Prescrit par"
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__dosage
+msgid "Quantity and frequency, as prescribed."
+msgstr "Quantité et fréquence, selon l'ordonnance."
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__rating_ids
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__rectal
+msgid "Rectal"
+msgstr "Rectale"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__state__refused
+msgid "Refused"
+msgstr "Refusé"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.bf_school_medication_view_form
+msgid "Revoke"
+msgstr "Révoquer"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__state__revoked
+msgid "Revoked"
+msgstr "Révoqué"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__route
+msgid "Route"
+msgstr "Voie"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_school_health
+#: model:mail.template,name:bf_school_health.mail_template_epinephrine
+msgid "School: epinephrine given"
+msgstr "École : épinéphrine donnée"
+
+#. module: bf_school_health
+#: model:mail.template,name:bf_school_health.mail_template_medication_request
+msgid "School: medication authorisation to sign"
+msgstr "École : autorisation de médicament à signer"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__state__asked
+msgid "Sent to the family"
+msgstr "Envoyé à la famille"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__res_partner__health_alert_level__severe
+msgid "Severe"
+msgstr "Grave"
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_res_partner__health_alert
+#: model:ir.model.fields,help:bf_school_health.field_res_users__health_alert
+msgid ""
+"Short, for every staff member: the allergy or condition and what to do. "
+"Example: severe peanut allergy, auto-injector in the backpack."
+msgstr ""
+"Courte, pour tout le personnel : l'allergie ou le problème et quoi faire. "
+"Exemple : allergie grave aux arachides, auto-injecteur dans le sac à dos."
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.bf_school_medication_view_form
+msgid "Signature"
+msgstr "Signature"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__signed_on
+msgid "Signed On"
+msgstr "Signé le"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__signed_by_id
+msgid "Signed by"
+msgstr "Signé par"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__student_id
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__student_id
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__student_id
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_health
+#: model:ir.model,name:bf_school_health.model_bf_school_health_record
+msgid "Student health record"
+msgstr "Dossier de santé de l'élève"
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_health_record__updated_on
+msgid "The family fills in the health form every year, at registration."
+msgstr "La famille remplit la fiche de santé chaque année, à l'inscription."
+
+#. module: bf_school_health
+#: model:res.groups,comment:bf_school_health.group_school_health
+msgid ""
+"The people the school authorises: detailed health records, medication\n"
+"            authorisations, the register of doses given."
+msgstr ""
+"Les personnes que l'école autorise : dossiers de santé détaillés, autorisations\n"
+"            de médicaments, registre des doses données."
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__self_administered
+msgid "The student takes it alone"
+msgstr "Prise par l'élève sans aide"
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "This authorisation is not valid on that day."
+msgstr "Cette autorisation n'est pas valide ce jour-là."
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "This authorisation no longer takes answers."
+msgstr "Cette autorisation ne reçoit plus de réponse."
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__res_partner__health_alert_level__info
+msgid "To know"
+msgstr "À savoir"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__topical
+msgid "Topical"
+msgstr "Topique"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__transdermal
+msgid "Transdermal"
+msgstr "Transdermique"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__physician
+msgid "Treating physician"
+msgstr "Médecin traitant"
+
+#. module: bf_school_health
+#: model:mail.template,subject:bf_school_health.mail_template_epinephrine
+msgid "URGENT, {{ object.student_id.name }}: epinephrine given at school"
+msgstr "URGENT, {{ object.student_id.name }} : épinéphrine donnée à l'école"
+
+#. module: bf_school_health
+#: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__vaginal
+msgid "Vaginal"
+msgstr "Vaginale"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__date_from
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "Valid from"
+msgstr "Valide du"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__date_to
+msgid "Valid until"
+msgstr "Valide jusqu'au"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_health
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_health_record__website_message_ids
+#: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__as_needed_conditions
+msgid "When to give it"
+msgstr "Quand le donner"
+
+#. module: bf_school_health
+#: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__storage
+msgid "Where it is kept"
+msgstr "Où il est rangé"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "to"
+msgstr "au"
+
+#. module: bf_school_health
+#: model:mail.template,subject:bf_school_health.mail_template_medication_request
+msgid "{{ object.student_id.name }}: medication authorisation to sign"
+msgstr "{{ object.student_id.name }} : autorisation de médicament à signer"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "· Route:"
+msgstr "· Voie :"
+
+#. module: bf_school_health
+#: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
+msgid "· until"
+msgstr "· jusqu'au"
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "1 auto-injector"
+msgstr "1 auto-injecteur"

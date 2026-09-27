@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="admission_form" name="School: admission form">
+        <t t-call="portal.frontend_layout">
+            <div class="container py-4" style="max-width: 760px;">
+                <small class="text-muted" t-out="campaign.school_id.name"/>
+                <h2 class="mt-1" t-out="campaign.name"/>
+                <p class="text-muted">School year <t t-out="campaign.target_year"/></p>
+                <t t-if="not accepting">
+                    <div class="alert alert-secondary">This admission campaign is not open.</div>
+                </t>
+                <t t-else="">
+                    <div t-if="campaign.intro_html" class="mb-3" t-out="campaign.intro_html"/>
+                    <div t-if="error" class="alert alert-warning" t-out="error"/>
+                    <form method="post" t-att-action="'/school/admission/%s/submit' % campaign.id"
+                          enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="d-none" aria-hidden="true">
+                            <label>Website <input type="text" name="website_url" tabindex="-1" autocomplete="off"/></label>
+                        </div>
+                        <h5 class="mt-3">The student</h5>
+                        <div class="row g-2">
+                            <div class="col-md-6"><label class="form-label">First name *</label>
+                                <input class="form-control" name="student_firstname" required="1" t-att-value="values.get('student_firstname')"/></div>
+                            <div class="col-md-6"><label class="form-label">Last name *</label>
+                                <input class="form-control" name="student_lastname" required="1" t-att-value="values.get('student_lastname')"/></div>
+                            <div class="col-md-6"><label class="form-label">Birth date *</label>
+                                <input class="form-control" type="date" name="student_birthdate" required="1" t-att-value="values.get('student_birthdate')"/></div>
+                            <div class="col-md-6"><label class="form-label">Level requested *</label>
+                                <select class="form-select" name="level_id" required="1">
+                                    <option value="">Choose</option>
+                                    <option t-foreach="campaign.level_ids" t-as="level" t-att-value="level.id"
+                                            t-att-selected="str(level.id) == values.get('level_id')" t-out="level.name"/>
+                                </select></div>
+                            <div class="col-12"><label class="form-label">Current school</label>
+                                <input class="form-control" name="current_school" t-att-value="values.get('current_school')"/></div>
+                        </div>
+                        <h5 class="mt-4">Parent or guardian</h5>
+                        <div class="row g-2">
+                            <div class="col-md-6"><label class="form-label">Name *</label>
+                                <input class="form-control" name="guardian1_name" required="1" t-att-value="values.get('guardian1_name')"/></div>
+                            <div class="col-md-6"><label class="form-label">Email *</label>
+                                <input class="form-control" type="email" name="guardian1_email" required="1" t-att-value="values.get('guardian1_email')"/></div>
+                            <div class="col-md-6"><label class="form-label">Phone</label>
+                                <input class="form-control" type="tel" name="guardian1_phone" t-att-value="values.get('guardian1_phone')"/></div>
+                        </div>
+                        <h5 class="mt-4">Second parent or guardian <small class="text-muted">(optional)</small></h5>
+                        <div class="row g-2">
+                            <div class="col-md-6"><label class="form-label">Name</label>
+                                <input class="form-control" name="guardian2_name" t-att-value="values.get('guardian2_name')"/></div>
+                            <div class="col-md-6"><label class="form-label">Email</label>
+                                <input class="form-control" type="email" name="guardian2_email" t-att-value="values.get('guardian2_email')"/></div>
+                            <div class="col-md-6"><label class="form-label">Phone</label>
+                                <input class="form-control" type="tel" name="guardian2_phone" t-att-value="values.get('guardian2_phone')"/></div>
+                        </div>
+                        <h5 class="mt-4">Documents</h5>
+                        <p class="text-muted small">Birth certificate and the latest report card. PDF, JPEG, PNG or HEIC, up to 10 MB each, 5 documents at most.</p>
+                        <input class="form-control" type="file" name="documents" multiple="1"
+                               accept="application/pdf,image/jpeg,image/png,image/heic,image/heif"/>
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" name="privacy_ack" id="privacy_ack" value="1" required="1"/>
+                            <label class="form-check-label" for="privacy_ack">
+                                I have read that the school uses this information only to study the application. If the
+                                student is not enrolled, the school destroys the documents and the student's information
+                                after the admission campaign; it keeps the fee receipt, as accounting rules require.
+                            </label>
+                        </div>
+                        <p t-if="campaign.fee_amount" class="mt-3">
+                            Application fee: <strong t-out="campaign.fee_amount" t-options="{'widget': 'monetary', 'display_currency': campaign.currency_id}"/>,
+                            paid online after sending, or at the school office. The application is studied once the fee is paid.
+                        </p>
+                        <button type="submit" class="btn btn-primary mt-2">Send the application</button>
+                    </form>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="admission_status" name="School: application status">
+        <t t-call="portal.frontend_layout">
+            <t t-set="app" t-value="application"/>
+            <div class="container py-4" style="max-width: 760px;">
+                <small class="text-muted" t-out="app.school_id.name"/>
+                <h2 class="mt-1"><t t-out="app.campaign_id.name"/></h2>
+                <p class="text-muted">
+                    <t t-out="app.name"/> ·
+                    <t t-out="app.student_id.name or ' '.join(filter(None, [app.student_firstname, app.student_lastname]))"/>
+                </p>
+                <div class="alert alert-info">
+                    <strong>Status:</strong> <span t-field="app.state"/>
+                </div>
+                <t t-if="app.state == 'awaiting_fee'">
+                    <p>The application is studied once the fee is paid. Pay online now, or at the school office.</p>
+                    <a t-if="app._payment_url()" t-att-href="app._payment_url()" class="btn btn-primary">
+                        Pay <t t-out="app.campaign_id.fee_amount" t-options="{'widget': 'monetary', 'display_currency': app.currency_id}"/>
+                    </a>
+                </t>
+                <t t-if="app.state == 'convened'">
+                    <p>
+                        <strong>Admission exam:</strong>
+                        <span t-field="app.campaign_id.exam_datetime" t-options="{'widget': 'datetime', 'tz_name': (app.company_id.partner_id.tz or 'America/Toronto')}"/>
+                        <t t-if="app.campaign_id.exam_location"> · <t t-out="app.campaign_id.exam_location"/></t>
+                    </p>
+                    <div t-if="app.campaign_id.exam_instructions" t-out="app.campaign_id.exam_instructions"/>
+                </t>
+                <p t-if="app.state == 'confirmed'">The re-enrolment is confirmed. The school will send the contract for signature.</p>
+                <p class="text-muted small mt-4">Keep this link: it shows the status of this application at any time.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="reenroll_form" name="School: re-enrolment">
+        <t t-call="portal.portal_layout">
+            <div class="mt-3" style="max-width: 760px;">
+                <h3>Re-enrol <t t-out="student.name"/> for <t t-out="campaign.target_year"/></h3>
+                <p>
+                    <t t-if="campaign.fee_amount">
+                        Registration fee:
+                        <strong t-out="campaign.fee_amount" t-options="{'widget': 'monetary', 'display_currency': campaign.currency_id}"/>.
+                        It is part of the price of next year's contract.
+                    </t>
+                </p>
+                <p class="text-muted small">Contact information to change? Write to the school office before confirming.</p>
+                <form method="post" t-att-action="'/my/school/reenroll/%s/%s/submit' % (student.id, campaign.id)">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div t-if="levels" class="mb-3" style="max-width: 320px;">
+                        <label class="form-label">Level next year</label>
+                        <select class="form-select" name="level_id">
+                            <option t-foreach="levels" t-as="level" t-att-value="level.id" t-out="level.name"/>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Confirm the re-enrolment</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_school_reenroll" name="School: re-enrolment buttons"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_child')]//div[hasclass('card-body')]" position="inside">
+            <t t-foreach="request.env['bf.school.admission']._school_reenrollment_offers(request.env.user.partner_id)" t-as="offer">
+                <t t-if="offer[0] == card['student']">
+                    <div class="mt-3">
+                        <a t-if="not offer[2]" class="btn btn-sm btn-primary"
+                           t-att-href="'/my/school/reenroll/%s/%s' % (offer[0].id, offer[1].id)">
+                            Re-enrol for <t t-out="offer[1].target_year"/>
+                        </a>
+                        <a t-else="" class="btn btn-sm btn-outline-secondary" t-att-href="offer[2]._status_url()">
+                            Re-enrolment <t t-out="offer[1].target_year"/>: <span t-field="offer[2].state"/>
+                        </a>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+    </template>
+</odoo>

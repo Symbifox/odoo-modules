@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_school_absence_reason_user,bf.school.absence.reason staff,model_bf_school_absence_reason,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_absence_reason_manager,bf.school.absence.reason administration,model_bf_school_absence_reason,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_absence_declaration_user,bf.school.absence.declaration staff,model_bf_school_absence_declaration,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_absence_declaration_manager,bf.school.absence.declaration administration,model_bf_school_absence_declaration,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_attendance_session_user,bf.school.attendance.session staff,model_bf_school_attendance_session,bf_school_core.group_school_user,1,1,1,0
+access_bf_school_attendance_session_manager,bf.school.attendance.session administration,model_bf_school_attendance_session,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_attendance_line_user,bf.school.attendance.line staff,model_bf_school_attendance_line,bf_school_core.group_school_user,1,1,0,0
+access_bf_school_attendance_line_manager,bf.school.attendance.line administration,model_bf_school_attendance_line,bf_school_core.group_school_manager,1,1,1,1

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_school" name="School: portal home tile"
+              inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/bf_school_core/static/description/icon.png'"/>
+                <t t-set="title">My children</t>
+                <t t-set="text">Their groups, their teachers, and what the school has on file for you</t>
+                <t t-set="url" t-value="'/my/school'"/>
+                <t t-set="placeholder_count" t-value="'school_child_count'"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school" name="School: breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="30">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school'" class="breadcrumb-item active">My children</li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_school" name="School: my children">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My children</t>
+            </t>
+            <div t-if="not cards" class="alert alert-info mt-3">
+                The school has not linked any child to your account yet.
+            </div>
+            <!-- The other school modules put their buttons here, side by side. -->
+            <div class="o_school_links d-flex flex-wrap gap-2 mt-3"/>
+            <div class="row g-3 mt-1">
+                <div t-foreach="cards" t-as="card" class="col-12 col-lg-6">
+                    <div class="card h-100 o_school_child">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <img t-att-src="image_data_uri(card['student'].avatar_128)"
+                                     class="rounded-circle" width="56" height="56" alt=""/>
+                                <div>
+                                    <h4 class="mb-0" t-out="card['student'].name"/>
+                                    <small class="text-muted" t-if="card['student'].student_birthdate">
+                                        <t t-out="card['student'].student_age"/> years old
+                                    </small>
+                                </div>
+                            </div>
+                            <t t-if="card['groups']">
+                                <div t-foreach="card['groups']" t-as="group" class="mb-2">
+                                    <div>
+                                        <strong t-out="group.school_id.name"/>,
+                                        group <strong t-out="group.name"/>
+                                        <span t-if="group.level_ids" class="text-muted">
+                                            (<t t-out="', '.join(group.level_ids.mapped('name'))"/>)
+                                        </span>
+                                    </div>
+                                    <div t-if="group.teacher_ids" class="text-muted">
+                                        Teachers: <t t-out="', '.join(group.teacher_ids.mapped('name'))"/>
+                                    </div>
+                                </div>
+                            </t>
+                            <p t-else="" class="text-muted">Not enrolled in a group this year.</p>
+                            <div class="mt-3">
+                                <small class="text-muted d-block mb-1">On file for you:</small>
+                                <span t-if="card['roles']['receives_notices']" class="badge text-bg-light border me-1">Receives notices</span>
+                                <span t-if="card['roles']['can_sign']" class="badge text-bg-light border me-1">Signs</span>
+                                <span t-if="card['roles']['is_payer']" class="badge text-bg-light border me-1">Pays</span>
+                                <span t-if="card['roles']['can_pickup']" class="badge text-bg-light border me-1">May pick up</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-muted small mt-4">
+                Something is wrong or missing? Write to the school office: only the school
+                changes this information.
+            </p>
+        </t>
+    </template>
+</odoo>

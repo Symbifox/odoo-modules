@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="form_type_trip" model="bf.school.form.type">
+            <field name="name">Field trip</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="form_type_activity" model="bf.school.form.type">
+            <field name="name">Extracurricular activity</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="form_type_overnight" model="bf.school.form.type">
+            <field name="name">Overnight stay</field>
+            <field name="sequence">30</field>
+            <field name="requires_all_signers" eval="True"/>
+        </record>
+
+        <record id="ir_cron_school_form_close" model="ir.cron">
+            <field name="name">School: close the authorisations past their deadline</field>
+            <field name="model_id" ref="model_bf_school_form"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_close_past_deadline()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

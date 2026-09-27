@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="seq_school_contract" model="ir.sequence">
+        <field name="name">School contract</field>
+        <field name="code">bf.school.contract</field>
+        <field name="prefix">CSE/%(year)s/</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_school_meeting_session_user,bf.school.meeting.session staff,model_bf_school_meeting_session,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_meeting_session_manager,bf.school.meeting.session administration,model_bf_school_meeting_session,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_meeting_availability_user,bf.school.meeting.availability staff,model_bf_school_meeting_availability,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_meeting_availability_manager,bf.school.meeting.availability administration,model_bf_school_meeting_availability,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_meeting_slot_user,bf.school.meeting.slot staff,model_bf_school_meeting_slot,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_meeting_slot_manager,bf.school.meeting.slot administration,model_bf_school_meeting_slot,bf_school_core.group_school_manager,1,1,1,1

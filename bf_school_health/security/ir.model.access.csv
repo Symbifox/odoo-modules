@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_school_health_record_health,bf.school.health.record health,model_bf_school_health_record,group_school_health,1,1,1,1
+access_bf_school_medication_health,bf.school.medication health,model_bf_school_medication,group_school_health,1,1,1,0
+access_bf_school_medication_administration_staff,bf.school.medication.administration staff,model_bf_school_medication_administration,bf_school_core.group_school_user,1,0,1,0
+access_bf_school_medication_administration_health,bf.school.medication.administration health,model_bf_school_medication_administration,group_school_health,1,1,1,0

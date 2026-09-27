@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Level 1 on the student form: every staff member. -->
+    <record id="view_partner_form_student_health" model="ir.ui.view">
+        <field name="name">res.partner.form.student.health</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="bf_school_core.view_partner_form_student"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='student_permanent_code']" position="after">
+                <field name="health_alert_level"/>
+                <field name="health_alert" invisible="not health_alert_level"
+                       decoration-danger="health_alert_level == 'severe'"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Health" name="health" groups="bf_school_health.group_school_health">
+                    <field name="health_record_ids" context="{'default_student_id': id}">
+                        <list>
+                            <field name="allergies"/>
+                            <field name="conditions"/>
+                            <field name="updated_on"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_list_student_health" model="ir.ui.view">
+        <field name="name">res.partner.list.student.health</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="bf_school_core.view_partner_list_student"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='student_age']" position="after">
+                <field name="health_alert" optional="show"/>
+                <field name="health_alert_level" column_invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_school_health_record_view_form" model="ir.ui.view">
+        <field name="name">bf.school.health.record.form</field>
+        <field name="model">bf.school.health.record</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="student_id"/>
+                        <field name="updated_on"/>
+                        <field name="physician"/>
+                        <field name="allergies"/>
+                        <field name="conditions"/>
+                    </group>
+                    <field name="emergency_plan" placeholder="Individual emergency plan written by the nurse."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_medication_view_form" model="ir.ui.view">
+        <field name="name">bf.school.medication.form</field>
+        <field name="model">bf.school.medication</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_ask_family" type="object" string="Ask the family to sign" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_revoke" type="object" string="Revoke" invisible="state != 'active'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,asked,active"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" placeholder="Medication"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="student_id"/>
+                            <field name="prescriber"/>
+                            <field name="health_problem"/>
+                            <field name="dosage"/>
+                            <field name="route"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="as_needed"/>
+                            <field name="as_needed_conditions" invisible="not as_needed"/>
+                            <field name="self_administered"/>
+                            <field name="storage"/>
+                        </group>
+                    </group>
+                    <group string="Signature" invisible="state == 'draft'">
+                        <field name="signed_by_id"/>
+                        <field name="signed_on"/>
+                        <field name="signed_ip"/>
+                        <field name="text_hash"/>
+                    </group>
+                    <field name="administration_ids" readonly="1">
+                        <list>
+                            <field name="given_on"/>
+                            <field name="dose"/>
+                            <field name="given_by_id"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_medication_view_list" model="ir.ui.view">
+        <field name="name">bf.school.medication.list</field>
+        <field name="model">bf.school.medication</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('refused', 'revoked')" decoration-success="state == 'active'">
+                <field name="student_id"/>
+                <field name="name"/>
+                <field name="dosage"/>
+                <field name="route"/>
+                <field name="date_to"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_medication_administration_view_form" model="ir.ui.view">
+        <field name="name">bf.school.medication.administration.form</field>
+        <field name="model">bf.school.medication.administration</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="student_id"/>
+                        <field name="emergency_epinephrine"/>
+                        <field name="medication_id" invisible="emergency_epinephrine"
+                               groups="bf_school_health.group_school_health"
+                               domain="[('student_id', '=', student_id), ('state', '=', 'active')]"/>
+                        <field name="given_on"/>
+                        <field name="dose"/>
+                        <field name="given_by_id"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_medication_administration_view_list" model="ir.ui.view">
+        <field name="name">bf.school.medication.administration.list</field>
+        <field name="model">bf.school.medication.administration</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="emergency_epinephrine">
+                <field name="given_on"/>
+                <field name="student_id"/>
+                <field name="medication_id" groups="bf_school_health.group_school_health"/>
+                <field name="dose"/>
+                <field name="emergency_epinephrine"/>
+                <field name="given_by_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_medication_action" model="ir.actions.act_window">
+        <field name="name">Medication authorisations</field>
+        <field name="res_model">bf.school.medication</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="bf_school_medication_administration_action" model="ir.actions.act_window">
+        <field name="name">Doses given</field>
+        <field name="res_model">bf.school.medication.administration</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="bf_school_health_record_action" model="ir.actions.act_window">
+        <field name="name">Health records</field>
+        <field name="res_model">bf.school.health.record</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="bf_school_epinephrine_action" model="ir.actions.act_window">
+        <field name="name">Emergency epinephrine</field>
+        <field name="res_model">bf.school.medication.administration</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_emergency_epinephrine': True}</field>
+    </record>
+
+    <menuitem id="menu_school_health_root" name="Health" parent="bf_school_core.menu_school_root" sequence="21"/>
+    <menuitem id="menu_school_epinephrine" name="Emergency epinephrine" parent="menu_school_health_root"
+              action="bf_school_epinephrine_action" sequence="5"/>
+    <menuitem id="menu_school_medications" name="Medication authorisations" parent="menu_school_health_root"
+              action="bf_school_medication_action" sequence="10" groups="group_school_health"/>
+    <menuitem id="menu_school_doses" name="Doses given" parent="menu_school_health_root"
+              action="bf_school_medication_administration_action" sequence="20" groups="group_school_health"/>
+    <menuitem id="menu_school_health_records" name="Health records" parent="menu_school_health_root"
+              action="bf_school_health_record_action" sequence="30" groups="group_school_health"/>
+</odoo>

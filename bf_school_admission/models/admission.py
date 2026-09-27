@@ -1,0 +1,387 @@
+import logging
+import secrets
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
+from odoo.tools import consteq
+
+#: Regulation respecting private educational institutions (E-9.1, r. 3).
+_logger = logging.getLogger(__name__)
+
+MAX_ELIGIBILITY_FEE = 50.0   # s. 11: fee for determining admissibility
+MAX_REGISTRATION_FEE = 200.0  # s. 12: admission or registration fee (or 1/10 of the price)
+
+
+class AdmissionCampaign(models.Model):
+    """One admission or re-enrolment round of a school, for one coming school year."""
+
+    _name = "bf.school.admission.campaign"
+    _description = "Admission campaign"
+    _inherit = ["mail.thread"]
+    _order = "date_open desc, id desc"
+
+    name = fields.Char(required=True, tracking=True)
+    kind = fields.Selection(
+        [("admission", "Admission of new students"), ("reenrollment", "Re-enrolment")],
+        required=True, default="admission")
+    school_id = fields.Many2one("bf.school", required=True, ondelete="restrict")
+    company_id = fields.Many2one(related="school_id.company_id", store=True)
+    currency_id = fields.Many2one(related="company_id.currency_id")
+    target_year = fields.Char("For the school year", required=True, help="For example 2027-2028.")
+    level_ids = fields.Many2many("bf.school.level", string="Levels offered")
+    date_open = fields.Date("Opens on", required=True)
+    date_close = fields.Date("Closes on", required=True)
+    state = fields.Selection(
+        [("draft", "Draft"), ("open", "Open"), ("closed", "Closed")],
+        default="draft", required=True, tracking=True)
+    fee_amount = fields.Monetary(
+        "Fee", tracking=True,
+        help="Admission: fee for studying the application, at most 50 $ (Regulation E-9.1, "
+             "r. 3, s. 11). Re-enrolment: registration fee, at most 200 $ (s. 12); it is part "
+             "of the price of the contract for educational services.")
+    fee_label = fields.Char(
+        "Fee label on the invoice", translate=True,
+        help="Empty: the application fee for an admission, the registration fee for a re-enrolment.")
+    exam_datetime = fields.Datetime("Admission exam")
+    exam_location = fields.Char("Exam location")
+    exam_instructions = fields.Html("What to bring to the exam", sanitize=True)
+    intro_html = fields.Html("Text of the public form", sanitize=True, translate=True)
+    application_ids = fields.One2many("bf.school.admission", "campaign_id", "Applications")
+    application_count = fields.Integer(compute="_compute_application_count")
+
+    @api.depends("application_ids")
+    def _compute_application_count(self):
+        for campaign in self:
+            campaign.application_count = len(campaign.application_ids)
+
+    @api.constrains("kind", "fee_amount")
+    def _check_fee_cap(self):
+        for campaign in self:
+            cap = MAX_ELIGIBILITY_FEE if campaign.kind == "admission" else MAX_REGISTRATION_FEE
+            if campaign.fee_amount > cap:
+                raise ValidationError(
+                    _("The admission application fee is at most 50 $ (Regulation E-9.1, r. 3, s. 11).")
+                    if campaign.kind == "admission" else
+                    _("The registration fee is at most 200 $ (Regulation E-9.1, r. 3, s. 12)."))
+
+    @api.constrains("date_open", "date_close")
+    def _check_dates(self):
+        for campaign in self:
+            if campaign.date_close < campaign.date_open:
+                raise ValidationError(_("A campaign closes after it opens."))
+
+    def _is_accepting(self):
+        self.ensure_one()
+        today = fields.Date.context_today(self)
+        return self.state == "open" and self.date_open <= today <= self.date_close
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        # 🔴 One default for both kinds put "Application fee" on re-enrolment invoices (QA,
+        # 2026-09-27): the label follows the kind of campaign.
+        for vals in vals_list:
+            if not vals.get("fee_label"):
+                vals["fee_label"] = (self.env._("Registration fee") if vals.get("kind") == "reenrollment"
+                                     else self.env._("Application fee"))
+        return super().create(vals_list)
+
+    def action_open(self):
+        self.write({"state": "open"})
+        return True
+
+    def action_close(self):
+        self.write({"state": "closed"})
+        return True
+
+    def action_purge(self):
+        """Destroy what the families sent for the applications that did not lead to a place.
+
+        The public form promises it (Law 25: information is kept only as long as the
+        purpose requires). The documents are deleted and the student's identity and the
+        evaluation are erased; the application stays as an empty shell so the fee invoice,
+        which accounting rules require to keep, still points somewhere.
+        """
+        for campaign in self:
+            if campaign.state != "closed":
+                raise UserError(_("Close the campaign before purging it."))
+            apps = campaign.application_ids.filtered(lambda a: a.state not in ("enrolled", "confirmed"))
+            self.env["ir.attachment"].sudo().search(
+                [("res_model", "=", "bf.school.admission"), ("res_id", "in", apps.ids)]).unlink()
+            apps.sudo().write({"student_firstname": False, "student_lastname": False,
+                               "student_birthdate": False, "current_school": False,
+                               "evaluation_note": False, "score": 0.0, "purged": True})
+            campaign.message_post(body=_("%s application(s) purged.", len(apps)),
+                                  message_type="notification", subtype_xmlid="mail.mt_note")
+        return True
+
+    def _public_url(self):
+        self.ensure_one()
+        return "/school/admission/%s" % self.id
+
+
+class Admission(models.Model):
+    """An application: a new student's admission, or a student's re-enrolment."""
+
+    _name = "bf.school.admission"
+    _description = "Admission application"
+    _inherit = ["mail.thread"]
+    _order = "campaign_id, level_id, id"
+
+    name = fields.Char(required=True, copy=False, readonly=True, default=lambda s: _("New"))
+    campaign_id = fields.Many2one("bf.school.admission.campaign", required=True, ondelete="restrict", index=True)
+    kind = fields.Selection(related="campaign_id.kind", store=True)
+    school_id = fields.Many2one(related="campaign_id.school_id", store=True)
+    company_id = fields.Many2one(related="campaign_id.company_id", store=True)
+    currency_id = fields.Many2one(related="campaign_id.currency_id")
+    level_id = fields.Many2one("bf.school.level", "Level requested")
+    state = fields.Selection([
+        ("awaiting_fee", "Awaiting payment"),
+        ("submitted", "Submitted"),
+        ("convened", "Convened to the exam"),
+        ("evaluated", "Evaluated"),
+        ("accepted", "Accepted"),
+        ("waitlisted", "Waiting list"),
+        ("refused", "Refused"),
+        ("enrolled", "Enrolled"),
+        ("confirmed", "Re-enrolment confirmed"),
+        ("withdrawn", "Withdrawn"),
+    ], default="awaiting_fee", required=True, tracking=True, index=True)
+
+    # The student. For an admission, typed by the family; for a re-enrolment, known.
+    student_firstname = fields.Char("First name")
+    student_lastname = fields.Char("Last name")
+    student_birthdate = fields.Date("Birth date")
+    current_school = fields.Char("Current school")
+    student_id = fields.Many2one("res.partner", "Student", ondelete="restrict")
+
+    guardian_ids = fields.Many2many("res.partner", string="Guardians")
+    payer_id = fields.Many2one("res.partner", "Pays the fee", ondelete="restrict")
+    invoice_id = fields.Many2one("account.move", "Fee invoice", readonly=True, copy=False)
+    fee_paid = fields.Boolean(compute="_compute_fee_paid")
+    submitted_on = fields.Datetime(readonly=True, copy=False)
+
+    score = fields.Float("Exam score", tracking=True)
+    evaluation_note = fields.Text(
+        "Evaluation notes", help="Internal. Never shown to the family.")
+    rank = fields.Integer(
+        "Rank", compute="_compute_rank",
+        help="Order by score within the campaign and the level, among the evaluated and "
+             "waiting-listed applications. An aid: the decision is always taken by a person.")
+    decided_by_id = fields.Many2one("res.users", "Decided by", readonly=True, copy=False)
+    decided_on = fields.Datetime(readonly=True, copy=False)
+    access_token = fields.Char(copy=False, readonly=True, default=lambda s: secrets.token_urlsafe(32))
+    purged = fields.Boolean(readonly=True, copy=False,
+                            help="The documents and the student's identity were destroyed.")
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("name") or vals["name"] == _("New"):
+                vals["name"] = self.env["ir.sequence"].next_by_code("bf.school.admission") or _("New")
+        return super().create(vals_list)
+
+    def _compute_display_name(self):
+        for app in self:
+            who = app.student_id.name or " ".join(filter(None, [app.student_firstname, app.student_lastname]))
+            app.display_name = "%s, %s" % (app.name, who) if who else app.name
+
+    @api.depends("invoice_id.payment_state", "campaign_id.fee_amount")
+    def _compute_fee_paid(self):
+        for app in self:
+            app.fee_paid = (not app.campaign_id.fee_amount
+                            or app.invoice_id.payment_state in ("paid", "in_payment"))
+
+    def _compute_rank(self):
+        for app in self:
+            app.rank = 0
+        ranked = self.filtered(lambda a: a.state in ("evaluated", "waitlisted"))
+        for (campaign, level), apps in ranked.grouped(lambda a: (a.campaign_id, a.level_id)).items():
+            peers = self.search([("campaign_id", "=", campaign.id), ("level_id", "=", level.id),
+                                 ("state", "in", ("evaluated", "waitlisted"))],
+                                order="score desc, submitted_on asc, id asc")
+            for position, peer in enumerate(peers, start=1):
+                if peer in apps:
+                    peer.rank = position
+
+    # --- The fee -----------------------------------------------------------------
+
+    def _school_create_fee_invoice(self):
+        """Issue the fee as a customer invoice; the family pays it online or at the office.
+
+        Educational services are tax exempt in Québec: the line carries no tax.
+        """
+        self.ensure_one()
+        campaign = self.campaign_id
+        if not campaign.fee_amount:
+            return self.env["account.move"]
+        label = campaign.fee_label or (
+            _("Registration fee") if campaign.kind == "reenrollment" else _("Application fee"))
+        move = self.env["account.move"].sudo().with_company(campaign.company_id).create({
+            "move_type": "out_invoice",
+            "partner_id": self.payer_id.id,
+            # 🔴 The default salesperson is the current user: the parent on the portal, whose name
+            # the invoice then carried and whose address its emails would use (QA, 2026-09-27).
+            "invoice_user_id": False,
+            "invoice_origin": self.name,
+            "ref": self.name,
+            "invoice_line_ids": [(0, 0, {
+                "name": "%s : %s" % (label, self.display_name),
+                "quantity": 1, "price_unit": campaign.fee_amount, "tax_ids": [(6, 0, [])],
+            })],
+        })
+        move.action_post()
+        self.sudo().invoice_id = move
+        # 🔴 Without its official PDF, the portal shows the invoice as "PROFORMA", which a
+        # family about to pay reads as "not a real invoice". The PDF is NOT generated here:
+        # wkhtmltopdf held the family's request more than a minute on the bench. A cron,
+        # triggered now, generates it right after the answer is sent.
+        self.env.ref("bf_school_admission.ir_cron_school_fee_invoice_pdf").sudo()._trigger()
+        return move
+
+    @api.model
+    def _cron_fee_invoice_pdf(self, limit=50):
+        """Generate the official PDF of the fee invoices that do not have it yet. Sends nothing."""
+        # 🔴 `invoice_pdf_report_id` is not stored: a domain on it is DROPPED with a log line,
+        # and the cron went over every invoice. Recent applications, filtered in Python.
+        since = fields.Datetime.subtract(fields.Datetime.now(), days=30)
+        moves = self.sudo().search([("invoice_id", "!=", False), ("create_date", ">=", since),
+                                    ("invoice_id.state", "=", "posted")]).invoice_id
+        moves = moves.filtered(lambda m: not m.invoice_pdf_report_id)[:limit]
+        for move in moves:
+            try:
+                with self.env.cr.savepoint():
+                    self.env["account.move.send"].sudo()._generate_and_send_invoices(move, sending_methods=[])
+            except Exception:  # noqa: BLE001
+                _logger.warning("School fee invoice %s: official PDF not generated", move.name, exc_info=True)
+
+    def _school_fee_paid(self):
+        """The fee is paid (online or recorded by the office): the application moves on."""
+        for app in self.sudo().filtered(lambda a: a.state == "awaiting_fee" and a.fee_paid):
+            app.write({"state": "confirmed" if app.kind == "reenrollment" else "submitted",
+                       "submitted_on": fields.Datetime.now()})
+            app._school_notify("received")
+
+    def _payment_url(self):
+        self.ensure_one()
+        return self.invoice_id.sudo().get_portal_url() if self.invoice_id else False
+
+    def _status_url(self):
+        self.ensure_one()
+        return "/school/admission/status/%s/%s" % (self.id, self.access_token)
+
+    def _check_token(self, token):
+        self.ensure_one()
+        return bool(token) and consteq(self.access_token or "", token)
+
+    # --- The office's steps -------------------------------------------------------------
+
+    def action_convene(self):
+        for app in self:
+            if app.state != "submitted":
+                raise UserError(_("Only a submitted application is convened."))
+            if not app.campaign_id.exam_datetime:
+                raise UserError(_("Set the exam date on the campaign first."))
+        self.write({"state": "convened"})
+        self._school_notify("convened")
+        return True
+
+    def action_mark_evaluated(self):
+        for app in self:
+            if app.state not in ("submitted", "convened"):
+                raise UserError(_("Only a submitted or convened application is evaluated."))
+        self.write({"state": "evaluated"})
+        return True
+
+    def _decide(self, state):
+        """🔴 Law 25 (Private Sector Act s. 12.1): no decision is taken by the machine.
+        The rank helps; a named person decides, and the decision records who."""
+        for app in self:
+            if app.state not in ("evaluated", "waitlisted", "submitted", "convened"):
+                raise UserError(_("This application is not waiting for a decision."))
+        self.write({"state": state, "decided_by_id": self.env.uid,
+                    "decided_on": fields.Datetime.now()})
+        self._school_notify(state)
+        return True
+
+    def action_accept(self):
+        return self._decide("accepted")
+
+    def action_waitlist(self):
+        return self._decide("waitlisted")
+
+    def action_refuse(self):
+        return self._decide("refused")
+
+    def action_withdraw(self):
+        self.filtered(lambda a: a.state not in ("enrolled", "confirmed")).write({"state": "withdrawn"})
+        return True
+
+    def action_enroll(self):
+        """An accepted applicant becomes a student, with their guardians' links."""
+        for app in self:
+            if app.state != "accepted":
+                raise UserError(_("Only an accepted application is enrolled."))
+            student = app.student_id or self.env["res.partner"].create({
+                "name": " ".join(filter(None, [app.student_firstname, app.student_lastname])),
+                "is_student": True, "student_birthdate": app.student_birthdate,
+                "lang": (app.guardian_ids[:1].lang or "fr_CA"),
+            })
+            Link = self.env["bf.school.guardian.link"]
+            for guardian in app.guardian_ids:
+                if not Link.search_count([("student_id", "=", student.id), ("guardian_id", "=", guardian.id)]):
+                    Link.create({"student_id": student.id, "guardian_id": guardian.id,
+                                 "is_payer": guardian == app.payer_id})
+            app.write({"student_id": student.id, "state": "enrolled"})
+        return True
+
+    # --- Emails -------------------------------------------------------------------------
+
+    def _school_notify(self, event):
+        template = self.env.ref("bf_school_admission.mail_template_admission_update",
+                                raise_if_not_found=False)
+        if not template:
+            return
+        for app in self.sudo():
+            for guardian in app.guardian_ids.filtered("email"):
+                lang = guardian.lang or app.company_id.partner_id.lang or "fr_CA"
+                template.with_context(lang=lang, school_lang=lang, school_event=event).send_mail(
+                    app.id, force_send=False,
+                    email_layout_xmlid=self.env["bf.school"]._school_mail_layout(),
+                    email_values={"recipient_ids": [(6, 0, guardian.ids)], "email_to": False})
+        self.env.ref("mail.ir_cron_mail_scheduler_action").sudo()._trigger()
+
+    # --- Portal -----------------------------------------------------------------------------
+
+    @api.model
+    def _school_reenrollment_offers(self, partner):
+        """[(student, campaign, application or None)] this adult may re-enrol today.
+
+        An adult who signs for a student enrolled this year in the campaign's school.
+        """
+        offers = []
+        links = partner._school_portal_links().filtered("can_sign")
+        campaigns = self.env["bf.school.admission.campaign"].sudo().search(
+            [("kind", "=", "reenrollment"), ("state", "=", "open")])
+        for campaign in campaigns.filtered(lambda c: c._is_accepting()):
+            for student in links.student_id:
+                enrolled = student.student_enrollment_ids.filtered(
+                    lambda e: e.state == "active" and e.year_id.state == "current"
+                    and e.school_id == campaign.school_id)
+                if not enrolled:
+                    continue
+                existing = self.sudo().search([("campaign_id", "=", campaign.id),
+                                               ("student_id", "=", student.id),
+                                               ("state", "!=", "withdrawn")], limit=1)
+                offers.append((student, campaign, existing or None))
+        return offers
+
+
+class AccountMove(models.Model):
+    _inherit = "account.move"
+
+    def _invoice_paid_hook(self):
+        """Paid online (Stripe, any provider) or recorded by the office: same path."""
+        result = super()._invoice_paid_hook()
+        self.env["bf.school.admission"].sudo().search(
+            [("invoice_id", "in", self.ids), ("state", "=", "awaiting_fee")])._school_fee_paid()
+        return result

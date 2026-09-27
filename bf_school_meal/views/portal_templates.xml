@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_meal_link" name="School: link to meals"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a href="/my/school/meals" class="btn btn-secondary">
+                <i class="fa fa-cutlery me-1"/>Meals</a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_meals" name="School: meals breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="38">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_meals'" class="breadcrumb-item active">Meals</li>
+        </xpath>
+    </template>
+
+    <template id="portal_school_meals" name="School: meals">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Meals</t>
+            </t>
+            <div t-if="message" class="alert alert-warning mt-3" t-out="message"/>
+
+            <div t-foreach="accounts" t-as="account" class="card mt-3">
+                <div class="card-body">
+                    <t t-set="school" t-value="schools.filtered(lambda s: s.company_id == account.company_id)[:1]"/>
+                    <div t-if="account.mode == 'prepaid'" class="d-flex flex-wrap align-items-center gap-3">
+                        <div>Meal balance: <strong class="o_school_meal_balance" t-out="account.balance"
+                             t-options="{'widget': 'monetary', 'display_currency': account.currency_id}"/></div>
+                        <form method="post" action="/my/school/meals/topup" class="d-flex gap-2 align-items-center">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="account_id" t-att-value="account.id"/>
+                            <select name="amount" class="form-select form-select-sm w-auto">
+                                <option value="20">20</option>
+                                <option value="50" selected="selected">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Top up</button>
+                        </form>
+                    </div>
+                    <div t-else="">Meals are billed at the end of each month, on one invoice.</div>
+                    <form t-if="school and school.meal_payment_modes == 'choice'" method="post"
+                          action="/my/school/meals/mode" class="small mt-2">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="account_id" t-att-value="account.id"/>
+                        <t t-if="account.mode == 'prepaid'">
+                            <input type="hidden" name="mode" value="monthly"/>
+                            <button type="submit" class="btn btn-link btn-sm p-0">Pay by monthly invoice instead</button>
+                        </t>
+                        <t t-else="">
+                            <input type="hidden" name="mode" value="prepaid"/>
+                            <button type="submit" class="btn btn-link btn-sm p-0">Pay from a prepaid balance instead</button>
+                        </t>
+                    </form>
+                </div>
+            </div>
+
+            <p t-if="not days" class="mt-3">No menu is published for the next four weeks.</p>
+            <div t-foreach="days" t-as="day" class="card mt-3">
+                <div class="card-header">
+                    <strong><span t-field="day.date" t-options="{'format': 'EEEE d MMMM'}"/></strong>
+                    <span t-if="day.closed" class="badge text-bg-warning ms-2" t-out="day.closed_reason"/>
+                </div>
+                <div class="card-body">
+                    <t t-set="orderable" t-value="day._is_orderable()"/>
+                    <t t-set="cancellable" t-value="day._is_cancellable()"/>
+                    <div t-foreach="children.filtered(lambda c: day.school_id in c.student_group_ids.school_id)" t-as="child" class="mb-2">
+                        <div class="fw-semibold" t-out="child.name"/>
+                        <div class="d-flex flex-wrap gap-2 mt-1">
+                            <t t-foreach="day.item_ids" t-as="item">
+                                <t t-set="order" t-value="orders.filtered(lambda o: o.day_id == day and o.student_id == child and o.item_id == item)"/>
+                                <t t-set="conflict" t-value="item.allergen_ids &amp; child.meal_allergen_ids"/>
+                                <div t-attf-class="border rounded p-2 small #{'border-success' if order else ''}">
+                                    <strong t-out="item.name"/>
+                                    · <span t-out="item.price" t-options="{'widget': 'monetary', 'display_currency': item.currency_id}"/>
+                                    <div t-if="item.allergen_ids" class="text-muted">Contains: <t t-out="', '.join(item.allergen_ids.mapped('name'))"/></div>
+                                    <div t-if="order" class="mt-1">
+                                        <span class="text-success"><i class="fa fa-check"/> Ordered</span>
+                                        <form t-if="cancellable" method="post" class="d-inline"
+                                              t-att-action="'/my/school/meals/%s/cancel' % order[:1].id">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <button type="submit" class="btn btn-link btn-sm p-0 ms-2">Cancel</button>
+                                        </form>
+                                    </div>
+                                    <div t-elif="conflict" class="text-danger mt-1">
+                                        Allergy declared: <t t-out="', '.join(conflict.mapped('name'))"/>
+                                    </div>
+                                    <form t-elif="orderable" method="post" action="/my/school/meals/order" class="mt-1">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="student_id" t-att-value="child.id"/>
+                                        <input type="hidden" name="day_id" t-att-value="day.id"/>
+                                        <input type="hidden" name="item_id" t-att-value="item.id"/>
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">Order</button>
+                                    </form>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                    <div t-if="not day.closed and not orderable" class="small text-muted">Orders for this day are closed.</div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

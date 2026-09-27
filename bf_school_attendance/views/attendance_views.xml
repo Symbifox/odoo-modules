@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_group_form_attendance" model="ir.ui.view">
+        <field name="name">bf.school.group.form.attendance</field>
+        <field name="model">bf.school.group</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_group_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='teacher_ids']" position="after">
+                <field name="attendance_mode"/>
+                <field name="periods_per_day" invisible="attendance_mode != 'period'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_school_attendance_session_view_form" model="ir.ui.view">
+        <field name="name">bf.school.attendance.session.form</field>
+        <field name="model">bf.school.attendance.session</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_done" type="object" string="Attendance taken" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_reopen" type="object" string="Correct"
+                            invisible="state != 'done'" groups="bf_school_core.group_school_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="group_id" readonly="id"
+                                   domain="[('teacher_ids', 'in', [uid]), ('year_id.state', '=', 'current')]"
+                                   options="{'no_create': True}"/>
+                            <field name="date" readonly="id"/>
+                            <field name="slot" readonly="id" placeholder="am, pm, or a period number"/>
+                        </group>
+                        <group>
+                            <field name="teacher_id"/>
+                            <field name="absent_count"/>
+                            <field name="late_count"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" readonly="state == 'done'">
+                        <list editable="bottom" create="0" delete="0"
+                              decoration-danger="status == 'absent' and not justified"
+                              decoration-muted="status == 'absent' and justified"
+                              decoration-warning="status == 'late'">
+                            <field name="student_id" readonly="1"/>
+                            <field name="status" widget="radio" options="{'horizontal': true}"/>
+                            <field name="minutes_late" invisible="status != 'late'"/>
+                            <field name="reason_id" groups="bf_school_core.group_school_manager"/>
+                            <field name="reason_id" readonly="1" groups="!bf_school_core.group_school_manager"/>
+                            <field name="justified"/>
+                            <field name="note" optional="hide"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_attendance_session_view_list" model="ir.ui.view">
+        <field name="name">bf.school.attendance.session.list</field>
+        <field name="model">bf.school.attendance.session</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="date"/>
+                <field name="group_id"/>
+                <field name="slot"/>
+                <field name="teacher_id"/>
+                <field name="absent_count"/>
+                <field name="late_count"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_attendance_session_view_search" model="ir.ui.view">
+        <field name="name">bf.school.attendance.session.search</field>
+        <field name="model">bf.school.attendance.session</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="group_id"/>
+                <filter name="today" string="Today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="mine" string="My groups" domain="[('group_id.teacher_ids', 'in', [uid])]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_absence_declaration_view_list" model="ir.ui.view">
+        <field name="name">bf.school.absence.declaration.list</field>
+        <field name="model">bf.school.absence.declaration</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="student_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="part"/>
+                <field name="reason_id"/>
+                <field name="comment"/>
+                <field name="source"/>
+                <field name="declared_by_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_absence_reason_view_list" model="ir.ui.view">
+        <field name="name">bf.school.absence.reason.list</field>
+        <field name="model">bf.school.absence.reason</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="is_justified"/>
+                <field name="portal_selectable"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_attendance_session_action" model="ir.actions.act_window">
+        <field name="name">Attendance</field>
+        <field name="res_model">bf.school.attendance.session</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_mine': 1, 'search_default_today': 1}</field>
+    </record>
+    <record id="bf_school_absence_declaration_action" model="ir.actions.act_window">
+        <field name="name">Declared absences</field>
+        <field name="res_model">bf.school.absence.declaration</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'default_source': 'office'}</field>
+    </record>
+    <record id="bf_school_absence_reason_action" model="ir.actions.act_window">
+        <field name="name">Absence reasons</field>
+        <field name="res_model">bf.school.absence.reason</field>
+        <field name="view_mode">list</field>
+    </record>
+    <record id="bf_school_repeated_absences_action" model="ir.actions.server">
+        <field name="name">Repeated unjustified absences</field>
+        <field name="model_id" ref="model_bf_school_attendance_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model._action_repeated_unjustified()</field>
+        <field name="groups_id" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+    </record>
+
+    <menuitem id="menu_school_attendance_root" name="Attendance" parent="bf_school_core.menu_school_root" sequence="15"/>
+    <menuitem id="menu_school_attendance" name="Take attendance" parent="menu_school_attendance_root"
+              action="bf_school_attendance_session_action" sequence="10"/>
+    <menuitem id="menu_school_absence_declarations" name="Declared absences" parent="menu_school_attendance_root"
+              action="bf_school_absence_declaration_action" sequence="20" groups="bf_school_core.group_school_manager"/>
+    <menuitem id="menu_school_repeated_absences" name="Repeated unjustified absences" parent="menu_school_attendance_root"
+              action="bf_school_repeated_absences_action" sequence="30" groups="bf_school_core.group_school_manager"/>
+    <menuitem id="menu_school_absence_reasons" name="Absence reasons" parent="bf_school_core.menu_school_config"
+              action="bf_school_absence_reason_action" sequence="50"/>
+</odoo>

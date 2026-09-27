@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_group_view_form" model="ir.ui.view">
+        <field name="name">bf.school.group.form</field>
+        <field name="model">bf.school.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title"><h1><field name="name" placeholder="Group name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="school_id"/>
+                            <field name="year_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="level_ids" widget="many2many_tags"/>
+                            <field name="teacher_ids" widget="many2many_avatar_user"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Students" name="students">
+                            <field name="enrollment_ids">
+                                <list editable="bottom" decoration-muted="state == 'left'">
+                                    <field name="student_id" context="{'default_is_student': True}"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end" optional="hide"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'active'"/>
+                                    <button name="action_leave" type="object" string="Leaves"
+                                            icon="fa-sign-out" invisible="state != 'active'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_group_view_list" model="ir.ui.view">
+        <field name="name">bf.school.group.list</field>
+        <field name="model">bf.school.group</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="school_id"/>
+                <field name="year_id"/>
+                <field name="level_ids" widget="many2many_tags"/>
+                <field name="teacher_ids" widget="many2many_avatar_user"/>
+                <field name="student_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_group_view_search" model="ir.ui.view">
+        <field name="name">bf.school.group.search</field>
+        <field name="model">bf.school.group</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="teacher_ids"/>
+                <filter name="current_year" string="Current year" domain="[('year_id.state', '=', 'current')]"/>
+                <filter name="mine" string="My groups" domain="[('teacher_ids', 'in', uid)]"/>
+                <group>
+                    <filter name="by_school" string="School" context="{'group_by': 'school_id'}"/>
+                    <filter name="by_year" string="School year" context="{'group_by': 'year_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_group_action" model="ir.actions.act_window">
+        <field name="name">Groups</field>
+        <field name="res_model">bf.school.group</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_current_year': 1}</field>
+    </record>
+</odoo>

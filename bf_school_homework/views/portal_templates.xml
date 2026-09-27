@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_homework_link" name="School: link to homework"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a href="/my/school/homework" class="btn btn-secondary">
+                <i class="fa fa-book me-1"/>Homework</a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_homework" name="School: homework breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="36">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_homework'" class="breadcrumb-item active">Homework</li>
+        </xpath>
+    </template>
+
+    <template id="portal_school_homework" name="School: homework">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Homework</t>
+            </t>
+            <div t-if="not pairs" class="alert alert-info mt-3">Nothing due for now.</div>
+            <div class="list-group mt-3">
+                <div t-foreach="pairs" t-as="pair" class="list-group-item">
+                    <t t-set="hw" t-value="pair[0]"/>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <strong t-out="hw.name"/>
+                            <small class="text-muted"> · <t t-out="pair[1].name"/> · <t t-out="hw.group_id.name"/></small>
+                        </div>
+                        <span class="badge text-bg-light border"><span t-field="hw.kind"/> · <span t-field="hw.date_due"/></span>
+                    </div>
+                    <div t-if="hw.description" class="mt-1 small" t-out="hw.description"/>
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6>In your calendar</h6>
+                    <p class="small text-muted mb-2">
+                        Subscribe to this address in Google Calendar or Apple Calendar: the due dates of your
+                        children's homework appear there and update by themselves. The address is personal.
+                    </p>
+                    <input class="form-control form-control-sm" readonly="1" t-att-value="ical_url" onclick="this.select()"/>
+                    <form method="post" action="/my/school/homework/new-link" class="mt-2">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Get a new address (the old one stops working)</button>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

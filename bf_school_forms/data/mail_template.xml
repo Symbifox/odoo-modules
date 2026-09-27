@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- One email per signing guardian and per child: the link is personal, it
+             records WHO answered. It works without a portal account. -->
+        <record id="mail_template_school_form" model="mail.template">
+            <field name="name">School: authorisation to answer</field>
+            <field name="model_id" ref="model_bf_school_form_answer"/>
+            <field name="subject">{{ ctx.get('school_child') }}: authorisation, {{ object.form_id.name }}</field>
+            <field name="email_from">{{ object.form_id.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <t t-set="societe" t-value="object.form_id.company_id"/>
+    <t t-set="accent" t-value="('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'"/>
+    <p style="margin:0 0 4px 0;font-size:13px;color:#6B7280;">
+        <t t-out="object.form_id.school_id.name or ''"/> · <t t-out="object.student_id.name or ''"/>
+    </p>
+    <p t-if="ctx.get('school_reminder')" style="margin:0 0 8px 0;font-weight:600;">Reminder: we have not received your answer yet.</p>
+    <h2 style="margin:0 0 16px 0;" t-out="object.form_id.name or ''"/>
+    <div style="margin:0 0 16px 0;" t-out="object.form_id.body_html"/>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}{{ object._url() }}"
+           t-attf-style="background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            Answer
+        </a>
+    </p>
+    <p style="margin:0;font-size:13px;color:#6B7280;">
+        This link is personal: it records your answer in your name. Do not forward it.
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

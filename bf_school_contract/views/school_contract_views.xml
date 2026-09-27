@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_contract_view_form" model="ir.ui.view">
+        <field name="name">bf.school.contract.form</field>
+        <field name="model">bf.school.contract</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send_for_signature" type="object" string="Send for signature"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_terminate" type="object" string="Record the termination"
+                            invisible="state != 'signed' or not termination_date"
+                            confirm="The client terminated the contract (s. 71). Compute what the school may keep and the refund due?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sign_requests" type="object" class="oe_stat_button"
+                                icon="fa-pencil" invisible="not sign_request_count">
+                            <field name="sign_request_count" widget="statinfo" string="Signatures"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="student_id" readonly="state != 'draft'"/>
+                            <field name="school_id" readonly="state != 'draft'"/>
+                            <field name="year_id" readonly="state != 'draft'"/>
+                            <field name="date_start" readonly="state != 'draft'"/>
+                            <field name="date_end" readonly="state != 'draft'"/>
+                            <field name="client_ids" widget="many2many_tags" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="eligibility_fee" readonly="state != 'draft'"/>
+                            <field name="admission_fee" readonly="state != 'draft'"/>
+                            <field name="tuition" readonly="state != 'draft'"/>
+                            <field name="total_price"/>
+                            <field name="installment_count" readonly="state != 'draft'"/>
+                            <field name="max_penalty"/>
+                            <field name="english_requested_on"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Accessory services" name="accessories">
+                            <field name="accessory_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="price"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Termination" name="termination" invisible="state == 'draft'">
+                            <group>
+                                <group>
+                                    <field name="termination_date" readonly="state == 'terminated'"/>
+                                    <field name="amount_paid" readonly="state == 'terminated'"/>
+                                </group>
+                                <group invisible="state != 'terminated'">
+                                    <field name="termination_due"/>
+                                    <field name="termination_refund"/>
+                                    <field name="refund_deadline"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_contract_view_list" model="ir.ui.view">
+        <field name="name">bf.school.contract.list</field>
+        <field name="model">bf.school.contract</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="year_id"/>
+                <field name="total_price" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge" decoration-success="state == 'signed'"
+                       decoration-muted="state == 'terminated'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_contract_action" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">bf.school.contract</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="bf_school_view_form_contract" model="ir.ui.view">
+        <field name="name">bf.school.form.contract</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Contracts" name="contracts" groups="bf_school_core.group_school_manager">
+                    <group>
+                        <field name="contract_programs"/>
+                        <field name="contract_teaching_language"/>
+                        <field name="contract_art14"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="menu_school_contracts" name="Contracts" parent="bf_school_core.menu_school_root"
+              action="bf_school_contract_action" sequence="40"
+              groups="bf_school_core.group_school_manager"/>
+</odoo>

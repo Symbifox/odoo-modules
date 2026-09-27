@@ -1,0 +1,709 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 00:41+0000\n"
+"PO-Revision-Date: 2026-09-27 00:41+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "%(guardian)s: %(decision)s for %(student)s."
+msgstr "%(guardian)s : %(decision)s pour %(student)s."
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "%s signing guardian(s) have no email address: reach them another way."
+msgstr ""
+"%s responsable(s) qui signe(nt) n'ont pas d'adresse courriel : les joindre "
+"autrement."
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "%s student(s) have no guardian who signs."
+msgstr "%s élève(s) n'ont aucun responsable qui signe."
+
+#. module: bf_school_forms
+#: model:mail.template,body_html:bf_school_forms.mail_template_school_form
+msgid ""
+"<div>\n"
+"    <t t-set=\"societe\" t-value=\"object.form_id.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 4px 0;font-size:13px;color:#6B7280;\">\n"
+"        <t t-out=\"object.form_id.school_id.name or ''\"/> · <t t-out=\"object.student_id.name or ''\"/>\n"
+"    </p>\n"
+"    <p t-if=\"ctx.get('school_reminder')\" style=\"margin:0 0 8px 0;font-weight:600;\">Reminder: we have not received your answer yet.</p>\n"
+"    <h2 style=\"margin:0 0 16px 0;\" t-out=\"object.form_id.name or ''\"/>\n"
+"    <div style=\"margin:0 0 16px 0;\" t-out=\"object.form_id.body_html\"/>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}{{ object._url() }}\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Answer\n"
+"        </a>\n"
+"    </p>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">\n"
+"        This link is personal: it records your answer in your name. Do not forward it.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div>\n"
+"    <t t-set=\"societe\" t-value=\"object.form_id.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 4px 0;font-size:13px;color:#6B7280;\">\n"
+"        <t t-out=\"object.form_id.school_id.name or ''\"/> · <t t-out=\"object.student_id.name or ''\"/>\n"
+"    </p>\n"
+"    <p t-if=\"ctx.get('school_reminder')\" style=\"margin:0 0 8px 0;font-weight:600;\">Rappel : nous n'avons pas encore reçu votre réponse.</p>\n"
+"    <h2 style=\"margin:0 0 16px 0;\" t-out=\"object.form_id.name or ''\"/>\n"
+"    <div style=\"margin:0 0 16px 0;\" t-out=\"object.form_id.body_html\"/>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}{{ object._url() }}\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Répondre\n"
+"        </a>\n"
+"    </p>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">\n"
+"        Ce lien est personnel : il enregistre votre réponse à votre nom. Ne le transférez pas.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
+msgid "<i class=\"fa fa-check me-1\"/>I authorise"
+msgstr "<i class=\"fa fa-check me-1\"/>J'autorise"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_my_school_forms_link
+msgid "<i class=\"fa fa-pencil-square-o me-1\"/>Authorisations"
+msgstr "<i class=\"fa fa-pencil-square-o me-1\"/>Autorisations"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
+msgid "<i class=\"fa fa-times me-1\"/>I refuse"
+msgstr "<i class=\"fa fa-times me-1\"/>Je refuse"
+
+#. module: bf_school_forms
+#: model:ir.model.constraint,message:bf_school_forms.constraint_bf_school_form_answer_response_partner_unique
+msgid "A guardian answers once per student."
+msgstr "Un responsable répond une seule fois par élève."
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid ""
+"A sent authorisation is not edited: its text is what the families answered. "
+"Close it and send a new one."
+msgstr ""
+"Une autorisation envoyée ne se modifie pas : son texte est ce à quoi les "
+"familles ont répondu. Fermez-la et envoyez-en une nouvelle."
+
+#. module: bf_school_forms
+#: model:ir.model.constraint,message:bf_school_forms.constraint_bf_school_form_response_form_student_unique
+msgid "A student is asked once per authorisation."
+msgstr "Un élève est visé une seule fois par autorisation."
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__access_token
+msgid "Access Token"
+msgstr "Jeton d'accès"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_needaction
+msgid "Action Needed"
+msgstr "Nécessite une action"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__deadline
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
+msgid "Answer by"
+msgstr "Répondre d'ici le"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__answered_on
+msgid "Answered On"
+msgstr "Répondu le"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.bf_school_form_view_form
+msgid "Answers"
+msgstr "Réponses"
+
+#. module: bf_school_forms
+#: model:ir.ui.menu,name:bf_school_forms.menu_school_form_answers
+msgid "Answers (evidence)"
+msgstr "Réponses (preuves)"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__response_ids
+msgid "Answers per student"
+msgstr "Réponses par élève"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_forms
+#: model:ir.model,name:bf_school_forms.model_bf_school_form_response
+msgid "Authorisation for a student"
+msgstr "Autorisation pour un élève"
+
+#. module: bf_school_forms
+#: model:ir.model,name:bf_school_forms.model_bf_school_form
+msgid "Authorisation request"
+msgstr "Demande d'autorisation"
+
+#. module: bf_school_forms
+#: model:ir.model,name:bf_school_forms.model_bf_school_form_type
+msgid "Authorisation type"
+msgstr "Type d'autorisation"
+
+#. module: bf_school_forms
+#: model:ir.actions.act_window,name:bf_school_forms.bf_school_form_type_action
+#: model:ir.ui.menu,name:bf_school_forms.menu_school_form_types
+msgid "Authorisation types"
+msgstr "Types d'autorisation"
+
+#. module: bf_school_forms
+#: model:ir.actions.act_window,name:bf_school_forms.bf_school_form_action
+#: model:ir.ui.menu,name:bf_school_forms.menu_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_breadcrumbs_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_my_home_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_forms
+msgid "Authorisations"
+msgstr "Autorisations"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__count_accepted
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_answer__decision__accepted
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_response__state__accepted
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_forms
+msgid "Authorised"
+msgstr "Autorisé"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__channel
+msgid "Channel"
+msgstr "Chaîne"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.bf_school_form_view_form
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_school_forms
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form__state__closed
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_forms
+msgid "Closed"
+msgstr "Fermée"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__company_id
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__company_id
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__create_uid
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__create_uid
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__create_uid
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__create_date
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__create_date
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__create_date
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
+msgid "Date:"
+msgstr "Date :"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__decision
+msgid "Decision"
+msgstr "Décision"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__default_body
+msgid "Default text"
+msgstr "Texte par défaut"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__display_name
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__display_name
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__display_name
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_forms
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__event_date
+msgid "Event date"
+msgstr "Date de l'activité"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.bf_school_form_view_form
+msgid ""
+"Every guardian who signs for a student of these groups will receive an "
+"email. The text can no longer be edited afterwards. Send?"
+msgstr ""
+"Chaque responsable qui signe pour un élève de ces groupes recevra un "
+"courriel. Le texte ne pourra plus être modifié ensuite. Envoyer?"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__requires_all_signers
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__requires_all_signers
+msgid "Every signing guardian must agree"
+msgstr "Tous les responsables qui signent doivent accepter"
+
+#. module: bf_school_forms
+#: model:bf.school.form.type,name:bf_school_forms.form_type_activity
+msgid "Extracurricular activity"
+msgstr "Activité parascolaire"
+
+#. module: bf_school_forms
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_answer__channel__portal
+msgid "Family portal"
+msgstr "Portail des familles"
+
+#. module: bf_school_forms
+#: model:bf.school.form.type,name:bf_school_forms.form_type_trip
+msgid "Field trip"
+msgstr "Sortie éducative"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_my_home_school_forms
+msgid "Field trips and activities: authorise or refuse in one click"
+msgstr "Sorties et activités : autoriser ou refuser d'un clic"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__body_hash
+msgid "Fingerprint of the text answered"
+msgstr "Empreinte du texte répondu"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (Partenaires)"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__form_id
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__form_id
+msgid "Form"
+msgstr "Formulaire"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__group_ids
+msgid "Groups"
+msgstr "Groupes"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__partner_id
+msgid "Guardian"
+msgstr "Responsable"
+
+#. module: bf_school_forms
+#: model:ir.model,name:bf_school_forms.model_bf_school_form_answer
+msgid "Guardian's answer to an authorisation"
+msgstr "Réponse d'un responsable à une autorisation"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__answer_ids
+msgid "Guardians' answers"
+msgstr "Réponses des responsables"
+
+#. module: bf_school_forms
+#: model:ir.actions.act_window,name:bf_school_forms.bf_school_form_answer_action
+msgid "Guardians' answers (evidence)"
+msgstr "Réponses des responsables (preuves)"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__id
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__id
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__id
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__ip_address
+msgid "IP address"
+msgstr "Adresse IP"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,help:bf_school_forms.field_bf_school_form__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_forms
+#: model:ir.model.fields,help:bf_school_forms.field_bf_school_form__message_has_error
+#: model:ir.model.fields,help:bf_school_forms.field_bf_school_form__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_is_follower
+msgid "Is Follower"
+msgstr "Est un abonné"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__write_uid
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__write_uid
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__write_uid
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__write_date
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__write_date
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__write_date
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur d'envoi du message"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.bf_school_form_view_form
+msgid "Museum trip"
+msgstr "Sortie au musée"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__name
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_school_forms
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_response__state__expired
+msgid "No answer"
+msgstr "Sans réponse"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__count_other
+msgid "No answer possible"
+msgstr "Réponse impossible"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_forms
+msgid "No authorisation for now."
+msgstr "Aucune autorisation pour le moment."
+
+#. module: bf_school_forms
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_response__state__no_signer
+msgid "No guardian signs"
+msgstr "Aucun responsable ne signe"
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "Nobody is enrolled in these groups."
+msgstr "Personne n'est inscrit dans ces groupes."
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,help:bf_school_forms.field_bf_school_form__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages nécessitant une action"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,help:bf_school_forms.field_bf_school_form__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec des erreurs d'envoi"
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "Only a draft authorisation is sent."
+msgstr "Seule une autorisation en brouillon s'envoie."
+
+#. module: bf_school_forms
+#: model:bf.school.form.type,name:bf_school_forms.form_type_overnight
+msgid "Overnight stay"
+msgstr "Séjour avec coucher"
+
+#. module: bf_school_forms
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_answer__channel__link
+msgid "Personal link"
+msgstr "Lien personnel"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__count_refused
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_answer__decision__refused
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_response__state__refused
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_forms
+msgid "Refused"
+msgstr "Refusée"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.bf_school_form_view_form
+msgid "Remind those who have not answered"
+msgstr "Relancer ceux qui n'ont pas répondu"
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "Reminder emailed to %s guardian(s)."
+msgstr "Relance envoyée par courriel à %s responsable(s)."
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__response_id
+msgid "Response"
+msgstr "Réponse"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,help:bf_school_forms.field_bf_school_form__body_hash
+msgid ""
+"SHA-256 of the text as sent. Every answer keeps the fingerprint of the text "
+"it answered: the proof that nobody changed the text afterwards."
+msgstr ""
+"SHA-256 du texte tel qu'envoyé. Chaque réponse garde l'empreinte du texte "
+"auquel elle répond : la preuve que personne n'a changé le texte ensuite."
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur d'envoi SMS"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_forms
+#: model:mail.template,name:bf_school_forms.mail_template_school_form
+msgid "School: authorisation to answer"
+msgstr "École : autorisation à répondre"
+
+#. module: bf_school_forms
+#: model:ir.actions.server,name:bf_school_forms.ir_cron_school_form_close_ir_actions_server
+msgid "School: close the authorisations past their deadline"
+msgstr "École : fermer les autorisations dont l'échéance est passée"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.bf_school_form_view_form
+msgid "Send to families"
+msgstr "Envoyer aux familles"
+
+#. module: bf_school_forms
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form__state__sent
+msgid "Sent"
+msgstr "Envoyé"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__sent_on
+msgid "Sent On"
+msgstr "Envoyé le"
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "Sent: %(students)s student(s), %(sent)s email(s) to guardians."
+msgstr ""
+"Envoyée : %(students)s élève(s), %(sent)s courriel(s) aux responsables."
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__answered_by_user_id
+msgid "Signed in as"
+msgstr "Connecté comme"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__state
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__state
+msgid "State"
+msgstr "Statut"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__student_id
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_response__student_id
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__body_html
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.bf_school_form_view_form
+msgid "Text"
+msgstr "Texte"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__body_hash
+msgid "Text fingerprint"
+msgstr "Empreinte du texte"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
+msgid ""
+"This answer could not be recorded: you may already have answered, or the\n"
+"                    authorisation is closed. Contact the school office if needed."
+msgstr ""
+"Cette réponse n'a pas pu être enregistrée : vous avez peut-être déjà répondu, ou\n"
+"                    l'autorisation est fermée. Au besoin, contactez le secrétariat."
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
+msgid "This authorisation is closed."
+msgstr "Cette autorisation est fermée."
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "This authorisation no longer takes answers."
+msgstr "Cette autorisation ne reçoit plus de réponses."
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_forms
+msgid "To answer"
+msgstr "À répondre"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__type_id
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "Unknown answer."
+msgstr "Réponse inconnue."
+
+#. module: bf_school_forms
+#: model:ir.model.fields,help:bf_school_forms.field_bf_school_form_type__requires_all_signers
+msgid ""
+"Unticked, one guardian's authorisation is enough (Civil Code art. 603: "
+"towards a third party in good faith, one parent is presumed to act with the "
+"other's agreement). Ticked, the school waits for every guardian who signs."
+msgstr ""
+"Décoché, l'autorisation d'un seul responsable suffit (Code civil, art. 603 :"
+" à l'égard des tiers de bonne foi, un parent est présumé agir avec l'accord "
+"de l'autre). Coché, l'école attend chaque responsable qui signe."
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__user_agent
+msgid "User Agent"
+msgstr "Navigateur"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__count_pending
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_answer__decision__pending
+#: model:ir.model.fields.selection,name:bf_school_forms.selection__bf_school_form_response__state__pending
+msgid "Waiting"
+msgstr "En attente"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_forms
+#: model:ir.model.fields,help:bf_school_forms.field_bf_school_form__website_message_ids
+msgid "Website communication history"
+msgstr "Historique de communication du site web"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.bf_school_form_view_form
+msgid "What, where, when, what to bring, what it costs."
+msgstr "Quoi, où, quand, quoi apporter, combien ça coûte."
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
+msgid "You authorised on"
+msgstr "Vous avez autorisé le"
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid ""
+"You have already answered. To change your answer, contact the school office."
+msgstr ""
+"Vous avez déjà répondu. Pour changer votre réponse, contactez le "
+"secrétariat."
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
+msgid "You refused on"
+msgstr "Vous avez refusé le"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
+msgid ""
+"Your answer is final and dated. To change it afterwards, contact the school "
+"office."
+msgstr ""
+"Votre réponse est définitive et datée. Pour la changer ensuite, contactez le"
+" secrétariat."
+
+#. module: bf_school_forms
+#: model:mail.template,subject:bf_school_forms.mail_template_school_form
+msgid ""
+"{{ ctx.get('school_child') }}: authorisation, {{ object.form_id.name }}"
+msgstr ""
+"{{ ctx.get('school_child') }} : autorisation, {{ object.form_id.name }}"
+
+#. module: bf_school_forms
+#: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_forms
+msgid "· answer by"
+msgstr "· répondre d'ici le"

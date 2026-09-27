@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_school_form_type_user,bf.school.form.type staff,model_bf_school_form_type,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_form_type_manager,bf.school.form.type administration,model_bf_school_form_type,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_form_user,bf.school.form staff,model_bf_school_form,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_form_manager,bf.school.form administration,model_bf_school_form,bf_school_core.group_school_manager,1,1,1,1
+access_bf_school_form_response_user,bf.school.form.response staff,model_bf_school_form_response,bf_school_core.group_school_user,1,0,0,0
+access_bf_school_form_response_manager,bf.school.form.response administration,model_bf_school_form_response,bf_school_core.group_school_manager,1,1,1,0
+access_bf_school_form_answer_manager,bf.school.form.answer administration,model_bf_school_form_answer,bf_school_core.group_school_manager,1,0,0,0

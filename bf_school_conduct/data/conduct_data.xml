@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Regulation respecting rules of conduct in elementary and secondary schools
+             (I-13.3, r. 10.01), public and private schools alike. -->
+        <record id="rule_civility" model="bf.school.conduct.rule">
+            <field name="name">Civility (formal "vous", madame and monsieur)</field><field name="sequence">10</field>
+        </record>
+        <record id="rule_phone" model="bf.school.conduct.rule">
+            <field name="name">Cell phone during the school day</field><field name="sequence">20</field>
+        </record>
+        <record id="rule_image" model="bf.school.conduct.rule">
+            <field name="name">Image or voice captured without consent</field><field name="sequence">30</field>
+        </record>
+        <record id="rule_respect" model="bf.school.conduct.rule">
+            <field name="name">Respect of people and property</field><field name="sequence">40</field>
+        </record>
+        <record id="rule_deadlines" model="bf.school.conduct.rule">
+            <field name="name">Schedules and deadlines</field><field name="sequence">50</field>
+        </record>
+        <record id="rule_bullying" model="bf.school.conduct.rule">
+            <field name="name">Bullying</field><field name="sequence">80</field>
+            <field name="is_violence" eval="True"/>
+        </record>
+        <record id="rule_violence" model="bf.school.conduct.rule">
+            <field name="name">Violence</field><field name="sequence">85</field>
+            <field name="is_violence" eval="True"/>
+        </record>
+        <record id="rule_sexual" model="bf.school.conduct.rule">
+            <field name="name">Sexual violence</field><field name="sequence">90</field>
+            <field name="is_violence" eval="True"/><field name="is_sexual" eval="True"/>
+        </record>
+
+        <!-- r. 10.01 s. 5: graduated sanctions, and restorative measures always possible. -->
+        <record id="sanction_warning" model="bf.school.sanction">
+            <field name="name">Warning</field><field name="level">1</field>
+        </record>
+        <record id="sanction_reflection" model="bf.school.sanction">
+            <field name="name">Written reflection</field><field name="level">2</field>
+        </record>
+        <record id="sanction_device" model="bf.school.sanction">
+            <field name="name">Device withheld</field><field name="level">2</field><field name="sequence">20</field>
+        </record>
+        <record id="sanction_detention" model="bf.school.sanction">
+            <field name="name">Detention</field><field name="level">3</field>
+        </record>
+        <record id="sanction_internal" model="bf.school.sanction">
+            <field name="name">Internal suspension</field><field name="level">4</field>
+            <field name="is_suspension" eval="True"/>
+        </record>
+        <record id="sanction_external" model="bf.school.sanction">
+            <field name="name">External suspension</field><field name="level">5</field>
+            <field name="is_suspension" eval="True"/>
+        </record>
+        <record id="sanction_repair" model="bf.school.sanction">
+            <field name="name">Restorative gesture</field><field name="level">1</field>
+            <field name="is_restorative" eval="True"/>
+        </record>
+
+        <record id="ir_cron_followup_monthly" model="ir.cron">
+            <field name="name">School: monthly news to the parents (Régime s. 29.2)</field>
+            <field name="model_id" ref="model_bf_school_followup"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_monthly_reminder()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="mail_template_incident" model="mail.template">
+            <field name="name">School: breach of the rules of conduct</field>
+            <field name="model_id" ref="model_bf_school_incident"/>
+            <field name="subject">{{ object.student_id.name }}: school follow-up</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The school informs you of a situation concerning <strong t-out="object.student_id.name or ''"/>: <t t-out="object.rule_id.name or ''"/>.</p>
+    <p style="margin:0 0 12px 0;">The details and the measures taken are in the family portal. To talk about it, contact the school office.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/conduct"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            See the follow-up
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+
+        <record id="mail_template_followup" model="mail.template">
+            <field name="name">School: monthly news</field>
+            <field name="model_id" ref="model_bf_school_followup_communication"/>
+            <field name="subject">{{ object.student_id.name }}: news from the school</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;" t-out="object.summary or ''"/>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/conduct"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            See the follow-up
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

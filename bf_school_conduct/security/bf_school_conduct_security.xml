@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Conduct files are sensitive: a teacher sees the breaches and follow-ups of the
+         students they teach this year, not the whole school. The office sees all. -->
+    <record id="rule_incident_teacher" model="ir.rule">
+        <field name="name">Breach: students I teach</field>
+        <field name="model_id" ref="model_bf_school_incident"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('student_id.student_enrollment_ids.group_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_incident_manager" model="ir.rule">
+        <field name="name">Breach: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_incident"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_followup_teacher" model="ir.rule">
+        <field name="name">Follow-up: students I teach</field>
+        <field name="model_id" ref="model_bf_school_followup"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('student_id.student_enrollment_ids.group_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_followup_manager" model="ir.rule">
+        <field name="name">Follow-up: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_followup"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_followup_communication_teacher" model="ir.rule">
+        <field name="name">Monthly news: students I teach</field>
+        <field name="model_id" ref="model_bf_school_followup_communication"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('student_id.student_enrollment_ids.group_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_followup_communication_manager" model="ir.rule">
+        <field name="name">Monthly news: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_followup_communication"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

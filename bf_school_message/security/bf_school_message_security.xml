@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The school office writes to every family: it edits the noticeboard. -->
+    <record id="bf_school_core.group_school_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('bf_babillard.group_babillard_redacteur'))]"/>
+    </record>
+
+    <!-- A teacher reads the family announcements of the groups they teach, and the
+         read receipts that go with them. -->
+    <record id="rule_post_school_teacher_read" model="ir.rule">
+        <field name="name">Noticeboard: family announcements of my groups</field>
+        <field name="model_id" ref="bf_babillard.model_bf_babillard_post"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">['&amp;', ('audience', '=', 'school_families'),
+            '|', ('auteur_user_id', '=', user.id), ('school_group_ids.teacher_ids', 'in', [user.id])]</field>
+    </record>
+
+    <!-- 🔴 Write and create: their own family announcements only. "Every group is
+         mine" cannot be said by a domain: `_check_teacher_scope` says it, after
+         the write. -->
+    <record id="rule_post_school_teacher_write" model="ir.rule">
+        <field name="name">Noticeboard: a teacher edits their own family announcements</field>
+        <field name="model_id" ref="bf_babillard.model_bf_babillard_post"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">[('audience', '=', 'school_families'), ('auteur_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_lecture_school_teacher" model="ir.rule">
+        <field name="name">Noticeboard: read receipts of my groups' family announcements</field>
+        <field name="model_id" ref="bf_babillard.model_bf_babillard_lecture"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('post_id.audience', '=', 'school_families'),
+            ('post_id.school_group_ids.teacher_ids', 'in', [user.id])]</field>
+    </record>
+</odoo>

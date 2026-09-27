@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="level_prek4" model="bf.school.level">
+        <field name="name">Pre-K (4 years)</field><field name="code">M4</field>
+        <field name="stage">preschool</field><field name="sequence">1</field>
+    </record>
+    <record id="level_k5" model="bf.school.level">
+        <field name="name">Kindergarten (5 years)</field><field name="code">M5</field>
+        <field name="stage">preschool</field><field name="sequence">2</field>
+    </record>
+    <record id="level_e1" model="bf.school.level">
+        <field name="name">Grade 1</field><field name="code">P1</field>
+        <field name="stage">elementary</field><field name="sequence">11</field>
+    </record>
+    <record id="level_e2" model="bf.school.level">
+        <field name="name">Grade 2</field><field name="code">P2</field>
+        <field name="stage">elementary</field><field name="sequence">12</field>
+    </record>
+    <record id="level_e3" model="bf.school.level">
+        <field name="name">Grade 3</field><field name="code">P3</field>
+        <field name="stage">elementary</field><field name="sequence">13</field>
+    </record>
+    <record id="level_e4" model="bf.school.level">
+        <field name="name">Grade 4</field><field name="code">P4</field>
+        <field name="stage">elementary</field><field name="sequence">14</field>
+    </record>
+    <record id="level_e5" model="bf.school.level">
+        <field name="name">Grade 5</field><field name="code">P5</field>
+        <field name="stage">elementary</field><field name="sequence">15</field>
+    </record>
+    <record id="level_e6" model="bf.school.level">
+        <field name="name">Grade 6</field><field name="code">P6</field>
+        <field name="stage">elementary</field><field name="sequence">16</field>
+    </record>
+    <record id="level_s1" model="bf.school.level">
+        <field name="name">Secondary I</field><field name="code">S1</field>
+        <field name="stage">secondary</field><field name="sequence">21</field>
+    </record>
+    <record id="level_s2" model="bf.school.level">
+        <field name="name">Secondary II</field><field name="code">S2</field>
+        <field name="stage">secondary</field><field name="sequence">22</field>
+    </record>
+    <record id="level_s3" model="bf.school.level">
+        <field name="name">Secondary III</field><field name="code">S3</field>
+        <field name="stage">secondary</field><field name="sequence">23</field>
+    </record>
+    <record id="level_s4" model="bf.school.level">
+        <field name="name">Secondary IV</field><field name="code">S4</field>
+        <field name="stage">secondary</field><field name="sequence">24</field>
+    </record>
+    <record id="level_s5" model="bf.school.level">
+        <field name="name">Secondary V</field><field name="code">S5</field>
+        <field name="stage">secondary</field><field name="sequence">25</field>
+    </record>
+</odoo>

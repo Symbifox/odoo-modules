@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_babillard_post_form_school" model="ir.ui.view">
+        <field name="name">bf.babillard.post.form.school</field>
+        <field name="model">bf.babillard.post</field>
+        <field name="inherit_id" ref="bf_babillard.view_babillard_post_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='group_ids']" position="after">
+                <field name="school_id" invisible="audience != 'school_families'"
+                       required="audience == 'school_families'"/>
+                <field name="school_group_ids" widget="many2many_tags"
+                       invisible="audience != 'school_families'"
+                       placeholder="Every family of the school"/>
+            </xpath>
+            <!-- A teacher is not an editor: the "Diffusion" block is hidden from them.
+                 They choose among the groups they teach, nothing else. -->
+            <xpath expr="//group[@name='reglages']" position="after">
+                <group string="Families" name="school_teacher"
+                       groups="!bf_babillard.group_babillard_redacteur">
+                    <group>
+                        <field name="audience" invisible="1"/>
+                        <field name="school_id" readonly="1"/>
+                        <field name="school_group_ids" widget="many2many_tags" required="1"
+                               domain="[('teacher_ids', 'in', [uid]), ('year_id.state', '=', 'current')]"
+                               options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="lecture_requise"/>
+                        <field name="date_echeance"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_school_news" model="ir.actions.act_window">
+        <field name="name">Announcements to families</field>
+        <field name="res_model">bf.babillard.post</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('bf_babillard.view_babillard_post_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('bf_babillard.view_babillard_post_form')})]"/>
+        <field name="domain">[('audience', '=', 'school_families')]</field>
+        <field name="context">{'default_audience': 'school_families', 'default_type_publication': 'annonce'}</field>
+    </record>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_view_form_privacy" model="ir.ui.view">
+        <field name="name">bf.school.form.privacy</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_portal.bf_school_view_form_portal"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_school_invite_families']" position="after">
+                <button name="action_school_request_consents" type="object"
+                        string="Ask this year's consents" class="btn-secondary"
+                        groups="bf_school_core.group_school_manager"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

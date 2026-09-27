@@ -1,0 +1,640 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 02:10+0000\n"
+"PO-Revision-Date: 2026-09-27 02:10+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_attendance
+#: model:mail.template,body_html:bf_school_attendance.mail_template_unjustified_absence
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The school notes an absence for <strong t-out=\"object.student_id.name or ''\"/> today (<t t-out=\"object.session_id._slot_label() or ''\"/>), with no reason known.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">If you know about this absence, please justify it in the family portal. If not, call the school office now.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/attendance\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Justify the absence\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Bonjour,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">L'école note une absence pour <strong t-out=\"object.student_id.name or ''\"/> aujourd'hui (<t t-out=\"object.session_id._slot_label() or ''\"/>), sans motif connu.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">Si vous êtes au courant de cette absence, motivez-la dans le portail des familles. Sinon, appelez le secrétariat dès maintenant.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/attendance\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            Motiver l'absence\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_my_school_attendance_link
+msgid "<i class=\"fa fa-user-times me-1\"/>Absences"
+msgstr "<i class=\"fa fa-user-times me-1\"/>Absences"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid ""
+"<select class=\"form-select\" name=\"part\">\n"
+"                                    <option value=\"full\">Whole day</option>\n"
+"                                    <option value=\"am\">Morning</option>\n"
+"                                    <option value=\"pm\">Afternoon</option>\n"
+"                                </select>"
+msgstr ""
+"<select class=\"form-select\" name=\"part\">\n"
+"                                    <option value=\"full\">Journée entière</option>\n"
+"                                    <option value=\"am\">Matin</option>\n"
+"                                    <option value=\"pm\">Après-midi</option>\n"
+"                                </select>"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,help:bf_school_attendance.field_bf_school_absence_reason__is_justified
+msgid "A justified (motivée) absence sends no alert to the family."
+msgstr "Une absence motivée n'envoie aucun avis à la famille."
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "A morning or afternoon absence covers a single day."
+msgstr "Une absence du matin ou de l'après-midi couvre une seule journée."
+
+#. module: bf_school_attendance
+#: model:ir.model.constraint,message:bf_school_attendance.constraint_bf_school_attendance_line_one_line
+msgid "A student appears once per roll call."
+msgstr "Un élève paraît une seule fois par prise de présences."
+
+#. module: bf_school_attendance
+#: model:ir.model,name:bf_school_attendance.model_bf_school_absence_declaration
+msgid "Absence declared by the family"
+msgstr "Absence déclarée par la famille"
+
+#. module: bf_school_attendance
+#: model:ir.model,name:bf_school_attendance.model_bf_school_absence_reason
+msgid "Absence reason"
+msgstr "Motif d'absence"
+
+#. module: bf_school_attendance
+#: model:ir.actions.act_window,name:bf_school_attendance.bf_school_absence_reason_action
+#: model:ir.ui.menu,name:bf_school_attendance.menu_school_absence_reasons
+msgid "Absence reasons"
+msgstr "Motifs d'absence"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_breadcrumbs_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "Absences"
+msgstr "Absences"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__absent_count
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_attendance_line__status__absent
+msgid "Absent"
+msgstr "Absence"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_absence_declaration__part__pm
+msgid "Afternoon"
+msgstr "Après-midi"
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "An absence ends after it starts."
+msgstr "Une absence se termine après son début."
+
+#. module: bf_school_attendance
+#: model:ir.actions.act_window,name:bf_school_attendance.bf_school_attendance_session_action
+#: model:ir.ui.menu,name:bf_school_attendance.menu_school_attendance_root
+msgid "Attendance"
+msgstr "Présences"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_group__attendance_mode
+msgid "Attendance Mode"
+msgstr "Mode Présence"
+
+#. module: bf_school_attendance
+#: model:ir.model.constraint,message:bf_school_attendance.constraint_bf_school_attendance_session_one_roll_call
+msgid "Attendance is taken once per group and slot."
+msgstr "Les présences se prennent une fois par groupe et par moment."
+
+#. module: bf_school_attendance
+#: model:ir.model,name:bf_school_attendance.model_bf_school_attendance_line
+msgid "Attendance of a student"
+msgstr "Présence d'un élève"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.bf_school_attendance_session_view_form
+msgid "Attendance taken"
+msgstr "Présences prises"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "Child"
+msgstr "Enfant"
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/controllers/portal.py:0
+msgid "Choose a reason."
+msgstr "Choisissez un motif."
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__comment
+msgid "Comment"
+msgstr "Commentaire"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "Comment (optional)"
+msgstr "Commentaire (facultatif)"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__company_id
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__company_id
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.bf_school_attendance_session_view_form
+msgid "Correct"
+msgstr "Corriger"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__create_uid
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__create_uid
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__create_uid
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__create_date
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__create_date
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__create_date
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__date
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__declaration_id
+msgid "Declaration"
+msgstr "Déclaration"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "Declare"
+msgstr "Déclarer"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "Declare an absence"
+msgstr "Déclarer une absence"
+
+#. module: bf_school_attendance
+#: model:ir.actions.act_window,name:bf_school_attendance.bf_school_absence_declaration_action
+#: model:ir.ui.menu,name:bf_school_attendance.menu_school_absence_declarations
+msgid "Declared absences"
+msgstr "Absences déclarées"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__declared_by_id
+msgid "Declared by"
+msgstr "Déclarée par"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__display_name
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__display_name
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__display_name
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_group__attendance_mode__period
+msgid "Each period"
+msgstr "À chaque période"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,help:bf_school_attendance.field_bf_school_group__attendance_mode
+msgid ""
+"Elementary schools usually take attendance twice a day, secondary schools at"
+" every period. No regulation sets the frequency."
+msgstr ""
+"Au primaire, les présences se prennent d'habitude deux fois par jour ; au "
+"secondaire, à chaque période. Aucun règlement n'en fixe la fréquence."
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__portal_selectable
+msgid "Families may choose it"
+msgstr "Offert aux familles"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__family_notified_on
+msgid "Family Notified On"
+msgstr "Famille avisée le"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_absence_declaration__source__portal
+msgid "Family portal"
+msgstr "Portail des familles"
+
+#. module: bf_school_attendance
+#: model:bf.school.absence.reason,name:bf_school_attendance.reason_family
+msgid "Family reason"
+msgstr "Raison familiale"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,help:bf_school_attendance.field_bf_school_absence_declaration__part
+msgid "For a single day: the whole day, or only the morning or afternoon."
+msgstr ""
+"Pour une seule journée : la journée entière, ou seulement le matin ou "
+"l'après-midi."
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/controllers/portal.py:0
+msgid "For an absence longer than %s days, contact the school office."
+msgstr "Pour une absence de plus de %s jours, contactez le secrétariat."
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/controllers/portal.py:0
+msgid "For an absence older than %s days, contact the school office."
+msgstr ""
+"Pour une absence de plus de %s jours passés, contactez le secrétariat."
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__date_from
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "From"
+msgstr "Du"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__group_id
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__group_id
+msgid "Group"
+msgstr "Groupe"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__slot
+msgid "Half-day or period"
+msgstr "Demi-journée ou période"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__id
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__id
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__id
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_attendance
+#: model:bf.school.absence.reason,name:bf_school_attendance.reason_illness
+msgid "Illness"
+msgstr "Maladie"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_attendance_session__state__draft
+msgid "In progress"
+msgstr "En cours"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,help:bf_school_attendance.field_bf_school_attendance_line__note
+msgid "Internal. Never shown to the family."
+msgstr "Interne. Jamais montré à la famille."
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__is_justified
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__justified
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "Justified"
+msgstr "Motivée"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "Last 30 days"
+msgstr "30 derniers jours"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__write_uid
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__write_uid
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__write_uid
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__write_uid
+msgid "Last Updated by"
+msgstr "Mis à jour par"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__write_date
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__write_date
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__write_date
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__write_date
+msgid "Last Updated on"
+msgstr "Mis à jour le"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__late_count
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_attendance_line__status__late
+msgid "Late"
+msgstr "Retard"
+
+#. module: bf_school_attendance
+#: model:bf.school.absence.reason,name:bf_school_attendance.reason_appointment
+msgid "Medical or dental appointment"
+msgstr "Rendez-vous médical ou dentaire"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__minutes_late
+msgid "Minutes late"
+msgstr "Minutes de retard"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_absence_declaration__part__am
+msgid "Morning"
+msgstr "Matin"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_group__attendance_mode__half_day
+msgid "Morning and afternoon"
+msgstr "Matin et après-midi"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.bf_school_attendance_session_view_search
+msgid "My groups"
+msgstr "Mes groupes"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "No absence or lateness."
+msgstr "Aucune absence ni aucun retard."
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "Only the school office sees this list."
+msgstr "Seul le secrétariat voit cette liste."
+
+#. module: bf_school_attendance
+#: model:bf.school.absence.reason,name:bf_school_attendance.reason_other
+msgid "Other"
+msgstr "Autre"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__part
+msgid "Part"
+msgstr "Partie de journée"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_group__periods_per_day
+msgid "Periods per day"
+msgstr "Périodes par jour"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_attendance_line__status__present
+msgid "Present"
+msgstr "Présence"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__reason_id
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__reason_id
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "Reason"
+msgstr "Motif"
+
+#. module: bf_school_attendance
+#: model:ir.actions.server,name:bf_school_attendance.bf_school_repeated_absences_action
+#: model:ir.ui.menu,name:bf_school_attendance.menu_school_repeated_absences
+msgid "Repeated unjustified absences"
+msgstr "Absences non motivées répétées"
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "Repeated unjustified absences (30 days, 3 days or more)"
+msgstr "Absences non motivées répétées (30 jours, 3 jours ou plus)"
+
+#. module: bf_school_attendance
+#: model:ir.model,name:bf_school_attendance.model_bf_school_attendance_session
+msgid "Roll call"
+msgstr "Prise de présences"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_attendance
+#: model:ir.model,name:bf_school_attendance.model_bf_school_group
+msgid "School group"
+msgstr "Groupe"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_absence_declaration__source__office
+msgid "School office"
+msgstr "Secrétariat"
+
+#. module: bf_school_attendance
+#: model:mail.template,name:bf_school_attendance.mail_template_unjustified_absence
+msgid "School: unjustified absence"
+msgstr "École : absence non motivée"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_reason__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__session_id
+msgid "Session"
+msgstr "Session"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__source
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__state
+msgid "State"
+msgstr "Statut"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__status
+msgid "Status"
+msgstr "Statut"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__student_id
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_line__student_id
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__line_ids
+msgid "Students"
+msgstr "Élèves"
+
+#. module: bf_school_attendance
+#: model:ir.ui.menu,name:bf_school_attendance.menu_school_attendance
+msgid "Take attendance"
+msgstr "Prendre les présences"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_attendance_session__state__done
+msgid "Taken"
+msgstr "Prises"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_attendance_session__teacher_id
+msgid "Taken by"
+msgstr "Prises par"
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/controllers/portal.py:0
+msgid "Thank you: the absence is recorded and the school is informed."
+msgstr "Merci : l'absence est enregistrée et l'école en est informée."
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/controllers/portal.py:0
+msgid "The dates are not valid."
+msgstr "Les dates ne sont pas valides."
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "The school has not linked any child to your account yet."
+msgstr "L'école n'a encore lié aucun enfant à votre compte."
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "This group takes attendance at each period: 1 to %s."
+msgstr "Ce groupe prend les présences à chaque période : 1 à %s."
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "This group takes attendance in the morning and afternoon: am or pm."
+msgstr "Ce groupe prend les présences le matin et l'après-midi : am ou pm."
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,field_description:bf_school_attendance.field_bf_school_absence_declaration__date_to
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "To"
+msgstr "Au"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "To justify"
+msgstr "À motiver"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.bf_school_attendance_session_view_search
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "Today or later, or to justify an absence already noted."
+msgstr "Aujourd'hui ou plus tard, ou pour motiver une absence déjà notée."
+
+#. module: bf_school_attendance
+#: model:bf.school.absence.reason,name:bf_school_attendance.reason_travel
+msgid "Trip during school days"
+msgstr "Voyage pendant les jours de classe"
+
+#. module: bf_school_attendance
+#: model:bf.school.absence.reason,name:bf_school_attendance.reason_unjustified
+msgid "Unjustified"
+msgstr "Non motivée"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "When"
+msgstr "Quand"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_absence_declaration__part__full
+msgid "Whole day"
+msgstr "Journée entière"
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "afternoon"
+msgstr "après-midi"
+
+#. module: bf_school_attendance
+#: model:ir.model.fields,help:bf_school_attendance.field_bf_school_attendance_session__slot
+msgid "am or pm in half-day mode; the period number (1, 2...) in period mode."
+msgstr ""
+"am ou pm en mode demi-journée; le numéro de la période (1, 2...) en mode "
+"période."
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.bf_school_attendance_session_view_form
+msgid "am, pm, or a period number"
+msgstr "am, pm, ou un numéro de période"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "min)"
+msgstr "min)"
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "morning"
+msgstr "matin"
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "period %s"
+msgstr "période %s"
+
+#. module: bf_school_attendance
+#: model:mail.template,subject:bf_school_attendance.mail_template_unjustified_absence
+msgid "{{ object.student_id.name }}: absence today"
+msgstr "{{ object.student_id.name }} : absence aujourd'hui"
+
+#. module: bf_school_attendance
+#: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
+msgid "· late"
+msgstr "· en retard"

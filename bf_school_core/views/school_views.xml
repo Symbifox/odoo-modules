@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_view_form" model="ir.ui.view">
+        <field name="name">bf.school.form</field>
+        <field name="model">bf.school</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_students" type="object" class="oe_stat_button" icon="fa-child">
+                            <field name="student_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title"><h1><field name="name" placeholder="School name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="current_year_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="School years" name="years">
+                            <field name="year_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'current'"
+                                           decoration-muted="state == 'closed'"/>
+                                    <button name="action_set_current" type="object" string="Make current"
+                                            icon="fa-play" invisible="state == 'current'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Groups" name="groups">
+                            <field name="group_ids" context="{'default_school_id': id}">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="year_id"/>
+                                    <field name="level_ids" widget="many2many_tags"/>
+                                    <field name="teacher_ids" widget="many2many_avatar_user"/>
+                                    <field name="student_count"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_view_list" model="ir.ui.view">
+        <field name="name">bf.school.list</field>
+        <field name="model">bf.school</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="current_year_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_action" model="ir.actions.act_window">
+        <field name="name">Schools</field>
+        <field name="res_model">bf.school</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="bf_school_level_view_list" model="ir.ui.view">
+        <field name="name">bf.school.level.list</field>
+        <field name="model">bf.school.level</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="stage"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_level_action" model="ir.actions.act_window">
+        <field name="name">Levels</field>
+        <field name="res_model">bf.school.level</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

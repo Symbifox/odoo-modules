@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_conduct_link" name="School: link to conduct"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a href="/my/school/conduct" class="btn btn-secondary">
+                <i class="fa fa-comments me-1"/>Follow-up</a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_conduct" name="School: conduct breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="35">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_conduct'" class="breadcrumb-item active">Follow-up</li>
+        </xpath>
+    </template>
+
+    <template id="portal_school_conduct" name="School: follow-up">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Follow-up</t>
+            </t>
+            <div t-if="not incidents and not news" class="alert alert-info mt-3">Nothing to report.</div>
+            <t t-if="news">
+                <h5 class="mt-4">News from the school</h5>
+                <div class="list-group">
+                    <div t-foreach="news" t-as="item" class="list-group-item">
+                        <small class="text-muted"><span t-field="item.date"/> · <t t-out="item.student_id.name"/></small>
+                        <div class="mt-1" style="white-space: pre-line;" t-out="item.summary"/>
+                    </div>
+                </div>
+            </t>
+            <t t-if="incidents">
+                <h5 class="mt-4">Breaches of the rules of conduct</h5>
+                <div class="list-group">
+                    <div t-foreach="incidents" t-as="incident" class="list-group-item">
+                        <small class="text-muted">
+                            <span t-field="incident.date" t-options="{'widget': 'date', 'tz_name': (incident.company_id.partner_id.tz or 'America/Toronto')}"/>
+                            · <t t-out="incident.student_id.name"/> · <t t-out="incident.rule_id.name"/>
+                        </small>
+                        <div class="mt-1" style="white-space: pre-line;" t-out="incident.description"/>
+                        <div t-if="incident.sanction_id" class="mt-1"><strong>Measure:</strong> <t t-out="incident.sanction_id.name"/></div>
+                        <div t-if="incident.restorative_measure" class="mt-1" style="white-space: pre-line;"><strong>Restorative measure:</strong> <t t-out="incident.restorative_measure"/></div>
+                        <div t-if="incident.support_measures" class="mt-1" style="white-space: pre-line;"><strong>Support:</strong> <t t-out="incident.support_measures"/></div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_consents_link" name="School: link to consents"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a href="/my/privacy/consents" class="btn btn-secondary">
+                <i class="fa fa-shield me-1"/>Consents</a>
+        </xpath>
+    </template>
+</odoo>

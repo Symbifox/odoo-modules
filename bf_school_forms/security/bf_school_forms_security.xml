@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Staff (teachers) read who is authorised: they take the children on the trip.
+         The evidence itself (IP address, browser, fingerprint) is the office's only:
+         it is personal information that a teacher has no use for. Nobody writes an
+         answer by hand: answers come from the guardians, through the portal or the link. -->
+    <record id="rule_school_form_company" model="ir.rule">
+        <field name="name">Authorisation: my companies</field>
+        <field name="model_id" ref="model_bf_school_form"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_school_form_response_company" model="ir.rule">
+        <field name="name">Authorisation per student: my companies</field>
+        <field name="model_id" ref="model_bf_school_form_response"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_school_form_answer_company" model="ir.rule">
+        <field name="name">Guardian's answer: my companies</field>
+        <field name="model_id" ref="model_bf_school_form_answer"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Two levels (Private Sector Act s. 20: need-to-know). Every staff member sees the
+         health ALERT on the student. The detailed record, the medication and the register
+         belong to this group only. The school Administration does NOT imply it: the
+         school names who is part of it (nurse, designated office staff). -->
+    <record id="group_school_health" model="res.groups">
+        <field name="name">Health</field>
+        <field name="category_id" ref="bf_school_core.module_category_school"/>
+        <field name="implied_ids" eval="[(4, ref('bf_school_core.group_school_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        <field name="comment">The people the school authorises: detailed health records, medication
+            authorisations, the register of doses given.</field>
+    </record>
+
+    <!-- A staff member who records emergency epinephrine sees what they recorded, nothing else. -->
+    <record id="rule_administration_staff_own" model="ir.rule">
+        <field name="name">Dose given: what I recorded</field>
+        <field name="model_id" ref="model_bf_school_medication_administration"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('given_by_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_administration_health" model="ir.rule">
+        <field name="name">Dose given: the health group sees all</field>
+        <field name="model_id" ref="model_bf_school_medication_administration"/>
+        <field name="groups" eval="[(6, 0, [ref('group_school_health')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

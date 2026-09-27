@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_school" model="ir.ui.view">
+        <field name="name">res.partner.form.school</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="is_student" invisible="is_company" groups="bf_school_core.group_school_user"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="School" name="school" invisible="not is_student"
+                      groups="bf_school_core.group_school_user">
+                    <group>
+                        <group>
+                            <field name="student_birthdate"/>
+                            <field name="student_age" invisible="not student_birthdate"/>
+                            <field name="student_permanent_code"/>
+                        </group>
+                        <group>
+                            <field name="student_group_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <separator string="Guardians"/>
+                    <field name="student_guardian_link_ids" context="{'default_student_id': id}">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="guardian_id" context="{'default_is_student': False}"/>
+                            <field name="relationship"/>
+                            <field name="has_parental_authority"/>
+                            <field name="receives_notices"/>
+                            <field name="can_sign"/>
+                            <field name="is_payer"/>
+                            <field name="can_pickup"/>
+                            <field name="is_emergency_contact"/>
+                            <field name="lives_with"/>
+                            <field name="note" optional="hide"/>
+                        </list>
+                    </field>
+                    <separator string="Enrolments"/>
+                    <field name="student_enrollment_ids" readonly="1">
+                        <list decoration-muted="state == 'left'">
+                            <field name="year_id"/>
+                            <field name="school_id"/>
+                            <field name="group_id"/>
+                            <field name="date_start"/>
+                            <field name="state" widget="badge" decoration-success="state == 'active'"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Children at school" name="school_children"
+                      invisible="not guardian_student_count" groups="bf_school_core.group_school_user">
+                    <field name="guardian_student_count" invisible="1"/>
+                    <field name="guardian_student_link_ids" readonly="1">
+                        <list>
+                            <field name="student_id"/>
+                            <field name="relationship"/>
+                            <field name="has_parental_authority"/>
+                            <field name="receives_notices"/>
+                            <field name="can_sign"/>
+                            <field name="is_payer"/>
+                            <field name="can_pickup"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- A student is not a customer: no VAT, no sales and purchases, no company.
+         The generic contact form keeps its "School" tab for the other entry points. -->
+    <record id="view_partner_form_student" model="ir.ui.view">
+        <field name="name">res.partner.form.student</field>
+        <field name="model">res.partner</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Student">
+                <sheet>
+                    <field name="avatar_128" invisible="1"/>
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                           options="{'preview_image': 'avatar_128'}"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Student name" required="1"/></h1>
+                    </div>
+                    <field name="is_student" invisible="1"/>
+                    <field name="is_company" invisible="1"/>
+                    <group>
+                        <group>
+                            <field name="student_birthdate"/>
+                            <field name="student_age" invisible="not student_birthdate"/>
+                            <field name="is_minor_child" readonly="1"/>
+                            <field name="student_permanent_code"/>
+                        </group>
+                        <group>
+                            <field name="student_group_ids" widget="many2many_tags"/>
+                            <field name="lang"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Guardians" name="guardians">
+                            <field name="student_guardian_link_ids" context="{'default_student_id': id}">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="guardian_id" context="{'default_is_student': False}"/>
+                                    <field name="relationship"/>
+                                    <field name="has_parental_authority"/>
+                                    <field name="receives_notices"/>
+                                    <field name="can_sign"/>
+                                    <field name="is_payer"/>
+                                    <field name="can_pickup"/>
+                                    <field name="is_emergency_contact"/>
+                                    <field name="lives_with"/>
+                                    <field name="note" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Enrolments" name="enrolments">
+                            <field name="student_enrollment_ids" readonly="1">
+                                <list decoration-muted="state == 'left'">
+                                    <field name="year_id"/>
+                                    <field name="school_id"/>
+                                    <field name="group_id"/>
+                                    <field name="date_start"/>
+                                    <field name="state" widget="badge" decoration-success="state == 'active'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="comment" placeholder="Visible to the school staff only."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_partner_list_student" model="ir.ui.view">
+        <field name="name">res.partner.list.student</field>
+        <field name="model">res.partner</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="student_group_ids" widget="many2many_tags"/>
+                <field name="student_age"/>
+                <field name="student_permanent_code" optional="show"/>
+                <field name="is_minor_child" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_partner_search_student" model="ir.ui.view">
+        <field name="name">res.partner.search.student</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='type_company']" position="after">
+                <filter name="students" string="Students" domain="[('is_student', '=', True)]"/>
+                <filter name="guardians" string="Guardians" domain="[('guardian_student_link_ids', '!=', False)]"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="student_permanent_code"/>
+                <field name="student_enrollment_ids" string="Group" filter_domain="[('student_enrollment_ids.group_id.name', 'ilike', self)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_school_students" model="ir.actions.act_window">
+        <field name="name">Students</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_student', '=', True)]</field>
+        <field name="context">{'default_is_student': True, 'default_is_company': False}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_partner_list_student')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_partner_form_student')})]"/>
+    </record>
+
+    <record id="action_school_guardians" model="ir.actions.act_window">
+        <field name="name">Guardians</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('guardian_student_link_ids', '!=', False)]</field>
+        <field name="context">{'default_is_company': False}</field>
+    </record>
+</odoo>

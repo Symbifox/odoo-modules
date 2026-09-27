@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A teacher takes the attendance of the groups they teach, not of their colleagues'.
+         The office sees and corrects everything. -->
+    <record id="rule_attendance_session_teacher" model="ir.rule">
+        <field name="name">Roll call: the groups I teach</field>
+        <field name="model_id" ref="model_bf_school_attendance_session"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('group_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_attendance_session_manager" model="ir.rule">
+        <field name="name">Roll call: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_attendance_session"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_attendance_line_teacher" model="ir.rule">
+        <field name="name">Attendance line: the groups I teach</field>
+        <field name="model_id" ref="model_bf_school_attendance_line"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('session_id.group_id.teacher_ids', 'in', [user.id])]</field>
+    </record>
+    <record id="rule_attendance_line_manager" model="ir.rule">
+        <field name="name">Attendance line: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_attendance_line"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_attendance_session_company" model="ir.rule">
+        <field name="name">Roll call: my companies</field>
+        <field name="model_id" ref="model_bf_school_attendance_session"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_absence_declaration_company" model="ir.rule">
+        <field name="name">Declared absence: my companies</field>
+        <field name="model_id" ref="model_bf_school_absence_declaration"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

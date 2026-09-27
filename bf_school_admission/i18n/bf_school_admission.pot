@@ -1,0 +1,945 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_admission
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 12:44+0000\n"
+"PO-Revision-Date: 2026-09-27 12:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "%s application(s) purged."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid ""
+",\n"
+"                            paid online after sending, or at the school office. The application is studied once the fee is paid."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.reenroll_form
+msgid ""
+".\n"
+"                        It is part of the price of next year's contract."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:mail.template,body_html:bf_school_admission.mail_template_admission_update
+msgid ""
+"<div>\n"
+"    <t t-set=\"event\" t-value=\"ctx.get('school_event')\"/>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p t-if=\"event == 'received'\" style=\"margin:0 0 12px 0;\">We have received the application and its fee. We will write to you at the next step.</p>\n"
+"    <p t-if=\"event == 'convened'\" style=\"margin:0 0 12px 0;\">You are convened to the admission exam: <strong t-out=\"format_datetime(object.campaign_id.exam_datetime, tz=object.company_id.partner_id.tz or 'America/Toronto') or ''\"/><t t-if=\"object.campaign_id.exam_location\">, <t t-out=\"object.campaign_id.exam_location\"/></t>.</p>\n"
+"    <p t-if=\"event == 'accepted'\" style=\"margin:0 0 12px 0;\">Good news: the application is accepted. The school will contact you to complete the registration.</p>\n"
+"    <p t-if=\"event == 'waitlisted'\" style=\"margin:0 0 12px 0;\">The application is on the waiting list. We will write to you if a place opens.</p>\n"
+"    <p t-if=\"event == 'refused'\" style=\"margin:0 0 12px 0;\">We are sorry: the school cannot offer a place this year.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}{{ object._status_url() }}\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            See the application\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "<option value=\"\">Choose</option>"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
+msgid "<strong>Admission exam:</strong>"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
+msgid "<strong>Status:</strong>"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "A campaign closes after it opens."
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid "A document is larger than 10 MB."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Accept"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__accepted
+msgid "Accepted"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__access_token
+msgid "Access Token"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_needaction
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.ui.menu,name:bf_school_admission.menu_school_admission
+msgid "Admission"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid "Admission 2027-2028"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model,name:bf_school_admission.model_bf_school_admission
+msgid "Admission application"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model,name:bf_school_admission.model_bf_school_admission_campaign
+msgid "Admission campaign"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__exam_datetime
+msgid "Admission exam"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission_campaign__kind__admission
+msgid "Admission of new students"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__fee_amount
+msgid ""
+"Admission: fee for studying the application, at most 50 $ (Regulation E-9.1,"
+" r. 3, s. 11). Re-enrolment: registration fee, at most 200 $ (s. 12); it is "
+"part of the price of the contract for educational services."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__application_count
+msgid "Application Count"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Application fee"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Application fee:"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.actions.act_window,name:bf_school_admission.bf_school_admission_action
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__application_ids
+#: model:ir.ui.menu,name:bf_school_admission.menu_school_admission_applications
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid "Applications"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid "At most %s documents."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__awaiting_fee
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_search
+msgid "Awaiting payment"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid ""
+"Birth certificate and the latest report card. PDF, JPEG, PNG or HEIC, up to "
+"10 MB each, 5 documents at most."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__student_birthdate
+msgid "Birth date"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Birth date *"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__campaign_id
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_search
+msgid "Campaign"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.actions.act_window,name:bf_school_admission.bf_school_admission_campaign_action
+#: model:ir.ui.menu,name:bf_school_admission.menu_school_admission_campaigns
+msgid "Campaigns"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid "Choose a level."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid "Close"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Close the campaign before purging it."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission_campaign__state__closed
+msgid "Closed"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__date_close
+msgid "Closes on"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__company_id
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.reenroll_form
+msgid "Confirm the re-enrolment"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.reenroll_form
+msgid ""
+"Contact information to change? Write to the school office before confirming."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Convene to the exam"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__convened
+msgid "Convened to the exam"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__create_uid
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__create_date
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__currency_id
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__current_school
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Current school"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__decided_on
+msgid "Decided On"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__decided_by_id
+msgid "Decided by"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__display_name
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Documents"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid "Documents are accepted as PDF, JPEG, PNG or HEIC only."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission_campaign__state__draft
+msgid "Draft"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Email"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Email *"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__fee_label
+msgid ""
+"Empty: the application fee for an admission, the registration fee for a re-"
+"enrolment."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Enrol"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__enrolled
+msgid "Enrolled"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__evaluated
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Evaluated"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Evaluation"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__evaluation_note
+msgid "Evaluation notes"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid "Exam instructions"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__exam_location
+msgid "Exam location"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__score
+msgid "Exam score"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Family and fee"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__fee_amount
+msgid "Fee"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__fee_paid
+msgid "Fee Paid"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__invoice_id
+msgid "Fee invoice"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__fee_label
+msgid "Fee label on the invoice"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__student_firstname
+msgid "First name"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "First name *"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__target_year
+msgid "For example 2027-2028."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__target_year
+msgid "For the school year"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__guardian_ids
+msgid "Guardians"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__has_message
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid ""
+"I have read that the school uses this information only to study the application. If the\n"
+"                                student is not enrolled, the school destroys the documents and the student's information\n"
+"                                after the admission campaign; it keeps the fee receipt, as accounting rules require."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__id
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__message_needaction
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__message_has_error
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__message_has_error
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__evaluation_note
+msgid "Internal. Never shown to the family."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model,name:bf_school_admission.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
+msgid "Keep this link: it shows the status of this application at any time."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__kind
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__kind
+msgid "Kind"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__write_uid
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__write_date
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__student_lastname
+msgid "Last name"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Last name *"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_search
+msgid "Level"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.reenroll_form
+msgid "Level next year"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__level_id
+msgid "Level requested"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Level requested *"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__level_ids
+msgid "Levels offered"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_has_error
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_ids
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__name
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__name
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Name"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Name *"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "New"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Only a submitted application is convened."
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Only a submitted or convened application is evaluated."
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Only an accepted application is enrolled."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission_campaign__state__open
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid "Open"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__date_open
+msgid "Opens on"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__rank
+msgid ""
+"Order by score within the campaign and the level, among the evaluated and "
+"waiting-listed applications. An aid: the decision is always taken by a "
+"person."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Parent or guardian"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
+msgid "Pay"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__payer_id
+msgid "Pays the fee"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Phone"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid ""
+"Please confirm that you have read how the school uses this information."
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid "Please fill in every required field."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid "Public form"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid "Purge the applications not enrolled"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__purged
+msgid "Purged"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__rank
+msgid "Rank"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__rating_ids
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.reenroll_form
+msgid "Re-enrol"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.portal_my_school_reenroll
+msgid "Re-enrol for"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission_campaign__kind__reenrollment
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.portal_my_school_reenroll
+msgid "Re-enrolment"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__confirmed
+msgid "Re-enrolment confirmed"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Refuse"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__refused
+msgid "Refused"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Registration fee"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.reenroll_form
+msgid "Registration fee:"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__school_id
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__school_id
+msgid "School"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "School year"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:mail.template,name:bf_school_admission.mail_template_admission_update
+msgid "School: application update"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.actions.server,name:bf_school_admission.ir_cron_school_fee_invoice_pdf_ir_actions_server
+msgid "School: official PDF of the fee invoices"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Second parent or guardian <small class=\"text-muted\">(optional)</small>"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Send the application"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Set the exam date on the campaign first."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__state
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__state
+msgid "State"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_search
+msgid "Status"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__student_id
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_list
+msgid "Student"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__submitted
+msgid "Submitted"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__submitted_on
+msgid "Submitted On"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__intro_html
+msgid "Text of the public form"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid ""
+"The admission application fee is at most 50 $ (Regulation E-9.1, r. 3, s. "
+"11)."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
+msgid ""
+"The application is studied once the fee is paid. Pay online now, or at the "
+"school office."
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid "The birth date is not valid."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__purged
+msgid "The documents and the student's identity were destroyed."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid ""
+"The documents, the student's identity and the evaluation of every "
+"application that did not lead to an enrolment will be destroyed. The fee "
+"invoices are kept. This cannot be undone. Continue?"
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid "The email address is not valid."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
+msgid ""
+"The re-enrolment is confirmed. The school will send the contract for "
+"signature."
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "The registration fee is at most 200 $ (Regulation E-9.1, r. 3, s. 12)."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "The student"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "This admission campaign is not open."
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "This application is not waiting for a decision."
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_search
+msgid "To decide"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__waitlisted
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Waiting list"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Website"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__website_message_ids
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid "What the families read above the form."
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__exam_instructions
+msgid "What to bring to the exam"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__withdrawn
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Withdrawn"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.reenroll_form
+msgid "for"
+msgstr ""
+
+#. module: bf_school_admission
+#: model:mail.template,subject:bf_school_admission.mail_template_admission_update
+msgid ""
+"{{ object.school_id.name }}: {{ object.campaign_id.name }}, {{ object.name "
+"}}"
+msgstr ""

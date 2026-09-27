@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_school_root" name="School" sequence="45"
+              web_icon="bf_school_core,static/description/icon.png"
+              groups="group_school_user"/>
+
+    <menuitem id="menu_school_students" name="Students" parent="menu_school_root"
+              action="action_school_students" sequence="10"/>
+    <menuitem id="menu_school_groups" name="Groups" parent="menu_school_root"
+              action="bf_school_group_action" sequence="20"/>
+    <menuitem id="menu_school_families" name="Families" parent="menu_school_root" sequence="30"/>
+    <menuitem id="menu_school_guardians" name="Guardians" parent="menu_school_families"
+              action="action_school_guardians" sequence="10"/>
+    <menuitem id="menu_school_guardian_links" name="Family links" parent="menu_school_families"
+              action="bf_school_guardian_link_action" sequence="20"/>
+
+    <menuitem id="menu_school_config" name="Configuration" parent="menu_school_root"
+              sequence="90" groups="group_school_manager"/>
+    <menuitem id="menu_school_schools" name="Schools" parent="menu_school_config"
+              action="bf_school_action" sequence="10"/>
+    <menuitem id="menu_school_levels" name="Levels" parent="menu_school_config"
+              action="bf_school_level_action" sequence="20"/>
+</odoo>

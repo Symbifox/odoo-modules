@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="reason_illness" model="bf.school.absence.reason">
+            <field name="name">Illness</field><field name="sequence">10</field>
+        </record>
+        <record id="reason_appointment" model="bf.school.absence.reason">
+            <field name="name">Medical or dental appointment</field><field name="sequence">20</field>
+        </record>
+        <record id="reason_family" model="bf.school.absence.reason">
+            <field name="name">Family reason</field><field name="sequence">30</field>
+        </record>
+        <record id="reason_travel" model="bf.school.absence.reason">
+            <field name="name">Trip during school days</field><field name="sequence">40</field>
+        </record>
+        <record id="reason_other" model="bf.school.absence.reason">
+            <field name="name">Other</field><field name="sequence">90</field>
+        </record>
+        <record id="reason_unjustified" model="bf.school.absence.reason">
+            <field name="name">Unjustified</field><field name="sequence">100</field>
+            <field name="is_justified" eval="False"/><field name="portal_selectable" eval="False"/>
+        </record>
+
+        <!-- Sent when the roll call is closed, for an absence the family has not declared.
+             🔴 No gender agreement: the text says "an absence for X", never "X is absent"
+             (a contact carries no gender). -->
+        <record id="mail_template_unjustified_absence" model="mail.template">
+            <field name="name">School: unjustified absence</field>
+            <field name="model_id" ref="model_bf_school_attendance_line"/>
+            <field name="subject">{{ object.student_id.name }}: absence today</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The school notes an absence for <strong t-out="object.student_id.name or ''"/> today (<t t-out="object.session_id._slot_label() or ''"/>), with no reason known.</p>
+    <p style="margin:0 0 12px 0;">If you know about this absence, please justify it in the family portal. If not, call the school office now.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/attendance"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            Justify the absence
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

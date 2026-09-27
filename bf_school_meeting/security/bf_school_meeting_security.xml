@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A teacher reads their own slots (who comes, for which child), not their
+         colleagues'. The office sees everything. Families have no access right:
+         the portal reads through the adult's own guardian links. -->
+    <record id="rule_meeting_slot_teacher" model="ir.rule">
+        <field name="name">Meeting slot: my own</field>
+        <field name="model_id" ref="model_bf_school_meeting_slot"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
+        <field name="domain_force">[('teacher_id', '=', user.id)]</field>
+    </record>
+    <record id="rule_meeting_slot_manager" model="ir.rule">
+        <field name="name">Meeting slot: the office sees all</field>
+        <field name="model_id" ref="model_bf_school_meeting_slot"/>
+        <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_manager')])]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_meeting_session_company" model="ir.rule">
+        <field name="name">Meetings: my companies</field>
+        <field name="model_id" ref="model_bf_school_meeting_session"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_meeting_slot_company" model="ir.rule">
+        <field name="name">Meeting slot: my companies</field>
+        <field name="model_id" ref="model_bf_school_meeting_slot"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

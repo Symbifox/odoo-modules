@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_health_link" name="School: link to health"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a href="/my/school/health" class="btn btn-secondary">
+                <i class="fa fa-medkit me-1"/>Health</a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_health" name="School: health breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="37">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_health'" class="breadcrumb-item active">Health</li>
+        </xpath>
+    </template>
+
+    <template id="portal_school_health" name="School: health">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Health</t>
+            </t>
+            <div t-if="message" class="alert alert-warning mt-3" t-out="message"/>
+            <div t-foreach="children" t-as="child" class="mt-3">
+                <div t-if="child.health_alert"
+                     t-attf-class="alert #{'alert-danger' if child.health_alert_level == 'severe' else 'alert-info'}">
+                    <strong t-out="child.name"/> · <t t-out="child.health_alert"/>
+                    <div class="small">Every staff member of the school sees this alert. To change it, write to the school office.</div>
+                </div>
+            </div>
+            <t t-if="to_sign">
+                <h5 class="mt-4">Authorisations to sign</h5>
+                <div t-foreach="to_sign" t-as="med" class="card mt-2">
+                    <div class="card-body">
+                        <strong t-out="med.name"/> · <t t-out="med.student_id.name"/>
+                        <ul class="small mb-2">
+                            <li>Prescribed by <t t-out="med.prescriber"/></li>
+                            <li>Dosage: <t t-out="med.dosage"/> · Route: <span t-field="med.route"/></li>
+                            <li t-if="med.as_needed">As needed: <t t-out="med.as_needed_conditions"/></li>
+                            <li>Valid from <span t-field="med.date_from"/> to <span t-field="med.date_to"/></li>
+                        </ul>
+                        <form method="post" t-att-action="'/my/school/health/%s/answer' % med.id" class="d-flex gap-2">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <button type="submit" name="decision" value="accept" class="btn btn-success btn-sm">I authorise</button>
+                            <button type="submit" name="decision" value="refuse" class="btn btn-outline-danger btn-sm">I refuse</button>
+                        </form>
+                    </div>
+                </div>
+            </t>
+            <t t-if="active">
+                <h5 class="mt-4">Medication authorised at school</h5>
+                <div class="list-group">
+                    <div t-foreach="active" t-as="med" class="list-group-item small">
+                        <strong t-out="med.name"/> · <t t-out="med.student_id.name"/> · <t t-out="med.dosage"/>
+                        · until <span t-field="med.date_to"/>
+                    </div>
+                </div>
+            </t>
+            <t t-if="given">
+                <h5 class="mt-4">Given at school (last 60 days)</h5>
+                <div class="list-group">
+                    <div t-foreach="given" t-as="dose" class="list-group-item small">
+                        <span t-field="dose.given_on" t-options="{'widget': 'datetime', 'tz_name': (dose.company_id.partner_id.tz or 'America/Toronto')}"/>
+                        · <t t-out="dose.student_id.name"/> ·
+                        <t t-if="dose.emergency_epinephrine">Epinephrine (emergency)</t>
+                        <t t-else=""><t t-out="dose.medication_id.name"/></t>
+                        · <t t-out="dose.dose"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

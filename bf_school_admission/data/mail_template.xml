@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_school_admission" model="ir.sequence">
+            <field name="name">School admission</field>
+            <field name="code">bf.school.admission</field>
+            <field name="prefix">ADM/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="ir_cron_school_fee_invoice_pdf" model="ir.cron">
+            <field name="name">School: official PDF of the fee invoices</field>
+            <field name="model_id" ref="model_bf_school_admission"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_fee_invoice_pdf()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- One template for every step: the event comes in the context. The link is the
+             personal status page, which works without a portal account. -->
+        <record id="mail_template_admission_update" model="mail.template">
+            <field name="name">School: application update</field>
+            <field name="model_id" ref="model_bf_school_admission"/>
+            <field name="subject">{{ object.school_id.name }}: {{ object.campaign_id.name }}, {{ object.name }}</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <t t-set="event" t-value="ctx.get('school_event')"/>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p t-if="event == 'received'" style="margin:0 0 12px 0;">We have received the application and its fee. We will write to you at the next step.</p>
+    <p t-if="event == 'convened'" style="margin:0 0 12px 0;">You are convened to the admission exam: <strong t-out="format_datetime(object.campaign_id.exam_datetime, tz=object.company_id.partner_id.tz or 'America/Toronto') or ''"/><t t-if="object.campaign_id.exam_location">, <t t-out="object.campaign_id.exam_location"/></t>.</p>
+    <p t-if="event == 'accepted'" style="margin:0 0 12px 0;">Good news: the application is accepted. The school will contact you to complete the registration.</p>
+    <p t-if="event == 'waitlisted'" style="margin:0 0 12px 0;">The application is on the waiting list. We will write to you if a place opens.</p>
+    <p t-if="event == 'refused'" style="margin:0 0 12px 0;">We are sorry: the school cannot offer a place this year.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}{{ object._status_url() }}"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            See the application
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

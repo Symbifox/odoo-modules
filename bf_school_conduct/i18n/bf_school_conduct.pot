@@ -1,0 +1,793 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_conduct
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 12:44+0000\n"
+"PO-Revision-Date: 2026-09-27 12:44+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_school_conduct
+#: model:mail.template,body_html:bf_school_conduct.mail_template_followup
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\" t-out=\"object.summary or ''\"/>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/conduct\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            See the follow-up\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:mail.template,body_html:bf_school_conduct.mail_template_incident
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The school informs you of a situation concerning <strong t-out=\"object.student_id.name or ''\"/>: <t t-out=\"object.rule_id.name or ''\"/>.</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The details and the measures taken are in the family portal. To talk about it, contact the school office.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/conduct\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            See the follow-up\n"
+"        </a>\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.portal_my_school_conduct_link
+msgid "<i class=\"fa fa-comments me-1\"/>Follow-up"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.portal_school_conduct
+msgid "<strong>Measure:</strong>"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.portal_school_conduct
+msgid "<strong>Restorative measure:</strong>"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.portal_school_conduct
+msgid "<strong>Support:</strong>"
+msgstr ""
+
+#. module: bf_school_conduct
+#. odoo-python
+#: code:addons/bf_school_conduct/models/conduct.py:0
+msgid ""
+"A suspension notice gives its reasons and the support measures (Education "
+"Act s. 96.27, Private Education Act s. 63.6)."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_sanction__is_suspension
+msgid ""
+"A suspension requires the reasons and the support measures in the parents' "
+"notice."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_needaction
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__active
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__active
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.ui.menu,name:bf_school_conduct.menu_school_violence_report
+msgid "Annual report"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.actions.act_window,name:bf_school_conduct.bf_school_violence_report_action
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.bf_school_incident_view_pivot
+msgid "Annual report on bullying and violence"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_attachment_count
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__author_id
+msgid "Author"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model,name:bf_school_conduct.model_bf_school_incident
+msgid "Breach of the rules of conduct"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.ui.menu,name:bf_school_conduct.menu_school_incidents
+msgid "Breaches"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.actions.act_window,name:bf_school_conduct.bf_school_incident_action
+msgid "Breaches of the rules"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.portal_school_conduct
+msgid "Breaches of the rules of conduct"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.conduct.rule,name:bf_school_conduct.rule_bullying
+msgid "Bullying"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__is_violence
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__is_violence
+msgid "Bullying or violence"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__case
+msgid "Case"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.conduct.rule,name:bf_school_conduct.rule_phone
+msgid "Cell phone during the school day"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__channel
+msgid "Channel"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.conduct.rule,name:bf_school_conduct.rule_civility
+msgid "Civility (formal \"vous\", madame and monsieur)"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.bf_school_incident_view_form
+msgid "Close"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields.selection,name:bf_school_conduct.selection__bf_school_incident__state__closed
+msgid "Closed"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__communication_ids
+msgid "Communications"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__company_id
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__company_id
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.ui.menu,name:bf_school_conduct.menu_school_conduct_root
+msgid "Conduct"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields.selection,name:bf_school_conduct.selection__bf_school_followup__case__conduct
+msgid "Conduct not in line with the rules"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_conduct_rule__is_violence
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__is_violence
+msgid ""
+"Counted in the annual report on bullying and violence, and the parents of "
+"the students involved are informed promptly (Education Act s. 96.12, Private"
+" Education Act s. 63.5)."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__create_uid
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__create_uid
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__create_uid
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__create_uid
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__create_date
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__create_date
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__create_date
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__create_date
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__date
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__date
+msgid "Date"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__description
+msgid "Description"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.sanction,name:bf_school_conduct.sanction_detention
+msgid "Detention"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.sanction,name:bf_school_conduct.sanction_device
+msgid "Device withheld"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__display_name
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__display_name
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__display_name
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__display_name
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields.selection,name:bf_school_conduct.selection__bf_school_followup_communication__channel__email
+msgid "Email from Symbifox"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.sanction,name:bf_school_conduct.sanction_external
+msgid "External suspension"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.portal_breadcrumbs_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.portal_school_conduct
+msgid "Follow-up"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_follower_ids
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_partner_ids
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__followup_id
+msgid "Followup"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_conduct_rule__is_sexual
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__is_sexual
+msgid "From 14, the parents are informed only with the student's consent."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__has_message
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__id
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__id
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__id
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__id
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__message_needaction
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__message_has_error
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__message_has_sms_error
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__message_has_error
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.conduct.rule,name:bf_school_conduct.rule_image
+msgid "Image or voice captured without consent"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.bf_school_incident_view_form
+msgid "Inform the parents"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.sanction,name:bf_school_conduct.sanction_internal
+msgid "Internal suspension"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_is_follower
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__is_suspension
+msgid "Is Suspension"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__last_communication
+msgid "Last Communication"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__write_uid
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__write_uid
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__write_uid
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__write_uid
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__write_date
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__write_date
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__write_date
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__write_date
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__level
+msgid "Level"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields.selection,name:bf_school_conduct.selection__bf_school_followup_communication__channel__meeting
+msgid "Meeting"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_has_error
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_ids
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model,name:bf_school_conduct.model_bf_school_followup
+msgid "Monthly follow-up"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.actions.act_window,name:bf_school_conduct.bf_school_followup_action
+#: model:ir.ui.menu,name:bf_school_conduct.menu_school_followups
+msgid "Monthly follow-ups"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model,name:bf_school_conduct.model_bf_school_followup_communication
+msgid "Monthly news to the parents"
+msgstr ""
+
+#. module: bf_school_conduct
+#. odoo-python
+#: code:addons/bf_school_conduct/models/conduct.py:0
+msgid "Monthly news to the parents of %s"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__name
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.portal_school_conduct
+msgid "News from the school"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__reported_by_id
+msgid "Noted by"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.portal_school_conduct
+msgid "Nothing to report."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__message_needaction_counter
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__message_has_error_counter
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields.selection,name:bf_school_conduct.selection__bf_school_incident__state__open
+msgid "Open"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields.selection,name:bf_school_conduct.selection__bf_school_followup_communication__channel__other
+msgid "Other"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__parents_informed_on
+msgid "Parents Informed On"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields.selection,name:bf_school_conduct.selection__bf_school_followup_communication__channel__phone
+msgid "Phone call"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__prior_count
+msgid "Previous breaches of this rule"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields.selection,name:bf_school_conduct.selection__bf_school_followup__case__intervention_plan
+msgid "Provided in the intervention plan"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__rating_ids
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__suspension_reasons
+msgid "Reasons for the suspension"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__student_consent
+msgid "Required for sexual violence when the student is 14 or older."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.conduct.rule,name:bf_school_conduct.rule_respect
+msgid "Respect of people and property"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__responsible_id
+msgid "Responsible teacher"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.sanction,name:bf_school_conduct.sanction_repair
+msgid "Restorative gesture"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__restorative_measure
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__is_restorative
+msgid "Restorative measure"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields.selection,name:bf_school_conduct.selection__bf_school_followup__case__failure_risk
+msgid "Risk of not reaching the pass mark"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__rule_id
+msgid "Rule"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model,name:bf_school_conduct.model_bf_school_conduct_rule
+msgid "Rule of conduct"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.actions.act_window,name:bf_school_conduct.bf_school_conduct_rule_action
+#: model:ir.ui.menu,name:bf_school_conduct.menu_school_conduct_rules
+msgid "Rules of conduct"
+msgstr ""
+
+#. module: bf_school_conduct
+#. odoo-python
+#: code:addons/bf_school_conduct/models/conduct.py:0
+msgid "Régime pédagogique s. 29.2: at least once a month."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model,name:bf_school_conduct.model_bf_school_sanction
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__sanction_id
+msgid "Sanction"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.actions.act_window,name:bf_school_conduct.bf_school_sanction_action
+#: model:ir.ui.menu,name:bf_school_conduct.menu_school_sanctions
+msgid "Sanctions"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.conduct.rule,name:bf_school_conduct.rule_deadlines
+msgid "Schedules and deadlines"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:mail.template,name:bf_school_conduct.mail_template_incident
+msgid "School: breach of the rules of conduct"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:mail.template,name:bf_school_conduct.mail_template_followup
+msgid "School: monthly news"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.actions.server,name:bf_school_conduct.ir_cron_followup_monthly_ir_actions_server
+msgid "School: monthly news to the parents (Régime s. 29.2)"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__sequence
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_sanction__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.conduct.rule,name:bf_school_conduct.rule_sexual
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__is_sexual
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__is_sexual
+msgid "Sexual violence"
+msgstr ""
+
+#. module: bf_school_conduct
+#. odoo-python
+#: code:addons/bf_school_conduct/models/conduct.py:0
+msgid ""
+"Sexual violence: from 14, the parents are informed only with the student's "
+"consent. Record it first, or contact the student protector."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__state
+msgid "State"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__student_id
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__student_id
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__student_id
+msgid "Student"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__student_consent
+msgid "Student agrees that the parents be informed"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__suggested_sanction_id
+msgid "Suggested sanction"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup_communication__summary
+msgid "Summary"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__support_measures
+msgid "Support and reintegration measures"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.bf_school_incident_view_form
+msgid ""
+"The adults who receive notices will get an email, and the breach will appear"
+" in their family portal. Continue?"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__suggested_sanction_id
+msgid ""
+"The next level after the previous breaches of the same rule this school "
+"year. An aid: a person decides."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_sanction__level
+msgid "The rank in the graduation: 1 is the lightest."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.conduct.rule,name:bf_school_conduct.rule_violence
+msgid "Violence"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.sanction,name:bf_school_conduct.sanction_warning
+msgid "Warning"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__website_message_ids
+#: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_followup__website_message_ids
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model_terms:ir.ui.view,arch_db:bf_school_conduct.bf_school_incident_view_form
+msgid "What happened, in plain words. The family reads it once informed."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__description
+msgid "What happened. Shared with the family once they are informed."
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:bf.school.sanction,name:bf_school_conduct.sanction_reflection
+msgid "Written reflection"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:mail.template,subject:bf_school_conduct.mail_template_followup
+msgid "{{ object.student_id.name }}: news from the school"
+msgstr ""
+
+#. module: bf_school_conduct
+#: model:mail.template,subject:bf_school_conduct.mail_template_incident
+msgid "{{ object.student_id.name }}: school follow-up"
+msgstr ""

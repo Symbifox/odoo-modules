@@ -1,0 +1,220 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 00:41+0000\n"
+"PO-Revision-Date: 2026-09-27 00:41+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_message
+#. odoo-python
+#: code:addons/bf_school_message/models/babillard_post.py:0
+msgid ""
+"%(n)s adult(s) who receive notices have no email address and were not told."
+msgstr ""
+"%(n)s adulte(s) qui reçoi(ven)t les avis n'ont pas d'adresse courriel et "
+"n'ont pas été prévenu(s)."
+
+#. module: bf_school_message
+#: model:mail.template,body_html:bf_school_message.mail_template_school_news
+msgid ""
+"<div>\n"
+"    <t t-set=\"societe\" t-value=\"object.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 4px 0;font-size:13px;color:#6B7280;\">\n"
+"        <t t-out=\"object.school_id.name or ''\"/> · <t t-out=\"ctx.get('school_children') or ''\"/>\n"
+"    </p>\n"
+"    <h2 style=\"margin:0 0 16px 0;\" t-out=\"object.name or ''\"/>\n"
+"    <div t-if=\"not is_html_empty(object.corps_html)\" style=\"margin:0 0 16px 0;\" t-out=\"object.corps_html\"/>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}{{ ctx.get('school_url') }}\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            <t t-if=\"object.lecture_requise\">Read and confirm</t>\n"
+"            <t t-else=\"\">Open in the family portal</t>\n"
+"        </a>\n"
+"    </p>\n"
+"    <p t-if=\"object.lecture_requise\" style=\"margin:0;font-size:13px;color:#6B7280;\">\n"
+"        The school asks you to confirm that you have read this announcement. The\n"
+"        confirmation is given in the family portal, after you sign in: opening this\n"
+"        email or its link does not count.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div>\n"
+"    <t t-set=\"societe\" t-value=\"object.company_id\"/>\n"
+"    <t t-set=\"accent\" t-value=\"('report_brand_primary' in societe._fields and societe.report_brand_primary) or societe.email_secondary_color or '#875A7B'\"/>\n"
+"    <p style=\"margin:0 0 4px 0;font-size:13px;color:#6B7280;\">\n"
+"        <t t-out=\"object.school_id.name or ''\"/> · <t t-out=\"ctx.get('school_children') or ''\"/>\n"
+"    </p>\n"
+"    <h2 style=\"margin:0 0 16px 0;\" t-out=\"object.name or ''\"/>\n"
+"    <div t-if=\"not is_html_empty(object.corps_html)\" style=\"margin:0 0 16px 0;\" t-out=\"object.corps_html\"/>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}{{ ctx.get('school_url') }}\" t-attf-style=\"background-color:{{ accent }};color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            <t t-if=\"object.lecture_requise\">Lire et confirmer</t>\n"
+"            <t t-else=\"\">Ouvrir dans le portail des familles</t>\n"
+"        </a>\n"
+"    </p>\n"
+"    <p t-if=\"object.lecture_requise\" style=\"margin:0;font-size:13px;color:#6B7280;\">\n"
+"        L'école vous demande de confirmer que vous avez lu cette annonce. La\n"
+"        confirmation se donne dans le portail des familles, après la connexion : ouvrir\n"
+"        ce courriel ou son lien ne compte pas.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_my_school_news_link
+msgid "<i class=\"fa fa-bullhorn me-1\"/>School announcements"
+msgstr "<i class=\"fa fa-bullhorn me-1\"/>Annonces de l'école"
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_school_news_detail
+msgid "<i class=\"fa fa-check me-1\"/>I have read it"
+msgstr "<i class=\"fa fa-check me-1\"/>J'ai lu"
+
+#. module: bf_school_message
+#. odoo-python
+#: code:addons/bf_school_message/models/babillard_post.py:0
+msgid ""
+"A teacher writes to the families of their own groups only. Choose one or "
+"more of your groups, or ask the school office."
+msgstr ""
+"Un enseignant écrit seulement aux familles de ses propres groupes. "
+"Choisissez un ou plusieurs de vos groupes, ou adressez-vous au secrétariat."
+
+#. module: bf_school_message
+#: model:ir.ui.menu,name:bf_school_message.menu_school_news
+msgid "Announcements"
+msgstr "Annonces"
+
+#. module: bf_school_message
+#: model:ir.actions.act_window,name:bf_school_message.action_school_news
+msgid "Announcements to families"
+msgstr "Annonces aux familles"
+
+#. module: bf_school_message
+#: model:ir.model.fields,field_description:bf_school_message.field_bf_babillard_post__audience
+msgid "Audience"
+msgstr "Public"
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_school_news
+msgid "Confirmed"
+msgstr "Confirmée"
+
+#. module: bf_school_message
+#: model:ir.model.fields,help:bf_school_message.field_bf_babillard_post__school_group_ids
+msgid ""
+"Empty: every family of the school. Otherwise the families of these groups "
+"only."
+msgstr ""
+"Vide : toutes les familles de l'école. Sinon, seulement les familles de ces "
+"groupes."
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.bf_babillard_post_form_school
+msgid "Every family of the school"
+msgstr "Toutes les familles de l'école"
+
+#. module: bf_school_message
+#. odoo-python
+#: code:addons/bf_school_message/models/babillard_post.py:0
+msgid "Every group must belong to the school of the announcement."
+msgstr "Chaque groupe doit appartenir à l'école de l'annonce."
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.bf_babillard_post_form_school
+msgid "Families"
+msgstr "Familles"
+
+#. module: bf_school_message
+#. odoo-python
+#: code:addons/bf_school_message/models/babillard_post.py:0
+msgid "Name the school whose families receive this announcement."
+msgstr "Nommez l'école dont les familles reçoivent cette annonce."
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_school_news
+msgid "No announcement for now."
+msgstr "Aucune annonce pour le moment."
+
+#. module: bf_school_message
+#. odoo-python
+#: code:addons/bf_school_message/models/babillard_post.py:0
+msgid "Notice emailed to %(n)s family member(s)."
+msgstr "Avis envoyé par courriel à %(n)s membre(s) de famille."
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_school_news
+msgid "Pinned"
+msgstr "Épinglée"
+
+#. module: bf_school_message
+#: model:ir.model,name:bf_school_message.model_bf_babillard_post
+msgid "Publication du babillard"
+msgstr "Publication du babillard"
+
+#. module: bf_school_message
+#: model:ir.model.fields,field_description:bf_school_message.field_bf_babillard_post__school_id
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_breadcrumbs_school_news
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_my_home_school_news
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_school_news
+msgid "School announcements"
+msgstr "Annonces de l'école"
+
+#. module: bf_school_message
+#: model:ir.model.fields.selection,name:bf_school_message.selection__bf_babillard_post__audience__school_families
+msgid "School families"
+msgstr "Familles de l'école"
+
+#. module: bf_school_message
+#: model:ir.model.fields,field_description:bf_school_message.field_bf_babillard_post__school_group_ids
+msgid "School groups"
+msgstr "Groupes"
+
+#. module: bf_school_message
+#: model:mail.template,name:bf_school_message.mail_template_school_news
+msgid "School: announcement to families"
+msgstr "École : annonce aux familles"
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_school_news_detail
+msgid "The school asks you to confirm that you have read it."
+msgstr "L'école vous demande de confirmer que vous l'avez lue."
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_school_news
+msgid "To confirm"
+msgstr "À confirmer"
+
+#. module: bf_school_message
+#. odoo-python
+#: code:addons/bf_school_message/models/babillard_post.py:0
+msgid "Waiting for confirmation"
+msgstr "En attente de confirmation"
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_my_home_school_news
+msgid "What the school tells you, and what it asks you to confirm"
+msgstr "Ce que l'école vous annonce, et ce qu'elle vous demande de confirmer"
+
+#. module: bf_school_message
+#: model_terms:ir.ui.view,arch_db:bf_school_message.portal_school_news_detail
+msgid "You confirmed reading this announcement on"
+msgstr "Vous avez confirmé la lecture de cette annonce le"
+
+#. module: bf_school_message
+#: model:mail.template,subject:bf_school_message.mail_template_school_news
+msgid "{{ ctx.get('school_children') }}: {{ object.name }}"
+msgstr "{{ ctx.get('school_children') }} : {{ object.name }}"

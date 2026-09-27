@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔴 The office asks this year's consents: without it, the action opened a wizard it
+         could not use, and the first request of a fresh base creates the notice version,
+         which only a privacy manager may do (found in QA, 2026-09-27). -->
+    <record id="bf_school_core.group_school_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('privacy_consent.group_privacy_manager'))]"/>
+    </record>
+</odoo>

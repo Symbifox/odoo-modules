@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="mail_template_meeting_booked" model="mail.template">
+            <field name="name">School: parent-teacher meeting booked</field>
+            <field name="model_id" ref="model_bf_school_meeting_slot"/>
+            <field name="subject">{{ object.student_id.name }}: meeting with {{ object.teacher_id.name }}</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">Your meeting is booked:
+        <strong t-out="format_datetime(object.start, tz=object.company_id.partner_id.tz or 'America/Toronto', dt_format='d MMMM, HH:mm') or ''"/>,
+        with <t t-out="object.teacher_id.name or ''"/>, about <t t-out="object.student_id.name or ''"/>.</p>
+    <p t-if="object.session_id.location" style="margin:0 0 12px 0;">Place: <t t-out="object.session_id.location"/></p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/meetings"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            My meetings
+        </a>
+    </p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

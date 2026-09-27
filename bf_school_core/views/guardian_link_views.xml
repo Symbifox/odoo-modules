@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_guardian_link_view_list" model="ir.ui.view">
+        <field name="name">bf.school.guardian.link.list</field>
+        <field name="model">bf.school.guardian.link</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="student_id"/>
+                <field name="guardian_id"/>
+                <field name="relationship"/>
+                <field name="has_parental_authority"/>
+                <field name="receives_notices"/>
+                <field name="can_sign"/>
+                <field name="is_payer"/>
+                <field name="can_pickup"/>
+                <field name="is_emergency_contact"/>
+                <field name="lives_with"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_guardian_link_view_search" model="ir.ui.view">
+        <field name="name">bf.school.guardian.link.search</field>
+        <field name="model">bf.school.guardian.link</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="guardian_id"/>
+                <filter name="payers" string="Pays" domain="[('is_payer', '=', True)]"/>
+                <filter name="no_notice" string="Receives no notices" domain="[('receives_notices', '=', False)]"/>
+                <group>
+                    <filter name="by_student" string="Student" context="{'group_by': 'student_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_guardian_link_action" model="ir.actions.act_window">
+        <field name="name">Family links</field>
+        <field name="res_model">bf.school.guardian.link</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>
