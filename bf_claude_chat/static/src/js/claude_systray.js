@@ -7,6 +7,7 @@ import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 import { router } from "@web/core/browser/router";
 import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
+import { listModeMixin } from "@bf_claude_chat/js/gen_list_mode";
 import {
     followTurn, newClientToken, pendingToStreaming, stopTurn, streamingFields,
 } from "@bf_claude_chat/js/gen_turn";
@@ -293,6 +294,7 @@ export class ClaudeSystrayItem extends Component {
             streamingActive: false, // a streamed response is in flight
             loaded: false,
             editingSessionId: null,
+            ...listModeMixin.listModeState(),
             editingName: "",
             pageContext: null,       // {model, res_id, display_name, view_type, url}
             contextDismissed: false, // user dismissed the context badge
@@ -464,6 +466,7 @@ export class ClaudeSystrayItem extends Component {
             const params = this._sessionFilterParams();
             const result = await rpc("/claude-chat/sessions", params);
             this.state.sessions = result.sessions || [];
+            this.applyListMode(result);
             if (result.streaming !== undefined) this.state.streaming = result.streaming;
             if (result.auto_brief !== undefined) this.state.autoBrief = result.auto_brief;
             if (result.auto_brief_prompt) this.state.autoBriefPrompt = result.auto_brief_prompt;
@@ -667,6 +670,7 @@ export class ClaudeSystrayItem extends Component {
         try {
             const sessResult = await rpc("/claude-chat/sessions", filterParams);
             this.state.sessions = sessResult.sessions || [];
+            this.applyListMode(sessResult);
             if (sessResult.streaming !== undefined) this.state.streaming = sessResult.streaming;
             if (wasNewSession) {
                 setTimeout(async () => {
@@ -827,6 +831,8 @@ export class ClaudeSystrayItem extends Component {
         return s ? s.name : "";
     }
 }
+
+Object.assign(ClaudeSystrayItem.prototype, listModeMixin);
 
 export const systrayClaudeChat = {
     Component: ClaudeSystrayItem,

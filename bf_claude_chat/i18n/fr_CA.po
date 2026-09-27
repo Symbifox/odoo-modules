@@ -1084,6 +1084,13 @@ msgstr "1 étape"
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 #, python-format
+msgid "Sub-agent: %s"
+msgstr "Sous-agent : %s"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+#, python-format
 msgid "%s steps"
 msgstr "%s étapes"
 
@@ -1113,6 +1120,24 @@ msgstr "Reprises automatiques après une fin propre du pont (délai, limite d'é
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__client_token
 msgid "Client Token"
 msgstr "Jeton de l'écran"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Queued: Gen will read this when it comes up for air."
+msgstr "En file : Gen la lira à sa prochaine respiration."
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/claude_chat.js:0
+msgid "Gen had already finished. Send your question again."
+msgstr "Gen avait déjà fini. Repose ta question."
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/claude_chat.js:0
+msgid "Gen finished before reading your question. Here it is again."
+msgstr "Gen a fini avant de lire ta question. La voici de retour."
 
 #. module: bf_claude_chat
 #. odoo-javascript
@@ -1215,3 +1240,21 @@ msgstr "Pourquoi le tour n'a pas fini normalement, tel que le pont l'a dit (time
 #, python-format
 msgid "Only the server may set these fields on a Gen message: %s"
 msgstr "Seul le serveur peut écrire ces champs d'un message de Gen : %s"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Titles"
+msgstr "Titres"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Records"
+msgstr "Éléments"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Switch between title and linked record"
+msgstr "Basculer entre le titre et l'élément associé"

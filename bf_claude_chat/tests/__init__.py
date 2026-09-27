@@ -3,3 +3,6 @@ from . import test_registre
 from . import test_comptes
 from . import test_personnalite
 from . import test_tours
+from . import test_plafond
+from . import test_nommage
+from . import test_liste

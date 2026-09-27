@@ -1,5 +1,95 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.28.0 - 2026-09-26
+
+### L'élément associé en pastille, avec un lien
+
+- Au plein écran, l'élément associé s'affiche dans une pastille bleue à droite
+  de la date ; au panneau latéral, sous le titre. Le titre reste en tête, et
+  l'interrupteur Titres | Éléments et la bascule par ligne restent là.
+- La pastille ouvre la fiche sans ouvrir la conversation. Ctrl, Maj ou le clic
+  du milieu l'ouvrent dans un autre onglet.
+- Même règle que la liste : pas de pastille sans élément, ni pour un élément
+  supprimé ou que l'usager ne peut pas lire.
+
+## 18.0.1.27.0 - 2026-09-26
+
+### Titre ou élément associé dans la liste des conversations
+
+- **Interrupteur Titres | Éléments** en tête de la liste, au plein écran comme
+  au panneau latéral. En mode Éléments, une conversation ouverte sur une fiche
+  montre « Type · Nom » (« Tâche · Rénover la salle d'attente ») ; sans fiche,
+  elle garde son titre, en grisé.
+- **Bascule par ligne** : une icône montre l'autre libellé d'une seule ligne,
+  le temps de l'écran. L'interrupteur global remet toutes les lignes à zéro.
+- **Le choix est mémorisé sur l'usager** (`res.users.gen_list_mode`), donc
+  partagé par le web et le mobile : `POST /claude-chat/list-mode` au bureau,
+  `POST /list-mode` au téléphone, et `list_mode` dans la réponse des deux listes.
+- **Lu avec les droits de l'usager** : un élément supprimé, un modèle absent ou
+  une fiche qu'il ne peut pas lire donnent le titre, sans rien signaler.
+- **api mobile 6** : `res_label` sur chaque ligne de `/sessions`.
+
+## 18.0.1.26.0 - 2026-09-25
+
+### Chercher, nommer et ouvrir une conversation depuis le téléphone
+
+- **Recherche** : `/sessions?q=` (mobile) et `query` sur `/claude-chat/sessions`
+  cherchent chaque mot dans le titre ou dans un message visible.
+- **Nom donné à la main** : `/rename-session` au téléphone, et le renommage
+  du bureau, marquent la conversation ; plus aucun titrage ne la réécrit.
+- **Le nom de la fiche** : une conversation ouverte sur une fiche avec la
+  consigne de départ porte le nom de la fiche, et non plus « Mets-moi en
+  contexte… ».
+- **Renommage périodique** : chaque jour, une conversation humaine touchée
+  dans la semaine et grandie de trois échanges depuis son dernier titre est
+  renommée d'après sa première et sa dernière question.
+- **Envoyer à Gen** : `/ask` accepte `context` (modèle, identifiant), contrôlé
+  comme au bureau, et `brief` pour la même consigne de départ ; la fiche
+  accompagne chaque tour suivant de la conversation.
+
+## 18.0.1.25.0 - 2026-09-24
+
+### Un plafond pour les écrans qui suivent un tour en direct
+
+- Chaque écran qui suit un tour en direct (`/claude-chat/stream`,
+  `/claude-chat/attach`) tient un worker HTTP jusqu'à la fin du tour. Six écrans
+  ouverts en même temps pouvaient prendre tous les workers et laisser Odoo muet.
+- Les flux de Gen n'ont plus droit qu'à la moitié des workers HTTP, ou au nombre
+  fixé par `bf_claude_chat.max_live_viewers`. Un écran refusé ne perd rien : il
+  revient par `/claude-chat/attach`, et le tour continue sans lui.
+- Le compte se tient par des verrous `flock`, un par place : le noyau libère la
+  place d'un worker tué ou recyclé.
+
+## 18.0.1.24.0 - 2026-09-21
+
+### Glisser une question pendant que Gen travaille
+
+- Une question posée pendant un tour part dans ce tour au lieu d'être refusée.
+  Gen la lit à sa prochaine pause ; la bulle reste « en file » jusqu'à ce que le
+  pont confirme la lecture. S'il a fini d'écrire avant, la question revient dans
+  la saisie.
+- Le travail d'un sous-agent s'affiche sous l'étape de délégation en cours, au
+  lieu du seul mot « Agent ».
+
+## 18.0.1.23.0 - 2026-09-15
+
+### Au téléphone : plusieurs conversations à la fois, et un bouton Arrêter
+
+Symbifox Mobile ne laissait poser qu'une question à la fois, toutes
+conversations confondues, et rien n'arrêtait Gen une fois parti. L'app porte
+l'essentiel du correctif ; la surface mobile gagne ce qu'il lui faut (api 4) :
+
+- **`POST /stop`** : le même geste que `/claude-chat/stop` au bureau. Le tour
+  s'enregistre avec ce qu'il avait écrit, sans reprise automatique et sans
+  compter comme un échec de la conversation.
+- **`busy` et `turn_id` par conversation** dans `/sessions` : la liste dit
+  lesquelles travaillent encore.
+- **Un tour à la fois par conversation**, comme au bureau depuis 18.0.1.22.0 :
+  `/ask` rend `409 busy` avec le tour en cours au lieu de lancer un second CLI
+  sur la même conversation. Rien n'est écrit. Les autres conversations restent
+  ouvertes.
+- **`end_reason`** dans `/turn` et `/messages`, pour qu'un tour arrêté ne se
+  peigne pas comme une panne.
 ## 18.0.1.22.1 - 2026-09-15
 
 ### Les champs d'un tour ne s'écrivent plus que côté serveur

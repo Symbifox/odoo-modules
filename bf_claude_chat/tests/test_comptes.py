@@ -281,7 +281,7 @@ class TestChargeUtileReelle(TransactionCase):
         self.Compte = self.env["claude.account"]
 
     def test_le_vrai_releve_ne_produit_que_les_fenetres_mesurees(self):
-        cid = self.Compte.enregistrer_releve("/home/livv/.claude",
+        cid = self.Compte.enregistrer_releve("/home/gen/.claude",
                                              nom="Blue Fox",
                                              charge=CHARGE_REELLE)
         compte = self.Compte.browse(cid)
@@ -290,20 +290,20 @@ class TestChargeUtileReelle(TransactionCase):
 
     def test_une_fenetre_a_none_ne_devient_pas_un_zero(self):
         """`seven_day_opus` arrive à None, pas absente. Zéro se lirait « gratuit »."""
-        cid = self.Compte.enregistrer_releve("/home/livv/.claude",
+        cid = self.Compte.enregistrer_releve("/home/gen/.claude",
                                              charge=CHARGE_REELLE)
         compte = self.Compte.browse(cid)
         self.assertNotIn("seven_day_opus", compte.window_ids.mapped("fenetre"))
 
     def test_une_fenetre_inconnue_est_ignoree(self):
         """`nimbus_quill` porte un vrai 0.0 et n'a rien à faire dans le compte."""
-        cid = self.Compte.enregistrer_releve("/home/livv/.claude",
+        cid = self.Compte.enregistrer_releve("/home/gen/.claude",
                                              charge=CHARGE_REELLE)
         compte = self.Compte.browse(cid)
         self.assertEqual(len(compte.window_ids), 2)
 
     def test_l_horodatage_a_la_microseconde_se_lit(self):
-        cid = self.Compte.enregistrer_releve("/home/livv/.claude",
+        cid = self.Compte.enregistrer_releve("/home/gen/.claude",
                                              charge=CHARGE_REELLE)
         semaine = self.Compte.browse(cid).window_ids.filtered(
             lambda w: w.fenetre == "seven_day")
@@ -335,7 +335,7 @@ class TestChargeUtileReelle(TransactionCase):
 
     def test_un_releve_sans_forfait_ni_credits_ne_casse_rien(self):
         """Le vrai relevé ne porte ni `subscription_type` ni `extra_usage`."""
-        cid = self.Compte.enregistrer_releve("/home/livv/.claude",
+        cid = self.Compte.enregistrer_releve("/home/gen/.claude",
                                              charge=CHARGE_REELLE)
         compte = self.Compte.browse(cid)
         self.assertFalse(compte.subscription_type)

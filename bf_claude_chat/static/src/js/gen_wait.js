@@ -100,7 +100,9 @@ export function trackWait(assistant, event, data) {
         }
         case "tool":
             if (data.name) {
-                assistant.tools.push({ raw: data.name, label: toolLabel(data.name), detail: "" });
+                assistant.tools.push({
+                    raw: data.name, label: toolLabel(data.name), detail: "", sub: [],
+                });
                 assistant.phase = "tool";
             }
             break;
@@ -108,6 +110,20 @@ export function trackWait(assistant, event, data) {
             const step = [...assistant.tools].reverse().find(
                 (s) => s.raw === data.name && !s.detail);
             if (step && data.detail) step.detail = data.detail;
+            break;
+        }
+        case "sub": {
+            // Le travail d'un sous-agent, relayé par le pont. Il se
+            // range SOUS la pastille de la délégation en cours : une
+            // délégation de quatre minutes n'affichait qu'« Agent », muet.
+            const hote = [...assistant.tools].reverse().find(
+                (s) => s.raw === "Agent" || s.raw === "Task");
+            if (!hote) break;
+            if (!hote.sub) hote.sub = [];
+            const ligne = data.kind === "tool"
+                ? (data.detail || toolLabel(data.name || ""))
+                : (data.text || "");
+            if (ligne) hote.sub.push(ligne);
             break;
         }
         case "text":
@@ -172,6 +188,11 @@ export class GenSteps extends Component {
 
     get latest() {
         const step = this.props.steps[this.props.steps.length - 1];
-        return this.props.live && step ? (step.detail || step.label) : "";
+        if (!this.props.live || !step) return "";
+        // Une délégation en cours parle par son sous-agent : montrer sa
+        // dernière étape plutôt que le mot « Agent », qui ne dit rien.
+        const sub = step.sub && step.sub.length ? step.sub[step.sub.length - 1] : "";
+        if (sub) return _t("Sub-agent: %s", sub);
+        return step.detail || step.label;
     }
 }

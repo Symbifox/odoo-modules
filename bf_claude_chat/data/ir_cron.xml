@@ -14,4 +14,16 @@
         <field name="interval_type">minutes</field>
         <field name="priority">5</field>
     </record>
+    <!-- Une conversation qui a grandi change souvent de sujet ;
+         son titre suit, sauf si la personne l'a nommée à la main. -->
+    <record id="ir_cron_retitle_sessions" model="ir.cron">
+        <field name="name">Gen: rename conversations that have grown</field>
+        <field name="model_id" ref="model_claude_chat_session"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_retitle_sessions()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="priority">20</field>
+    </record>
 </odoo>

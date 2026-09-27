@@ -612,6 +612,15 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
     }
 }
 
+// Une question glissée dans un tour en cours, tant que Gen ne l'a pas lue.
+// Elle s'efface si le pont dit qu'elle est arrivée trop tard.
+.bf-chat-queued {
+    margin-top: 4px;
+    font-size: 0.72rem;
+    opacity: 0.75;
+    font-style: italic;
+}
+
 .bf-gen-steps {
     margin-bottom: 6px;
     font-size: 0.75rem;
@@ -647,6 +656,22 @@ $bf-accent-badge: color-mix(in srgb, var(--brand-primary, #714bea) 10%, transpar
         padding-left: 1.4em;
         max-height: 14em;
         overflow-y: auto;
+    }
+
+    // Le travail d'un sous-agent, en retrait sous la délégation qui l'a
+    // lancé. Pas de puce : la ligne appartient à l'étape du dessus,
+    // elle ne la concurrence pas.
+    .bf-gen-steps-sub {
+        margin: 2px 0 2px;
+        padding-left: 0.9em;
+        list-style: none;
+        opacity: 0.8;
+
+        li::before {
+            content: "↳";
+            margin-right: 0.35em;
+            opacity: 0.7;
+        }
     }
 
     li {
@@ -774,4 +799,55 @@ body.bf_dark_mode {
 
     // Le lien d'une bulle d'usager est posé sur l'accent plein : il garde son
     // gris clair d'origine, qui ne dépend pas du thème.
+}
+
+// ── Titre ou élément associé ─────────────────────
+// L'élément associé, en pastille à droite de la date (pleine page)
+// ou sous le titre (panneau latéral). Texte en `--bf-gen-bubble-fg`, jamais en
+// bleu de marque : le bleu ne sert qu'au filet et au fond teinté.
+.bf-gen-session-meta {
+    min-width: 0;
+    gap: 6px;
+}
+
+.bf-gen-record-pill {
+    display: inline-block;
+    min-width: 0;
+    max-width: 100%;
+    padding: 0 8px;
+    border: 1px solid var(--brand-primary, #29ABE2);
+    border-radius: 999px;
+    background: var(--bf-gen-bubble-bg);
+    color: var(--bf-gen-bubble-fg) !important;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+        background: var(--bf-gen-avatar-bg);
+        text-decoration: none;
+    }
+}
+
+.bf-gen-label-dim {
+    color: var(--bs-secondary-color);
+    font-style: italic;
+}
+
+.bf-gen-list-mode .btn {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.25rem;
+}
+
+.bf-side-panel-session-item {
+    .bf-side-panel-flip {
+        font-size: 0.7rem;
+        opacity: 0;
+        transition: opacity 0.15s;
+    }
+
+    &:hover .bf-side-panel-flip {
+        opacity: 1;
+    }
 }

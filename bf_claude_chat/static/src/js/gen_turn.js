@@ -67,6 +67,19 @@ function applyEvent(host, assistant, event, data, labels) {
         case "gen_turn":
             if (data.turn_id) assistant.turnId = data.turn_id;
             break;
+        case "queued":
+            // Une question est partie dans le tour en cours. Elle n'est pas
+            // encore lue : c'est `queued_seen` qui le dira.
+            if (host.onQueued) host.onQueued(data.text || "");
+            break;
+        case "queued_seen":
+            if (host.onQueuedSeen) host.onQueuedSeen(data.text || "");
+            break;
+        case "queued_lost":
+            // 🔴 Le CLI n'a jamais lu la question : il avait fini d'écrire. La
+            // rendre à la personne, sans quoi elle croit l'avoir posée.
+            if (host.onQueuedLost) host.onQueuedLost(data.text || "");
+            break;
         case "busy":
             assistant.notice = _t("Gen is still working on your previous request. Here is where it stands.");
             if (host.onBusy) host.onBusy(assistant);
@@ -74,13 +87,18 @@ function applyEvent(host, assistant, event, data, labels) {
         case "notice":
             assistant.notice = data.text || "";
             break;
+        case "viewer_full":
+            // Trop d'écrans en direct sur le serveur : le tour continue, cet
+            // écran revient par /claude-chat/attach dès qu'une place se libère.
+            assistant.reconnecting = true;
+            break;
         case "snapshot":
             // Relecture du tour depuis le début : ce que les reprises
             // précédentes ont écrit, puis le tour en cours rejoué.
             assistant.prefix = data.text || "";
             assistant.content = assistant.prefix;
             assistant.tools = (data.tools || []).map((t) => ({
-                raw: t.name, label: toolLabel(t.name), detail: t.detail || "",
+                raw: t.name, label: toolLabel(t.name), detail: t.detail || "", sub: [],
             }));
             assistant.reconnecting = false;
             break;

@@ -51,6 +51,8 @@ bf_claude_chat/
 - **Portal pattern**: the overlay is moved to `<body>` in JS to escape the navbar's stacking context and display above every Odoo element (chatter, statusbar, modals)
 - Slide-in animation from the right
 - Session list on the left, chat area on the right
+- A **Titles | Records** switch above the list: each conversation shows its own title, or the record it is linked to as "Type · Name". A per-row toggle flips one line for the time of the screen; the switch resets every row. The choice is stored on the user and shared with the mobile app
+- Each conversation linked to a record carries a **record pill** under its title: a link that opens the record (Ctrl/Shift/middle click: new tab) without opening the conversation. No pill when the record is gone or the user cannot read it
 - A context badge showing the current page with a pretty name (e.g. "Task #1234 - Name")
 - **Per-record filtering**: the systray shows only the conversations linked to the current record (res_model + res_id). The full-screen page still shows every conversation.
 
@@ -58,7 +60,9 @@ bf_claude_chat/
 
 - Reached through the main "Gen" menu or the panel's expand button
 - Session sidebar (280px) plus a centred chat area (max 900px)
-- Session renaming by double-click or the pencil icon
+- Session renaming by double-click or the pencil icon; a name given by hand is never rewritten by the automatic titling
+- The same **Titles | Records** switch and per-row toggle as the side panel, and the **record pill** to the right of each conversation's date
+- A question typed while Gen is working is slipped into the running turn instead of being refused; it stays "queued" until the bridge confirms Gen read it, and comes back to the input if the turn ended first
 - Session archiving (soft delete through the `active` field)
 
 ### Context capture
@@ -173,6 +177,11 @@ modules the mobile routes simply answer 401.
 | origin | Selection (web/mobile) | Where the conversation was started (provenance only) |
 | stream_fail_count | Integer | Consecutive streamed failures; past the threshold the thread is forked |
 | last_stream_error | Char | Reason code of the last streamed failure |
+| name_manual | Boolean | Named by hand: the automatic titling never rewrites it |
+| titled_message_count | Integer | Message count at the last automatic titling; a conversation that has grown enough is retitled |
+
+`res.users` gains `gen_list_mode` (Selection `title` / `element`, default
+`title`): what the conversation list shows, shared by the web and the mobile app.
 
 ### claude.chat.message
 
@@ -212,7 +221,9 @@ Every endpoint is `type="json"`, `auth="user"`, `methods=["POST"]`.
 |-------|-------------|
 | `/claude-chat/send` | Sends a message, returns the assistant's reply |
 | `/claude-chat/sessions` | Lists sessions (filterable by res_model/res_id) |
+| `/claude-chat/list-mode` | Remembers whether the list shows titles or linked records |
 | `/claude-chat/messages` | A session's messages |
+| `/claude-chat/say` | Slips a question into the owner's running turn; nothing is recorded until the bridge confirms Gen read it |
 | `/claude-chat/rename-session` | Renames a session |
 | `/claude-chat/delete-session` | Archives a session |
 | `/claude-chat/search-tasks` | Task search (for Share) |
@@ -229,11 +240,20 @@ bearer token (no session cookie, `save_session=False`):
 | Route | Description |
 |-------|-------------|
 | `GET  /bf_claude_chat/mobile/v1/ping` | Discovery; the version is disclosed only to a recognised device |
-| `GET  /bf_claude_chat/mobile/v1/sessions` | The device user's conversations |
-| `GET  /bf_claude_chat/mobile/v1/messages` | One conversation's messages |
-| `POST /bf_claude_chat/mobile/v1/ask` | Records the question, returns a turn_id |
-| `GET  /bf_claude_chat/mobile/v1/turn` | Turn state, partial text and tool log |
+| `GET  /bf_claude_chat/mobile/v1/sessions` | The device user's conversations, each with `busy` and the running `turn_id` |
+| `GET  /bf_claude_chat/mobile/v1/messages` | One conversation's messages, with `end_reason` |
+| `POST /bf_claude_chat/mobile/v1/ask` | Records the question, returns a turn_id; `409 busy` (with the running `turn_id`) while that conversation already has a turn |
+| `GET  /bf_claude_chat/mobile/v1/turn` | Turn state, partial text, tool log and `end_reason` (`stopped` after the Stop button) |
+| `POST /bf_claude_chat/mobile/v1/stop` | The Stop button: flags the turn and cancels it at the bridge, like `/claude-chat/stop` |
 | `POST /bf_claude_chat/mobile/v1/delete-session` | Archives a conversation |
+| `POST /bf_claude_chat/mobile/v1/rename-session` | Renames a conversation; a manual name is never rewritten by the automatic titling |
+| `POST /bf_claude_chat/mobile/v1/list-mode` | Stores the Titles / Records choice on the user (same setting as the web) |
+
+`/sessions` accepts `q` (every word must appear in the title or a visible
+message), `limit` and `offset`, and returns `res_label` ("Type · Name", or
+`false` when there is no readable record) with `list_mode`. `/ping` announces
+the API level: 4 adds `/stop` and per-conversation `busy`, 5 adds search,
+renaming and "Send to Gen" from a record, 6 adds `res_label` and `/list-mode`.
 
 ## Talking to the bridge
 
@@ -296,6 +316,7 @@ the text of `result` is not.
 | API Key | (empty) | Optional Anthropic key (otherwise the Max plan) |
 | Tenant Slug | pme | Selects the bridge's tools and system prompt |
 | Bridge Socket | /run/claude-bridge/bridge.sock | Unix socket path (parameter `bf_ai_bridge.socket`, shared by every module calling the bridge) |
+| Live viewers (parameter `bf_claude_chat.max_live_viewers`) | half the HTTP workers | How many screens may follow a turn live at once. Each one holds an HTTP worker until its turn ends; a refused screen reattaches through `/claude-chat/attach` and the turn carries on without it |
 | Gen's personality | (empty) | How Gen speaks here (name, tu/vous, language, length, self-presentation), composed before the steering instructions as `context.identity`. Tone only, 2,000 characters at most; what Gen may do stays on the bridge |
 
 ## Security

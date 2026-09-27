@@ -1244,6 +1244,13 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
 #, python-format
+msgid "Sub-agent: %s"
+msgstr "Sous-agent : %s"
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_wait.js:0
+#, python-format
 msgid "%s steps"
 msgstr ""
 
@@ -1272,6 +1279,24 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__client_token
 msgid "Client Token"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Queued: Gen will read this when it comes up for air."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/claude_chat.js:0
+msgid "Gen had already finished. Send your question again."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/claude_chat.js:0
+msgid "Gen finished before reading your question. Here it is again."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1374,4 +1399,22 @@ msgstr ""
 #: code:addons/bf_claude_chat/models/claude_chat_message.py:0
 #, python-format
 msgid "Only the server may set these fields on a Gen message: %s"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Titles"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Records"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Switch between title and linked record"
 msgstr ""

@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
+    <!-- Titre ou élément associé, pour toute la liste -->
+    <t t-name="bf_claude_chat.ListModeSwitch">
+        <div class="btn-group btn-group-sm w-100 mt-2 bf-gen-list-mode" role="group">
+            <button type="button"
+                    t-att-class="'btn ' + (state.listMode === 'title' ? 'btn-secondary' : 'btn-outline-secondary')"
+                    t-on-click.stop="() => this.onSetListMode('title')">Titles</button>
+            <button type="button"
+                    t-att-class="'btn ' + (state.listMode === 'element' ? 'btn-secondary' : 'btn-outline-secondary')"
+                    t-on-click.stop="() => this.onSetListMode('element')">Records</button>
+        </div>
+    </t>
+
+    <!-- L'élément associé en pastille, lien vers la fiche -->
+    <t t-name="bf_claude_chat.RecordPill">
+        <a t-if="recordHref(session)"
+           t-att-href="recordHref(session)"
+           class="bf-gen-record-pill text-truncate"
+           t-att-title="session.res_label"
+           t-on-click="(ev) => this.onOpenRecord(ev, session)"
+           t-on-auxclick.stop="() => {}"
+           t-esc="session.res_label"/>
+    </t>
+
     <!-- Main chat action layout (full page) -->
     <t t-name="bf_claude_chat.ChatAction">
         <div class="bf-chat-container d-flex h-100">
@@ -10,6 +33,7 @@
                     <button class="btn btn-primary w-100" t-on-click="onNewChat">
                         <i class="fa fa-plus me-1"/> New Chat
                     </button>
+                    <t t-call="bf_claude_chat.ListModeSwitch"/>
                 </div>
                 <div class="bf-chat-session-list flex-grow-1 overflow-auto">
                     <t t-foreach="state.sessions" t-as="session" t-key="session.id">
@@ -29,11 +53,20 @@
                                            t-ref="renameInput"/>
                                 </t>
                                 <t t-else="">
-                                    <span class="bf-chat-session-title text-truncate flex-grow-1"
+                                    <t t-set="label" t-value="sessionLabel(session)"/>
+                                    <span t-att-class="'bf-chat-session-title text-truncate flex-grow-1'
+                                                       + (label.dim ? ' bf-gen-label-dim' : '')"
+                                          t-att-title="label.text"
                                           t-on-dblclick.stop="() => this.onStartRename(session)"
-                                          t-esc="session.name"/>
+                                          t-esc="label.text"/>
                                 </t>
                                 <div class="d-flex ms-2 bf-chat-session-actions">
+                                    <button t-if="session.res_label"
+                                            class="btn btn-link btn-sm text-muted p-0 me-1 bf-chat-action-btn"
+                                            t-on-click.stop="() => this.onFlipRow(session)"
+                                            title="Switch between title and linked record">
+                                        <i class="fa fa-exchange"/>
+                                    </button>
                                     <button class="btn btn-link btn-sm text-muted p-0 bf-chat-action-btn"
                                             t-on-click.stop="() => this.onStartRename(session)"
                                             title="Rename">
@@ -46,7 +79,10 @@
                                     </button>
                                 </div>
                             </div>
-                            <small class="text-muted" t-esc="formatDate(session.write_date)"/>
+                            <div class="d-flex align-items-center bf-gen-session-meta">
+                                <small class="text-muted flex-shrink-0" t-esc="formatDate(session.write_date)"/>
+                                <t t-call="bf_claude_chat.RecordPill"/>
+                            </div>
                         </div>
                     </t>
                     <div t-if="state.sessions.length === 0" class="p-3 text-muted text-center">
@@ -134,6 +170,9 @@
                                     <div t-else=""
                                          class="bf-chat-content">
                                         <t t-esc="msg.content"/>
+                                        <div t-if="msg.queued" class="bf-chat-queued">
+                                            <i class="fa fa-hourglass-half me-1"/>Queued: Gen will read this when it comes up for air.
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- Avatar user (right) -->
@@ -161,7 +200,7 @@
                         <div class="d-flex gap-2">
                             <textarea class="form-control bf-chat-input"
                                       t-ref="chatInput"
-                                      t-att-disabled="state.isThinking"
+                                      t-att-disabled="state.isThinking and !state.streamingActive"
                                       t-on-keydown="onInputKeydown"
                                       rows="1"
                                       placeholder="Type your message..."/>
@@ -172,7 +211,7 @@
                             </button>
                             <button t-else=""
                                     class="btn btn-primary bf-chat-send-btn"
-                                    t-att-disabled="state.isThinking"
+                                    t-att-disabled="state.isThinking and !state.streamingActive"
                                     t-on-click="onSend">
                                 <i t-att-class="state.isThinking ? 'fa fa-spinner fa-spin' : 'fa fa-paper-plane'"/>
                             </button>
@@ -280,11 +319,14 @@
                     <div class="d-flex bf-side-panel-body">
                         <!-- Mini session list -->
                         <div class="bf-side-panel-sessions border-end">
+                            <div class="px-2 py-1 border-bottom">
+                                <t t-call="bf_claude_chat.ListModeSwitch"/>
+                            </div>
                             <t t-foreach="state.sessions" t-as="session" t-key="session.id">
                                 <div t-att-class="'bf-side-panel-session-item px-2 py-1 cursor-pointer text-truncate '
                                                  + (state.activeSessionId === session.id ? 'active' : '')"
                                      t-on-click.stop="() => this.onSelectSession(session.id)"
-                                     t-att-title="session.name">
+                                     t-att-title="sessionLabel(session).text">
                                     <t t-if="state.editingSessionId === session.id">
                                         <input type="text"
                                                class="form-control form-control-sm bf-side-panel-rename-input"
@@ -295,8 +337,22 @@
                                                t-on-click.stop="() => {}"/>
                                     </t>
                                     <t t-else="">
-                                        <small t-on-dblclick.stop="() => this.onStartRename(session)"
-                                               t-esc="session.name"/>
+                                        <t t-set="label" t-value="sessionLabel(session)"/>
+                                        <div class="d-flex align-items-center">
+                                            <small t-att-class="'text-truncate flex-grow-1'
+                                                                + (label.dim ? ' bf-gen-label-dim' : '')"
+                                                   t-on-dblclick.stop="() => this.onStartRename(session)"
+                                                   t-esc="label.text"/>
+                                            <button t-if="session.res_label"
+                                                    class="btn btn-link btn-sm text-muted p-0 ms-1 bf-side-panel-flip"
+                                                    t-on-click.stop="() => this.onFlipRow(session)"
+                                                    title="Switch between title and linked record">
+                                                <i class="fa fa-exchange"/>
+                                            </button>
+                                        </div>
+                                        <div t-if="recordHref(session)" class="d-flex bf-gen-session-meta">
+                                            <t t-call="bf_claude_chat.RecordPill"/>
+                                        </div>
                                     </t>
                                 </div>
                             </t>
@@ -348,6 +404,9 @@
                                                 </t>
                                                 <div t-else="">
                                                     <t t-esc="msg.content"/>
+                                                    <div t-if="msg.queued" class="bf-chat-queued">
+                                                        <i class="fa fa-hourglass-half me-1"/>Queued: Gen will read this when it comes up for air.
+                                                    </div>
                                                 </div>
                                             </div>
                                             <!-- Avatar user (right) -->
@@ -376,7 +435,7 @@
                                     <div class="d-flex gap-1">
                                         <textarea class="form-control form-control-sm bf-side-panel-textarea"
                                                   t-ref="systrayInput"
-                                                  t-att-disabled="state.isThinking"
+                                                  t-att-disabled="state.isThinking and !state.streamingActive"
                                                   t-on-keydown="onInputKeydown"
                                                   rows="1"
                                                   placeholder="Message Gen..."/>
@@ -387,7 +446,7 @@
                                         </button>
                                         <button t-else=""
                                                 class="btn btn-primary btn-sm bf-side-panel-send"
-                                                t-att-disabled="state.isThinking"
+                                                t-att-disabled="state.isThinking and !state.streamingActive"
                                                 t-on-click.stop="onSend">
                                             <i t-att-class="state.isThinking ? 'fa fa-spinner fa-spin' : 'fa fa-paper-plane'"/>
                                         </button>
@@ -427,8 +486,13 @@
             <summary><i class="fa fa-list-ul me-1"/><t t-esc="summary"/><span t-if="latest" class="bf-gen-steps-latest"> · <t t-esc="latest"/></span></summary>
             <ol>
                 <li t-foreach="props.steps" t-as="step" t-key="step_index"
-                    t-att-title="step.detail ? step.label : ''"
-                    t-esc="step.detail or step.label"/>
+                    t-att-title="step.detail ? step.label : ''">
+                    <t t-esc="step.detail or step.label"/>
+                    <ul t-if="step.sub and step.sub.length" class="bf-gen-steps-sub">
+                        <li t-foreach="step.sub" t-as="ligne" t-key="ligne_index"
+                            t-esc="ligne"/>
+                    </ul>
+                </li>
             </ol>
         </details>
     </t>

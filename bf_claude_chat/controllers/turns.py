@@ -280,6 +280,32 @@ class TurnProgress:
                 self.write(force=True)
                 return
 
+    def on_queued_seen(self, texte, session_id):
+        """Le CLI a LU une question glissée dans le tour : elle existe enfin.
+
+        ⚠️ L'enregistrement attend l'accusé de lecture du pont, jamais l'envoi :
+        une question acceptée mais jamais lue (le tour finissait) laisserait
+        sinon en base une ligne de conversation à laquelle personne n'a
+        répondu. Le pont le dit alors par `queued_lost`, et l'écran la reprend.
+        """
+        texte = (texte or "").strip()
+        if not texte or not session_id:
+            return
+        def _ecrire():
+            with Registry(self.db_name).cursor() as cr:
+                env = odoo.api.Environment(cr, odoo.SUPERUSER_ID, {})
+                session = env["claude.chat.session"].browse(session_id)
+                if not session.exists():
+                    return None
+                env["claude.chat.message"].create({
+                    "session_id": session.id, "role": "user", "content": texte,
+                })
+                return True
+        try:
+            retrying(_ecrire)
+        except Exception:  # noqa: BLE001
+            _logger.warning("Gen : question en file non enregistrée", exc_info=True)
+
     def restart_attempt(self):
         """Le tour en cours sera relu depuis le début : oublier sa part."""
         self.text = ""
@@ -473,6 +499,14 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
                         progress.on_tool(data.get("name") or "tool")
                     elif nom == "tool_detail":
                         progress.on_detail(data.get("name") or "tool", data.get("detail"))
+                    elif nom == "queued_seen":
+                        # Une question glissée dans le tour vient d'être lue.
+                        progress.on_queued_seen(data.get("text"), etat["session_id"])
+                    elif nom == "queued_lost":
+                        # Elle n'a jamais été lue : rien en base, l'écran la
+                        # remet dans la saisie.
+                        _logger.info("Gen : question en file non lue (tour %s)",
+                                     message_id)
                     elif nom in ("done", "error"):
                         final = dict(data, _event=nom)
                         if data.get("session_id"):
@@ -599,7 +633,8 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
                 svals["stream_fail_count"] = 0
                 svals["last_stream_error"] = False
             titre = False
-            if session.name in ("New Chat", False) and not en_erreur and question:
+            if session.name in ("New Chat", False) and not session.name_manual \
+                    and not en_erreur and question:
                 titre = (question[:60] + "...") if len(question) > 60 else question
                 svals["name"] = titre
             if svals:

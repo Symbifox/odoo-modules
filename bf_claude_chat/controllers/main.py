@@ -20,6 +20,7 @@ from odoo.http import request, Response
 from odoo.modules.registry import Registry
 
 from . import turns
+from . import viewer_slots
 
 _logger = logging.getLogger(__name__)
 
@@ -232,6 +233,19 @@ def _sse_response(iterable):
     )
 
 
+def _viewer_full(session_id, turn_id):
+    """Réponse courte d'un écran refusé : le tour continue sans lui.
+
+    Sans ``final``, l'écran revient par /claude-chat/attach avec son attente
+    croissante (gen_turn.js), et reprend le direct dès qu'une place se libère.
+    """
+    return _sse_response(iter([
+        _sse_line("session", {"odoo_session_id": session_id}),
+        _sse_line("gen_turn", {"turn_id": turn_id}),
+        _sse_line("viewer_full", {"turn_id": turn_id}),
+    ]))
+
+
 def _generate_smart_title(db_name, session_id, fallback, user_msg, asst_resp, api_key, socket_path):
     """Background thread: call /generate-title and update session name."""
     try:
@@ -250,7 +264,8 @@ def _generate_smart_title(db_name, session_id, fallback, user_msg, asst_resp, ap
         with registry.cursor() as cr:
             env = odoo.api.Environment(cr, odoo.SUPERUSER_ID, {})
             session = env["claude.chat.session"].browse(session_id)
-            if session.exists() and session.name == fallback:
+            if session.exists() and session.name == fallback \
+                    and not session.name_manual:
                 session.write({"name": title})
     except Exception:
         _logger.warning("Smart title generation failed", exc_info=True)
@@ -594,7 +609,7 @@ class ClaudeChatController(http.Controller):
                 ("client_token", "=", client_token), ("user_id", "=", user.id),
             ], limit=1)
             if known:
-                return _sse_response(self._follow(known))
+                return self._follow_capped(known)
 
         if not _check_rate_limit(user.id):
             return _err("Trop de requêtes. Veuillez patienter avant de réessayer.",
@@ -622,12 +637,17 @@ class ClaudeChatController(http.Controller):
                 running.sudo().write({"state": "error", "end_reason": "orphan"})
                 running = Message.browse()
             if running:
-                return _sse_response(self._follow(running, busy=True))
+                return self._follow_capped(running, busy=True)
         else:
             vals = {"name": "New Chat", "user_id": user.id}
             if ctx_model and ctx_res_id:
                 vals["res_model"] = ctx_model
                 vals["res_id"] = ctx_res_id
+                # La consigne de départ (« Mets-moi en contexte… »)
+                # faisait le titre de TOUTES les conversations ouvertes sur une
+                # fiche. Le nom de la fiche le fait maintenant.
+                if internal:
+                    vals["name"] = Session._record_title(ctx_model, ctx_res_id) or "New Chat"
             session = Session.create(vals)
 
         Message.create({
@@ -692,7 +712,9 @@ class ClaudeChatController(http.Controller):
         # nobody can see yet.
         request.env.cr.commit()
 
-        listener = turns.Listener()
+        # Le tour part dans tous les cas ; seul l'écran attend une place.
+        slot = viewer_slots.acquire(request.env, request.env.cr.dbname)
+        listener = turns.Listener() if slot else turns._NullListener()
         turns.start_runner(
             request.env.cr.dbname, pending.id, settings["socket"], settings["timeout"],
             listener=listener, max_continue=reglages["auto_continue"],
@@ -700,6 +722,8 @@ class ClaudeChatController(http.Controller):
         )
         odoo_session_id = session.id
         turn_id = pending.id
+        if not slot:
+            return _viewer_full(odoo_session_id, turn_id)
 
         def _stream():
             yield _sse_line("session", {"odoo_session_id": odoo_session_id})
@@ -710,7 +734,21 @@ class ClaudeChatController(http.Controller):
                 })
             yield from listener.iterate()
 
-        return _sse_response(_stream())
+        return _sse_response(viewer_slots.held(slot, _stream()))
+
+    def _follow_capped(self, message, busy=False):
+        """``_follow`` sous le plafond des écrans en direct.
+
+        Un tour fini passe sans place : sa réponse part d'un bloc. Un tour en
+        cours sans place libre rend la main tout de suite ; si son fil est
+        mort, le cron de reprise le relève sans écran.
+        """
+        if message.sudo().state != "pending":
+            return _sse_response(self._follow(message, busy=busy))
+        slot = viewer_slots.acquire(request.env, request.env.cr.dbname)
+        if not slot:
+            return _viewer_full(message.sudo().session_id.id, message.id)
+        return _sse_response(viewer_slots.held(slot, self._follow(message, busy=busy)))
 
     def _follow(self, message, busy=False):
         """Stream a turn that is already running, or its saved result.
@@ -881,7 +919,7 @@ class ClaudeChatController(http.Controller):
             return _sse_response([_sse_line("error", {
                 "response": "", "reason": "not_found", "interrupted": False,
             })])
-        return _sse_response(self._follow(message))
+        return self._follow_capped(message)
 
     @http.route("/claude-chat/stop", type="json", auth="user", methods=["POST"])
     def stop_turn(self, turn_id):
@@ -906,8 +944,59 @@ class ClaudeChatController(http.Controller):
             _logger.info("Gen : arrêt non transmis au pont", exc_info=True)
         return {"status": "ok"}
 
+    @http.route("/claude-chat/say", type="json", auth="user", methods=["POST"])
+    def say_in_turn(self, session_id=None, message=""):
+        """Glisser une question dans le tour en cours, au lieu de la refuser.
+
+        Jusqu'ici, une question tapée pendant que Gen travaillait n'était même
+        pas enregistrée : le contrôleur rendait le flux du tour en cours et la
+        question revenait dans la saisie. Le pont sait
+        maintenant l'écrire sur l'entrée du CLI, qui la lit à sa prochaine
+        respiration.
+
+        ⚠️ Cette route ne crée AUCUNE ligne de conversation : tant que le CLI
+        n'a pas accusé lecture, la question n'est pas entrée dans le tour. Le
+        fil de tour l'enregistre sur `queued_seen`, et l'écran la reprend sur
+        `queued_lost`.
+        """
+        texte = (message or "").strip()
+        if not texte:
+            return {"status": "empty"}
+        if len(texte) > 8000:
+            return {"status": "too_long"}
+        try:
+            session_id = int(session_id or 0)
+        except (TypeError, ValueError):
+            return {"status": "not_found"}
+        Message = request.env["claude.chat.message"]
+        session = request.env["claude.chat.session"].browse(session_id).exists()
+        if not session or session.user_id != request.env.user:
+            return {"status": "not_found"}
+        en_cours = Message.search([
+            ("session_id", "=", session.id), ("role", "=", "assistant"),
+            ("state", "=", "pending"),
+        ], order="id desc", limit=1)
+        cle = en_cours.sudo().turn_key if en_cours else ""
+        if not cle:
+            # Aucun tour en vol, ou un tour d'avant les tours détachés : à
+            # l'écran de reposer la question comme un tour neuf.
+            return {"status": "over"}
+        settings = _get_settings()
+        try:
+            transport.post(settings["socket"], "/chat-say", {
+                "turn_key": cle, "tenant": settings["tenant"], "message": texte,
+            }, 10)
+        except Exception as exc:  # noqa: BLE001
+            # Le pont refuse (tour fini entre-temps) ou ne répond pas : dans
+            # les deux cas la question n'est pas partie, et le dire est la
+            # seule réponse honnête.
+            _logger.info("Gen : message non glissé dans le tour %s (%s)",
+                         en_cours.id, exc)
+            return {"status": "over"}
+        return {"status": "queued", "turn_id": en_cours.id}
+
     @http.route("/claude-chat/sessions", type="json", auth="user", methods=["POST"])
-    def list_sessions(self, res_model=None, res_id=None):
+    def list_sessions(self, res_model=None, res_id=None, query=None):
         """List the current user's chat sessions, optionally filtered by record context.
 
         Mobile threads are included: since the app moved to /chat they share the
@@ -919,12 +1008,15 @@ class ClaudeChatController(http.Controller):
         if res_model and res_id:
             domain.append(("res_model", "=", str(res_model)[:64]))
             domain.append(("res_id", "=", int(res_id)))
-        sessions = request.env["claude.chat.session"].search_read(
+        if query:
+            domain += request.env["claude.chat.session"]._search_domain(query)
+        Session = request.env["claude.chat.session"]
+        sessions = Session._with_res_labels(Session.search_read(
             domain,
             ["name", "write_date", "message_count", "res_model", "res_id"],
             order="write_date desc",
             limit=50,
-        )
+        ))
         ICP = request.env["ir.config_parameter"].sudo()
         streaming = (
             ICP.get_param("bf_claude_chat.streaming", "True") == "True"
@@ -935,7 +1027,16 @@ class ClaudeChatController(http.Controller):
             "streaming": streaming,
             "auto_brief": settings_auto_brief(ICP),
             "auto_brief_prompt": AUTO_BRIEF_PROMPT,
+            "list_mode": Session._list_mode(),
         }
+
+    @http.route("/claude-chat/list-mode", type="json", auth="user", methods=["POST"])
+    def set_list_mode(self, mode):
+        """Le titre ou l'élément associé, mémorisé sur l'usager."""
+        retenu = request.env["claude.chat.session"]._set_list_mode(mode)
+        if not retenu:
+            return {"error": "invalid_mode"}
+        return {"list_mode": retenu}
 
     @http.route("/claude-chat/messages", type="json", auth="user", methods=["POST"])
     def get_messages(self, session_id):
@@ -958,12 +1059,10 @@ class ClaudeChatController(http.Controller):
         if not session.exists() or session.user_id != request.env.user:
             return {"error": "Session not found"}
 
-        # Sanitize: strip HTML, limit length
-        clean_name = _re.sub(r"<[^>]+>", "", str(name)).strip()[:120]
+        # Un nom donné à la main n'est plus jamais réécrit.
+        clean_name = session._rename_by_hand(name)
         if not clean_name:
             return {"error": "Name cannot be empty"}
-
-        session.write({"name": clean_name})
         return {"status": "ok", "name": clean_name}
 
     @http.route("/claude-chat/delete-session", type="json", auth="user", methods=["POST"])

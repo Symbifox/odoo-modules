@@ -6,6 +6,7 @@ import { useService } from "@web/core/utils/hooks";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
+import { listModeMixin } from "@bf_claude_chat/js/gen_list_mode";
 import {
     followTurn, newClientToken, pendingToStreaming, stopTurn, streamingFields,
 } from "@bf_claude_chat/js/gen_turn";
@@ -182,6 +183,9 @@ class ClaudeChatAction extends Component {
 
     setup() {
         this.notification = useService("notification");
+        //: Questions glissées dans un tour en cours, par leur texte : la
+        //: bulle reste « en file » jusqu'à l'accusé de lecture du pont.
+        this._enFile = new Map();
         this.messagesRef = useRef("messagesContainer");
         this.inputRef = useRef("chatInput");
 
@@ -193,6 +197,7 @@ class ClaudeChatAction extends Component {
             streaming: true,
             streamingActive: false,
             editingSessionId: null,
+            ...listModeMixin.listModeState(),
             editingName: "",
             shareOpen: false,
             shareQuery: "",
@@ -213,6 +218,7 @@ class ClaudeChatAction extends Component {
         try {
             const result = await rpc("/claude-chat/sessions", {});
             this.state.sessions = result.sessions || [];
+            this.applyListMode(result);
             if (result.streaming !== undefined) this.state.streaming = result.streaming;
         } catch (e) {
             this.notification.add(_t("Failed to load sessions"), { type: "danger" });
@@ -303,7 +309,15 @@ class ClaudeChatAction extends Component {
         const textarea = this.inputRef.el;
         if (!textarea) return;
         const message = textarea.value.trim();
-        if (!message || this.state.isThinking) return;
+        if (!message) return;
+        // Gen travaille : la question part dans le tour en cours au lieu de
+        // rester coincée. Il la lit à sa prochaine
+        // respiration ; s'il a fini d'écrire avant, le pont le dit et on la
+        // remet dans la saisie.
+        if (this.state.isThinking) {
+            await this._sayInTurn(message, textarea);
+            return;
+        }
 
         // Determine session_id: null for brand new sessions
         const sessionId = this.state.activeSessionId === -1 ? null : this.state.activeSessionId;
@@ -368,6 +382,44 @@ class ClaudeChatAction extends Component {
         this.focusInput();
     }
 
+    /** Glisser une question dans le tour en cours. */
+    async _sayInTurn(message, textarea) {
+        const sessionId = this.state.activeSessionId === -1 ? null : this.state.activeSessionId;
+        if (!sessionId) return;
+        const bulle = {
+            id: `q-${Date.now()}`, role: "user", content: message,
+            queued: true, create_date: new Date().toISOString(),
+        };
+        this.state.messages.push(bulle);
+        textarea.value = "";
+        this.autoResize(textarea);
+        this.scrollToBottom();
+        let reponse;
+        try {
+            reponse = await rpc("/claude-chat/say", { session_id: sessionId, message });
+        } catch (e) {
+            reponse = { status: "over" };
+        }
+        if (!reponse || reponse.status !== "queued") {
+            this._rendreQuestion(bulle, message);
+            this.notification.add(
+                _t("Gen had already finished. Send your question again."),
+                { type: "info" });
+            return;
+        }
+        this._enFile.set(message, bulle);
+    }
+
+    /** Reprendre une question que Gen n'a pas lue : la bulle s'efface. */
+    _rendreQuestion(bulle, message) {
+        this.state.messages = this.state.messages.filter((m) => m.id !== bulle.id);
+        this._enFile.delete(message);
+        if (this.inputRef.el && !this.inputRef.el.value) {
+            this.inputRef.el.value = message;
+            this.autoResize(this.inputRef.el);
+        }
+    }
+
     async _followTurn(assistant, { start = null, turnId = null, onBusy = null }) {
         this.state.isThinking = true;
         this.state.streamingActive = true;
@@ -381,6 +433,20 @@ class ClaudeChatAction extends Component {
                 onSessionId: (id) => { this.state.activeSessionId = id; },
                 scrollToBottom: () => this.scrollToBottom(),
                 onBusy,
+                onQueuedSeen: (texte) => {
+                    const bulle = this._enFile.get(texte);
+                    if (bulle) {
+                        bulle.queued = false;      // Gen l'a lue : bulle normale
+                        this._enFile.delete(texte);
+                    }
+                },
+                onQueuedLost: (texte) => {
+                    const bulle = this._enFile.get(texte);
+                    if (bulle) this._rendreQuestion(bulle, texte);
+                    this.notification.add(
+                        _t("Gen finished before reading your question. Here it is again."),
+                        { type: "info" });
+                },
             }, assistant, { start, turnId, signal: controller.signal, labels: { usageLabel, usageTitle } });
         } finally {
             if (outcome === "stopped") assistant.interrupted = true;
@@ -547,5 +613,7 @@ class ClaudeChatAction extends Component {
         }, 50);
     }
 }
+
+Object.assign(ClaudeChatAction.prototype, listModeMixin);
 
 registry.category("actions").add("claude_chat", ClaudeChatAction);

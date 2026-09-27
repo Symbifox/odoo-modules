@@ -5,7 +5,7 @@ Trois choix structurent ce fichier.
 **Le même `/chat-stream` que le bureau.** Mêmes outils (écriture comprise), même
 `claude_session_id`, donc une conversation commencée au téléphone se poursuit à
 l'écran et l'inverse. C'était volontairement en lecture seule à la livraison ;
-Olivier a tranché pour la parité complète le 2026-08-16.
+la parité complète a été retenue le 2026-08-16.
 
 **Asynchrone, malgré le flux.** Un tour agentique dure parfois des minutes et le
 serveur n'a que deux travailleurs : tenir un SSE ouvert par téléphone les
@@ -27,9 +27,12 @@ import logging
 from odoo import fields, http
 from odoo.http import request
 
+from odoo.addons.bf_ai_bridge.tools import transport
+
 from . import turns
 from .main import (
-    _attach_identity, _attach_steering, _check_rate_limit, _get_settings,
+    AUTO_BRIEF_PROMPT, _attach_identity, _attach_steering, _check_rate_limit,
+    _get_settings, _resolve_persona_summary, _validated_context_ref,
 )
 
 _logger = logging.getLogger(__name__)
@@ -81,6 +84,26 @@ def _tools(tool_log):
     return rows if isinstance(rows, list) else []
 
 
+def _running_turn(env, session_ids):
+    """Les tours en cours, par conversation : {session_id: message}.
+
+    Seuls comptent les tours DÉTACHÉS (`turn_key` posé) : un « en cours » d'avant
+    ce mécanisme ne se termine jamais, et le compter bloquerait la conversation
+    pour toujours. Le bureau les clôt en « orphan » quand il en croise un.
+
+    ⚠️ En sudo : `turn_key` ne se lit qu'en administration depuis 18.0.1.22.1.
+    L'appelant ne passe que des conversations dont il a vérifié la propriété.
+    """
+    rows = env["claude.chat.message"].sudo().search([
+        ("session_id", "in", list(session_ids)), ("role", "=", "assistant"),
+        ("state", "=", "pending"), ("turn_key", "!=", False),
+    ], order="id desc")
+    running = {}
+    for row in rows:
+        running.setdefault(row.session_id.id, row)
+    return running
+
+
 def _push(env, user, session, text):
     """Prévient l'appareil quand la réponse arrive. Ne lève jamais."""
     model = "sms.archive.unifiedpush"
@@ -107,7 +130,17 @@ class BfClaudeChatMobileApi(http.Controller):
         payload = {
             "ok": True,
             "module": "bf_claude_chat",
-            "api": 3,
+            # api 4 : `/stop`, `busy` par conversation, `end_reason`
+            # d'un tour, et `/ask` qui refuse une seconde question pendant
+            # qu'un tour tourne dans la même conversation.
+            # api 5 : `/sessions?q=` cherche dans les titres et les
+            # messages, `/rename-session`, et `/ask` qui ouvre une conversation
+            # sur une fiche (`context`), avec la consigne de départ du bureau
+            # quand `brief` est vrai.
+            # api 6 : `res_label` sur chaque conversation de
+            # `/sessions` (« Type · Nom », ou faux), `list_mode` dans la
+            # réponse, et `/list-mode` pour mémoriser le choix sur l'usager.
+            "api": 6,
             "enabled": bool(settings["enabled"]),
             # Parité complète depuis l'api 2 : mêmes outils qu'au bureau.
             "readonly": False,
@@ -132,12 +165,31 @@ class BfClaudeChatMobileApi(http.Controller):
         request.update_env(user=device.user_id.id)
         # Plus de filtre par origine : les conversations sont les mêmes des deux
         # côtés, c'est tout l'objet de la parité.
-        rows = request.env["claude.chat.session"].search_read(
-            [("user_id", "=", request.env.user.id)],
-            ["name", "write_date", "message_count", "origin"],
-            order="write_date desc", limit=30,
+        Session = request.env["claude.chat.session"]
+        domaine = [("user_id", "=", request.env.user.id)]
+        requete = (kw.get("q") or "").strip()[:200]
+        if requete:
+            domaine += Session._search_domain(requete)
+        try:
+            limite = max(1, min(int(kw.get("limit") or 30), 100))
+            decalage = max(0, int(kw.get("offset") or 0))
+        except (TypeError, ValueError):
+            limite, decalage = 30, 0
+        rows = Session.search_read(
+            domaine,
+            ["name", "write_date", "message_count", "origin", "res_model",
+             "res_id", "name_manual"],
+            order="write_date desc", limit=limite, offset=decalage,
         )
-        return _json({"sessions": rows})
+        # Plusieurs conversations peuvent travailler en même temps : la liste
+        # dit lesquelles, pour qu'on sache où une réponse va tomber.
+        running = _running_turn(request.env, [r["id"] for r in rows])
+        for row in rows:
+            tour = running.get(row["id"])
+            row["busy"] = bool(tour)
+            row["turn_id"] = tour.id if tour else False
+        Session._with_res_labels(rows)
+        return _json({"sessions": rows, "list_mode": Session._list_mode()})
 
     @http.route(f"{BASE}/messages", type="http", auth="public", methods=["GET"],
                 csrf=False, save_session=False)
@@ -152,7 +204,7 @@ class BfClaudeChatMobileApi(http.Controller):
             return _json({"error": "conversation introuvable"}, 404)
         rows = request.env["claude.chat.message"].search_read(
             [("session_id", "=", session.id), ("internal", "=", False)],
-            ["role", "content", "state", "tool_log", "create_date",
+            ["role", "content", "state", "end_reason", "tool_log", "create_date",
              "input_tokens", "output_tokens", "cache_read_tokens",
              "cache_write_tokens", "net_tokens", "total_tokens", "cost_usd",
              "duration_ms"],
@@ -160,6 +212,8 @@ class BfClaudeChatMobileApi(http.Controller):
         )
         for row in rows:
             row["tools"] = _tools(row.pop("tool_log", None))
+            # `search_read` rend `false` pour un texte vide ; `/turn` rend "".
+            row["end_reason"] = row.get("end_reason") or ""
         return _json({"session_id": session.id, "session_name": session.name,
                       "messages": rows})
 
@@ -180,7 +234,15 @@ class BfClaudeChatMobileApi(http.Controller):
             return _json({"error": "Trop de requêtes — réessaie dans un instant."}, 429)
 
         body = _body()
-        question = (body.get("message") or "").strip()
+        # « Envoyer à Gen » depuis une note, un événement, une
+        # tâche. La fiche passe par le MÊME contrôle d'accès que le bureau,
+        # et `brief` pose la même consigne de départ, en message interne.
+        contexte = body.get("context") if isinstance(body.get("context"), dict) else None
+        ctx_model, ctx_res_id = _validated_context_ref(request.env, contexte)
+        if contexte and not ctx_model:
+            return _json({"error": "Fiche introuvable."}, 404)
+        brief = bool(body.get("brief")) and bool(ctx_model) and not body.get("session_id")
+        question = AUTO_BRIEF_PROMPT if brief else (body.get("message") or "").strip()
         if not question:
             return _json({"error": "Question vide."}, 400)
         if len(question) > 4000:
@@ -192,14 +254,26 @@ class BfClaudeChatMobileApi(http.Controller):
             session = Session.browse(int(body["session_id"]))
             if not session.exists() or session.user_id != user:
                 return _json({"error": "conversation introuvable"}, 404)
+            # Un tour à la fois par conversation, comme au bureau :
+            # deux CLI sur la même conversation Claude enregistrent tous deux
+            # « (No response) ». Rien n'est écrit, et l'app reprend le tour en
+            # cours plutôt que d'en lancer un second.
+            running = _running_turn(request.env, session.ids).get(session.id)
+            if running:
+                return _json({"error": "busy", "session_id": session.id,
+                              "turn_id": running.id}, 409)
         else:
-            session = Session.create({
-                "name": "New Chat", "user_id": user.id, "origin": "mobile",
-            })
+            vals = {"name": "New Chat", "user_id": user.id, "origin": "mobile"}
+            if ctx_model:
+                vals.update(res_model=ctx_model, res_id=ctx_res_id)
+                vals["name"] = Session._record_title(ctx_model, ctx_res_id) or "New Chat"
+            session = Session.create(vals)
 
         Message = request.env["claude.chat.message"]
         Message.create({
             "session_id": session.id, "role": "user", "content": question,
+            # La consigne de départ ne s'affiche pas, comme au bureau.
+            "internal": brief,
         })
         # sudo : les champs du tour ne s'écrivent que côté serveur
         # (`TURN_FIELDS`), et la session vient d'être vérifiée à cet usager.
@@ -225,8 +299,24 @@ class BfClaudeChatMobileApi(http.Controller):
             "max_turns": settings["max_turns"],
             "tenant": settings["tenant"],
         }
+        # La fiche de la conversation, à chaque tour, comme au bureau.
+        fiche_model = session.res_model if session.res_model and session.res_id else None
+        if fiche_model:
+            fiche_model, fiche_id = _validated_context_ref(
+                request.env, {"model": session.res_model, "res_id": session.res_id})
+        if fiche_model:
+            base = request.env["ir.config_parameter"].sudo().get_param("web.base.url") or ""
+            payload["context"] = {
+                "model": fiche_model, "res_id": fiche_id,
+                "display_name": Session._record_title(fiche_model, fiche_id),
+                "view_type": "form",
+                "url": "%s/odoo/%s/%s" % (base, fiche_model, fiche_id),
+            }
+            persona = _resolve_persona_summary(request.env, fiche_model, fiche_id)
+            if persona:
+                payload["context"]["persona_summary"] = persona[:2000]
         _attach_identity(request.env, payload)
-        _attach_steering(request.env, payload, None)
+        _attach_steering(request.env, payload, fiche_model)
 
         # Le même fil que le bureau (`controllers/turns.py`) : il écrit
         # l'avancement dans le message, survit au processus qui l'a lancé
@@ -272,6 +362,9 @@ class BfClaudeChatMobileApi(http.Controller):
             "session_id": message.session_id.id,
             "session_name": message.session_id.name,
             "state": message.state,
+            # « stopped » quand on a appuyé sur Arrêter : l'app ne le peint pas
+            # comme une panne.
+            "end_reason": message.end_reason or "",
             # Le point d'attente initial n'est pas une réponse : ne pas l'afficher.
             "text": "" if texte == "…" else texte,
             "tools": _tools(message.tool_log),
@@ -292,6 +385,42 @@ class BfClaudeChatMobileApi(http.Controller):
             },
         })
 
+    @http.route(f"{BASE}/stop", type="http", auth="public", methods=["POST"],
+                csrf=False, save_session=False)
+    def stop(self, **kw):
+        """Le bouton Arrêter du téléphone, le même geste que `/claude-chat/stop`.
+
+        Le drapeau d'abord, le pont ensuite : si le pont ne répond pas, le fil
+        relit le drapeau à l'événement suivant et s'arrête quand même. Le tour
+        s'enregistre alors avec ce qu'il avait écrit, sans reprise automatique
+        et sans compter comme un échec de la conversation.
+        """
+        device = _device()
+        if not device:
+            return _json({"error": "unauthorized"}, 401)
+        request.update_env(user=device.user_id.id)
+        try:
+            turn_id = int(_body().get("turn_id") or 0)
+        except (TypeError, ValueError):
+            turn_id = 0
+        # sudo pour le contrôle : le tour d'un autre est invisible à l'appelant,
+        # et le lire lèverait une erreur d'accès au lieu de répondre 404.
+        message = request.env["claude.chat.message"].sudo().browse(turn_id).exists()
+        if (not message or message.role != "assistant"
+                or message.session_id.user_id != request.env.user):
+            return _json({"error": "tour introuvable"}, 404)
+        if message.state != "pending":
+            return _json({"ok": True, "status": "over"})
+        message.write({"stop_requested": True})
+        settings = _get_settings()
+        try:
+            transport.post(settings["socket"], "/chat-cancel", {
+                "turn_key": message.turn_key, "tenant": settings["tenant"],
+            }, 10)
+        except Exception:  # noqa: BLE001
+            _logger.info("Gen mobile : arrêt non transmis au pont", exc_info=True)
+        return _json({"ok": True, "status": "stopping"})
+
     @http.route(f"{BASE}/delete-session", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
     def delete_session(self, **kw):
@@ -305,3 +434,41 @@ class BfClaudeChatMobileApi(http.Controller):
             return _json({"error": "conversation introuvable"}, 404)
         session.write({"active": False})
         return _json({"ok": True})
+
+    @http.route(f"{BASE}/list-mode", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def list_mode(self, **kw):
+        """Le même réglage que le bureau, porté par l'usager."""
+        device = _device()
+        if not device:
+            return _json({"error": "unauthorized"}, 401)
+        request.update_env(user=device.user_id.id)
+        retenu = request.env["claude.chat.session"]._set_list_mode(
+            _body().get("mode"))
+        if not retenu:
+            return _json({"error": "mode inconnu"}, 400)
+        return _json({"ok": True, "list_mode": retenu})
+
+    @http.route(f"{BASE}/rename-session", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def rename_session(self, **kw):
+        """Le nom donné ici n'est plus jamais réécrit."""
+        device = _device()
+        if not device:
+            return _json({"error": "unauthorized"}, 401)
+        request.update_env(user=device.user_id.id)
+        body = _body()
+        try:
+            sid = int(body.get("session_id") or 0)
+        except (TypeError, ValueError):
+            sid = 0
+        # Cherchée parmi les SIENNES : lire celle d'un autre lèverait un 403,
+        # qui dirait qu'elle existe.
+        session = request.env["claude.chat.session"].search(
+            [("id", "=", sid), ("user_id", "=", request.env.user.id)], limit=1)
+        if not session:
+            return _json({"error": "conversation introuvable"}, 404)
+        nom = session._rename_by_hand(body.get("name"))
+        if not nom:
+            return _json({"error": "Nom vide."}, 400)
+        return _json({"ok": True, "name": nom})

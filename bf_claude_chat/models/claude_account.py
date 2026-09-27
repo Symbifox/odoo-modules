@@ -72,7 +72,7 @@ class ClaudeAccount(models.Model):
         required=True,
         index=True,
         help="Ce que CLAUDE_CONFIG_DIR pointe sur l'hôte, par exemple "
-             "/home/livv/.claude. C'est la clé du compte.",
+             "/home/gen/.claude. C'est la clé du compte.",
     )
     subscription_type = fields.Char(
         string="Forfait",
