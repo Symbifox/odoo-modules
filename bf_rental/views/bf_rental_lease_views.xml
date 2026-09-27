@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_rental_lease_form" model="ir.ui.view">
+        <field name="name">bf.rental.lease.form</field>
+        <field name="model">bf.rental.lease</field>
+        <field name="arch" type="xml">
+            <form string="Bail de logement">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Référence du bail"/></h1>
+                    </div>
+                    <group>
+                        <group string="Parties">
+                            <field name="organisation_id"/>
+                            <field name="building_id"/>
+                            <field name="unit_id"/>
+                            <field name="tenant_ids" widget="many2many_tags"/>
+                            <field name="joint_and_several"/>
+                        </group>
+                        <group string="Formulaire employé">
+                            <field name="form_kind"/>
+                            <!-- ⚠️ Les deux lettres se calculent depuis le
+                                 formulaire : elles ne sont pas les mêmes d'un
+                                 formulaire à l'autre, et elles ne décident de
+                                 rien. Elles servent à écrire « voir section X »
+                                 quand quelqu'un a le papier sous les yeux. -->
+                            <field name="restriction_section"/>
+                            <field name="notice_section"/>
+                            <field name="lease_attachment_ids" widget="many2many_binary"
+                                   string="Formulaire signé"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Durée">
+                            <field name="is_room"/>
+                            <field name="duration_kind" widget="radio"/>
+                            <field name="date_start"/>
+                            <field name="date_end"
+                                   invisible="duration_kind == 'indeterminate'"
+                                   required="duration_kind == 'fixed'"/>
+                        </group>
+                        <group string="Loyer">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="rent"/>
+                            <field name="services_cost"/>
+                            <field name="rent_total"/>
+                            <field name="rent_period" widget="radio"/>
+                            <field name="payment_mode"/>
+                            <!-- ⚠️ Un consentement du locataire, pas une
+                                 exigence du locateur : l'art. 1904 interdit
+                                 d'EXIGER un effet postdaté, pas d'y consentir.
+                                 Le libellé du champ le dit, et il se lit ici
+                                 comme au formulaire. -->
+                            <field name="postdated_cheques_accepted"/>
+                        </group>
+                    </group>
+                    <group string="Restrictions au droit à la fixation (art. 1955 C.c.Q.)">
+                        <field name="fixation_restricted"/>
+                        <field name="restriction_kind"
+                               invisible="not fixation_restricted"
+                               required="fixation_restricted"/>
+                        <field name="ready_date"
+                               invisible="not fixation_restricted"
+                               required="fixation_restricted"/>
+                        <field name="max_rent_5y"
+                               invisible="not fixation_restricted"/>
+                    </group>
+                    <!-- ⚠️ `name` et non seulement `string` : depuis Odoo 18,
+                         l'héritage de vue refuse `string` comme sélecteur, et
+                         un module qui greffe ici n'aurait aucune prise. -->
+                    <group name="note" string="Note">
+                        <field name="note" nolabel="1" placeholder="…"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_rental_abandonment_form" model="ir.ui.view">
+        <field name="name">bf.rental.abandonment.form</field>
+        <field name="model">bf.rental.abandonment</field>
+        <field name="arch" type="xml">
+            <form string="Départ sans préavis">
+                <sheet>
+                    <group>
+                        <group string="Ce qui s'est passé">
+                            <field name="lease_id"/>
+                            <field name="date_noticed"/>
+                            <field name="kind"/>
+                            <field name="effects_left"/>
+                            <!-- 🔴 Affiché en clair : c'est la seule chose que
+                                 l'utilisateur croira savoir. Un départ n'est
+                                 pas toujours une résiliation. -->
+                            <field name="lease_resiliated_by_operation_of_law"/>
+                        </group>
+                        <group string="Les effets laissés (art. 1978)"
+                               invisible="not effects_left">
+                            <field name="disposal_notice_date"/>
+                            <field name="forgotten_from"/>
+                            <field name="may_not_dispose_before"/>
+                            <field name="disposed_on"/>
+                            <field name="disposal_method"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="proceeds"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not effects_left">
+                        Les effets laissés ne deviennent pas la propriété du
+                        locateur. Ils sont réputés oubliés après 90 jours, et
+                        il faut encore un avis de la même durée avant d'en
+                        disposer (art. 944). Disposer veut dire vendre, à
+                        défaut donner à un organisme de bienfaisance
+                        (art. 945). Le propriétaire peut les revendiquer tant
+                        que son droit n'est pas prescrit, et si le bien a été
+                        vendu, son droit s'exerce sur ce qui reste du prix
+                        (art. 946).
+                    </div>
+                    <group string="Description des effets" invisible="not effects_left">
+                        <field name="effects_description" nolabel="1"/>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_rental_abandonment" model="ir.actions.act_window">
+        <field name="name">Départs sans préavis</field>
+        <field name="res_model">bf.rental.abandonment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_bf_rental_abandonment" name="Départs sans préavis"
+              parent="bf_property_core.menu_property_people"
+              action="action_bf_rental_abandonment" sequence="34"/>
+
+    <record id="view_bf_rental_lease_list" model="ir.ui.view">
+        <field name="name">bf.rental.lease.list</field>
+        <field name="model">bf.rental.lease</field>
+        <field name="arch" type="xml">
+            <list string="Baux">
+                <field name="name"/>
+                <field name="building_id"/>
+                <field name="unit_id"/>
+                <field name="tenant_ids" widget="many2many_tags" optional="show"/>
+                <field name="form_kind" optional="hide"/>
+                <field name="duration_kind" optional="hide"/>
+                <field name="date_start"/>
+                <field name="date_end" optional="show"/>
+                <field name="rent_total" optional="show"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_rental_lease_search" model="ir.ui.view">
+        <field name="name">bf.rental.lease.search</field>
+        <field name="model">bf.rental.lease</field>
+        <field name="arch" type="xml">
+            <search string="Baux">
+                <field name="name"/>
+                <field name="building_id"/>
+                <field name="tenant_ids"/>
+                <filter name="fixed" string="Durée fixe"
+                        domain="[('duration_kind', '=', 'fixed')]"/>
+                <filter name="indeterminate" string="Durée indéterminée"
+                        domain="[('duration_kind', '=', 'indeterminate')]"/>
+                <separator/>
+                <!-- Ce qu'un locateur doit pouvoir retrouver : les baux dont la
+                     restriction est inscrite sans ce qui la rend opposable au
+                     locataire (art. 1955 al. 3). Le module refuse d'en créer,
+                     mais un bail importé ou antérieur peut en porter. -->
+                <filter name="restriction_without_max_rent"
+                        string="Restriction sans loyer maximal"
+                        domain="[('fixation_restricted', '=', True),
+                                 ('max_rent_5y', '=', 0)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="by_building" string="Immeuble"
+                            context="{'group_by': 'building_id'}"/>
+                    <filter name="by_form" string="Formulaire"
+                            context="{'group_by': 'form_kind'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_rental_lease" model="ir.actions.act_window">
+        <field name="name">Baux</field>
+        <field name="res_model">bf.rental.lease</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Inscrire un bail</p>
+            <p>
+                Le bail de logement se conclut sur le formulaire obligatoire du
+                Tribunal administratif du logement, acheté au Tribunal sur papier
+                ou en format électronique. Ce module enregistre ce qui a été
+                convenu et porte le formulaire signé en pièce jointe : il ne le
+                remplace pas et n'en produit pas un qui lui ressemble.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_bf_rental_lease"
+              name="Baux"
+              parent="bf_property_core.menu_property_people"
+              action="action_bf_rental_lease"
+              sequence="30"/>
+
+</odoo>

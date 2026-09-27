@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_property_request" model="ir.sequence">
+            <field name="name">Demandes d'entretien</field>
+            <field name="code">bf.property.request</field>
+            <field name="prefix">DE/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_property_booking" model="ir.sequence">
+            <field name="name">Réservations d'espaces communs</field>
+            <field name="code">bf.property.booking</field>
+            <field name="prefix">RES/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_property_parcel" model="ir.sequence">
+            <field name="name">Colis</field>
+            <field name="code">bf.property.parcel</field>
+            <field name="prefix">COL/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_property_visit" model="ir.sequence">
+            <field name="name">Visiteurs</field>
+            <field name="code">bf.property.visit</field>
+            <field name="prefix">VIS/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

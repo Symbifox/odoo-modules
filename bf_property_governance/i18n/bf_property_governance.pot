@@ -1,0 +1,2471 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_governance
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 03:29+0000\n"
+"PO-Revision-Date: 2026-09-14 03:29+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"%(issued)d bulletin(s) remis à %(voters)d votant(s) pour %(weight)s voix ; "
+"%(cast)d déposé(s). Registre : %(rlines)d ligne(s) pour %(rvoters)d "
+"personne(s) et %(rweight)s voix. %(verdict)s"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_attendance.py:0
+msgid "%(owner)s (%(unit)s)"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "%(unit)s, %(owner)s, %(votes)s voix : %(code)s"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.actions.report,print_report_name:bf_property_governance.action_report_assembly_minutes
+msgid "'PV_assemblee_%s' % object._report_minutes_date()"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.actions.report,print_report_name:bf_property_governance.action_report_council_minutes
+msgid "'PV_conseil_%s' % object._report_minutes_date()"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.report_minutes
+msgid ""
+",\n"
+"                                avant toute transmission."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly_attendance__status__absent
+msgid "Absent"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_ballot_deposit__choice__abstain
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_secret_ballot__choice__abstain
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_vote__choice__abstain
+msgid "Abstention"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__message_needaction
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__message_needaction
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_ids
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_state
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_type_icon
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Adoption du budget 2026"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__result__adopted
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__result_override__adopted
+msgid "Adoptée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Ajouter le mode de tenue au PV"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__agenda_request_deadline
+msgid "Ajouts à l'ordre du jour jusqu'au"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__assembly_type__annual
+msgid "Annuelle"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid "Annuler une réunion du conseil"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__cancelled
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__state__cancelled
+msgid "Annulée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid ""
+"Art. 1070 al. 1 C.c.Q. : les procès-verbaux du conseil\n"
+"                                font partie du registre du syndicat, au même titre que\n"
+"                                ceux de l'assemblée. Les administrateurs présents se\n"
+"                                nomment ici : le module ne tient pas de liste\n"
+"                                d'administrateurs, faute d'une source qui en fixe la\n"
+"                                composition."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__syndicat_held
+msgid ""
+"Art. 1076 C.c.Q. : cette ligne porte une part que le syndicat détient lui-"
+"même. Il n'y dispose d'aucune voix. Le retranchement du total, lui, se fait "
+"au registre : il vaut même si la feuille de présence n'a jamais été chargée."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_unit__syndicat_held_votes
+msgid ""
+"Art. 1076 C.c.Q. : part de la quote-part que le syndicat détient lui-même. "
+"Ces voix ne s'exercent pas en assemblée et viennent en diminution du total "
+"des voix qui peuvent être exprimées."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__syndicat_held_votes
+msgid ""
+"Art. 1076 C.c.Q. : voix des fractions que le syndicat détient lui-même. "
+"Elles ne s'exercent pas et sont déjà déduites du total des voix. Affichées à"
+" part pour que le calcul se relise : l'art. 1103 fait d'une erreur dans le "
+"calcul des voix un motif d'annulation, ouvert 90 jours."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__participation_mode
+msgid ""
+"Art. 1084.1 C.c.Q. : le conseil peut siéger à l'aide de moyens permettant à "
+"tous les participants de communiquer immédiatement entre eux. Aucun accord "
+"préalable des administrateurs n'est requis, à la différence du régime "
+"général de l'art. 344."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__remote_immediate_communication
+msgid ""
+"Art. 1084.1 C.c.Q. : les moyens doivent permettre à TOUS les participants de"
+" communiquer immédiatement ENTRE EUX. Une diffusion à sens unique ne remplit"
+" pas la condition. Le module ne peut pas le constater : la case est une "
+"attestation de qui préside, et elle reste au dossier."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__minutes_deadline
+msgid ""
+"Art. 1086.1 C.c.Q. : le conseil transmet le procès-verbal de ses réunions "
+"dans les 30 jours."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__agenda_request_deadline
+msgid "Art. 1088 C.c.Q. : 5 jours après la réception de l'avis."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__remote_immediate_communication
+msgid ""
+"Art. 1088.1 C.c.Q. : les moyens doivent permettre à TOUS les participants de"
+" communiquer immédiatement ENTRE EUX. Une diffusion à sens unique, où "
+"l'assistance regarde sans pouvoir intervenir, ne remplit pas la condition. "
+"Le module ne peut pas constater cela lui-même : la case est une attestation "
+"de la présidence, et elle reste au dossier."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__participation_mode
+msgid ""
+"Art. 1088.1 C.c.Q. : mode réellement suivi par ce membre. L'assemblée porte "
+"le mode annoncé à la convocation ; cette colonne porte ce qui s'est passé, "
+"et c'est elle qui compte au procès-verbal. Sans distinction, une assemblée "
+"hybride se lit comme une assemblée en salle."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__participation_mode
+msgid ""
+"Art. 1088.1 C.c.Q. : une assemblée peut être tenue à l'aide de moyens "
+"permettant à tous les participants de communiquer immédiatement entre eux. "
+"Le mode déclaré ici est celui qu'annonce la convocation ; le mode réellement"
+" suivi par chacun se porte sur sa ligne de présence."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid ""
+"Art. 1089 al. 1 C.c.Q. : copropriétaires détenant la majorité des voix."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Art. 1089 al. 2 : à une assemblée de reprise, une décision de l'art. 1097 "
+"exige que les présents représentent au moins la majorité des voix de tous "
+"les copropriétaires. Présents : %(p)s sur %(t)s."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid ""
+"Art. 1089 al. 2 C.c.Q. : assemblée de reprise. Les trois quarts des membres "
+"présents ou représentés constituent le quorum, ce qui revient à siéger avec "
+"les présents. Une décision de l'art. 1097 reste soumise à une condition "
+"supplémentaire, vérifiée résolution par résolution."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_vote__ballot_issued
+msgid ""
+"Art. 1089.1 C.c.Q. : au scrutin secret, la seule chose que le registre "
+"retient d'un votant est qu'un bulletin lui a été remis."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__mandate_refused
+msgid ""
+"Art. 1090 al. 2 C.c.Q. : l'indivisaire absent est présumé avoir mandaté les "
+"autres indivisaires, à moins qu'il n'ait mandaté un tiers par écrit (auquel "
+"cas il figure ici comme « Représenté »), ou indiqué son refus d'être "
+"représenté. Cette case porte le refus."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__indivision_votes
+msgid ""
+"Art. 1090 al. 2 C.c.Q. : voix des indivisaires absents de la même fraction, "
+"présumés avoir donné mandat de les représenter."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_attendance.py:0
+msgid ""
+"Art. 1091 C.c.Q. : moins de cinq fractions et plus de la moitié des voix. "
+"Voix réduites à %(t)s, soit la somme des voix des autres copropriétaires "
+"présents ou représentés."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_organisation__promoter_unit_id
+msgid ""
+"Art. 1092 C.c.Q. : le plafond porte sur les voix du promoteur « outre les "
+"voix attachées à la fraction qu'il occupe ». Cette fraction-là échappe donc "
+"au plafond."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_attendance.py:0
+msgid ""
+"Art. 1092 C.c.Q. : promoteur plafonné à %(p)d %% des voix du syndicat, outre"
+" les %(o)s voix de la fraction qu'il occupe, soit %(t)s voix. Déclaration "
+"inscrite le %(d)s."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_organisation__promoter_partner_id
+msgid ""
+"Art. 1093 C.c.Q. : celui qui, au moment de l'inscription de la déclaration, "
+"était propriétaire d'au moins la moitié des fractions, ou ses ayants cause. "
+"Renseigné à la main : la qualité de promoteur se constate au titre, pas au "
+"registre courant."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__voting_deprived
+msgid ""
+"Art. 1094 C.c.Q. : le copropriétaire qui n'a pas acquitté sa part des "
+"charges depuis plus de trois mois est privé de son droit de vote. À cocher à"
+" la main : le module ne connaît pas encore l'état des charges, qui vit dans "
+"le volet financier."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Art. 1096 : %(f)s voix pour sur %(p)s présentes ou représentées ; il en faut"
+" plus de %(r)s. Les abstentions restent au dénominateur."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__majority_type
+msgid ""
+"Art. 1096 : toutes les décisions du syndicat qui ne relèvent pas d'un autre article, y compris la modification du règlement de l'immeuble et la correction d'une erreur matérielle dans la déclaration.\n"
+"\n"
+"Art. 1097 : 1° acquisition ou aliénation immobilière par le syndicat ; 2° travaux de transformation, d'agrandissement ou d'amélioration des parties communes, la répartition de leur coût et l'hypothèque mobilière qui les finance ; 3° construction de bâtiments pour créer de nouvelles fractions ; 4° modification de l'acte constitutif de copropriété ou de l'état descriptif des fractions ; 5° modification de la description des parties privatives visée à l'art. 1070.\n"
+"\n"
+"Art. 1098 : 1° changement de destination de l'immeuble ; 2° aliénation des parties communes dont la conservation est nécessaire au maintien de cette destination ; 3° modification de la déclaration pour permettre la détention d'une fraction en jouissance périodique et successive.\n"
+"\n"
+"⚠️ Art. 1101 : « Est réputée non écrite toute stipulation de la déclaration de copropriété qui modifie le nombre de voix requis pour prendre une décision prévue au présent chapitre. » C'est la raison pour laquelle ce champ choisit entre trois règles du Code et n'offre aucun pourcentage à saisir : un seuil paramétrable serait sans effet en droit, et donnerait à l'assemblée la certitude d'avoir décidé quelque chose qu'elle n'a pas décidé."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "Art. 1096 C.c.Q. : majorité des voix des présents ou représentés"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Art. 1097 : %(f)s voix pour sur %(r)s requises, soit les trois quarts de "
+"%(p)s voix présentes ou représentées (%(vstate)s). Depuis le 10 janvier "
+"2020, cet article ne pose plus de condition sur le nombre de copropriétaires"
+" : %(of)d sur %(op)d ici, sans effet sur le résultat."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Art. 1097 C.c.Q. : trois quarts des voix des copropriétaires présents ou "
+"représentés"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Art. 1098 : %(of)d copropriétaire(s) pour sur %(ot)d au registre (il en faut"
+" %(orq)s) et %(f)s voix pour sur %(vt)s au total (il en faut %(vrq)s). Ces "
+"seuils se mesurent sur tous les copropriétaires, présents ou non."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Art. 1098 C.c.Q. : trois quarts des copropriétaires représentant 90 % des "
+"voix de tous les copropriétaires"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__withheld_votes
+msgid ""
+"Art. 1099 C.c.Q. : les voix retirées par la privation du droit de vote, par "
+"une réduction ou par un plafond viennent en diminution du total des voix du "
+"syndicat. L'absence, elle, ne retranche rien : le copropriétaire absent "
+"garde ses voix, il ne les exprime simplement pas. Les voix de l'art. 1076 ne"
+" figurent pas ici : elles se retranchent au registre, et l'assemblée les "
+"porte à part."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__minutes_deadline
+msgid ""
+"Art. 1102.1 C.c.Q. : le conseil d'administration transmet le procès-verbal "
+"aux copropriétaires dans les 30 jours de l'assemblée."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__convocation_state
+msgid ""
+"Art. 346 C.c.Q., que le syndicat rejoint par les art. 1039 et 334 : au moins 10 jours et au plus 45 jours avant la tenue. La déclaration peut allonger le délai, jamais le raccourcir.\n"
+"\n"
+"⚠️ « Pas encore transmis » et « tenue sans avoir été convoquée » sont deux faits très différents, et le module les disait avec les mêmes mots. Un avis en retard se discute ; une assemblée tenue sans aucun avis est un autre sujet."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__secret_requested_by_id
+msgid ""
+"Art. 351 al. 2 C.c.Q. : le scrutin secret se tient « sur demande ». Qui l'a "
+"demandé se consigne, parce que c'est la demande qui justifie d'écarter le "
+"vote à main levée."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__ballot_mode
+msgid ""
+"Art. 351 al. 2 C.c.Q. : le vote se fait à main levée ou, sur demande, au "
+"scrutin secret. Au scrutin secret, le registre dit qui a reçu un bulletin et"
+" l'urne porte les choix : aucun chemin en base ne mène de l'un à l'autre."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+msgid ""
+"Article 1086.1 du Code civil du Québec : le conseil d'administration "
+"transmet le procès-verbal de ses réunions aux copropriétaires dans les 30 "
+"jours. Même délai que l'art. 1102.1 pour l'assemblée, mais deux articles "
+"distincts. Le procès-verbal fait partie du registre de l'art. 1070."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+msgid ""
+"Article 1102.1 du Code civil du Québec : le conseil d'administration "
+"transmet le procès-verbal aux copropriétaires dans les 30 jours de "
+"l'assemblée. Le procès-verbal fait partie du registre de l'art. 1070."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__assembly_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__assembly_id
+msgid "Assemblée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__previous_assembly_id
+msgid "Assemblée ajournée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Assemblée annuelle 2026"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__is_reconvened
+msgid "Assemblée de reprise"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_assembly
+msgid "Assemblée des copropriétaires"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__is_reconvened
+msgid ""
+"Assemblée tenue après un défaut de quorum. Le quorum devient alors les trois"
+" quarts des membres présents ou représentés (art. 1089 al. 2 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.actions.act_window,name:bf_property_governance.action_assembly
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_organisation__assembly_ids
+#: model:ir.ui.menu,name:bf_property_governance.menu_assembly
+msgid "Assemblées"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid ""
+"Au scrutin secret, ce registre dit seulement à\n"
+"                                qui un bulletin a été remis. La colonne du vote\n"
+"                                y reste vide, et le demeure : les choix vivent\n"
+"                                dans l'urne, sans rien qui nomme leur auteur."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_vote__choice
+msgid ""
+"Au scrutin secret, cette colonne reste vide et le demeure : le registre dit "
+"qui a reçu un bulletin, jamais ce qu'il en a fait."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/wizard/bf_property_ballot_wizard.py:0
+msgid "Aucun bulletin ne porte ce récépissé pour cette résolution."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_secret_ballot.py:0
+msgid ""
+"Aucun bulletin ne porte ce récépissé pour cette résolution. Vérifiez le code"
+" : il compte %(n)d caractères, tirets non compris."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Aucun membre présent ou représenté qui dispose d'une voix : il n'y a "
+"personne à qui remettre un bulletin."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.report_minutes
+msgid ""
+"Aucun procès-verbal n'a été rédigé au dossier. Le module\n"
+"                                ne le compose pas à la place du syndicat : ce qui s'est\n"
+"                                dit à la séance ne s'invente pas."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "Aucun scrutin consigné."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_search
+msgid "Avis non conforme"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__convocation_state__none
+msgid "Avis pas encore transmis"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__convocation_date
+msgid "Avis transmis le"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/wizard/bf_property_ballot_wizard.py:0
+msgid "Bulletin de %(votes)s voix, déposé : %(choice)s."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/wizard/bf_property_ballot_wizard.py:0
+msgid "Bulletin de %(votes)s voix, jamais déposé dans l'urne."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_secret_ballot
+msgid "Bulletin de scrutin secret"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/wizard/bf_property_ballot_wizard.py:0
+msgid "Bulletin déposé. %(cast)d sur %(issued)d bulletins remis."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__ballot_issued
+msgid "Bulletin remis"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__ballot_cast_count
+msgid "Bulletins déposés"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__secret_exposure_count
+msgid "Bulletins que leur poids isole"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__ballot_issued_count
+msgid "Bulletins remis"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_secret_ballot.py:0
+msgid ""
+"Ce bulletin a déjà été déposé. Un récépissé ne sert qu'une fois et un "
+"bulletin ne ressort pas de l'urne."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_secret_ballot__exposed_by_weight
+msgid ""
+"Ce bulletin est le seul de l'urne à peser ce nombre de voix. Rapproché du "
+"registre, il désigne son auteur. Voir le point 1 de l'en-tête du modèle."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.constraint,message:bf_property_governance.constraint_bf_property_assembly_attendance_unique_owner_per_unit_per_assembly
+msgid ""
+"Ce copropriétaire figure déjà à la feuille de présence pour cette fraction."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.constraint,message:bf_property_governance.constraint_bf_property_vote_unique_ballot
+msgid "Ce membre a déjà voté sur cette résolution."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Ce membre appartient à une autre assemblée que la résolution soumise au "
+"vote."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__remote_means
+msgid ""
+"Ce par quoi les administrateurs se joignent et se parlent : plateforme, "
+"lien, numéro. D'une réunion sans salle, c'est cela le lieu."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__remote_means
+msgid ""
+"Ce par quoi les participants à distance se joignent et se parlent : "
+"plateforme, lien, numéro. Art. 346 C.c.Q. : l'avis de convocation indique le"
+" lieu où l'assemblée est tenue, et d'une assemblée sans salle, c'est cela le"
+" lieu."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_receipt__outcome
+msgid "Ce que porte le bulletin"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Ce scrutin est secret : le vote se dépose dans l'urne par récépissé, jamais "
+"sur la ligne de registre qui nomme le votant."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_issue_form
+msgid ""
+"Ces codes ne s'affichent qu'une fois. Ensuite, un code\n"
+"                        perdu laisse son bulletin dans l'urne sans qu'il puisse\n"
+"                        jamais y être déposé."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid ""
+"Ces résolutions n'ont pas de résultat : %s. Clôturez-les avant de clore "
+"l'assemblée."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid ""
+"Cette assemblée compte des participants en personne. Portez-la en hybride : "
+"le mode inscrit au procès-verbal doit être celui qui a été suivi."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid ""
+"Cette assemblée compte des participants à distance. Portez-la en hybride ou "
+"à distance : le mode inscrit au procès-verbal doit être celui qui a été "
+"suivi."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_attendance.py:0
+msgid ""
+"Cette assemblée est annoncée en personne. Portez-la en hybride ou à distance"
+" avant d'y inscrire une participation à distance (art. 1088.1 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_attendance.py:0
+msgid ""
+"Cette assemblée est annoncée à distance. Portez-la en hybride avant d'y "
+"inscrire une participation en personne."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid ""
+"Cette assemblée se tient en tout ou en partie à distance. Renseignez les "
+"moyens technologiques avant de convoquer : l'art. 346 C.c.Q. veut que l'avis"
+" indique le lieu où l'assemblée est tenue, et c'est cela le lieu."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+#: code:addons/bf_property_governance/models/bf_property_secret_ballot.py:0
+#: code:addons/bf_property_governance/wizard/bf_property_ballot_wizard.py:0
+msgid "Cette résolution se vote à main levée : il n'y a pas d'urne."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_ballot_issue__distribution
+msgid ""
+"Chaque ligne porte un récépissé et le votant à qui il revient. ⚠️ Tant que "
+"cette fenêtre est ouverte, cette liste EST en base : c'est le seul endroit "
+"où le lien entre une personne et son bulletin existe. Elle est supprimée dès"
+" que vous confirmez avoir distribué les récépissés. Ensuite, un code perdu "
+"ne se retrouve plus et son bulletin reste dans l'urne sans pouvoir y être "
+"déposé : c'est le prix du secret."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Charger la feuille de présence"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__voter_key
+msgid "Clé de votant"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Clôturer"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__state__closed
+msgid "Clôturée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__remote_immediate_communication
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__remote_immediate_communication
+msgid "Communication immédiate entre tous"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid "Communication immédiate entre tous les participants"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__convocation_state__ok
+msgid "Conforme"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__convocation_state
+msgid "Conformité de l'avis"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Consigner la transmission du PV"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_ballot_deposit__choice__against
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_secret_ballot__choice__against
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_vote__choice__against
+msgid "Contre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__ballot_box_detail
+msgid "Contrôle de l'urne"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Convocation"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Convoquer"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__state__convened
+msgid "Convoquée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__partner_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__partner_id
+msgid "Copropriétaire"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__owners_abstain
+msgid "Copropriétaires abstention"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__total_owners
+msgid "Copropriétaires au registre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__owners_against
+msgid "Copropriétaires contre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__owners_for
+msgid "Copropriétaires pour"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__owners_present
+msgid "Copropriétaires présents ou représentés"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.actions.server,name:bf_property_governance.cron_assembly_refresh_minutes_state_ir_actions_server
+msgid "Copropriété : rafraîchir l'état de transmission des PV"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.actions.server,name:bf_property_governance.cron_council_meeting_refresh_state_ir_actions_server
+msgid "Copropriété : rafraîchir l'état des réunions du conseil"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Correction manuelle"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__create_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__create_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__create_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_issue__create_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_receipt__create_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__create_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__create_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__create_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__create_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__create_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_issue__create_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_receipt__create_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__create_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__create_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid "Dans le délai."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__feedback
+msgid "Dernier dépôt"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Des bulletins ont déjà été déposés. Un scrutin entamé ne se reprend pas : "
+"portez la question à une nouvelle résolution."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.constraint,message:bf_property_governance.constraint_bf_property_secret_ballot_unique_receipt
+msgid "Deux bulletins ne peuvent pas porter le même récépissé."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__display_name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__display_name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__display_name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_issue__display_name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_receipt__display_name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__display_name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__display_name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__display_name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.report_minutes
+msgid "Document imprimé le"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Décompte"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__participation_warning
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_search
+msgid "Défaut de mode"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Délibérations et décisions du conseil."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_deposit_form
+msgid "Déposer"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+#: code:addons/bf_property_governance/wizard/bf_property_ballot_wizard.py:0
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_deposit_form
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Déposer un bulletin"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__is_cast
+msgid "Déposé"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_ballot_deposit
+msgid "Dépôt d'un bulletin secret"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__receipt_hash
+msgid "Empreinte du récépissé"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_search
+msgid "En cours"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__participation_mode__in_person
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly_attendance__participation_mode__in_person
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__participation_mode__in_person
+msgid "En personne"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__minutes_state__overdue
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__minutes_state__overdue
+msgid "En retard"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__assembly_type__special
+msgid "Extraordinaire"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_deposit_form
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_receipt_form
+msgid "Fermer"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__attendance_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Feuille de présence"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__activity_type_icon
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_unit
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__unit_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__unit_id
+msgid "Fraction"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__syndicat_held
+msgid "Fraction du syndicat"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_organisation__promoter_unit_id
+msgid "Fraction occupée par le promoteur"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.ui.menu,name:bf_property_governance.menu_governance
+msgid "Gouvernance"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__has_message
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__has_message
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_minutes_moment
+msgid "Heure locale d'une séance imprimée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__participation_mode__hybrid
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__participation_mode__hybrid
+msgid "Hybride"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_issue__id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_receipt__id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__activity_exception_icon
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__message_needaction
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__message_needaction
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__message_has_error
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__message_has_error
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_secret_ballot__voter_key
+msgid ""
+"Jeton tiré au hasard, le même pour tous les bulletins d'une même personne à "
+"cette résolution. Il sert à compter des personnes et non des bulletins, ce "
+"qu'exige la majorité en nombre de l'art. 1098 C.c.Q. Il ne nomme personne et"
+" ne se recalcule pas."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__override_reason
+msgid "Justification de la correction"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_secret_ballot.py:0
+msgid "L'assemblée est clôturée : l'urne ne s'ouvre plus."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+#: code:addons/bf_property_governance/wizard/bf_property_ballot_wizard.py:0
+msgid "L'assemblée est clôturée."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "L'urne correspond au registre."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"L'urne ne correspond PAS au registre. Art. 1103 C.c.Q. : une erreur dans le "
+"calcul des voix ouvre l'annulation de la décision, pendant 90 jours."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid ""
+"La communication immédiate entre TOUS les participants n'est pas attestée "
+"(art. 1084.1 C.c.Q.). Une diffusion à sens unique ne remplit pas la "
+"condition."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid ""
+"La communication immédiate entre tous les participants n'est pas attestée "
+"(art. 1088.1 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid "La feuille de présence ne se recharge pas après la tenue."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__write_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__write_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__write_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_issue__write_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_receipt__write_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__write_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__write_uid
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__write_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__write_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__write_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_issue__write_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_receipt__write_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__write_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__write_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__result_override
+msgid ""
+"Le calcul est une aide, pas un avis juridique. Une correction manuelle exige"
+" une justification."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid "Le procès-verbal de « %(name)s » a déjà été transmis le %(date)s."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid ""
+"Le procès-verbal de « %s » a été transmis : la réunion a eu lieu et ne "
+"s'annule plus."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Le scrutin de « %s » est déjà ouvert : son mode ne change plus. Reprenez le "
+"scrutin à zéro, ou portez la question à une nouvelle résolution."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "Le scrutin n'a pas été ouvert."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Le scrutin secret est déjà ouvert. Il ne se rouvre pas pour ajouter un "
+"votant : reprenez-le à zéro tant qu'aucun bulletin n'a été déposé."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid ""
+"Les bulletins remis seront détruits et de nouveaux récépissés seront tirés. "
+"Les codes déjà distribués ne vaudront plus rien."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid ""
+"Les moyens technologiques ne sont pas indiqués : d'une réunion sans salle, "
+"c'est cela le lieu."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid ""
+"Les moyens technologiques ne sont pas renseignés. Art. 346 C.c.Q. : l'avis "
+"indique le lieu où l'assemblée est tenue."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Lien de visioconférence, plateforme, numéro"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__location
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__location
+msgid "Lieu"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__majority_type
+msgid "Majorité requise"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__proxy_partner_id
+msgid "Mandataire"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Marquer tenue"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__attendance_id
+msgid "Membre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__message_has_error
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__message_has_error
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__message_ids
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__message_ids
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__ballot_mode
+msgid "Mode de scrutin"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Mode de scrutin (art. 351 al. 2 C.c.Q.)"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__participation_mode
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__participation_mode
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_search
+msgid "Mode de tenue"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Mode de tenue (art. 1084.1 C.c.Q.)"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid "Mode de tenue et scrutins"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__result_detail
+msgid "Motif du résultat"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__remote_means
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__remote_means
+msgid "Moyens technologiques"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid "Moyens technologiques (art. 1088.1 C.c.Q.)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__assembly_type
+msgid "Nature"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_summary
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_type_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__secret_exposure_count
+msgid ""
+"Nombre de bulletins seuls de leur poids dans l'urne. Rapprochés du registre,"
+" ceux-là désignent leur auteur : un scrutin pondéré n'est secret qu'entre "
+"bulletins de même poids. Le module compte et le dit ; il ne promet pas un "
+"secret que l'arithmétique ne peut pas tenir."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+msgid "Non consigné"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__result__pending
+msgid "Non voté"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__secret_request_note
+msgid "Note sur la demande"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__name
+msgid "Objet"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Objet de la réunion"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid "On cherche la présence d'un défaut de mode, pas son libellé."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__majority_type__art_1096
+msgid "Ordinaire (art. 1096)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__sequence
+msgid "Ordre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__agenda
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Ordre du jour"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Ouvrir le scrutin"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_search
+msgid "PV en retard"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__minutes_sent_date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__minutes_sent_date
+msgid "PV transmis le"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_search
+msgid "PV à transmettre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__ownership_share
+msgid "Part dans la fraction (%)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__ownership_share
+msgid ""
+"Part détenue dans la fraction. Sert à répartir les voix entre indivisaires."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__in_person_attendee_count
+msgid "Participants en personne"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__remote_attendee_count
+msgid "Participants à distance"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__participation_mode
+msgid "Participation"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__proxy_partner_id
+msgid "Personne porteuse de la procuration."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__cap_rule
+msgid "Plafond appliqué"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__exposed_by_weight
+msgid "Poids unique dans l'urne"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Points à traiter."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Portée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_ballot_deposit__choice__for
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_secret_ballot__choice__for
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_vote__choice__for
+msgid "Pour"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Pour : %(f)s voix / %(of)d votant(s). Contre : %(a)s voix / %(oa)d. "
+"Abstention : %(b)s voix / %(ob)d. Non déposées : %(n)s voix."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__voting_deprived
+msgid "Privé du droit de vote"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__minutes
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__minutes
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.report_minutes
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Procès-verbal"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.actions.report,name:bf_property_governance.action_report_assembly_minutes
+msgid "Procès-verbal de l'assemblée"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+msgid "Procès-verbal de l'assemblée des copropriétaires"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.actions.report,name:bf_property_governance.action_report_council_minutes
+msgid "Procès-verbal de la réunion du conseil"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+msgid "Procès-verbal de la réunion du conseil d'administration"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid ""
+"Procès-verbal transmis le %(date)s. Art. 1086.1 C.c.Q. : le conseil transmet"
+" le procès-verbal de ses réunions dans les 30 jours. %(verdict)s"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.report_minutes
+msgid "Projet : le procès-verbal n'a pas encore été rédigé au dossier."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.report_minutes
+msgid ""
+"Projet : le procès-verbal n'a pas encore été transmis aux\n"
+"                                copropriétaires. La date portée ci-dessous est celle de\n"
+"                                l'impression, et non celle d'une transmission."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_organisation__promoter_partner_id
+msgid "Promoteur"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__convocation_notice_days
+msgid "Préavis (jours)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Préavis de"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_assembly_attendance
+msgid "Présence à une assemblée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly_attendance__status__present
+msgid "Présent"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__state__planned
+msgid "Prévue"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__majority_type__art_1098
+msgid "Qualifiée (art. 1098)"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Quorum"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__quorum_reached
+msgid "Quorum atteint"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_search
+msgid "Quorum non atteint"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Quorum non atteint :"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__quorum_required
+msgid "Quorum requis"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__base_votes
+msgid ""
+"Quote-part de la fraction, répartie selon la part détenue (art. 1090 "
+"C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__rating_ids
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__rating_ids
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Recompter l'urne"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__mandate_refused
+msgid "Refuse d'être représenté"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_search
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__result__rejected
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__result_override__rejected
+msgid "Rejetée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__majority_type__art_1097
+msgid "Renforcée (art. 1097)"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid "Renseignez la date de transmission de l'avis avant de convoquer."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Reprendre le scrutin à zéro"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Reprise"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+msgid "Reprise de"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly_attendance__status__represented
+msgid "Représenté"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__resolution_count
+msgid "Resolution Count"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__activity_user_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Rouvrir"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid "Rouvrir une réunion du conseil"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__quorum_rule
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__majority_label
+msgid "Règle appliquée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__receipt_code
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_receipt__receipt_code
+msgid "Récépissé"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_ballot_issue
+msgid "Récépissés d'un scrutin secret"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_issue_form
+msgid "Récépissés distribués, effacer la liste"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_issue_form
+msgid "Récépissés à distribuer"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid ""
+"Rédigez le procès-verbal de « %s » avant d'en consigner la transmission : "
+"consigner l'envoi d'une page blanche ne prouve rien."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__cap_reduction
+msgid ""
+"Réduction calculée au titre de l'art. 1091 (moins de cinq fractions) ou de "
+"l'art. 1092 (promoteur)."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__vote_reduction
+msgid "Réduction des voix"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly_attendance__vote_reduction
+msgid ""
+"Réduction saisie à la main, pour un motif que le module ne calcule pas lui-"
+"même. Les réductions des art. 1091 et 1092, elles, sont calculées et "
+"apparaissent séparément."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__participation_warning
+msgid "Réserve sur le mode de tenue"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__resolution_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_issue__resolution_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_receipt__resolution_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__name
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__resolution_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__resolution_id
+msgid "Résolution"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_resolution
+msgid "Résolution d'assemblée"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+#: model:ir.actions.act_window,name:bf_property_governance.action_resolution
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__resolution_ids
+#: model:ir.ui.menu,name:bf_property_governance.menu_resolution
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_list
+msgid "Résolutions"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__result
+msgid "Résultat"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__result_override
+msgid "Résultat corrigé à la main"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "Résultat corrigé à la main."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Réunion"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid "Réunion annulée."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_council_meeting
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Réunion du conseil d'administration"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.actions.act_window,name:bf_property_governance.action_council_meeting
+#: model:ir.ui.menu,name:bf_property_governance.menu_council_meeting
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_list
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_search
+msgid "Réunions du conseil"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_secret_ballot__receipt_hash
+msgid ""
+"SHA-256 du code remis au votant. Le code lui-même n'est nulle part en base :"
+" sans lui, ce bulletin ne se rattache à personne."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/wizard/bf_property_ballot_wizard.py:0
+msgid "Saisissez le récépissé et le vote."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/wizard/bf_property_ballot_wizard.py:0
+msgid "Saisissez le récépissé à vérifier."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__minutes_state__na
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__ballot_box_state__na
+msgid "Sans objet"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__vote_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Scrutin"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__ballot_box_state__open
+msgid "Scrutin non ouvert"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "Scrutin repris à zéro avant tout dépôt."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__ballot_mode__secret
+msgid "Scrutin secret"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__secret_requested_by_id
+msgid "Scrutin secret demandé par"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Scrutin secret ouvert : %(n)d bulletin(s) remis. Les récépissés ne "
+"s'affichent qu'une fois, et la liste qui les relie aux votants est supprimée"
+" dès que l'officier confirme les avoir distribués."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "Scrutin secret ouvert, aucun bulletin déposé."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Secret du scrutin : %(n)d bulletin(s) seul(s) de leur poids dans l'urne, "
+"donc rattachables à leur auteur par le registre."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__company_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__company_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__company_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__company_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__company_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__total_votes
+msgid "Somme des voix de tous les copropriétaires, art. 1090 C.c.Q."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__activity_state
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__status
+msgid "Statut"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__organisation_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__organisation_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__organisation_id
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__organisation_id
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_search
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_search
+msgid "Syndicat"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_issue_form
+msgid ""
+"Tant que cette fenêtre est ouverte, cette liste est la\n"
+"                        seule chose au monde qui relie une personne à son\n"
+"                        bulletin, et elle est en base. Distribuez les\n"
+"                        récépissés, puis confirmez ci-dessous : la liste est\n"
+"                        alors supprimée et le lien n'existe plus nulle part."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__state__held
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__state__held
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Tenue"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_minutes_report.py:0
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__date
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__date
+msgid "Tenue le"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__convocation_state__never
+msgid "Tenue sans avoir été convoquée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_search
+msgid "Tenue à distance ou hybride"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_search
+msgid "Tenues à distance"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Texte"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__description
+msgid "Texte de la résolution"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid "Transmettre un procès-verbal du conseil"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.report_minutes
+msgid "Transmis aux copropriétaires le"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__minutes_state__sent
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__minutes_state__sent
+msgid "Transmis dans le délai"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__minutes_state__sent_late
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__minutes_state__sent_late
+msgid "Transmis hors délai"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Transmission (art. 1102.1)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__minutes_state
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__minutes_state
+msgid "Transmission du PV"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__minutes_deadline
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__minutes_deadline
+msgid "Transmission du PV au plus tard le"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_form
+msgid "Transmission du procès-verbal (art. 1086.1 C.c.Q.)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__convocation_state__late
+msgid "Trop tard"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__convocation_state__early
+msgid "Trop tôt"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_assembly__activity_exception_decoration
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_council_meeting__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Un scrutin secret s'ouvre résolution par résolution : les récépissés ne "
+"s'affichent qu'une fois et ne se retrouvent pas."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Un scrutin à main levée consigne le vote de chacun : renseignez le vote de "
+"%s."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid ""
+"Une correction manuelle du résultat doit être motivée. Renseignez la "
+"justification."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.constraint,message:bf_property_governance.constraint_bf_property_assembly_attendance_vote_reduction_positive
+msgid "Une réduction de voix ne peut pas être négative."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__secret_ballot_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Urne"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__ballot_box_state__balanced
+msgid "Urne conforme au registre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__ballot_box_state__unbalanced
+msgid "Urne non conforme au registre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_secret_ballot__choice
+msgid "Vide tant que le bulletin n'a pas été déposé."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__votes
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__votes
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Voix"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__votes_abstain
+msgid "Voix abstention"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__votes_against
+msgid "Voix contre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_resolution__votes_not_cast
+msgid ""
+"Voix de bulletins remis mais jamais déposés dans l'urne. Elles ne sont ni "
+"pour, ni contre, ni abstention : elles n'ont pas été exprimées. Les "
+"dénominateurs des art. 1096 et 1097 se mesurent de toute façon sur les voix "
+"présentes, pas sur les bulletins."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_vote
+msgid "Voix exprimée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__votes_not_cast
+msgid "Voix non déposées"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__votes_for
+msgid "Voix pour"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__votes_present
+msgid "Voix présentes ou représentées"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__votes
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Voix retenues"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,help:bf_property_governance.field_bf_property_secret_ballot__votes
+msgid ""
+"Voix retenues du votant au moment de l'ouverture du scrutin, plafonds des "
+"art. 1091 et 1092 déjà appliqués."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_unit__syndicat_held_votes
+msgid "Voix retirées (art. 1076)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__syndicat_held_votes
+msgid "Voix retirées au syndicat (art. 1076)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__cap_reduction
+msgid "Voix retirées par plafond"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "Voix retranchées"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__withheld_votes
+msgid "Voix retranchées du total"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__indivision_votes
+msgid "Voix reçues de l'indivision"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly_attendance__base_votes
+msgid "Voix théoriques"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__total_votes
+msgid "Voix totales du syndicat"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_deposit__choice
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_secret_ballot__choice
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_vote__choice
+msgid "Vote"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model,name:bf_property_governance.model_bf_property_ballot_receipt
+msgid "Vérification d'un récépissé"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_receipt_form
+msgid "Vérifier"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_receipt_form
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "Vérifier un récépissé"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_deposit_form
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_ballot_receipt_form
+msgid "XXXX-XXXX-XXXX"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "atteint"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid "attestée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid ""
+"bulletin(s) sont seuls de leur poids dans l'urne. Un\n"
+"                        scrutin pondéré n'est secret qu'entre bulletins de même\n"
+"                        poids : ceux-là se rattachent à leur auteur par simple\n"
+"                        lecture du registre. Le module le dit plutôt que de\n"
+"                        promettre un secret que l'arithmétique ne tient pas."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "copropriétaire(s)"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "jours, au-delà du maximum de 45 jours."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid ""
+"jours. L'art. 346 C.c.Q., que le syndicat rejoint par les art. 1039 et 334,\n"
+"                        en exige au moins 10.\n"
+"                        La déclaration peut allonger ce délai, jamais le raccourcir."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_resolution.py:0
+msgid "non atteint"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid "non attestée"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_assembly.py:0
+msgid "non renseignés"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "requises."
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_resolution_form
+msgid "voix /"
+msgstr ""
+
+#. module: bf_property_governance
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_form
+msgid "voix présentes ou représentées pour"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid ""
+"« %s » : un procès-verbal ne se transmet pas avant la réunion qu'il relate."
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid "« %s » a été annulée : il n'y a pas de procès-verbal."
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__participation_mode__remote
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly_attendance__participation_mode__remote
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__participation_mode__remote
+msgid "À distance"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_resolution__ballot_mode__open
+msgid "À main levée"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_ballot_issue__distribution
+msgid "À remettre aux votants"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_assembly__minutes_state__pending
+#: model:ir.model.fields.selection,name:bf_property_governance.selection__bf_property_council_meeting__minutes_state__pending
+msgid "À transmettre"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_assembly__state
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_council_meeting__state
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_assembly_search
+#: model_terms:ir.ui.view,arch_db:bf_property_governance.view_council_meeting_search
+msgid "État"
+msgstr ""
+
+#. module: bf_property_governance
+#: model:ir.model.fields,field_description:bf_property_governance.field_bf_property_resolution__ballot_box_state
+msgid "État de l'urne"
+msgstr ""
+
+#. module: bf_property_governance
+#. odoo-python
+#: code:addons/bf_property_governance/models/bf_property_council_meeting.py:0
+msgid "⚠️ Hors délai."
+msgstr ""

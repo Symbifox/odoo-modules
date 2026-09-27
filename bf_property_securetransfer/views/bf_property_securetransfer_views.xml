@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--
+            Le même bloc sur les trois régimes. Il dit trois choses : quand la
+            pièce est partie, combien de fois elle a été ouverte, et
+            l'avertissement quand le lien a expiré sans que personne ne l'ait
+            ouvert — parce qu'envoyer n'est pas remettre.
+        -->
+        <record id="view_property_attestation_form_secure" model="ir.ui.view">
+            <field name="name">bf.property.attestation.form.secure</field>
+            <field name="model">bf.property.attestation</field>
+            <field name="inherit_id" ref="bf_property_records.view_attestation_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="Remise sécurisée">
+                        <div class="alert alert-warning" role="alert" colspan="2"
+                             invisible="not secure_unread">
+                            Le lien a expiré et personne ne l'a ouvert. Le syndicat a
+                            envoyé ; le destinataire n'a rien reçu.
+                        </div>
+                        <field name="secure_sent_date" readonly="1"/>
+                        <field name="secure_transfer_id" readonly="1"/>
+                        <field name="secure_download_count" readonly="1"
+                               invisible="not secure_transfer_id"/>
+                        <field name="secure_frozen_attachment_id" readonly="1"
+                               invisible="not secure_transfer_id"/>
+                        <field name="secure_unread" invisible="1"/>
+                    </group>
+                </xpath>
+                <xpath expr="//button[@name='action_print']" position="before">
+                    <button name="action_secure_send" type="object"
+                            string="Remettre par transfert sécurisé"
+                            invisible="secure_transfer_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_property_disclosure_form_secure" model="ir.ui.view">
+            <field name="name">bf.property.disclosure.form.secure</field>
+            <field name="model">bf.property.disclosure</field>
+            <field name="inherit_id" ref="bf_property_records.view_disclosure_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="Remise sécurisée">
+                        <div class="alert alert-warning" role="alert" colspan="2"
+                             invisible="not secure_unread">
+                            Le lien a expiré et personne ne l'a ouvert.
+                        </div>
+                        <field name="secure_sent_date" readonly="1"/>
+                        <field name="secure_transfer_id" readonly="1"/>
+                        <field name="secure_download_count" readonly="1"
+                               invisible="not secure_transfer_id"/>
+                        <field name="secure_unread" invisible="1"/>
+                    </group>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="before">
+                    <!-- 🔴 Rien à remettre avant la revue de vie privée : une
+                         pièce partie par un lien sécurisé ne se caviarde plus. -->
+                    <button name="action_secure_send" type="object"
+                            string="Remettre par transfert sécurisé"
+                            invisible="secure_transfer_id or state in ('requested', 'refused', 'cancelled')"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_property_charge_statement_form_secure" model="ir.ui.view">
+            <field name="name">bf.property.charge.statement.form.secure</field>
+            <field name="model">bf.property.charge.statement</field>
+            <field name="inherit_id" ref="bf_property_finance.view_charge_statement_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="Remise sécurisée">
+                        <div class="alert alert-danger" role="alert" colspan="2"
+                             invisible="not secure_unread">
+                            Le lien a expiré et personne ne l'a ouvert. Le délai de
+                            quinze jours de l'article 1069 alinéa 2 joue contre le
+                            syndicat : passé ce délai, l'acquéreur n'est plus tenu.
+                        </div>
+                        <field name="secure_sent_date" readonly="1"/>
+                        <field name="secure_transfer_id" readonly="1"/>
+                        <field name="secure_download_count" readonly="1"
+                               invisible="not secure_transfer_id"/>
+                        <field name="secure_unread" invisible="1"/>
+                    </group>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="before">
+                    <!-- ⚠️ C'est ici que l'horloge de l'art. 1069 al. 2 s'arrête,
+                         et c'est le seul délai de la suite qui joue contre le
+                         syndicat. Le bouton n'a pas à être caché dans un menu. -->
+                    <button name="action_secure_send" type="object"
+                            class="btn-primary"
+                            string="Remettre par transfert sécurisé"
+                            invisible="secure_transfer_id or state in ('requested', 'cancelled')"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <!-- Le canal du code, réglé par copropriété plutôt qu'hérité en silence. -->
+        <record id="view_property_organisation_form_secure" model="ir.ui.view">
+            <field name="name">bf.property.organisation.form.secure</field>
+            <field name="model">bf.property.organisation</field>
+            <field name="inherit_id" ref="bf_property_core.view_property_organisation_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="Remise sécurisée des documents">
+                        <field name="secure_otp_channel"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le gestionnaire de copropriété tient le transfert sécurisé, au niveau UTILISATEUR.
+
+         🔴 Joué avec un vrai compte de
+         gestionnaire, remettre une attestation, un état des charges ou des documents de copropriété exigeait l'administrateur. Le module offrait
+         le bouton à un rôle qui ne pouvait pas s'en servir. Utilisateur, pas
+         administrateur : la configuration du module reste à l'admin. -->
+    <record id="bf_property_core.group_bf_property_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('bf_securetransfer.group_securetransfer_user'))]"/>
+    </record>
+</odoo>

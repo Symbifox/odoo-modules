@@ -1,0 +1,3549 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_finance
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 07:40+0000\n"
+"PO-Revision-Date: 2026-09-26 07:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+" Réduite de %(before)s à %(after)s : l'alinéa 3 permet de s'arrêter à une "
+"capitalisation de 100 000 $. C'est une faculté, exercée ici par le syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid ""
+" ⚠️ L'alinéa 2 de l'art. 1572, « celle que le débiteur a le plus d'intérêt à"
+" acquitter », n'est pas appliqué : il suppose de connaître sa situation. "
+"Imputez à la main s'il existe un motif de préférer une contribution à une "
+"autre."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid " ⚠️ Sans adresse de courriel, à aviser autrement : %s."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid "%(payment)s → %(line)s"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "%(syndicat)s : état des charges dues demandé pour la fraction %(unit)s"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.report,print_report_name:bf_property_finance.action_report_charge_statement
+msgid ""
+"'Etat_charges_%s_%s' % ((object.unit_id.display_name or '').replace(' ', "
+"'_'), object._report_date())"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.report,print_report_name:bf_property_finance.action_report_budget
+msgid "'Etat_financier_%s' % (object.name or '').replace(' ', '_')"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid ", du"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid ""
+".\n"
+"                                État fourni le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_floor_basis__promoter
+msgid "0,5 % de la valeur de reconstruction (art. 1071 al. 4 C.c.Q.)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_floor_basis__general
+msgid "5 % des contributions aux charges communes (Loi 16, art. 153 al. 2)"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_attendance.py:0
+msgid ""
+"<li>%(owner)s (%(unit)s) : %(amount)s dus, échus depuis le %(since)s</li>"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_attendance.py:0
+msgid ""
+"<p>Art. 1094 C.c.Q. appliqué à %(count)d ligne(s) de présence, sur la foi du"
+" registre des impayés : une contribution échue depuis plus de trois mois "
+"n'est pas acquittée.</p><ul>%(detail)s</ul><p>Art. 1099 : les voix ainsi "
+"retirées viennent en diminution du total des voix du syndicat. Art. 1094 al."
+" 2 : le droit revient dès que la totalité des charges dues est "
+"acquittée.</p>"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"<p>Bonjour,</p><p>%(syndicat)s vous avise, comme l'exige l'art. 1069 al. 2 "
+"C.c.Q., qu'un état des charges dues pour la fraction %(unit)s a été demandé "
+"le %(date)s par %(requester)s, qui se propose de l'acquérir. Cet état lui "
+"sera fourni après le présent avis.</p>"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid ""
+"<strong>Ce que ce tableau dit, et ce qu'il ne dit pas.</strong>\n"
+"                            Il suit la contribution : ce qui a été fixé, ce qui a été\n"
+"                            appelé aux copropriétaires, ce qui est rentré. Il ne compare\n"
+"                            pas le prévu au <em>dépensé</em> : le module ne tient aucune\n"
+"                            dépense, ni facture ni comptabilité. L'encaissé est réparti\n"
+"                            entre les postes au prorata de l'appelé, parce qu'un paiement\n"
+"                            s'impute sur la contribution d'une fraction et non sur un\n"
+"                            poste (articles 1569 à 1572 du Code civil)."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid ""
+"<strong>Projet.</strong>\n"
+"                            Cet état n'a pas encore été fourni au proposant acquéreur. Tant\n"
+"                            qu'il ne l'est pas, la date portée ci-dessous est celle du jour et\n"
+"                            le délai de quinze jours continue de courir."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_needaction
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_needaction
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_needaction
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_state
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_state
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_state
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_type_icon
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_type_icon
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_type_icon
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Ajustement"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid "Ajustement au budget"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__adjustment_amount
+msgid "Ajustement selon le budget"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Ajustement selon le dernier budget annuel"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid ""
+"Alinéa 3 : « L'état fourni est ajusté selon le dernier budget\n"
+"                                annuel des copropriétaires. »"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "Annuler une demande d'état des charges"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__cancelled
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_charge_statement__state__cancelled
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__state__cancelled
+msgid "Annulé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__call_id
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_search
+msgid "Appel"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_fund_call
+msgid "Appel de fonds"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Appel du 1er trimestre 2027"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_fund_call__call_type__periodic
+msgid "Appel périodique"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"Appel transmis, exigible le %(due)s. Art. 1072 al. 3 C.c.Q. : le syndicat "
+"avise sans délai chaque copropriétaire du montant de sa contribution et de "
+"la date où elle est exigible."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Appels"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+#: model:ir.actions.act_window,name:bf_property_finance.action_fund_call
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__call_ids
+#: model:ir.ui.menu,name:bf_property_finance.menu_fund_call
+msgid "Appels de fonds"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_list
+msgid "Appelé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__amount_outstanding
+msgid "Appelé et non encaissé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_assembly_form_finance
+msgid "Appliquer l'art. 1094 d'après les impayés"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_syndicat_form_finance
+msgid "Arrérages"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget_line__charge_type
+msgid ""
+"Art. 1064 C.c.Q. Les deux natures « usage restreint » ne se répartissent pas"
+" de la même façon : l'entretien courant est à la charge des seuls "
+"bénéficiaires, les réparations majeures et le remplacement suivent la règle "
+"générale à moins que la déclaration n'en dispose autrement."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Art. 1064 al. 1 C.c.Q. : en proportion de la valeur relative de chaque "
+"fraction."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Art. 1064 al. 1 in fine C.c.Q. : entretien et réparations courantes d'une "
+"partie commune à usage restreint. Les copropriétaires qui en ont l'usage "
+"contribuent seuls, au prorata de leurs quotes-parts respectives."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Art. 1064 al. 2 C.c.Q. : la déclaration de copropriété prévoit une "
+"répartition différente, la charge est portée aux seules fractions "
+"bénéficiaires."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Art. 1064 al. 2 C.c.Q. : réparations majeures ou remplacement d'une partie "
+"commune à usage restreint. SANS stipulation de la déclaration, ces charges "
+"suivent la règle générale et se répartissent sur TOUTES les fractions, non "
+"sur les seuls bénéficiaires."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget_line__declaration_derogation
+msgid ""
+"Art. 1064 al. 2 C.c.Q. : sans stipulation de la déclaration de copropriété, "
+"les réparations majeures et le remplacement d'une partie commune à usage "
+"restreint se répartissent sur TOUTES les fractions, comme n'importe quelle "
+"charge commune. Cochez seulement si la déclaration porte une clause en ce "
+"sens, et citez-la à la note."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__unit_id
+msgid ""
+"Art. 1069 : l'état porte sur les charges dues « relativement à cette "
+"fraction ». La charge suit la fraction, pas la personne."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__owner_partner_ids
+msgid ""
+"Art. 1069 al. 2 : le syndicat n'est autorisé à fournir l'état que « sauf à "
+"en aviser au préalable le propriétaire de la fraction ou ses ayants cause »."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__requester_partner_id
+msgid ""
+"Art. 1069 al. 2 : « celui qui se propose d'acquérir ». Ce n'est ni le "
+"copropriétaire vendeur, qui demande l'attestation de l'art. 1068.1, ni le "
+"promettant acheteur de l'art. 1068.2."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__acquirer_bound
+msgid ""
+"Art. 1069 al. 2 : « le proposant acquéreur n'est alors tenu au paiement de "
+"ces charges communes QUE SI l'état lui est fourni par le syndicat dans les "
+"15 jours de la demande ». Hors délai, le syndicat perd sa créance contre lui"
+" et devra la réclamer au vendeur."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid ""
+"Art. 1069 al. 2 C.c.Q. : le syndicat n'est autorisé à fournir\n"
+"                        l'état que « sauf à en aviser au préalable le propriétaire de la\n"
+"                        fraction ou ses ayants cause ». Le préavis conditionne\n"
+"                        l'autorisation, et l'état porte les dettes d'une personne nommée."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"Art. 1069 al. 2 C.c.Q. : le syndicat n'est autorisé à fournir l'état que « "
+"sauf à en aviser au préalable le propriétaire de la fraction ou ses ayants "
+"cause ». Consignez le préavis avant de fournir l'état."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.actions.act_window,help:bf_property_finance.action_charge_statement
+msgid ""
+"Art. 1069 al. 2 C.c.Q. Demandé par celui qui se propose d'acquérir, avec\n"
+"                préavis obligatoire au propriétaire. Le délai de 15 jours joue contre le\n"
+"                syndicat : passé ce jour, l'acquéreur n'est plus tenu des charges dues,\n"
+"                et la créance devra être réclamée au vendeur."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid ""
+"Art. 1069 al. 3 : comment l'état a été ajusté selon le dernier budget "
+"annuel."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__budget_id
+msgid ""
+"Art. 1069 al. 3 : « L'état fourni est ajusté selon le dernier budget annuel "
+"des copropriétaires. » Le module rattache le budget et conserve l'ajustement"
+" ; il ne le calcule pas, l'ajustement supposant un jugement sur l'exercice "
+"en cours."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"Art. 1069 al. 3 C.c.Q. : « L'état fourni est ajusté selon le dernier budget "
+"annuel des copropriétaires. » Rattachez le budget sur lequel l'ajustement "
+"est fait."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__adjustment_amount
+msgid "Art. 1069 al. 3. Positif ou négatif, saisi à la main."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__contingency_study_date
+msgid ""
+"Art. 1071 al. 2 C.c.Q. : étude établissant les sommes nécessaires pour "
+"couvrir le coût estimatif des réparations majeures et du remplacement des "
+"parties communes. Seul un membre d'un ordre professionnel désigné par "
+"règlement peut la réaliser."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__contingency_study_amount
+msgid ""
+"Art. 1071 al. 3 C.c.Q. : les sommes à verser au fonds sont fixées sur la "
+"base des recommandations de l'étude, en tenant compte de l'évolution de la "
+"copropriété et des montants déjà disponibles au fonds. Le conseil peut donc "
+"s'en écarter, motifs à l'appui ; le module retient ce chiffre comme repère."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Art. 1071 al. 3 C.c.Q. : sommes fixées sur la base des recommandations de "
+"l'étude du fonds de prévoyance, en tenant compte de l'évolution de la "
+"copropriété et des montants déjà disponibles au fonds."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Art. 1071 et 1072 C.c.Q. : sommes à verser au fonds de prévoyance, comprises"
+" dans la contribution aux charges communes et réparties comme elle."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__self_insurance_balance
+msgid ""
+"Art. 1071.1 C.c.Q. : fonds liquide et disponible à court terme, affecté aux "
+"franchises des assurances du syndicat et à la réparation du préjudice que ni"
+" le fonds de prévoyance ni une indemnité ne peuvent couvrir."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Art. 1071.1 et 1072 C.c.Q. : sommes à verser au fonds d'auto-assurance, "
+"comprises dans la contribution aux charges communes et réparties comme elle."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__amount_total
+msgid ""
+"Art. 1072 C.c.Q. : la contribution aux charges communes comprend les sommes "
+"nécessaires à l'exploitation de l'immeuble ET les sommes à verser au fonds "
+"de prévoyance et au fonds d'auto-assurance. Les deux fonds ne sont pas des "
+"suppléments : ils font partie de la contribution."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid ""
+"Art. 1072 C.c.Q. : le conseil d'administration fixe la contribution\n"
+"                        après consultation de l'assemblée des copropriétaires. L'assemblée\n"
+"                        n'adopte pas le budget, elle est consultée."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__consultation_assembly_id
+msgid ""
+"Art. 1072 C.c.Q. : le conseil d'administration fixe la contribution « après "
+"consultation de l'assemblée des copropriétaires ». L'assemblée n'adopte pas "
+"le budget, elle est consultée ; c'est le conseil qui le fixe."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__notice_date
+msgid ""
+"Art. 1072 al. 3 C.c.Q. : le syndicat avise « sans délai » chaque "
+"copropriétaire du montant de ses contributions et de la date où elles sont "
+"exigibles. Le texte ne fixe aucun nombre de jours : le module signale un "
+"avis en souffrance, il n'invente pas d'échéance."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid ""
+"Art. 1072.1 C.c.Q. : le conseil d'administration doit consulter\n"
+"                        l'assemblée des copropriétaires avant de décider de toute contribution\n"
+"                        spéciale. La consultation du budget annuel ne vaut pas pour celle-ci."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"Art. 1072.1 C.c.Q. : le conseil d'administration doit consulter l'assemblée "
+"des copropriétaires avant de décider d'une contribution spéciale. Indiquez "
+"l'assemblée consultée."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__call_type
+msgid ""
+"Art. 1072.1 C.c.Q. : une contribution spéciale exige que le conseil ait "
+"consulté l'assemblée avant de la décider."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__consultation_assembly_id
+msgid ""
+"Art. 1072.1 C.c.Q., pour une contribution spéciale. La consultation du "
+"budget annuel ne vaut pas pour elle."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__reconstruction_value
+msgid ""
+"Art. 1073 C.c.Q. : montant qui doit pourvoir à la reconstruction de "
+"l'immeuble, évalué au moins tous les cinq ans. Le règlement nomme l'ordre : "
+"seul un membre de l'Ordre professionnel des évaluateurs agréés du Québec "
+"peut faire cette évaluation (CCQ, r. 4.1, art. 3). Sert ici de base au "
+"plancher du promoteur."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_assembly__art1087_declaration_changes
+msgid ""
+"Art. 1087 : « tout projet de modification ». S'il n'y en a aucun, la pièce "
+"est sans objet et se coche quand même : c'est la vérification qui est "
+"consignée, pas le document."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_assembly_form_art1087
+msgid ""
+"Art. 1087 C.c.Q. : l'avis de convocation de l'assemblée\n"
+"                        <strong>annuelle</strong> doit être accompagné de six pièces. Le\n"
+"                        module en produit une entièrement, le budget prévisionnel, et la\n"
+"                        moitié d'une autre, les créances de l'état des dettes et créances.\n"
+"                        Le bilan, l'état des résultats et le reste relèvent de la\n"
+"                        comptabilité du syndicat et se joignent à la main."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_assembly__art1087_budget_id
+msgid ""
+"Art. 1087 C.c.Q. : le budget prévisionnel accompagne l'avis de convocation "
+"de l'assemblée annuelle. C'est la seule des six pièces que le module produit"
+" entièrement."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly_attendance__deprivation_suggested
+msgid "Art. 1094 : privation constatable"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_assembly_form_finance
+msgid "Art. 1094 C.c.Q. : le registre des impayés montre"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_assembly_attendance__charges_total_due
+msgid ""
+"Art. 1094 al. 2 C.c.Q. : le droit de vote revient « dès qu'il acquitte la "
+"totalité des charges communes qu'il doit ». Ce total-ci porte tout ce qui "
+"reste dû, échu depuis plus de trois mois ou non."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__promoter_handover_date
+msgid ""
+"Art. 1104 C.c.Q. : assemblée extraordinaire de nomination d'un nouveau "
+"conseil, convoquée dans les 90 jours de la perte par le promoteur de la "
+"majorité des voix. Cette date décide de tout le régime transitoire : selon "
+"qu'elle précède de plus de 30 jours l'entrée en vigueur du règlement "
+"(2025-08-14), c'est le syndicat qui a trois ans pour obtenir carnet et étude"
+" (Loi 16, art. 151), ou le promoteur qui doit les fournir (art. 156 de cette"
+" loi et art. 1106.1 C.c.Q.). Elle commande aussi le plancher du fonds de "
+"prévoyance. Sans elle, le module ne devine pas."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid ""
+"Art. 1569 C.c.Q. : le copropriétaire a indiqué quelle dette il\n"
+"                        entend acquitter. Saisissez ses imputations à la main.\n"
+"                        L'ordre supplétif de l'art. 1572 ne s'applique qu'à défaut\n"
+"                        d'indication."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid ""
+"Art. 1569 C.c.Q. : le copropriétaire a indiqué quelle dette il acquitte. "
+"Saisissez ses imputations plutôt que d'appliquer l'ordre supplétif de l'art."
+" 1572."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__imputation_mode
+msgid ""
+"Art. 1569 C.c.Q. : le débiteur a le droit d'indiquer quelle dette il entend "
+"acquitter. L'ordre de l'art. 1572 ne s'applique qu'à défaut d'indication."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid ""
+"Art. 1569 al. 2 C.c.Q. : cette imputation solde une contribution non encore "
+"échue alors qu'une contribution échue reste impayée. Il y faut le "
+"consentement du syndicat, à cocher sur l'encaissement."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__creditor_consent
+msgid ""
+"Art. 1569 al. 2 C.c.Q. : le débiteur ne peut pas, sans le consentement du "
+"créancier, imputer son paiement sur une dette non encore échue de préférence"
+" à une dette échue."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid ""
+"Art. 1570 C.c.Q. : %(i).2f d'intérêts restent dus sur la contribution de "
+"%(unit)s. Un paiement s'impute d'abord sur les intérêts, sauf consentement "
+"du syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid ""
+"Art. 1570 C.c.Q. : un paiement partiel sur capital et\n"
+"                                intérêts s'impute d'abord sur les intérêts."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment_allocation__amount_interest
+msgid ""
+"Art. 1570 al. 2 C.c.Q. : un paiement partiel sur capital et intérêts "
+"s'impute d'abord sur les intérêts."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid ""
+"Art. 1571 C.c.Q. : une imputation acceptée par le copropriétaire ne se "
+"refait pas. Annulez l'encaissement et saisissez-en un autre, pour que le "
+"registre garde trace des deux."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid ""
+"Art. 1572 C.c.Q. : imputé d'abord sur les dettes échues, puis de la plus "
+"ancienne à la plus récente, et proportionnellement entre celles échues le "
+"même jour. Art. 1570 : à l'intérieur d'une contribution, les intérêts avant "
+"le capital."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__late_interest_basis
+msgid ""
+"Art. 1594 C.c.Q. : d'où vient la demeure. Premier cas, la déclaration de "
+"copropriété stipule que le seul écoulement du temps y constitue le "
+"copropriétaire, et les intérêts courent de l'échéance. Deuxième cas, il y "
+"faut une demande extrajudiciaire écrite (art. 1595), portée contribution par"
+" contribution. Sans demeure, l'art. 1617 ne fait courir aucun intérêt."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"Art. 1594 al. 1 et 1617 C.c.Q. : la déclaration de copropriété constitue en "
+"demeure par le seul écoulement du temps. Les intérêts courent de l'échéance,"
+" à %(r)s %% l'an."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"Art. 1595 C.c.Q. : aucune mise en demeure écrite n'est consignée. Sans "
+"demeure, l'art. 1617 ne fait courir aucun intérêt."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call_line__demeure_date
+msgid ""
+"Art. 1595 C.c.Q. : date de la demande extrajudiciaire écrite. Sert quand la "
+"déclaration de copropriété ne stipule pas que le seul écoulement du temps "
+"constitue le copropriétaire en demeure."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"Art. 1595 et 1617 C.c.Q. : intérêts à %(r)s %% l'an depuis la mise en "
+"demeure écrite."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call_line__interest_accrued
+msgid ""
+"Art. 1617 C.c.Q. : intérêt au taux convenu, dû à compter de la demeure. "
+"Calculé sur le capital réellement dû période par période, les encaissements "
+"le faisant décroître au fil du temps."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__late_interest_rate
+msgid ""
+"Art. 1617 C.c.Q. : « au taux convenu ou, à défaut de toute convention, au "
+"taux légal ». Le taux convenu est celui de la déclaration de copropriété. Le"
+" module n'en propose aucun : le taux légal ne vient pas du Code civil, et un"
+" chiffre sans sa source n'a pas sa place ici."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid ""
+"Article 1069 alinéa 2 du Code civil du Québec, fourni au proposant\n"
+"                            acquéreur de la fraction ci-dessous."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget_line__derogation_reference
+msgid ""
+"Article de la déclaration de copropriété qui prévoit la répartition "
+"différente."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__consultation_assembly_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__consultation_assembly_id
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget__state__consulted
+msgid "Assemblée consultée"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Assemblée consultée le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__promoter_handover_date
+msgid "Assemblée de l'art. 1104 tenue le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_assembly
+msgid "Assemblée des copropriétaires"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_general_assiette
+msgid "Assiette du 5 %"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_syndicat_form_finance
+msgid ""
+"Aucun intérêt n'est porté sur les arrérages. L'art. 1617 C.c.Q.\n"
+"                        suppose un taux convenu, ou le taux légal, et une demeure au\n"
+"                        sens des art. 1594 et 1595. Le module n'invente ni l'un ni\n"
+"                        l'autre."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__late_interest_basis__none
+msgid "Aucun intérêt porté"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Aucun plancher n'est porté : le syndicat n'a pas retenu le sien. Fait détenu"
+" : l'assemblée de l'art. 1104 C.c.Q. s'est tenue le %(handover)s, soit moins"
+" de 30 jours avant l'entrée en vigueur du règlement le %(inforce)s, ou après"
+" elle ; le critère de la Loi 16, art. 151, n'est donc pas rempli."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Aucun plancher n'est porté : le syndicat n'a pas retenu le sien. Fait détenu"
+" : l'assemblée de l'art. 1104 C.c.Q. s'est tenue le %(handover)s, soit plus "
+"de 30 jours avant l'entrée en vigueur du règlement le %(inforce)s, critère "
+"de la Loi 16, art. 151."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Aucun plancher n'est porté : le syndicat n'a pas retenu le sien. La date de "
+"l'assemblée de l'art. 1104 C.c.Q. n'est pas renseignée non plus, alors que "
+"la Loi 16, art. 151, la prend pour critère."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"Aucun propriétaire n'est inscrit au registre pour la fraction %s : le "
+"préavis de l'art. 1069 al. 2 n'a personne à aviser. Inscrivez le "
+"propriétaire d'abord."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Aucune assemblée annuelle n'a été tenue depuis la première étude du "
+"%(first)s. Le délai de 30 jours de l'art. 153 al. 1 court de cette "
+"assemblée."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid ""
+"Aucune charge commune due relativement à cette\n"
+"                                            fraction à la date du présent état."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid ""
+"Aucune contribution transmise et impayée ne correspond à cet encaissement. "
+"Vérifiez la fraction visée, ou le payeur si elle est laissée vide."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.actions.act_window,help:bf_property_finance.action_unit_overdue
+msgid "Aucune fraction en défaut"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Aucune franchise n'est renseignée : l'art. 2 du règlement n'a pas d'assiette"
+" pour calculer la contribution."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Aucune première étude n'est portée : l'art. 153 al. 1 de la Loi 16 n'a pas "
+"encore de point de départ."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Aucune étude du fonds de prévoyance et aucune valeur de reconstruction : "
+"rien ne permet de dire si la somme budgétée répond à l'art. 1071."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Auto-assurance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__method__other
+msgid "Autre"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_search
+msgid "Avec des impayés"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Avis de contribution transmis aux copropriétaires (art. 1072 al. 3 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__notice_date
+msgid "Avis transmis le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__notice_pending
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_search
+msgid "Avis à transmettre"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid "Aviser le propriétaire"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Aviser les copropriétaires"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Avisé le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_basis
+msgid "Base du fonds de prévoyance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_basis__unknown
+msgid "Base inconnue"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__art1087_balance_sheet
+msgid "Bilan joint"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget__state__draft
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_fund_call__state__draft
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__budget_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__budget_id
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_search
+msgid "Budget"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_budget
+msgid "Budget annuel du syndicat"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_general_assiette__operating
+msgid "Budget d'exploitation seul, hors les deux fonds"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__art1087_budget_id
+msgid "Budget prévisionnel joint"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Budget retenu"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.act_window,name:bf_property_finance.action_budget
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__budget_ids
+#: model:ir.ui.menu,name:bf_property_finance.menu_budget
+msgid "Budgets"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Budgété"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__highest_deductible
+msgid ""
+"CCQ, r. 4.1, art. 2 : la contribution se calcule sur la plus haute franchise"
+" prévue par les assurances du syndicat. ⚠️ Les franchises de tremblement de "
+"terre et d'inondation en sont EXCLUES par l'alinéa 2, si ces protections "
+"sont au contrat : portez ici la plus haute des autres. Le module ne lit pas "
+"les polices et ne peut pas faire l'exclusion à votre place."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__self_insurance_cap_applied
+msgid ""
+"CCQ, r. 4.1, art. 2 al. 3 : lorsque la contribution porterait la "
+"capitalisation au-delà de 100 000 $, elle « PEUT » être réduite pour que la "
+"capitalisation atteigne au moins 100 000 $. C'est une faculté du syndicat, "
+"pas une règle : le module ne l'applique que si cette case est cochée."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"CCQ, r. 4.1, art. 2, par. 1° : la capitalisation n'atteint pas la moitié de "
+"la plus haute franchise. La contribution est égale à cette moitié."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"CCQ, r. 4.1, art. 2, par. 2° : la capitalisation dépasse la moitié de la "
+"plus haute franchise sans l'atteindre. La contribution comble la différence."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"CCQ, r. 4.1, art. 2, par. 3° : la capitalisation atteint ou dépasse la plus "
+"haute franchise. Aucune contribution n'est requise."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Calculer la répartition"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "Calculer les charges dues"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid "Calculez la répartition avant de transmettre."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__call_count
+msgid "Call Count"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__amount_capital
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_unit_overdue_list
+msgid "Capital"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_assembly_attendance__charges_overdue_amount
+msgid ""
+"Capital des contributions échues depuis plus de trois mois et non "
+"acquittées, pour toutes les fractions de ce copropriétaire dans ce syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__amount_capital
+msgid "Capital dû"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__overdue_amount
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_unit__overdue_amount
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Capital en souffrance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__self_insurance_balance
+msgid "Capitalisation du fonds d'auto-assurance"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid "Ce budget n'a aucun poste."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_assembly_form_art1087
+msgid "Ce que le module fournit"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_assembly_form_art1087
+msgid "Ce qui se joint à la main"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid ""
+"Ces créances forment la moitié de l'état des dettes et créances\n"
+"                            que l'article 1087 du Code civil du Québec veut voir accompagner\n"
+"                            l'avis de convocation de l'assemblée annuelle. Ce que le\n"
+"                            syndicat doit à ses fournisseurs n'y figure pas, non plus que le\n"
+"                            bilan et l'état des résultats, qui relèvent de la comptabilité\n"
+"                            du syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid "Cet encaissement est déjà entièrement imputé."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.constraint,message:bf_property_finance.constraint_bf_property_payment_allocation_unique_line_per_payment
+msgid "Cette contribution figure déjà aux imputations de cet encaissement."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.constraint,message:bf_property_finance.constraint_bf_property_fund_call_line_unique_unit_per_call
+msgid "Cette fraction figure déjà à cet appel."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid "Cette partie commune appartient à un autre syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.ui.menu,name:bf_property_finance.menu_finance
+msgid "Charges"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__amount_common
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__amount_common
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Charges communes"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Charges communes dues relativement à la fraction"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget_line__charge_type__common
+msgid "Charges communes générales"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid "Charges dues"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly_attendance__charges_overdue_amount
+msgid "Charges échues impayées"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__method__cheque
+msgid "Chèque"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__derogation_reference
+msgid "Clause de la déclaration"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Clôturer"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget__state__closed
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_fund_call__state__closed
+msgid "Clôturé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__method__cash
+msgid "Comptant"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Consigner la consultation"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Consultation et fixation"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__consultation_date
+msgid "Consultée le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__amount
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__line_id
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_list
+msgid "Contribution"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Contribution (art. 1072)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid ""
+"Contribution aux charges communes, article 1072 du Code civil\n"
+"                            du Québec. Le conseil d'administration fixe la contribution\n"
+"                            après consultation de l'assemblée des copropriétaires."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_fund_call_line
+msgid "Contribution d'une fraction"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_general_assiette__total
+msgid "Contribution entière, fonds compris (art. 1072 C.c.Q.)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Contribution fixée le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__self_insurance_contribution
+msgid "Contribution minimale annuelle"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_fund_call__call_type__special
+msgid "Contribution spéciale"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__amount_total
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_list
+msgid "Contribution totale"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__amount_uncalled
+msgid ""
+"Contribution totale moins ce qui a été appelé. ⚠️ Ce reste n'est presque "
+"jamais nul par accident : quatre appels de 25 % d'un budget qui ne se divise"
+" pas par quatre laissent des cents derrière eux, chaque appel étant arrondi "
+"pour lui-même. Le module montre l'écart plutôt que de le répartir en douce :"
+" c'est au dernier appel de l'exercice de le reprendre."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.act_window,name:bf_property_finance.action_fund_call_line
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_unit__call_line_ids
+#: model:ir.ui.menu,name:bf_property_finance.menu_fund_call_line
+msgid "Contributions"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_search
+msgid "Contributions spéciales"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_unit_overdue_list
+msgid "Copropriétaires"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget__state__notified
+msgid "Copropriétaires avisés"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__owner_ids
+msgid "Copropriétaires du moment"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.server,name:bf_property_finance.cron_charge_statement_refresh_ir_actions_server
+msgid "Copropriété : délai des états des charges (art. 1069)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.server,name:bf_property_finance.cron_call_line_refresh_overdue_ir_actions_server
+msgid "Copropriété : rafraîchir l'état des contributions en défaut"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__create_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__create_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__create_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__create_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__create_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__create_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__create_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__create_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__create_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__create_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__create_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__create_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__create_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__create_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_search
+msgid "Créance perdue"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__art1087_receivables
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Créances du syndicat"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_assembly.py:0
+msgid ""
+"Créances produites par le module (%(amount)s d'impayés) ; les dettes du "
+"syndicat sont à joindre à la main"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid "Demande"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "Demande annulée."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Demande reçue le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_charge_statement__state__requested
+msgid "Demandé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__request_date
+msgid "Demandée le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__budget_id
+msgid "Dernier budget annuel"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly_attendance__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__currency_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_unit__currency_id
+msgid "Devise"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__display_name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__display_name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__display_name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__display_name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__display_name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__display_name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__display_name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "Donner le préavis au propriétaire"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__date_start
+msgid "Début de l'exercice"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__amount_called
+msgid "Déjà appelé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid "Délai de l'art. 1069 al. 2"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_charge_statement__state__late
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_search
+msgid "Délai dépassé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__line_ids
+msgid "Détail"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__binding_rule
+msgid "Effet du délai"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Effet du délai de l'article 1069 alinéa 2"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_search
+msgid "En cours"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__is_overdue
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_search
+msgid "En défaut"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_unit__overdue_since
+msgid "En souffrance depuis"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+#: model:ir.model,name:bf_property_finance.model_bf_property_payment
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__payment_id
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "Encaissement"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid "Encaissement annulé : ses imputations sont retirées."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.act_window,name:bf_property_finance.action_payment
+#: model:ir.ui.menu,name:bf_property_finance.menu_payment
+msgid "Encaissements"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__amount_collected
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_list
+msgid "Encaissé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.actions.act_window,help:bf_property_finance.action_charge_statement
+msgid "Enregistrer une demande"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Entretien usage restreint"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__name
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Exercice"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Exercice 2027"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__due_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__due_date
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Exigible le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Explication"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__adjustment_note
+msgid "Explication de l'ajustement"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__unit_id
+msgid ""
+"Facultatif. Renseignée, elle borne l'imputation à cette fraction, ce qui est"
+" le cas d'un paiement fait au titre d'une vente. Laissée vide, l'imputation "
+"cherche parmi les fractions que le payeur détient aujourd'hui."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__date_end
+msgid "Fin de l'exercice"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_fixing_state
+msgid "Fixation des sommes"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Fixer par le conseil"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__fixed_date
+msgid "Fixé le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget__state__fixed
+msgid "Fixé par le conseil"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_fixing_state__met
+msgid "Fixées"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Fonds"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__amount_self_insurance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__amount_self_insurance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget_line__charge_type__self_insurance
+msgid "Fonds d'auto-assurance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_syndicat_form_finance
+msgid "Fonds d'auto-assurance (art. 1071.1 C.c.Q.)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Fonds d'auto-assurance (art. 1071.1)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__amount_contingency
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__contingency_warning
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__amount_contingency
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget_line__charge_type__contingency
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Fonds de prévoyance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Fonds de prévoyance (art. 1071)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_syndicat_form_finance
+msgid "Fonds de prévoyance et assurance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_catchup_deadline
+msgid "Fonds suffisant au plus tard le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__activity_type_icon
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__activity_type_icon
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__activity_type_icon
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_charge_statement__state__issued
+msgid "Fourni dans le délai"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_charge_statement__state__issued_late
+msgid "Fourni hors délai"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__issued_date
+msgid "Fourni le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid "Fournir l'état"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "Fournir l'état des charges dues"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_unit
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__unit_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__unit_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__unit_id
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_unit_overdue_list
+msgid "Fraction"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__unit_id
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Fraction visée"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.act_window,name:bf_property_finance.action_unit_overdue
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__overdue_line_count
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__overdue_unit_count
+#: model:ir.ui.menu,name:bf_property_finance.menu_unit_overdue
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Fractions en défaut"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__allocation_unit_count
+msgid "Fractions visées"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__has_message
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__has_message
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__has_message
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__activity_exception_icon
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__activity_exception_icon
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__activity_exception_icon
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__message_needaction
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__message_needaction
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__message_needaction
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__message_has_error
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__message_has_sms_error
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__message_has_error
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__message_has_sms_error
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__message_has_error
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__message_has_sms_error
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__message_has_error
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "Il reste"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly_attendance__charges_overdue_since
+msgid "Impayé depuis"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_syndicat_form_finance
+msgid "Impayés"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid "Imprimer"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__imputation_mode
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "Imputation"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_payment_allocation
+msgid "Imputation d'un encaissement"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__allocation_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__allocation_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "Imputations"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "Imputer (art. 1572)"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid "Imputez l'encaissement avant de le porter au registre."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__amount_allocated
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__amount_total
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__state__applied
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_list
+msgid "Imputé"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Indiquez l'assemblée consultée. Art. 1072 C.c.Q. : le conseil fixe la "
+"contribution après consultation de l'assemblée des copropriétaires."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__imputation_mode__debtor
+msgid "Indiquée par le copropriétaire (art. 1569)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_shortfall
+msgid "Insuffisance constatée par l'étude"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__amount_interest
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_list
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_unit_overdue_list
+msgid "Intérêts"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_syndicat_form_finance
+msgid "Intérêts (art. 1617 C.c.Q.)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__interest_start_date
+msgid "Intérêts courent depuis"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__interest_accrued
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Intérêts courus"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__amount_interest
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__amount_interest
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__interest_balance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Intérêts dus"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__overdue_interest
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_unit__overdue_interest
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Intérêts en souffrance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__late_interest_basis
+msgid "Intérêts sur arrérages"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__days_overdue
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_unit__overdue_days
+msgid "Jours de retard"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__acquirer_bound
+msgid "L'acquéreur est tenu des charges"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"L'appel « %(name)s » n'a jamais été transmis. Transmettez-le, ou supprimez-"
+"le : un appel en brouillon ne se clôt pas."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid "L'assemblée consultée appartient à un autre syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"L'assemblée n'a pas été consultée. Art. 1072 C.c.Q. : le conseil "
+"d'administration fixe la contribution « après consultation de l'assemblée "
+"des copropriétaires ». L'ordre des deux gestes est dans le texte."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid ""
+"L'encaissement vise la fraction %(unit)s : il ne s'impute pas sur la "
+"contribution d'une autre."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"L'exercice « %(clash)s » couvre déjà une partie de cette période, du "
+"%(start)s au %(end)s."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"L'exercice « %(name)s » n'a pas été fixé par le conseil : il est %(state)s. "
+"Art. 1072 C.c.Q. : la contribution se fixe après consultation de "
+"l'assemblée. Un exercice qui n'a jamais été fixé ne se clôt pas."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"L'exercice « %(name)s » porte %(count)d appel(s) déjà transmis : %(calls)s. "
+"Art. 1072 al. 3 C.c.Q. : les copropriétaires ont été avisés du montant de "
+"leurs contributions. Reprenez l'appel avant de rouvrir l'exercice."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.actions.act_window,help:bf_property_finance.action_payment
+msgid ""
+"L'imputation d'un paiement suit les art. 1569 à 1572 C.c.Q. : le\n"
+"                copropriétaire indique la dette qu'il acquitte, et à défaut, le\n"
+"                paiement va d'abord aux contributions échues, de la plus ancienne à\n"
+"                la plus récente, proportionnellement entre celles échues le même jour."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid ""
+"L'écart se lit du budget vers le repère : négatif, le budget\n"
+"                            verse moins que le repère ; positif, il verse davantage."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_assembly.py:0
+msgid "L'état des dettes et créances"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_assembly.py:0
+msgid "L'état des résultats de l'exercice écoulé"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "L'état est déjà fourni : le préavis devait le précéder."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.actions.act_window,help:bf_property_finance.action_unit_overdue
+msgid ""
+"L'état se compte par fraction, et non par personne : art. 1069 C.c.Q.,\n"
+"                l'acquéreur est tenu des charges dues relativement à la fraction au\n"
+"                moment de l'acquisition. Trois mois de retard ouvrent la privation du\n"
+"                droit de vote de l'art. 1094 ; 30 jours, l'hypothèque légale de\n"
+"                l'art. 2729, hors de portée du module."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"L'étude ne révèle aucune insuffisance : l'art. 154 de la Loi 16 ne commande "
+"aucun rattrapage."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid "La contribution imputée appartient à un autre syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "La contribution, poste par poste"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__late_interest_basis__declaration_term
+msgid "La déclaration constitue en demeure par le seul écoulement du temps"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__declaration_derogation
+msgid "La déclaration prévoit une répartition différente"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"La dérogation de l'art. 1064 al. 2 C.c.Q. ne vise que les réparations "
+"majeures et le remplacement d'une partie commune à usage restreint. Elle n'a"
+" pas d'objet sur « %s »."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.constraint,message:bf_property_finance.constraint_bf_property_budget_dates_ordered
+msgid "La fin de l'exercice doit suivre son début."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.constraint,message:bf_property_finance.constraint_bf_property_fund_call_period_ordered
+msgid "La fin de la période doit suivre son début."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "La fraction appartient à un autre syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_assembly__art1087_receivables
+msgid ""
+"La moitié de l'état des dettes et créances : ce que les copropriétaires "
+"doivent au syndicat, soit l'état des impayés. ⚠️ Ce que le syndicat DOIT "
+"n'est pas tenu par le module, qui ne fait pas de comptabilité."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.constraint,message:bf_property_finance.constraint_bf_property_fund_call_share_positive
+msgid "La part du budget appelée doit être supérieure à zéro."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"La période appelée déborde l'exercice « %(budget)s », qui court du %(start)s"
+" au %(end)s."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__write_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__write_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__write_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__write_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__write_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__write_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__write_uid
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__write_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__write_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__write_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__write_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__write_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__write_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__write_date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_syndicat_form_finance
+msgid ""
+"Le 5 % de la Loi 16, art. 153 al. 2, porte sur « les contributions\n"
+"                        des copropriétaires aux charges communes ». L'art. 1072 C.c.Q. y\n"
+"                        range les versements au fonds de prévoyance et au fonds\n"
+"                        d'auto-assurance, ce qui conduit à prendre le total ; l'usage\n"
+"                        d'avant la Loi 16 calculait souvent sur le seul budget\n"
+"                        d'exploitation. Sur 60 000 $ d'exploitation plus 3 000 $ aux\n"
+"                        fonds, l'écart entre les deux lectures est de 150 $ par exercice.\n"
+"                        Le module n'en retient aucune d'office et ne chiffre rien tant\n"
+"                        que vous n'avez pas retenu la vôtre : la question est pour le\n"
+"                        notaire ou l'avocat à votre dossier."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_assembly.py:0
+msgid "Le bilan"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "Le budget annuel appartient à un autre syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid "Le budget doit être fixé par le conseil avant d'être avisé."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid ""
+"Le budget est fixé mais aucun avis n'a été transmis. Art. 1072 al. 3 :\n"
+"                        le syndicat avise sans délai chaque copropriétaire du montant de ses\n"
+"                        contributions et de la date où elles sont exigibles."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid "Le budget n'a aucun poste à répartir."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_assembly.py:0
+msgid "Le budget prévisionnel"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Le budget verse %(budgeted)s au fonds de prévoyance pour un repère de "
+"%(reference)s. %(rule)s"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Le plancher retenu est celui de l'art. 1071 al. 4 C.c.Q., soit 0,5 % de la "
+"valeur de reconstruction de l'immeuble, et cette valeur n'est pas "
+"renseignée. L'art. 1073 la fait évaluer au moins tous les cinq ans, et le "
+"règlement nomme l'ordre : un membre de l'Ordre professionnel des évaluateurs"
+" agréés du Québec (CCQ, r. 4.1, art. 3)."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Le plancher retenu est celui de la Loi 16 (2019, c. 28), art. 153 al. 2, "
+"soit au moins 5 % des contributions des copropriétaires aux charges "
+"communes. L'assiette de ce pourcentage n'a pas été retenue à la fiche du "
+"syndicat : rien n'est chiffré tant qu'elle ne l'est pas."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__owner_notice_date
+msgid ""
+"Le préavis conditionne l'autorisation de fournir l'état. Sans lui, le module"
+" refuse la remise."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid ""
+"Le présent état porte sur les charges communes dues relativement à\n"
+"                            la fraction visée, à la date qui y est portée. Il ne vaut ni\n"
+"                            attestation du syndicat sur l'état de la copropriété au sens de\n"
+"                            l'article 1068.1, ni communication des documents permettant un\n"
+"                            consentement éclairé au sens de l'article 1068.2 : ces deux\n"
+"                            documents se demandent séparément et par d'autres personnes.\n"
+"                            L'article 1069 ne prescrit ni la forme ni le contenu de l'état ;\n"
+"                            la présentation ci-dessus est celle retenue par le syndicat."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_assembly_attendance__deprivation_suggested
+msgid ""
+"Le registre montre une contribution échue depuis plus de trois mois et non "
+"acquittée. Le module le signale ; il ne coche rien."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__creditor_consent
+msgid "Le syndicat consent à l'imputation indiquée"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"Le syndicat n'a pas retenu son plancher du fonds de prévoyance : rien ne "
+"permet de dire si la somme budgétée y répond."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid ""
+"Le syndicat n'est autorisé à fournir le présent état que\n"
+"                                « sauf à en aviser au préalable le propriétaire de la fraction\n"
+"                                ou ses ayants cause ». Le préavis est la condition de cette\n"
+"                                autorisation, et non une courtoisie."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"Le syndicat ne porte pas d'intérêt sur les arrérages. L'art. 1617 C.c.Q. "
+"suppose un taux convenu ou le taux légal, et une demeure : le module "
+"n'invente ni l'un ni l'autre."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Les deux fonds"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Les impayés au jour de l'état"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid ""
+"Les imputations totalisent %(a).2f, soit plus que l'encaissement de %(p).2f."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_charge_statement_line
+msgid "Ligne d'un état des charges"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Loi 16, art. 153 al. 1 : le conseil doit fixer les sommes à verser au fonds "
+"de prévoyance au plus tard le %(deadline)s, soit 30 jours après l'assemblée "
+"annuelle du %(held)s, la première tenue depuis la première étude."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Loi 16, art. 154 : la période de dix ans est écoulée depuis le %(deadline)s."
+" Le fonds devait être suffisant, et il manque encore %(short)s."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__contingency_first_study_date
+msgid ""
+"Loi 16, art. 154 : la période de rattrapage court de la date d'obtention de "
+"la PREMIÈRE étude. Une étude renouvelée ne remet pas ce compteur à zéro. "
+"Renseignée par le volet Loi 16 quand une étude y est portée comme obtenue."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Loi 16, art. 154 : le fonds doit être suffisant au plus tard le "
+"%(deadline)s, soit dix ans après la première étude. Il y manque %(short)s, "
+"et il reste %(years)d année(s) : le versement annuel de rattrapage est d'au "
+"moins %(annual)s."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__contingency_shortfall
+msgid ""
+"Loi 16, art. 154 : montant dont le fonds est insuffisant pour couvrir le "
+"coût estimatif des réparations majeures et de remplacement, tel que l'étude "
+"le révèle. ⚠️ Le module ne l'apprécie pas : la suffisance du fonds est "
+"l'affaire de la personne qui signe l'étude, et ce chiffre vient d'elle."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_has_error
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_has_error
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_has_error
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__demeure_date
+msgid "Mise en demeure le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__late_interest_basis__demeure
+msgid "Mise en demeure écrite, au cas par cas"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__method
+msgid "Mode"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_search
+msgid "Mois"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__amount
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__amount
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Montant"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Montants"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__charge_type
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__call_type
+msgid "Nature"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_summary
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_summary
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_summary
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_type_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_type_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_type_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_floor_basis__undeclared
+msgid "Non retenu : aucun plancher porté"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_general_assiette__undeclared
+msgid "Non retenue : aucun repère chiffré"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__reconstruction_value_state__missing
+msgid "Non évaluée"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__method__notary
+msgid "Notaire (acte de vente)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__note
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__note
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__art1087_contracts_note
+msgid "Note sur les contrats et travaux jointe"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid "Nouveau"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Numéro d'entreprise du Québec"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__reference
+msgid ""
+"Numéro de chèque, référence du virement, minute du notaire. Sert aussi à "
+"relier les encaissements d'un même versement qui solde plusieurs fractions."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__sequence
+msgid "Ordre"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__budget_share
+msgid ""
+"Part de l'exercice appelée ici. Quatre appels trimestriels portent 25 % "
+"chacun. Proposée d'après la durée de la période, et modifiable : un syndicat"
+" peut appeler autrement qu'au prorata des jours."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__budget_share
+msgid "Part du budget (%)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__common_area_id
+msgid "Partie commune à usage restreint"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__amount_restricted
+msgid "Parties communes à usage restreint"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__payer_partner_id
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_search
+msgid "Payeur"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__art1087_state
+msgid "Pièces de l'art. 1087"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_assembly_form_art1087
+msgid "Pièces de l'avis (art. 1087)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__art1087_missing
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_assembly__art1087_state__incomplete
+msgid "Pièces manquantes"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_assembly_form_art1087
+msgid "Pièces manquantes :"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_assembly__art1087_state__complete
+msgid "Pièces réunies"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_basis__promoter
+msgid "Plancher du promoteur (0,5 % de la reconstruction)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_basis__undeclared
+msgid "Plancher non retenu"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_floor_basis
+msgid "Plancher retenu par le syndicat"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Plancher retenu par le syndicat : Loi 16 (2019, c. 28), art. 153 al. 2, « "
+"les sommes à verser au fonds de prévoyance sont d'au moins 5 % des "
+"contributions des copropriétaires aux charges communes », tant que ces "
+"sommes n'ont pas été fixées après la première étude. Le repère se chiffre "
+"exercice par exercice, sur le budget."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Plancher retenu par le syndicat : art. 1071 al. 4 C.c.Q., « jusqu'à ce que "
+"le promoteur obtienne l'étude du fonds de prévoyance, les sommes à verser à "
+"ce fonds doivent correspondre à 0,5 % de la valeur de reconstruction de "
+"l'immeuble »."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_basis__general
+msgid "Plancher transitoire du syndicat (5 % des charges)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__highest_deductible
+msgid "Plus haute franchise (hors séisme et inondation)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "Porter au registre"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Portée"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_search
+msgid "Portés au registre"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__name
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Poste"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_budget_line
+msgid "Poste budgétaire"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Postes budgétaires"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call_line__owner_ids
+msgid ""
+"Pour information seulement. La charge est rattachée à la fraction : art. "
+"1069 C.c.Q., l'acquéreur est tenu des charges dues relativement à la "
+"fraction au moment de l'acquisition."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Pour le syndicat"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_fixing_assembly_id
+msgid "Première assemblée annuelle suivant l'étude"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_first_study_date
+msgid "Première étude obtenue le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__deprivation_candidate_count
+msgid "Privations constatables (art. 1094)"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_assembly.py:0
+msgid "Produit par le module"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__art1087_declaration_changes
+msgid "Projets de modification à la déclaration joints"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__requester_partner_id
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Proposant acquéreur"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__owner_notice_date
+msgid "Propriétaire avisé le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Propriétaire de la fraction"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__owner_partner_ids
+msgid "Propriétaires à aviser"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "Préavis au propriétaire"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"Préavis de l'art. 1069 al. 2 envoyé le %(date)s à : "
+"%(reached)s.%(unreached)s"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__method__preauthorized
+msgid "Prélèvement préautorisé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model,name:bf_property_finance.model_bf_property_assembly_attendance
+msgid "Présence à une assemblée"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Prévu"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__period_start
+msgid "Période du"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Période et échéance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__payer_partner_id
+msgid ""
+"Qui a remis la somme. Ce n'est pas forcément un copropriétaire courant : au "
+"closing d'une vente, c'est souvent le notaire, et l'art. 1069 C.c.Q. rend "
+"l'acquéreur tenu des charges dues avant son acquisition."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__quote_part
+msgid "Quote-part"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__rating_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__rating_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__rating_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_syndicat_form_finance
+msgid "Rattrapage du fonds (Loi 16, art. 153 et 154)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid "Relever les charges dues"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"Relevé des charges dues : %(count)d contribution(s) impayée(s) pour la "
+"fraction %(unit)s."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Remettre en brouillon"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Repère"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_reference
+msgid "Repère annuel du fonds de prévoyance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__contingency_reference
+msgid "Repère du fonds de prévoyance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__activity_user_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__activity_user_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__activity_user_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__amount_uncalled
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Reste à appeler"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__amount_unallocated
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_list
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_search
+msgid "Reste à imputer"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "Retirer les imputations"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__amount_received
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_list
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_list
+msgid "Reçu"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__amount_received
+msgid "Reçu en capital"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__amount_interest_paid
+msgid "Reçu en intérêts"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__date
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__date
+msgid "Reçu le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_rule
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__self_insurance_rule
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__imputation_rule
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "Règle appliquée"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_fixing_rule
+msgid "Règle de la fixation"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__interest_rule
+msgid "Règle des intérêts"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_catchup_rule
+msgid "Règle du rattrapage"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__self_insurance_cap_applied
+msgid "Réduire la contribution au-delà de 100 000 $"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__reference
+msgid "Référence"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Réparations majeures"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__allocation_rule
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Répartition"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"Répartition calculée : %(count)d fraction(s) pour %(share)s %% de "
+"l'exercice."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.actions.act_window,help:bf_property_finance.action_payment
+msgid "Saisir un encaissement"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_assembly__art1087_state__na
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_fixing_state__na
+msgid "Sans objet"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__company_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__company_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__company_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__company_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__company_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__company_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__company_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_list
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_list
+msgid "Solde"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__amount_balance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__balance
+msgid "Solde en capital"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_search
+msgid "Solde ouvert"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_study_amount
+msgid "Somme annuelle recommandée"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__contingency_gap
+msgid ""
+"Somme budgétée au fonds de prévoyance, moins le repère. Négatif quand le "
+"budget verse moins que ce que l'étude recommande, ou moins que le plancher "
+"applicable."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__amount_called
+msgid ""
+"Somme des appels transmis ou clôturés. Les brouillons ne comptent pas : rien"
+" n'a encore été demandé aux copropriétaires."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call_line__amount_received
+msgid ""
+"Somme des imputations en capital des encaissements. Ne se saisit pas : "
+"l'ordre d'imputation vient des art. 1569 à 1572 C.c.Q., et un nombre tapé à "
+"côté ne dirait pas sur quelle dette il s'est posé."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__contingency_reference
+msgid ""
+"Somme que le fonds de prévoyance devrait recevoir pour cet exercice. Elle "
+"vient de l'étude quand il y en a une (art. 1071 al. 3 C.c.Q.), sinon du "
+"plancher que le syndicat a retenu sur sa fiche : 0,5 % de la valeur de "
+"reconstruction (art. 1071 al. 4 C.c.Q.) ou 5 % des contributions aux charges"
+" communes (Loi 16, art. 153 al. 2). Ce dernier est une proportion de CET "
+"exercice : il ne peut se chiffrer que sur le budget, et sur l'assiette que "
+"le syndicat a retenue. Tant que rien n'est retenu, rien n'est chiffré."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__amount_collected
+msgid ""
+"Somme réellement reçue sur les appels de cet exercice, imputée en capital. "
+"Les intérêts n'y sont pas : ils ne financent aucun poste du budget."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_organisation.py:0
+msgid ""
+"Sommes fixées le %(date)s, dans les 30 jours de l'assemblée annuelle du "
+"%(held)s (Loi 16, art. 153 al. 1)."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_fixing_deadline
+msgid "Sommes à fixer au plus tard le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__activity_state
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__activity_state
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__activity_state
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Suivi des appels"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__amount_capital
+msgid "Sur le capital"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__amount_interest
+msgid "Sur les intérêts"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__contingency_general_assiette
+msgid ""
+"Sur quoi porte le 5 % de la Loi 16, art. 153 al. 2, dont le texte vise « les"
+" contributions des copropriétaires aux charges communes ». L'art. 1072 "
+"C.c.Q. range les versements au fonds de prévoyance et au fonds d'auto-"
+"assurance DANS cette contribution, ce qui conduit à prendre le total ; "
+"l'usage d'avant la Loi 16 calculait souvent sur le seul budget "
+"d'exploitation. Sur 60 000 $ d'exploitation plus 3 000 $ aux fonds, les deux"
+" lectures diffèrent de 150 $ par exercice. Question pour le notaire ou "
+"l'avocat au dossier. Ne sert que lorsque le plancher retenu est celui de la "
+"Loi 16."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__organisation_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget_line__organisation_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__organisation_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__organisation_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__organisation_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__organisation_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment_allocation__organisation_id
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_search
+msgid "Syndicat"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_syndicat_form_finance
+msgid ""
+"Tant que l'étude du fonds de prévoyance n'est pas obtenue, deux\n"
+"                        textes portent un plancher, et ils ne donnent pas le même chiffre.\n"
+"                        L'art. 1071 al. 4 C.c.Q. met 0,5 % de la valeur de reconstruction\n"
+"                        de l'immeuble à la charge du promoteur. La Loi 16 (2019, c. 28),\n"
+"                        art. 153 al. 2, met au moins 5 % des contributions des\n"
+"                        copropriétaires aux charges communes à celle du syndicat.\n"
+"                        Lequel des deux vous vise se lit dans votre déclaration de\n"
+"                        copropriété, qui est un acte notarié propre à votre immeuble :\n"
+"                        c'est une question pour le notaire ou l'avocat à votre dossier,\n"
+"                        et le module ne la tranche pas à votre place. Il ne porte aucun\n"
+"                        plancher tant que vous n'avez pas retenu le vôtre."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_organisation__contingency_floor_basis
+msgid ""
+"Tant que l'étude du fonds de prévoyance n'est pas obtenue, deux textes "
+"portent un plancher : l'art. 1071 al. 4 C.c.Q., qui met 0,5 % de la valeur "
+"de reconstruction à la charge du promoteur, et la Loi 16 (2019, c. 28), art."
+" 153 al. 2, qui met au moins 5 % des contributions aux charges communes à "
+"celle du syndicat. Lequel vise ce syndicat-ci est une lecture du texte, et "
+"elle se prend sur la déclaration de copropriété, acte notarié propre à "
+"l'immeuble, avec le notaire ou l'avocat au dossier. Le module n'en retient "
+"aucune d'office et ne porte aucun plancher tant que celui-ci n'est pas "
+"retenu."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__late_interest_rate
+msgid "Taux d'intérêt annuel (%)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__amount_total
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_form
+msgid "Total"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__amount_total
+msgid "Total appelé"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__amount_total
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__amount_due
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__total_due
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_list
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_line_list
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_unit_overdue_list
+msgid "Total dû"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly_attendance__charges_total_due
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Total dû au syndicat"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__overdue_total
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_unit__overdue_total
+msgid "Total en souffrance"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_assembly.py:0
+msgid "Tout projet de modification à la déclaration de copropriété"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "Transmettre"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_fund_call__state__issued
+msgid "Transmis"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__activity_exception_decoration
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__activity_exception_decoration
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__activity_exception_decoration
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_fund_call.py:0
+msgid ""
+"Un appel transmis ne se recalcule pas. Les copropriétaires ont reçu ces "
+"montants : corrigez par un appel distinct."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_payment.py:0
+msgid "Un encaissement annulé ne s'impute pas."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.constraint,message:bf_property_finance.constraint_bf_property_payment_amount_positive
+msgid "Un encaissement porte un montant supérieur à zéro."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.constraint,message:bf_property_finance.constraint_bf_property_budget_line_amount_positive
+msgid "Un poste budgétaire ne peut pas porter un montant négatif."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"Un état fourni ne se recalcule pas. Il énonce des montants à une date, il a "
+"été remis, et l'acquéreur s'y fie. Ouvrez une nouvelle demande si les "
+"chiffres ont changé."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "Une demande annulée ne se fournit pas."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.constraint,message:bf_property_finance.constraint_bf_property_payment_allocation_amounts_positive
+msgid "Une imputation ne peut pas être négative."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_assembly.py:0
+msgid ""
+"Une note sur les modalités essentielles de tout contrat proposé et de tous "
+"travaux projetés"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__amount_restricted_maintenance
+msgid "Usage restreint : entretien"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget_line__charge_type__restricted_maintenance
+msgid "Usage restreint : entretien et réparations courantes"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call_line__amount_restricted_major
+msgid "Usage restreint : réparations majeures"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_budget_line__charge_type__restricted_major
+msgid "Usage restreint : réparations majeures et remplacement"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__reconstruction_value
+msgid "Valeur de reconstruction"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call_line__quote_part
+msgid ""
+"Valeur relative de la fraction, dans la base déclarée par le syndicat. "
+"Détermine la part des charges communes et le poids du vote en assemblée."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__reconstruction_value_date
+msgid "Valeur évaluée le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_catchup_annual
+msgid "Versement annuel de rattrapage"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__method__transfer
+msgid "Virement"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__website_message_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__website_message_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__website_message_ids
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_budget__website_message_ids
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_charge_statement__website_message_ids
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_fund_call__website_message_ids
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_payment__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__period_end
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "au"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "aucun budget rattaché"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "aucun propriétaire au registre"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_form
+msgid "fraction(s) en défaut de paiement."
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_assembly_form_finance
+msgid ""
+"ligne(s) de présence dont le copropriétaire n'a pas acquitté sa\n"
+"                    quote-part des charges communes depuis plus de trois mois. Le module\n"
+"                    ne coche rien : la privation se constate à l'assemblée, et le droit\n"
+"                    revient dès que la totalité des charges dues est acquittée."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "personne"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "préavis non consigné"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"« %s » est une partie commune générale. Ses charges se répartissent sur "
+"toutes les fractions."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"« %s » n'est pas une charge d'usage restreint : retirez la partie commune."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_budget.py:0
+msgid ""
+"« %s » vise une partie commune à usage restreint : indiquez laquelle. Sans "
+"elle, le module ne sait pas qui en a l'usage."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_payment__imputation_mode__legal
+msgid "À défaut d'indication (art. 1572)"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_fixing_state__pending
+msgid "À fixer"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_search
+msgid "À fournir"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__deadline_date
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "À fournir au plus tard le"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"À fournir au plus tard le %(deadline)s. Passé ce jour, le proposant "
+"acquéreur ne sera plus tenu des charges."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_assembly.py:0
+msgid "À joindre à la main : hors de la portée du module"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__reconstruction_value_state__current
+msgid "À jour"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.actions.act_window,help:bf_property_finance.action_charge_statement
+msgid ""
+"À ne pas confondre avec l'attestation de l'art. 1068.1, que demande le\n"
+"                copropriétaire vendeur, ni avec les documents de l'art. 1068.2, que\n"
+"                demande le promettant acheteur à ses frais."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__reconstruction_value_state__stale
+msgid "À réévaluer"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "Écart"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__contingency_gap
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_form
+msgid "Écart au repère du fonds de prévoyance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,help:bf_property_finance.field_bf_property_unit__overdue_since
+msgid ""
+"Échéance de la plus ancienne contribution non soldée. C'est de cette date "
+"que se comptent les trois mois de l'art. 1094 C.c.Q. et, séparément, les 30 "
+"jours de l'art. 2729."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_fixing_state__overdue
+msgid "Échéance dépassée"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_budget__state
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__name
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement__state
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_charge_statement_line__statement_id
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_fund_call__state
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_payment__state
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_budget_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_charge_statement_search
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_fund_call_search
+msgid "État"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "État daté du"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__reconstruction_value_state
+msgid "État de l'évaluation"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid "État des charges"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.report,name:bf_property_finance.action_report_charge_statement
+#: model:ir.model,name:bf_property_finance.model_bf_property_charge_statement
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_charge_statement
+msgid "État des charges communes dues"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__art1087_debts_receivables
+msgid "État des dettes et créances joint"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_assembly__art1087_income_statement
+msgid "État des résultats joint"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.report,name:bf_property_finance.action_report_budget
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.report_budget
+msgid "État financier de l'exercice"
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"État fourni le %(issued)s, dans les 15 jours de la demande. Art. 1069 al. 2 "
+": le proposant acquéreur est tenu au paiement des charges qui y figurent."
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.actions.act_window,name:bf_property_finance.action_charge_statement
+#: model:ir.ui.menu,name:bf_property_finance.menu_charge_statement
+msgid "États des charges dues"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields.selection,name:bf_property_finance.selection__bf_property_organisation__contingency_basis__study
+msgid "Étude du fonds de prévoyance"
+msgstr ""
+
+#. module: bf_property_finance
+#: model:ir.model.fields,field_description:bf_property_finance.field_bf_property_organisation__contingency_study_date
+msgid "Étude du fonds de prévoyance obtenue le"
+msgstr ""
+
+#. module: bf_property_finance
+#: model_terms:ir.ui.view,arch_db:bf_property_finance.view_payment_form
+msgid "à imputer."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"⚠️ État fourni le %(issued)s, après l'échéance du %(deadline)s. Art. 1069 "
+"al. 2 : le proposant acquéreur n'est PAS tenu au paiement de ces charges. Le"
+" syndicat a perdu sa créance contre lui et devra la réclamer au vendeur."
+msgstr ""
+
+#. module: bf_property_finance
+#. odoo-python
+#: code:addons/bf_property_finance/models/bf_property_charge_statement.py:0
+msgid ""
+"🔴 Les 15 jours de l'art. 1069 al. 2 sont écoulés depuis le %(deadline)s et "
+"l'état n'a pas été fourni. Fourni maintenant, il n'obligera plus le "
+"proposant acquéreur."
+msgstr ""

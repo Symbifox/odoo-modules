@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_request_form_operations" model="ir.ui.view">
+        <field name="name">bf.property.request.form.operations</field>
+        <field name="model">bf.property.request</field>
+        <field name="inherit_id" ref="bf_property_portal.view_property_request_form"/>
+        <field name="arch" type="xml">
+
+            <button name="action_reopen" position="after">
+                <button name="action_create_work" type="object"
+                        string="Ouvrir un travail"
+                        invisible="state == 'refused'"/>
+            </button>
+
+            <div class="oe_title" position="before">
+                <div class="oe_button_box" name="bf_work_button_box">
+                    <button name="action_view_work" type="object"
+                            class="oe_stat_button" icon="fa-wrench"
+                            invisible="work_count == 0">
+                        <field name="work_count" widget="statinfo"
+                               string="Travaux"/>
+                    </button>
+                </div>
+            </div>
+
+            <field name="responsible_user_id" position="before">
+                <field name="maintenance_team_id"
+                       options="{'no_create_edit': True}"/>
+            </field>
+
+        </field>
+    </record>
+
+    <record id="view_property_request_list_operations" model="ir.ui.view">
+        <field name="name">bf.property.request.list.operations</field>
+        <field name="model">bf.property.request</field>
+        <field name="inherit_id" ref="bf_property_portal.view_property_request_list"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <field name="maintenance_team_id" optional="show"/>
+                <field name="work_open_count" optional="hide"
+                       string="Travaux en cours"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_property_request_search_operations" model="ir.ui.view">
+        <field name="name">bf.property.request.search.operations</field>
+        <field name="model">bf.property.request</field>
+        <field name="inherit_id" ref="bf_property_portal.view_property_request_search"/>
+        <field name="arch" type="xml">
+            <!-- ⚠️ L'héritage de vues refuse `string` comme sélecteur : on
+                 s'ancre sur un filtre nommé du groupe, jamais sur son titre. -->
+            <filter name="group_building" position="after">
+                <filter name="bf_group_by_team" string="Équipe"
+                        context="{'group_by': 'maintenance_team_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_form_bf_request" model="ir.ui.view">
+        <field name="name">maintenance.request.form.bf.request</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="bf_property_operations.view_maintenance_request_form_property"/>
+        <field name="arch" type="xml">
+            <field name="bf_building_id" position="before">
+                <field name="bf_request_id"
+                       groups="bf_property_core.group_bf_property_user"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

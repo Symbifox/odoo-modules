@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_rental_notice_form" model="ir.ui.view">
+        <field name="name">bf.rental.notice.form</field>
+        <field name="model">bf.rental.notice</field>
+        <field name="arch" type="xml">
+            <form string="Avis">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,given,accepted,refused"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="L'avis">
+                            <field name="lease_id"/>
+                            <field name="kind"/>
+                            <field name="date_given"/>
+                            <field name="date_received"/>
+                            <field name="target_date"/>
+                        </group>
+                        <group string="Ce que le silence produira">
+                            <!-- 🔴 Affiché en clair, avec son article : c'est la
+                                 chose que l'utilisateur croira savoir et qu'il
+                                 saura de travers trois fois sur quatre. -->
+                            <field name="silence_effect"/>
+                            <field name="silence_article"/>
+                            <field name="response_deadline"/>
+                            <field name="tenant_must_leave_if_refusing"
+                                   invisible="kind != 'modification'"/>
+                        </group>
+                    </group>
+                    <!-- ⚠️ Le groupe ENTIER porte la restriction, pas
+                         seulement ses champs : un modificateur qui référence un
+                         champ retiré de l'arch est un piège, et une section
+                         vide qui s'affiche en dit déjà trop. -->
+                    <group string="Résiliation par le locataire"
+                           groups="bf_property_core.group_bf_property_manager"
+                           invisible="kind != 'tenant_resiliation'">
+                        <field name="resiliation_ground"/>
+                        <!-- ⚠️ Affiché parce que réclamer la mauvaise pièce est
+                             le piège central de ce régime : l'art. 1974.1 ne
+                             veut PAS de certificat médical. -->
+                        <field name="attestation_authority"/>
+                        <field name="attestation_received"/>
+                        <field name="is_sensitive_ground" invisible="1"/>
+                        <div class="alert alert-warning" role="alert"
+                             invisible="not is_sensitive_ground">
+                            Renseignement d'une sensibilité particulière : sa
+                            divulgation met une personne en danger. Ne pas le
+                            reporter dans un courriel, une note au fil de
+                            discussion ni un export.
+                        </div>
+                        <field name="relet_date"/>
+                        <field name="agreed_date"/>
+                        <field name="resiliation_effective_date"/>
+                    </group>
+                    <group string="Si le locataire refuse"
+                           invisible="kind != 'modification'">
+                        <field name="date_refused"/>
+                        <!-- ⚠️ Le seul délai du corpus qui joue contre le
+                             locateur : passé, l'augmentation est perdue et le
+                             bail se reconduit aux conditions antérieures. -->
+                        <field name="landlord_tribunal_deadline"/>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1" placeholder="…"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_rental_notice_list" model="ir.ui.view">
+        <field name="name">bf.rental.notice.list</field>
+        <field name="model">bf.rental.notice</field>
+        <field name="arch" type="xml">
+            <list string="Avis">
+                <field name="name"/>
+                <field name="lease_id"/>
+                <field name="kind"/>
+                <field name="date_given"/>
+                <field name="response_deadline" optional="show"/>
+                <field name="silence_effect" optional="show"/>
+                <field name="landlord_tribunal_deadline" optional="show"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_rental_notice_search" model="ir.ui.view">
+        <field name="name">bf.rental.notice.search</field>
+        <field name="model">bf.rental.notice</field>
+        <field name="arch" type="xml">
+            <search string="Avis">
+                <field name="name"/>
+                <field name="lease_id"/>
+                <!-- Ce qu'un locateur doit voir avant tout le reste : les avis
+                     dont le silence vaut ACCEPTATION et dont le mois court
+                     encore, puis ceux dont son propre délai de saisine court. -->
+                <filter name="silence_accepts" string="Silence = acceptation"
+                        domain="[('silence_effect', '=', 'accept')]"/>
+                <filter name="silence_refuses" string="Silence = refus"
+                        domain="[('silence_effect', '=', 'refuse')]"/>
+                <separator/>
+                <filter name="awaiting" string="Réponse attendue"
+                        domain="[('state', '=', 'given'),
+                                 ('response_deadline', '!=', False)]"/>
+                <filter name="tribunal_due" string="Saisine du Tribunal à faire"
+                        domain="[('landlord_tribunal_deadline', '!=', False),
+                                 ('state', '=', 'refused')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="by_kind" string="Nature"
+                            context="{'group_by': 'kind'}"/>
+                    <filter name="by_lease" string="Bail"
+                            context="{'group_by': 'lease_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_rental_notice" model="ir.actions.act_window">
+        <field name="name">Avis</field>
+        <field name="res_model">bf.rental.notice</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_bf_rental_moratorium_form" model="ir.ui.view">
+        <field name="name">bf.rental.moratorium.form</field>
+        <field name="model">bf.rental.moratorium</field>
+        <field name="arch" type="xml">
+            <form string="Moratoire">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Ce que dit le texte">
+                            <field name="in_force"/>
+                            <field name="statutory_end"/>
+                            <field name="gazette_notice_date"/>
+                            <field name="effective_end"/>
+                        </group>
+                        <group string="Ce qu'on a constaté, et quand">
+                            <!-- 🔴 La date de constat est au même rang que la
+                                 donnée : un état jamais revérifié n'est pas un
+                                 état, c'est un souvenir. -->
+                            <field name="checked_on"/>
+                            <field name="source"/>
+                        </group>
+                    </group>
+                    <group string="Territoires soustraits (art. 2)">
+                        <field name="excluded_territories" nolabel="1"
+                               placeholder="Aucun à ce jour…"/>
+                    </group>
+                    <group string="Note">
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_rental_moratorium" model="ir.actions.act_window">
+        <field name="name">Moratoire sur l'éviction</field>
+        <field name="res_model">bf.rental.moratorium</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_bf_rental_notice" name="Avis"
+              parent="bf_property_core.menu_property_people"
+              action="action_bf_rental_notice" sequence="31"/>
+
+    <menuitem id="menu_bf_rental_moratorium" name="Moratoire sur l'éviction"
+              parent="bf_property_core.menu_property_people"
+              action="action_bf_rental_moratorium" sequence="32"
+              groups="bf_property_core.group_bf_property_manager"/>
+
+</odoo>

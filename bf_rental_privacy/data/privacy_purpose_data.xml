@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ⚠️ `noupdate="1"` : le texte en langage clair est ce qu'on a MONTRÉ aux
+         personnes. Une mise à jour du module qui le réécrirait changerait après
+         coup ce qu'elles ont lu, sans que personne le sache. -->
+    <data noupdate="1">
+
+        <record id="purpose_rental_lease" model="privacy.purpose">
+            <field name="code">rental_lease</field>
+            <field name="name">Dossier locatif : bail, avis et loyer</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Le locateur tient le dossier de votre bail : votre nom, votre
+                adresse, vos coordonnées, le loyer convenu et ce qui a été versé,
+                ainsi que les avis échangés de part et d'autre : modification du
+                bail, reprise, éviction, cession, sous-location.</p>
+                <p>Cette tenue repose sur le bail lui-même et sur les
+                obligations que le Code civil du Québec attache au louage
+                résidentiel. Elle ne repose pas sur votre consentement, et ne
+                vous est pas demandée comme un choix : sans elle, le locateur ne
+                pourrait ni vous donner un avis valable, ni recevoir le vôtre.</p>
+                <p>Ce dossier ne contient aucun dépôt de garantie, aucune
+                enquête de crédit et aucune évaluation de votre personne. La loi
+                interdit d'exiger un dépôt, et le module ne prévoit pas de
+                champ pour en porter un.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- 🔴 Une finalité SÉPARÉE, et c'est le point de ce fichier. La fondre
+             dans la précédente reviendrait à annoncer « nom, adresse et loyer »
+             à une personne dont on enregistre en réalité qu'elle est victime de
+             violence. Le registre doit dire ce qui est collecté, pas une
+             moyenne de ce qui est collecté. -->
+        <record id="purpose_rental_resiliation_ground" model="privacy.purpose">
+            <field name="code">rental_resiliation_ground</field>
+            <field name="name">Fondement d'une résiliation par le locataire</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Le Code civil vous permet de résilier votre bail avant terme
+                dans certaines situations : l'attribution d'un logement à loyer
+                modique, un relogement ordonné par le tribunal, un handicap qui
+                vous empêche d'occuper le logement, une admission permanente en
+                hébergement, ou lorsque votre sécurité ou celle d'un enfant qui
+                habite avec vous est menacée.</p>
+                <p>Pour exercer ce droit, vous transmettez un avis accompagné
+                d'une attestation. Le locateur conserve donc le fondement que
+                vous avez invoqué et le fait que l'attestation a été reçue.
+                <strong>Il ne conserve pas le contenu de l'attestation</strong>,
+                ni les faits qui la soutiennent.</p>
+                <p>Lorsque le fondement est une situation de violence, ce
+                renseignement est traité comme mettant votre sécurité en jeu :
+                sa lecture est réservée aux personnes qui traitent votre
+                dossier, il n'apparaît pas au fil de discussion et il ne part
+                dans aucun courriel. La date à laquelle le bail prend fin, elle,
+                reste visible : c'est le motif qui est protégé, pas la date.</p>
+                <p>Ce traitement repose sur l'organisation, par le Code civil,
+                de l'exercice d'un droit qui vous appartient. Il ne vous est pas
+                demandé comme un choix, et il n'est pas conservé au-delà de ce
+                que le dossier du bail exige.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">51</field>
+        </record>
+
+    </data>
+</odoo>

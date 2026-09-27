@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_assembly_form_art1087" model="ir.ui.view">
+        <field name="name">bf.property.assembly.form.art1087</field>
+        <field name="model">bf.property.assembly</field>
+        <field name="inherit_id" ref="bf_property_governance.view_assembly_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Pièces de l'avis (art. 1087)" name="art1087"
+                      invisible="assembly_type != 'annual'">
+                    <div class="alert alert-info" role="alert">
+                        Art. 1087 C.c.Q. : l'avis de convocation de l'assemblée
+                        <strong>annuelle</strong> doit être accompagné de six pièces. Le
+                        module en produit une entièrement, le budget prévisionnel, et la
+                        moitié d'une autre, les créances de l'état des dettes et créances.
+                        Le bilan, l'état des résultats et le reste relèvent de la
+                        comptabilité du syndicat et se joignent à la main.
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="art1087_state != 'incomplete'">
+                        Pièces manquantes :
+                        <field name="art1087_missing" readonly="1" nolabel="1"/>
+                    </div>
+                    <group>
+                        <group string="Ce que le module fournit">
+                            <field name="art1087_budget_id"/>
+                            <field name="art1087_receivables"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Ce qui se joint à la main">
+                            <field name="art1087_balance_sheet"/>
+                            <field name="art1087_income_statement"/>
+                            <field name="art1087_debts_receivables"/>
+                            <field name="art1087_declaration_changes"/>
+                            <field name="art1087_contracts_note"/>
+                            <field name="art1087_state"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

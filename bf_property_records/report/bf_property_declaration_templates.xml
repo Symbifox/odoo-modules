@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ⚠️ Aucune marque d'éditeur : cette déclaration est celle du
+         PROFESSIONNEL qui a examiné l'immeuble, versée au carnet du syndicat.
+         Elle n'est pas un document de l'outil qui l'imprime.
+
+         ⚠️ Le texte de l'attestation reprend celui de l'art. 6 et rien d'autre.
+         Le module n'y ajoute aucune affirmation : c'est la personne qui signe
+         qui répond de ce qu'elle déclare. -->
+    <template id="report_site_declaration">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="draft" t-value="not doc.site_declaration_date"/>
+                <div class="article">
+                    <style>
+                        .decl { font-family: Helvetica, Arial, sans-serif; font-size: 10pt; color: #1a1a1a; line-height: 1.5; }
+                        .decl h1 { font-size: 15pt; margin: 0 0 2pt 0; text-transform: uppercase; letter-spacing: 0.5pt; }
+                        .decl .legal { font-size: 9pt; color: #555; margin: 0 0 14pt 0; }
+                        .decl .rule { border-bottom: 1.5pt solid #1a1a1a; margin: 0 0 14pt 0; }
+                        .decl .draft { border: 1pt solid #8a6d3b; background: #fcf8e3; color: #8a6d3b;
+                                       padding: 6pt 8pt; margin: 0 0 12pt 0; font-size: 9pt; }
+                        .decl table.ident { width: 100%; border-collapse: collapse; margin: 0 0 16pt 0; }
+                        .decl table.ident td { padding: 2pt 0; vertical-align: top; }
+                        .decl table.ident td.k { width: 34%; color: #555; }
+                        .decl .statement { margin: 0 0 18pt 0; padding: 10pt 12pt;
+                                           border-left: 2pt solid #1a1a1a; background: #fafafa; }
+                        .decl .sign { margin-top: 26pt; page-break-inside: avoid; }
+                        .decl .sign .line { border-bottom: 0.75pt solid #1a1a1a; height: 30pt; width: 62%; }
+                        .decl .sign .cap { font-size: 8.5pt; color: #555; padding-top: 3pt; }
+                        .decl .foot { margin-top: 18pt; font-size: 8pt; color: #666;
+                                      border-top: 0.25pt solid #ccc; padding-top: 6pt; }
+                    </style>
+
+                    <div class="decl">
+                        <h1>Déclaration d'examen sur place</h1>
+                        <p class="legal">
+                            Règlement établissant diverses règles en matière de copropriété
+                            divise, RLRQ, c. CCQ, r. 8.01, article 6. Déclaration datée et
+                            incluse au carnet d'entretien.
+                        </p>
+                        <div class="rule"/>
+
+                        <div t-if="draft" class="draft">
+                            Projet : la déclaration n'est pas encore datée au dossier. Une
+                            déclaration se date du jour de l'examen et de la prise de
+                            connaissance du carnet, et non du jour où on l'imprime.
+                        </div>
+
+                        <table class="ident">
+                            <tbody>
+                                <tr t-foreach="doc._report_declaration_rows()" t-as="row">
+                                    <td class="k"><t t-esc="row[0]"/></td>
+                                    <td><t t-esc="row[1]"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="statement">
+                            Je déclare que les parties communes et les biens visés à
+                            l'article 2 du règlement ont été examinés sur place par
+                            moi-même ou sous ma supervision, et que j'ai pris connaissance
+                            des renseignements contenus au carnet d'entretien.
+                        </div>
+
+                        <table class="ident">
+                            <tbody>
+                                <tr>
+                                    <td class="k">Déclaration datée du</td>
+                                    <td>
+                                        <t t-if="doc.site_declaration_date">
+                                            <t t-esc="doc.site_declaration_date"/>
+                                        </t>
+                                        <t t-else="">À dater</t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="sign">
+                            <div class="line"/>
+                            <div class="cap">
+                                <t t-esc="doc.author_partner_id.display_name or ''"/>
+                            </div>
+                        </div>
+
+                        <div class="foot">
+                            Cette déclaration fait partie du carnet d'entretien du syndicat
+                            et se conserve avec lui.
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

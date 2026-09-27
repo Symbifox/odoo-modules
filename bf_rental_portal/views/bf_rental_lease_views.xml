@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inviter les locataires du bail au portail. -->
+    <record id="view_bf_rental_lease_form_portal_invite" model="ir.ui.view">
+        <field name="name">bf.rental.lease.form.portal.invite</field>
+        <field name="model">bf.rental.lease</field>
+        <field name="inherit_id" ref="bf_rental.view_bf_rental_lease_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_bf_invite_portal" type="object"
+                            string="Inviter au portail"
+                            groups="bf_property_core.group_bf_property_manager"
+                            help="Invite les locataires du bail. Déjà invités : l'accès leur est renvoyé."/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

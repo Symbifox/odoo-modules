@@ -1,0 +1,230 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Properties: foundation</h2>
+        <h3 class="oe_slogan">Organisations, immovables, fractions and the people who own or occupy them: the structure the whole property suite builds on</h3>
+        <p style="text-align:center; color:#6c757d; font-size:0.9em">Version française plus bas.</p>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <p class="oe_mt32">
+                This module holds the structure of a building in Odoo 18 Community: the
+                organisation that answers for the immovable, the immovable itself, its
+                fractions, its common portions, and the people who own or occupy them. It is
+                written for Québec, where the Civil Code decides what that structure has to
+                record. A syndicate of co-ownership, a lessor, a housing cooperative and a
+                non-profit housing organisation all start here, and the co-ownership and
+                rental modules add their own rules on top.
+            </p>
+            <ul>
+                <li>Organisations of four kinds: syndicate of co-ownership, lessor, housing cooperative, non-profit housing organisation</li>
+                <li>Immovables with their address, cadastral lot, year built and number of storeys</li>
+                <li>Fractions with their relative value, area and type (residential, parking, storage, commercial)</li>
+                <li>Common portions, general or for restricted use, with the fractions that have the use of them (art. 1043 CCQ)</li>
+                <li>Ownership kept as a dated history per fraction, undivided co-owners and their shares included</li>
+                <li>An occupant distinct from the owner when a fraction is rented</li>
+                <li>The total of relative values compared at all times with the base stated in the declaration of co-ownership, such as 1,000 or 10,000</li>
+                <li>A daily job that refreshes current ownerships, so a holder whose ownership ended yesterday stops showing as a current co-owner today</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <img src="building_en.png" alt="Form of an immovable with its organisation, cadastral lot and total of relative values" style="max-width:100%; border:1px solid #ddd; border-radius:4px"/>
+            <p style="text-align:center; color:#6c757d; font-size:0.9em">An immovable, the organisation that answers for it, and the total of relative values of its fractions.</p>
+            <img class="oe_mt32" src="units_en.png" alt="List of the fractions of an immovable with their relative values" style="max-width:100%; border:1px solid #ddd; border-radius:4px"/>
+            <p style="text-align:center; color:#6c757d; font-size:0.9em">The fractions of an immovable, each with its relative value and its current holders.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">What the module refuses to do</h3>
+            <ul>
+                <li>It never blocks a save because the relative values do not add up yet. An immovable is entered fraction by fraction, so the gap shows as a banner and a searchable state.</li>
+                <li>It refuses to create a general meeting, a contingency fund, a statement of common expenses or a certificate of the syndicate for an organisation that is not a syndicate of co-ownership. Those objects do not exist outside that regime.</li>
+                <li>It takes no threshold from secondary commentary. Each rule in the suite cites the Civil Code of Québec or a regulation made under it, and where the text is silent the screen says so.</li>
+            </ul>
+            <p>This is software, not legal advice. An organisation remains responsible for the decisions it takes.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Part of the property suite</h3>
+            <p>This module depends on <code>base</code> and <code>mail</code> only. The nineteen modules of the suite fall into three groups.</p>
+            <p><strong>Every building</strong></p>
+            <ul>
+                <li>Properties: foundation (<code>bf_property_core</code>), this module</li>
+                <li>Properties: operations (<code>bf_property_operations</code>), equipment, schedules and work shifts on Odoo Maintenance</li>
+                <li>Properties: from the request to the work (<code>bf_property_operations_portal</code>)</li>
+                <li>Operations: privacy bridge, Act 25 (<code>bf_property_operations_privacy</code>)</li>
+            </ul>
+            <p><strong>Divided co-ownership</strong></p>
+            <ul>
+                <li>Co-ownership: general meetings (<code>bf_property_governance</code>)</li>
+                <li>Co-ownership: common expenses and calls for contributions (<code>bf_property_finance</code>)</li>
+                <li>Co-ownership: maintenance log, study and certificates (<code>bf_property_records</code>)</li>
+                <li>Co-ownership: occupant portal (<code>bf_property_portal</code>)</li>
+                <li>Co-ownership: the maintenance log and operations (<code>bf_property_operations_records</code>)</li>
+                <li>Co-ownership: privacy bridge, Act 25 (<code>bf_property_privacy</code>)</li>
+                <li>Co-ownership: secure hand-over of documents (<code>bf_property_securetransfer</code>)</li>
+                <li>Co-ownership: electronic signature (<code>bf_property_sign</code>)</li>
+                <li>Co-ownership: text message notices (<code>bf_property_sms</code>)</li>
+                <li>Co-ownership: occupant satisfaction (<code>bf_property_cx</code>)</li>
+            </ul>
+            <p><strong>Residential rental</strong></p>
+            <ul>
+                <li>Rental: the dwelling lease (<code>bf_rental</code>)</li>
+                <li>Rental: notices (<code>bf_rental_notice</code>)</li>
+                <li>Rental: rent and arrears (<code>bf_rental_rent</code>)</li>
+                <li>Rental: lessee portal (<code>bf_rental_portal</code>)</li>
+                <li>Rental: privacy bridge, Act 25 (<code>bf_rental_privacy</code>)</li>
+            </ul>
+            <p>The interface is available in French and in English, with the vocabulary of the official English text of the Civil Code of Québec.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Licence</h3>
+            <p>
+                Business Source License 1.1. You may use this module in production for your own
+                internal business operations, which include administering immovables that you own
+                or that you are constituted to administer, and letting a person acting on your
+                behalf use your instance for that purpose. Administering immovables for the account
+                of others, or providing the module to third parties as a product or service, whether
+                hosted, managed or resold, requires a separate written agreement with the licensor.
+                Each version converts to LGPL-3.0-or-later on the Change Date stated in the LICENSE
+                file, which sets out the exact terms.
+            </p>
+        </div>
+    </div>
+</section>
+
+<hr/>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Immeubles : socle</h2>
+        <h3 class="oe_slogan">Organisations, immeubles, fractions, et les personnes qui les possèdent ou les occupent : la structure sur laquelle repose toute la suite immobilière</h3>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <p class="oe_mt32">
+                Ce module tient la structure d'un immeuble dans Odoo 18 Community :
+                l'organisation qui en répond, l'immeuble, ses fractions, ses parties communes,
+                et les personnes qui les possèdent ou les occupent. Il est écrit pour le Québec,
+                où le Code civil dit ce que cette structure doit consigner. Un syndicat de
+                copropriété, un bailleur, une coopérative d'habitation et un OBNL d'habitation
+                partent tous d'ici ; les modules de copropriété et de location y ajoutent leurs
+                propres règles.
+            </p>
+            <ul>
+                <li>Organisations de quatre natures : syndicat de copropriété, bailleur, coopérative d'habitation, OBNL d'habitation</li>
+                <li>Immeubles avec leur adresse, leur lot cadastral, leur année de construction et leur nombre d'étages</li>
+                <li>Fractions avec leur quote-part, leur superficie et leur type (résidentiel, stationnement, rangement, commercial)</li>
+                <li>Parties communes générales ou à usage restreint, avec les fractions qui en ont l'usage (art. 1043 C.c.Q.)</li>
+                <li>Propriété tenue en historique daté par fraction, indivisaires et leurs parts compris</li>
+                <li>Occupant distinct du propriétaire quand la fraction est louée</li>
+                <li>Total des quotes-parts comparé en tout temps à la base inscrite à la déclaration de copropriété, par exemple 1 000 ou 10 000</li>
+                <li>Tâche quotidienne qui rafraîchit les propriétés en cours : la personne dont la propriété a pris fin hier ne figure plus comme copropriétaire aujourd'hui</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <img src="building_fr.png" alt="Fiche d'un immeuble avec son organisation, son lot cadastral et le total des quotes-parts" style="max-width:100%; border:1px solid #ddd; border-radius:4px"/>
+            <p style="text-align:center; color:#6c757d; font-size:0.9em">Un immeuble, l'organisation qui en répond, et le total des quotes-parts de ses fractions.</p>
+            <img class="oe_mt32" src="units_fr.png" alt="Liste des fractions d'un immeuble avec leurs quotes-parts" style="max-width:100%; border:1px solid #ddd; border-radius:4px"/>
+            <p style="text-align:center; color:#6c757d; font-size:0.9em">Les fractions d'un immeuble, chacune avec sa quote-part et ses titulaires actuels.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Ce que le module refuse de faire</h3>
+            <ul>
+                <li>Il ne bloque jamais un enregistrement parce que les quotes-parts ne totalisent pas encore la base. Un immeuble se saisit fraction par fraction : l'écart s'affiche en bandeau et se retrouve par la recherche.</li>
+                <li>Il refuse de créer une assemblée, un fonds de prévoyance, un état des charges ou une attestation du syndicat pour une organisation qui n'est pas un syndicat de copropriété. Ces objets n'existent pas hors de ce régime.</li>
+                <li>Il ne tire aucun seuil de la doctrine. Chaque règle de la suite cite le Code civil du Québec ou un règlement pris sous son autorité, et quand le texte se tait, l'écran le dit.</li>
+            </ul>
+            <p>Ce logiciel ne donne pas d'avis juridique. L'organisation reste responsable des décisions qu'elle prend.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Dans la suite immobilière</h3>
+            <p>Ce module ne dépend que de <code>base</code> et de <code>mail</code>. Les dix-neuf modules de la suite se rangent en trois groupes.</p>
+            <p><strong>Tout immeuble</strong></p>
+            <ul>
+                <li>Immeubles : socle (<code>bf_property_core</code>), le présent module</li>
+                <li>Immeubles : exploitation (<code>bf_property_operations</code>), équipements, cédules et quarts de travail sur la Maintenance d'Odoo</li>
+                <li>Immeubles : de la demande au travail (<code>bf_property_operations_portal</code>)</li>
+                <li>Exploitation : pont vie privée, Loi 25 (<code>bf_property_operations_privacy</code>)</li>
+            </ul>
+            <p><strong>Copropriété divise</strong></p>
+            <ul>
+                <li>Copropriété : assemblées (<code>bf_property_governance</code>)</li>
+                <li>Copropriété : charges et appels de fonds (<code>bf_property_finance</code>)</li>
+                <li>Copropriété : carnet, étude et attestations (<code>bf_property_records</code>)</li>
+                <li>Copropriété : portail de l'occupant (<code>bf_property_portal</code>)</li>
+                <li>Copropriété : le carnet et l'exploitation (<code>bf_property_operations_records</code>)</li>
+                <li>Copropriété : pont vie privée, Loi 25 (<code>bf_property_privacy</code>)</li>
+                <li>Copropriété : remise sécurisée des documents (<code>bf_property_securetransfer</code>)</li>
+                <li>Copropriété : signature électronique (<code>bf_property_sign</code>)</li>
+                <li>Copropriété : avis par texto (<code>bf_property_sms</code>)</li>
+                <li>Copropriété : satisfaction des occupants (<code>bf_property_cx</code>)</li>
+            </ul>
+            <p><strong>Location résidentielle</strong></p>
+            <ul>
+                <li>Locatif : le bail de logement (<code>bf_rental</code>)</li>
+                <li>Locatif : les avis (<code>bf_rental_notice</code>)</li>
+                <li>Locatif : loyer et arrérages (<code>bf_rental_rent</code>)</li>
+                <li>Locatif : portail du locataire (<code>bf_rental_portal</code>)</li>
+                <li>Locatif : pont vie privée, Loi 25 (<code>bf_rental_privacy</code>)</li>
+            </ul>
+            <p>L'interface existe en français et en anglais ; l'anglais reprend le vocabulaire du texte anglais officiel du Code civil du Québec.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Licence</h3>
+            <p>
+                Business Source License 1.1. Vous pouvez utiliser ce module en production pour vos
+                propres activités internes, ce qui comprend l'administration des immeubles dont vous
+                êtes propriétaire ou que vous êtes constitué pour administrer, et l'usage de votre
+                instance à cette fin par une personne qui agit pour votre compte. Administrer des
+                immeubles pour le compte d'autrui, ou fournir le module à des tiers comme produit ou
+                service, hébergé, géré ou revendu, exige une entente écrite distincte avec le
+                concédant. Chaque version passe sous LGPL-3.0 ou ultérieure à la date de changement
+                inscrite au fichier LICENSE, qui fait foi.
+            </p>
+        </div>
+    </div>
+</section>

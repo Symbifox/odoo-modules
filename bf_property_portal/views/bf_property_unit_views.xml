@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inviter les résidents de la fraction au portail. -->
+    <record id="view_property_unit_form_portal_invite" model="ir.ui.view">
+        <field name="name">bf.property.unit.form.portal.invite</field>
+        <field name="model">bf.property.unit</field>
+        <field name="inherit_id" ref="bf_property_core.view_property_unit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button name="action_bf_invite_portal" type="object"
+                            string="Inviter au portail"
+                            groups="bf_property_core.group_bf_property_manager"
+                            help="Invite les copropriétaires courants et l'occupant. Déjà invités : l'accès leur est renvoyé."/>
+                </header>
+            </xpath>
+        </field>
+    </record>
+</odoo>

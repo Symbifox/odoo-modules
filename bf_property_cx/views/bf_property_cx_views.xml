@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_syndicat_form_cx" model="ir.ui.view">
+        <field name="name">bf.property.organisation.form.cx</field>
+        <field name="model">bf.property.organisation</field>
+        <field name="inherit_id" ref="bf_property_core.view_property_organisation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group[last()]" position="after">
+                <group string="Satisfaction des occupants">
+                    <group>
+                        <field name="cx_feedback_enabled"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" colspan="2"
+                         invisible="cx_feedback_enabled">
+                        La mesure est à l'arrêt : aucune demande d'avis ne part vers
+                        un occupant. Une fois ouverte, une demande d'entretien réglée
+                        fait partir à son demandeur une question en trois émojis, et
+                        la réponse rejoint le registre d'expérience. Une demande
+                        refusée n'en fait jamais partir : refuser, c'est dire que la
+                        demande sort de l'objet du syndicat (art. 1039 C.c.Q.).
+                    </div>
+                    <div class="alert alert-info" role="alert" colspan="2"
+                         invisible="not cx_feedback_enabled">
+                        La mesure est ouverte. Deux freins restent hors de votre
+                        main, et c'est voulu : le garde-fou anti-sursollicitation,
+                        qui compte par personne, et le lien de désabonnement que
+                        porte chaque courriel. Le courriel ne porte aucune marque
+                        d'éditeur : il vient de vous.
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_property_parcel_list" model="ir.ui.view">
+            <field name="name">bf.property.parcel.list</field>
+            <field name="model">bf.property.parcel</field>
+            <field name="arch" type="xml">
+                <list decoration-muted="state != 'held'"
+                      decoration-warning="parcel_type == 'perishable' and state == 'held'">
+                    <field name="name"/>
+                    <field name="date_received"/>
+                    <field name="building_id" optional="show"/>
+                    <field name="unit_id"/>
+                    <field name="partner_id"/>
+                    <field name="parcel_type"/>
+                    <field name="carrier" optional="show"/>
+                    <field name="storage_location" optional="show"/>
+                    <field name="state" widget="badge" decoration-info="state == 'held'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_property_parcel_form" model="ir.ui.view">
+            <field name="name">bf.property.parcel.form</field>
+            <field name="model">bf.property.parcel</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_collected" type="object" string="Remis"
+                                class="btn-primary" invisible="state != 'held'"/>
+                        <button name="action_returned" type="object" string="Retourné"
+                                invisible="state != 'held'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                        <group>
+                            <group>
+                                <field name="organisation_id"/>
+                                <field name="building_id"/>
+                                <field name="unit_id"/>
+                                <field name="partner_id"/>
+                            </group>
+                            <group>
+                                <field name="parcel_type"/>
+                                <field name="carrier"/>
+                                <field name="reference"/>
+                                <field name="storage_location"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="date_received"/>
+                            </group>
+                            <group>
+                                <field name="date_closed"/>
+                                <field name="collected_by"/>
+                            </group>
+                        </group>
+                        <field name="note"/>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_property_parcel_search" model="ir.ui.view">
+            <field name="name">bf.property.parcel.search</field>
+            <field name="model">bf.property.parcel</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="unit_id"/>
+                    <filter name="held" string="En dépôt" domain="[('state', '=', 'held')]"/>
+                    <filter name="perishable" string="Périssables"
+                            domain="[('parcel_type', '=', 'perishable')]"/>
+                    <group expand="1" string="Regrouper par">
+                        <filter name="group_building" string="Immeuble"
+                                context="{'group_by': 'building_id'}"/>
+                        <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_property_parcel" model="ir.actions.act_window">
+            <field name="name">Colis</field>
+            <field name="res_model">bf.property.parcel</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_held': 1, 'search_default_group_building': 1}</field>
+        </record>
+
+        <record id="view_property_visit_list" model="ir.ui.view">
+            <field name="name">bf.property.visit.list</field>
+            <field name="model">bf.property.visit</field>
+            <field name="arch" type="xml">
+                <list decoration-muted="state in ('departed', 'cancelled')">
+                    <field name="name"/>
+                    <field name="date_expected"/>
+                    <field name="building_id" optional="show"/>
+                    <field name="unit_id"/>
+                    <field name="host_partner_id"/>
+                    <field name="visitor_name"/>
+                    <field name="visitor_kind"/>
+                    <field name="vehicle_plate" optional="hide"/>
+                    <field name="state" widget="badge" decoration-info="state == 'expected'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_property_visit_form" model="ir.ui.view">
+            <field name="name">bf.property.visit.form</field>
+            <field name="model">bf.property.visit</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_arrived" type="object" string="Arrivé"
+                                class="btn-primary" invisible="state != 'expected'"/>
+                        <button name="action_departed" type="object" string="Reparti"
+                                invisible="state != 'arrived'"/>
+                        <button name="action_cancel" type="object" string="Annuler"
+                                invisible="state in ('departed', 'cancelled')"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                        <div class="alert alert-info" role="note">
+                            Renseignements sur un tiers qui n'a rien consenti. Le journal
+                            se purge automatiquement selon la durée de conservation fixée
+                            au syndicat.
+                        </div>
+                        <group>
+                            <group>
+                                <field name="organisation_id"/>
+                                <field name="building_id"/>
+                                <field name="unit_id"/>
+                                <field name="host_partner_id"/>
+                            </group>
+                            <group>
+                                <field name="visitor_name"/>
+                                <field name="visitor_kind"/>
+                                <field name="vehicle_plate"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="date_expected"/>
+                                <field name="date_expected_end"/>
+                            </group>
+                            <group>
+                                <field name="date_arrived"/>
+                                <field name="date_departed"/>
+                            </group>
+                        </group>
+                        <field name="note"/>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_property_visit_search" model="ir.ui.view">
+            <field name="name">bf.property.visit.search</field>
+            <field name="model">bf.property.visit</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="visitor_name"/>
+                    <field name="host_partner_id"/>
+                    <filter name="expected" string="Attendus" domain="[('state', '=', 'expected')]"/>
+                    <filter name="onsite" string="Sur place" domain="[('state', '=', 'arrived')]"/>
+                    <group expand="1" string="Regrouper par">
+                        <filter name="group_building" string="Immeuble"
+                                context="{'group_by': 'building_id'}"/>
+                        <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_property_visit" model="ir.actions.act_window">
+            <field name="name">Visiteurs</field>
+            <field name="res_model">bf.property.visit</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_expected': 1, 'search_default_group_building': 1}</field>
+        </record>
+
+        <!-- Durée de conservation, sur la fiche du syndicat. -->
+        <record id="view_property_organisation_form_retention" model="ir.ui.view">
+            <field name="name">bf.property.organisation.form.retention</field>
+            <field name="model">bf.property.organisation</field>
+            <field name="inherit_id" ref="bf_property_portal.view_property_organisation_form_portal"/>
+            <field name="arch" type="xml">
+                <field name="portal_document_count" position="after">
+                    <field name="request_acknowledge_days"/>
+                    <field name="log_retention_days"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>

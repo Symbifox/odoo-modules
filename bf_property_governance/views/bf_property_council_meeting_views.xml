@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_council_meeting_form" model="ir.ui.view">
+        <field name="name">bf.property.council.meeting.form</field>
+        <field name="model">bf.property.council.meeting</field>
+        <field name="arch" type="xml">
+            <form string="Réunion du conseil d'administration">
+                <header>
+                    <button name="action_send_minutes" type="object"
+                            string="Consigner la transmission du PV"
+                            class="btn-primary"
+                            invisible="minutes_sent_date or cancelled"/>
+                    <button name="action_cancel" type="object" string="Annuler"
+                            invisible="cancelled"/>
+                    <button name="action_reopen" type="object" string="Rouvrir"
+                            invisible="not cancelled"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="planned,held"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Objet de la réunion"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not participation_warning">
+                        <field name="participation_warning" readonly="1" nolabel="1"/>
+                    </div>
+                    <group>
+                        <group string="Réunion">
+                            <field name="organisation_id"/>
+                            <field name="date"/>
+                            <field name="location"/>
+                            <field name="cancelled" invisible="1"/>
+                        </group>
+                        <group string="Mode de tenue (art. 1084.1 C.c.Q.)">
+                            <field name="participation_mode"/>
+                            <field name="remote_means"
+                                   invisible="participation_mode == 'in_person'"
+                                   required="participation_mode != 'in_person'"/>
+                            <field name="remote_immediate_communication"
+                                   invisible="participation_mode == 'in_person'"/>
+                        </group>
+                    </group>
+                    <group string="Transmission du procès-verbal (art. 1086.1 C.c.Q.)">
+                        <field name="minutes_deadline"/>
+                        <field name="minutes_sent_date"/>
+                        <field name="minutes_state"/>
+                    </group>
+                    <notebook>
+                        <page string="Ordre du jour">
+                            <field name="agenda" placeholder="Points à traiter."/>
+                        </page>
+                        <page string="Procès-verbal">
+                            <div class="alert alert-info" role="alert">
+                                Art. 1070 al. 1 C.c.Q. : les procès-verbaux du conseil
+                                font partie du registre du syndicat, au même titre que
+                                ceux de l'assemblée. Les administrateurs présents se
+                                nomment ici : le module ne tient pas de liste
+                                d'administrateurs, faute d'une source qui en fixe la
+                                composition.
+                            </div>
+                            <field name="minutes"
+                                   placeholder="Délibérations et décisions du conseil."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_council_meeting_list" model="ir.ui.view">
+        <field name="name">bf.property.council.meeting.list</field>
+        <field name="model">bf.property.council.meeting</field>
+        <field name="arch" type="xml">
+            <list string="Réunions du conseil"
+                  decoration-danger="minutes_state == 'overdue'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="organisation_id"/>
+                <field name="participation_mode"/>
+                <field name="minutes_deadline"/>
+                <field name="minutes_state"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_council_meeting_search" model="ir.ui.view">
+        <field name="name">bf.property.council.meeting.search</field>
+        <field name="model">bf.property.council.meeting</field>
+        <field name="arch" type="xml">
+            <search string="Réunions du conseil">
+                <field name="name"/>
+                <field name="organisation_id"/>
+                <filter name="filter_overdue" string="PV en retard"
+                        domain="[('minutes_state', '=', 'overdue')]"/>
+                <filter name="filter_pending" string="PV à transmettre"
+                        domain="[('minutes_state', '=', 'pending')]"/>
+                <filter name="filter_remote" string="Tenues à distance"
+                        domain="[('participation_mode', 'in', ('remote', 'hybrid'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_syndicat" string="Syndicat"
+                            context="{'group_by': 'organisation_id'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_council_meeting" model="ir.actions.act_window">
+        <field name="name">Réunions du conseil</field>
+        <field name="res_model">bf.property.council.meeting</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

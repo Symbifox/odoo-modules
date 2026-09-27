@@ -1,0 +1,970 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_property_core
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 22:33+0000\n"
+"PO-Revision-Date: 2026-09-26 22:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_authority.py:0
+msgid "%s relève du syndicat, pas de l'occupant."
+msgstr "%s belongs to the syndicate, not to the occupant."
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+msgid ""
+",\n"
+"                        soit un écart de"
+msgstr ""
+",\n"
+"                        a gap of"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+msgid ""
+".\n"
+"                        Normal tant que la saisie des fractions n'est pas terminée."
+msgstr ""
+".\n"
+"                        Normal so long as the fractions have not all been entered."
+
+#. module: bf_property_core
+#: model:mail.template,body_html:bf_property_core.mail_template_resident_welcome
+msgid ""
+"<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Bonjour <t t-out=\"object.name or ''\"/>,</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Votre accès au portail de <t t-out=\"ctx.get('bf_organisation') or ''\"/> est actif.</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Votre identifiant : <strong t-out=\"object.login or ''\"/></p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 20px 0;\">\n"
+"        <tbody>\n"
+"            <tr>\n"
+"                <td t-attf-style=\"border-radius:10px;background-color:{{ brand_primary }};text-align:center;\">\n"
+"                    <a t-att-href=\"object.get_base_url() + '/my'\" style=\"display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;\">Ouvrir le portail</a>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </tbody>\n"
+"    </table>\n"
+"</div>\n"
+"        "
+msgstr ""
+"<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Hello <t t-out=\"object.name or ''\"/>,</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Your access to the portal of <t t-out=\"ctx.get('bf_organisation') or ''\"/> is active.</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Your login: <strong t-out=\"object.login or ''\"/></p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 20px 0;\">\n"
+"        <tbody>\n"
+"            <tr>\n"
+"                <td t-attf-style=\"border-radius:10px;background-color:{{ brand_primary }};text-align:center;\">\n"
+"                    <a t-att-href=\"object.get_base_url() + '/my'\" style=\"display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;\">Open the portal</a>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </tbody>\n"
+"    </table>\n"
+"</div>\n"
+"        "
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/res_partner.py:0
+msgid "Accès renvoyé : %s."
+msgstr "Access sent again: %s."
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_form
+msgid "Adresse"
+msgstr "Address"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_ownership_search
+msgid "Anciens"
+msgstr "Former"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__year_built
+msgid "Année de construction"
+msgstr "Year built"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_form
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+msgid "Archivé"
+msgstr "Archived"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_form
+msgid "Archivée"
+msgstr "Archived"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_search
+msgid "Archivés"
+msgstr "Archived"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_organisation__quote_part_state__empty
+msgid "Aucune fraction"
+msgstr "No fraction"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_unit__unit_type__other
+msgid "Autre"
+msgstr "Other"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_organisation__kind__landlord
+msgid "Bailleur"
+msgstr "Lessor"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__fraction_base
+msgid "Base des quotes-parts"
+msgstr "Relative value base"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_form
+msgid "Bâtiment"
+msgstr "Building"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_organisation__kind
+msgid ""
+"Ce qui décide des obligations qui s'appliquent. Un syndicat de copropriété "
+"tient une assemblée, répartit des charges communes et doit une attestation à"
+" chaque vente ; un bailleur signe des baux et donne des avis d'augmentation."
+" Rien de ce qui suit n'est commun aux deux, et le module ne les mélange pas."
+msgstr ""
+"What decides which obligations apply. A syndicate of co-ownership holds a "
+"general meeting, apportions common expenses and owes an attestation on every"
+" sale; a lessor signs leases and gives notices of increase. Nothing that "
+"follows is common to both, and the module does not mix them."
+
+#. module: bf_property_core
+#: model:ir.model,name:bf_property_core.model_bf_property_organisation_authority
+msgid "Ce qui relève du syndicat et non de l'occupant"
+msgstr "What belongs to the syndicate and not to the occupant"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_authority.py:0
+msgid "Ces renseignements relèvent du syndicat, pas de l'occupant : %s."
+msgstr "This information belongs to the syndicate, not to the occupant: %s."
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_unit__is_rented
+msgid ""
+"Cochée quand la fraction est occupée par un locataire plutôt que par son "
+"propriétaire. Le syndicat doit tenir au registre le nom et l'adresse de "
+"chaque locataire (art. 1070 C.c.Q.)."
+msgstr ""
+"Checked when the fraction is occupied by a lessee rather than by its owner. "
+"The syndicate shall keep in the register the name and address of each lessee"
+" (art. 1070 CCQ)."
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__zip
+msgid "Code postal"
+msgstr "Postal code"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_unit__unit_type__commercial
+msgid "Commercial"
+msgstr "Commercial"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_common_area__area_type__general
+msgid "Commune générale"
+msgstr "General common portion"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_common_area__area_type__restricted
+msgid "Commune à usage restreint"
+msgstr "Common portion for restricted use"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_form
+msgid "Complément"
+msgstr "Additional"
+
+#. module: bf_property_core
+#: model:res.groups,name:bf_property_core.group_bf_property_user
+msgid "Consultation"
+msgstr "Consultation"
+
+#. module: bf_property_core
+#: model:res.groups,comment:bf_property_core.group_bf_property_user
+msgid ""
+"Consulte les syndicats, immeubles et fractions sans pouvoir les modifier."
+msgstr ""
+"Consults syndicates, immovables and fractions without being able to modify "
+"them."
+
+#. module: bf_property_core
+#: model:ir.model,name:bf_property_core.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_organisation__kind__cooperative
+msgid "Coopérative d'habitation"
+msgstr "Housing cooperative"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_ownership__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_ownership_search
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_search
+msgid "Copropriétaire"
+msgstr "Co-owner"
+
+#. module: bf_property_core
+#: model:ir.actions.act_window,name:bf_property_core.action_property_ownership
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__owner_ids
+#: model:ir.ui.menu,name:bf_property_core.menu_property_ownership
+msgid "Copropriétaires"
+msgstr "Co-owners"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_unit__owner_ids
+msgid ""
+"Copropriétaires actuels, calculés à partir de l'historique de propriété."
+msgstr "Current co-owners, computed from the ownership history."
+
+#. module: bf_property_core
+#: model:ir.actions.server,name:bf_property_core.cron_property_refresh_current_ir_actions_server
+msgid "Copropriété : rafraîchir les propriétés en cours"
+msgstr "Co-ownership: refresh current ownerships"
+
+#. module: bf_property_core
+#: model:res.groups,comment:bf_property_core.group_bf_property_manager
+msgid "Crée et modifie la structure de copropriété."
+msgstr "Creates and modifies the co-ownership structure."
+
+#. module: bf_property_core
+#: model_terms:ir.actions.act_window,help:bf_property_core.action_property_organisation
+msgid "Créez votre premier syndicat"
+msgstr "Create your first syndicate"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_ownership__date_start
+msgid "Date d'acquisition. Vide vaut « depuis toujours »."
+msgstr "Date of acquisition. Empty means \"always\"."
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_ownership__date_end
+msgid "Date de cession. Vide vaut « toujours propriétaire »."
+msgstr "Date of alienation. Empty means \"still the owner\"."
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__declaration_date
+msgid "Date de la déclaration"
+msgstr "Date of the declaration"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_organisation__declaration_date
+msgid ""
+"Date de publication de la déclaration de copropriété au registre foncier."
+msgstr ""
+"Date of publication of the declaration of co-ownership in the land register."
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_ownership__date_start
+msgid "Depuis"
+msgstr "Since"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_common_area__description
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_common_area_form
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/res_partner.py:0
+msgid "Donner l'accès au portail relève du syndicat, pas de l'occupant."
+msgstr "Granting portal access is for the syndicate to do, not the occupant."
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_organisation__quote_part_state__over
+msgid "Dépassement"
+msgstr "Overrun"
+
+#. module: bf_property_core
+#: model:ir.model,name:bf_property_core.model_mail_template
+msgid "Email Templates"
+msgstr "Email Templates"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_ownership__is_current
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_ownership_search
+msgid "En cours"
+msgstr "Current"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_common_area__bookable
+msgid ""
+"Espace que les occupants peuvent réserver : salle communautaire, gym, "
+"ascenseur de déménagement. Le moteur de réservation vit dans un module "
+"distinct."
+msgstr ""
+"A space occupants may book: community room, gym, moving lift. The booking "
+"engine lives in a separate module."
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_organisation__partner_id
+msgid ""
+"Fiche du syndicat comme personne morale distincte des copropriétaires. Sert "
+"de tiers pour les contrats et la facturation."
+msgstr ""
+"Record of the syndicate as a legal person distinct from the co-owners. "
+"Serves as the third party for contracts and invoicing."
+
+#. module: bf_property_core
+#: model:ir.model,name:bf_property_core.model_bf_property_unit
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_ownership__unit_id
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_form
+msgid "Fraction"
+msgstr "Fraction"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_building.py:0
+#: code:addons/bf_property_core/models/bf_property_organisation.py:0
+#: model:ir.actions.act_window,name:bf_property_core.action_property_unit
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__unit_ids
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__unit_ids
+#: model:ir.ui.menu,name:bf_property_core.menu_property_unit
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_form
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_list
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+msgid "Fractions"
+msgstr "Fractions"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_common_area__restricted_unit_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_common_area_form
+msgid "Fractions bénéficiaires"
+msgstr "Benefiting fractions"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_common_area__restricted_unit_ids
+msgid "Fractions qui ont la jouissance exclusive de cette partie commune."
+msgstr "Fractions having exclusive use of this common portion."
+
+#. module: bf_property_core
+#: model:ir.module.category,description:bf_property_core.module_category_property
+msgid "Gestion des immeubles : copropriété et location"
+msgstr "Management of immovables: co-ownership and leasing"
+
+#. module: bf_property_core
+#: model:res.groups,name:bf_property_core.group_bf_property_manager
+msgid "Gestionnaire"
+msgstr "Manager"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__ownership_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_form
+msgid "Historique de propriété"
+msgstr "Ownership history"
+
+#. module: bf_property_core
+#: model:ir.model,name:bf_property_core.model_bf_property_building
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_common_area__building_id
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__building_id
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_search
+msgid "Immeuble"
+msgstr "Immovable"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_form
+msgid "Immeuble A"
+msgstr "Building A"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_organisation.py:0
+#: model:ir.actions.act_window,name:bf_property_core.action_property_building
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__building_ids
+#: model:ir.ui.menu,name:bf_property_core.menu_property_building
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_list
+msgid "Immeubles"
+msgstr "Immovables"
+
+#. module: bf_property_core
+#: model:mail.template,name:bf_property_core.mail_template_resident_welcome
+msgid "Immeubles : bienvenue au portail"
+msgstr "Immovables: welcome to the portal"
+
+#. module: bf_property_core
+#: model:ir.module.category,name:bf_property_core.module_category_property
+#: model:ir.ui.menu,name:bf_property_core.menu_property_root
+msgid "Immobilier"
+msgstr "Properties"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_organisation__quote_part_state__under
+msgid "Incomplet"
+msgstr "Incomplete"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_res_partner__bf_property_invited_by_id
+#: model:ir.model.fields,field_description:bf_property_core.field_res_users__bf_property_invited_by_id
+msgid "Invité au portail par"
+msgstr "Invited to the portal by"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/res_partner.py:0
+msgid "Invités : %s."
+msgstr "Invited: %s."
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_ownership__date_end
+msgid "Jusqu'au"
+msgstr "Until"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_organisation.py:0
+#: model:ir.model.constraint,message:bf_property_core.constraint_bf_property_organisation_fraction_base_positive
+msgid "La base des quotes-parts doit être supérieure à zéro."
+msgstr "The relative value base shall be greater than zero."
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_ownership.py:0
+msgid "La date de cession ne peut pas précéder la date d'acquisition."
+msgstr "The date of alienation cannot precede the date of acquisition."
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_unit.py:0
+msgid ""
+"La fraction %s porte un occupant distinct sans être marquée comme louée. "
+"Cochez « Louée » ou retirez l'occupant."
+msgstr ""
+"Fraction %s carries a separate occupant without being marked as leased. "
+"Check \"Leased\" or remove the occupant."
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_ownership.py:0
+msgid ""
+"Les parts simultanées de la fraction %(unit)s totalisent %(total).2f %%, ce "
+"qui dépasse 100 %%."
+msgstr ""
+"The simultaneous shares of fraction %(unit)s total %(total).2f%%, which "
+"exceeds 100%%."
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+msgid "Les quotes-parts saisies totalisent"
+msgstr "The relative values entered total"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_list
+msgid "Logements"
+msgstr "Dwellings"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__cadastre
+msgid "Lot cadastral"
+msgstr "Cadastral lot"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__is_rented
+msgid "Louée"
+msgstr "Leased"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_search
+msgid "Louées"
+msgstr "Leased"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__neq
+msgid "NEQ"
+msgstr "QBN"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_common_area__area_type
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__kind
+msgid "Nature"
+msgstr "Nature"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__name
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_common_area__name
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__name
+msgid "Nom"
+msgstr "Name"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+msgid "Nom de l'organisation"
+msgstr "Name of the organisation"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__storeys
+msgid "Nombre d'étages"
+msgstr "Number of storeys"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_ownership__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__name
+msgid "Numéro"
+msgstr "Number"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_organisation__neq
+msgid "Numéro d'entreprise du Québec du organisation."
+msgstr "Québec business number of the organisation."
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_unit__name
+msgid ""
+"Numéro de la fraction tel qu'il apparaît à la déclaration de copropriété. "
+"Souvent le numéro d'appartement."
+msgstr ""
+"Number of the fraction as it appears in the declaration of co-ownership. "
+"Often the apartment number."
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_building__cadastre
+msgid "Numéro de lot au cadastre du Québec."
+msgstr "Lot number in the cadastre of Québec."
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_organisation__kind__nonprofit
+msgid "OBNL d'habitation"
+msgstr "Non-profit housing organisation"
+
+#. module: bf_property_core
+#: model:ir.model,name:bf_property_core.model_bf_property_syndicat_regime
+msgid "Objet propre au régime de la copropriété divise"
+msgstr "Object specific to divided co-ownership"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__occupant_id
+msgid "Occupant"
+msgstr "Occupant"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_unit__occupant_id
+msgid "Occupant réel lorsqu'il diffère du propriétaire."
+msgstr "Actual occupant where different from the owner."
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_form
+msgid "Occupation"
+msgstr "Occupancy"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__organisation_id
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_common_area__organisation_id
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_ownership__organisation_id
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__organisation_id
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_ownership_search
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_search
+msgid "Organisation"
+msgstr "Organisation"
+
+#. module: bf_property_core
+#: model:ir.model,name:bf_property_core.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr "Organisation answering for an immovable"
+
+#. module: bf_property_core
+#: model:ir.actions.act_window,name:bf_property_core.action_property_organisation
+#: model:ir.ui.menu,name:bf_property_core.menu_property_organisation
+msgid "Organisations"
+msgstr "Organisations"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_ownership__share
+msgid "Part (%)"
+msgstr "Share (%)"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_ownership__share
+msgid ""
+"Part détenue dans la fraction. 100 pour un propriétaire unique, à répartir "
+"entre les indivisaires sinon."
+msgstr ""
+"Share held in the fraction. 100 for a sole owner, to be apportioned among "
+"the undivided co-owners otherwise."
+
+#. module: bf_property_core
+#: model:ir.model,name:bf_property_core.model_bf_property_common_area
+msgid "Partie commune"
+msgstr "Common portion"
+
+#. module: bf_property_core
+#: model:ir.actions.act_window,name:bf_property_core.action_property_common_area
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__common_area_ids
+#: model:ir.ui.menu,name:bf_property_core.menu_property_common_area
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_form
+msgid "Parties communes"
+msgstr "Common portions"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__country_id
+msgid "Pays"
+msgstr "Country"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__partner_id
+msgid "Personne morale"
+msgstr "Legal person"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/res_partner.py:0
+msgid "Personne à inviter."
+msgstr "Nobody to invite."
+
+#. module: bf_property_core
+#: model:ir.ui.menu,name:bf_property_core.menu_property_people
+msgid "Personnes"
+msgstr "Persons"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_ownership__company_id
+msgid ""
+"Porté pour permettre le cloisonnement multi-société : ce modèle contient des"
+" noms de copropriétaires, donc des renseignements personnels."
+msgstr ""
+"Carried to allow multi-company walls: this model holds co-owners' names, "
+"hence personal information."
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__owner_display
+msgid "Propriétaire"
+msgstr "Owner"
+
+#. module: bf_property_core
+#: model:ir.model,name:bf_property_core.model_bf_property_ownership
+msgid "Propriété d'une fraction"
+msgstr "Ownership of a fraction"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__state_id
+msgid "Province"
+msgstr "Province"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__quote_part
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_form
+msgid "Quote-part"
+msgstr "Relative value"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__quote_part_pct
+msgid "Quote-part (%)"
+msgstr "Relative value (%)"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+msgid "Quotes-parts"
+msgstr "Relative values"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_search
+msgid "Quotes-parts à compléter"
+msgstr "Relative values to be completed"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_unit__unit_type__storage
+msgid "Rangement"
+msgstr "Storage"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_form
+msgid "Rattachement"
+msgstr "Attachment"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_search
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_ownership_search
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_search
+msgid "Regrouper par"
+msgstr "Group by"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__street
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_building_form
+msgid "Rue"
+msgstr "Street"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__street2
+msgid "Rue 2"
+msgstr "Street 2"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__is_syndicat
+msgid "Régime de la copropriété divise"
+msgstr "Divided co-ownership regime"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+msgid ""
+"Répartition complète : les quotes-parts atteignent exactement la base "
+"déclarée."
+msgstr ""
+"Apportionment complete: the relative values reach exactly the declared base."
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_common_area__bookable
+msgid "Réservable"
+msgstr "Bookable"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_unit__unit_type__residential
+msgid "Résidentiel"
+msgstr "Residential"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_common_area_form
+msgid "Salle communautaire"
+msgstr "Community room"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_search
+msgid "Sans propriétaire"
+msgstr "Without an owner"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_search
+msgid "Sans quote-part"
+msgstr "Without a relative value"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_form
+msgid "Situation"
+msgstr "Location"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__company_id
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_common_area__company_id
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__company_id
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_ownership__company_id
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__company_id
+msgid "Société"
+msgstr "Company"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_building__quote_part_total
+msgid ""
+"Somme des quotes-parts des fractions de cet immeuble. Un syndicat peut "
+"regrouper plusieurs immeubles : c'est le total du syndicat qui doit "
+"atteindre la base, pas celui d'un immeuble isolé."
+msgstr ""
+"Sum of the relative values of this immovable's fractions. A syndicate may "
+"group several immovables: it is the syndicate's total that must reach the "
+"base, not that of one immovable on its own."
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_unit__unit_type__parking
+msgid "Stationnement"
+msgstr "Parking"
+
+#. module: bf_property_core
+#: model:ir.ui.menu,name:bf_property_core.menu_property_structure
+msgid "Structure"
+msgstr "Structure"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_common_area__area
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__area
+msgid "Superficie (m²)"
+msgstr "Area (m²)"
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_organisation__kind__syndicat
+msgid "Syndicat de copropriété"
+msgstr "Syndicate of co-ownership"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_unit_list
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__quote_part_total
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__quote_part_total
+msgid "Total des quotes-parts"
+msgstr "Total of relative values"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_organisation__quote_part_gap
+msgid ""
+"Total des quotes-parts moins la base déclarée. Zéro quand la répartition est"
+" complète."
+msgstr ""
+"Total of relative values less the declared base. Zero when the apportionment"
+" is complete."
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_organisation__fraction_base
+msgid ""
+"Total que doivent atteindre les quotes-parts de toutes les fractions. 1000 "
+"pour des millièmes, 10000 pour des dix-millièmes."
+msgstr ""
+"Total the relative values of all the fractions must reach. 1000 for "
+"thousandths, 10000 for ten-thousandths."
+
+#. module: bf_property_core
+#: model_terms:ir.actions.act_window,help:bf_property_core.action_property_organisation
+msgid ""
+"Un syndicat porte sa déclaration de copropriété, ses immeubles et\n"
+"               la base contre laquelle les quotes-parts sont vérifiées."
+msgstr ""
+"A syndicate carries its declaration of co-ownership, its immovables and\n"
+"               the base against which relative values are checked."
+
+#. module: bf_property_core
+#: model:ir.model.constraint,message:bf_property_core.constraint_bf_property_ownership_share_range
+msgid "Une part doit être supérieure à 0 et au plus 100 %."
+msgstr "A share shall be greater than 0 and at most 100%."
+
+#. module: bf_property_core
+#: model:ir.model.constraint,message:bf_property_core.constraint_bf_property_unit_quote_part_positive
+msgid "Une quote-part ne peut pas être négative."
+msgstr "A relative value cannot be negative."
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_unit__quote_part
+msgid ""
+"Valeur relative de la fraction, dans la base déclarée par le syndicat. "
+"Détermine la part des charges communes et le poids du vote en assemblée."
+msgstr ""
+"Relative value of the fraction, within the base declared by the syndicate. "
+"It determines the contribution to the common expenses and the weight of the "
+"vote at the general meeting."
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_building__city
+msgid "Ville"
+msgstr "City"
+
+#. module: bf_property_core
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_form
+msgid "pour une base de"
+msgstr "for a base of"
+
+#. module: bf_property_core
+#: model:mail.template,subject:bf_property_core.mail_template_resident_welcome
+msgid "{{ ctx.get('bf_organisation') }} : bienvenue au portail"
+msgstr "{{ ctx.get('bf_organisation') }}: welcome to the portal"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_common_area.py:0
+msgid ""
+"« %(area)s » appartient à l'immeuble %(building)s mais réserve sa jouissance"
+" à des fractions d'un autre immeuble : %(units)s."
+msgstr ""
+"\"%(area)s\" belongs to immovable %(building)s but reserves its use to "
+"fractions of another immovable: %(units)s."
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_authority.py:0
+msgid "« %(record)s » ne peut pas passer à cet état de votre propre autorité."
+msgstr "\"%(record)s\" cannot move to this state on your own authority."
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_authority.py:0
+msgid ""
+"« %(what)s » relève du régime de la copropriété divise, et %(who)s est de "
+"nature « %(kind)s ». Ce n'est pas une question de permission : cet objet "
+"n'existe pas dans ce régime."
+msgstr ""
+"\"%(what)s\" belongs to the divided co-ownership regime, and %(who)s is of "
+"nature \"%(kind)s\". It is not a question of permission: this object does "
+"not exist in that regime."
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/bf_property_common_area.py:0
+msgid ""
+"« %s » est déclarée commune générale mais porte des fractions bénéficiaires."
+" Passez-la à usage restreint ou retirez les fractions."
+msgstr ""
+"\"%s\" is declared a general common portion but carries benefiting "
+"fractions. Set it to restricted use or remove the fractions."
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_common_area__area_type
+msgid ""
+"À usage restreint quand la jouissance est réservée à certaines fractions "
+"(art. 1043 C.c.Q.)."
+msgstr ""
+"For restricted use where the use is reserved to certain fractions (art. 1043"
+" CCQ)."
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__quote_part_gap
+msgid "Écart"
+msgstr "Gap"
+
+#. module: bf_property_core
+#. odoo-python
+#: code:addons/bf_property_core/models/res_partner.py:0
+msgid "Écartés (sans adresse ou compte interne) : %s."
+msgstr "Left out (no email address, or an internal account): %s."
+
+#. module: bf_property_core
+#: model:ir.model.fields.selection,name:bf_property_core.selection__bf_property_organisation__quote_part_state__balanced
+msgid "Équilibré"
+msgstr "Balanced"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_unit__floor
+msgid "Étage"
+msgstr "Floor"
+
+#. module: bf_property_core
+#: model:ir.model.fields,field_description:bf_property_core.field_bf_property_organisation__quote_part_state
+#: model_terms:ir.ui.view,arch_db:bf_property_core.view_property_organisation_search
+msgid "État des quotes-parts"
+msgstr "State of relative values"
+
+#. module: bf_property_core
+#: model:ir.model.fields,help:bf_property_core.field_bf_property_organisation__is_syndicat
+msgid ""
+"⚠️ Stocké, parce que les modules de copropriété cherchent dessus. Il ne "
+"dépend que de la nature, donc d'une écriture, jamais de la date du jour : "
+"aucun cron ne lui est nécessaire."
+msgstr ""
+"⚠️ Stored, because the co-ownership modules search on it. It depends only on"
+" the nature, therefore on a write, never on today's date: no cron is needed "
+"for it."

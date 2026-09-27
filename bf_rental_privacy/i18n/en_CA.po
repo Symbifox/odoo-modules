@@ -1,0 +1,135 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_rental_privacy
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 00:09+0000\n"
+"PO-Revision-Date: 2026-09-14 00:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_rental_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_rental_privacy.purpose_rental_lease
+msgid ""
+"Ce dossier ne contient aucun dépôt de garantie, aucune\n"
+"                enquête de crédit et aucune évaluation de votre personne. La loi\n"
+"                interdit d'exiger un dépôt, et le module ne prévoit pas de\n"
+"                champ pour en porter un."
+msgstr ""
+"This file contains no security deposit, no credit\n"
+"                check and no assessment of you as a person. The law forbids exacting\n"
+"                a deposit, and the module provides no field to hold one."
+
+#. module: bf_rental_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_rental_privacy.purpose_rental_resiliation_ground
+msgid ""
+"Ce traitement repose sur l'organisation, par le Code civil,\n"
+"                de l'exercice d'un droit qui vous appartient. Il ne vous est pas\n"
+"                demandé comme un choix, et il n'est pas conservé au-delà de ce\n"
+"                que le dossier du bail exige."
+msgstr ""
+"This processing rests on the Civil Code's organisation\n"
+"                of the exercise of a right that belongs to you. It is not put to\n"
+"                you as a choice, and it is not kept beyond what the lease file\n"
+"                requires."
+
+#. module: bf_rental_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_rental_privacy.purpose_rental_lease
+msgid ""
+"Cette tenue repose sur le bail lui-même et sur les\n"
+"                obligations que le Code civil du Québec attache au louage\n"
+"                résidentiel. Elle ne repose pas sur votre consentement, et ne\n"
+"                vous est pas demandée comme un choix : sans elle, le locateur ne\n"
+"                pourrait ni vous donner un avis valable, ni recevoir le vôtre."
+msgstr ""
+"Keeping it rests on the lease itself and on the\n"
+"                obligations the Civil Code of Québec attaches to the lease of a\n"
+"                dwelling. It does not rest on your consent, and is not put to\n"
+"                you as a choice: without it the lessor could neither give you a\n"
+"                valid notice nor receive yours."
+
+#. module: bf_rental_privacy
+#: model:privacy.purpose,name:bf_rental_privacy.purpose_rental_lease
+msgid "Dossier locatif : bail, avis et loyer"
+msgstr "Rental file: lease, notices and rent"
+
+#. module: bf_rental_privacy
+#: model:privacy.purpose,name:bf_rental_privacy.purpose_rental_resiliation_ground
+msgid "Fondement d'une résiliation par le locataire"
+msgstr "Ground for a resiliation by the lessee"
+
+#. module: bf_rental_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_rental_privacy.purpose_rental_resiliation_ground
+msgid ""
+"Le Code civil vous permet de résilier votre bail avant terme\n"
+"                dans certaines situations : l'attribution d'un logement à loyer\n"
+"                modique, un relogement ordonné par le tribunal, un handicap qui\n"
+"                vous empêche d'occuper le logement, une admission permanente en\n"
+"                hébergement, ou lorsque votre sécurité ou celle d'un enfant qui\n"
+"                habite avec vous est menacée."
+msgstr ""
+"The Civil Code allows you to resiliate your lease before term\n"
+"                in certain situations: being allocated a dwelling in low-rental\n"
+"                housing, being relocated by a decision of the court, a handicap\n"
+"                preventing you from occupying the dwelling, permanent admission\n"
+"                to residential care, or where your safety or that of a child\n"
+"                living with you is threatened."
+
+#. module: bf_rental_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_rental_privacy.purpose_rental_lease
+msgid ""
+"Le locateur tient le dossier de votre bail : votre nom, votre\n"
+"                adresse, vos coordonnées, le loyer convenu et ce qui a été versé,\n"
+"                ainsi que les avis échangés de part et d'autre : modification du\n"
+"                bail, reprise, éviction, cession, sous-location."
+msgstr ""
+"The lessor keeps the file of your lease: your name, your\n"
+"                address, your contact details, the rent agreed upon and what has been paid,\n"
+"                as well as the notices exchanged on both sides: modification of the\n"
+"                lease, repossession, eviction, assignment, sublease."
+
+#. module: bf_rental_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_rental_privacy.purpose_rental_resiliation_ground
+msgid ""
+"Lorsque le fondement est une situation de violence, ce\n"
+"                renseignement est traité comme mettant votre sécurité en jeu :\n"
+"                sa lecture est réservée aux personnes qui traitent votre\n"
+"                dossier, il n'apparaît pas au fil de discussion et il ne part\n"
+"                dans aucun courriel. La date à laquelle le bail prend fin, elle,\n"
+"                reste visible : c'est le motif qui est protégé, pas la date."
+msgstr ""
+"Where the ground is a situation of violence, that\n"
+"                information is treated as putting your safety at stake:\n"
+"                only the people handling your file may read it, it does not appear\n"
+"                in the message thread and it goes out in no email. The date on\n"
+"                which the lease ends does remain visible: it is the ground that\n"
+"                is protected, not the date."
+
+#. module: bf_rental_privacy
+#: model_terms:privacy.purpose,plain_language_summary:bf_rental_privacy.purpose_rental_resiliation_ground
+msgid ""
+"Pour exercer ce droit, vous transmettez un avis accompagné\n"
+"                d'une attestation. Le locateur conserve donc le fondement que\n"
+"                vous avez invoqué et le fait que l'attestation a été reçue.\n"
+"                <strong>Il ne conserve pas le contenu de l'attestation</strong>,\n"
+"                ni les faits qui la soutiennent."
+msgstr ""
+"To exercise this right you send a notice together with\n"
+"                an attestation. The lessor therefore keeps the ground you invoked\n"
+"                and the fact that the attestation was received.\n"
+"                <strong>It does not keep the content of the attestation</strong>,\n"
+"                nor the facts supporting it."

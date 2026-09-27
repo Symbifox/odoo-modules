@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ⚠️ Héritage, jamais de fork. Le
+         vocabulaire d'atelier du module d'origine se recadre par-dessus, il ne
+         se recopie pas. -->
+    <record id="view_equipment_form_property" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.property</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <field name="location" position="before">
+                <field name="bf_building_id"
+                       groups="bf_property_core.group_bf_property_user,bf_property_operations.group_bf_property_operations"
+                       options="{'no_create_edit': True}"/>
+                <field name="bf_common_area_id"
+                       groups="bf_property_core.group_bf_property_user"
+                       invisible="bf_unit_id"
+                       domain="[('building_id', '=', bf_building_id)]"
+                       options="{'no_create_edit': True}"/>
+                <field name="bf_unit_id"
+                       groups="bf_property_core.group_bf_property_user"
+                       invisible="bf_common_area_id"
+                       domain="[('building_id', '=', bf_building_id)]"
+                       options="{'no_create_edit': True}"/>
+            </field>
+            <!-- Le texte libre d'origine reste : il porte la précision que le
+                 bâti n'a pas, « sous-sol, local 3 ». -->
+            <field name="location" position="attributes">
+                <attribute name="string">Précision d'emplacement</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_equipment_tree_property" model="ir.ui.view">
+        <field name="name">maintenance.equipment.list.property</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="bf_building_id"
+                       groups="bf_property_core.group_bf_property_user,bf_property_operations.group_bf_property_operations"
+                       optional="show"/>
+                <field name="bf_common_area_id"
+                       groups="bf_property_core.group_bf_property_user"
+                       optional="hide"/>
+                <field name="bf_unit_id"
+                       groups="bf_property_core.group_bf_property_user"
+                       optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- ⚠️ Un champ sans écran ne vaut rien : c'est le défaut de classe
+         corrigé ailleurs dans la suite. L'emplacement composé n'a de sens
+         que là où l'on balaie des fiches sans les ouvrir. -->
+    <record id="view_equipment_kanban_property" model="ir.ui.view">
+        <field name="name">maintenance.equipment.kanban.property</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_kanban"/>
+        <field name="arch" type="xml">
+            <field name="serial_no" position="after">
+                <field name="bf_location_display"
+                       groups="bf_property_core.group_bf_property_user"
+                       t-if="record.bf_location_display.raw_value"
+                       class="text-muted"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_equipment_search_property" model="ir.ui.view">
+        <field name="name">maintenance.equipment.search.property</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_search"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="bf_building_id"
+                       groups="bf_property_core.group_bf_property_user,bf_property_operations.group_bf_property_operations"/>
+            </field>
+            <filter name="category" position="before">
+                <filter name="bf_group_by_building" string="Immeuble"
+                        groups="bf_property_core.group_bf_property_user,bf_property_operations.group_bf_property_operations"
+                        context="{'group_by': 'bf_building_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- ⚠️ Le cédule se voit depuis le bien, sinon il ne se voit pas. Un
+         entretien préventif qui ne vit que dans un menu de configuration est
+         un entretien que personne ne relit en ouvrant la fiche de la
+         chaudière. -->
+    <record id="view_equipment_form_property_plan" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.property.plan</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_view_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button name="action_view_bf_plans" type="object"
+                        class="oe_stat_button" icon="fa-calendar-check-o">
+                    <field name="bf_plan_count" string="Cédules" widget="statinfo"/>
+                </button>
+            </div>
+            <page name="maintenance" position="after">
+                <page string="Entretien préventif" name="bf_preventive">
+                    <field name="bf_next_preventive_date" invisible="1"/>
+                    <field name="bf_plan_ids"
+                           context="{'default_equipment_id': id}">
+                        <list editable="bottom">
+                            <field name="next_date"/>
+                            <field name="name"/>
+                            <field name="interval_count"/>
+                            <field name="interval_unit"/>
+                            <field name="start_date"/>
+                            <field name="end_date" optional="hide"/>
+                            <field name="advance_days" optional="hide"/>
+                            <field name="duration" widget="float_time" optional="hide"/>
+                            <field name="last_done_date" readonly="1"/>
+                        </list>
+                    </field>
+                </page>
+            </page>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        ⚠️ **La garde est ICI, pas au contrôleur.** Le contrôleur se contente de
+        chercher : si la recherche ne rend rien, la personne n'y a pas droit.
+        Écrire la garde deux fois garantit surtout qu'un jour les deux ne diront
+        plus la même chose. C'est la discipline du portail de la copropriété, et
+        elle vaut ici.
+
+        🔴 **AUCUNE DATE dans ces domaines.** Le domaine d'une `ir.rule` est mis
+        en cache par `ormcache` sans composante temporelle : une date y est
+        évaluée une fois puis gelée. Un bail « en cours » filtré par la règle
+        resterait donc « en cours » longtemps après son terme. Ce qui dépend du
+        jour se calcule au contrôleur.
+
+        🔴 **L'appartenance se lit au BAIL, jamais à la fraction.** Voir
+        `models/bf_rental_lease.py` : passer par `unit.occupant_id` perdrait les
+        co-locataires et les baux sans fraction, et ouvrirait le bail à qui est
+        inscrit à la fraction sans y être partie.
+    -->
+    <data noupdate="0">
+
+        <record id="rule_rental_lease_portal" model="ir.rule">
+            <field name="name">Baux : le locataire voit les siens</field>
+            <field name="model_id" ref="bf_rental.model_bf_rental_lease"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('tenant_ids', 'in', [user.partner_id.id])]</field>
+        </record>
+
+        <record id="rule_rental_notice_portal" model="ir.rule">
+            <field name="name">Avis : ceux des baux du locataire, donnés, hors résiliation</field>
+            <field name="model_id" ref="bf_rental_notice.model_bf_rental_notice"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <!-- 🔴 Les colocataires partagent le bail, pas la résiliation. Une
+                 résiliation de l'art. 1974.1 est donnée par une victime de
+                 violence, et le colocataire peut être l'agresseur : ce qui lui
+                 sert n'est pas le motif, que le portail ne montre pas, mais
+                 « elle part, et quand ». Aucun champ ne dit lequel des
+                 locataires la donne : elle sort donc du portail, et celui qui
+                 l'a donnée le sait déjà. Le brouillon, lui, est le travail du
+                 bureau, pas un avis donné. -->
+            <field name="domain_force">[('lease_id.tenant_ids', 'in', [user.partner_id.id]), ('state', '!=', 'draft'), ('kind', '!=', 'tenant_resiliation')]</field>
+        </record>
+
+        <record id="rule_rental_term_portal" model="ir.rule">
+            <field name="name">Termes de loyer : ceux des baux du locataire</field>
+            <field name="model_id" ref="bf_rental_rent.model_bf_rental_term"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('lease_id.tenant_ids', 'in', [user.partner_id.id])]</field>
+        </record>
+
+        <record id="rule_rental_payment_portal" model="ir.rule">
+            <field name="name">Versements : ceux des baux du locataire</field>
+            <field name="model_id" ref="bf_rental_rent.model_bf_rental_payment"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('lease_id.tenant_ids', 'in', [user.partner_id.id])]</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔴 La bienvenue d'après-inscription d'Odoo est celle de la société qui
+         héberge l'instance (« Bienvenue chez <hébergeur> »). Pour une personne
+         que la suite a invitée, c'est celle-ci qui part : celle de son syndicat
+         ou de son bailleur. -->
+    <record id="mail_template_resident_welcome" model="mail.template">
+        <field name="name">Immeubles : bienvenue au portail</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="subject">{{ ctx.get('bf_organisation') }} : bienvenue au portail</field>
+        <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+        <field name="email_to">{{ object.email_formatted }}</field>
+        <field name="lang">{{ object.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+<t t-set="company" t-value="object.company_id or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'"/>
+<div style="margin:0;padding:0;">
+    <p style="margin:0 0 16px 0;font-size:15px;">Bonjour <t t-out="object.name or ''"/>,</p>
+    <p style="margin:0 0 16px 0;font-size:15px;">Votre accès au portail de <t t-out="ctx.get('bf_organisation') or ''"/> est actif.</p>
+    <p style="margin:0 0 16px 0;font-size:15px;">Votre identifiant : <strong t-out="object.login or ''"/></p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
+        <tbody>
+            <tr>
+                <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                    <a t-att-href="object.get_base_url() + '/my'" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">Ouvrir le portail</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+        </field>
+    </record>
+</odoo>

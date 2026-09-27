@@ -1,0 +1,126 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_property_sign
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 07:40+0000\n"
+"PO-Revision-Date: 2026-09-26 07:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_sign
+#: model:ir.model,name:bf_property_sign.model_bf_property_assembly
+msgid "Assemblée des copropriétaires"
+msgstr "General meeting of the co-owners"
+
+#. module: bf_property_sign
+#: model:ir.model,name:bf_property_sign.model_bf_property_attestation
+msgid "Attestation du syndicat"
+msgstr "Certificate of the syndicate"
+
+#. module: bf_property_sign
+#. odoo-python
+#: code:addons/bf_property_sign/models/bf_property_attestation.py:0
+msgid ""
+"Attestation signée électroniquement. ⚠️ Signer n'est pas remettre : l'art. "
+"1068.1 C.c.Q. fait courir quinze jours de la demande du copropriétaire, et "
+"c'est la remise qui les arrête. Portez la remise au dossier quand elle a "
+"lieu."
+msgstr ""
+"Certificate signed electronically. ⚠️ Signing is not delivering: art. 1068.1"
+" CCQ runs fifteen days from the co-owner's request, and it is delivery that "
+"stops them. Record the delivery in the file when it takes place."
+
+#. module: bf_property_sign
+#: model:ir.model,name:bf_property_sign.model_bf_property_maintenance_log
+msgid "Carnet d'entretien"
+msgstr "Maintenance log"
+
+#. module: bf_property_sign
+#. odoo-python
+#: code:addons/bf_property_sign/models/bf_property_maintenance_log.py:0
+msgid ""
+"Déclaration d'examen sur place signée par %(who)s (r. 8.01, art. 6). La "
+"déclaration est datée du %(date)s et fait partie du carnet."
+msgstr ""
+"Declaration of on-site review signed by %(who)s (r. 8.01, s. 6). The "
+"declaration is dated %(date)s and forms part of the log."
+
+#. module: bf_property_sign
+#: model_terms:ir.ui.view,arch_db:bf_property_sign.view_attestation_form_sign
+msgid "Envoyer pour signature"
+msgstr "Send for signature"
+
+#. module: bf_property_sign
+#: model_terms:ir.ui.view,arch_db:bf_property_sign.view_log_form_sign
+msgid "Faire signer la déclaration d'examen"
+msgstr "Have the declaration of review signed"
+
+#. module: bf_property_sign
+#: model_terms:ir.ui.view,arch_db:bf_property_sign.view_assembly_form_sign
+#: model_terms:ir.ui.view,arch_db:bf_property_sign.view_council_meeting_form_sign
+msgid "Faire signer le procès-verbal"
+msgstr "Have the minutes signed"
+
+#. module: bf_property_sign
+#. odoo-python
+#: code:addons/bf_property_sign/models/bf_property_minutes.py:0
+msgid ""
+"Procès-verbal signé électroniquement. ⚠️ L'art. 1086.1 C.c.Q. exige la "
+"transmission aux copropriétaires dans les 30 jours, pas la signature : "
+"l'échéance continue de se compter sur la transmission seule."
+msgstr ""
+"Minutes signed electronically. ⚠️ Art. 1086.1 CCQ requires sending to the "
+"co-owners within 30 days, not signing: the deadline continues to be counted "
+"on the sending alone."
+
+#. module: bf_property_sign
+#. odoo-python
+#: code:addons/bf_property_sign/models/bf_property_minutes.py:0
+msgid ""
+"Procès-verbal signé électroniquement. ⚠️ L'art. 1102.1 C.c.Q. exige la "
+"transmission aux copropriétaires dans les 30 jours, pas la signature : "
+"l'échéance continue de se compter sur la transmission seule."
+msgstr ""
+"Minutes signed electronically. ⚠️ Art. 1102.1 CCQ requires sending to the "
+"co-owners within 30 days, not signing: the deadline continues to be counted "
+"on the sending alone."
+
+#. module: bf_property_sign
+#: model:ir.model,name:bf_property_sign.model_bf_property_council_meeting
+msgid "Réunion du conseil d'administration"
+msgstr "Board of directors meeting"
+
+#. module: bf_property_sign
+#: model:ir.model.fields,field_description:bf_property_sign.field_bf_property_assembly__sign_request_count
+#: model:ir.model.fields,field_description:bf_property_sign.field_bf_property_attestation__sign_request_count
+#: model:ir.model.fields,field_description:bf_property_sign.field_bf_property_council_meeting__sign_request_count
+#: model:ir.model.fields,field_description:bf_property_sign.field_bf_property_maintenance_log__sign_request_count
+msgid "Signatures"
+msgstr "Signatures"
+
+#. module: bf_property_sign
+#. odoo-python
+#: code:addons/bf_property_sign/models/bf_property_maintenance_log.py:0
+msgid "date non portée"
+msgstr "date not recorded"
+
+#. module: bf_property_sign
+#. odoo-python
+#: code:addons/bf_property_sign/models/bf_property_maintenance_log.py:0
+msgid "l'auteur du carnet"
+msgstr "the author of the log"

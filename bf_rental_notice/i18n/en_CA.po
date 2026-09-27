@@ -1,0 +1,694 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_rental_notice
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 03:30+0000\n"
+"PO-Revision-Date: 2026-09-14 03:30+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__silence_effect__accept
+msgid "Acceptation"
+msgstr "Acceptance"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__state__accepted
+msgid "Accepté"
+msgstr "Accepted"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__resiliation_ground__senior_care
+msgid "Admission permanente en hébergement (art. 1974)"
+msgstr "Permanent admission to residential care (art. 1974)"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__silence_article
+msgid "Article"
+msgstr "Article"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__attestation_received
+msgid "Attestation reçue"
+msgstr "Attestation received"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__resiliation_ground__llm
+msgid "Attribution d'un logement à loyer modique (art. 1974)"
+msgstr "Allocation of a dwelling in low-rental housing (art. 1974)"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__silence_effect__none
+msgid "Aucun : l'avis informe, il n'appelle pas de réponse"
+msgstr "None: the notice informs, it calls for no reply"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_notice.py:0
+msgid ""
+"Aucun locataire ne peut être évincé pour subdiviser, agrandir ou changer l'affectation du logement avant le %(end)s (%(basis)s).\n"
+"\n"
+"⚠️ Cet état a été constaté le %(checked)s. Le moratoire peut cesser AVANT cette date, soixante jours après un avis publié à la Gazette officielle (art. 11), et le gouvernement peut en soustraire des parties du territoire (art. 2). Vérifier avant de s'y fier."
+msgstr ""
+"No lessee may be evicted in order to subdivide, enlarge or change the destination of the dwelling before %(end)s (%(basis)s).\n"
+"\n"
+"⚠️ This state was found on %(checked)s. The moratorium may cease BEFORE that date, sixty days after a notice published in the Gazette officielle (s. 11), and the Government may exclude parts of the territory (s. 2). Check before relying on it."
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_moratorium_form
+msgid "Aucun à ce jour…"
+msgstr "None to date…"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid "Aucune : le contrat de travail a pris fin"
+msgstr "None: the contract of employment has ended"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_notice.py:0
+#: model:ir.actions.act_window,name:bf_rental_notice.action_bf_rental_notice
+#: model:ir.ui.menu,name:bf_rental_notice.menu_bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_form
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_list
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_search
+msgid "Avis"
+msgstr "Notice"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__kind__new_tenant_rent
+msgid "Avis au nouveau locataire : dernier loyer payé"
+msgstr "Notice to the new lessee: lowest rent paid"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__kind__new_tenant_max
+msgid "Avis au nouveau locataire : loyer maximal sur cinq ans"
+msgstr "Notice to the new lessee: maximum rent over five years"
+
+#. module: bf_rental_notice
+#: model:ir.model,name:bf_rental_notice.model_bf_rental_notice
+msgid "Avis donné au titre du louage"
+msgstr "Notice given under the lease"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_notice.py:0
+msgid ""
+"Avis donné trop tard : le dernier jour utile était le %(latest)s pour une "
+"date visée au %(target)s (art. 1942 et 1960 C.c.Q.)."
+msgstr ""
+"Notice given too late: the last useful day was %(latest)s for a date "
+"concerned of %(target)s (arts. 1942 and 1960 CCQ)."
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_notice.py:0
+msgid ""
+"Avis donné trop tôt : le premier jour utile est le %(earliest)s. L'avis de "
+"modification ne se donne pas plus tôt que cela (art. 1942 C.c.Q.), un "
+"maximum valant autant qu'un minimum."
+msgstr ""
+"Notice given too early: the first useful day is %(earliest)s. A notice of "
+"modification is not given earlier than that (art. 1942 CCQ), a maximum "
+"counting as much as a minimum."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_moratorium__gazette_notice_date
+msgid "Avis publié à la Gazette (art. 11)"
+msgstr "Notice published in the Gazette (s. 11)"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__lease_id
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_search
+msgid "Bail"
+msgstr "Lease"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__state__draft
+msgid "Brouillon"
+msgstr "Draft"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__attestation_authority
+msgid ""
+"Calculé depuis le fondement, pour que personne ne réclame la mauvaise pièce."
+msgstr "Computed from the ground, so that nobody asks for the wrong document."
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_moratorium_form
+msgid "Ce qu'on a constaté, et quand"
+msgstr "What was found, and when"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_moratorium_form
+msgid "Ce que dit le texte"
+msgstr "What the text says"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_form
+msgid "Ce que le silence produira"
+msgstr "What silence will produce"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_moratorium__checked_on
+msgid "Constaté le"
+msgstr "Noted on"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__agreed_date
+msgid "Date convenue entre les parties"
+msgstr "Date agreed between the parties"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_moratorium__gazette_notice_date
+msgid ""
+"Date de publication de l'avis constatant un taux d'inoccupation de 3 %. Les "
+"dispositions cessent d'avoir effet le 60e jour qui suit."
+msgstr ""
+"Date of publication of the notice finding a vacancy rate of 3%. The "
+"provisions cease to have effect on the 60th day thereafter."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__target_date
+msgid "Date visée"
+msgstr "Date concerned"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__state__given
+msgid "Donné"
+msgstr "Given"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__date_given
+msgid "Donné le"
+msgstr "Given on"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__silence_effect
+msgid "Effet du silence"
+msgstr "Effect of silence"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_moratorium__in_force
+msgid "En vigueur"
+msgstr "In force"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__kind__sublet_end
+msgid "Fin de bail après sous-location de plus de 12 mois"
+msgstr "End of lease after a sublease of more than 12 months"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__resiliation_ground__employment
+msgid "Fin du contrat de travail (art. 1976)"
+msgstr "End of the contract of employment (art. 1976)"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_moratorium__effective_end
+msgid "Fin effective"
+msgstr "Effective end"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_moratorium__statutory_end
+msgid "Fin prévue par l'art. 1"
+msgstr "End provided by s. 1"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_moratorium__name
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__resiliation_ground
+msgid "Fondement"
+msgstr "Ground"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__is_sensitive_ground
+msgid "Fondement sensible"
+msgstr "Sensitive ground"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__resiliation_ground__handicap
+msgid "Handicap empêchant d'occuper le logement (art. 1974)"
+msgstr "Handicap preventing occupancy of the dwelling (art. 1974)"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid "L'autorité concernée"
+msgstr "The authority concerned"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid ""
+"L'autorité concernée, ET le certificat d'une personne autorisée attestant "
+"que les conditions nécessitant l'admission sont remplies"
+msgstr ""
+"The authority concerned, AND a certificate from an authorized person stating"
+" that the conditions requiring admission to the facility have been met"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid "L'autorité qui attribue le logement à loyer modique"
+msgstr "The authority that allocates the dwelling in low-rental housing"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_form
+msgid "L'avis"
+msgstr "The notice"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_notice.py:0
+msgid ""
+"L'avis de loyer maximal ne se donne que lorsque le bail porte une "
+"restriction au droit à la fixation (art. 1955 al. 3 C.c.Q.)."
+msgstr ""
+"The maximum-rent notice is given only where the lease carries a restriction "
+"on having the rent fixed (art. 1955 para. 3 CCQ)."
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid ""
+"L'avis de résiliation doit être ACCOMPAGNÉ de l'attestation (art. %(article)s C.c.Q.).\n"
+"\n"
+"Pièce attendue : %(authority)s."
+msgstr ""
+"The notice of resiliation shall be ACCOMPANIED by the attestation (art. %(article)s CCQ).\n"
+"\n"
+"Document expected: %(authority)s."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_moratorium__effective_end
+msgid ""
+"La PREMIÈRE des deux dates : celle de l'art. 1, ou le 60e jour suivant un "
+"avis publié sous l'art. 11."
+msgstr ""
+"The EARLIER of the two dates: that of s. 1, or the 60th day following a "
+"notice published under s. 11."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_moratorium__statutory_end
+msgid ""
+"Le 6 juin 2027 au texte. ⚠️ C'est un PLAFOND, pas une échéance : l'art. 11 "
+"peut y mettre fin plus tôt."
+msgstr ""
+"6 June 2027 in the text. ⚠️ It is a CEILING, not a deadline: s. 11 may end "
+"it sooner."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__response_deadline
+msgid "Le locataire doit répondre avant le"
+msgstr "The lessee shall reply before"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__landlord_tribunal_deadline
+msgid "Le locateur doit saisir le Tribunal avant le"
+msgstr "The lessor shall apply to the Tribunal before"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid "Le logement ne peut pas avoir été reloué avant que l'avis soit donné."
+msgstr "The dwelling cannot have been re-leased before the notice was given."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__target_date
+msgid ""
+"Le terme du bail pour un bail à durée fixe ; la date de la modification, de "
+"la reprise ou de l'éviction proposée pour un bail à durée indéterminée."
+msgstr ""
+"The term of the lease for a lease with a fixed term; the date of the "
+"proposed modification, repossession or eviction for a lease with an "
+"indeterminate term."
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid "Le tribunal qui a ordonné le relogement"
+msgstr "The court that ordered the relocation"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__agreed_date
+msgid "Les parties peuvent convenir d'une date antérieure au délai."
+msgstr "The parties may agree on a date earlier than the period."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__relet_date
+msgid "Logement reloué le"
+msgstr "Dwelling re-leased on"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__kind__modification
+msgid "Modification du bail (dont l'augmentation de loyer)"
+msgstr "Modification of the lease (including an increase of rent)"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_moratorium_form
+msgid "Moratoire"
+msgstr "Moratorium"
+
+#. module: bf_rental_notice
+#: model:ir.actions.act_window,name:bf_rental_notice.action_bf_rental_moratorium
+#: model:ir.ui.menu,name:bf_rental_notice.menu_bf_rental_moratorium
+msgid "Moratoire sur l'éviction"
+msgstr "Eviction moratorium"
+
+#. module: bf_rental_notice
+#: model:ir.model,name:bf_rental_notice.model_bf_rental_moratorium
+msgid "Moratoire sur l'éviction : état constaté"
+msgstr "Eviction moratorium: state as noted"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_search
+msgid "Nature"
+msgstr "Nature"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__kind
+msgid "Nature de l'avis"
+msgstr "Nature of the notice"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_moratorium__note
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__note
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_moratorium_form
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_form
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_notice.py:0
+msgid "Nouveau"
+msgstr "New"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__kind__rpa_offer
+msgid "Offre de nouveau bail en RPA (changement d'affectation)"
+msgstr ""
+"Offer of a new lease in a private seniors' residence (change of destination)"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_moratorium__source
+msgid ""
+"Où l'on est allé regarder, pour que la personne suivante y retourne plutôt "
+"que de refaire la recherche."
+msgstr ""
+"Where someone went to look, so that the next person goes back there rather "
+"than redoing the search."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__attestation_authority
+msgid "Qui doit attester"
+msgstr "Who must attest"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__silence_effect__refuse
+msgid "Refus"
+msgstr "Objection"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__date_refused
+msgid "Refus reçu le"
+msgstr "Objection received on"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__tenant_must_leave_if_refusing
+msgid "Refuser oblige à quitter"
+msgstr "Objecting means vacating"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__state__refused
+msgid "Refusé"
+msgstr "Objected to"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_search
+msgid "Regrouper par"
+msgstr "Group by"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__resiliation_ground__rehoused
+msgid "Relogement ordonné par le tribunal (art. 1974)"
+msgstr "Relocation by a decision of the court (art. 1974)"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_form
+msgid ""
+"Renseignement d'une sensibilité particulière : sa\n"
+"                            divulgation met une personne en danger. Ne pas le\n"
+"                            reporter dans un courriel, une note au fil de\n"
+"                            discussion ni un export."
+msgstr ""
+"Information of particular sensitivity: its\n"
+"                            disclosure puts a person in danger. Do not carry it\n"
+"                            over into an email, a note in the message thread\n"
+"                            or an export."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__kind__repossession
+msgid "Reprise du logement"
+msgstr "Repossession of the dwelling"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__date_received
+msgid "Reçu le"
+msgstr "Received on"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__name
+msgid "Référence"
+msgstr "Reference"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_search
+msgid "Réponse attendue"
+msgstr "Reply expected"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_notice__resiliation_effective_date
+msgid "Résiliation effective le"
+msgstr "Resiliation effective on"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_form
+msgid "Résiliation par le locataire"
+msgstr "Resiliation by the lessee"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__kind__tenant_resiliation
+msgid "Résiliation par le locataire (art. 1974, 1974.1, 1976)"
+msgstr "Resiliation by the lessee (arts. 1974, 1974.1, 1976)"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_search
+msgid "Saisine du Tribunal à faire"
+msgstr "Application to the Tribunal to be filed"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_form
+msgid "Si le locataire refuse"
+msgstr "If the lessee objects"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_search
+msgid "Silence = acceptation"
+msgstr "Silence = acceptance"
+
+#. module: bf_rental_notice
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_notice_search
+msgid "Silence = refus"
+msgstr "Silence = refusal"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_moratorium__source
+msgid "Source du constat"
+msgstr "Source of the finding"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__resiliation_ground__violence
+msgid "Sécurité menacée (art. 1974.1)"
+msgstr "Safety threatened (art. 1974.1)"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,field_description:bf_rental_notice.field_bf_rental_moratorium__excluded_territories
+#: model_terms:ir.ui.view,arch_db:bf_rental_notice.view_bf_rental_moratorium_form
+msgid "Territoires soustraits (art. 2)"
+msgstr "Territories excluded (s. 2)"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid ""
+"Un fonctionnaire ou officier public DÉSIGNÉ PAR LE MINISTRE DE LA JUSTICE, "
+"sur le vu d'un jugement ou d'une déclaration sous serment"
+msgstr ""
+"A public servant or public officer DESIGNATED BY THE MINISTER OF JUSTICE, on"
+" examining a judgment or an affidavit"
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid ""
+"Un fondement de résiliation ne se pose que sur un avis de résiliation par le"
+" locataire."
+msgstr ""
+"A ground for resiliation belongs only on a notice of resiliation by the "
+"lessee."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__response_deadline
+msgid "Un mois de la réception (art. 1945, 1962)."
+msgstr "One month after receiving the notice (arts. 1945, 1962)."
+
+#. module: bf_rental_notice
+#. odoo-python
+#: code:addons/bf_rental_notice/models/bf_rental_resiliation.py:0
+msgid ""
+"Une résiliation par le locataire dit sur quoi elle repose (art. 1974, 1974.1"
+" ou 1976) : c'est le fondement qui décide de l'attestation exigée."
+msgstr ""
+"A resiliation by the lessee says what it rests on (art. 1974, 1974.1 or "
+"1976): the ground is what decides which attestation is required."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__state__lapsed
+msgid "Échu"
+msgstr "Lapsed"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields.selection,name:bf_rental_notice.selection__bf_rental_notice__kind__eviction
+msgid "Éviction (subdivision, agrandissement, changement d'affectation)"
+msgstr "Eviction (subdivision, enlargement, change of destination)"
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__landlord_tribunal_deadline
+msgid ""
+"⚠️ Art. 1947 al. 2 : « S'il omet de présenter sa demande dans le mois "
+"suivant le refus, le bail est reconduit de plein droit aux conditions "
+"antérieures. » C'est le SEUL délai du corpus qui joue contre le locateur, et"
+" il lui coûte l'augmentation."
+msgstr ""
+"⚠️ Art. 1947 para. 3: \"If the lessor fails to file an application within "
+"one month after the objection or the refusal, the lease is renewed by "
+"operation of law on the same conditions.\" It is the ONLY period in the "
+"corpus that runs against the lessor, and it costs the lessor the increase."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__date_received
+msgid ""
+"⚠️ C'est de la RÉCEPTION que court le mois de réponse, pas de l'envoi. Tant "
+"qu'elle n'est pas connue, aucune échéance n'est affichée : une échéance "
+"calculée sur une date supposée est pire qu'une échéance absente."
+msgstr ""
+"⚠️ The month to reply runs from RECEIPT, not from sending. Until it is "
+"known, no deadline is shown: a deadline computed on a supposed date is worse"
+" than no deadline at all."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_moratorium__in_force
+msgid ""
+"⚠️ Ce qui se décoche ici est un CONSTAT, pas une prévision. On le décoche le"
+" jour où un avis a paru à la Gazette officielle sous l'art. 11, ou quand la "
+"date de l'art. 1 est passée."
+msgstr ""
+"⚠️ What is unchecked here is a FINDING, not a forecast. It is unchecked the "
+"day a notice appears in the Gazette officielle under s. 11, or when the date"
+" in s. 1 has passed."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__tenant_must_leave_if_refusing
+msgid ""
+"⚠️ Exception de l'art. 1945 al. 2 : lorsque le bail porte sur un logement "
+"visé à l'art. 1955 (immeuble de moins de cinq ans, ou coopérative), le "
+"locataire qui refuse la modification doit quitter à la fin du bail. Refuser "
+"n'est alors pas rester."
+msgstr ""
+"⚠️ Exception under art. 1945 para. 2: where the lease is of a dwelling "
+"described in art. 1955 (an immovable less than five years old, or a "
+"cooperative), the lessee who objects to the modification shall vacate the "
+"dwelling upon termination of the lease. Objecting is then not staying."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__resiliation_ground
+msgid ""
+"⚠️ Le fondement décide de l'attestation exigée, et elles ne sont pas "
+"interchangeables. Il ne décide PAS du délai : celui-ci dépend du bail, pas "
+"du motif."
+msgstr ""
+"⚠️ The ground decides which attestation is required, and they are not "
+"interchangeable. It does NOT decide the period: that depends on the lease, "
+"not on the ground."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_moratorium__excluded_territories
+msgid ""
+"⚠️ Le gouvernement peut soustraire des parties du territoire. Le module ne "
+"modélise pas la géographie du Québec : il porte la trace de ce qui a été "
+"soustrait, pour que personne ne croie le moratoire uniforme."
+msgstr ""
+"⚠️ The Government may exclude parts of the territory. The module does not "
+"model the geography of Québec: it carries the trace of what was excluded, so"
+" that nobody believes the moratorium uniform."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__relet_date
+msgid ""
+"⚠️ Relouer pendant le délai y met fin : la résiliation prend effet à cette "
+"date. Sans ce champ, le module ferait payer au locataire un loyer que la loi"
+" ne lui doit plus."
+msgstr ""
+"⚠️ Re-leasing during the period ends it: the resiliation takes effect on "
+"that date. Without this field the module would make the lessee pay rent the "
+"law no longer owes."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__is_sensitive_ground
+msgid ""
+"⚠️ Vrai pour l'art. 1974.1. Sert à ce que les écrans et les exports sachent "
+"qu'ils manipulent un renseignement dont la divulgation met une personne en "
+"danger, pas seulement un renseignement personnel de plus."
+msgstr ""
+"⚠️ True for art. 1974.1. It lets screens and exports know they are handling "
+"information whose disclosure puts a person in danger, not merely one more "
+"piece of personal information."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_notice__silence_effect
+msgid ""
+"🔴 Ce n'est PAS le même d'un avis à l'autre. Le silence vaut acceptation sur "
+"une modification du bail (art. 1945) et refus sur une reprise, une éviction "
+"ou une fin de sous-location (art. 1962, 1944.1). Un tableau de bord commun "
+"se tromperait trois fois sur quatre."
+msgstr ""
+"🔴 It is NOT the same from one notice to another. Silence means acceptance on"
+" a modification of the lease (art. 1945) and refusal on a repossession, an "
+"eviction or an end of sublease (arts. 1962, 1944.1). One common dashboard "
+"would be wrong three times out of four."
+
+#. module: bf_rental_notice
+#: model:ir.model.fields,help:bf_rental_notice.field_bf_rental_moratorium__checked_on
+msgid ""
+"🔴 La date à laquelle une personne est allée VOIR. C'est elle qui dit ce que "
+"vaut cet enregistrement : un état jamais revérifié n'est pas un état, c'est "
+"un souvenir."
+msgstr ""
+"🔴 The date on which someone went to LOOK. It is what says how much this "
+"record is worth: a state never re-checked is not a state, it is a memory."

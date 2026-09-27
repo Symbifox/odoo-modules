@@ -1,0 +1,3047 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_property_records
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 07:40+0000\n"
+"PO-Revision-Date: 2026-09-26 07:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid ""
+" Aucun bien n'a d'année de réalisation estimée passée sans date de "
+"réalisation ni raison."
+msgstr ""
+" No item has a past estimated year of carrying out without a date of "
+"carrying out or a reason."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid ""
+" ⚠️ %(count)d bien(s) dont l'année de réalisation estimée est passée sans "
+"date de réalisation ni raison : %(items)s. L'art. 4 veut que le carnet "
+"mentionne les travaux requis ou prévus qui n'ont pas été effectués ET "
+"indique pourquoi."
+msgstr ""
+" ⚠️ %(count)d item(s) whose estimated year of carrying out has passed "
+"without a date of carrying out or a reason: %(items)s. Section 4 wants the "
+"log to mention the required or planned works that were not carried out AND "
+"to state why."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid " ⚠️ Sans adresse de courriel, à aviser autrement : %s."
+msgstr " ⚠️ No email address, to be notified by other means: %s."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"%(count)d document(s) fourni(s) au promettant acheteur le %(date)s, %(days)d"
+" jour(s) après la demande. ⚠️ Art. 1068.2 al. 2 : le syndicat doit "
+"maintenant transmettre au propriétaire ce qu'il a fourni."
+msgstr ""
+"%(count)d document(s) provided to the promisor on %(date)s, %(days)d day(s) "
+"after the request. ⚠️ Art. 1068.2 para. 2: the syndicate must now send the "
+"owner what it provided."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"%(syndicat)s : documents fournis au promettant acheteur, fraction %(unit)s"
+msgstr "%(syndicat)s: documents provided to the promisor, fraction %(unit)s"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "%(year)d : %(work)s (%(item)s), coût estimé %(cost)s"
+msgstr "%(year)d: %(work)s (%(item)s), estimated cost %(cost)s"
+
+#. module: bf_property_records
+#: model:ir.actions.report,print_report_name:bf_property_records.action_report_attestation
+msgid ""
+"'Attestation_%s_%s' % ((object.unit_id.display_name or '').replace(' ', "
+"'_'), object._report_date())"
+msgstr ""
+"'Certificate_%s_%s' % ((object.unit_id.display_name or '').replace(' ', "
+"'_'), object._report_date())"
+
+#. module: bf_property_records
+#: model:ir.actions.report,print_report_name:bf_property_records.action_report_site_declaration
+msgid "'Declaration_examen_%s' % object._report_declaration_date()"
+msgstr "'Review_declaration_%s' % object._report_declaration_date()"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid "1 à 5 : la situation financière"
+msgstr "1 to 5: the financial situation"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__contingency_balance
+msgid "1. Fonds de prévoyance à ce jour"
+msgstr "1. Contingency fund to date"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__contingency_recommended
+msgid "1. Montant recommandé par l'étude"
+msgstr "1. Amount recommended by the study"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "1. le montant du fonds de prévoyance (par. 1°)"
+msgstr "1. the amount of the contingency fund (subpara. 1)"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__contributions_called
+msgid "2. Contributions exigées (3 ans)"
+msgstr "2. Contributions exacted (3 years)"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__contributions_paid
+msgid "2. Contributions payées (3 ans)"
+msgstr "2. Contributions paid (3 years)"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__operating_cash
+msgid "3. Liquidités d'exploitation"
+msgstr "3. Operating liquidities"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "3. les liquidités d'exploitation (par. 3°)"
+msgstr "3. the operating liquidities (subpara. 3)"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__financial_results
+msgid "4. Surplus ou déficit des 3 derniers états"
+msgstr "4. Surplus or deficit of the last 3 statements"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "4. le surplus ou déficit des 3 derniers états (par. 4°)"
+msgstr "4. the surplus or deficit of the last 3 statements (subpara. 4)"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__current_budget
+msgid "5. Budget prévisionnel de l'année"
+msgstr "5. Budget forecast for the year"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"5. le budget prévisionnel de l'année en cours (par. 5°) : aucun exercice ne "
+"couvre la date de la demande, et le montant n'a pas été saisi"
+msgstr ""
+"5. the budget forecast for the current year (subpara. 5): no financial "
+"period covers the date of the request, and the amount was not entered"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid "6 et 7 : les assurances"
+msgstr "6 and 7: the insurance"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__insurance_held
+msgid "6. Le syndicat détient les polices de l'art. 1073"
+msgstr "6. The syndicate holds the policies under art. 1073"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "6. la mention des polices de l'art. 1073 (par. 6°)"
+msgstr "6. the mention of the policies under art. 1073 (subpara. 6)"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__self_insurance_balance
+msgid "7. Fonds d'auto-assurance"
+msgstr "7. Self-insurance fund"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__highest_deductible
+msgid "7. Plus haute franchise"
+msgstr "7. Highest deductible"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "7. la plus haute franchise (par. 7°)"
+msgstr "7. the highest deductible (subpara. 7)"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid "8 : l'état de l'immeuble"
+msgstr "8: the condition of the immovable"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__inspections_5y
+msgid "8a. Inspections et expertises (5 ans)"
+msgstr "8a. Inspections and expert reports (5 years)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "8a. les inspections des 5 dernières années"
+msgstr "8a. the inspections of the last 5 years"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__claims_5y
+msgid "8b. Sinistres (5 ans)"
+msgstr "8b. Losses (5 years)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "8b. les sinistres des 5 dernières années"
+msgstr "8b. the losses of the last 5 years"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__works_done_5y
+msgid "8c. Travaux majeurs faits (5 ans)"
+msgstr "8c. Major works done (5 years)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "8c. les travaux majeurs des 5 dernières années"
+msgstr "8c. the major works of the last 5 years"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__works_planned_10y
+msgid "8d. Travaux majeurs prévus (10 ans)"
+msgstr "8d. Major works planned (10 years)"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__litigation
+msgid "8e. Litiges en cours"
+msgstr "8e. Litigation under way"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "8e. les litiges en cours"
+msgstr "8e. the litigation under way"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__declaration_changes_3y
+msgid "8f. Modifications à la déclaration (3 ans)"
+msgstr "8f. Amendments to the declaration (3 years)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "8f. les modifications à la déclaration des 3 dernières années"
+msgstr "8f. the amendments to the declaration over the last 3 years"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid ""
+"<br/>\n"
+"                                Personne autorisée à donner l'attestation pour le syndicat.\n"
+"                                Signée le"
+msgstr ""
+"<br/>\n"
+"                                Person authorized to give the certificate for the syndicate.\n"
+"                                Signed on"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"<p>Bonjour,</p><p>Comme l'exige l'art. 1068.2 al. 2 C.c.Q., %(syndicat)s "
+"vous transmet la liste de ce qu'il a fourni le %(date)s au promettant "
+"acheteur de la fraction %(unit)s :</p><ul>%(list)s</ul><p>Une copie de "
+"chaque document vous est remise sur demande au syndicat.</p>"
+msgstr ""
+"<p>Hello,</p><p>As required by art. 1068.2 para. 2 CCQ, %(syndicat)s sends "
+"you the list of what it provided on %(date)s to the promisor of fraction "
+"%(unit)s:</p><ul>%(list)s</ul><p>A copy of each document is available from "
+"the syndicate on request.</p>"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"<p>Transmis au propriétaire le %(date)s : %(owners)s. Art. 1068.2 al. 2 "
+"C.c.Q.%(unreached)s</p><ul>%(list)s</ul>"
+msgstr ""
+"<p>Sent to the owner on %(date)s: %(owners)s. Art. 1068.2 para. 2 "
+"CCQ.%(unreached)s</p><ul>%(list)s</ul>"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid ""
+"<strong>Projet.</strong>\n"
+"                            Ce document n'a pas encore été remis au copropriétaire demandeur."
+msgstr ""
+"<strong>Draft.</strong>\n"
+"                            This document has not yet been delivered to the requesting co-owner."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid "Annuler"
+msgstr "Cancel"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Annuler une attestation"
+msgstr "Cancel a certificate"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid "Annuler une demande de documents"
+msgstr "Cancel a request for documents"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__cancelled
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__cancelled
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_attestation__state__cancelled
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_disclosure__state__cancelled
+msgid "Annulée"
+msgstr "Cancelled"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__major_work_year
+msgid "Année de réalisation estimée"
+msgstr "Estimated year of carrying out"
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_log__author_order
+msgid ""
+"Art. 1, par. 1° du règlement. Quatre ordres, et non trois : l'Ordre des "
+"évaluateurs agréés du Québec en fait partie."
+msgstr ""
+"S. 1, subpara. 1 of the regulation. Four orders, not three: the Ordre des "
+"évaluateurs agréés du Québec is one of them."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_log__author_practice
+msgid ""
+"Art. 1, par. 2° : les activités professionnelles de l'auteur concernent "
+"principalement la gestion, la construction, la rénovation, l'évaluation ou "
+"l'inspection immobilière."
+msgstr ""
+"S. 1, subpara. 2: the author's professional activities relate principally to"
+" real-estate management, construction, renovation, appraisal or inspection."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__author_practice
+msgid "Art. 1, par. 2°, exigé de tous sauf du CPA."
+msgstr "S. 1, subpara. 2, required of all except the CPA."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_log__author_independent
+msgid ""
+"Art. 1, par. 3° : l'auteur n'est ni membre du conseil d'administration, ni "
+"gérant, copropriétaire ou occupant de l'immeuble, ni le conjoint d'une telle"
+" personne, ni actionnaire, dirigeant, administrateur ou employé d'une "
+"personne morale, société ou fiducie copropriétaire, occupante ou "
+"gestionnaire de l'immeuble. C'est la condition qui écarte le gestionnaire."
+msgstr ""
+"S. 1, subpara. 3: the author is neither a member of the board of directors, "
+"nor a manager, co-owner or occupant of the immovable, nor the spouse of such"
+" a person, nor a shareholder, officer, director or employee of a legal "
+"person, partnership or trust that is a co-owner, occupant or manager of the "
+"immovable. That is the condition which rules out the manager."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__author_independent
+msgid "Art. 1, par. 3°, exigé de tous, CPA compris."
+msgstr "S. 1, subpara. 3, required of all, including the CPA."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__signatory_title
+msgid ""
+"Art. 10 al. 2 : l'attestation « doit être datée et comporter la signature de"
+" la personne autorisée à la donner ainsi que son nom et sa qualité »."
+msgstr ""
+"S. 10 para. 2: the certificate \"must be dated and bear the signature of the"
+" person authorized to give it as well as their name and capacity\"."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__contingency_recommended
+msgid ""
+"Art. 10, par. 1° : la recommandation de l'étude quant au montant devant être"
+" disponible au début de l'année en cours. Repris de l'étude en vigueur."
+msgstr ""
+"S. 10, subpara. 1: the study's recommendation as to the amount that must be "
+"available at the beginning of the current year. Taken from the study in "
+"force."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__contingency_balance
+msgid ""
+"Art. 10, par. 1° : le montant total du fonds de prévoyance à la date de "
+"l'attestation."
+msgstr ""
+"S. 10, subpara. 1: the total amount of the contingency fund at the date of "
+"the certificate."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__contributions_paid
+msgid ""
+"Art. 10, par. 2° : et le montant total payé par les copropriétaires au cours"
+" de cette période."
+msgstr ""
+"S. 10, subpara. 2: and the total amount paid by the co-owners over that "
+"period."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__contributions_called
+msgid ""
+"Art. 10, par. 2° : le montant total des contributions aux charges communes "
+"exigées lors des 3 années précédentes."
+msgstr ""
+"S. 10, subpara. 2: the total amount of the contributions to the common "
+"expenses exacted over the 3 preceding years."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__operating_cash
+msgid "Art. 10, par. 3°."
+msgstr "S. 10, subpara. 3."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__financial_results
+msgid "Art. 10, par. 4°."
+msgstr "S. 10, subpara. 4."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__current_budget
+msgid "Art. 10, par. 5°."
+msgstr "S. 10, subpara. 5."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__insurance_held
+msgid "Art. 10, par. 6° : une mention à cet effet est exigée."
+msgstr "S. 10, subpara. 6: a mention to that effect is required."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__highest_deductible
+msgid ""
+"Art. 10, par. 7° : le montant de la plus haute franchise prévue par les "
+"assurances souscrites par le syndicat."
+msgstr ""
+"S. 10, subpara. 7: the amount of the highest deductible provided for by the "
+"insurance taken out by the syndicate."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__self_insurance_balance
+msgid "Art. 10, par. 7°, première partie."
+msgstr "S. 10, subpara. 7, first part."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__inspections_5y
+msgid ""
+"Art. 10, par. 8°, a) : celles réalisées à l'initiative du syndicat au cours "
+"des 5 dernières années, portant sur l'état général de l'immeuble ou de l'une"
+" de ses principales composantes."
+msgstr ""
+"S. 10, subpara. 8, a): those carried out on the syndicate's initiative over "
+"the last 5 years, bearing on the general condition of the immovable or of "
+"one of its main components."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__claims_5y
+msgid ""
+"Art. 10, par. 8°, b) : ceux ayant affecté la partie privative vendue ou les "
+"parties communes."
+msgstr ""
+"S. 10, subpara. 8, b): those that affected the private portion sold or the "
+"common portions."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__works_done_5y
+msgid ""
+"Art. 10, par. 8°, c) : réparations majeures et remplacements effectués sur "
+"les parties communes, avec date et coût."
+msgstr ""
+"S. 10, subpara. 8, c): major repairs and replacements carried out on the "
+"common portions, with date and cost."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__works_planned_10y
+msgid ""
+"Art. 10, par. 8°, d) : ceux prévus sur les parties communes au cours des 10 "
+"prochaines années, avec date et coût estimés. Proposé d'après le carnet "
+"d'entretien, et modifiable."
+msgstr ""
+"S. 10, subpara. 8, d): those planned on the common portions over the next 10"
+" years, with estimated date and cost. Proposed from the maintenance log, and"
+" editable."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__litigation
+msgid ""
+"Art. 10, par. 8°, e) : ceux auxquels le syndicat est partie et qui font "
+"l'objet d'une procédure devant un tribunal."
+msgstr ""
+"S. 10, subpara. 8, e): those to which the syndicate is a party and that are "
+"the subject of proceedings before a court."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__declaration_changes_3y
+msgid "Art. 10, par. 8°, f)."
+msgstr "S. 10, subpara. 8, f)."
+
+#. module: bf_property_records
+#: model_terms:ir.actions.act_window,help:bf_property_records.action_attestation
+msgid ""
+"Art. 1068.1 C.c.Q. La demande vient du copropriétaire qui vend, non de\n"
+"                l'acquéreur, et le syndicat a 15 jours pour y répondre. L'état des\n"
+"                charges de l'art. 1069 al. 2 et les documents de l'art. 1068.2 forment\n"
+"                deux autres régimes."
+msgstr ""
+"Art. 1068.1 CCQ. The request comes from the co-owner who sells, not from\n"
+"                the acquirer, and the syndicate has 15 days to answer it. The statement of\n"
+"                common expenses under art. 1069 para. 2 and the documents under art. 1068.2 form\n"
+"                two other regimes."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_attestation__requester_partner_id
+msgid ""
+"Art. 1068.1 al. 2 : le syndicat remet l'attestation « au copropriétaire qui "
+"en fait la demande ». Ce n'est pas l'acquéreur pressenti : celui-là relève "
+"des art. 1069 al. 2 et 1068.2."
+msgstr ""
+"Art. 1068.1 para. 2: the syndicate gives the certificate \"to a co-owner who"
+" so requests\". It is not the prospective acquirer: that one falls under "
+"arts. 1069 para. 2 and 1068.2."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"Art. 1068.1 al. 3 C.c.Q. : l'obligation de remettre l'attestation n'existe "
+"qu'à compter de la nomination d'un nouveau conseil, après la perte de "
+"contrôle du promoteur. Renseignez la date de l'assemblée de l'art. 1104 sur "
+"le syndicat."
+msgstr ""
+"Art. 1068.1 para. 3 CCQ: the obligation to give the certificate exists only "
+"from the appointment of a new board, after the developer loses control. "
+"Enter the date of the art. 1104 meeting on the syndicate."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_disclosure__days_open
+msgid ""
+"Art. 1068.2 : le syndicat fournit « avec diligence ». Le texte ne pose aucun"
+" nombre de jours et le module n'en invente pas : ce compteur informe, il ne "
+"déclare aucun retard."
+msgstr ""
+"Art. 1068.2: the syndicate provides \"with diligence\". The text sets no "
+"number of days and the module invents none: this counter informs, it "
+"declares no delay."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid ""
+"Art. 1068.2 : le syndicat fournit « sous réserve des\n"
+"                                dispositions relatives à la protection de la vie privée ».\n"
+"                                L'article autorise la communication au sens de l'art. 37\n"
+"                                C.c.Q., mais cette autorisation ne couvre pas les\n"
+"                                renseignements personnels des autres copropriétaires. Le\n"
+"                                registre de l'art. 1070 en contient, et l'état des impayés\n"
+"                                en est."
+msgstr ""
+"Art. 1068.2: the syndicate provides \"subject to the\n"
+"                                provisions relating to the protection of privacy\".\n"
+"                                The article authorizes communication within the meaning of art. 37\n"
+"                                CCQ, but that authorization does not cover the\n"
+"                                personal information of the other co-owners. The\n"
+"                                register under art. 1070 contains some, and the statement of arrears\n"
+"                                is one."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_disclosure__cost_amount
+msgid ""
+"Art. 1068.2 : les documents sont fournis « aux frais » du promettant "
+"acheteur."
+msgstr ""
+"Art. 1068.2: the documents are provided \"at the expense\" of the promisor."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_disclosure__requester_partner_id
+msgid ""
+"Art. 1068.2 : « celui qui promet d'acheter une fraction ». Ce n'est ni le "
+"copropriétaire vendeur, qui demande l'attestation de l'art. 1068.1, ni le "
+"proposant acquéreur, qui demande l'état des charges de l'art. 1069 al. 2."
+msgstr ""
+"Art. 1068.2: \"a person who promises to buy a fraction\". It is neither the "
+"selling co-owner, who requests the certificate under art. 1068.1, nor the "
+"prospective acquirer, who requests the statement of common expenses under "
+"art. 1069 para. 2."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_disclosure__privacy_reviewed
+msgid ""
+"Art. 1068.2 : « sous réserve des dispositions relatives à la protection de "
+"la vie privée ». L'article autorise la communication au sens de l'art. 37 "
+"C.c.Q., mais cette autorisation ne couvre pas les renseignements personnels "
+"des autres copropriétaires. Le registre de l'art. 1070 en contient, et "
+"l'état des impayés en est."
+msgstr ""
+"Art. 1068.2: \"subject to the provisions relating to the protection of "
+"privacy\". The article authorizes communication within the meaning of art. "
+"37 CCQ, but that authorization does not cover the personal information of "
+"the other co-owners. The register under art. 1070 contains some, and the "
+"statement of arrears is one."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"Art. 1068.2 C.c.Q. : le syndicat fournit « sous réserve des dispositions "
+"relatives à la protection de la vie privée ». L'autorisation de la loi au "
+"sens de l'art. 37 ne couvre pas les renseignements personnels des autres "
+"copropriétaires. Consignez la revue avant de fournir."
+msgstr ""
+"Art. 1068.2 CCQ: the syndicate provides \"subject to the provisions relating"
+" to the protection of privacy\". The authorization of law within the meaning"
+" of art. 37 does not cover the personal information of the other co-owners. "
+"Record the review before providing."
+
+#. module: bf_property_records
+#: model_terms:ir.actions.act_window,help:bf_property_records.action_disclosure
+msgid ""
+"Art. 1068.2 C.c.Q. Troisième des régimes de documents à l'acquéreur.\n"
+"                Demandé par le promettant acheteur, à ses frais, fourni « avec\n"
+"                diligence » et sous réserve de la protection de la vie privée. Ce qui a\n"
+"                été fourni doit ensuite être transmis au propriétaire de la fraction."
+msgstr ""
+"Art. 1068.2 CCQ. The third of the regimes of documents to the acquirer.\n"
+"                Requested by the promisor, at their expense, provided \"with\n"
+"                diligence\" and subject to the provisions relating to the protection of privacy. What was\n"
+"                provided must then be sent to the owner of the fraction."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_disclosure__owner_partner_ids
+msgid ""
+"Art. 1068.2 al. 2 : le syndicat doit transmettre au propriétaire de la "
+"fraction ou à ses ayants cause ce qu'il a fourni."
+msgstr ""
+"Art. 1068.2 para. 2: the syndicate must send to the owner of the fraction or"
+" to their successors what it provided."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid ""
+"Art. 1068.2 al. 2 C.c.Q. : le syndicat doit transmettre au\n"
+"                        propriétaire de la fraction, ou à ses ayants cause, les documents\n"
+"                        ou renseignements qu'il a fournis au promettant acheteur.\n"
+"                        L'obligation naît de la remise et porte sur son contenu exact."
+msgstr ""
+"Art. 1068.2 para. 2 CCQ: the syndicate must send to the\n"
+"                        owner of the fraction, or to their successors, the documents\n"
+"                        or information it provided to the promisor.\n"
+"                        The obligation arises from the delivery and bears on its exact content."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"Art. 1068.2 al. 2 C.c.Q. : le syndicat transmet au propriétaire « les "
+"documents ou renseignements qu'il A FOURNIS ». Rien n'a encore été fourni."
+msgstr ""
+"Art. 1068.2 para. 2 CCQ: the syndicate sends the owner \"the documents or "
+"information IT PROVIDED\". Nothing has been provided yet."
+
+#. module: bf_property_records
+#: model_terms:ir.actions.act_window,help:bf_property_records.action_log
+msgid ""
+"Art. 1070.2 C.c.Q. Le carnet ne peut être établi que par un membre de\n"
+"                l'un de quatre ordres professionnels, exerçant principalement dans\n"
+"                l'immobilier et indépendant du syndicat : le gestionnaire de l'immeuble\n"
+"                ne peut pas établir le carnet de l'immeuble qu'il gère."
+msgstr ""
+"Art. 1070.2 CCQ. The log may be established only by a member of\n"
+"                one of four professional orders, practising principally in\n"
+"                real estate and independent of the syndicate: the manager of the immovable\n"
+"                cannot establish the log of the immovable they manage."
+
+#. module: bf_property_records
+#: model_terms:ir.actions.act_window,help:bf_property_records.action_study
+msgid ""
+"Art. 1071 al. 2 C.c.Q. Un comptable professionnel agréé indépendant peut\n"
+"                la réaliser, au même titre qu'un ingénieur, un évaluateur agréé, un\n"
+"                architecte ou un technologue professionnel. Elle se base obligatoirement\n"
+"                sur un carnet d'entretien établi."
+msgstr ""
+"Art. 1071 para. 2 CCQ. An independent chartered professional accountant may\n"
+"                carry it out, just as an engineer, a chartered appraiser, an\n"
+"                architect or a professional technologist may. It is necessarily based\n"
+"                on an established maintenance log."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_organisation.py:0
+msgid ""
+"Art. 1106.1 C.c.Q. : dans les 30 jours de l'assemblée extraordinaire, le "
+"promoteur fournit au syndicat le carnet d'entretien et l'étude du fonds de "
+"prévoyance, ainsi que les plans et devis, les certificats de localisation et"
+" la description des parties privatives. Échéance au %(deadline)s."
+msgstr ""
+"Art. 1106.1 CCQ: within 30 days of the special meeting, the developer "
+"provides the syndicate with the maintenance log and the contingency fund "
+"study, as well as the plans and specifications, the location certificates "
+"and the description of the private portions. Due on %(deadline)s."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_item.py:0
+msgid ""
+"Art. 2 du règlement : un bien situé dans une partie privative n'entre au "
+"carnet que si le syndicat est responsable de son entretien. Retirez-le, ou "
+"portez cette responsabilité."
+msgstr ""
+"S. 2 of the regulation: an item situated in a private portion enters the log"
+" only if the syndicate is responsible for its maintenance. Remove it, or "
+"record that responsibility."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_log__planning_horizon_date
+msgid ""
+"Art. 3 : la description des réparations majeures et des remplacements porte "
+"sur minimalement les 25 prochaines années."
+msgstr ""
+"S. 3: the description of the major repairs and replacements bears on at "
+"least the next 25 years."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__in_horizon
+msgid ""
+"Art. 3 : la description porte sur minimalement les 25 prochaines années. Un "
+"travail prévu au-delà est une information de plus, pas une exigence du "
+"règlement."
+msgstr ""
+"S. 3: the description bears on at least the next 25 years. A work planned "
+"beyond that is one more piece of information, not a requirement of the "
+"regulation."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid ""
+"Art. 3 du règlement : l'estimation de l'état, de la durée\n"
+"                                de vie utile restante et du coût des travaux appartient à\n"
+"                                la personne qui signe le carnet. Le module la conserve, il\n"
+"                                ne la produit pas."
+msgstr ""
+"S. 3 of the regulation: the estimate of the condition, of the remaining\n"
+"                                useful life and of the cost of the works belongs to\n"
+"                                the person who signs the log. The module keeps it, it\n"
+"                                does not produce it."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_log__last_update_date
+msgid ""
+"Art. 4 : le conseil met le carnet à jour minimalement une fois par année."
+msgstr "S. 4: the board updates the log at least once a year."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_log__last_revision_date
+msgid ""
+"Art. 5 : la révision est faite par une personne remplissant les conditions "
+"de l'art. 1. Elle est distincte de la mise à jour annuelle, que le conseil "
+"fait lui-même."
+msgstr ""
+"S. 5: the review is done by a person meeting the conditions of s. 1. It is "
+"distinct from the annual update, which the board does itself."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid ""
+"Art. 5 al. 1 du règlement : révision minimalement tous les 5 ans. Aucun "
+"immeuble n'est rattaché, donc les trois conditions du 10 ans n'ont pas pu "
+"être vérifiées."
+msgstr ""
+"S. 5 para. 1 of the regulation: review at least every 5 years. No immovable "
+"is attached, so the three conditions for 10 years could not be checked."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid ""
+"Art. 5 al. 1 du règlement : révision minimalement tous les 5 ans. Aucune des"
+" trois conditions du deuxième alinéa n'est remplie."
+msgstr ""
+"S. 5 para. 1 of the regulation: review at least every 5 years. None of the "
+"three conditions of the second paragraph is met."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_building_form_loi16
+msgid ""
+"Art. 5 al. 2 du Règlement établissant diverses règles en matière\n"
+"                        de copropriété divise : la révision du carnet passe de 5 à 10 ans\n"
+"                        si l'immeuble remplit l'UNE de ces trois conditions. Le décompte\n"
+"                        des parties privatives exclut les accessoires, rangements et\n"
+"                        stationnements compris."
+msgstr ""
+"S. 5 para. 2 of the Regulation respecting various rules concerning\n"
+"                        divided co-ownership: the review of the log goes from 5 to 10 years\n"
+"                        if the immovable meets ONE of these three conditions. The count\n"
+"                        of private portions excludes accessories, storage and\n"
+"                        parking included."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid ""
+"Art. 5 al. 2 du règlement : révision aux 10 ans, l'immeuble remplissant "
+"%(which)s. Les trois conditions sont alternatives."
+msgstr ""
+"S. 5 para. 2 of the regulation: review every 10 years, the immovable meeting"
+" %(which)s. The three conditions are alternatives."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_building__private_unit_count
+msgid ""
+"Art. 5 al. 2, par. 1° : le décompte exclut les fractions accessoires, "
+"rangements et stationnements compris. C'est ce décompte-là, et non le nombre"
+" total de fractions, qui décide de l'intervalle de révision."
+msgstr ""
+"S. 5 para. 2, subpara. 1: the count excludes accessory fractions, storage "
+"and parking included. It is that count, and not the total number of "
+"fractions, that decides the review interval."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_building__common_areas_in_building
+msgid ""
+"Art. 5 al. 2, par. 2° : « aucune partie commune de l'immeuble n'est située "
+"dans un bâtiment » permet la révision aux 10 ans. Une cour, une allée ou un "
+"stationnement extérieur sont des parties communes qui ne sont dans aucun "
+"bâtiment. Le module ne peut pas le lire dans la liste des parties communes."
+msgstr ""
+"S. 5 para. 2, subpara. 2: \"no common portion of the immovable is situated "
+"in a building\" allows review every 10 years. A yard, a driveway or outdoor "
+"parking are common portions that are in no building. The module cannot read "
+"this from the list of common portions."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_log__site_declaration
+msgid ""
+"Art. 6 : l'auteur signe une déclaration attestant que les parties communes "
+"et les biens de l'art. 2 ont été examinés sur place par lui ou par une "
+"personne sous sa supervision, et qu'il a pris connaissance des "
+"renseignements du carnet."
+msgstr ""
+"S. 6: the author signs a declaration attesting that the common portions and "
+"the items under s. 2 were reviewed on site by them or by a person under "
+"their supervision, and that they have taken cognizance of the information in"
+" the log."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid ""
+"Art. 6 du règlement : la déclaration d'examen sur place « doit être datée et"
+" incluse au carnet d'entretien »."
+msgstr ""
+"S. 6 of the regulation: the declaration of on-site review \"must be dated "
+"and included in the maintenance log\"."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__author_order
+msgid ""
+"Art. 7 du règlement. Aux quatre ordres du carnet s'ajoute l'Ordre des "
+"comptables professionnels agréés du Québec, qui n'a à remplir que la "
+"condition d'indépendance."
+msgstr ""
+"S. 7 of the regulation. To the log's four orders is added the Ordre des "
+"comptables professionnels agréés du Québec, which need meet only the "
+"condition of independence."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__fund_balance_used
+msgid ""
+"Art. 8 al. 2, par. 1° : le solde du fonds de prévoyance utilisé pour la "
+"réalisation de l'étude."
+msgstr ""
+"S. 8 para. 2, subpara. 1: the balance of the contingency fund used in "
+"carrying out the study."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__recommended_annual_amount
+msgid ""
+"Art. 8 al. 2, par. 3° : la recommandation sur les sommes à verser "
+"annuellement au fonds."
+msgstr ""
+"S. 8 para. 2, subpara. 3: the recommendation on the amounts to be paid "
+"annually into the fund."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__restricted_share
+msgid ""
+"Art. 8 al. 2, par. 3° in fine : la part du montant réservée au financement "
+"des réparations majeures aux parties communes à usage restreint et au "
+"remplacement de ces parties, « le cas échéant ». Elle n'est donc pas "
+"toujours applicable."
+msgstr ""
+"S. 8 para. 2, subpara. 3 in fine: the share of the amount reserved to "
+"finance major repairs to common portions for restricted use and the "
+"replacement of those portions, \"where applicable\". It is therefore not "
+"always applicable."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__recommended_opening_balance
+msgid "Art. 8 al. 2, par. 3°, première partie."
+msgstr "S. 8 para. 2, subpara. 3, first part."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__calculation_note
+msgid ""
+"Art. 8 al. 2, par. 4° : « une explication sur les calculs faits pour établir"
+" les montants ». Le module la conserve, il ne la produit pas."
+msgstr ""
+"S. 8 para. 2, subpara. 4: \"an explanation of the calculations made to "
+"establish the amounts\". The module keeps it, it does not produce it."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_study_form
+msgid ""
+"Art. 8 du règlement : l'étude se base sur la description des\n"
+"                        réparations majeures et des remplacements incluse au carnet\n"
+"                        d'entretien. Elle ne peut donc pas le précéder. Le module ne se\n"
+"                        prononce jamais sur la suffisance du fonds : c'est l'affaire de\n"
+"                        la personne qui signe."
+msgstr ""
+"S. 8 of the regulation: the study is based on the description of the\n"
+"                        major repairs and replacements included in the maintenance\n"
+"                        log. It therefore cannot precede it. The module never\n"
+"                        pronounces on the sufficiency of the fund: that is the business of\n"
+"                        the person who signs."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__log_id
+msgid ""
+"Art. 8 du règlement : l'étude « doit être réalisée en se basant sur la "
+"description incluse au carnet d'entretien conformément à l'article 3 ». Sans"
+" carnet établi, il n'y a rien sur quoi se baser."
+msgstr ""
+"S. 8 of the regulation: the study \"must be carried out on the basis of the "
+"description included in the maintenance log in accordance with section 3\". "
+"Without an established log, there is nothing to base it on."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__signed
+msgid ""
+"Art. 9 : « L'étude du fonds de prévoyance est signée et datée par son "
+"auteur. »"
+msgstr "S. 9: \"The contingency fund study is signed and dated by its author.\""
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid ""
+"Article 1068.1 du Code civil du Québec. Contenu établi conformément\n"
+"                            à l'article 10 du Règlement établissant diverses règles en matière\n"
+"                            de copropriété divise (RLRQ, c. CCQ, r. 8.01)."
+msgstr ""
+"Article 1068.1 of the Civil Code of Québec. Content established in accordance\n"
+"                            with section 10 of the Regulation respecting various rules concerning\n"
+"                            divided co-ownership (CQLR, c. CCQ, r. 8.01)."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Assurances du syndicat"
+msgstr "Insurance of the syndicate"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__name
+msgid "Attestation"
+msgstr "Certificate"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid "Attestation datée du"
+msgstr "Certificate dated"
+
+#. module: bf_property_records
+#: model:ir.actions.report,name:bf_property_records.action_report_attestation
+#: model:ir.model,name:bf_property_records.model_bf_property_attestation
+msgid "Attestation du syndicat"
+msgstr "Certificate of the syndicate"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid "Attestation du syndicat sur l'état de la copropriété"
+msgstr ""
+"Certificate of the syndicate attesting to the condition of the co-ownership"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"Attestation remise le %(date)s, demandée le %(asked)s. Délai de l'art. "
+"1068.1 al. 2 : 15 jours, échéance au %(deadline)s. %(verdict)s"
+msgstr ""
+"Certificate delivered on %(date)s, requested on %(asked)s. Period under art."
+" 1068.1 para. 2: 15 days, due on %(deadline)s. %(verdict)s"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_organisation__attestation_ids
+msgid "Attestations"
+msgstr "Certificates"
+
+#. module: bf_property_records
+#: model:ir.actions.act_window,name:bf_property_records.action_attestation
+#: model:ir.ui.menu,name:bf_property_records.menu_attestation
+msgid "Attestations du syndicat"
+msgstr "Certificates of the syndicate"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"Aucun document n'est inscrit. L'art. 1068.2 al. 2 oblige à transmettre au "
+"propriétaire ce qui a été fourni : il faut donc savoir ce que c'était."
+msgstr ""
+"No document is recorded. Art. 1068.2 para. 2 requires sending the owner what"
+" was provided: one must therefore know what it was."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"Aucun propriétaire n'est inscrit au registre pour la fraction %s : la "
+"transmission de l'art. 1068.2 al. 2 n'a personne à qui aller. Inscrivez le "
+"propriétaire d'abord."
+msgstr ""
+"No owner is entered in the register for fraction %s: the transmission under "
+"art. 1068.2 para. 2 has nobody to go to. Enter the owner first."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_declaration_report.py:0
+msgid "Auteur"
+msgstr "Author"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "Auteur (art. 1 du règlement)"
+msgstr "Author (s. 1 of the regulation)"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_study_form
+msgid "Auteur (art. 7 du règlement)"
+msgstr "Author (s. 7 of the regulation)"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_organisation__loi16_regime__handover
+msgid "Autour du pivot : le promoteur fournit sous 6 mois"
+msgstr "Around the pivot: the developer provides within 6 months"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__name
+msgid "Bien"
+msgstr "Item"
+
+#. module: bf_property_records
+#: model:ir.model,name:bf_property_records.model_bf_property_maintenance_item
+msgid "Bien au carnet d'entretien"
+msgstr "Item in the maintenance log"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__item_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "Biens au carnet"
+msgstr "Items in the log"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_declaration_report.py:0
+msgid "Biens décrits au carnet"
+msgstr "Items described in the log"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_item__condition__good
+msgid "Bon"
+msgstr "Good"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__state__draft
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__state__draft
+msgid "Brouillon"
+msgstr "Draft"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Budget prévisionnel de l'année en cours"
+msgstr "Budget forecast for the current year"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_declaration_report.py:0
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__log_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__name
+msgid "Carnet"
+msgstr "Log"
+
+#. module: bf_property_records
+#: model:ir.model,name:bf_property_records.model_bf_property_maintenance_log
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__log_id
+msgid "Carnet d'entretien"
+msgstr "Maintenance log"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "Carnet d'entretien 2026"
+msgstr "2026 maintenance log"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_building_form_loi16
+msgid "Carnet d'entretien : conditions de taille"
+msgstr "Maintenance log: size conditions"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_organisation__loi16_deadline
+msgid "Carnet et étude au plus tard le"
+msgstr "Log and study no later than"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_declaration_report.py:0
+msgid "Carnet établi le"
+msgstr "Log established on"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid ""
+"Carnet établi le %(date)s. %(rule)s Horizon de planification jusqu'au "
+"%(horizon)s (art. 3 du règlement, minimalement 25 ans)."
+msgstr ""
+"Log established on %(date)s. %(rule)s Planning horizon to %(horizon)s (s. 3 "
+"of the regulation, at least 25 years)."
+
+#. module: bf_property_records
+#: model:ir.actions.act_window,name:bf_property_records.action_log
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_organisation__maintenance_log_ids
+#: model:ir.ui.menu,name:bf_property_records.menu_log
+msgid "Carnets d'entretien"
+msgstr "Maintenance logs"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure_line__redacted
+msgid "Caviardé"
+msgstr "Redacted"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__missing_items
+msgid "Ce qu'il manque"
+msgstr "What is missing"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__privacy_note
+msgid "Ce qui a été retranché ou caviardé"
+msgstr "What was removed or redacted"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid "Ce qui a été retranché ou caviardé, et pourquoi."
+msgstr "What was removed or redacted, and why."
+
+#. module: bf_property_records
+#: model:ir.model.constraint,message:bf_property_records.constraint_bf_property_maintenance_log_unique_name_per_syndicat
+msgid "Ce syndicat porte déjà un carnet de ce nom."
+msgstr "This syndicate already has a log of that name."
+
+#. module: bf_property_records
+#: model:ir.model.constraint,message:bf_property_records.constraint_bf_property_contingency_study_unique_name_per_syndicat
+msgid "Ce syndicat porte déjà une étude de ce nom."
+msgstr "This syndicate already has a study of that name."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_site_declaration
+msgid ""
+"Cette déclaration fait partie du carnet d'entretien du syndicat\n"
+"                            et se conserve avec lui."
+msgstr ""
+"This declaration forms part of the syndicate's maintenance log\n"
+"                            and is kept with it."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "Consigner la mise à jour annuelle"
+msgstr "Record the annual update"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid "Contenu minimal"
+msgstr "Minimum content"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_study_form
+msgid "Contenu minimal (art. 8 al. 2 du règlement)"
+msgstr "Minimum content (s. 8 para. 2 of the regulation)"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__contract_reference
+msgid "Contrats"
+msgstr "Contracts"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Contribution totale prévue"
+msgstr "Total contribution planned"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Contributions aux charges communes, 3 années précédentes"
+msgstr "Contributions to the common expenses, 3 preceding years"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__requester_partner_id
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid "Copropriétaire demandeur"
+msgstr "Requesting co-owner"
+
+#. module: bf_property_records
+#: model:ir.actions.server,name:bf_property_records.cron_syndicat_refresh_loi16_ir_actions_server
+msgid "Copropriété : calendrier des échéances légales"
+msgstr "Co-ownership: calendar of legal due dates"
+
+#. module: bf_property_records
+#: model:ir.actions.server,name:bf_property_records.cron_attestation_refresh_state_ir_actions_server
+msgid "Copropriété : délai de 15 jours des attestations"
+msgstr "Co-ownership: 15-day period for certificates"
+
+#. module: bf_property_records
+#: model:ir.actions.server,name:bf_property_records.cron_study_refresh_schedule_ir_actions_server
+msgid "Copropriété : échéance de l'étude du fonds"
+msgstr "Co-ownership: contingency fund study due date"
+
+#. module: bf_property_records
+#: model:ir.actions.server,name:bf_property_records.cron_log_refresh_schedule_ir_actions_server
+msgid "Copropriété : échéances du carnet d'entretien"
+msgstr "Co-ownership: maintenance log due dates"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__major_work_cost
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "Coût estimé"
+msgstr "Estimated cost"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__done_cost
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "Coût réel"
+msgstr "Actual cost"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__in_horizon
+msgid "Dans l'horizon des 25 ans"
+msgstr "Within the 25-year horizon"
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_log__established_date
+msgid ""
+"Date d'obtention du carnet. C'est d'elle que courent la révision et la "
+"validité."
+msgstr "Date the log was obtained. The review and the validity run from it."
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__name
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure_line__disclosure_id
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid "Demande"
+msgstr "Request"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid "Demande de documents"
+msgstr "Request for documents"
+
+#. module: bf_property_records
+#: model:ir.model,name:bf_property_records.model_bf_property_disclosure
+msgid "Demande de documents (art. 1068.2)"
+msgstr "Request for documents (art. 1068.2)"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid "Demande reçue le"
+msgstr "Request received on"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_attestation__state__requested
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_disclosure__state__requested
+msgid "Demandée"
+msgstr "Requested"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__request_date
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__request_date
+msgid "Demandée le"
+msgstr "Requested on"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__last_maintenance_date
+msgid "Dernier entretien"
+msgstr "Last maintenance"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__last_update_date
+msgid "Dernière mise à jour"
+msgstr "Last update"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__last_repair_date
+msgid "Dernière réparation courante"
+msgstr "Last ordinary repair"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_declaration_report.py:0
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__last_revision_date
+msgid "Dernière révision"
+msgstr "Last review"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__description
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__currency_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__currency_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__currency_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__currency_id
+msgid "Devise"
+msgstr "Currency"
+
+#. module: bf_property_records
+#: model:ir.model,name:bf_property_records.model_bf_property_disclosure_line
+msgid "Document fourni au promettant acheteur"
+msgstr "Document provided to the promisor"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure_line__name
+msgid "Document ou renseignement"
+msgstr "Document or information"
+
+#. module: bf_property_records
+#: model:ir.actions.act_window,name:bf_property_records.action_disclosure
+#: model:ir.ui.menu,name:bf_property_records.menu_disclosure
+msgid "Documents au promettant acheteur"
+msgstr "Documents to the promisor"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid "Documents fournis"
+msgstr "Documents provided"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__remaining_life_years
+msgid "Durée de vie utile restante (ans)"
+msgstr "Remaining useful life (years)"
+
+#. module: bf_property_records
+#: model:ir.actions.report,name:bf_property_records.action_report_site_declaration
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__site_declaration
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_site_declaration
+msgid "Déclaration d'examen sur place"
+msgstr "Declaration of on-site review"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__site_declaration_date
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_site_declaration
+msgid "Déclaration datée du"
+msgstr "Declaration dated"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Délai respecté."
+msgstr "Period met."
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_organisation__loi16_state__pending
+msgid "En cours"
+msgstr "Current"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_attestation__state__late
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_search
+msgid "En retard"
+msgstr "Late"
+
+#. module: bf_property_records
+#: model_terms:ir.actions.act_window,help:bf_property_records.action_disclosure
+msgid "Enregistrer une demande"
+msgstr "Record a request"
+
+#. module: bf_property_records
+#: model_terms:ir.actions.act_window,help:bf_property_records.action_attestation
+msgid "Enregistrer une demande d'attestation"
+msgstr "Record a request for a certificate"
+
+#. module: bf_property_records
+#: model_terms:ir.actions.act_window,help:bf_property_records.action_study
+msgid "Enregistrer une étude"
+msgstr "Record a study"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__syndicat_maintains
+msgid "Entretien à la charge du syndicat"
+msgstr "Maintenance at the syndicate's charge"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__calculation_note
+msgid "Explication des calculs"
+msgstr "Explanation of the calculations"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_study_form
+msgid "Explication des calculs (par. 4°)"
+msgstr "Explanation of the calculations (subpara. 4)"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_item__condition__end_of_life
+msgid "Fin de vie utile"
+msgstr "End of useful life"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Fonds d'auto-assurance"
+msgstr "Self-insurance fund"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Fonds de prévoyance"
+msgstr "Contingency fund"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_disclosure__state__complete
+msgid "Fournie et transmise"
+msgstr "Provided and sent"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__provided_date
+msgid "Fournie le"
+msgstr "Provided on"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_disclosure__state__provided
+msgid "Fournie, à transmettre au propriétaire"
+msgstr "Provided, to send to the owner"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid "Fournir au promettant acheteur"
+msgstr "Provide to the promisor"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid "Fournir les documents de copropriété"
+msgstr "Provide the co-ownership documents"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__unit_id
+msgid "Fraction"
+msgstr "Fraction"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__unit_id
+msgid "Fraction promise"
+msgstr "Fraction promised"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__unit_id
+msgid "Fraction vendue"
+msgstr "Fraction sold"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid "Fraction visée par la vente"
+msgstr "Fraction concerned by the sale"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__cost_paid
+msgid "Frais acquittés"
+msgstr "Costs paid"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__cost_amount
+msgid "Frais réclamés"
+msgstr "Costs claimed"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__maintenance_frequency
+msgid "Fréquence d'entretien"
+msgstr "Maintenance frequency"
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_disclosure__privacy_note
+msgid ""
+"Garder le motif rend la décision relisible, et c'est elle qui sera discutée "
+"si le promettant acheteur estime avoir reçu trop peu."
+msgstr ""
+"Keeping the ground makes the decision readable again, and it is the decision"
+" that will be argued if the promisor considers they received too little."
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__planning_horizon_date
+msgid "Horizon de planification"
+msgstr "Planning horizon"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid ""
+"Il lui manque des renseignements exigés par l'article 10 du\n"
+"                                règlement, et il n'est donc pas conforme en l'état."
+msgstr ""
+"It is missing information required by section 10 of the\n"
+"                                regulation, and is therefore not compliant as it stands."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_declaration_report.py:0
+#: model:ir.model,name:bf_property_records.model_bf_property_building
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__building_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__building_id
+msgid "Immeuble"
+msgstr "Immovable"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid "Imprimer"
+msgstr "Print"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__author_independent
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__author_independent
+msgid "Indépendance attestée"
+msgstr "Independence attested"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_organisation__loi16_regime__unknown
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_organisation__loi16_state__unknown
+msgid "Indéterminé"
+msgstr "Undetermined"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__inspection_reference
+msgid "Inspections et expertises"
+msgstr "Inspections and expert reports"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__install_date
+msgid "Installé le"
+msgstr "Installed on"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__shortfall_amount
+msgid "Insuffisance constatée"
+msgstr "Insufficiency found"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__revision_years
+msgid "Intervalle de révision (ans)"
+msgstr "Review interval (years)"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_site_declaration
+msgid ""
+"Je déclare que les parties communes et les biens visés à\n"
+"                            l'article 2 du règlement ont été examinés sur place par\n"
+"                            moi-même ou sous ma supervision, et que j'ai pris connaissance\n"
+"                            des renseignements contenus au carnet d'entretien."
+msgstr ""
+"I declare that the common portions and the items referred to in\n"
+"                            section 2 of the regulation were reviewed on site by\n"
+"                            myself or under my supervision, and that I have taken cognizance\n"
+"                            of the information contained in the maintenance log."
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_organisation__loi16_days_left
+msgid "Jours restants"
+msgstr "Days remaining"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__days_open
+msgid "Jours écoulés"
+msgstr "Days elapsed"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid ""
+"L'art. 2 al. 2 du règlement veut, pour chaque bien, sept\n"
+"                                renseignements : la date d'installation, les travaux\n"
+"                                d'entretien requis avec leur fréquence et leur date, les\n"
+"                                réparations courantes et leur date, les contrats de\n"
+"                                réalisation, les contrats de garantie en vigueur, les\n"
+"                                rapports d'inspection ou d'expertise et les manuels du\n"
+"                                fabricant. Les colonnes existent toutes ; celles qui ne\n"
+"                                sont pas affichées s'ajoutent par le bouton des colonnes\n"
+"                                optionnelles, à droite de l'en-tête."
+msgstr ""
+"Section 2 para. 2 of the regulation wants, for each item, seven\n"
+"                                pieces of information: the date of installation, the required\n"
+"                                maintenance work with its frequency and its date, the\n"
+"                                ordinary repairs and their date, the contracts for\n"
+"                                carrying out the work, the warranty contracts in force, the\n"
+"                                inspection or expert reports and the manufacturer's\n"
+"                                manuals. The columns all exist; those not\n"
+"                                shown are added through the optional-columns\n"
+"                                button, to the right of the header."
+
+#. module: bf_property_records
+#: model_terms:ir.actions.act_window,help:bf_property_records.action_disclosure
+msgid ""
+"L'attestation de l'art. 1068.1 se demande par le copropriétaire vendeur ;\n"
+"                l'état des charges de l'art. 1069 al. 2, par le proposant acquéreur, avec\n"
+"                préavis au propriétaire AVANT la remise."
+msgstr ""
+"The certificate under art. 1068.1 is requested by the selling co-owner;\n"
+"                the statement of common expenses under art. 1069 para. 2, by the prospective acquirer, with\n"
+"                prior notice to the owner BEFORE delivery."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"L'attestation n'est pas conforme à l'art. 10 du règlement. Il y manque :\n"
+"%(list)s"
+msgstr ""
+"The certificate does not comply with s. 10 of the regulation. It is missing:\n"
+"%(list)s"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid ""
+"L'attestation n'est pas encore conforme à l'art. 10 du règlement.\n"
+"                        Il y manque :"
+msgstr ""
+"The certificate does not yet comply with s. 10 of the regulation.\n"
+"                        It is missing:"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_study_form
+msgid ""
+"L'étude a plus de cinq ans. Art. 8 du règlement : une nouvelle\n"
+"                        étude doit être obtenue minimalement tous les 5 ans."
+msgstr ""
+"The study is more than five years old. S. 8 of the regulation: a new\n"
+"                        study must be obtained at least every 5 years."
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__fund_insufficient
+msgid "L'étude conclut à l'insuffisance du fonds"
+msgstr "The study concludes that the fund is insufficient"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid ""
+"L'étude ne peut pas être portée comme obtenue. Il y manque :\n"
+"%(list)s"
+msgstr ""
+"The study cannot be recorded as obtained. It is missing:\n"
+"%(list)s"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_organisation.py:0
+msgid ""
+"La date de l'assemblée de l'art. 1104 C.c.Q. n'est pas renseignée. C'est "
+"elle qui décide lequel des trois régimes transitoires s'applique, et donc "
+"qui doit fournir le carnet d'entretien et l'étude du fonds de prévoyance, et"
+" pour quand."
+msgstr ""
+"The date of the meeting under art. 1104 CCQ is not entered. It is what "
+"decides which of the three transitional regimes applies, and therefore who "
+"must provide the maintenance log and the contingency fund study, and by "
+"when."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"La demande est antérieure à l'assemblée de l'art. 1104, tenue le %(date)s. "
+"L'art. 1068.1 al. 3 ne faisait pas encore naître l'obligation."
+msgstr ""
+"The request predates the art. 1104 meeting, held on %(date)s. Art. 1068.1 "
+"para. 3 did not yet give rise to the obligation."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid "La fraction appartient à un autre syndicat."
+msgstr "The fraction belongs to another syndicate."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "La fraction vendue appartient à un autre syndicat."
+msgstr "The fraction sold belongs to another syndicate."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid ""
+"La mise à jour annuelle est échue. Art. 4 du règlement : le\n"
+"                        conseil met le carnet à jour minimalement une fois par année, et\n"
+"                        mentionne les travaux prévus qui n'ont pas été effectués ainsi\n"
+"                        que leurs raisons."
+msgstr ""
+"The annual update is overdue. S. 4 of the regulation: the\n"
+"                        board updates the log at least once a year, and\n"
+"                        mentions the planned works that were not carried out as\n"
+"                        well as their reasons."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "La révision du carnet est échue. Art. 5 du règlement."
+msgstr "The review of the log is overdue. Section 5 of the regulation."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"La transmission au propriétaire ne peut pas précéder la remise au promettant"
+" acheteur : l'art. 1068.2 al. 2 porte sur ce qui a été fourni."
+msgstr ""
+"The sending to the owner cannot precede the delivery to the promisor: art. "
+"1068.2 para. 2 bears on what was provided."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid "Le carnet d'entretien appartient à un autre syndicat."
+msgstr "The maintenance log belongs to another syndicate."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid ""
+"Le carnet ne peut pas être porté comme établi. Il y manque :\n"
+"%(list)s"
+msgstr ""
+"The log cannot be recorded as established. It is missing:\n"
+"%(list)s"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_item.py:0
+msgid ""
+"Le carnet « %(log)s » porte sur l'immeuble %(log_building)s, et « %(item)s »"
+" est porté à %(building)s."
+msgstr ""
+"The log \"%(log)s\" bears on immovable %(log_building)s, and \"%(item)s\" is"
+" recorded on %(building)s."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_disclosure_line__redacted
+msgid ""
+"Le document a été fourni, mais des renseignements personnels en ont été "
+"retranchés au titre de la réserve de l'art. 1068.2."
+msgstr ""
+"The document was provided, but personal information was removed from it "
+"under the reservation in art. 1068.2."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid "Le délai de 15 jours de l'art. 1068.1 al. 2 C.c.Q. est dépassé."
+msgstr "The 15-day period under art. 1068.1 para. 2 CCQ has been exceeded."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_log__building_id
+msgid ""
+"Le règlement raisonne par immeuble : ses conditions de taille portent sur le"
+" bâti, pas sur le syndicat, qui peut en compter plusieurs."
+msgstr ""
+"The regulation reasons by immovable: its size conditions bear on the "
+"building, not on the syndicate, which may count several."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"Le syndicat est titulaire des polices d'assurance auxquelles il doit "
+"souscrire en vertu de l'article 1073 du Code civil du Québec"
+msgstr ""
+"The syndicate holds the insurance policies it must take out under article "
+"1073 of the Civil Code of Québec"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid ""
+"Le syndicat fournit « avec diligence », aux frais du promettant\n"
+"                        acheteur. Le texte ne pose aucun nombre de jours, et le module\n"
+"                        n'en invente pas : le compteur informe, il ne déclare aucun\n"
+"                        retard."
+msgstr ""
+"The syndicate provides \"with diligence\", at the promisor's\n"
+"                        expense. The text sets no number of days, and the module\n"
+"                        invents none: the counter informs, it declares no\n"
+"                        delay."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid ""
+"Les montants et les périodes portés à la présente suivent les\n"
+"                            fenêtres prescrites par l'article 10 du règlement : trois années\n"
+"                            pour les contributions, les états financiers et les modifications à\n"
+"                            la déclaration de copropriété ; cinq années pour les inspections,\n"
+"                            les sinistres et les travaux effectués ; dix années pour les\n"
+"                            travaux prévus."
+msgstr ""
+"The amounts and periods carried herein follow the\n"
+"                            windows prescribed by section 10 of the regulation: three years\n"
+"                            for the contributions, the financial statements and the amendments to\n"
+"                            the declaration of co-ownership; five years for the inspections,\n"
+"                            the losses and the works carried out; ten years for the\n"
+"                            works planned."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Liquidités"
+msgstr "Liquidities"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_organisation.py:0
+msgid ""
+"Loi 16 (2019, c. 28), art. 151 : l'assemblée de l'art. 1104 ayant été tenue "
+"plus de 30 jours avant l'entrée en vigueur du règlement le %(inforce)s, le "
+"conseil d'administration doit avoir fait établir le carnet d'entretien et "
+"obtenu l'étude du fonds de prévoyance au plus tard le %(deadline)s. ⚠️ Le "
+"texte dit « le jour qui suit de trois ans » : le module retient la lecture "
+"la plus hâtive, la plus tardive restant à confirmer."
+msgstr ""
+"Act 16 (2019, c. 28), s. 151: the meeting under art. 1104 having been held "
+"more than 30 days before the regulation came into force on %(inforce)s, the "
+"board of directors must have had the maintenance log established and "
+"obtained the contingency fund study no later than %(deadline)s. ⚠️ The text "
+"says \"the day that follows by three years\": the module takes the earlier "
+"reading, the later one remaining to be confirmed."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__fund_insufficient
+msgid ""
+"Loi 16, art. 154 : « Si l'étude du fonds de prévoyance révèle que le fonds "
+"s'avère insuffisant pour couvrir le coût estimatif des réparations majeures "
+"et le coût de remplacement des parties communes ». ⚠️ C'est l'étude qui le "
+"révèle, pas le module : la case porte la conclusion de la personne qui "
+"signe."
+msgstr ""
+"Act 16, s. 154: \"If the contingency fund study reveals that the fund proves"
+" insufficient to cover the estimated cost of the major repairs and the cost "
+"of replacement of the common portions\". ⚠️ It is the study that reveals it,"
+" not the module: the box carries the conclusion of the person who signs."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_organisation.py:0
+msgid ""
+"Loi 16, art. 156 : l'assemblée de l'art. 1104 s'étant tenue entre le "
+"trentième jour précédant et le quatre-vingt-dixième jour suivant l'entrée en"
+" vigueur du règlement, c'est LE PROMOTEUR qui fournit le carnet et l'étude, "
+"dans les six mois de cette assemblée, soit au plus tard le %(deadline)s."
+msgstr ""
+"Act 16, s. 156: the meeting under art. 1104 having been held between the "
+"thirtieth day before and the ninetieth day after the regulation came into "
+"force, it is THE DEVELOPER who provides the log and the study, within six "
+"months of that meeting, that is, no later than %(deadline)s."
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__manual_reference
+msgid "Manuel du fabricant"
+msgstr "Manufacturer's manual"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_item__condition__poor
+msgid "Mauvais"
+msgstr "Poor"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "Mise à jour annuelle portée au %(date)s (art. 4 du règlement)."
+msgstr "Annual update recorded on %(date)s (s. 4 of the regulation)."
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__update_state__due
+msgid "Mise à jour annuelle échue"
+msgstr "Annual update overdue"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__next_update_date
+msgid "Mise à jour au plus tard le"
+msgstr "Update no later than"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_search
+msgid "Mise à jour échue"
+msgstr "Update overdue"
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_contingency_study__shortfall_amount
+msgid ""
+"Montant dont le fonds est insuffisant selon l'étude. Il commande le "
+"versement annuel de rattrapage, que le conseil doit fixer de façon que le "
+"fonds soit suffisant dans les dix ans de la PREMIÈRE étude (Loi 16, art. "
+"154)."
+msgstr ""
+"The amount by which the fund is insufficient according to the study. It "
+"governs the annual catch-up payment, which the board must set so that the "
+"fund is sufficient within ten years of the FIRST study (Act 16, s. 154)."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"Montant que l'étude du fonds de prévoyance recommande d'avoir au début de "
+"l'année en cours"
+msgstr ""
+"Amount the contingency fund study recommends having at the beginning of the "
+"current year"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__recommended_opening_balance
+msgid "Montant recommandé au début de l'exercice"
+msgstr "Amount recommended at the beginning of the financial period"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Montant total du fonds à la date de l'attestation"
+msgstr "Total amount of the fund at the date of the certificate"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__refusal_reason
+msgid "Motif du refus"
+msgstr "Ground for the refusal"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Non"
+msgstr "No"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__not_done_reason
+msgid "Non effectué, parce que"
+msgstr "Not done, because"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_declaration_report.py:0
+msgid "Non rattaché"
+msgstr "Not attached"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__note
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__note
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid "Nouvelle"
+msgstr "New"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+msgid "Numéro d'entreprise du Québec"
+msgstr "Québec business number"
+
+#. module: bf_property_records
+#: model:ir.ui.menu,name:bf_property_records.menu_loi16
+msgid "Obligations légales"
+msgstr "Legal obligations"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_organisation__loi16_state__met
+msgid "Obligations remplies"
+msgstr "Obligations met"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__state__obtained
+msgid "Obtenue"
+msgstr "Obtained"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__obtained_date
+msgid "Obtenue le"
+msgstr "Obtained on"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__author_order__architect
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__author_order__architect
+msgid "Ordre des architectes du Québec"
+msgstr "Ordre des architectes du Québec"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__author_order__cpa
+msgid "Ordre des comptables professionnels agréés du Québec"
+msgstr "Ordre des comptables professionnels agréés du Québec"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__author_order__engineer
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__author_order__engineer
+msgid "Ordre des ingénieurs du Québec"
+msgstr "Ordre des ingénieurs du Québec"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__author_order__technologist
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__author_order__technologist
+msgid "Ordre des technologues professionnels du Québec"
+msgstr "Ordre des technologues professionnels du Québec"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__author_order__appraiser
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__author_order__appraiser
+msgid "Ordre des évaluateurs agréés du Québec"
+msgstr "Ordre des évaluateurs agréés du Québec"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_declaration_report.py:0
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__author_order
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__author_order
+msgid "Ordre professionnel"
+msgstr "Professional order"
+
+#. module: bf_property_records
+#: model:ir.model,name:bf_property_records.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr "Organisation answering for an immovable"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Oui"
+msgstr "Yes"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__restricted_share
+msgid "Part réservée aux parties communes à usage restreint"
+msgstr "Share reserved to common portions for restricted use"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__common_area_id
+msgid "Partie commune"
+msgstr "Common portion"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_building__common_areas_in_building
+msgid "Parties communes dans un bâtiment"
+msgstr "Common portions in a building"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_building__private_unit_count
+msgid "Parties privatives (hors accessoires)"
+msgstr "Private portions (excluding accessories)"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_item__condition__fair
+msgid "Passable"
+msgstr "Fair"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"Plus haute franchise prévue par les assurances souscrites par le syndicat"
+msgstr ""
+"Highest deductible provided for by the insurance taken out by the syndicate"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_study_form
+msgid "Porter comme obtenue"
+msgstr "Record as obtained"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "Porter comme établi"
+msgstr "Record as established"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_study_form
+msgid "Portée"
+msgstr "Scope"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_organisation__loi16_regime__new
+msgid "Postérieur : le promoteur fournit sous 30 jours"
+msgstr "Later: the developer provides within 30 days"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__author_practice
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__author_practice
+msgid "Pratique immobilière attestée"
+msgstr "Real-estate practice attested"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__next_study_date
+msgid "Prochaine étude au plus tard le"
+msgstr "Next study no later than"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_site_declaration
+msgid ""
+"Projet : la déclaration n'est pas encore datée au dossier. Une\n"
+"                            déclaration se date du jour de l'examen et de la prise de\n"
+"                            connaissance du carnet, et non du jour où on l'imprime."
+msgstr ""
+"Draft: the declaration is not yet dated in the file. A\n"
+"                            declaration is dated from the day of the review and of taking\n"
+"                            cognizance of the log, and not from the day it is printed."
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__requester_partner_id
+msgid "Promettant acheteur"
+msgstr "Promisor"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__owner_partner_ids
+msgid "Propriétaires à qui transmettre"
+msgstr "Owners to send to"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure_line__note
+msgid "Précision"
+msgstr "Detail"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__signatory_title
+msgid "Qualité du signataire"
+msgstr "Capacity of the signatory"
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_building__floors_above_ground
+msgid ""
+"RLRQ, c. CCQ, r. 8.01, art. 5 al. 2, par. 3° : « au plus 3 étages "
+"entièrement hors sol » permet la révision du carnet aux 10 ans. Ce n'est pas"
+" le nombre d'étages : un niveau en sous-sol n'est pas hors sol. Saisi à la "
+"main, le module ne le devine pas."
+msgstr ""
+"CQLR, c. CCQ, r. 8.01, s. 5 para. 2, subpara. 3: \"at most 3 storeys "
+"entirely above ground\" allows review of the log every 10 years. It is not "
+"the number of storeys: a basement level is not above ground. Entered by "
+"hand, the module does not guess it."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid "Refus"
+msgstr "Objection"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_disclosure__state__refused
+msgid "Refusée"
+msgstr "Refused"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_search
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_search
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_search
+msgid "Regrouper par"
+msgstr "Group by"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid "Remettre"
+msgstr "Deliver"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Remettre une attestation du syndicat"
+msgstr "Deliver a certificate of the syndicate"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_attestation__state__issued
+msgid "Remise"
+msgstr "Delivery"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__issued_date
+msgid "Remise le"
+msgstr "Delivered on"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__state__superseded
+msgid "Remplacé"
+msgstr "Replaced"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__state__superseded
+msgid "Remplacée"
+msgstr "Replaced"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__privacy_reviewed
+msgid "Revue de vie privée faite"
+msgstr "Privacy review done"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid ""
+"Rien n'a été fourni au promettant acheteur : l'art. 1068.2 al. 2 n'a pas "
+"d'objet."
+msgstr ""
+"Nothing was provided to the promisor: art. 1068.2 para. 2 has no object."
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_organisation__loi16_rule
+msgid "Règle applicable"
+msgstr "Applicable rule"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__revision_rule
+msgid "Règle de révision"
+msgstr "Review rule"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_site_declaration
+msgid ""
+"Règlement établissant diverses règles en matière de copropriété\n"
+"                            divise, RLRQ, c. CCQ, r. 8.01, article 6. Déclaration datée et\n"
+"                            incluse au carnet d'entretien."
+msgstr ""
+"Regulation respecting various rules concerning divided\n"
+"                            co-ownership, CQLR, c. CCQ, r. 8.01, section 6. Declaration dated and\n"
+"                            included in the maintenance log."
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__author_partner_id
+msgid "Réalisée par"
+msgstr "Carried out by"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_organisation__loi16_regime
+msgid "Régime transitoire"
+msgstr "Transitional regime"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__major_work
+msgid "Réparation majeure ou remplacement prévu"
+msgstr "Major repair or replacement planned"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Résultats des 3 derniers états financiers"
+msgstr "Results of the last 3 financial statements"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__next_revision_date
+msgid "Révision au plus tard le"
+msgstr "Review no later than"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__revision_state__due
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_search
+msgid "Révision échue"
+msgstr "Review overdue"
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__syndicat_maintains
+msgid ""
+"Sans cette responsabilité, un bien de partie privative n'a rien à faire au "
+"carnet."
+msgstr ""
+"Without that responsibility, an item of a private portion has no business in"
+" the log."
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__study_state__na
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__revision_state__na
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__update_state__na
+msgid "Sans objet"
+msgstr "Not applicable"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__signatory_name
+msgid "Signataire"
+msgstr "Signatory"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid "Signature (art. 10 al. 2)"
+msgstr "Signature (s. 10 para. 2)"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__signed
+msgid "Signée et datée"
+msgstr "Signed and dated"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__in_private_portion
+msgid "Situé dans une partie privative"
+msgstr "Situated in a private portion"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__company_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__company_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__company_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure_line__company_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__company_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__company_id
+msgid "Société"
+msgstr "Company"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__fund_balance_used
+msgid "Solde du fonds retenu"
+msgstr "Fund balance retained"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_study_list
+msgid "Somme annuelle"
+msgstr "Annual amount"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__recommended_annual_amount
+msgid "Somme annuelle recommandée"
+msgstr "Recommended annual amount"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"Somme dont dispose le syndicat pour les dépenses courantes de fonctionnement"
+msgstr "Amount the syndicate has available for current operating expenses"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid "Suivi"
+msgstr "Follow-up"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Surplus ou déficit annuel"
+msgstr "Annual surplus or deficit"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_declaration_report.py:0
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__organisation_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__organisation_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__organisation_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__organisation_id
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__organisation_id
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_attestation
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_search
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_search
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_search
+msgid "Syndicat"
+msgstr "Syndicate"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_organisation__loi16_regime__existing
+msgid "Syndicat existant : le conseil fournit"
+msgstr "Existing syndicate: the board provides"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Total exigé des copropriétaires"
+msgstr "Total exacted from the co-owners"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Total payé par les copropriétaires"
+msgstr "Total paid by the co-owners"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid "Transmettre au propriétaire"
+msgstr "Send to the owner"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid "Transmettre la remise au propriétaire"
+msgstr "Send the delivery to the owner"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__owner_transmission_date
+msgid "Transmise au propriétaire le"
+msgstr "Sent to the owner on"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__done_date
+msgid "Travaux réalisés le"
+msgstr "Works carried out on"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_form
+msgid ""
+"Trois fenêtres distinctes : 3 ans pour les contributions,\n"
+"                                les états financiers et les modifications à la\n"
+"                                déclaration ; 5 ans pour les inspections, les sinistres et\n"
+"                                les travaux faits ; 10 ans pour les travaux prévus."
+msgstr ""
+"Three separate windows: 3 years for the contributions,\n"
+"                                the financial statements and the amendments to the\n"
+"                                declaration; 5 years for the inspections, the losses and\n"
+"                                the works done; 10 years for the works planned."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "Un carnet qui n'est pas établi ne se met pas à jour."
+msgstr "A log that is not established is not updated."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_disclosure__refusal_reason
+msgid ""
+"Un refus total se motive. La réserve de vie privée de l'art. 1068.2 justifie"
+" de retrancher des renseignements, rarement de tout refuser."
+msgstr ""
+"A total refusal must be justified. The privacy reservation in art. 1068.2 "
+"justifies removing information, rarely refusing everything."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid ""
+"Un refus total se motive. La réserve de vie privée justifie de retrancher "
+"des renseignements, rarement de tout refuser."
+msgstr ""
+"A total refusal must be justified. The privacy reservation justifies "
+"removing information, rarely refusing everything."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__building_id
+msgid ""
+"Un syndicat peut regrouper plusieurs immeubles, et le carnet ne disait pas "
+"dans lequel un bien se trouve : la partie commune le disait pour lui, et un "
+"bien de partie privative ne le disait nulle part."
+msgstr ""
+"A syndicate may group several immovables, and the log did not say which one "
+"an item is in: the common portion said it for it, and an item of a private "
+"portion said it nowhere."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "Une attestation annulée ne se remet pas."
+msgstr "A cancelled certificate is not delivered."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid "Une demande annulée ne se fournit pas."
+msgstr "A cancelled request is not provided for."
+
+#. module: bf_property_records
+#: model:ir.model.constraint,message:bf_property_records.constraint_bf_property_maintenance_item_remaining_life_positive
+msgid "Une durée de vie utile restante ne peut pas être négative."
+msgstr "A remaining useful life cannot be negative."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_form
+msgid "Vie privée"
+msgstr "Privacy"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"a) Inspections et expertises réalisées à l'initiative du syndicat, 5 "
+"dernières années"
+msgstr ""
+"a) Inspections and expert reports carried out on the syndicate's initiative,"
+" last 5 years"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "au plus %(max)d parties privatives hors accessoires (%(count)d)"
+msgstr "at most %(max)d private portions excluding accessories (%(count)d)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "au plus %(max)d étages entièrement hors sol (%(count)d)"
+msgstr "at most %(max)d storeys entirely above ground (%(count)d)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "aucune partie commune située dans un bâtiment"
+msgstr "no common portion situated in a building"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"b) Sinistres ayant affecté la partie privative vendue ou les parties "
+"communes, 5 dernières années"
+msgstr ""
+"b) Losses that affected the private portion sold or the common portions, "
+"last 5 years"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"c) Réparations majeures et remplacements effectués sur les parties communes,"
+" 5 dernières années"
+msgstr ""
+"c) Major repairs and replacements carried out on the common portions, last 5"
+" years"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"d) Réparations majeures et remplacements prévus sur les parties communes, 10"
+" prochaines années"
+msgstr ""
+"d) Major repairs and replacements planned on the common portions, next 10 "
+"years"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "e) Litiges en cours auxquels le syndicat est partie devant un tribunal"
+msgstr ""
+"e) Litigation under way to which the syndicate is a party before a court"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid ""
+"f) Modifications apportées à la déclaration de copropriété, 3 dernières "
+"années"
+msgstr "f) Amendments made to the declaration of co-ownership, last 3 years"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "l'attestation d'indépendance (art. 1, par. 3°)"
+msgstr "the attestation of independence (s. 1, subpara. 3)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "l'attestation de pratique immobilière (art. 1, par. 2°)"
+msgstr "the attestation of real-estate practice (s. 1, subpara. 2)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid ""
+"l'attestation de pratique immobilière (art. 1, par. 2°), exigée de tous sauf"
+" du comptable professionnel agréé"
+msgstr ""
+"the attestation of real-estate practice (s. 1, subpara. 2), required of all "
+"except the chartered professional accountant"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "l'auteur"
+msgstr "the author"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid "l'explication des calculs (art. 8 al. 2, par. 4°)"
+msgstr "the explanation of the calculations (s. 8 para. 2, subpara. 4)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "l'inventaire des biens (art. 2), qui ne peut pas être vide"
+msgstr "the inventory of items (s. 2), which cannot be empty"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "l'ordre professionnel de l'auteur (art. 1, par. 1°)"
+msgstr "the author's professional order (s. 1, subpara. 1)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid "l'ordre professionnel de l'auteur (art. 7)"
+msgstr "the author's professional order (s. 7)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid "la date d'obtention"
+msgstr "the date of obtaining"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "la date d'établissement"
+msgstr "the date of establishment"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_log.py:0
+msgid "la déclaration d'examen sur place (art. 6)"
+msgstr "the declaration of on-site review (s. 6)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid "la signature datée de l'auteur (art. 9)"
+msgstr "the author's dated signature (s. 9)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid "la somme annuelle recommandée (art. 8 al. 2, par. 3°)"
+msgstr "the recommended annual amount (s. 8 para. 2, subpara. 3)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid ""
+"le carnet d'entretien sur lequel elle se base (art. 8 du règlement) : "
+"l'étude ne peut pas le précéder"
+msgstr ""
+"the maintenance log it is based on (s. 8 of the regulation): the study "
+"cannot precede it"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid ""
+"le montant de l'insuffisance : sans lui, le rattrapage de l'art. 154 de la "
+"Loi 16 n'a pas d'assiette"
+msgstr ""
+"the amount of the insufficiency: without it, the catch-up under s. 154 of "
+"Act 16 has no basis"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "le nom et la qualité du signataire (art. 10 al. 2)"
+msgstr "the name and capacity of the signatory (s. 10 para. 2)"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_disclosure.py:0
+msgid "personne"
+msgstr "nobody"
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__in_private_portion
+msgid ""
+"r. 8.01, art. 2 al. 1 : le carnet couvre aussi les matériaux, appareils et "
+"équipements installés dans les parties privatives dont le SYNDICAT est "
+"responsable de l'entretien."
+msgstr ""
+"r. 8.01, s. 2 para. 1: the log also covers the materials, apparatus and "
+"equipment installed in the private portions whose maintenance the SYNDICATE "
+"is responsible for."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__unit_id
+msgid ""
+"r. 8.01, art. 2 al. 1 : le carnet couvre les matériaux, appareils et "
+"équipements installés dans les parties privatives dont le syndicat est "
+"responsable de l'entretien. Le règlement n'exige pas de nommer la fraction ;"
+" y envoyer quelqu'un, oui."
+msgstr ""
+"r. 8.01, s. 2 para. 1: the log covers the materials, apparatus and equipment"
+" installed in the private portions whose maintenance the syndicate is "
+"responsible for. The regulation does not require naming the fraction; "
+"sending someone there does."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__description
+msgid ""
+"r. 8.01, art. 2 al. 1 : le carnet porte l'inventaire ET la description des "
+"parties communes, des matériaux, des appareils et des équipements qui les "
+"composent."
+msgstr ""
+"r. 8.01, s. 2 para. 1: the log carries the inventory AND the description of "
+"the common portions, of the materials, apparatus and equipment composing "
+"them."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__install_date
+msgid ""
+"r. 8.01, art. 2 al. 2, par. 1° : « la date d'installation, si connue »."
+msgstr ""
+"r. 8.01, s. 2 para. 2, subpara. 1: \"the date of installation, if known\"."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__last_maintenance_date
+msgid ""
+"r. 8.01, art. 2 al. 2, par. 2° : la date de réalisation des travaux "
+"d'entretien requis."
+msgstr ""
+"r. 8.01, s. 2 para. 2, subpara. 2: the date on which the required "
+"maintenance work was carried out."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__maintenance_frequency
+msgid ""
+"r. 8.01, art. 2 al. 2, par. 2° : les travaux d'entretien requis et la "
+"fréquence à laquelle ils doivent être effectués."
+msgstr ""
+"r. 8.01, s. 2 para. 2, subpara. 2: the required maintenance work and the "
+"frequency at which it must be carried out."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__last_repair_date
+msgid ""
+"r. 8.01, art. 2 al. 2, par. 3° : les réparations courantes et leur date."
+msgstr ""
+"r. 8.01, s. 2 para. 2, subpara. 3: the ordinary repairs and their date."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__contract_reference
+msgid ""
+"r. 8.01, art. 2 al. 2, par. 4° et 5° : contrats de réalisation des travaux "
+"et contrats de garantie en vigueur."
+msgstr ""
+"r. 8.01, s. 2 para. 2, subparas. 4 and 5: contracts for carrying out the "
+"work and warranty contracts in force."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__inspection_reference
+msgid "r. 8.01, art. 2 al. 2, par. 6° : rapports d'inspection ou d'expertise."
+msgstr "r. 8.01, s. 2 para. 2, subpara. 6: inspection or expert reports."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__manual_reference
+msgid "r. 8.01, art. 2 al. 2, par. 7° : manuels d'entretien du fabricant."
+msgstr ""
+"r. 8.01, s. 2 para. 2, subpara. 7: manufacturer's maintenance manuals."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__major_work_cost
+msgid ""
+"r. 8.01, art. 3 : coût estimé de la réparation majeure ou du remplacement, "
+"porté par l'auteur du carnet."
+msgstr ""
+"r. 8.01, s. 3: estimated cost of the major repair or replacement, recorded "
+"by the author of the log."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__major_work
+msgid ""
+"r. 8.01, art. 3 : description des réparations majeures et des remplacements "
+"à effectuer."
+msgstr ""
+"r. 8.01, s. 3: description of the major repairs and replacements to be "
+"carried out."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__remaining_life_years
+msgid "r. 8.01, art. 3 : estimation de l'auteur du carnet."
+msgstr "r. 8.01, s. 3: estimate by the author of the log."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__condition
+msgid ""
+"r. 8.01, art. 3 : estimation portée par la personne qui signe le carnet. Le "
+"module ne l'évalue pas."
+msgstr ""
+"r. 8.01, s. 3: estimate recorded by the person who signs the log. The module"
+" does not assess it."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__major_work_year
+msgid ""
+"r. 8.01, art. 3 : « Une année de réalisation estimée doit être indiquée pour"
+" chaque réparation majeure et remplacement à effectuer. »"
+msgstr ""
+"r. 8.01, s. 3: \"An estimated year of carrying out must be indicated for "
+"each major repair and replacement to be carried out.\""
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__done_cost
+msgid ""
+"r. 8.01, art. 3 al. 2 : le coût des travaux effectués, tel qu'il a été, et "
+"non le coût qui avait été estimé."
+msgstr ""
+"r. 8.01, s. 3 para. 2: the cost of the works carried out, as it was, and not"
+" the cost that had been estimated."
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__done_date
+msgid ""
+"r. 8.01, art. 3 al. 2 : « Les travaux effectués, leur date et leur coût y "
+"sont notés. »"
+msgstr ""
+"r. 8.01, s. 3 para. 2: \"The works carried out, their date and their cost "
+"are noted therein.\""
+
+#. module: bf_property_records
+#: model:ir.model.fields,help:bf_property_records.field_bf_property_maintenance_item__not_done_reason
+msgid ""
+"r. 8.01, art. 4 : lors de la mise à jour annuelle, si des travaux requis ou "
+"prévus n'ont pas été effectués, le carnet le mentionne ET indique pourquoi. "
+"Le module ne juge pas qu'un travail aurait dû l'être. Deux personnes peuvent"
+" l'écrire : le conseil, et le concierge qui déclare à l'exploitation un "
+"entretien cédulé non effectué. La seconde ne remplace jamais la première ; "
+"elle écrit là où le carnet se taisait, et le relevé ci-dessous porte toutes "
+"les occurrences."
+msgstr ""
+"r. 8.01, s. 4: at the annual update, if required or planned works have not "
+"been carried out, the log mentions it AND states why. The module does not "
+"judge that a work ought to have been done. Two people may write it: the "
+"board, and the caretaker who declares to operations a scheduled maintenance "
+"not done. The second never replaces the first; it writes where the log was "
+"silent, and the statement below carries every occurrence."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid "un carnet d'entretien ÉTABLI, celui-ci ne l'étant pas"
+msgstr "an ESTABLISHED maintenance log, this one not being so"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_item.py:0
+msgid ""
+"« %(item)s » est porté à l'immeuble %(building)s, mais l'emplacement choisi "
+"appartient à %(anchor)s."
+msgstr ""
+"\"%(item)s\" is recorded on immovable %(building)s, but the location chosen "
+"belongs to %(anchor)s."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_item.py:0
+msgid ""
+"« %(item)s » est porté à la fois à la fraction %(unit)s et à la partie "
+"commune %(area)s. Un bien est dans l'une ou dans l'autre : c'est ce partage "
+"qui dit si le syndicat en répond de plein droit."
+msgstr ""
+"\"%(item)s\" is recorded both on fraction %(unit)s and on the common portion"
+" %(area)s. An item is in one or the other: it is that division that says "
+"whether the syndicate answers for it as of right."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_item.py:0
+msgid ""
+"« %(item)s » n'est porté à aucun immeuble, alors que l'emplacement choisi "
+"appartient à %(anchor)s."
+msgstr ""
+"\"%(item)s\" is recorded on no immovable, while the location chosen belongs "
+"to %(anchor)s."
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_maintenance_item.py:0
+msgid ""
+"« %(item)s » nomme la fraction %(unit)s sans être déclaré situé dans une "
+"partie privative. L'art. 2 du règlement fait reposer le carnet sur cette "
+"distinction : cochez la case, ou retirez la fraction."
+msgstr ""
+"\"%(item)s\" names fraction %(unit)s without being declared as situated in a"
+" private portion. S. 2 of the regulation rests the log on that distinction: "
+"check the box, or remove the fraction."
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.report_site_declaration
+msgid "À dater"
+msgstr "To date"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_search
+msgid "À fournir"
+msgstr "To provide"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__study_state__current
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__revision_state__current
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__update_state__current
+msgid "À jour"
+msgstr "Up to date"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_search
+msgid "À remettre"
+msgstr "To deliver"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__deadline_date
+msgid "À remettre au plus tard le"
+msgstr "To deliver no later than"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_contingency_study__study_state__due
+msgid "À renouveler"
+msgstr "To renew"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_search
+msgid "À transmettre au propriétaire"
+msgstr "To send to the owner"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_organisation__loi16_state__overdue
+msgid "Échéance dépassée"
+msgstr "Due date passed"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_form
+msgid "Échéances"
+msgstr "Due dates"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_syndicat_form_loi16
+msgid "Échéances légales"
+msgstr "Legal due dates"
+
+#. module: bf_property_records
+#: model:ir.model.fields.selection,name:bf_property_records.selection__bf_property_maintenance_log__state__established
+msgid "Établi"
+msgstr "Established"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__established_date
+msgid "Établi le"
+msgstr "Established on"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__author_partner_id
+msgid "Établi par"
+msgstr "Established by"
+
+#. module: bf_property_records
+#: model_terms:ir.actions.act_window,help:bf_property_records.action_log
+msgid "Établir un carnet d'entretien"
+msgstr "Establish a maintenance log"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_log_search
+msgid "Établis"
+msgstr "Established"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_building__floors_above_ground
+msgid "Étages entièrement hors sol"
+msgstr "Storeys entirely above ground"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_attestation__state
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__state
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__study_state
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_disclosure__state
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__state
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_attestation_search
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_disclosure_search
+msgid "État"
+msgstr "Status"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "État de l'immeuble"
+msgstr "Condition of the immovable"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__update_state
+msgid "État de la mise à jour"
+msgstr "State of the update"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_log__revision_state
+msgid "État de la révision"
+msgstr "State of the review"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_organisation__loi16_state
+msgid "État des obligations"
+msgstr "State of the obligations"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_maintenance_item__condition
+msgid "État estimé"
+msgstr "Estimated condition"
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_contingency_study__name
+msgid "Étude"
+msgstr "Study"
+
+#. module: bf_property_records
+#: model:ir.model,name:bf_property_records.model_bf_property_contingency_study
+msgid "Étude du fonds de prévoyance"
+msgstr "Contingency fund study"
+
+#. module: bf_property_records
+#: model_terms:ir.ui.view,arch_db:bf_property_records.view_study_form
+msgid "Étude du fonds de prévoyance 2026"
+msgstr "2026 contingency fund study"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_contingency_study.py:0
+msgid ""
+"Étude obtenue le %(date)s, sur la base du carnet « %(log)s ». Prochaine "
+"étude au plus tard le %(next)s (art. 8 du règlement, minimalement tous les 5"
+" ans). La base du fonds de prévoyance du syndicat passe aux recommandations "
+"de l'étude (art. 1071 al. 3 C.c.Q.)."
+msgstr ""
+"Study obtained on %(date)s, on the basis of the log \"%(log)s\". Next study "
+"no later than %(next)s (s. 8 of the regulation, at least every 5 years). The"
+" basis of the syndicate's contingency fund moves to the study's "
+"recommendations (art. 1071 para. 3 CCQ)."
+
+#. module: bf_property_records
+#: model:ir.model.fields,field_description:bf_property_records.field_bf_property_organisation__contingency_study_ids
+msgid "Études du fonds"
+msgstr "Fund studies"
+
+#. module: bf_property_records
+#: model:ir.actions.act_window,name:bf_property_records.action_study
+#: model:ir.ui.menu,name:bf_property_records.menu_study
+msgid "Études du fonds de prévoyance"
+msgstr "Contingency fund studies"
+
+#. module: bf_property_records
+#. odoo-python
+#: code:addons/bf_property_records/models/bf_property_attestation.py:0
+msgid "⚠️ Délai dépassé."
+msgstr "⚠️ Period exceeded."

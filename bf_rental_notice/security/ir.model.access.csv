@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_rental_notice_user,bf.rental.notice consultation,model_bf_rental_notice,bf_property_core.group_bf_property_user,1,0,0,0
+access_bf_rental_notice_manager,bf.rental.notice gestion,model_bf_rental_notice,bf_property_core.group_bf_property_manager,1,1,1,1
+access_bf_rental_moratorium_user,bf.rental.moratorium consultation,model_bf_rental_moratorium,bf_property_core.group_bf_property_user,1,0,0,0
+access_bf_rental_moratorium_manager,bf.rental.moratorium gestion,model_bf_rental_moratorium,bf_property_core.group_bf_property_manager,1,1,1,1

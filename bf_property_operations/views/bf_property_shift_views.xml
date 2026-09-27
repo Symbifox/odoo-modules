@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_shift_list" model="ir.ui.view">
+        <field name="name">bf.property.shift.list</field>
+        <field name="model">bf.property.shift</field>
+        <field name="arch" type="xml">
+            <list string="Quarts" sample="1">
+                <field name="date_start"/>
+                <field name="date_stop" optional="show"/>
+                <field name="maintenance_team_id"/>
+                <field name="building_id" optional="show"/>
+                <field name="user_ids" widget="many2many_avatar_user" optional="show"/>
+                <field name="line_count" optional="show"/>
+                <field name="open_line_count"
+                       decoration-warning="open_line_count &gt; 0"/>
+                <field name="planned_duration" widget="float_time" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'open'"
+                       decoration-muted="state == 'closed'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_shift_form" model="ir.ui.view">
+        <field name="name">bf.property.shift.form</field>
+        <field name="model">bf.property.shift</field>
+        <field name="arch" type="xml">
+            <form string="Quart">
+                <header>
+                    <button name="action_compose" type="object"
+                            string="Composer la liste"
+                            invisible="state == 'closed'"
+                            help="Ajoute les demandes en cours et le préventif échu du secteur. N'efface rien."/>
+                    <button name="action_open" type="object" string="Ouvrir le quart"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="%(action_shift_close_wizard)d" type="action"
+                            string="Fermer et passer la main" class="btn-primary"
+                            invisible="state != 'open'"
+                            context="{'default_shift_id': id}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_works" type="object"
+                                class="oe_stat_button" icon="fa-wrench">
+                            <field name="line_count" string="Travaux" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="maintenance_team_id"
+                                   options="{'no_create': True}"
+                                   readonly="state == 'closed'"/>
+                            <field name="building_id"
+                                   options="{'no_create': True}"
+                                   readonly="state == 'closed'"
+                                   placeholder="Vide = tout le secteur de l'équipe"/>
+                            <field name="user_ids" widget="many2many_tags_avatar"
+                                   readonly="state == 'closed'"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="date_start" readonly="state == 'closed'"/>
+                            <field name="date_stop" readonly="state == 'closed'"/>
+                            <label for="planned_duration"/>
+                            <div class="o_row">
+                                <field name="planned_duration" widget="float_time"/>
+                                <span class="ms-2">de travail prévu</span>
+                            </div>
+                            <field name="open_line_count"/>
+                        </group>
+                    </group>
+
+                    <!-- Le différenciateur tient à un champ, et son
+                         absence ne se voyait nulle part. L'avertissement nomme
+                         les comptes muets ; il ne les corrige pas, parce que le
+                         mode de notification appartient à la personne. -->
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not silent_notice">
+                        <field name="silent_notice" readonly="1" nolabel="1"/>
+                        <field name="silent_user_ids" invisible="1"/>
+                    </div>
+
+                    <!-- ⚠️ La passation à l'entrée du quart, pas au fond d'un
+                         onglet : c'est la première chose qu'on lit en prenant
+                         un quart, et la dernière qu'on écrit en le rendant. -->
+                    <div class="alert alert-info" role="alert"
+                         invisible="not previous_shift_id">
+                        Ce quart reprend la passation de
+                        <field name="previous_shift_id" readonly="1" nolabel="1"
+                               class="oe_inline"/>.
+                    </div>
+                    <div class="alert alert-secondary" role="alert"
+                         invisible="not next_shift_id">
+                        La main a été passée à
+                        <field name="next_shift_id" readonly="1" nolabel="1"
+                               class="oe_inline"/>
+                        le <field name="closed_date" readonly="1" nolabel="1"
+                                  class="oe_inline"/>
+                        par <field name="closed_by_user_id" readonly="1" nolabel="1"
+                                   class="oe_inline"/>.
+                    </div>
+
+                    <notebook>
+                        <page string="Liste de travail" name="lines">
+                            <!-- ⚠️ `delete="0"` : une ligne de quart est la
+                                 trace de ce que ce quart a porté. Le chemin du
+                                 retrait est « Retirer », qui exige la raison ;
+                                 la corbeille l'effaçait sans rien demander, et
+                                 le droit d'accès la refuse maintenant — l'écran
+                                 ne doit pas proposer un geste qui lèvera. -->
+                            <field name="line_ids" readonly="state == 'closed'">
+                                <list editable="bottom" delete="0"
+                                      decoration-muted="state in ('dropped', 'passed_on')">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="request_id" options="{'no_create': True}"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'settled'"
+                                           decoration-warning="state == 'todo'"/>
+                                    <field name="work_done" optional="hide"/>
+                                    <field name="work_archived" optional="hide"
+                                           string="Annulé"/>
+                                    <field name="work_not_done_reason" optional="show"/>
+                                    <field name="drop_reason" optional="show"
+                                           placeholder="si retiré de la liste"/>
+                                    <button name="action_drop" type="object"
+                                            string="Retirer" icon="fa-times"
+                                            invisible="state in ('dropped', 'passed_on')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Passation" name="handover">
+                            <field name="handover_note"
+                                   readonly="state == 'closed'"
+                                   placeholder="Ce que le quart suivant doit savoir et que les enregistrements ne disent pas : le local qu'on n'a pas pu ouvrir, le locataire à rappeler, la pièce commandée qui arrive demain."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_shift_search" model="ir.ui.view">
+        <field name="name">bf.property.shift.search</field>
+        <field name="model">bf.property.shift</field>
+        <field name="arch" type="xml">
+            <search string="Quarts">
+                <field name="name"/>
+                <field name="maintenance_team_id"/>
+                <field name="building_id"/>
+                <field name="user_ids"/>
+                <filter name="mine" string="Mes quarts"
+                        domain="[('user_ids', 'in', uid)]"/>
+                <separator/>
+                <filter name="open" string="En cours" domain="[('state', '=', 'open')]"/>
+                <filter name="draft" string="Préparés" domain="[('state', '=', 'draft')]"/>
+                <!-- ⚠️ Le filtre passe par le one2many RÉEL, pas par
+                     `open_line_count` : un champ calculé non stocké ne se
+                     cherche pas, et le domaine ne filtrerait rien du tout. -->
+                <filter name="unsettled" string="Avec du travail non réglé"
+                        domain="[('line_ids.state', '=', 'todo')]"/>
+                <separator/>
+                <filter name="filter_date_start" date="date_start"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_team" string="Équipe"
+                            context="{'group_by': 'maintenance_team_id'}"/>
+                    <filter name="group_building" string="Immeuble"
+                            context="{'group_by': 'building_id'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_shift" model="ir.actions.act_window">
+        <field name="name">Quarts de travail</field>
+        <field name="res_model">bf.property.shift</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_shift_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Préparer un quart</p>
+            <p>
+                Un quart porte une plage, une équipe, des personnes et sa liste
+                de travail. Il se ferme en passant la main : le travail resté
+                ouvert va à un quart nommé, avec un mot sur ce que la liste ne
+                dit pas. C'est cette passation qui distingue un quart d'un
+                tableau de tâches.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_shift"
+              name="Quarts de travail"
+              parent="maintenance.menu_maintenance_title"
+              action="action_shift"
+              groups="bf_property_operations.group_bf_property_operations"
+              sequence="4"/>
+
+</odoo>

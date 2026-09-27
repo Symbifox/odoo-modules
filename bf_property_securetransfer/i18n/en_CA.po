@@ -1,0 +1,322 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_property_securetransfer
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 07:40+0000\n"
+"PO-Revision-Date: 2026-09-26 07:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_securetransfer
+#: model:ir.model,name:bf_property_securetransfer.model_bf_property_attestation
+msgid "Attestation du syndicat"
+msgstr "Certificate of the syndicate"
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_attestation.py:0
+msgid "Attestation du syndicat : %s"
+msgstr "Certificate of the syndicate: %s"
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_secure_mixin.py:0
+msgid ""
+"Aucune marque de transfert sécurisé n'est configurée : le lien n'aurait pas "
+"de domaine où vivre."
+msgstr ""
+"No secure-transfer brand is configured: the link would have no domain to "
+"live on."
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_organisation__secure_otp_channel
+msgid "Canal du code de la remise sécurisée"
+msgstr "Channel for the delivery code"
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_attestation__secure_frozen_attachment_id
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_charge_statement__secure_frozen_attachment_id
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_disclosure__secure_frozen_attachment_id
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_secure_delivery__secure_frozen_attachment_id
+msgid ""
+"Ce qui est parti, tel quel. Le transfert efface la sienne ; celle-ci reste, "
+"parce qu'une pièce régénérée plus tard ne dirait pas la même chose."
+msgstr ""
+"What went out, as it was. The transfer erases its own copy; this one "
+"remains, because a document regenerated later would not say the same thing."
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_charge_statement.py:0
+msgid ""
+"Cet état n'est pas encore fourni. Le préavis au propriétaire est une "
+"condition de l'autorisation (art. 1069 al. 2), et le module le vérifie à la "
+"remise."
+msgstr ""
+"This statement is not yet provided. Prior notice to the owner is a condition"
+" of the authorization (art. 1069 para. 2), and the module checks it at "
+"delivery."
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_secure_mixin.py:0
+msgid "Cette pièce est déjà partie par transfert sécurisé le %s."
+msgstr "This document already went out by secure transfer on %s."
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_attestation__secure_frozen_attachment_id
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_charge_statement__secure_frozen_attachment_id
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_disclosure__secure_frozen_attachment_id
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_secure_delivery__secure_frozen_attachment_id
+msgid "Copie remise"
+msgstr "Copy delivered"
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields.selection,name:bf_property_securetransfer.selection__bf_property_organisation__secure_otp_channel__email
+msgid "Courriel"
+msgstr "Email"
+
+#. module: bf_property_securetransfer
+#: model:ir.model,name:bf_property_securetransfer.model_bf_property_disclosure
+msgid "Demande de documents (art. 1068.2)"
+msgstr "Request for documents (art. 1068.2)"
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_disclosure.py:0
+msgid "Documents de copropriété : %s"
+msgstr "Co-ownership documents: %s"
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_attestation__secure_unread
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_charge_statement__secure_unread
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_disclosure__secure_unread
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_secure_delivery__secure_unread
+msgid "Expiré sans avoir été ouvert"
+msgstr "Expired without being opened"
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_secure_mixin.py:0
+msgid ""
+"Joignez d'abord les pièces à remettre : le module n'en fabrique pas à votre "
+"place."
+msgstr ""
+"Attach the documents to be delivered first: the module does not make any for"
+" you."
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_disclosure.py:0
+msgid ""
+"La revue de vie privée n'est pas faite. L'art. 1068.2 n'autorise pas la "
+"communication des renseignements personnels des autres copropriétaires, et "
+"une pièce partie par un lien sécurisé ne se caviarde plus."
+msgstr ""
+"The privacy review has not been done. Art. 1068.2 does not authorize "
+"communicating the personal information of the other co-owners, and a "
+"document sent through a secure link can no longer be redacted."
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_secure_mixin.py:0
+msgid ""
+"Le destinataire n'a pas d'adresse courriel : le lien sécurisé n'aurait nulle"
+" part où aller."
+msgstr ""
+"The recipient has no email address: the secure link would have nowhere to "
+"go."
+
+#. module: bf_property_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_disclosure_form_secure
+msgid "Le lien a expiré et personne ne l'a ouvert."
+msgstr "The link expired and nobody opened it."
+
+#. module: bf_property_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_charge_statement_form_secure
+msgid ""
+"Le lien a expiré et personne ne l'a ouvert. Le délai de\n"
+"                            quinze jours de l'article 1069 alinéa 2 joue contre le\n"
+"                            syndicat : passé ce délai, l'acquéreur n'est plus tenu."
+msgstr ""
+"The link expired and nobody opened it. The fifteen-day\n"
+"                            period of article 1069 paragraph 2 runs against the\n"
+"                            syndicate: after it, the acquirer is no longer bound."
+
+#. module: bf_property_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_attestation_form_secure
+msgid ""
+"Le lien a expiré et personne ne l'a ouvert. Le syndicat a\n"
+"                            envoyé ; le destinataire n'a rien reçu."
+msgstr ""
+"The link expired and nobody opened it. The syndicate\n"
+"                            sent; the recipient received nothing."
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_attestation__secure_transfer_id
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_charge_statement__secure_transfer_id
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_disclosure__secure_transfer_id
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_secure_delivery__secure_transfer_id
+msgid "Le transfert par lequel la pièce est partie."
+msgstr "The transfer by which the document went out."
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_secure_mixin.py:0
+msgid ""
+"Le transfert sécurisé n'a pas rendu d'identifiant : rien n'a été rattaché à "
+"la fiche."
+msgstr ""
+"The secure transfer returned no identifier: nothing was attached to the "
+"record."
+
+#. module: bf_property_securetransfer
+#: model:ir.model,name:bf_property_securetransfer.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr "Organisation answering for an immovable"
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_secure_mixin.py:0
+msgid "Pièce remise par transfert sécurisé à %(who)s."
+msgstr "Document delivered by secure transfer to %(who)s."
+
+#. module: bf_property_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_attestation_form_secure
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_charge_statement_form_secure
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_disclosure_form_secure
+msgid "Remettre par transfert sécurisé"
+msgstr "Deliver by secure transfer"
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_secure_mixin.py:0
+msgid "Remettre une pièce à un tiers"
+msgstr "Deliver a document to a third party"
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_attestation__secure_sent_date
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_charge_statement__secure_sent_date
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_disclosure__secure_sent_date
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_secure_delivery__secure_sent_date
+msgid "Remis par transfert le"
+msgstr "Delivered by transfer on"
+
+#. module: bf_property_securetransfer
+#: model:ir.model,name:bf_property_securetransfer.model_bf_property_secure_delivery
+msgid "Remise d'une pièce par transfert sécurisé"
+msgstr "Delivery of a document by secure transfer"
+
+#. module: bf_property_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_attestation_form_secure
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_charge_statement_form_secure
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_disclosure_form_secure
+msgid "Remise sécurisée"
+msgstr "Secure delivery"
+
+#. module: bf_property_securetransfer
+#: model_terms:ir.ui.view,arch_db:bf_property_securetransfer.view_property_organisation_form_secure
+msgid "Remise sécurisée des documents"
+msgstr "Secure delivery of documents"
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields.selection,name:bf_property_securetransfer.selection__bf_property_organisation__secure_otp_channel__sms
+msgid "Texto au mobile du destinataire"
+msgstr "Text message to the recipient's mobile"
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_attestation__secure_transfer_id
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_charge_statement__secure_transfer_id
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_disclosure__secure_transfer_id
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_secure_delivery__secure_transfer_id
+msgid "Transfert sécurisé"
+msgstr "Secure transfer"
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_attestation__secure_download_count
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_charge_statement__secure_download_count
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_disclosure__secure_download_count
+#: model:ir.model.fields,field_description:bf_property_securetransfer.field_bf_property_secure_delivery__secure_download_count
+msgid "Téléchargements"
+msgstr "Downloads"
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_secure_mixin.py:0
+msgid ""
+"Votre compte n'a pas d'adresse courriel : l'accusé d'envoi n'aurait nulle "
+"part où aller."
+msgstr ""
+"Your account has no email address: the delivery receipt would have nowhere "
+"to go."
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_charge_statement.py:0
+msgid "« %s » est annulé."
+msgstr "\"%s\" is cancelled."
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_attestation.py:0
+msgid "« %s » est annulée : elle n'a pas à être remise."
+msgstr "\"%s\" is cancelled: it does not have to be delivered."
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_disclosure.py:0
+msgid "« %s » est annulée."
+msgstr "\"%s\" is cancelled."
+
+#. module: bf_property_securetransfer
+#: model:ir.model,name:bf_property_securetransfer.model_bf_property_charge_statement
+msgid "État des charges communes dues"
+msgstr "Statement of common expenses due"
+
+#. module: bf_property_securetransfer
+#. odoo-python
+#: code:addons/bf_property_securetransfer/models/bf_property_charge_statement.py:0
+msgid "État des charges communes dues : %s"
+msgstr "Statement of common expenses due: %s"
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_attestation__secure_unread
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_charge_statement__secure_unread
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_disclosure__secure_unread
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_secure_delivery__secure_unread
+msgid ""
+"⚠️ Le lien a expiré et personne ne l'a ouvert. Le syndicat a envoyé ; "
+"l'acquéreur n'a rien reçu. Sur l'art. 1069 al. 2, dont le délai joue contre "
+"le syndicat, la différence n'est pas théorique."
+msgstr ""
+"⚠️ The link expired and nobody opened it. The syndicate sent; the acquirer "
+"received nothing. On art. 1069 para. 2, whose period runs against the "
+"syndicate, the difference is not theoretical."
+
+#. module: bf_property_securetransfer
+#: model:ir.model.fields,help:bf_property_securetransfer.field_bf_property_organisation__secure_otp_channel
+msgid ""
+"⚠️ Par courriel, le lien et le code arrivent dans la même boîte : qui accède"
+" à cette boîte accède aux documents. Par texto, il faut les deux, mais le "
+"mobile doit être inscrit à la fiche du destinataire, sans quoi le socle "
+"bascule sur le courriel."
+msgstr ""
+"⚠️ By email, the link and the code arrive in the same mailbox: whoever "
+"reaches that mailbox reaches the documents. By text message both are needed,"
+" but the mobile must be on the recipient's record, failing which the base "
+"falls back to email."

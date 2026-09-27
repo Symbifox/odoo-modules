@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_rental_term_user,bf.rental.term consultation,model_bf_rental_term,bf_property_core.group_bf_property_user,1,0,0,0
+access_bf_rental_term_manager,bf.rental.term gestion,model_bf_rental_term,bf_property_core.group_bf_property_manager,1,1,1,1
+access_bf_rental_payment_user,bf.rental.payment consultation,model_bf_rental_payment,bf_property_core.group_bf_property_user,1,0,0,0
+access_bf_rental_payment_manager,bf.rental.payment gestion,model_bf_rental_payment,bf_property_core.group_bf_property_manager,1,1,1,1

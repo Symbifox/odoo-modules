@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_syndicat_form_finance" model="ir.ui.view">
+        <field name="name">bf.property.organisation.form.finance</field>
+        <field name="model">bf.property.organisation</field>
+        <field name="inherit_id" ref="bf_property_core.view_property_organisation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group[last()]" position="after">
+                <group string="Fonds de prévoyance et assurance">
+                    <group>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="contingency_study_date"/>
+                        <field name="contingency_study_amount"/>
+                        <field name="contingency_floor_basis"
+                               invisible="contingency_study_date"/>
+                        <field name="contingency_general_assiette"
+                               invisible="contingency_study_date or contingency_floor_basis != 'general'"/>
+                        <field name="contingency_basis"/>
+                        <field name="contingency_reference"/>
+                    </group>
+                    <group>
+                        <field name="promoter_handover_date"/>
+                        <field name="reconstruction_value"/>
+                        <field name="reconstruction_value_date"/>
+                        <field name="reconstruction_value_state"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" colspan="2">
+                        <field name="contingency_rule" readonly="1" nolabel="1"/>
+                    </div>
+                    <div class="alert alert-info" role="alert" colspan="2"
+                         invisible="contingency_study_date or contingency_floor_basis != 'undeclared'">
+                        Tant que l'étude du fonds de prévoyance n'est pas obtenue, deux
+                        textes portent un plancher, et ils ne donnent pas le même chiffre.
+                        L'art. 1071 al. 4 C.c.Q. met 0,5 % de la valeur de reconstruction
+                        de l'immeuble à la charge du promoteur. La Loi 16 (2019, c. 28),
+                        art. 153 al. 2, met au moins 5 % des contributions des
+                        copropriétaires aux charges communes à celle du syndicat.
+                        Lequel des deux vous vise se lit dans votre déclaration de
+                        copropriété, qui est un acte notarié propre à votre immeuble :
+                        c'est une question pour le notaire ou l'avocat à votre dossier,
+                        et le module ne la tranche pas à votre place. Il ne porte aucun
+                        plancher tant que vous n'avez pas retenu le vôtre.
+                    </div>
+                    <div class="alert alert-info" role="alert" colspan="2"
+                         invisible="contingency_study_date or contingency_floor_basis != 'general' or contingency_general_assiette != 'undeclared'">
+                        Le 5 % de la Loi 16, art. 153 al. 2, porte sur « les contributions
+                        des copropriétaires aux charges communes ». L'art. 1072 C.c.Q. y
+                        range les versements au fonds de prévoyance et au fonds
+                        d'auto-assurance, ce qui conduit à prendre le total ; l'usage
+                        d'avant la Loi 16 calculait souvent sur le seul budget
+                        d'exploitation. Sur 60 000 $ d'exploitation plus 3 000 $ aux
+                        fonds, l'écart entre les deux lectures est de 150 $ par exercice.
+                        Le module n'en retient aucune d'office et ne chiffre rien tant
+                        que vous n'avez pas retenu la vôtre : la question est pour le
+                        notaire ou l'avocat à votre dossier.
+                    </div>
+                </group>
+                <group string="Rattrapage du fonds (Loi 16, art. 153 et 154)">
+                    <group>
+                        <field name="contingency_first_study_date"/>
+                        <field name="contingency_shortfall"/>
+                        <field name="contingency_catchup_deadline"/>
+                        <field name="contingency_catchup_annual"/>
+                    </group>
+                    <group>
+                        <field name="contingency_fixing_assembly_id"/>
+                        <field name="contingency_fixing_deadline"/>
+                        <field name="contingency_fixing_state"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" colspan="2"
+                         invisible="not contingency_catchup_rule">
+                        <field name="contingency_catchup_rule" readonly="1" nolabel="1"/>
+                    </div>
+                    <div class="alert alert-warning" role="alert" colspan="2"
+                         invisible="contingency_fixing_state not in ('pending', 'overdue')">
+                        <field name="contingency_fixing_rule" readonly="1" nolabel="1"/>
+                    </div>
+                </group>
+                <group string="Fonds d'auto-assurance (art. 1071.1 C.c.Q.)">
+                    <group>
+                        <field name="self_insurance_balance"/>
+                        <field name="highest_deductible"/>
+                        <field name="self_insurance_cap_applied"/>
+                    </group>
+                    <group>
+                        <field name="self_insurance_contribution"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" colspan="2"
+                         invisible="not self_insurance_rule">
+                        <field name="self_insurance_rule" readonly="1" nolabel="1"/>
+                    </div>
+                </group>
+                <group string="Arrérages">
+                    <group string="Intérêts (art. 1617 C.c.Q.)">
+                        <field name="late_interest_basis"/>
+                        <field name="late_interest_rate"
+                               invisible="late_interest_basis == 'none'"
+                               required="late_interest_basis != 'none'"/>
+                    </group>
+                    <group string="Impayés">
+                        <field name="overdue_unit_count"/>
+                        <field name="overdue_amount"/>
+                        <field name="overdue_interest"/>
+                        <field name="overdue_total"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" colspan="2"
+                         invisible="late_interest_basis != 'none'">
+                        Aucun intérêt n'est porté sur les arrérages. L'art. 1617 C.c.Q.
+                        suppose un taux convenu, ou le taux légal, et une demeure au
+                        sens des art. 1594 et 1595. Le module n'invente ni l'un ni
+                        l'autre.
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

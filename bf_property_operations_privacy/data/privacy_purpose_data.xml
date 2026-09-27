@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ⚠️ `noupdate="1"` : le texte en langage clair est ce qu'on a MONTRÉ aux
+         personnes. Une mise à jour du module qui le réécrirait changerait après
+         coup ce qu'elles ont lu, sans que personne le sache. -->
+    <data noupdate="1">
+
+        <record id="purpose_property_shift" model="privacy.purpose">
+            <field name="code">property_shift</field>
+            <field name="name">Quarts de travail de l'équipe d'entretien</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>L'employeur tient un registre des quarts de travail : la
+                plage, l'équipe, les personnes affectées, et le travail
+                d'entretien porté par chaque quart : ce qui a été réglé, ce qui
+                a été passé au quart suivant et ce qui a été retiré de la
+                liste, avec la raison.</p>
+                <p>Cette tenue repose sur la relation d'emploi : elle sert à
+                confier le travail, à savoir qui le tient et à le transmettre
+                d'un quart à l'autre. Elle ne repose pas sur votre
+                consentement, et ne vous est pas demandée comme un choix.</p>
+                <p>Ce registre porte sur le travail, pas sur la personne : il
+                ne contient ni appréciation de rendement, ni relevé de
+                présence, ni heures travaillées.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+            <field name="sequence">40</field>
+        </record>
+
+    </data>
+</odoo>

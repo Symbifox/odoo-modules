@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_maintenance_plan_list" model="ir.ui.view">
+        <field name="name">bf.property.maintenance.plan.list</field>
+        <field name="model">bf.property.maintenance.plan</field>
+        <field name="arch" type="xml">
+            <!-- ⚠️ L'échéance en tête et en couleur : un cédule se lit pour
+                 savoir ce qui vient, jamais pour relire sa fréquence. -->
+            <list string="Cédules d'entretien" sample="1">
+                <field name="next_date" decoration-danger="next_date &lt; context_today().strftime('%Y-%m-%d')"/>
+                <field name="equipment_id"/>
+                <field name="name"/>
+                <field name="frequency_display"/>
+                <field name="last_done_date" optional="show"/>
+                <field name="request_count" optional="hide"/>
+                <field name="end_date" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_maintenance_plan_form" model="ir.ui.view">
+        <field name="name">bf.property.maintenance.plan.form</field>
+        <field name="model">bf.property.maintenance.plan</field>
+        <field name="arch" type="xml">
+            <form string="Cédule d'entretien">
+                <header>
+                    <button name="action_generate_now" type="object"
+                            string="Ouvrir ce qui est dû"
+                            class="btn-primary"
+                            invisible="not next_date"
+                            help="Ouvre tout de suite les travaux à échoir, sans attendre la passe de nuit."/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_requests" type="object"
+                                class="oe_stat_button" icon="fa-wrench">
+                            <field name="request_count" string="Travaux" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="p. ex. Inspection de la chaudière"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="equipment_id"
+                                   options="{'no_create_edit': True}"/>
+                            <label for="interval_count"/>
+                            <div class="o_row">
+                                <field name="interval_count" class="oe_inline"/>
+                                <field name="interval_unit" class="oe_inline"/>
+                            </div>
+                            <label for="duration"/>
+                            <div class="o_row">
+                                <field name="duration" widget="float_time" class="oe_inline"/>
+                                <span class="ms-2">heures</span>
+                            </div>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="next_date"/>
+                            <field name="advance_days"/>
+                            <field name="last_done_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Consigne" name="instruction">
+                            <field name="instruction_text"
+                                   placeholder="Ce qu'il y a à faire, pas à pas. Recopié sur chaque travail ouvert."/>
+                        </page>
+                        <page string="Travaux ouverts" name="requests">
+                            <field name="request_ids" readonly="1">
+                                <list>
+                                    <field name="request_date"/>
+                                    <field name="name"/>
+                                    <field name="maintenance_team_id"/>
+                                    <field name="user_id"/>
+                                    <field name="stage_id"/>
+                                    <field name="close_date"/>
+                                    <field name="bf_not_done_reason"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_maintenance_plan_search" model="ir.ui.view">
+        <field name="name">bf.property.maintenance.plan.search</field>
+        <field name="model">bf.property.maintenance.plan</field>
+        <field name="arch" type="xml">
+            <search string="Cédules d'entretien">
+                <field name="name"/>
+                <field name="equipment_id"/>
+                <filter name="due" string="À échoir"
+                        domain="[('next_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="running" string="En cours"
+                        domain="[('next_date', '!=', False)]"/>
+                <separator/>
+                <filter name="inactive" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_equipment" string="Bien"
+                            context="{'group_by': 'equipment_id'}"/>
+                    <filter name="group_by_next_date" string="Prochaine échéance"
+                            context="{'group_by': 'next_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_maintenance_plan" model="ir.actions.act_window">
+        <field name="name">Cédules d'entretien</field>
+        <field name="res_model">bf.property.maintenance.plan</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_maintenance_plan_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Céduler un entretien préventif
+            </p>
+            <p>
+                Un cédule fait naître le travail du bien et de sa fréquence.
+                La chaudière s'inspecte deux fois l'an, que le billet
+                précédent ait été fermé ou non.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_maintenance_plan"
+              name="Cédules d'entretien"
+              parent="maintenance.menu_maintenance_title"
+              action="action_maintenance_plan"
+              groups="maintenance.group_equipment_manager,base.group_user"
+              sequence="3"/>
+
+</odoo>

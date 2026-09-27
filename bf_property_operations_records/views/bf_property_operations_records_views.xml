@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_log_form_operations" model="ir.ui.view">
+        <field name="name">bf.property.maintenance.log.form.operations</field>
+        <field name="model">bf.property.maintenance.log</field>
+        <field name="inherit_id" ref="bf_property_records.view_log_form"/>
+        <field name="arch" type="xml">
+
+            <!-- ⚠️ L'écart se dit à l'entrée du carnet, pas au fond d'une
+                 colonne facultative : c'est là qu'on décide de la mise à jour
+                 annuelle de l'art. 4. -->
+            <notebook position="before">
+                <div class="alert alert-warning" role="alert"
+                     invisible="equipment_drift_count == 0">
+                    <field name="equipment_drift_count" nolabel="1" readonly="1"
+                           class="oe_inline"/>
+                    bien(s) du carnet citent un équipement que l'exploitation a
+                    retiré du service, sans que des travaux réalisés aient été
+                    notés. L'art. 4 du règlement veut, à la mise à jour
+                    annuelle, ce qui n'a pas été fait et pourquoi : la raison
+                    vient du conseil.
+                </div>
+            </notebook>
+
+            <!-- ⚠️ Même raison que l'écart ci-dessus : un entretien sauté qui
+                 ne se lit que dans une colonne facultative d'une liste de deux
+                 cents biens ne se lit pas. L'art. 4 se décide ici. -->
+            <div class="alert alert-warning" position="after">
+                <div class="alert alert-warning" role="alert"
+                     invisible="bf_skipped_item_count == 0">
+                    <field name="bf_skipped_item_count" nolabel="1" readonly="1"
+                           class="oe_inline"/>
+                    bien(s) du carnet portent un entretien préventif que
+                    l'exploitation a déclaré non effectué. L'art. 4 du
+                    règlement veut, à la mise à jour annuelle, la mention ET la
+                    raison : la colonne « Relevé des entretiens non effectués »
+                    les porte toutes, y compris celles que le champ « Non
+                    effectué, parce que » ne peut pas contenir.
+                </div>
+            </div>
+
+            <xpath expr="//field[@name='item_ids']//field[@name='condition']"
+                   position="before">
+                <field name="equipment_id" optional="show"/>
+                <field name="equipment_drift" optional="show" readonly="1"
+                       decoration-warning="equipment_drift"/>
+                <field name="bf_skipped_count" optional="show" readonly="1"
+                       decoration-warning="bf_skipped_count &gt; 0"/>
+                <field name="bf_skipped_summary" optional="hide" readonly="1"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="view_equipment_form_records" model="ir.ui.view">
+        <field name="name">maintenance.equipment.form.records</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="inherit_id" ref="bf_property_operations.view_equipment_form_property"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='maintenance']" position="after">
+                <page string="Carnet d'entretien" name="bf_maintenance_items"
+                      groups="bf_property_core.group_bf_property_user"
+                      invisible="not bf_maintenance_item_ids">
+                    <field name="bf_maintenance_item_ids" readonly="1">
+                        <list>
+                            <field name="log_id"/>
+                            <field name="name"/>
+                            <field name="condition"/>
+                            <field name="major_work"/>
+                            <field name="major_work_year" options="{'enable_formatting': false}"/>
+                            <field name="equipment_drift"
+                                   decoration-warning="equipment_drift"/>
+                        </list>
+                    </field>
+                    <div class="text-muted mt-2">
+                        Le carnet est un document réglementaire qu'un
+                        professionnel indépendant établit. Ce qu'il dit de ce
+                        bien ne se corrige pas depuis ici.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

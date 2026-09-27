@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_budget_user,bf.property.budget.user,model_bf_property_budget,bf_property_core.group_bf_property_user,1,0,0,0
+access_budget_manager,bf.property.budget.manager,model_bf_property_budget,bf_property_core.group_bf_property_manager,1,1,1,1
+access_budget_line_user,bf.property.budget.line.user,model_bf_property_budget_line,bf_property_core.group_bf_property_user,1,0,0,0
+access_budget_line_manager,bf.property.budget.line.manager,model_bf_property_budget_line,bf_property_core.group_bf_property_manager,1,1,1,1
+access_fund_call_user,bf.property.fund.call.user,model_bf_property_fund_call,bf_property_core.group_bf_property_user,1,0,0,0
+access_fund_call_manager,bf.property.fund.call.manager,model_bf_property_fund_call,bf_property_core.group_bf_property_manager,1,1,1,1
+access_fund_call_line_user,bf.property.fund.call.line.user,model_bf_property_fund_call_line,bf_property_core.group_bf_property_user,1,0,0,0
+access_fund_call_line_manager,bf.property.fund.call.line.manager,model_bf_property_fund_call_line,bf_property_core.group_bf_property_manager,1,1,1,1
+access_payment_user,bf.property.payment.user,model_bf_property_payment,bf_property_core.group_bf_property_user,1,0,0,0
+access_payment_manager,bf.property.payment.manager,model_bf_property_payment,bf_property_core.group_bf_property_manager,1,1,1,1
+access_payment_allocation_user,bf.property.payment.allocation.user,model_bf_property_payment_allocation,bf_property_core.group_bf_property_user,1,0,0,0
+access_payment_allocation_manager,bf.property.payment.allocation.manager,model_bf_property_payment_allocation,bf_property_core.group_bf_property_manager,1,1,1,1
+access_charge_statement_user,bf.property.charge.statement.user,model_bf_property_charge_statement,bf_property_core.group_bf_property_user,1,0,0,0
+access_charge_statement_manager,bf.property.charge.statement.manager,model_bf_property_charge_statement,bf_property_core.group_bf_property_manager,1,1,1,1
+access_charge_statement_line_user,bf.property.charge.statement.line.user,model_bf_property_charge_statement_line,bf_property_core.group_bf_property_user,1,0,0,0
+access_charge_statement_line_manager,bf.property.charge.statement.line.manager,model_bf_property_charge_statement_line,bf_property_core.group_bf_property_manager,1,1,1,1

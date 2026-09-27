@@ -1,0 +1,548 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_rental_portal
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 22:33+0000\n"
+"PO-Revision-Date: 2026-09-26 22:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_rental_portal
+#. odoo-python
+#: code:addons/bf_rental_portal/models/bf_rental_lease.py:0
+msgid "%(landlord)s : bail %(name)s"
+msgstr "%(landlord)s: lease %(name)s"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid ""
+",\n"
+"                                        pour une durée indéterminée"
+msgstr ""
+",\n"
+"                                        for an indeterminate term"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid ""
+",\n"
+"                        le bail est reconduit de plein droit aux conditions\n"
+"                        antérieures (art. 1947 al. 2 C.c.Q.)."
+msgstr ""
+",\n"
+"                        the lease is renewed by operation of law on the same\n"
+"                        conditions (art. 1947 para. 3 CCQ)."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid ""
+"<br/>\n"
+"                                    <span class=\"text-muted\">Locateur : </span>"
+msgstr ""
+"<br/>\n"
+"                                    <span class=\"text-muted\">Lessor: </span>"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "<span class=\"text-muted\">cet avis informe</span>"
+msgstr "<span class=\"text-muted\">this notice informs</span>"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid ""
+"<strong>Sans réponse de votre part, l'avis sera réputé\n"
+"                        accepté</strong> et votre bail sera reconduit avec ce qui\n"
+"                        y est demandé ("
+msgstr ""
+"<strong>If you do not reply, you are deemed to have agreed</strong> to the\n"
+"                        renewal of the lease on the conditions proposed by the lessor ("
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid ""
+"<strong>Votre recours en fixation du loyer est restreint\n"
+"                            pendant les cinq premières années</strong>\n"
+"                            (art. 1955 C.c.Q.)."
+msgstr ""
+"<strong>You may not apply to have the rent fixed during the first five\n"
+"                            years</strong>\n"
+"                            (art. 1955 CCQ)."
+
+#. module: bf_rental_portal
+#: model:mail.template,body_html:bf_rental_portal.mail_template_lessee_invitation
+msgid ""
+"<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Bonjour <t t-out=\"object.name or ''\"/>,</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\"><t t-out=\"ctx.get('bf_organisation') or ''\"/> vous ouvre un accès à son portail. Vous y trouverez :</p>\n"
+"    <ul style=\"margin:0 0 16px 0;padding-left:20px;font-size:15px;\">\n"
+"        <li style=\"margin:0 0 4px 0;\">votre bail et ses pièces ;</li>\n"
+"        <li style=\"margin:0 0 4px 0;\">les avis qui vous sont adressés ;</li>\n"
+"        <li style=\"margin:0 0 4px 0;\">vos loyers et ce qui reste à payer.</li>\n"
+"    </ul>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Votre identifiant : <strong t-out=\"object.login or ''\"/></p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 20px 0;\">\n"
+"        <tbody>\n"
+"            <tr>\n"
+"                <td t-attf-style=\"border-radius:10px;background-color:{{ brand_primary }};text-align:center;\">\n"
+"                    <a t-att-href=\"ctx.get('portal_url')\" style=\"display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;\">Choisir mon mot de passe</a>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </tbody>\n"
+"    </table>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">Si vous n'attendiez pas ce courriel, vous pouvez l'ignorer : l'accès reste inutilisable tant qu'aucun mot de passe n'est choisi.</p>\n"
+"</div>\n"
+"        "
+msgstr ""
+"<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Hello <t t-out=\"object.name or ''\"/>,</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\"><t t-out=\"ctx.get('bf_organisation') or ''\"/> is giving you access to its portal. There you will find:</p>\n"
+"    <ul style=\"margin:0 0 16px 0;padding-left:20px;font-size:15px;\">\n"
+"        <li style=\"margin:0 0 4px 0;\">your lease and its documents;</li>\n"
+"        <li style=\"margin:0 0 4px 0;\">the notices sent to you;</li>\n"
+"        <li style=\"margin:0 0 4px 0;\">your rent instalments and what remains to be paid.</li>\n"
+"    </ul>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Your login: <strong t-out=\"object.login or ''\"/></p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 20px 0;\">\n"
+"        <tbody>\n"
+"            <tr>\n"
+"                <td t-attf-style=\"border-radius:10px;background-color:{{ brand_primary }};text-align:center;\">\n"
+"                    <a t-att-href=\"ctx.get('portal_url')\" style=\"display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;\">Choose my password</a>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </tbody>\n"
+"    </table>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">If you were not expecting this email, you can ignore it: the access remains unusable until a password is chosen.</p>\n"
+"</div>\n"
+"        "
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "Acceptation"
+msgstr "Acceptance"
+
+#. module: bf_rental_portal
+#. odoo-python
+#: code:addons/bf_rental_portal/models/bf_rental_lease.py:0
+msgid "Accès au portail"
+msgstr "Portal access"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Acquitté"
+msgstr "Paid"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "Aucun avis n'a été inscrit à votre dossier."
+msgstr "No notice has been recorded in your file."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid ""
+"Aucun bail n'est rattaché à votre compte. C'est le bail qui\n"
+"                    dit qui en est locataire : si votre nom n'y figure pas, rien\n"
+"                    ne s'affiche ici, même si vous habitez le logement."
+msgstr ""
+"No lease is attached to your account. It is the lease that says who the\n"
+"                    lessee is: if your name is not on it, nothing appears here,\n"
+"                    even if you live in the dwelling."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Aucun terme de loyer n'a été inscrit à votre dossier."
+msgstr "No rent instalment has been recorded in your file."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "Avis"
+msgstr "Notice"
+
+#. module: bf_rental_portal
+#: model:ir.model,name:bf_rental_portal.model_bf_rental_notice
+msgid "Avis donné au titre du louage"
+msgstr "Notice given under the lease"
+
+#. module: bf_rental_portal
+#: model:ir.model,name:bf_rental_portal.model_bf_rental_lease
+msgid "Bail de logement"
+msgstr "Lease of a dwelling"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid ""
+"C.c.Q.). C'est alors au locateur de s'adresser au Tribunal\n"
+"                        administratif du logement."
+msgstr ""
+"CCQ). It is then for the lessor to apply to the Administrative\n"
+"                        Housing Tribunal."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "C.c.Q.). Répondre ne coûte rien ; ne pas répondre décide."
+msgstr "CCQ). Replying costs nothing; not replying decides."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_my_home_rental
+msgid "Ce qui a été convenu, et le formulaire signé"
+msgstr "What was agreed, and the signed form"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_my_home_rental
+msgid "Ce qui a été payé, et ce qui reste dû"
+msgstr "What has been paid, and what is still owed"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "Date visée"
+msgstr "Date concerned"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Depuis le"
+msgstr "Since"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Du"
+msgstr "From"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Déposé au greffe"
+msgstr "Deposited in the office of the court"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "En retard"
+msgstr "Late"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Exigible le"
+msgstr "Payable on"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Il reste"
+msgstr "There remains"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid ""
+"Il revient maintenant au locateur de s'adresser au\n"
+"                        Tribunal administratif du logement."
+msgstr ""
+"It is now for the lessor to apply to the\n"
+"                        Administrative Housing Tribunal."
+
+#. module: bf_rental_portal
+#: model:ir.model.fields,field_description:bf_rental_portal.field_bf_rental_lease__portal_building_name
+msgid "Immeuble (portail)"
+msgstr "Immovable (portal)"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.view_bf_rental_lease_form_portal_invite
+msgid ""
+"Invite les locataires du bail. Déjà invités : l'accès leur est renvoyé."
+msgstr ""
+"Invites the lessees of the lease. Already invited: their access is sent "
+"again."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.view_bf_rental_lease_form_portal_invite
+msgid "Inviter au portail"
+msgstr "Invite to the portal"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_my_home_rental
+msgid "Jusqu'à quand répondre, et ce que le silence produit"
+msgstr "How long you have to reply, and what silence produces"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "La durée"
+msgstr "The term"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "La mention figure à la section"
+msgstr "The stipulation is at section"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid ""
+"Le Tribunal administratif du logement renseigne sur ce\n"
+"                            que la restriction laisse ouvert."
+msgstr ""
+"The Administrative Housing Tribunal can tell you what\n"
+"                            the restriction leaves open."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid ""
+"Le formulaire n'a pas été déposé au dossier. Le\n"
+"                            locateur doit vous en remettre une copie dans les dix\n"
+"                            jours de la signature (art. 1895 C.c.Q.)."
+msgstr ""
+"The form has not been filed. Within 10 days after entering into\n"
+"                            the lease, the lessor is bound to give you a copy\n"
+"                            (art. 1895 CCQ)."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Le formulaire signé"
+msgstr "The signed form"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid ""
+"Le locateur doit vous remettre un reçu si vous le demandez\n"
+"                    (art. 1908 C.c.Q.), et il ne peut exiger aucune somme autre\n"
+"                    que le loyer, sous forme de dépôt ou autrement (art. 1904)."
+msgstr ""
+"The lessor is bound to give you a receipt if you ask for one\n"
+"                    (art. 1908 CCQ), and may not exact any sum other than\n"
+"                    the rent, by way of deposit or otherwise (art. 1904)."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Le logement"
+msgstr "The dwelling"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Le loyer"
+msgstr "The rent"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Le loyer maximal qui y est inscrit est de"
+msgstr "The maximum rent it indicates is"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "Le silence vaut"
+msgstr "Silence means"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_my_home_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Les avis reçus"
+msgstr "Notices received"
+
+#. module: bf_rental_portal
+#: model:ir.model.fields,field_description:bf_rental_portal.field_bf_rental_lease__portal_landlord_name
+msgid "Locateur (portail)"
+msgstr "Lessor (portal)"
+
+#. module: bf_rental_portal
+#: model:mail.template,name:bf_rental_portal.mail_template_lessee_invitation
+msgid "Locatif : invitation au portail du locataire"
+msgstr "Rental: invitation to the lessee portal"
+
+#. module: bf_rental_portal
+#: model:ir.model.fields,field_description:bf_rental_portal.field_bf_rental_lease__portal_unit_name
+msgid "Logement (portail)"
+msgstr "Dwelling (portal)"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Loyer"
+msgstr "Rent"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_my_home_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Mon bail"
+msgstr "My lease"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_my_home_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Mon loyer"
+msgstr "My rent"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Montant"
+msgstr "Amount"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Partiel"
+msgstr "Partial"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Payé"
+msgstr "Paid"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "Refus"
+msgstr "Objection"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "Reste"
+msgstr "Still owed"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "Reçu le"
+msgstr "Received on"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "S'il ne le fait pas avant le"
+msgstr "If the lessor does not do so before"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid ""
+"Sans réponse de votre part, l'avis sera réputé\n"
+"                        <strong>refusé</strong> ("
+msgstr ""
+"If you do not reply, you are deemed to have\n"
+"                        <strong>refused to vacate the dwelling</strong> ("
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Services, taxes et frais"
+msgstr "Services, taxes and costs"
+
+#. module: bf_rental_portal
+#: model:ir.model,name:bf_rental_portal.model_bf_rental_term
+msgid "Terme de loyer"
+msgstr "Rent instalment"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Terminé"
+msgstr "Ended"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_rental_portal
+#. odoo-python
+#: code:addons/bf_rental_portal/models/bf_rental_lease.py:0
+msgid "Voir mon logement"
+msgstr "View my dwelling"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "Vous avez jusqu'au"
+msgstr "You have until"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "Vous avez refusé"
+msgstr "You objected to"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "au"
+msgstr "to"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "avis."
+msgstr "notices."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_leases
+msgid "de votre bail."
+msgstr "of your lease."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid ""
+"dû sur les termes déjà exigibles. Le détail est ci-dessous,\n"
+"                        terme par terme."
+msgstr ""
+"owed on instalments already payable. The detail is below,\n"
+"                        instalment by instalment."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "non consignée"
+msgstr "not recorded"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "pour répondre."
+msgstr "to reply."
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "un avis."
+msgstr "one notice."
+
+#. module: bf_rental_portal
+#: model:mail.template,subject:bf_rental_portal.mail_template_lessee_invitation
+msgid "{{ ctx.get('bf_organisation') }} : votre accès au portail"
+msgstr "{{ ctx.get('bf_organisation') }}: your portal access"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid "À répondre avant"
+msgstr "Reply before"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "À venir"
+msgstr "Upcoming"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_rent
+msgid "État"
+msgstr "Status"
+
+#. module: bf_rental_portal
+#: model_terms:ir.ui.view,arch_db:bf_rental_portal.portal_rental_notices
+msgid ""
+"⚠️ Ce logement est visé par l'art. 1955 C.c.Q. : refuser la\n"
+"                        modification vous oblige à quitter à la fin du bail\n"
+"                        (art. 1945 al. 2). Le refus n'est pas ici le maintien."
+msgstr ""
+"⚠️ This dwelling is one described in art. 1955 CCQ: if you object to the\n"
+"                        modification you shall vacate the dwelling upon termination\n"
+"                        of the lease (art. 1945 para. 2). Objecting is not staying."
+
+#. module: bf_rental_portal
+#: model:ir.model.fields,help:bf_rental_portal.field_bf_rental_lease__portal_unit_name
+msgid ""
+"⚠️ Vide pour un bail de chambre ou de terrain de maison mobile, qui ne "
+"correspond à aucune fraction inscrite."
+msgstr ""
+"⚠️ Empty for the lease of a room or of land for a mobile home, which matches"
+" no registered fraction."

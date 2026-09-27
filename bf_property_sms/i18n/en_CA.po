@@ -1,0 +1,330 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_property_sms
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 11:27+0000\n"
+"PO-Revision-Date: 2026-09-26 11:27+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_announcement.py:0
+msgid " Non joints : %s."
+msgstr " Not reached: %s."
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_sms_consent.py:0
+msgid "%(who)s n'a aucune fraction dans %(syndicat)s."
+msgstr "%(who)s has no fraction in %(syndicat)s."
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_organisation.py:0
+msgid "%s n'a pas consenti à être joint par texto pour ce canal"
+msgstr "%s has not consented to be contacted by text message on this channel"
+
+#. module: bf_property_sms
+#: model:ir.model,name:bf_property_sms.model_bf_property_announcement
+msgid "Annonce de l'immeuble"
+msgstr "Announcement for the immovable"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,help:bf_property_sms.field_bf_property_sms_consent__phone
+msgid ""
+"Art. 1070 al. 1 C.c.Q. : ce renseignement n'est au registre que parce que la"
+" personne y a consenti. Il ne sert qu'aux avis qu'elle a acceptés."
+msgstr ""
+"Art. 1070 para. 1 CCQ: this information is in the register only because the "
+"person consented to it. It serves only the notices they have accepted."
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_parcel.py:0
+msgid "Aucun avis par texto : %s."
+msgstr "No text-message notice: %s."
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_organisation__sms_enabled
+#: model:ir.ui.menu,name:bf_property_sms.menu_property_sms_consent
+msgid "Avis par texto"
+msgstr "Text-message notices"
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_announcement.py:0
+msgid "Avis par texto : %(sent)d joint(s).%(skipped)s"
+msgstr "Text-message notice: %(sent)d reached.%(skipped)s"
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_parcel.py:0
+msgid "Avis par texto envoyé au destinataire."
+msgstr "Text-message notice sent to the recipient."
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_announcement__sms_sent_date
+msgid "Avis par texto envoyé le"
+msgstr "Text-message notice sent on"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__channel_urgent
+msgid "Avis urgents"
+msgstr "Urgent notices"
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_sms_consent.py:0
+msgid "Canal inconnu : %s"
+msgstr "Unknown channel: %s"
+
+#. module: bf_property_sms
+#: model:ir.model.constraint,message:bf_property_sms.constraint_bf_property_sms_consent_unique_partner_per_syndicat
+msgid "Cette personne a déjà une ligne de consentement pour ce syndicat."
+msgstr "This person already has a consent line for this syndicate."
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__channel_parcel
+msgid "Colis"
+msgstr "Parcel"
+
+#. module: bf_property_sms
+#: model:ir.model,name:bf_property_sms.model_bf_property_parcel
+msgid "Colis reçu pour un occupant"
+msgstr "Parcel received for an occupant"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__note
+msgid "Comment le consentement a été recueilli"
+msgstr "How the consent was collected"
+
+#. module: bf_property_sms
+#: model_terms:ir.ui.view,arch_db:bf_property_sms.view_property_sms_consent_form
+msgid ""
+"Comment le consentement a été recueilli : formulaire signé, courriel, "
+"assemblée."
+msgstr "How the consent was collected: signed form, email, general meeting."
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_sms_consent.py:0
+msgid "Consentement retiré."
+msgstr "Consent withdrawn."
+
+#. module: bf_property_sms
+#: model:ir.model,name:bf_property_sms.model_bf_property_sms_consent
+msgid "Consentement à être joint par texto"
+msgstr "Consent to be contacted by text message"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_organisation__sms_consent_ids
+msgid "Consentements"
+msgstr "Consents"
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_organisation.py:0
+#: model:ir.actions.act_window,name:bf_property_sms.action_property_sms_consent
+msgid "Consentements aux avis par texto"
+msgstr "Consents to text-message notices"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__given_date
+msgid "Consenti le"
+msgstr "Consented on"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_announcement__sms_sent_count
+msgid "Destinataires joints"
+msgstr "Recipients reached"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__active_consent
+#: model_terms:ir.ui.view,arch_db:bf_property_sms.view_property_sms_consent_list
+msgid "En vigueur"
+msgstr "In force"
+
+#. module: bf_property_sms
+#: model_terms:ir.ui.view,arch_db:bf_property_sms.view_property_announcement_form_sms
+msgid "Envoyer par texto"
+msgstr "Send by text message"
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_announcement.py:0
+msgid "Envoyer un avis urgent par texto"
+msgstr "Send an urgent notice by text message"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,help:bf_property_sms.field_bf_property_organisation__sms_line_id
+msgid "La ligne VoIP.ms depuis laquelle les avis partent."
+msgstr "The VoIP.ms line the notices go out from."
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_sms_consent.py:0
+msgid "Le consentement de %s est déjà retiré."
+msgstr "%s's consent is already withdrawn."
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_organisation__sms_line_id
+msgid "Ligne d'envoi"
+msgstr "Sending line"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__phone
+msgid "Numéro pour les avis"
+msgstr "Number for notices"
+
+#. module: bf_property_sms
+#: model:ir.model,name:bf_property_sms.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr "Organisation answering for an immovable"
+
+#. module: bf_property_sms
+#: model_terms:ir.ui.view,arch_db:bf_property_sms.view_property_organisation_form_sms
+msgid ""
+"Ouvrir le canal ne suffit pas : chaque personne doit avoir\n"
+"                        consenti de son côté, et le module n'enverra rien à qui ne\n"
+"                        l'a pas fait.\n"
+"                        <br/>\n"
+"                        Ce que le fournisseur de texto conserve de son côté, et ce\n"
+"                        que garde l'appareil du destinataire, ne suit pas la purge du\n"
+"                        journal des colis et des visiteurs."
+msgstr ""
+"Opening the channel is not enough: each person must have\n"
+"                        consented on their side, and the module will send nothing to\n"
+"                        anyone who has not.\n"
+"                        <br/>\n"
+"                        What the text-message provider keeps on its side, and what\n"
+"                        the recipient's device keeps, does not follow the purge of the\n"
+"                        parcel and visitor log."
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__partner_id
+msgid "Personne"
+msgstr "Person"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,help:bf_property_sms.field_bf_property_sms_consent__channel_urgent
+msgid "Prévenir cette personne d'un avis urgent de l'immeuble."
+msgstr "Notify this person of an urgent notice for the immovable."
+
+#. module: bf_property_sms
+#: model:ir.model.fields,help:bf_property_sms.field_bf_property_sms_consent__channel_parcel
+msgid "Prévenir cette personne quand un colis arrive à son nom."
+msgstr "Notify this person when a parcel arrives in their name."
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_announcement.py:0
+msgid ""
+"Publiez l'annonce avant de l'envoyer par texto : le portail doit pouvoir la "
+"relire."
+msgstr ""
+"Publish the announcement before sending it by text message: the portal must "
+"be able to show it again."
+
+#. module: bf_property_sms
+#: model_terms:ir.ui.view,arch_db:bf_property_sms.view_property_sms_consent_form
+msgid "Retirer le consentement"
+msgstr "Withdraw the consent"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__withdrawn_date
+msgid "Retiré le"
+msgstr "Withdrawn on"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__company_id
+msgid "Société"
+msgstr "Company"
+
+#. module: bf_property_sms
+#: model:ir.model.fields,field_description:bf_property_sms.field_bf_property_sms_consent__organisation_id
+msgid "Syndicat"
+msgstr "Syndicate"
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_sms_consent.py:0
+msgid "Un consentement ne se retire pas avant d'être donné."
+msgstr "A consent is not withdrawn before it is given."
+
+#. module: bf_property_sms
+#: model_terms:ir.ui.view,arch_db:bf_property_sms.view_property_sms_consent_form
+msgid ""
+"Un numéro de téléphone n'est pas au registre de droit.\n"
+"                            L'article 1070 alinéa 1 du Code civil y met le nom et\n"
+"                            l'adresse de chaque copropriétaire et de chaque occupant,\n"
+"                            et n'y met les autres renseignements personnels que si la\n"
+"                            personne y consent expressément. Cette fiche est ce\n"
+"                            consentement, et aucun texto ne part sans elle."
+msgstr ""
+"A telephone number is not in the register as of right.\n"
+"                            Article 1070 paragraph 1 of the Civil Code puts there the name\n"
+"                            and address of each co-owner and of each occupant,\n"
+"                            and puts other personal information there only if the\n"
+"                            person expressly consents. This record is that\n"
+"                            consent, and no text message goes out without it."
+
+#. module: bf_property_sms
+#: model:ir.model.fields,help:bf_property_sms.field_bf_property_sms_consent__withdrawn_date
+msgid ""
+"Un retrait n'efface pas la ligne : il la ferme. Effacer empêcherait de dire "
+"ce qui était permis au moment d'un envoi déjà fait."
+msgstr ""
+"A withdrawal does not erase the line: it closes it. Erasing would make it "
+"impossible to say what was permitted at the time of a sending already made."
+
+#. module: bf_property_sms
+#: model_terms:ir.ui.view,arch_db:bf_property_sms.view_property_announcement_form_sms
+msgid ""
+"Un texto part à chaque personne que cette annonce vise et qui a consenti. "
+"C'est irréversible."
+msgstr ""
+"A text message goes to every person this announcement targets who has "
+"consented. It cannot be undone."
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_organisation.py:0
+msgid "aucune ligne d'envoi n'est choisie sur la fiche du syndicat"
+msgstr "no sending line is chosen on the syndicate's record"
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_organisation.py:0
+msgid "le canal texto du syndicat est fermé"
+msgstr "the syndicate's text-message channel is closed"
+
+#. module: bf_property_sms
+#. odoo-python
+#: code:addons/bf_property_sms/models/bf_property_announcement.py:0
+msgid "« %s » a déjà été envoyée par texto le %s."
+msgstr "\"%s\" was already sent by text message on %s."
+
+#. module: bf_property_sms
+#: model:ir.model.fields,help:bf_property_sms.field_bf_property_organisation__sms_enabled
+msgid ""
+"⚠️ À l'arrêt par défaut. L'ouvrir ne suffit pas : chaque personne doit avoir"
+" consenti de son côté (art. 1070 al. 1 C.c.Q.)."
+msgstr ""
+"⚠️ Off by default. Turning it on is not enough: each person must have "
+"consented on their side (art. 1070 para. 1 CCQ)."

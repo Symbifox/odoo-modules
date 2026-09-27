@@ -1,0 +1,242 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_property_cx
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 22:35+0000\n"
+"PO-Revision-Date: 2026-09-26 22:35+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_cx
+#: model:mail.template,body_html:bf_property_cx.mail_template_request_rating
+msgid ""
+"<t t-set=\"partner\" t-value=\"object._rating_get_partner()\"/>\n"
+"<t t-set=\"access_token\" t-value=\"object._rating_get_access_token()\"/>\n"
+"<t t-set=\"company\" t-value=\"object.organisation_id.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Bonjour <t t-out=\"partner.name or ''\"/>,</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">\n"
+"        Votre demande «&nbsp;<t t-out=\"object.name or ''\"/>&nbsp;» à <t t-out=\"object.organisation_id.display_name or ''\"/>\n"
+"        a été réglée.\n"
+"    </p>\n"
+"    <p t-if=\"object.resolution\" t-attf-style=\"margin:0 0 16px 0;font-size:15px;padding:12px 16px;background-color:#F8FAFC;border-left:3px solid {{ brand_primary }};\">\n"
+"        <t t-out=\"object.resolution\"/>\n"
+"    </p>\n"
+"    <p style=\"margin:0 0 8px 0;font-size:15px;\">\n"
+"        En un clic, comment ça s'est passé&nbsp;?\n"
+"    </p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:16px auto 16px auto;text-align:center;\">\n"
+"        <tbody><tr>\n"
+"            <td style=\"padding:0 16px;\">\n"
+"                <a t-attf-href=\"/rate/{{ access_token }}/5\">\n"
+"                    <img alt=\"Satisfait\" src=\"/rating/static/src/img/rating_5.png\" title=\"Satisfait\"/>\n"
+"                </a>\n"
+"            </td>\n"
+"            <td style=\"padding:0 16px;\">\n"
+"                <a t-attf-href=\"/rate/{{ access_token }}/3\">\n"
+"                    <img alt=\"Correct\" src=\"/rating/static/src/img/rating_3.png\" title=\"Correct\"/>\n"
+"                </a>\n"
+"            </td>\n"
+"            <td style=\"padding:0 16px;\">\n"
+"                <a t-attf-href=\"/rate/{{ access_token }}/1\">\n"
+"                    <img alt=\"Insatisfait\" src=\"/rating/static/src/img/rating_1.png\" title=\"Insatisfait\"/>\n"
+"                </a>\n"
+"            </td>\n"
+"        </tr></tbody>\n"
+"    </table>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:13px;color:#6B7280;\">\n"
+"        Un commentaire libre peut être ajouté après le clic.\n"
+"    </p>\n"
+"    <p style=\"margin:0;font-size:12px;color:#9CA3AF;\">\n"
+"        Vous préférez ne plus recevoir de demandes d'avis&nbsp;?\n"
+"        <a t-att-href=\"partner.bf_cx_unsubscribe_url\" style=\"color:#9CA3AF;\">Me désabonner</a>.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<t t-set=\"partner\" t-value=\"object._rating_get_partner()\"/>\n"
+"<t t-set=\"access_token\" t-value=\"object._rating_get_access_token()\"/>\n"
+"<t t-set=\"company\" t-value=\"object.organisation_id.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Hello <t t-out=\"partner.name or ''\"/>,</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">\n"
+"        Your request \"<t t-out=\"object.name or ''\"/>\" to <t t-out=\"object.organisation_id.display_name or ''\"/>\n"
+"        has been settled.\n"
+"    </p>\n"
+"    <p t-if=\"object.resolution\" t-attf-style=\"margin:0 0 16px 0;font-size:15px;padding:12px 16px;background-color:#F8FAFC;border-left:3px solid {{ brand_primary }};\">\n"
+"        <t t-out=\"object.resolution\"/>\n"
+"    </p>\n"
+"    <p style=\"margin:0 0 8px 0;font-size:15px;\">\n"
+"        In one click, how did it go?\n"
+"    </p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:16px auto 16px auto;text-align:center;\">\n"
+"        <tbody><tr>\n"
+"            <td style=\"padding:0 16px;\">\n"
+"                <a t-attf-href=\"/rate/{{ access_token }}/5\">\n"
+"                    <img alt=\"Satisfied\" src=\"/rating/static/src/img/rating_5.png\" title=\"Satisfied\"/>\n"
+"                </a>\n"
+"            </td>\n"
+"            <td style=\"padding:0 16px;\">\n"
+"                <a t-attf-href=\"/rate/{{ access_token }}/3\">\n"
+"                    <img alt=\"Fine\" src=\"/rating/static/src/img/rating_3.png\" title=\"Fine\"/>\n"
+"                </a>\n"
+"            </td>\n"
+"            <td style=\"padding:0 16px;\">\n"
+"                <a t-attf-href=\"/rate/{{ access_token }}/1\">\n"
+"                    <img alt=\"Dissatisfied\" src=\"/rating/static/src/img/rating_1.png\" title=\"Dissatisfied\"/>\n"
+"                </a>\n"
+"            </td>\n"
+"        </tr></tbody>\n"
+"    </table>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:13px;color:#6B7280;\">\n"
+"        A free comment can be added after the click.\n"
+"    </p>\n"
+"    <p style=\"margin:0;font-size:12px;color:#9CA3AF;\">\n"
+"        Would you rather not receive feedback requests?\n"
+"        <a t-att-href=\"partner.bf_cx_unsubscribe_url\" style=\"color:#9CA3AF;\">Unsubscribe</a>.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__cx_feedback_sent
+msgid "Avis demandé"
+msgstr "Feedback requested"
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid "Avis demandé à %s."
+msgstr "Feedback requested from %s."
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid ""
+"Avis non demandé : %s a été sollicité récemment (garde-fou anti-"
+"sursollicitation)."
+msgstr ""
+"Feedback not requested: %s was solicited recently (over-solicitation guard)."
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid "Avis non demandé : %s n'a pas d'adresse de courriel au registre."
+msgstr "Feedback not requested: %s has no email address in the register."
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid "Avis non demandé : l'envoi a échoué (%s)."
+msgstr "Feedback not requested: sending failed (%s)."
+
+#. module: bf_property_cx
+#: model:mail.template,name:bf_property_cx.mail_template_request_rating
+msgid "Copropriété : avis après une demande réglée"
+msgstr "Co-ownership: feedback after a settled request"
+
+#. module: bf_property_cx
+#: model:ir.model,name:bf_property_cx.model_bf_property_request
+msgid "Demande d'entretien"
+msgstr "Maintenance request"
+
+#. module: bf_property_cx
+#: model_terms:ir.ui.view,arch_db:bf_property_cx.view_syndicat_form_cx
+msgid ""
+"La mesure est ouverte. Deux freins restent hors de votre\n"
+"                        main, et c'est voulu : le garde-fou anti-sursollicitation,\n"
+"                        qui compte par personne, et le lien de désabonnement que\n"
+"                        porte chaque courriel. Le courriel ne porte aucune marque\n"
+"                        d'éditeur : il vient de vous."
+msgstr ""
+"Measurement is on. Two brakes stay out of your\n"
+"                        hands, and that is deliberate: the over-solicitation\n"
+"                        guard, which counts per person, and the unsubscribe\n"
+"                        link every email carries. The email carries no\n"
+"                        vendor branding: it comes from you."
+
+#. module: bf_property_cx
+#: model_terms:ir.ui.view,arch_db:bf_property_cx.view_syndicat_form_cx
+msgid ""
+"La mesure est à l'arrêt : aucune demande d'avis ne part vers\n"
+"                        un occupant. Une fois ouverte, une demande d'entretien réglée\n"
+"                        fait partir à son demandeur une question en trois émojis, et\n"
+"                        la réponse rejoint le registre d'expérience. Une demande\n"
+"                        refusée n'en fait jamais partir : refuser, c'est dire que la\n"
+"                        demande sort de l'objet du syndicat (art. 1039 C.c.Q.)."
+msgstr ""
+"Measurement is off: no feedback request goes out to\n"
+"                        an occupant. Once on, a settled maintenance request\n"
+"                        sends its requester a three-emoji question, and\n"
+"                        the answer joins the experience register. A refused\n"
+"                        request never sends one: refusing means saying the\n"
+"                        request falls outside the objects of the syndicate\n"
+"                        (art. 1039 CCQ)."
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_organisation__cx_feedback_enabled
+msgid "Mesurer la satisfaction des occupants"
+msgstr "Measure occupant satisfaction"
+
+#. module: bf_property_cx
+#: model:ir.model,name:bf_property_cx.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr "Organisation answering for an immovable"
+
+#. module: bf_property_cx
+#: model_terms:ir.ui.view,arch_db:bf_property_cx.view_syndicat_form_cx
+msgid "Satisfaction des occupants"
+msgstr "Occupant satisfaction"
+
+#. module: bf_property_cx
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_request__cx_feedback_sent
+msgid ""
+"Une demande réglée ne fait partir qu'une seule demande d'avis. Rouvrir puis "
+"refermer la demande n'en fait pas partir une deuxième : la personne a déjà "
+"été sollicitée."
+msgstr ""
+"A settled request sends only one feedback request. Reopening then closing "
+"the request does not send a second: the person has already been solicited."
+
+#. module: bf_property_cx
+#: model:mail.template,subject:bf_property_cx.mail_template_request_rating
+msgid "Votre demande a été réglée : comment ça s'est passé ?"
+msgstr "Your request has been settled: how did it go?"
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid "le demandeur"
+msgstr "the requester"
+
+#. module: bf_property_cx
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_organisation__cx_feedback_enabled
+msgid ""
+"⚠️ À l'arrêt par défaut. Une fois ouvert, une demande d'entretien RÉGLÉE "
+"fait partir à son demandeur une demande d'avis en trois émojis. Une demande "
+"refusée n'en fait jamais partir : refuser, c'est dire que la demande sort de"
+" l'objet du syndicat (art. 1039 C.c.Q.), et mesurer la satisfaction juste "
+"après mesurerait le refus."
+msgstr ""
+"⚠️ Off by default. Once on, a SETTLED maintenance request sends its "
+"requester a three-emoji feedback request. A refused request never sends one:"
+" refusing means saying the request falls outside the objects of the "
+"syndicate (art. 1039 CCQ), and measuring satisfaction right after would "
+"measure the refusal."

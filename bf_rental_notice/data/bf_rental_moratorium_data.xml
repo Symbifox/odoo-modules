@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ⚠️ noupdate="1" : c'est un CONSTAT daté, pas une donnée de référence.
+         Un `-u` du module ne doit pas réécrire la date à laquelle quelqu'un est
+         allé vérifier, ni effacer un avis de la Gazette inscrit depuis. Le
+         module pose l'état connu à sa livraison ; ensuite il appartient au
+         client. -->
+    <data noupdate="1">
+
+        <record id="moratorium_d1301" model="bf.rental.moratorium">
+            <field name="name">RLRQ, c. D-13.01, art. 1</field>
+            <field name="in_force" eval="True"/>
+            <field name="statutory_end" eval="'2027-06-06'"/>
+            <field name="checked_on" eval="'2026-09-13'"/>
+            <field name="source">LégisQuébec, texte à jour au 2026-04-07, en-tête « Ce document a valeur officielle »</field>
+            <field name="note">Loi limitant le droit d'éviction des locateurs et renforçant la protection des locataires aînés (L.Q. 2024, c. 23, sanctionnée le 2024-06-06).
+
+⚠️ La date du 6 juin 2027 est un PLAFOND, pas une échéance. L'art. 11 fait cesser les dispositions le soixantième jour suivant un avis publié à la Gazette officielle, dès que le taux d'inoccupation publié par la SCHL pour les centres urbains de 10 000 habitants et plus atteint 3 %. Inscrire cet avis ici le jour où il paraît.
+
+⚠️ L'art. 2 permet au gouvernement de soustraire de l'application des logements situés sur toute partie du territoire du Québec. Le moratoire n'est donc pas uniforme : inscrire les soustractions au champ prévu.
+
+⚠️ L'art. 12 oblige le ministre à faire rapport au gouvernement au plus tard le 6 février 2027. C'est le signal public le plus proche d'une décision sur la suite.</field>
+        </record>
+
+    </data>
+</odoo>

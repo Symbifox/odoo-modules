@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le gestionnaire de copropriété tient la signature électronique, au niveau UTILISATEUR.
+
+         🔴 Joué avec un vrai compte de
+         gestionnaire, envoyer un procès-verbal, une attestation ou un carnet à la signature exigeait l'administrateur. Le module offrait
+         le bouton à un rôle qui ne pouvait pas s'en servir. Utilisateur, pas
+         administrateur : la configuration du module reste à l'admin. -->
+    <record id="bf_property_core.group_bf_property_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('bf_sign.group_sign_user'))]"/>
+    </record>
+</odoo>

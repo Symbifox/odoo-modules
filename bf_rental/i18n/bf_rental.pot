@@ -1,0 +1,910 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_rental
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 00:08+0000\n"
+"PO-Revision-Date: 2026-09-14 00:08+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__message_needaction
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__student
+msgid "Annexe 1 : Personne aux études"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__llm
+msgid "Annexe 2 : Logement à loyer modique"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__mobile
+msgid "Annexe 3 : Terrain pour maison mobile"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__coop
+msgid "Annexe 4 : Logement en coopérative"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__general
+msgid "Annexe 5 : Tout autre logement"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__verbal
+msgid "Annexe 7 : Écrit constatant un bail verbal"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__payment_mode__cash
+msgid "Argent comptant"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__fixation_restricted
+msgid ""
+"Art. 1955 : ni le locateur ni le locataire ne peuvent faire fixer le loyer "
+"par le Tribunal. ⚠️ Elle ne vaut que si elle est PRÉVUE AU BAIL (al. 3) : ce"
+" n'est pas un état de l'immeuble que le module déduirait tout seul."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__max_rent_5y
+msgid ""
+"Art. 1955 al. 3 : sans cette mention AU BAIL, le locateur ne peut pas "
+"invoquer la restriction contre le locataire. Il ne perd pas un champ, il "
+"perd le droit de s'en prévaloir."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__message_attachment_count
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_abandonment.py:0
+msgid ""
+"Aucun avis de disposition n'a été donné. L'art. 944 ne permet de disposer "
+"qu'APRÈS un avis, et cet avis court %(days)s jours."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__payment_mode__other
+msgid "Autre"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__disposal_method__other
+msgid "Autre disposition, faute de pouvoir vendre ou donner"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__disposal_notice_date
+msgid "Avis de disposition donné le"
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__lease_id
+msgid "Bail"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__is_room
+msgid "Bail d'une chambre"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model,name:bf_rental.model_bf_rental_lease
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Bail de logement"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__lease_resiliated_by_operation_of_law
+msgid "Bail résilié de plein droit"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.actions.act_window,name:bf_rental.action_bf_rental_lease
+#: model:ir.ui.menu,name:bf_rental.menu_bf_rental_lease
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_list
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Baux"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__ready_date
+msgid "C'est d'elle que court le délai de cinq ans, pas de la date du bail."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__kind
+msgid "Cas"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__joint_and_several
+msgid ""
+"Case du formulaire, à la section des signatures. Le module la reprend telle "
+"quelle : il ne la déduit pas du nombre de locataires, parce que ce n'est pas"
+" le nombre qui en décide."
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid "Ce qui s'est passé"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__restriction_kind__converted
+msgid "Changement d'affectation depuis cinq ans ou moins"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__payment_mode__cheque
+msgid "Chèque"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__company_id
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__date_noticed
+msgid "Constaté le"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__services_cost
+msgid "Coût des services"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__services_cost
+msgid ""
+"Coût total des services, tel qu'il se porte au formulaire. Le détail par "
+"service va à l'annexe 6, qui est un document distinct."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__create_uid
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__create_date
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__currency_id
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__effects_left
+msgid "Des effets ont été laissés"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__effects_description
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid "Description des effets"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__display_name
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_abandonment.py:0
+msgid ""
+"Disposition trop tôt : pas avant le %(date)s.\n"
+"\n"
+"Le bien n'est réputé oublié qu'après %(forgotten)s jours sans être réclamé, et le détenteur ne peut en disposer qu'après un avis de la même durée (art. 944 C.c.Q.)."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__disposed_on
+msgid "Disposé le"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__disposal_method__charity
+msgid "Don à un organisme de bienfaisance (art. 945)"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__duration_kind
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Durée"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__duration_kind__fixed
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Durée fixe"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__duration_kind__indeterminate
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Durée indéterminée"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__date_start
+msgid "Début"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__kind__deguerpissement
+msgid "Déguerpissement sans motif (art. 1975 al. 1)"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model,name:bf_rental.model_bf_rental_abandonment
+msgid "Départ du locataire sans préavis"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid "Départ sans préavis"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.actions.act_window,name:bf_rental.action_bf_rental_abandonment
+#: model:ir.ui.menu,name:bf_rental.menu_bf_rental_abandonment
+msgid "Départs sans préavis"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__joint_and_several
+msgid "Engagement solidaire"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__date_end
+msgid "Fin"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__message_follower_ids
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__message_partner_ids
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Formulaire"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Formulaire employé"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__form_kind
+msgid "Formulaire obligatoire"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__lease_attachment_ids
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Formulaire signé"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__has_message
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__id
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__message_needaction
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__message_has_error
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__building_id
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Immeuble"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__restriction_kind__new
+msgid "Immeuble construit depuis cinq ans ou moins"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__ready_date
+msgid "Immeuble prêt pour l'habitation le"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.actions.act_window,help:bf_rental.action_bf_rental_lease
+msgid "Inscrire un bail"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__message_is_follower
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__disposal_notice_date
+msgid ""
+"L'avis « de la même durée » de l'art. 944, donné à celui qui a laissé le "
+"bien."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__organisation_id
+msgid "L'organisation qui répond de l'immeuble et signe le bail."
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid "La fin du bail précède son début."
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"La restriction court cinq ans depuis la date où l'immeuble était prêt pour "
+"l'usage auquel il est destiné. Sans cette date, rien ne dit quand elle "
+"cesse."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__unit_id
+msgid ""
+"Laissé vide pour un bail de chambre ou de terrain qui ne correspond à aucune"
+" fraction inscrite."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__write_uid
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__write_date
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.actions.act_window,help:bf_rental.action_bf_rental_lease
+msgid ""
+"Le bail de logement se conclut sur le formulaire obligatoire du\n"
+"                Tribunal administratif du logement, acheté au Tribunal sur papier\n"
+"                ou en format électronique. Ce module enregistre ce qui a été\n"
+"                convenu et porte le formulaire signé en pièce jointe : il ne le\n"
+"                remplace pas et n'en produit pas un qui lui ressemble."
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_abandonment.py:0
+msgid ""
+"Le déguerpissement de l'art. 1975 al. 1 suppose que le locataire est parti EN EMPORTANT ses effets mobiliers.\n"
+"\n"
+"Des effets laissés sur place font sortir de ce cas : le bail n'est pas résilié de plein droit, et les effets relèvent de l'art. 1978, qui renvoie aux règles du détenteur du bien confié et oublié (art. 944 à 946)."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__lease_attachment_ids
+msgid ""
+"Le formulaire officiel rempli et signé, tel qu'il a été acheté au Tribunal. "
+"Le module le PORTE ; il ne le produit pas."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__postdated_cheques_accepted
+msgid "Le locataire accepte de remettre des chèques postdatés"
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Le logement à loyer modique est hors du périmètre de ce module.\n"
+"\n"
+"C'est un régime distinct : le loyer s'y fixe selon les règlements de la Société d'habitation du Québec et non selon les critères ordinaires (art. 1956 C.c.Q.), et le locateur doit y tenir un registre des demandes de location et une liste d'admissibilité (art. 1985 C.c.Q.).\n"
+"\n"
+"Lui appliquer les règles du bail ordinaire produirait des avis fondés sur les mauvais articles. Ce bail se tient hors du module."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__form_kind
+msgid ""
+"Lequel des sept formulaires du Tribunal a été employé (T-15.01, r. 3, art. 1"
+" à 3). Ce n'est pas une étiquette : les formulaires n'ont pas les mêmes "
+"sections, et ce champ décide de ce que le bail doit porter."
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid "Les effets laissés (art. 1978)"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid ""
+"Les effets laissés ne deviennent pas la propriété du\n"
+"                        locateur. Ils sont réputés oubliés après 90 jours, et\n"
+"                        il faut encore un avis de la même durée avant d'en\n"
+"                        disposer (art. 944). Disposer veut dire vendre, à\n"
+"                        défaut donner à un organisme de bienfaisance\n"
+"                        (art. 945). Le propriétaire peut les revendiquer tant\n"
+"                        que son droit n'est pas prescrit, et si le bien a été\n"
+"                        vendu, son droit s'exerce sur ce qui reste du prix\n"
+"                        (art. 946)."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__restriction_section
+msgid ""
+"Lettre de la section où se déclarent les restrictions au droit à la "
+"fixation, SUR LE FORMULAIRE EMPLOYÉ. Elle change d'un formulaire à l'autre, "
+"et sert à écrire « voir section X », jamais à décider d'une règle."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__tenant_ids
+msgid "Locataires"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__organisation_id
+msgid "Locateur"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__unit_id
+msgid "Logement"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__kind__unfit
+msgid "Logement impropre, départ sans avis (art. 1975 al. 2)"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__rent
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Loyer"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__max_rent_5y
+msgid "Loyer maximal sur cinq ans"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__rent_total
+msgid "Loyer plus services, comme le formulaire le demande."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__rent_total
+msgid "Loyer total"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__message_has_error
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__message_ids
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__disposal_method
+msgid "Mode de disposition"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__payment_mode
+msgid "Mode de paiement"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__restriction_kind
+msgid "Motif de la restriction"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__note
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__note
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Note"
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid "Nouveau"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__message_needaction_counter
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__message_has_error_counter
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__rent_period__month
+msgid "Par mois"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__rent_period__week
+msgid "Par semaine"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Parties"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__may_not_dispose_before
+msgid "Pas de disposition avant le"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__tenant_ids
+msgid ""
+"Plusieurs locataires au même bail se lisent au formulaire, qui demande s'ils"
+" s'engagent solidairement."
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Pour un bail conclu après le 20 février 2024 sur un immeuble prêt après "
+"cette date, le bail doit indiquer le loyer maximal exigible dans les cinq "
+"ans, sans quoi la restriction ne peut pas être invoquée contre le locataire "
+"(art. 1955 al. 3)."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__proceeds
+msgid "Produit de la vente"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__rent_period
+msgid "Période"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__rating_ids
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__fixation_restricted
+msgid "Restriction au droit à la fixation"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Restriction sans loyer maximal"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Restrictions au droit à la fixation (art. 1955 C.c.Q.)"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__name
+msgid "Référence"
+msgstr ""
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Référence du bail"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__forgotten_from
+msgid "Réputé oublié à partir du"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__notice_section
+msgid "Section de l'avis au nouveau locataire"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__restriction_section
+msgid "Section des restrictions"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Un bail a au moins un locataire : c'est à lui que se donnent les avis, et "
+"c'est lui que le registre nomme."
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Un bail à durée fixe a un terme : c'est de lui que courent les délais d'avis"
+" de modification (art. 1942) et de reprise ou d'éviction (art. 1960)."
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Un bail à durée indéterminée n'a pas de terme. Ses délais d'avis se comptent"
+" depuis la date de la modification ou de la reprise proposée, pas depuis une"
+" fin de bail."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__date_end
+msgid ""
+"Un bail à durée indéterminée n'en a pas, et le module refuse qu'on lui en "
+"donne une : ce serait un bail à durée fixe qui s'ignore, avec les délais "
+"d'avis de l'autre régime."
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Un syndicat de copropriété ne signe pas de bail de logement : le locateur d'une fraction louée est son propriétaire.\n"
+"\n"
+"Pour inscrire qu'une fraction est louée, au titre du registre de l'art. 1070 C.c.Q., c'est la case « Louée » de la fraction qui sert."
+msgstr ""
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Une restriction au droit à la fixation dit de quoi elle relève : immeuble "
+"neuf, ou changement d'affectation (art. 1955 al. 2)."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__disposal_method__auction
+msgid "Vente aux enchères (art. 945)"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__disposal_method__private
+msgid "Vente de gré à gré (art. 945)"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__payment_mode__transfer
+msgid "Virement bancaire électronique"
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__is_room
+msgid ""
+"⚠️ Ce n'est pas une nuance de vocabulaire : l'art. 1892 assimile le bail "
+"d'une chambre à un bail de logement, mais l'art. 1942 al. 3 lui donne des "
+"DÉLAIS d'avis propres : 10 et 20 jours au lieu de mois. Un avis calculé sur "
+"les délais ordinaires serait donné beaucoup trop tôt, et le locataire aurait"
+" raison de le contester."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__disposal_method
+msgid ""
+"⚠️ L'ordre du texte n'est pas indifférent : vendre, à défaut donner, et "
+"seulement à défaut de pouvoir donner, disposer à son gré. Jeter est la "
+"dernière option, pas la première."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__postdated_cheques_accepted
+msgid ""
+"⚠️ Un CONSENTEMENT du locataire, jamais une exigence du locateur. L'art. "
+"1904 al. 2 interdit d'« exiger » un effet postdaté ; il n'interdit pas au "
+"locataire d'y consentir, et le formulaire officiel porte la case avec ses "
+"initiales. Décoché par défaut, parce que le silence n'est pas un "
+"consentement."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__lease_resiliated_by_operation_of_law
+msgid ""
+"⚠️ Vrai UNIQUEMENT pour le déguerpissement sans motif avec emport des "
+"effets. Le cas du logement impropre est facultatif : le texte dit « il PEUT "
+"être résilié », ce qui n'est pas la même chose."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__effects_left
+msgid ""
+"🔴 Décide de tout. L'art. 1975 al. 1 ne résilie de plein droit que le "
+"locataire qui déguerpit EN EMPORTANT ses effets mobiliers. S'il en laisse, "
+"le bail n'est pas résilié de plein droit et l'art. 1978 renvoie aux règles "
+"du bien confié et oublié."
+msgstr ""
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__may_not_dispose_before
+msgid ""
+"🔴 Le module ne dit jamais « vous pouvez disposer ». Il dit avant quelle date"
+" c'est certainement NON : 90 jours pour que le bien soit réputé oublié, et "
+"90 jours d'avis, qui peuvent courir ensemble mais pas se remplacer."
+msgstr ""

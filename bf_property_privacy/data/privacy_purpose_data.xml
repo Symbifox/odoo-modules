@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            ⚠️ Trois finalités, et la différence entre elles n'est pas de degré.
+            Celle du registre repose sur une obligation légale : y accoler un
+            consentement laisserait croire qu'on peut le refuser, alors que le
+            nom et l'adresse postale d'un copropriétaire sont au registre par
+            l'effet de l'art. 1070 al. 1 lui-même.
+        -->
+        <record id="purpose_property_register" model="privacy.purpose">
+            <field name="code">property_register</field>
+            <field name="name">Registre du syndicat de copropriété</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Le syndicat tient un registre où figurent le nom et l'adresse
+                postale de chaque copropriétaire et de chaque autre occupant de
+                l'immeuble, ainsi que les procès-verbaux de l'assemblée et du
+                conseil d'administration. Cette tenue est une obligation du
+                Code civil du Québec (art. 1070) : elle ne repose pas sur votre
+                consentement et ne peut pas être refusée.</p>
+                <p>Le registre se consulte selon l'article 1070.1, aux
+                conditions qu'il prévoit.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+        </record>
+
+        <!--
+            Le numéro de téléphone n'est PAS au registre de droit : l'art. 1070
+            al. 1 ne l'y met que « si celui-ci y consent expressément ». D'où
+            l'opt-in exprès, et une finalité distincte de celle du registre.
+        -->
+        <record id="purpose_property_sms" model="privacy.purpose">
+            <field name="code">property_sms_notice</field>
+            <field name="name">Avis aux occupants par texto</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>Avec votre consentement exprès, le syndicat inscrit votre
+                numéro de téléphone mobile au registre pour vous joindre par
+                message texte : l'arrivée d'un colis à votre nom, ou un avis
+                urgent concernant l'immeuble.</p>
+                <p>Ce numéro ne sert qu'aux avis que vous avez acceptés. Vous
+                pouvez retirer votre consentement en tout temps, canal par
+                canal, et le retrait ferme l'envoi sans effacer la trace de ce
+                qui était permis auparavant.</p>
+            ]]></field>
+            <field name="requires_consent" eval="True"/>
+            <field name="requires_express_opt_in" eval="True"/>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">sms</field>
+        </record>
+
+        <record id="notice_property_sms" model="privacy.notice">
+            <field name="name">Avis par texto du syndicat</field>
+            <field name="purpose_id" ref="purpose_property_sms"/>
+            <field name="body_fr"><![CDATA[
+                <p>Le syndicat souhaite pouvoir vous joindre par message texte
+                pour l'arrivée d'un colis à votre nom et pour les avis urgents
+                concernant l'immeuble.</p>
+                <p>L'article 1070 alinéa 1 du Code civil du Québec ne met votre
+                numéro de téléphone au registre du syndicat que si vous y
+                consentez expressément. Ce numéro ne servira qu'aux avis que
+                vous acceptez ici, et vous pouvez retirer votre consentement en
+                tout temps.</p>
+                <p>Le message texte transite par un fournisseur de
+                télécommunication et reste sur votre appareil : ce que le
+                syndicat efface de ses propres journaux ne s'efface pas de
+                ces deux endroits-là.</p>
+            ]]></field>
+            <field name="body_en"><![CDATA[
+                <p>The syndicate would like to reach you by text message when a
+                parcel arrives in your name and for urgent notices about the
+                building.</p>
+                <p>Article 1070 para. 1 of the Civil Code of Québec places your
+                telephone number in the syndicate's register only if you
+                expressly consent to it. The number will serve only the notices
+                you accept here, and you may withdraw your consent at any
+                time.</p>
+                <p>A text message travels through a telecommunications provider
+                and stays on your device: what the syndicate deletes from its
+                own logs is not deleted from either of those.</p>
+            ]]></field>
+        </record>
+
+        <!-- Sans version initiale, les consentements créés par le pont ne
+             porteraient aucun `notice_version_id`, donc aucune chaîne de preuve
+             de ce qui avait été montré à la personne. -->
+        <record id="notice_property_sms_version_1" model="privacy.notice.version">
+            <field name="notice_id" ref="notice_property_sms"/>
+            <field name="version">1.0</field>
+            <field name="body"><![CDATA[
+                <p>Le syndicat souhaite pouvoir vous joindre par message texte
+                pour l'arrivée d'un colis à votre nom et pour les avis urgents
+                concernant l'immeuble.</p>
+                <p>L'article 1070 alinéa 1 du Code civil du Québec ne met votre
+                numéro de téléphone au registre du syndicat que si vous y
+                consentez expressément. Ce numéro ne servira qu'aux avis que
+                vous acceptez ici, et vous pouvez retirer votre consentement en
+                tout temps.</p>
+                <p>Le message texte transite par un fournisseur de
+                télécommunication et reste sur votre appareil : ce que le
+                syndicat efface de ses propres journaux ne s'efface pas de
+                ces deux endroits-là.</p>
+            ]]></field>
+        </record>
+
+        <!--
+            🔴 La finalité la plus délicate de la suite. Le journal des colis
+            dit qui reçoit quoi ; celui des visiteurs dit qui reçoit QUI, et il
+            porte des renseignements sur des tiers qui n'ont rien consenti : le
+            visiteur n'est ni copropriétaire ni occupant, et il n'a aucun compte
+            d'où retirer quoi que ce soit. Ce qui reste, c'est d'informer et de
+            ne pas garder au-delà de la nécessité.
+        -->
+        <record id="purpose_property_access_log" model="privacy.purpose">
+            <field name="code">property_access_log</field>
+            <field name="name">Journal des colis et des visiteurs</field>
+            <field name="plain_language_summary"><![CDATA[
+                <p>La réception de l'immeuble consigne les colis reçus au nom
+                des occupants et les visiteurs annoncés : le nom du visiteur, la
+                nature de la visite, l'heure attendue et, si le syndicat gère un
+                stationnement, la plaque du véhicule.</p>
+                <p>Le journal se purge automatiquement après la durée fixée par
+                le syndicat, une fois le colis remis ou la visite terminée. Un
+                colis encore en dépôt et un visiteur encore attendu ne se
+                purgent pas, quelle que soit leur date.</p>
+            ]]></field>
+            <field name="requires_consent" eval="False"/>
+            <field name="requires_express_opt_in" eval="False"/>
+            <field name="context_scope">general</field>
+            <field name="channel_scope">all</field>
+        </record>
+
+        <!--
+            ⚠️ 90 jours est la valeur PAR DÉFAUT du module, pas une durée que le
+            texte impose : aucune disposition ne fixe combien de temps un
+            syndicat garde son journal de réception. C'est chaque syndicat qui
+            la choisit, et le pont le dit à l'écran quand son choix diverge de
+            ce qui est déclaré ici.
+        -->
+        <record id="retention_property_access_log" model="privacy.retention.policy">
+            <field name="purpose_id" ref="purpose_property_access_log"/>
+            <field name="retention_days">90</field>
+            <field name="trigger_on">expiration</field>
+            <field name="destruction_method">delete</field>
+            <field name="data_categories">Nom du destinataire, nom du visiteur, nature de la visite, heure attendue, plaque de véhicule.</field>
+            <field name="notes">La purge est faite par le cron du module copropriété, qui SUPPRIME les entrées closes plutôt que de les archiver : archiver garderait la donnée en la cachant, ce qui est le contraire du but. Ce pont ne détruit rien lui-même.</field>
+        </record>
+
+    </data>
+</odoo>

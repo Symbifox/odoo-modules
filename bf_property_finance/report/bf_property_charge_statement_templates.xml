@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        ⚠️ Ce document est celui du SYNDICAT, pas celui de l'éditeur du
+        logiciel. Aucune marque, aucune couleur d'éditeur : c'est une pièce que
+        le proposant acquéreur remettra à son notaire.
+
+        🔴 **Ce document EST la preuve de la remise dans le délai.** Partout
+        ailleurs dans la suite, un imprimé résume ce que la fiche sait déjà.
+        Ici, l'art. 1069 al. 2 fait dépendre une créance de la remise dans les
+        quinze jours : le document doit donc porter la demande, l'échéance, la
+        remise et leur conséquence, et les porter en évidence plutôt qu'en note
+        de bas de page. C'est ce que l'acquéreur montrera si le syndicat lui
+        réclame les charges, et c'est ce que le syndicat montrera s'il est à
+        temps.
+
+        ⚠️ **Rien ne prescrit la forme de ce document.** L'attestation de
+        l'art. 1068.1 a un contenu fixé par règlement (r. 8.01, art. 10) ;
+        l'état de l'art. 1069 al. 2 n'en a aucun. Ce qui suit est donc un choix
+        de rédaction, et le pied de page le dit plutôt que de laisser croire à
+        un formulaire officiel.
+    -->
+    <template id="report_charge_statement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="draft" t-value="not doc.issued_date"/>
+                <div class="article">
+                    <style>
+                        .ecd { font-family: Helvetica, Arial, sans-serif; font-size: 10pt; color: #1a1a1a; line-height: 1.45; }
+                        .ecd h1 { font-size: 15pt; margin: 0 0 2pt 0; text-transform: uppercase; letter-spacing: 0.5pt; }
+                        .ecd .legal { font-size: 9pt; color: #555; margin: 0 0 14pt 0; }
+                        .ecd .rule { border-bottom: 1.5pt solid #1a1a1a; margin: 0 0 14pt 0; }
+                        .ecd .draft { border: 1pt solid #8a6d3b; background: #fcf8e3; color: #8a6d3b;
+                                      padding: 6pt 8pt; margin: 0 0 12pt 0; font-size: 9pt; }
+                        .ecd .effect { border: 1pt solid #1a1a1a; padding: 8pt 10pt; margin: 0 0 16pt 0;
+                                       page-break-inside: avoid; }
+                        .ecd .effect .lbl { font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.4pt;
+                                            color: #555; margin: 0 0 4pt 0; }
+                        .ecd .effect .say { font-size: 10.5pt; margin: 0; }
+                        .ecd .effect.lost { border-color: #8a2c22; color: #8a2c22; }
+                        .ecd table.ident { width: 100%; border-collapse: collapse; margin: 0 0 16pt 0; }
+                        .ecd table.ident td { padding: 2pt 0; vertical-align: top; }
+                        .ecd table.ident td.k { width: 38%; color: #555; }
+                        .ecd .sec { margin: 0 0 14pt 0; }
+                        .ecd .sec h2 { font-size: 10.5pt; margin: 0 0 5pt 0; padding: 0 0 2pt 0;
+                                       border-bottom: 0.5pt solid #bbb; page-break-after: avoid; }
+                        .ecd table.detail { width: 100%; border-collapse: collapse; }
+                        .ecd table.detail th { font-size: 8.5pt; text-transform: uppercase; letter-spacing: 0.3pt;
+                                               color: #555; text-align: left; padding: 0 0 3pt 0;
+                                               border-bottom: 0.5pt solid #bbb; }
+                        .ecd table.detail th.money, .ecd table.detail td.money { text-align: right; white-space: nowrap; }
+                        .ecd table.detail td { padding: 3pt 0; vertical-align: top; border-bottom: 0.25pt solid #eee; }
+                        .ecd table.detail tr.total td { border-top: 0.75pt solid #1a1a1a; border-bottom: none;
+                                                        padding-top: 5pt; font-weight: bold; }
+                        .ecd .none { color: #555; font-style: normal; }
+                        .ecd .adj td.k { width: 38%; color: #555; }
+                        .ecd table.adj { width: 100%; border-collapse: collapse; }
+                        .ecd table.adj td { padding: 2pt 0; vertical-align: top; }
+                        .ecd table.adj td.k { width: 38%; color: #555; }
+                        .ecd table.adj td.money { text-align: right; white-space: nowrap; }
+                        .ecd .sign, .ecd .foot { page-break-inside: avoid; }
+                        .ecd .sign { margin-top: 22pt; }
+                        .ecd .sign .line { border-bottom: 0.75pt solid #1a1a1a; height: 26pt; width: 62%; }
+                        .ecd .sign .cap { font-size: 8.5pt; color: #555; padding-top: 3pt; }
+                        .ecd .foot { margin-top: 18pt; font-size: 8pt; color: #666;
+                                     border-top: 0.25pt solid #ccc; padding-top: 6pt; }
+                    </style>
+
+                    <div class="ecd">
+                        <h1>État des charges communes dues</h1>
+                        <p class="legal">
+                            Article 1069 alinéa 2 du Code civil du Québec, fourni au proposant
+                            acquéreur de la fraction ci-dessous.
+                        </p>
+                        <div class="rule"/>
+
+                        <div class="draft" t-if="draft">
+                            <strong>Projet.</strong>
+                            Cet état n'a pas encore été fourni au proposant acquéreur. Tant
+                            qu'il ne l'est pas, la date portée ci-dessous est celle du jour et
+                            le délai de quinze jours continue de courir.
+                        </div>
+
+                        <!-- 🔴 En haut, et encadré. C'est la seule chose que le
+                             lecteur doit trouver sans chercher : elle décide qui
+                             doit les charges. -->
+                        <div t-attf-class="effect {{ '' if doc.acquirer_bound else 'lost' }}">
+                            <p class="lbl">Effet du délai de l'article 1069 alinéa 2</p>
+                            <p class="say"><span t-esc="doc.binding_rule"/></p>
+                        </div>
+
+                        <table class="ident">
+                            <tr>
+                                <td class="k">Syndicat</td>
+                                <td><span t-field="doc.organisation_id.name"/></td>
+                            </tr>
+                            <tr t-if="doc.organisation_id.neq">
+                                <td class="k">Numéro d'entreprise du Québec</td>
+                                <td><span t-field="doc.organisation_id.neq"/></td>
+                            </tr>
+                            <tr>
+                                <td class="k">Fraction visée</td>
+                                <td><span t-esc="doc.unit_id.display_name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="k">Proposant acquéreur</td>
+                                <td><span t-field="doc.requester_partner_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="k">Demande reçue le</td>
+                                <td><span t-field="doc.request_date"/></td>
+                            </tr>
+                            <tr>
+                                <td class="k">À fournir au plus tard le</td>
+                                <td><span t-field="doc.deadline_date"/></td>
+                            </tr>
+                            <tr>
+                                <td class="k">État daté du</td>
+                                <td><span t-esc="doc._report_date()"/></td>
+                            </tr>
+                        </table>
+
+                        <div class="sec">
+                            <h2>Préavis au propriétaire</h2>
+                            <table class="adj">
+                                <tr>
+                                    <td class="k">Propriétaire de la fraction</td>
+                                    <td>
+                                        <span t-if="doc.owner_partner_ids" t-esc="doc._report_owners()"/>
+                                        <span t-else="" class="none">aucun propriétaire au registre</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="k">Avisé le</td>
+                                    <td>
+                                        <span t-if="doc.owner_notice_date" t-field="doc.owner_notice_date"/>
+                                        <span t-else="" class="none">préavis non consigné</span>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="legal" style="margin-top: 6pt;">
+                                Le syndicat n'est autorisé à fournir le présent état que
+                                « sauf à en aviser au préalable le propriétaire de la fraction
+                                ou ses ayants cause ». Le préavis est la condition de cette
+                                autorisation, et non une courtoisie.
+                            </p>
+                        </div>
+
+                        <div class="sec">
+                            <h2>Charges communes dues relativement à la fraction</h2>
+                            <table class="detail">
+                                <thead>
+                                    <tr>
+                                        <th>Contribution</th>
+                                        <th>Exigible le</th>
+                                        <th class="money">Capital</th>
+                                        <th class="money">Intérêts</th>
+                                        <th class="money">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="doc.line_ids" t-as="line">
+                                        <td><span t-esc="line.name"/></td>
+                                        <td><span t-field="line.due_date"/></td>
+                                        <td class="money" t-esc="doc._report_amount(line.amount_capital)"/>
+                                        <td class="money" t-esc="doc._report_amount(line.amount_interest)"/>
+                                        <td class="money" t-esc="doc._report_amount(line.amount_total)"/>
+                                    </tr>
+                                    <tr t-if="not doc.line_ids">
+                                        <td colspan="5" class="none">
+                                            Aucune charge commune due relativement à cette
+                                            fraction à la date du présent état.
+                                        </td>
+                                    </tr>
+                                    <tr class="total">
+                                        <td colspan="2">Total dû</td>
+                                        <td class="money" t-esc="doc._report_amount(doc.amount_capital)"/>
+                                        <td class="money" t-esc="doc._report_amount(doc.amount_interest)"/>
+                                        <td class="money" t-esc="doc._report_amount(doc.amount_total)"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="sec">
+                            <h2>Ajustement selon le dernier budget annuel</h2>
+                            <table class="adj">
+                                <tr>
+                                    <td class="k">Budget retenu</td>
+                                    <td>
+                                        <span t-if="doc.budget_id" t-esc="doc.budget_id.display_name"/>
+                                        <span t-else="" class="none">aucun budget rattaché</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="k">Ajustement</td>
+                                    <td class="money" t-esc="doc._report_amount(doc.adjustment_amount)"/>
+                                </tr>
+                                <tr t-if="doc.adjustment_note">
+                                    <td class="k">Explication</td>
+                                    <td><span t-esc="doc.adjustment_note"/></td>
+                                </tr>
+                            </table>
+                            <p class="legal" style="margin-top: 6pt;">
+                                Alinéa 3 : « L'état fourni est ajusté selon le dernier budget
+                                annuel des copropriétaires. »
+                            </p>
+                        </div>
+
+                        <div class="sign">
+                            <div class="line"/>
+                            <div class="cap">
+                                Pour le syndicat <span t-field="doc.organisation_id.name"/>.
+                                État fourni le <span t-esc="doc._report_date()"/>.
+                            </div>
+                        </div>
+
+                        <div class="foot">
+                            Le présent état porte sur les charges communes dues relativement à
+                            la fraction visée, à la date qui y est portée. Il ne vaut ni
+                            attestation du syndicat sur l'état de la copropriété au sens de
+                            l'article 1068.1, ni communication des documents permettant un
+                            consentement éclairé au sens de l'article 1068.2 : ces deux
+                            documents se demandent séparément et par d'autres personnes.
+                            L'article 1069 ne prescrit ni la forme ni le contenu de l'état ;
+                            la présentation ci-dessus est celle retenue par le syndicat.
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

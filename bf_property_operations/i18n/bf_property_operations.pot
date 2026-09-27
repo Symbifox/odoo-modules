@@ -1,0 +1,1415 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_operations
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 07:40+0000\n"
+"PO-Revision-Date: 2026-09-26 07:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid ""
+"%(count)s travaux de « %(shift)s » ne sont pas réglés. Nommez le quart qui "
+"les reprend, ou retirez-les de la liste en disant pourquoi. Un quart qui se "
+"ferme en laissant du travail sans destinataire ne fait pas de passation : il"
+" fait un tableau."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/maintenance_team.py:0
+msgid ""
+"%(leader)s dirige l'équipe « %(team)s » sans en être membre. Le tableau de "
+"bord d'équipe et les filtres « mon travail » se lisent sur les membres : le "
+"responsable recevrait les affectations sans rien voir de ce qu'il dirige."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid ""
+"%(names)s : le compte est en mode courriel. La liste s'affiche dans Odoo, "
+"mais aucun avis n'est poussé au téléphone. Le mode de notification est un "
+"réglage personnel : il se change dans les préférences du compte, et cela se "
+"demande à la personne."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "<span class=\"ms-2\">de travail prévu</span>"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+msgid "<span class=\"ms-2\">heures</span>"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid ""
+"Ajoute les demandes en cours et le préventif échu du secteur. N'efface rien."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.actions.act_window,name:bf_property_operations.action_operations_analysis
+msgid "Analyse de l'exploitation"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_close_wizard_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__work_archived
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Annulé"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_maintenance_plan__interval_unit__year
+msgid "Ans"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+msgid "Archivé"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_search
+msgid "Archivés"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_search_analysis
+msgid "Arriéré"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__end_date
+msgid ""
+"Au-delà, le cédule n'ouvre plus rien. Laisser vide pour un entretien qui n'a"
+" pas de terme connu."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_search
+msgid "Avec du travail non réglé"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__silent_notice
+msgid "Avis muets"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__equipment_id
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_search
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_search_analysis
+msgid "Bien"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__instruction_text
+msgid ""
+"Ce qu'il y a à faire, dans le détail, recopié sur chaque travail ouvert. Une"
+" consigne qui vit uniquement dans la tête du concierge sortant se perd avec "
+"lui."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+msgid "Ce qu'il y a à faire, pas à pas. Recopié sur chaque travail ouvert."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Ce quart reprend la passation de"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift_line__state
+msgid ""
+"Ce que CE quart a fait du travail, pas l'état du travail lui-même, qui vit "
+"sur le billet."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__handover_note
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid ""
+"Ce que le quart suivant doit savoir et que les enregistrements ne disent pas"
+" : le local qu'on n'a pas pu ouvrir, le locataire à rappeler, la pièce "
+"commandée qui arrive demain."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift_close_wizard__handover_note
+msgid ""
+"Ce que le quart suivant doit savoir et que les enregistrements ne disent "
+"pas."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_equipment__bf_location_display
+msgid ""
+"Ce que le rattachement au bâti donne à lire, sans remplacer le texte libre "
+"d'origine : les deux coexistent, parce qu'une précision comme « sous-sol, "
+"local 3 » n'a pas de champ."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__name
+msgid ""
+"Ce qui est à faire, dit comme on le dirait à la personne qui le fera : « "
+"Inspection de la chaudière », « Vérification des détecteurs de fumée »."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__handover_note
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__handover_note
+msgid "Ce qui passe au quart suivant"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.actions.act_window,help:bf_property_operations.action_operations_equipment_analysis
+msgid "Ce qui revient"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.actions.act_window,name:bf_property_operations.action_operations_equipment_analysis
+#: model:ir.ui.menu,name:bf_property_operations.menu_operations_equipment_analysis
+msgid "Ce qui revient, par bien"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.constraint,message:bf_property_operations.constraint_bf_property_shift_line_one_line_per_work_and_shift
+msgid "Ce travail est déjà sur la liste de ce quart."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Composer la liste"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__name
+msgid ""
+"Composé de l'équipe, du secteur et de la plage : un quart ne se nomme pas à "
+"la main, il se reconnaît."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__instruction_text
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+msgid "Consigne"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_request__bf_not_done_date
+msgid "Constaté non effectué le"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__create_uid
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__create_uid
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__create_date
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__create_date
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__create_date
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_request__bf_plan_id
+msgid "Cédule"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+msgid "Cédule d'entretien"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model,name:bf_property_operations.model_bf_property_maintenance_plan
+msgid "Cédule d'entretien préventif"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.actions.act_window,help:bf_property_operations.action_maintenance_plan
+msgid "Céduler un entretien préventif"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_equipment_form_property_plan
+msgid "Cédules"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/maintenance_equipment.py:0
+#: model:ir.actions.act_window,name:bf_property_operations.action_maintenance_plan
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_equipment__bf_plan_ids
+#: model:ir.ui.menu,name:bf_property_operations.menu_maintenance_plan
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_list
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_search
+msgid "Cédules d'entretien"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__last_done_date
+msgid "Dernier entretien fait"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__display_name
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__display_name
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__display_name
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/maintenance_request.py:0
+msgid ""
+"Dites pourquoi « %(work)s » n'a pas été fait. L'art. 4 du règlement veut, à "
+"la mise à jour annuelle du carnet, les travaux non effectués ET la raison : "
+"un travail annulé sans motif fait un carnet muet."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid "Dites pourquoi « %s » sort de la liste de ce quart."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__duration
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__planned_duration
+msgid "Durée prévue"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__date_start
+msgid "Début"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_equipment__bf_location_display
+msgid "Emplacement"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_shift__state__open
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_search
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_search
+msgid "En cours"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_equipment_form_property_plan
+msgid "Entretien préventif"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.ui.menu,name:bf_property_operations.menu_operations_analysis
+#: model:res.groups,name:bf_property_operations.group_bf_property_operations
+msgid "Exploitation"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.actions.server,name:bf_property_operations.cron_generate_preventive_requests_ir_actions_server
+msgid "Exploitation : ouvrir les entretiens préventifs à échoir"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_close_wizard_form
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Fermer et passer la main"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.actions.act_window,name:bf_property_operations.action_shift_close_wizard
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_close_wizard_form
+msgid "Fermer le quart"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model,name:bf_property_operations.model_bf_property_shift_close_wizard
+msgid "Fermeture d'un quart et passation"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_shift__state__closed
+msgid "Fermé"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__closed_date
+msgid "Fermé le"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__closed_by_user_id
+msgid "Fermé par"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__date_stop
+msgid "Fin"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_equipment__bf_unit_id
+msgid "Fraction"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__frequency_display
+msgid "Fréquence"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__id
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__id
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__id
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model,name:bf_property_operations.model_bf_property_building
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__building_id
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_equipment__bf_building_id
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_request__bf_building_id
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_equipment_search_property
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_search_property
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_search
+msgid "Immeuble"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/maintenance_team.py:0
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_team__bf_building_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_team_form_property
+msgid "Immeubles"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_search_property_plan
+msgid "Issus d'un cédule"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_maintenance_plan__interval_unit__day
+msgid "Jours"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__end_date
+msgid "Jusqu'au"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__start_date
+msgid ""
+"L'ancrage du cédule : c'est cette date qui dit si l'inspection tombe en mars"
+" ou en septembre. Elle ne fait pas d'arriéré : la première échéance est la "
+"première occurrence à venir."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.actions.act_window,help:bf_property_operations.action_operations_analysis
+msgid "L'arriéré, par immeuble et par équipe"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid ""
+"L'immeuble %(building)s répond de l'équipe %(team)s, et ce quart est tenu "
+"par %(other)s."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_equipment__bf_building_id
+msgid ""
+"L'immeuble où l'équipement est installé. C'est ce rattachement qui permet "
+"d'acheminer un travail vers l'équipe qui a l'immeuble, et de compter "
+"l'arriéré par immeuble."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_request__bf_building_id
+msgid ""
+"L'immeuble où le travail se passe. Il vient de l'équipement, et reste "
+"modifiable pour un travail qui ne vise aucun équipement."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__is_overdue
+msgid ""
+"L'échéance est passée et le travail n'a pas encore été ouvert. C'est l'écart"
+" entre ce que le cédule promet et ce que la passe de nuit a fait."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_building__bf_maintenance_team_id
+msgid ""
+"L'équipe qui répond de cet immeuble. Une demande ouverte ici lui est "
+"acheminée, et les équipements de l'immeuble lui reviennent par défaut."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__maintenance_team_id
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift_close_wizard__maintenance_team_id
+msgid ""
+"L'équipe qui tient ce quart. Sans immeuble précisé, le quart couvre tous les"
+" immeubles dont elle répond."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__last_done_date
+msgid ""
+"La date du dernier travail de ce cédule effectivement terminé. C'est elle "
+"que le carnet d'entretien reprend, lorsque le pont vers le carnet est "
+"installé."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_request__bf_not_done_date
+msgid ""
+"La date à laquelle le travail a été déclaré non effectué. Deux inspections "
+"sautées sont deux constats distincts : c'est cette date qui les sépare."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__frequency_display
+msgid ""
+"La fréquence telle qu'elle se lit, pour les écrans où l'on balaie des "
+"cédules sans les ouvrir."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "La main a été passée à"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_equipment__bf_common_area_id
+msgid "La partie commune où l'équipement est installé, lorsqu'il y en a une."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_equipment__bf_unit_id
+msgid ""
+"La partie privative où l'équipement est installé, lorsqu'il y en a une. Un "
+"équipement est dans une fraction ou dans une partie commune, jamais dans les"
+" deux."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_team__bf_leader_user_id
+msgid ""
+"La personne à qui une demande acheminée à cette équipe est confiée par "
+"défaut. Elle reste modifiable demande par demande."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__silent_notice
+msgid ""
+"La phrase que porte l'écran du quart. Vide quand tout le monde est "
+"joignable."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_equipment__bf_next_preventive_date
+msgid ""
+"La plus proche des échéances de ses cédules. Vide quand le bien n'a aucun "
+"entretien préventif cédulé, ce qui est une information, pas un vide."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__next_date
+msgid ""
+"La prochaine occurrence attendue. Elle avance d'elle-même à chaque travail "
+"ouvert, et se corrige à la main quand une campagne se décale."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__planned_duration
+msgid ""
+"La somme des durées prévues des travaux de la liste. C'est ce qui permet de "
+"voir qu'un quart de huit heures en porte douze."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__building_id
+msgid ""
+"Laisser vide pour un quart qui couvre tout le secteur de l'équipe. Le "
+"secteur n'est pas un modèle : c'est l'ensemble des immeubles que l'équipe a "
+"déjà."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__write_uid
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__write_uid
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__write_date
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__write_date
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__write_date
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__equipment_id
+msgid ""
+"Le bien dont l'entretien se répète. C'est lui qui donne l'immeuble, l'équipe"
+" et le technicien du travail généré."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_request__bf_plan_id
+msgid ""
+"Le cédule d'entretien préventif qui a ouvert ce travail. Un travail ouvert à"
+" la main n'en a pas."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_maintenance_plan.py:0
+msgid "Le cédule « %(plan)s » se termine le %(end)s et commence le %(start)s."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_close_wizard_form
+msgid ""
+"Le local mécanique du 3 est resté barré, le locataire du 402 doit être "
+"rappelé avant 9 h, la pièce du moteur de garage arrive demain."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.actions.act_window,help:bf_property_operations.action_operations_equipment_analysis
+msgid ""
+"Le nombre d'interventions et le temps moyen entre deux pannes\n"
+"                sont portés par le bien lui-même. Un bien qui revient souvent\n"
+"                se lit ici, sans qu'aucun taux n'ait été inventé pour le dire."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__previous_shift_id
+msgid "Le quart dont celui-ci a reçu la passation."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift_close_wizard__next_shift_id
+msgid ""
+"Le quart qui prend en charge ce qui reste. Il doit être ouvert ou préparé : "
+"on ne passe pas de travail à un quart déjà fermé."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid ""
+"Le quart « %(shift)s » est fermé. On ne compose pas la liste d'un quart "
+"passé."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid "Le quart « %s » est déjà fermé."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid "Le quart « %s » est fermé : on ne lui passe pas de travail."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid ""
+"Le quart « %s » n'a pas été ouvert. On ne ferme, ni ne fait passer la main, "
+"à un quart qui n'a pas eu lieu."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid "Le quart « %s » n'est pas préparé."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__next_shift_id
+msgid "Le quart à qui la passation a été faite."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.actions.act_window,help:bf_property_operations.action_operations_analysis
+msgid ""
+"Le tableau s'ouvre sur l'arriéré. Les autres mesures se\n"
+"                composent en changeant le regroupement : par bien pour voir ce\n"
+"                qui revient, par nature pour séparer le préventif du correctif."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__duration
+msgid ""
+"Le temps que le travail prend, reporté sur chaque travail ouvert. C'est ce "
+"qui permettra de composer une liste de quart qui tienne dans un quart."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__advance_days
+msgid ""
+"Le travail apparaît sur la liste de l'équipe ce nombre de jours avant son "
+"échéance. Zéro l'ouvre le jour même."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_form_property_plan
+msgid ""
+"Le travail sera annulé, et la raison portée au carnet d'entretien s'il en "
+"existe un."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_equipment__bf_plan_ids
+msgid ""
+"Les entretiens préventifs qui se répètent sur ce bien. Un même bien en porte"
+" souvent plusieurs : la chaudière s'inspecte deux fois l'an et son filtre se"
+" change tous les trois mois."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_team__bf_building_ids
+msgid ""
+"Les immeubles dont cette équipe répond. Une demande ouverte sur l'un d'eux "
+"lui est acheminée."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__silent_user_ids
+msgid ""
+"Les personnes affectées dont le compte est en mode courriel. Elles verront "
+"la liste en ouvrant Odoo, et leur téléphone ne sonnera pas."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__line_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Liste de travail"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model,name:bf_property_operations.model_maintenance_equipment
+msgid "Maintenance Equipment"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model,name:bf_property_operations.model_maintenance_request
+msgid "Maintenance Request"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model,name:bf_property_operations.model_maintenance_team
+msgid "Maintenance Teams"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_search
+msgid "Mes quarts"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_maintenance_plan__interval_unit__month
+msgid "Mois"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_search_analysis
+msgid "Nature"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_request__bf_repair_scope
+msgid "Nature de la réparation"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__silent_user_ids
+msgid "Ne recevront pas d'avis"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_team__bf_building_count
+msgid "Nombre d'immeubles"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_equipment__bf_plan_count
+msgid "Nombre de cédules"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__request_count
+msgid "Nombre de travaux"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_form_property_plan
+msgid "Non effectué"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__work_not_done_reason
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_request__bf_not_done_reason
+msgid "Non effectué, parce que"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_search_property_plan
+msgid "Non effectués, avec raison"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.constraint,message:bf_property_operations.constraint_bf_property_maintenance_plan_advance_days_positive
+msgid ""
+"On ouvre un travail d'avance, pas en retard : le nombre de jours d'avance ne"
+" peut pas être négatif."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_maintenance_plan.py:0
+msgid "Opérateur non pris en charge : %s"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+msgid ""
+"Ouvre tout de suite les travaux à échoir, sans attendre la passe de nuit."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+msgid "Ouvrir ce qui est dû"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Ouvrir le quart"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__advance_days
+msgid "Ouvrir le travail d'avance (jours)"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_equipment__bf_common_area_id
+msgid "Partie commune"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Passation"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_shift_line__state__passed_on
+msgid "Passé au quart suivant"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__user_ids
+msgid "Personnes affectées"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_equipment__bf_next_preventive_date
+msgid "Prochain entretien prévu"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__next_date
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_search
+msgid "Prochaine échéance"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_equipment_form_property
+msgid "Précision d'emplacement"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.actions.act_window,help:bf_property_operations.action_shift
+msgid "Préparer un quart"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_shift__state__draft
+msgid "Préparé"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_search
+msgid "Préparés"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__is_overdue
+msgid "Préventif échu"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__name
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__shift_id
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__shift_id
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Quart"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model,name:bf_property_operations.model_bf_property_shift
+msgid "Quart de travail"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__previous_shift_id
+msgid "Quart précédent"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__next_shift_id
+msgid "Quart suivant"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_list
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_search
+msgid "Quarts"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.actions.act_window,name:bf_property_operations.action_shift
+#: model:ir.ui.menu,name:bf_property_operations.menu_shift
+msgid "Quarts de travail"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift__user_ids
+msgid ""
+"Qui tient le quart. C'est ce champ qui fait du quart un traitement de "
+"renseignements personnels de salariés."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_search
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__next_shift_id
+msgid "Repris par le quart"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_maintenance_team__bf_leader_user_id
+msgid "Responsable d'équipe"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__open_line_count
+msgid "Restant à régler"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Retirer"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_shift_line__state__dropped
+msgid "Retiré de la liste"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__drop_reason
+msgid "Retiré parce que"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_maintenance_plan.py:0
+msgid ""
+"Rien à ouvrir : aucune échéance de ces cédules ne tombe avant %(horizon)s."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_shift_line__state__settled
+msgid "Réglé pendant ce quart"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__maintenance_request__bf_repair_scope__routine
+msgid "Réparation courante"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__maintenance_request__bf_repair_scope__major
+msgid "Réparation majeure ou remplacement"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_search_property_plan
+msgid "Réparations fermées, nature à dire"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_maintenance_plan__interval_unit__week
+msgid "Semaines"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift_line__work_archived
+msgid ""
+"Set archive to true to hide the maintenance request without deleting it."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__company_id
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__company_id
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__state
+msgid "Sur ce quart"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__work_done
+msgid "Terminé"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:res.groups,comment:bf_property_operations.group_bf_property_operations
+msgid ""
+"Tient les quarts et le travail d'entretien. Voit les immeubles, jamais le "
+"registre des copropriétaires."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__interval_count
+msgid "Tous les"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_maintenance_plan.py:0
+msgid "Tous les %(count)s %(unit)s"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_close_wizard_form
+msgid "Tout le travail du quart est réglé. Rien à passer."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_line__request_id
+msgid "Travail"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__name
+msgid "Travail d'entretien"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model,name:bf_property_operations.model_bf_property_shift_line
+msgid "Travail porté par un quart"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__line_count
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Travaux"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_maintenance_plan.py:0
+msgid "Travaux du cédule"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid "Travaux du quart"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__carried_count
+msgid "Travaux non réglés"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_maintenance_plan.py:0
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__request_ids
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+msgid "Travaux ouverts"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__active
+msgid ""
+"Un cédule archivé cesse d'ouvrir des travaux. Les travaux déjà ouverts "
+"restent."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.actions.act_window,help:bf_property_operations.action_maintenance_plan
+msgid ""
+"Un cédule fait naître le travail du bien et de sa fréquence.\n"
+"                La chaudière s'inspecte deux fois l'an, que le billet\n"
+"                précédent ait été fermé ou non."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid "Un quart ne se passe pas la main à lui-même."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.actions.act_window,help:bf_property_operations.action_shift
+msgid ""
+"Un quart porte une plage, une équipe, des personnes et sa liste\n"
+"                de travail. Il se ferme en passant la main : le travail resté\n"
+"                ouvert va à un quart nommé, avec un mot sur ce que la liste ne\n"
+"                dit pas. C'est cette passation qui distingue un quart d'un\n"
+"                tableau de tâches."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.constraint,message:bf_property_operations.constraint_bf_property_shift_shift_dates
+msgid "Un quart se termine après avoir commencé."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift_line__drop_reason
+msgid ""
+"Un travail qu'on sort de la liste du quart sort pour une raison. Elle ne "
+"remplace pas celle de l'art. 4 : celle-là dit pourquoi un entretien n'a pas "
+"été FAIT, celle-ci pourquoi il n'était pas à faire pendant ce quart-ci."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.constraint,message:bf_property_operations.constraint_bf_property_maintenance_plan_interval_positive
+msgid "Une fréquence d'entretien se répète au moins tous les 1."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__interval_unit
+msgid "Unité"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model,name:bf_property_operations.model_res_users
+msgid "User"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "Vide = tout le secteur de l'équipe"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "le"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_form
+msgid "p. ex. Inspection de la chaudière"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_form_property_plan
+msgid "p. ex. accès au local mécanique refusé par le locataire"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "par"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_request__bf_repair_scope
+msgid ""
+"r. 8.01 : une réparation courante se note à l'art. 2 al. 2, par. 3° ; une "
+"réparation majeure ou un remplacement se notent à l'art. 3 al. 2, avec leur "
+"coût. « Correctif » ne dit ni l'un ni l'autre. Laissé vide, rien ne remonte "
+"au carnet : le module ne qualifie pas une réparation à la place de la "
+"personne qui la constate."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_maintenance_plan__interval_count
+msgid ""
+"r. 8.01, art. 2 al. 2, par. 2° : la fréquence à laquelle les travaux "
+"d'entretien requis doivent être effectués."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,help:bf_property_operations.field_bf_property_shift_line__work_not_done_reason
+#: model:ir.model.fields,help:bf_property_operations.field_maintenance_request__bf_not_done_reason
+msgid ""
+"r. 8.01, art. 4 : lors de la mise à jour annuelle, le carnet mentionne les "
+"travaux requis ou prévus qui n'ont pas été effectués ET indique pourquoi. La"
+" raison vient de la personne qui constate, jamais d'un calcul."
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_form
+msgid "si retiré de la liste"
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid "tout le secteur"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_close_wizard_form
+msgid ""
+"travaux ne sont pas réglés. Nommez le quart qui les reprend,\n"
+"                    et dites ce que la liste ne dit pas : c'est cette passation\n"
+"                    qui distingue un quart d'un tableau de tâches."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/maintenance_equipment.py:0
+msgid ""
+"« %(equipment)s » appartient à %(company)s et l'immeuble %(building)s à "
+"%(other)s."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/maintenance_equipment.py:0
+msgid ""
+"« %(equipment)s » est rattaché à l'immeuble %(building)s, mais l'emplacement"
+" choisi appartient à %(anchor)s."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/maintenance_equipment.py:0
+msgid ""
+"« %(equipment)s » est rattaché à la fois à la fraction %(unit)s et à la "
+"partie commune %(area)s. Un équipement est dans l'une ou dans l'autre : "
+"c'est ce partage qui dit qui en répond."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/maintenance_equipment.py:0
+msgid ""
+"« %(equipment)s » n'est rattaché à aucun immeuble, alors que l'emplacement "
+"choisi appartient à %(anchor)s."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid ""
+"« %(next)s » est tenu par %(team)s, qui ne répond pas de %(buildings)s. Un "
+"travail qui change d'équipe change de secteur : rattachez l'immeuble à cette"
+" équipe, ou passez la main à un quart de %(own)s."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid ""
+"« %(shift)s » passe %(count)s travaux au quart suivant sans un mot. Ce qui "
+"se transmet d'un quart à l'autre n'est pas la liste (elle se lit), c'est ce "
+"que la liste ne dit pas."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/maintenance_request.py:0
+msgid ""
+"« %(work)s » vient du cédule « %(plan)s » et porte en plus la répétition du "
+"billet. À sa fermeture, les deux ouvriraient chacun le suivant. La fréquence"
+" se règle sur le cédule."
+msgstr ""
+
+#. module: bf_property_operations
+#. odoo-python
+#: code:addons/bf_property_operations/models/bf_property_shift.py:0
+msgid ""
+"« %s » sort de la liste du quart sans raison. Un travail retiré sans motif "
+"se relit comme un travail oublié."
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields.selection,name:bf_property_operations.selection__bf_property_shift_line__state__todo
+msgid "À faire"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_maintenance_plan__start_date
+msgid "À partir du"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_search
+msgid "À échoir"
+msgstr ""
+
+#. module: bf_property_operations
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_plan_search_overdue
+msgid "Échu"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__maintenance_team_id
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift_close_wizard__maintenance_team_id
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_maintenance_request_search_analysis
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_search
+msgid "Équipe"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_building__bf_maintenance_team_id
+msgid "Équipe d'entretien"
+msgstr ""
+
+#. module: bf_property_operations
+#: model:ir.model.fields,field_description:bf_property_operations.field_bf_property_shift__state
+#: model_terms:ir.ui.view,arch_db:bf_property_operations.view_shift_search
+msgid "État"
+msgstr ""

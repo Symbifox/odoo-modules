@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ⚠️ La règle d'origine du module maintenance, `equipment_rule_user`,
+             ne montre à un employé que les équipements dont il suit le fil.
+             Un gestionnaire de copropriété ouvrirait donc un carnet citant une
+             chaudière sans pouvoir la lire, et la citation lèverait une erreur
+             d'accès au lieu d'afficher un nom.
+
+             Les deux règles portent chacune leur groupe : elles se combinent
+             par OU, et celle-ci n'enlève rien à personne. Le cloisonnement
+             multi-société de maintenance, lui, est une règle globale : il
+             reste appliqué par ET par-dessus celle-ci.
+
+             L'écriture n'est pas ouverte pour autant : le droit d'accès du
+             module maintenance laisse `base.group_user` en lecture seule, et
+             une règle d'enregistrement n'a jamais accordé un droit que le
+             droit d'accès refuse. -->
+        <record id="rule_equipment_property_user" model="ir.rule">
+            <field name="name">Équipements : ceux qui sont rattachés à un immeuble</field>
+            <field name="model_id" ref="maintenance.model_maintenance_equipment"/>
+            <field name="domain_force">[('bf_building_id', '!=', False)]</field>
+            <field name="groups" eval="[(4, ref('bf_property_core.group_bf_property_user'))]"/>
+        </record>
+
+        <!-- ── Le cédule d'entretien préventif ──
+
+             ⚠️ Sa visibilité recopie EXACTEMENT celle du bien qu'il cédule,
+             règle pour règle. Un cédule qui se montrerait plus largement que
+             son équipement nommerait des biens à des gens qui n'ont pas le
+             droit de les lire, et le seul écran qui le dirait serait celui
+             qu'on n'ouvre pas.
+
+             Le cloisonnement multi-société, lui, est une règle globale : il
+             s'applique par ET par-dessus les trois autres. -->
+        <record id="rule_maintenance_plan_company" model="ir.rule">
+            <field name="name">Cédules d'entretien : multi-société</field>
+            <field name="model_id" ref="model_bf_property_maintenance_plan"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <record id="rule_maintenance_plan_follower" model="ir.rule">
+            <field name="name">Cédules d'entretien : ceux des biens dont on suit le fil</field>
+            <field name="model_id" ref="model_bf_property_maintenance_plan"/>
+            <field name="domain_force">[('equipment_id.message_partner_ids', 'in', [user.partner_id.id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="rule_maintenance_plan_property_user" model="ir.rule">
+            <field name="name">Cédules d'entretien : ceux des biens rattachés à un immeuble</field>
+            <field name="model_id" ref="model_bf_property_maintenance_plan"/>
+            <field name="domain_force">[('equipment_id.bf_building_id', '!=', False)]</field>
+            <field name="groups" eval="[(4, ref('bf_property_core.group_bf_property_user'))]"/>
+        </record>
+
+        <record id="rule_maintenance_plan_equipment_manager" model="ir.rule">
+            <field name="name">Cédules d'entretien : gestionnaire d'équipement</field>
+            <field name="model_id" ref="model_bf_property_maintenance_plan"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('maintenance.group_equipment_manager'))]"/>
+        </record>
+
+        <!-- ══ Le groupe d'exploitation ══
+
+             🔴 Un groupe séparé, et c'est mesuré : donner
+             le groupe Consultation de la suite à un concierge lui donnerait le
+             REGISTRE DES COPROPRIÉTAIRES, qui vit sur la fraction. Un
+             concierge n'a rien à y faire.
+
+             Ce groupe n'implique donc PAS `group_bf_property_user`. Il ouvre
+             exactement une chose de la structure de copropriété : l'immeuble,
+             parce qu'un travail sans son adresse dit quoi faire sans dire où.
+             La fraction, la propriété et les demandes des occupants restent
+             fermées. -->
+        <record id="group_bf_property_operations" model="res.groups">
+            <field name="name">Exploitation</field>
+            <field name="category_id" ref="bf_property_core.module_category_property"/>
+            <field name="comment">Tient les quarts et le travail d'entretien. Voit les immeubles, jamais le registre des copropriétaires.</field>
+            <field name="implied_ids" eval="[(4, ref('maintenance.group_equipment_manager'))]"/>
+        </record>
+
+        <!-- ⚠️ Le gestionnaire de la suite tient aussi l'exploitation : sans
+             cette implication, un gestionnaire ouvrant un quart obtiendrait un
+             refus d'accès sur son propre parc. -->
+        <record id="bf_property_core.group_bf_property_manager" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_bf_property_operations'))]"/>
+        </record>
+
+        <!-- L'immeuble, et lui seul. La règle porte son propre groupe : elle se
+             combine par OU avec celle du groupe Consultation, juste en dessous,
+             et n'enlève rien à personne.
+
+             🔴 Cette règle Consultation n'existait pas avant la 18.0.7.5.0
+             Odoo combine par OU les seules règles
+             des groupes de la personne : un groupe sans règle n'ouvre rien. Le
+             gestionnaire implique l'Exploitation, donc TOUT gestionnaire était
+             restreint aux immeubles pourvus d'une équipe, et la liste des
+             fractions levait une erreur d'accès. -->
+        <record id="rule_building_property_user" model="ir.rule">
+            <field name="name">Immeubles : tous, pour la consultation</field>
+            <field name="model_id" ref="bf_property_core.model_bf_property_building"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('bf_property_core.group_bf_property_user'))]"/>
+        </record>
+
+        <record id="rule_building_operations_user" model="ir.rule">
+            <field name="name">Immeubles : ceux qu'une équipe d'exploitation dessert</field>
+            <field name="model_id" ref="bf_property_core.model_bf_property_building"/>
+            <field name="domain_force">[('bf_maintenance_team_id', '!=', False)]</field>
+            <field name="groups" eval="[(4, ref('group_bf_property_operations'))]"/>
+        </record>
+
+        <record id="rule_shift_company" model="ir.rule">
+            <field name="name">Quarts : multi-société</field>
+            <field name="model_id" ref="model_bf_property_shift"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <record id="rule_shift_line_company" model="ir.rule">
+            <field name="name">Lignes de quart : multi-société</field>
+            <field name="model_id" ref="model_bf_property_shift_line"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- ══ Le cloisonnement entre équipes ══
+
+             🔴 Le multi-société ne cloisonne rien à l'intérieur d'une société.
+             Mesuré : le concierge de l'équipe B lisait le quart de l'équipe A,
+             ses personnes affectées et sa note de passation, écrivait dessus,
+             et s'ajoutait lui-même aux personnes affectées. Aucun test ne
+             l'avait vu — ils opposaient le portail à l'interne, jamais deux
+             internes.
+
+             ⚠️ C'est la matière même du pont vie privée : un quart nomme des
+             SALARIÉS, et sa base est la relation d'emploi. La relation d'emploi
+             de l'équipe A ne fonde pas la lecture par l'équipe B.
+
+             La personne nommée sur un quart le voit, qu'elle soit membre de
+             l'équipe ou prêtée pour la soirée : sans cette branche, un renfort
+             ne verrait pas la liste qu'on vient de lui confier. -->
+        <record id="rule_shift_operations_team" model="ir.rule">
+            <field name="name">Quarts : ceux de ses équipes, et ceux qu'on tient</field>
+            <field name="model_id" ref="model_bf_property_shift"/>
+            <field name="domain_force">['|',
+                ('user_ids', 'in', [user.id]),
+                ('maintenance_team_id.member_ids', 'in', [user.id])]</field>
+            <field name="groups" eval="[(4, ref('group_bf_property_operations'))]"/>
+        </record>
+
+        <record id="rule_shift_line_operations_team" model="ir.rule">
+            <field name="name">Lignes de quart : celles des quarts qu'on voit</field>
+            <field name="model_id" ref="model_bf_property_shift_line"/>
+            <field name="domain_force">['|',
+                ('shift_id.user_ids', 'in', [user.id]),
+                ('shift_id.maintenance_team_id.member_ids', 'in', [user.id])]</field>
+            <field name="groups" eval="[(4, ref('group_bf_property_operations'))]"/>
+        </record>
+
+        <!-- ⚠️ Le gestionnaire de la suite répond du parc, pas d'un quart : il
+             voit tous les quarts de ses sociétés. Les règles portant chacune
+             leur groupe se combinent par OU, et il porte les deux groupes —
+             celle-ci lui rend donc ce que la précédente lui retirerait. Le
+             cloisonnement multi-société, lui, est une règle globale : il
+             s'applique par ET par-dessus les deux. -->
+        <record id="rule_shift_property_manager" model="ir.rule">
+            <field name="name">Quarts : le gestionnaire voit tout son parc</field>
+            <field name="model_id" ref="model_bf_property_shift"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('bf_property_core.group_bf_property_manager'))]"/>
+        </record>
+
+        <record id="rule_shift_line_property_manager" model="ir.rule">
+            <field name="name">Lignes de quart : le gestionnaire voit tout son parc</field>
+            <field name="model_id" ref="model_bf_property_shift_line"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('bf_property_core.group_bf_property_manager'))]"/>
+        </record>
+
+    </data>
+</odoo>

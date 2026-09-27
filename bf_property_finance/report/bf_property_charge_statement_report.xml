@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Format Lettre, comme l'attestation de l'art. 1068.1 : ces deux
+         documents finissent dans le même dossier de vente, chez le même
+         notaire, et rien ne gagne à ce qu'ils n'aient pas la même taille. -->
+    <record id="paperformat_charge_statement" model="report.paperformat">
+        <field name="name">État des charges communes dues (Lettre)</field>
+        <field name="format">Letter</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">18</field>
+        <field name="margin_bottom">16</field>
+        <field name="margin_left">12</field>
+        <field name="margin_right">12</field>
+        <field name="header_spacing">8</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_report_charge_statement" model="ir.actions.report">
+        <field name="name">État des charges communes dues</field>
+        <field name="model">bf.property.charge.statement</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_property_finance.report_charge_statement</field>
+        <field name="report_file">bf_property_finance.report_charge_statement</field>
+        <field name="print_report_name">'Etat_charges_%s_%s' % ((object.unit_id.display_name or '').replace(' ', '_'), object._report_date())</field>
+        <field name="binding_model_id" ref="model_bf_property_charge_statement"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_charge_statement"/>
+    </record>
+
+</odoo>

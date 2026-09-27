@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- 🔴 L'immeuble se montre AUSSI au groupe Exploitation, et c'est le
+         motif déclaré de ce groupe : « un travail sans son adresse dit quoi
+         faire sans dire où ». On a mesuré l'inverse —
+         le droit d'accès et la règle d'enregistrement ouvraient bien
+         l'immeuble au concierge, et les trois `groups=` de vue le lui
+         retiraient sur le formulaire, la liste ET la recherche. Un champ
+         qu'aucun écran ne montre ne vaut rien : défaut de classe déjà
+         corrigé ailleurs dans la suite, revenu par la vue.
+
+         ⚠️ La fraction et la partie commune, elles, restent au seul groupe
+         Consultation : c'est la barrière entre équipes et fractions, et elle tient. -->
+    <record id="view_maintenance_request_form_property" model="ir.ui.view">
+        <field name="name">maintenance.request.form.property</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <field name="maintenance_team_id" position="before">
+                <field name="bf_building_id"
+                       groups="bf_property_core.group_bf_property_user,bf_property_operations.group_bf_property_operations"
+                       options="{'no_create_edit': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_tree_property" model="ir.ui.view">
+        <field name="name">maintenance.request.list.property</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="bf_building_id"
+                       groups="bf_property_core.group_bf_property_user,bf_property_operations.group_bf_property_operations"
+                       optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_search_property" model="ir.ui.view">
+        <field name="name">maintenance.request.search.property</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="bf_building_id"
+                       groups="bf_property_core.group_bf_property_user,bf_property_operations.group_bf_property_operations"/>
+            </field>
+            <filter name="assigned" position="before">
+                <filter name="bf_group_by_building" string="Immeuble"
+                        groups="bf_property_core.group_bf_property_user,bf_property_operations.group_bf_property_operations"
+                        context="{'group_by': 'bf_building_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- ⚠️ Le bouton « Annuler » d'origine ne demande aucune raison, et
+         l'art. 4 du règlement en veut une. Pour un travail cédulé, c'est donc
+         « Non effectué » qui prend sa place ; le bouton d'origine reste pour
+         tout le reste, qui ne relève pas de cet article. -->
+    <record id="view_maintenance_request_form_property_plan" model="ir.ui.view">
+        <field name="name">maintenance.request.form.property.plan</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_form"/>
+        <field name="arch" type="xml">
+            <button name="archive_equipment_request" position="attributes">
+                <attribute name="invisible">archive or bf_plan_id</attribute>
+            </button>
+            <button name="archive_equipment_request" position="before">
+                <field name="bf_plan_id" invisible="1"/>
+                <button string="Non effectué" name="action_bf_not_done" type="object"
+                        invisible="archive or not bf_plan_id"
+                        confirm="Le travail sera annulé, et la raison portée au carnet d'entretien s'il en existe un."/>
+            </button>
+            <field name="request_date" position="after">
+                <field name="bf_plan_id" readonly="1" invisible="not bf_plan_id"
+                       options="{'no_create': True}"/>
+            </field>
+            <field name="close_date" position="after">
+                <field name="bf_not_done_date" readonly="1" invisible="not bf_not_done_date"/>
+                <field name="bf_not_done_reason"
+                       invisible="not bf_plan_id and not bf_not_done_reason"
+                       placeholder="p. ex. accès au local mécanique refusé par le locataire"/>
+            </field>
+
+            <!-- ⚠️ Sous le type, parce que c'est lui qu'elle précise : « correctif »
+                 ne dit pas si le règlement veut la réparation au par. 3° de
+                 l'art. 2 al. 2 ou à l'art. 3 al. 2. Vide = personne ne s'est
+                 prononcé, et rien ne remonte au carnet. Elle ne se montre pas
+                 sur un préventif : un travail d'entretien requis ne se qualifie
+                 pas, le par. 2° écartant déjà les travaux visés à l'article 3. -->
+            <field name="maintenance_type" position="after">
+                <field name="bf_repair_scope"
+                       invisible="maintenance_type != 'corrective'"
+                       groups="bf_property_core.group_bf_property_user,bf_property_operations.group_bf_property_operations"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_tree_property_plan" model="ir.ui.view">
+        <field name="name">maintenance.request.list.property.plan</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="bf_plan_id" optional="hide"/>
+                <field name="bf_repair_scope" optional="hide"/>
+                <field name="bf_not_done_reason" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_request_search_property_plan" model="ir.ui.view">
+        <field name="name">maintenance.request.search.property.plan</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="unscheduled" position="after">
+                <separator/>
+                <filter name="bf_cedule" string="Issus d'un cédule"
+                        domain="[('bf_plan_id', '!=', False)]"/>
+                <filter name="bf_not_done" string="Non effectués, avec raison"
+                        domain="[('bf_not_done_reason', '!=', False)]"/>
+                <!-- Ce que le conseil doit trancher avant la mise à jour
+                     annuelle de l'art. 4 : les réparations fermées dont
+                     personne n'a dit la nature ne sont nulle part au carnet. -->
+                <filter name="bf_repair_unqualified" string="Réparations fermées, nature à dire"
+                        domain="[('maintenance_type', '=', 'corrective'),
+                                 ('bf_repair_scope', '=', False),
+                                 ('stage_id.done', '=', True)]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

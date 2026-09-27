@@ -1,0 +1,794 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_rental
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 00:08+0000\n"
+"PO-Revision-Date: 2026-09-14 00:08+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__student
+msgid "Annexe 1 : Personne aux études"
+msgstr "Schedule 1: Student"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__llm
+msgid "Annexe 2 : Logement à loyer modique"
+msgstr "Schedule 2: Dwelling in low-rental housing"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__mobile
+msgid "Annexe 3 : Terrain pour maison mobile"
+msgstr "Schedule 3: Land for the emplacement of a mobile home"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__coop
+msgid "Annexe 4 : Logement en coopérative"
+msgstr "Schedule 4: Dwelling leased by a housing cooperative"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__general
+msgid "Annexe 5 : Tout autre logement"
+msgstr "Schedule 5: Any other dwelling"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__form_kind__verbal
+msgid "Annexe 7 : Écrit constatant un bail verbal"
+msgstr "Schedule 7: Writing setting forth an oral lease"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__payment_mode__cash
+msgid "Argent comptant"
+msgstr "Cash"
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__fixation_restricted
+msgid ""
+"Art. 1955 : ni le locateur ni le locataire ne peuvent faire fixer le loyer "
+"par le Tribunal. ⚠️ Elle ne vaut que si elle est PRÉVUE AU BAIL (al. 3) : ce"
+" n'est pas un état de l'immeuble que le module déduirait tout seul."
+msgstr ""
+"Art. 1955: neither the lessor nor the lessee may apply to the Tribunal to "
+"have the rent fixed. ⚠️ It holds only if it is SET OUT IN THE LEASE (para. "
+"3): it is not a state of the immovable that the module would infer on its "
+"own."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__max_rent_5y
+msgid ""
+"Art. 1955 al. 3 : sans cette mention AU BAIL, le locateur ne peut pas "
+"invoquer la restriction contre le locataire. Il ne perd pas un champ, il "
+"perd le droit de s'en prévaloir."
+msgstr ""
+"Art. 1955 para. 3: without that indication IN THE LEASE, the restriction may"
+" not be set up by the lessor against the lessee. The lessor does not lose a "
+"field, but the right to rely on it."
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_abandonment.py:0
+msgid ""
+"Aucun avis de disposition n'a été donné. L'art. 944 ne permet de disposer "
+"qu'APRÈS un avis, et cet avis court %(days)s jours."
+msgstr ""
+"No notice of disposal has been given. Art. 944 allows disposal only AFTER a "
+"notice, and that notice runs %(days)s days."
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__payment_mode__other
+msgid "Autre"
+msgstr "Other"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__disposal_method__other
+msgid "Autre disposition, faute de pouvoir vendre ou donner"
+msgstr "Other disposal, being unable to sell or give"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__disposal_notice_date
+msgid "Avis de disposition donné le"
+msgstr "Notice of disposal given on"
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__lease_id
+msgid "Bail"
+msgstr "Lease"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__is_room
+msgid "Bail d'une chambre"
+msgstr "Lease of a room"
+
+#. module: bf_rental
+#: model:ir.model,name:bf_rental.model_bf_rental_lease
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Bail de logement"
+msgstr "Lease of a dwelling"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__lease_resiliated_by_operation_of_law
+msgid "Bail résilié de plein droit"
+msgstr "Lease resiliated by operation of law"
+
+#. module: bf_rental
+#: model:ir.actions.act_window,name:bf_rental.action_bf_rental_lease
+#: model:ir.ui.menu,name:bf_rental.menu_bf_rental_lease
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_list
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Baux"
+msgstr "Leases"
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__ready_date
+msgid "C'est d'elle que court le délai de cinq ans, pas de la date du bail."
+msgstr "The five years run from that date, not from the date of the lease."
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__kind
+msgid "Cas"
+msgstr "Case"
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__joint_and_several
+msgid ""
+"Case du formulaire, à la section des signatures. Le module la reprend telle "
+"quelle : il ne la déduit pas du nombre de locataires, parce que ce n'est pas"
+" le nombre qui en décide."
+msgstr ""
+"A box on the form, in the signatures section. The module takes it as it "
+"stands: it does not infer it from the number of lessees, because the number "
+"is not what decides it."
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid "Ce qui s'est passé"
+msgstr "What happened"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__restriction_kind__converted
+msgid "Changement d'affectation depuis cinq ans ou moins"
+msgstr "Recent change of destination (five years or less)"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__payment_mode__cheque
+msgid "Chèque"
+msgstr "Cheque"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__date_noticed
+msgid "Constaté le"
+msgstr "Noted on"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__services_cost
+msgid "Coût des services"
+msgstr "Cost of services"
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__services_cost
+msgid ""
+"Coût total des services, tel qu'il se porte au formulaire. Le détail par "
+"service va à l'annexe 6, qui est un document distinct."
+msgstr ""
+"Total cost of services, as entered on the form. The detail service by "
+"service goes on Schedule 6, which is a separate document."
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__effects_left
+msgid "Des effets ont été laissés"
+msgstr "Movable effects were left"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__effects_description
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid "Description des effets"
+msgstr "Description of the effects"
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_abandonment.py:0
+msgid ""
+"Disposition trop tôt : pas avant le %(date)s.\n"
+"\n"
+"Le bien n'est réputé oublié qu'après %(forgotten)s jours sans être réclamé, et le détenteur ne peut en disposer qu'après un avis de la même durée (art. 944 C.c.Q.)."
+msgstr ""
+"Disposal too early: not before %(date)s.\n"
+"\n"
+"The thing is considered forgotten only after %(forgotten)s days without being claimed, and the holder may dispose of it only after a notice of the same length of time (art. 944 CCQ)."
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__disposed_on
+msgid "Disposé le"
+msgstr "Disposed of on"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__disposal_method__charity
+msgid "Don à un organisme de bienfaisance (art. 945)"
+msgstr "Gift to a charitable institution (art. 945)"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__duration_kind
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Durée"
+msgstr "Term"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__duration_kind__fixed
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Durée fixe"
+msgstr "Fixed term"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__duration_kind__indeterminate
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Durée indéterminée"
+msgstr "Indeterminate term"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__date_start
+msgid "Début"
+msgstr "Beginning"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__kind__deguerpissement
+msgid "Déguerpissement sans motif (art. 1975 al. 1)"
+msgstr "Abandonment without any reason (art. 1975 para. 1)"
+
+#. module: bf_rental
+#: model:ir.model,name:bf_rental.model_bf_rental_abandonment
+msgid "Départ du locataire sans préavis"
+msgstr "Lessee abandoning the dwelling"
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid "Départ sans préavis"
+msgstr "Abandonment of the dwelling"
+
+#. module: bf_rental
+#: model:ir.actions.act_window,name:bf_rental.action_bf_rental_abandonment
+#: model:ir.ui.menu,name:bf_rental.menu_bf_rental_abandonment
+msgid "Départs sans préavis"
+msgstr "Abandonments of the dwelling"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__joint_and_several
+msgid "Engagement solidaire"
+msgstr "Solidary undertaking"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__date_end
+msgid "Fin"
+msgstr "End"
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Formulaire"
+msgstr "Form"
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Formulaire employé"
+msgstr "Form used"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__form_kind
+msgid "Formulaire obligatoire"
+msgstr "Mandatory form"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__lease_attachment_ids
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Formulaire signé"
+msgstr "Signed form"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__building_id
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Immeuble"
+msgstr "Immovable"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__restriction_kind__new
+msgid "Immeuble construit depuis cinq ans ou moins"
+msgstr "Recently erected immovable (five years or less)"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__ready_date
+msgid "Immeuble prêt pour l'habitation le"
+msgstr "Immovable ready for its intended use on"
+
+#. module: bf_rental
+#: model_terms:ir.actions.act_window,help:bf_rental.action_bf_rental_lease
+msgid "Inscrire un bail"
+msgstr "Record a lease"
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__disposal_notice_date
+msgid ""
+"L'avis « de la même durée » de l'art. 944, donné à celui qui a laissé le "
+"bien."
+msgstr ""
+"The notice \"of the same length of time\" under art. 944, given to the "
+"person who left the thing."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__organisation_id
+msgid "L'organisation qui répond de l'immeuble et signe le bail."
+msgstr "The organisation answering for the immovable and signing the lease."
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid "La fin du bail précède son début."
+msgstr "The end of the lease precedes its beginning."
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"La restriction court cinq ans depuis la date où l'immeuble était prêt pour "
+"l'usage auquel il est destiné. Sans cette date, rien ne dit quand elle "
+"cesse."
+msgstr ""
+"The restriction runs for five years from the date on which the immovable is "
+"ready for its intended use. Without that date, nothing says when it ends."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__unit_id
+msgid ""
+"Laissé vide pour un bail de chambre ou de terrain qui ne correspond à aucune"
+" fraction inscrite."
+msgstr ""
+"Left empty for the lease of a room or of land matching no registered "
+"fraction."
+
+#. module: bf_rental
+#: model_terms:ir.actions.act_window,help:bf_rental.action_bf_rental_lease
+msgid ""
+"Le bail de logement se conclut sur le formulaire obligatoire du\n"
+"                Tribunal administratif du logement, acheté au Tribunal sur papier\n"
+"                ou en format électronique. Ce module enregistre ce qui a été\n"
+"                convenu et porte le formulaire signé en pièce jointe : il ne le\n"
+"                remplace pas et n'en produit pas un qui lui ressemble."
+msgstr ""
+"The lease of a dwelling is entered into on the mandatory form of the\n"
+"                Administrative Housing Tribunal, bought from the Tribunal on paper\n"
+"                or in electronic format. This module records what was agreed\n"
+"                and carries the signed form as an attachment: it does not\n"
+"                replace it and produces nothing resembling it."
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_abandonment.py:0
+msgid ""
+"Le déguerpissement de l'art. 1975 al. 1 suppose que le locataire est parti EN EMPORTANT ses effets mobiliers.\n"
+"\n"
+"Des effets laissés sur place font sortir de ce cas : le bail n'est pas résilié de plein droit, et les effets relèvent de l'art. 1978, qui renvoie aux règles du détenteur du bien confié et oublié (art. 944 à 946)."
+msgstr ""
+"Abandonment under art. 1975 para. 1 supposes that the lessee left TAKING the movable effects along.\n"
+"\n"
+"Effects left behind take the case out of that rule: the lease is not resiliated by operation of law, and the effects fall under art. 1978, which refers to the rules on the holder of property entrusted and forgotten (arts. 944 to 946)."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__lease_attachment_ids
+msgid ""
+"Le formulaire officiel rempli et signé, tel qu'il a été acheté au Tribunal. "
+"Le module le PORTE ; il ne le produit pas."
+msgstr ""
+"The official form filled in and signed, as bought from the Tribunal. The "
+"module CARRIES it; it does not produce it."
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__postdated_cheques_accepted
+msgid "Le locataire accepte de remettre des chèques postdatés"
+msgstr "The lessee agrees to give postdated cheques"
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Le logement à loyer modique est hors du périmètre de ce module.\n"
+"\n"
+"C'est un régime distinct : le loyer s'y fixe selon les règlements de la Société d'habitation du Québec et non selon les critères ordinaires (art. 1956 C.c.Q.), et le locateur doit y tenir un registre des demandes de location et une liste d'admissibilité (art. 1985 C.c.Q.).\n"
+"\n"
+"Lui appliquer les règles du bail ordinaire produirait des avis fondés sur les mauvais articles. Ce bail se tient hors du module."
+msgstr ""
+"A dwelling in low-rental housing is outside the scope of this module.\n"
+"\n"
+"It is a separate regime: the rent is fixed there under the by-laws of the Société d'habitation du Québec and not under the ordinary criteria (art. 1956 CCQ), and the lessor shall keep a register of lease applications and a list of eligible persons (art. 1985 CCQ).\n"
+"\n"
+"Applying the ordinary lease rules to it would produce notices founded on the wrong articles. Such a lease is kept outside the module."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__form_kind
+msgid ""
+"Lequel des sept formulaires du Tribunal a été employé (T-15.01, r. 3, art. 1"
+" à 3). Ce n'est pas une étiquette : les formulaires n'ont pas les mêmes "
+"sections, et ce champ décide de ce que le bail doit porter."
+msgstr ""
+"Which of the Tribunal's seven forms was used (T-15.01, r. 3, arts. 1 to 3). "
+"It is not a label: the forms do not have the same sections, and this field "
+"decides what the lease must carry."
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid "Les effets laissés (art. 1978)"
+msgstr "Movable effects left (art. 1978)"
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+msgid ""
+"Les effets laissés ne deviennent pas la propriété du\n"
+"                        locateur. Ils sont réputés oubliés après 90 jours, et\n"
+"                        il faut encore un avis de la même durée avant d'en\n"
+"                        disposer (art. 944). Disposer veut dire vendre, à\n"
+"                        défaut donner à un organisme de bienfaisance\n"
+"                        (art. 945). Le propriétaire peut les revendiquer tant\n"
+"                        que son droit n'est pas prescrit, et si le bien a été\n"
+"                        vendu, son droit s'exerce sur ce qui reste du prix\n"
+"                        (art. 946)."
+msgstr ""
+"Movable effects left behind do not become the property\n"
+"                        of the lessor. They are considered forgotten after 90 days,\n"
+"                        and a notice of the same length of time is still required\n"
+"                        before disposing of them (art. 944). Disposing means selling,\n"
+"                        failing that giving to a charitable institution\n"
+"                        (art. 945). The owner may revendicate them so long as\n"
+"                        the right of ownership has not been prescribed, and if the\n"
+"                        thing has been sold, that right is exercised against what\n"
+"                        is left of the price (art. 946)."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__restriction_section
+msgid ""
+"Lettre de la section où se déclarent les restrictions au droit à la "
+"fixation, SUR LE FORMULAIRE EMPLOYÉ. Elle change d'un formulaire à l'autre, "
+"et sert à écrire « voir section X », jamais à décider d'une règle."
+msgstr ""
+"Letter of the section where restrictions on having the rent fixed are "
+"declared, ON THE FORM USED. It changes from one form to another, and serves "
+"to write \"see section X\", never to decide a rule."
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__tenant_ids
+msgid "Locataires"
+msgstr "Lessees"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__organisation_id
+msgid "Locateur"
+msgstr "Lessor"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__unit_id
+msgid "Logement"
+msgstr "Dwelling"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__kind__unfit
+msgid "Logement impropre, départ sans avis (art. 1975 al. 2)"
+msgstr ""
+"Dwelling unfit for habitation, abandoned without notice (art. 1975 para. 2)"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__rent
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Loyer"
+msgstr "Rent"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__max_rent_5y
+msgid "Loyer maximal sur cinq ans"
+msgstr "Maximum rent over five years"
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__rent_total
+msgid "Loyer plus services, comme le formulaire le demande."
+msgstr "Rent plus services, as the form asks for."
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__rent_total
+msgid "Loyer total"
+msgstr "Total rent"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__disposal_method
+msgid "Mode de disposition"
+msgstr "Manner of disposal"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__payment_mode
+msgid "Mode de paiement"
+msgstr "Method of payment"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__restriction_kind
+msgid "Motif de la restriction"
+msgstr "Ground for the restriction"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__note
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__note
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_abandonment_form
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid "Nouveau"
+msgstr "New"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__rent_period__month
+msgid "Par mois"
+msgstr "Monthly"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__rent_period__week
+msgid "Par semaine"
+msgstr "Weekly"
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Parties"
+msgstr "Parties"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__may_not_dispose_before
+msgid "Pas de disposition avant le"
+msgstr "No disposal before"
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__tenant_ids
+msgid ""
+"Plusieurs locataires au même bail se lisent au formulaire, qui demande s'ils"
+" s'engagent solidairement."
+msgstr ""
+"Several lessees on one lease are read from the form, which asks whether they"
+" bind themselves solidarily."
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Pour un bail conclu après le 20 février 2024 sur un immeuble prêt après "
+"cette date, le bail doit indiquer le loyer maximal exigible dans les cinq "
+"ans, sans quoi la restriction ne peut pas être invoquée contre le locataire "
+"(art. 1955 al. 3)."
+msgstr ""
+"For a lease entered into after 20 February 2024 on an immovable ready after "
+"that date, the lease shall indicate the maximum rent that may be imposed in "
+"the five years, failing which the restriction may not be set up against the "
+"lessee (art. 1955 para. 3)."
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__proceeds
+msgid "Produit de la vente"
+msgstr "Proceeds of the sale"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__rent_period
+msgid "Période"
+msgstr "Payment period"
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Regrouper par"
+msgstr "Group by"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__fixation_restricted
+msgid "Restriction au droit à la fixation"
+msgstr "Restriction on applying to have the rent fixed"
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_search
+msgid "Restriction sans loyer maximal"
+msgstr "Restriction without a maximum rent"
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Restrictions au droit à la fixation (art. 1955 C.c.Q.)"
+msgstr "Restrictions on having the rent fixed (art. 1955 CCQ)"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__name
+msgid "Référence"
+msgstr "Reference"
+
+#. module: bf_rental
+#: model_terms:ir.ui.view,arch_db:bf_rental.view_bf_rental_lease_form
+msgid "Référence du bail"
+msgstr "Lease reference"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_abandonment__forgotten_from
+msgid "Réputé oublié à partir du"
+msgstr "Considered forgotten from"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__notice_section
+msgid "Section de l'avis au nouveau locataire"
+msgstr "New lessee notice section"
+
+#. module: bf_rental
+#: model:ir.model.fields,field_description:bf_rental.field_bf_rental_lease__restriction_section
+msgid "Section des restrictions"
+msgstr "Restrictions section"
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Un bail a au moins un locataire : c'est à lui que se donnent les avis, et "
+"c'est lui que le registre nomme."
+msgstr ""
+"A lease has at least one lessee: notices are given to the lessee, and it is "
+"the lessee the register names."
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Un bail à durée fixe a un terme : c'est de lui que courent les délais d'avis"
+" de modification (art. 1942) et de reprise ou d'éviction (art. 1960)."
+msgstr ""
+"A lease with a fixed term has a term: the notice periods for modification "
+"(art. 1942) and for repossession or eviction (art. 1960) run from it."
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Un bail à durée indéterminée n'a pas de terme. Ses délais d'avis se comptent"
+" depuis la date de la modification ou de la reprise proposée, pas depuis une"
+" fin de bail."
+msgstr ""
+"A lease with an indeterminate term has no term. Its notice periods are "
+"counted from the date of the proposed modification or repossession, not from"
+" an end of lease."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__date_end
+msgid ""
+"Un bail à durée indéterminée n'en a pas, et le module refuse qu'on lui en "
+"donne une : ce serait un bail à durée fixe qui s'ignore, avec les délais "
+"d'avis de l'autre régime."
+msgstr ""
+"A lease with an indeterminate term has none, and the module refuses to give "
+"it one: it would be a fixed-term lease that does not know it, with the "
+"notice periods of the other regime."
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Un syndicat de copropriété ne signe pas de bail de logement : le locateur d'une fraction louée est son propriétaire.\n"
+"\n"
+"Pour inscrire qu'une fraction est louée, au titre du registre de l'art. 1070 C.c.Q., c'est la case « Louée » de la fraction qui sert."
+msgstr ""
+"A syndicate of co-ownership does not sign a lease of a dwelling: the lessor of a leased fraction is its owner.\n"
+"\n"
+"To record that a fraction is leased, for the register under art. 1070 CCQ, the \"Leased\" box on the fraction is what serves."
+
+#. module: bf_rental
+#. odoo-python
+#: code:addons/bf_rental/models/bf_rental_lease.py:0
+msgid ""
+"Une restriction au droit à la fixation dit de quoi elle relève : immeuble "
+"neuf, ou changement d'affectation (art. 1955 al. 2)."
+msgstr ""
+"A restriction on having the rent fixed says what it rests on: a recently "
+"erected immovable, or a recent change of destination (art. 1955 para. 2)."
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__disposal_method__auction
+msgid "Vente aux enchères (art. 945)"
+msgstr "Auction sale (art. 945)"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_abandonment__disposal_method__private
+msgid "Vente de gré à gré (art. 945)"
+msgstr "Sale by agreement (art. 945)"
+
+#. module: bf_rental
+#: model:ir.model.fields.selection,name:bf_rental.selection__bf_rental_lease__payment_mode__transfer
+msgid "Virement bancaire électronique"
+msgstr "Electronic bank transfer"
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__is_room
+msgid ""
+"⚠️ Ce n'est pas une nuance de vocabulaire : l'art. 1892 assimile le bail "
+"d'une chambre à un bail de logement, mais l'art. 1942 al. 3 lui donne des "
+"DÉLAIS d'avis propres : 10 et 20 jours au lieu de mois. Un avis calculé sur "
+"les délais ordinaires serait donné beaucoup trop tôt, et le locataire aurait"
+" raison de le contester."
+msgstr ""
+"⚠️ This is not a shade of vocabulary: art. 1892 treats the lease of a room "
+"as the lease of a dwelling, but art. 1942 para. 4 gives it its own notice "
+"PERIODS: 10 and 20 days instead of months. A notice computed on the ordinary"
+" periods would be given far too early, and the lessee would be right to "
+"contest it."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__disposal_method
+msgid ""
+"⚠️ L'ordre du texte n'est pas indifférent : vendre, à défaut donner, et "
+"seulement à défaut de pouvoir donner, disposer à son gré. Jeter est la "
+"dernière option, pas la première."
+msgstr ""
+"⚠️ The order of the text matters: sell, failing that give, and only failing "
+"the ability to give, dispose of it as one sees fit. Throwing away is the "
+"last option, not the first."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_lease__postdated_cheques_accepted
+msgid ""
+"⚠️ Un CONSENTEMENT du locataire, jamais une exigence du locateur. L'art. "
+"1904 al. 2 interdit d'« exiger » un effet postdaté ; il n'interdit pas au "
+"locataire d'y consentir, et le formulaire officiel porte la case avec ses "
+"initiales. Décoché par défaut, parce que le silence n'est pas un "
+"consentement."
+msgstr ""
+"⚠️ CONSENT by the lessee, never a requirement of the lessor. Art. 1904 "
+"forbids the lessor to \"demand\" payment by postdated instrument; it does "
+"not forbid the lessee to agree to it, and the official form carries the box "
+"with the lessee's initials. Unchecked by default, because silence is not "
+"consent."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__lease_resiliated_by_operation_of_law
+msgid ""
+"⚠️ Vrai UNIQUEMENT pour le déguerpissement sans motif avec emport des "
+"effets. Le cas du logement impropre est facultatif : le texte dit « il PEUT "
+"être résilié », ce qui n'est pas la même chose."
+msgstr ""
+"⚠️ True ONLY where the lessee abandons the dwelling without any reason, "
+"taking the movable effects along. The unfit-dwelling case is optional: the "
+"text says the lease \"MAY also be resiliated\", which is not the same thing."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__effects_left
+msgid ""
+"🔴 Décide de tout. L'art. 1975 al. 1 ne résilie de plein droit que le "
+"locataire qui déguerpit EN EMPORTANT ses effets mobiliers. S'il en laisse, "
+"le bail n'est pas résilié de plein droit et l'art. 1978 renvoie aux règles "
+"du bien confié et oublié."
+msgstr ""
+"🔴 Decides everything. Art. 1975 para. 1 resiliates by operation of law only "
+"where the lessee abandons the dwelling TAKING the movable effects along. If "
+"any are left, the lease is not resiliated by operation of law and art. 1978 "
+"refers to the rules on property entrusted and forgotten."
+
+#. module: bf_rental
+#: model:ir.model.fields,help:bf_rental.field_bf_rental_abandonment__may_not_dispose_before
+msgid ""
+"🔴 Le module ne dit jamais « vous pouvez disposer ». Il dit avant quelle date"
+" c'est certainement NON : 90 jours pour que le bien soit réputé oublié, et "
+"90 jours d'avis, qui peuvent courir ensemble mais pas se remplacer."
+msgstr ""
+"🔴 The module never says \"you may dispose of them\". It says before which "
+"date the answer is certainly NO: 90 days for the thing to be considered "
+"forgotten, and 90 days of notice, which may run together but not replace one"
+" another."

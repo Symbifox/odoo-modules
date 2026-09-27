@@ -1,0 +1,2706 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_portal
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 22:33+0000\n"
+"PO-Revision-Date: 2026-09-26 22:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_document.py:0
+msgid ""
+" Pièce du registre de l'art. 1070 C.c.Q. : la publication va au-delà de "
+"l'art. 1070.1, et le syndicat l'assume."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "%(syndicat)s : demande %(name)s"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "%(who)s n'a aucune fraction dans %(syndicat)s."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "%s n'a aucune fraction dans cette copropriété."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid ""
+"<option value=\"\">Aucune en particulier (hall, ascenseur, terrain)</option>"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "<option value=\"\">Aucune en particulier</option>"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "<option value=\"\">La mienne</option>"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "<strong>Ce qui a été fait : </strong>"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:mail.template,body_html:bf_property_portal.mail_template_staff_alert
+msgid ""
+"<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\"><t t-out=\"ctx.get('bf_body') or ''\"/></p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 20px 0;\">\n"
+"        <tbody>\n"
+"            <tr>\n"
+"                <td t-attf-style=\"border-radius:10px;background-color:{{ brand_primary }};text-align:center;\">\n"
+"                    <a t-att-href=\"ctx.get('bf_link')\" style=\"display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;\">Ouvrir dans Odoo</a>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </tbody>\n"
+"    </table>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">Vous recevez ce courriel parce que vos préférences demandent les dépôts du portail par courriel. Elles se règlent dans Mes préférences.</p>\n"
+"</div>\n"
+"        "
+msgstr ""
+
+#. module: bf_property_portal
+#: model:mail.template,body_html:bf_property_portal.mail_template_resident_invitation
+msgid ""
+"<t t-set=\"company\" t-value=\"object.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Bonjour <t t-out=\"object.name or ''\"/>,</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\"><t t-out=\"ctx.get('bf_organisation') or ''\"/> vous ouvre un accès à son portail. Vous y trouverez :</p>\n"
+"    <ul style=\"margin:0 0 16px 0;padding-left:20px;font-size:15px;\">\n"
+"        <li style=\"margin:0 0 4px 0;\">les annonces et les documents de l'immeuble ;</li>\n"
+"        <li style=\"margin:0 0 4px 0;\">vos demandes d'entretien et leur suivi ;</li>\n"
+"        <li style=\"margin:0 0 4px 0;\">la réservation des espaces communs ;</li>\n"
+"        <li style=\"margin:0 0 4px 0;\">vos colis et les visiteurs que vous annoncez.</li>\n"
+"    </ul>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Votre identifiant : <strong t-out=\"object.login or ''\"/></p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:0 0 20px 0;\">\n"
+"        <tbody>\n"
+"            <tr>\n"
+"                <td t-attf-style=\"border-radius:10px;background-color:{{ brand_primary }};text-align:center;\">\n"
+"                    <a t-att-href=\"ctx.get('portal_url')\" style=\"display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;\">Choisir mon mot de passe</a>\n"
+"                </td>\n"
+"            </tr>\n"
+"        </tbody>\n"
+"    </table>\n"
+"    <p style=\"margin:0;font-size:13px;color:#6B7280;\">Si vous n'attendiez pas ce courriel, vous pouvez l'ignorer : l'accès reste inutilisable tant qu'aucun mot de passe n'est choisi.</p>\n"
+"</div>\n"
+"        "
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_unit.py:0
+msgid "Accès au portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_needaction
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_needaction
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_needaction
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_needaction
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_needaction
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__active
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__active
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__active
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_search
+msgid "Actives"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_organisation__portal_contact_name
+msgid "Administrateur, secrétaire ou gestionnaire. Affiché au portail."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_list
+msgid "Affichée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__is_visible_now
+msgid "Affichée en ce moment"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__date_start
+msgid "Affichée à partir du"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_search
+msgid "Affichées en ce moment"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_announcement
+msgid "Annonce de l'immeuble"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Annoncer"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid ""
+"Annoncer quelqu'un prévient le syndicat ; cela n'ouvre\n"
+"                            aucune porte. Ce que vous inscrivez ici concerne une\n"
+"                            personne qui n'a rien consenti : le journal ne garde\n"
+"                            que ce qui sert, et il se purge tout seul."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Annoncer un visiteur"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.actions.act_window,name:bf_property_portal.action_property_announcement
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__announcement_ids
+#: model:ir.ui.menu,name:bf_property_portal.menu_property_announcement
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_announcements
+msgid "Annonces"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__state__expected
+msgid "Annoncé"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__announcement_count
+msgid "Announcement Count"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_form
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_visit_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__state__cancelled
+msgid "Annulé"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_booking__state__cancelled
+msgid "Annulée"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "Archiver une réservation"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__state__arrived
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_visit_form
+msgid "Arrivé"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__date_arrived
+msgid "Arrivé le"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__portion_type
+msgid ""
+"Art. 1039 C.c.Q. : l'objet du syndicat est la conservation de l'immeuble et "
+"l'entretien des parties communes."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__cost_bearer
+msgid ""
+"Art. 1064 C.c.Q. Lecture affichée, jamais une facture : la répartition se "
+"fait au budget."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__work_type
+msgid ""
+"Art. 1064 al. 1 et 2 C.c.Q. : sur une partie commune à usage restreint, "
+"l'entretien et les réparations courantes ne se répartissent pas comme les "
+"réparations majeures."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__is_register_item
+msgid "Art. 1070 C.c.Q."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__register_ack
+msgid ""
+"Art. 1070.1 C.c.Q. : la consultation du registre se fait en présence d'un "
+"administrateur, à des heures raisonnables et selon le règlement de "
+"l'immeuble, et la copie s'obtient moyennant des frais raisonnables. Publier "
+"la pièce au portail donne davantage. Cochez pour l'assumer."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__audience
+msgid ""
+"Art. 1070.1 C.c.Q. réserve la consultation du registre au copropriétaire. Un"
+" locataire figure au registre (art. 1070 al. 1) sans pour autant y avoir "
+"accès."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__elevator
+msgid "Ascenseur"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_form
+msgid "Ascenseur arrêté jusqu'à mercredi"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_attachment_count
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__date_expected
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Attendu le"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_visit_search
+msgid "Attendus"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__unit_id
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Au titre de la fraction"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__acknowledge_deadline
+msgid ""
+"Aucun article n'impose de délai de réponse. Celui-ci est l'engagement que le"
+" syndicat s'est donné."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Aucun colis à votre nom."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__res_users__bf_property_portal_email__none
+msgid "Aucun courriel"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
+msgid "Aucun document publié."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__commitment_result__none
+msgid "Aucun engagement inscrit"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Aucun espace réservable dans votre immeuble."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_announcements
+msgid "Aucune annonce en ce moment."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Aucune demande de votre part."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid ""
+"Aucune fraction n'est rattachée à votre compte, alors il n'y\n"
+"                        a personne à qui adresser une demande. Le syndicat inscrit\n"
+"                        les copropriétaires au registre de l'article 1070 du Code\n"
+"                        civil, et les locataires y figurent par leur nom et leur\n"
+"                        adresse."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid ""
+"Aucune fraction n'est rattachée à votre compte. Le syndicat\n"
+"                        inscrit les copropriétaires au registre de l'article 1070\n"
+"                        du Code civil, et les locataires y figurent par leur nom et\n"
+"                        leur adresse."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid ""
+"Aucune fraction ne rattache %(who)s à %(syndicat)s. Une demande d'entretien "
+"s'ouvre là où l'on habite ou l'on possède."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Aucune réservation de votre part."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__audience
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__audience
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_search
+msgid "Auditoire"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__other
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__visitor_kind__other
+msgid "Autre"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__other
+msgid "Autre document"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__notice
+msgid "Avis aux copropriétaires ou aux occupants"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__maintenance_log
+msgid "Carnet d'entretien"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__category
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Catégorie"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid ""
+"Ce qu'on relira dans deux ans en cherchant quand la fuite a été réparée."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_organisation_form_portal
+msgid ""
+"Ce que le portail affiche pour joindre le syndicat.\n"
+"                                Aucun annuaire des copropriétaires n'est publié :\n"
+"                                l'article 1070 du Code civil ne met au registre les\n"
+"                                renseignements personnels autres que le nom et\n"
+"                                l'adresse qu'avec le consentement exprès de la\n"
+"                                personne visée."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_common_area_form_booking
+msgid ""
+"Ce que le règlement de l'immeuble prévoit pour cet espace, tel que "
+"l'occupant doit le lire. Le modifier relève de la majorité de l'article 1096"
+" du Code civil."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_common_area__booking_rules
+msgid ""
+"Ce que le règlement de l'immeuble prévoit pour cet espace, tel que "
+"l'occupant doit le lire. Le module n'invente aucune condition. Modifier le "
+"règlement relève de la majorité de l'art. 1096 C.c.Q."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Ce que vous constatez"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__resolution
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid "Ce qui a été fait"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Ce qui est déjà pris, dans les trente prochains jours"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__is_safety
+msgid ""
+"Ce qui menace les personnes ou la conservation de l'immeuble passe devant. "
+"Art. 1039 C.c.Q. pour la conservation."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Ce qui vous attend à la réception"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
+msgid "Ce qui vous attend à la réception, et qui vous annoncez"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid ""
+"Cela touche la sécurité des personnes ou la conservation\n"
+"                                        de l'immeuble"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
+msgid ""
+"Certaines de ces pièces font partie du registre du syndicat\n"
+"                        (article 1070 du Code civil). L'article 1070.1 prévoit que\n"
+"                        le registre se consulte en présence d'un administrateur ou\n"
+"                        d'une personne désignée, à des heures raisonnables et selon\n"
+"                        les modalités du règlement de l'immeuble, et que la copie\n"
+"                        s'obtient moyennant des frais raisonnables. Le syndicat a\n"
+"                        choisi de les déposer ici, ce qui va au-delà de ce que\n"
+"                        l'article demande."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__location_certificate
+msgid "Certificat de localisation"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Cet espace ne se réserve pas, ou il n'est pas dans votre immeuble."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__heating
+msgid "Chauffage, ventilation, climatisation"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.actions.act_window,name:bf_property_portal.action_property_parcel
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__parcel_ids
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_parcel__parcel_type__parcel
+#: model:ir.ui.menu,name:bf_property_portal.menu_property_parcel
+msgid "Colis"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Colis et visiteurs"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Colis remis."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Colis retourné à l'expéditeur."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_parcel
+msgid "Colis reçu pour un occupant"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_common_area__booking_rules
+msgid "Conditions d'usage"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_common_area__booking_requires_approval
+msgid "Confirmation du syndicat requise"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_form
+msgid "Confirmer"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "Confirmer une réservation"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_booking__state__confirmed
+msgid "Confirmée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__log_retention_days
+msgid "Conservation des journaux (jours)"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Consigner l'arrivée d'un visiteur"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Consigner la remise d'un colis"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Consigner le départ d'un visiteur"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Consigner le retour d'un colis"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__contract
+msgid "Contrat auquel le syndicat est partie"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__commitment_result
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Contre l'engagement"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Copropriétaire"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_search
+msgid "Copropriétaires"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_announcement__audience__all
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__audience__all
+msgid "Copropriétaires et occupants"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_announcement__audience__owners
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__audience__owners
+msgid "Copropriétaires seulement"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:mail.template,name:bf_property_portal.mail_template_resident_invitation
+msgid "Copropriété : invitation au portail de l'occupant"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.actions.server,name:bf_property_portal.cron_purge_portal_logs_ir_actions_server
+msgid "Copropriété : purge des journaux de colis et de visiteurs"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__visitor_kind__trade
+msgid "Corps de métier"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__portal_contact_email
+msgid "Courriel du portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_parcel__parcel_type__letter
+msgid "Courrier recommandé"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__create_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__create_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__create_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__create_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__create_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__create_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__create_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__create_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__create_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__create_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid ""
+"Créneau déplacé par l'occupant : la réservation repasse en attente de "
+"confirmation du syndicat."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
+msgid "Date"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__date
+msgid "Date de la pièce"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid "Demande"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_request
+msgid "Demande d'entretien"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Demande prise en charge."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Demande rouverte."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Demande réglée : %s"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Demander le créneau"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.actions.act_window,name:bf_property_portal.action_property_request
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__request_ids
+#: model:ir.ui.menu,name:bf_property_portal.menu_property_request
+msgid "Demandes d'entretien"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__res_users__bf_property_portal_email__safety
+msgid "Demandes de sécurité seulement"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__requester_partner_id
+msgid "Demandeur"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_booking__state__requested
+msgid "Demandée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__description
+msgid "Description"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__private_description
+msgid "Description des parties privatives"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__partner_id
+msgid "Destinataire"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__display_name
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__display_name
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__display_name
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__display_name
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__display_name
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid ""
+"Dites ce qui a été fait pour « %s » avant de la fermer. Le fil sert à cela."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid ""
+"Dites pourquoi « %s » est hors de l'objet du syndicat. Art. 1039 C.c.Q."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "Dites pourquoi « %s » est refusée."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
+msgid "Document"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_document
+msgid "Document consultable du syndicat"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.ui.menu,name:bf_property_portal.menu_property_document
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
+msgid "Documents"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.actions.act_window,name:bf_property_portal.action_property_document
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__portal_document_ids
+msgid "Documents du portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__resolution_delay_days
+msgid ""
+"Du dépôt au règlement. Vide sur une demande refusée : une demande refusée "
+"n'a pas été réglée."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__acknowledge_delay_days
+msgid ""
+"Du dépôt à la prise en charge. Vide tant que la demande n'est pas prise en "
+"charge, et vide sur une demande refusée."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__duration_minutes
+msgid "Durée (minutes)"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_common_area__booking_max_minutes
+msgid "Durée maximale (minutes)"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__date_start
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Début"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__declaration
+msgid "Déclaration de copropriété"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Décrivez ce que vous constatez : c'est le corps de la demande."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_list_delays
+msgid "Délai de prise en charge"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__acknowledge_delay_days
+msgid "Délai de prise en charge (jours)"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_list_delays
+msgid "Délai de règlement"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__resolution_delay_days
+msgid "Délai de règlement (jours)"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.ui.menu,name:bf_property_portal.menu_property_request_analysis
+msgid "Délais de traitement"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.actions.act_window,name:bf_property_portal.action_property_request_analysis
+msgid "Délais de traitement des demandes"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Démarrer les travaux"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_res_users__bf_property_portal_email
+msgid "Dépôts du portail par courriel"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "Désarchiver une réservation"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_search
+msgid "En attente"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__state__in_progress
+msgid "En cours"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_parcel__state__held
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_parcel_search
+msgid "En dépôt"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_list
+msgid "En retard"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_parcel__parcel_type__bulky
+msgid "Encombrant"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__acknowledge_deadline
+msgid "Engagement de prise en charge"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__request_acknowledge_days
+msgid "Engagement de prise en charge (jours)"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__is_overdue
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__commitment_result__missed
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Engagement dépassé"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Engagement non tenu"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__commitment_result__met
+msgid "Engagement respecté"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__work_type__maintenance
+msgid "Entretien ou réparation courante"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Envoyer la demande"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__common_area_id
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_search
+msgid "Espace"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Espaces communs"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Facultatif."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__date_end
+msgid ""
+"Facultatif. Sans date de fin, l'annonce reste au portail jusqu'à ce qu'on "
+"l'y retire."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__visitor_kind__family
+msgid "Famille"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__attachment_id
+msgid "Fichier"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__date_stop
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Fin"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_follower_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_partner_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__form
+msgid "Formulaire"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_unit
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__unit_id
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Fraction"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__unit_id
+msgid "Fraction visitée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__unit_id
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Fraction visée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__guide
+msgid "Guide ou consigne pratique"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__has_message
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__has_message
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__has_message
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__has_message
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__has_message
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_organisation__portal_contact_note
+msgid ""
+"Heures de disponibilité, marche à suivre en cas d'urgence, modalités de "
+"consultation du registre prévues au règlement de l'immeuble (art. 1070.1 "
+"C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_organisation_form_portal
+msgid ""
+"Heures de disponibilité, urgences, modalités de consultation du registre "
+"prévues au règlement de l'immeuble."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__state__refused
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid "Hors de l'objet du syndicat"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Hors de l'objet du syndicat : %s"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__message_needaction
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_booking__message_needaction
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__message_needaction
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_parcel__message_needaction
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__message_needaction
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_visit__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__message_has_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__message_has_sms_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_booking__message_has_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_booking__message_has_sms_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__message_has_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__message_has_sms_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_parcel__message_has_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_parcel__message_has_sms_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__message_has_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__message_has_sms_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_visit__message_has_error
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_visit__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Il faut au moins un nom et une date d'arrivée."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__building_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__building_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__building_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__building_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__building_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__building_id
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_parcel_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_visit_search
+msgid "Immeuble"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:mail.template,name:bf_property_portal.mail_template_staff_alert
+msgid "Immeubles : alerte du bureau (dépôt au portail)"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Indiquez la fraction : votre compte en touche plus d'une."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Indiquez la fraction visée : votre compte en touche plus d'une."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Indiquez un début et une fin."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_unit_form_portal_invite
+msgid ""
+"Invite les copropriétaires courants et l'occupant. Déjà invités : l'accès "
+"leur est renvoyé."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_unit_form_portal_invite
+msgid "Inviter au portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__visitor_kind__guest
+msgid "Invité"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_is_follower
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_portal_actor
+msgid "Journal rattaché à un occupant"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__date_expected_end
+msgid "Jusqu'à"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_announcement.py:0
+msgid "L'annonce « %s » serait retirée avant d'être affichée."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "L'immeuble visé appartient à un autre syndicat."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "La fraction visée est dans un autre immeuble."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "La partie commune visée appartient à un autre syndicat."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "La fraction %(unit)s n'est ni possédée ni occupée par %(who)s."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "La fraction %s n'est ni possédée ni occupée par le demandeur."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "La fraction visée appartient à un autre syndicat."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__category
+msgid ""
+"La nature décide du régime : les treize premières valeurs sont des pièces du"
+" registre de l'art. 1070 C.c.Q., dont la consultation est encadrée par "
+"l'art. 1070.1."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "La partie commune visée est dans un autre immeuble."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__attachment_id
+msgid ""
+"La pièce elle-même. Elle n'est servie qu'aux personnes que l'auditoire vise,"
+" et jamais par un lien anonyme."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__building_id
+msgid "La vue du concierge se regroupe là-dessus."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__building_id
+msgid "Laisser vide quand l'annonce vise toute la copropriété."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__unit_id
+msgid ""
+"Laisser vide quand la demande ne vise aucune fraction en particulier : un "
+"hall, un ascenseur, le terrain."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__building_id
+msgid "Laisser vide quand la pièce vise toute la copropriété."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__write_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__write_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__write_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__write_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__write_uid
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__write_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__write_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__write_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__write_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__write_date
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid ""
+"Le créneau demandé n'a pas été retenu : il chevauche une autre\n"
+"                    réservation, il dépasse la durée permise pour cet espace, il va\n"
+"                    trop loin dans le temps, ou l'espace est à usage restreint et\n"
+"                    votre fraction n'en a pas la jouissance."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_parcel__collected_by
+msgid "Le nom de qui repart avec, quand ce n'est pas le destinataire."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_parcel__reference
+msgid ""
+"Le numéro que porte l'étiquette, s'il aide à retrouver le colis. Rien "
+"n'oblige à le saisir."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__commitment_result
+msgid ""
+"Le résultat de la prise en charge face à l'engagement que le syndicat s'est "
+"donné. « Aucun engagement inscrit » est une réponse, pas un vide : sans "
+"engagement, il n'y a rien à tenir."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.actions.act_window,help:bf_property_portal.action_property_request_analysis
+msgid ""
+"Le tableau s'ouvre sur les demandes mesurables : les\n"
+"                    demandes refusées en sont écartées, parce que mesurer un\n"
+"                    refus reviendrait à mesurer le refus lui-même. Sans\n"
+"                    engagement inscrit au syndicat, la colonne le dit plutôt\n"
+"                    que d'afficher une performance."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_form
+msgid "Le texte tel que l'occupant le lira."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Les documents"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.actions.act_window,help:bf_property_portal.action_property_request_analysis
+msgid "Les délais, contre l'engagement"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid ""
+"Les seuls copropriétaires qui ont l'usage de cette partie (art. 1064 al. 1 "
+"in fine C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__visitor_kind__delivery
+msgid "Livraison"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_parcel__storage_location
+msgid "Local à colis, bureau, casier."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Ma copropriété"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Mes demandes d'entretien"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
+msgid "Mes fractions, les annonces et les documents du syndicat"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Mes réservations"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Mes visiteurs annoncés"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_has_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_has_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_has_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_has_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_has_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Mesurables"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_list
+msgid "Minutes"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Mois de dépôt"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__decision_reason
+msgid "Motif de la décision"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__note
+msgid "Motif ou précisions"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__category
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__parcel_type
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_search
+msgid "Nature"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__visitor_kind
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Nature de la visite"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__work_type
+msgid "Nature des travaux"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__visitor_name
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Nom du visiteur"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_search
+msgid "Non publiées"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__priority__0
+msgid "Normale"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__note
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__note
+msgid "Note interne"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_form
+msgid "Note interne, jamais affichée au portail."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Nouveau"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Nouvelle"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/controllers/portal.py:0
+msgid "Nouvelle demande %s"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/controllers/portal.py:0
+msgid "Nouvelle réservation : %s"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_booking__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_parcel__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__message_needaction_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_visit__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_booking__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_parcel__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__message_has_error_counter
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_visit__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__name
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__name
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__name
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__name
+msgid "Numéro"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_form
+msgid "Obligatoire pour refuser."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Occupant"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_search
+msgid "Occupants"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_announcement__audience__occupants
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__audience__occupants
+msgid "Occupants seulement"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_announcement.py:0
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Opérateur non pris en charge : %s"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Ouvertes"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/controllers/portal.py:0
+msgid "Ouvrir dans Odoo"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Où"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__storage_location
+msgid "Où il est rangé"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Où, depuis quand, ce que vous voyez ou entendez."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_common_area
+msgid "Partie commune"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__portion_type__common
+msgid "Partie commune générale"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__common_area_id
+msgid "Partie commune visée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__portion_type__restricted
+msgid "Partie commune à usage restreint"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__portion_type__private
+msgid "Partie privative"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid ""
+"Partie privative : hors de l'objet que l'art. 1039 C.c.Q. donne au syndicat,"
+" sauf pour ce qui touche la conservation de l'immeuble."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__portion_type
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Partie visée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Parties communes"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Parties privatives"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Personne d'annoncé."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__portal_contact_name
+msgid "Personne à joindre"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__attachment_ids
+msgid "Photos et pièces"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__is_register_item
+msgid "Pièce du registre"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_form
+msgid ""
+"Pièce du registre du syndicat, article 1070 du Code civil.\n"
+"                            L'article 1070.1 veut que le registre se consulte en présence\n"
+"                            d'un administrateur ou d'une personne désignée, à des heures\n"
+"                            raisonnables et selon le règlement de l'immeuble, et que la\n"
+"                            copie s'obtienne moyennant des frais raisonnables. La déposer\n"
+"                            au portail donne davantage : c'est une décision du syndicat."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
+msgid "Pièce du registre, article 1070 C.c.Q."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_search
+msgid "Pièces du registre"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__cadastral_plan
+msgid "Plan cadastral"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__plans_specs
+msgid "Plans et devis"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__vehicle_plate
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Plaque du véhicule"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__plumbing
+msgid "Plomberie"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.ui.menu,name:bf_property_portal.menu_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_organisation_form_portal
+msgid "Portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__portal_document_count
+msgid "Portal Document Count"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Pour joindre le syndicat"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_res_users__bf_property_portal_email
+msgid ""
+"Pour les comptes qui reçoivent leurs notifications dans Odoo : ce qui part "
+"AUSSI par courriel quand un résident dépose une demande, une réservation ou "
+"un visiteur au portail."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid "Prendre en charge"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Prendre en charge une demande"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__priority
+msgid "Priorité"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__state__acknowledged
+msgid "Prise en charge"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__date_acknowledged
+msgid "Prise en charge le"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__minutes_assembly
+msgid "Procès-verbal d'assemblée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_form
+msgid "Procès-verbal de l'assemblée annuelle"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__minutes_board
+msgid "Procès-verbal du conseil d'administration"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__cleaning
+msgid "Propreté"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Précisions"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__portal_contact_note
+msgid "Précisions au portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__register_ack
+msgid "Publication du registre assumée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_form
+msgid "Publier"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_form
+msgid "Publier au portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__published
+msgid "Publié au portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__published
+msgid "Publiée au portail"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_document.py:0
+msgid "Publiée au portail, auditoire : %(audience)s.%(register)s"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_announcement.py:0
+msgid "Publiée au portail, auditoire : %s."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__is_visible_now
+msgid "Publiée, et dans sa fenêtre d'affichage."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_search
+msgid "Publiés"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_parcel__parcel_type__perishable
+msgid "Périssable"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_parcel_search
+msgid "Périssables"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__cost_bearer
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid "Qui porte la dépense"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Quote-part"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__rating_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__rating_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__rating_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__rating_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__rating_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_form
+msgid "Refuser"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Refuser une demande"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "Refuser une réservation"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_booking__state__refused
+msgid "Refusée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_list
+msgid "Registre"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_search
+msgid "Registre publié au portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_parcel_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_visit_search
+msgid "Regrouper par"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_parcel__state__collected
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_parcel_form
+msgid "Remis"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__date_closed
+msgid "Remis ou retourné le"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__collected_by
+msgid "Remis à"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_visit_form
+msgid ""
+"Renseignements sur un tiers qui n'a rien consenti. Le journal\n"
+"                            se purge automatiquement selon la durée de conservation fixée\n"
+"                            au syndicat."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__state__departed
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_visit_form
+msgid "Reparti"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__date_departed
+msgid "Reparti le"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__responsible_user_id
+msgid "Responsable"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__pinned
+msgid "Reste en tête de liste tant qu'elle est affichée."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_form
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_form
+msgid "Retirer du portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__date_end
+msgid "Retirée après le"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_document.py:0
+msgid ""
+"Retirée du portail : la pièce est devenue une pièce du registre (art. 1070 "
+"C.c.Q.) et sa publication n'a pas été assumée."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_announcement.py:0
+#: code:addons/bf_property_portal/models/bf_property_document.py:0
+msgid "Retirée du portail."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_parcel_form
+msgid "Retourné"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_parcel__state__returned
+msgid "Retourné à l'expéditeur"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__host_partner_id
+msgid "Reçoit"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__date_received
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Reçu le"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__state__submitted
+msgid "Reçue"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__date_submitted
+msgid "Reçue le"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Rien de retenu."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid "Rouvrir"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Rouvrir une demande"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__by_laws
+msgid "Règlement de l'immeuble"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__reference
+msgid "Référence"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid "Régler"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Régler une demande"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__state__done
+msgid "Réglée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__date_done
+msgid "Réglée le"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__work_type__major
+msgid "Réparation majeure ou remplacement"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_common_area__booking_horizon_days
+msgid "Réservable à l'avance (jours)"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "Réservation annulée."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "Réservation confirmée."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_booking
+msgid "Réservation d'une partie commune"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/controllers/portal.py:0
+msgid "Réservation déposée."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "Réservation refusée : %s"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.actions.act_window,name:bf_property_portal.action_property_booking
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_common_area__booking_ids
+#: model:ir.ui.menu,name:bf_property_portal.menu_property_booking
+msgid "Réservations"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "Réserver"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Réserver un espace"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
+msgid "Réserver un espace commun"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__partner_id
+msgid "Réservé par"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__written_resolution
+msgid "Résolution écrite"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__message_has_sms_error
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
+msgid "Salle communautaire, gym, monte-charge"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_common_area__booking_requires_approval
+msgid ""
+"Sans cela, une demande devient une réservation dès qu'elle est déposée. "
+"Avec, elle attend une décision."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Seulement si le syndicat gère un stationnement visiteur."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid ""
+"Si vous hésitez, laissez « À déterminer » : c'est au\n"
+"                                        syndicat de qualifier la partie, et cela décide qui\n"
+"                                        porte la dépense (article 1064 du Code civil)."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+msgid "Signaler quelque chose"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_my_home_property
+msgid "Signaler un problème et suivre ce qu'il devient"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid ""
+"Signalée comme touchant la sécurité des personnes ou la\n"
+"                            conservation de l'immeuble. L'article 1039 du Code civil\n"
+"                            fait de la conservation de l'immeuble l'objet même du syndicat."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__company_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__company_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__company_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__company_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__company_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_visit__visitor_kind__care
+msgid "Soins à domicile"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_visit_search
+msgid "Sur place"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__organisation_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__organisation_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__organisation_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__organisation_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__organisation_id
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__organisation_id
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_announcement_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_document_search
+msgid "Syndicat"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_requests
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_list
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+msgid "Sécurité"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__is_safety
+msgid "Sécurité des personnes ou de l'immeuble"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__security
+msgid "Sécurité et accès"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__grounds
+msgid "Terrain et stationnement"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__body
+msgid "Texte"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__name
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__name
+msgid "Titre"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__envelope
+msgid "Toiture, fenêtres, portes"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__res_users__bf_property_portal_email__all
+msgid "Tous les dépôts du portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "Toutes les annonces"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid ""
+"Toutes les fractions : sur une partie commune à usage restreint, les "
+"réparations majeures et le remplacement suivent la règle générale, à moins "
+"que la déclaration n'en dispose autrement (art. 1064 al. 2 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid ""
+"Toutes les fractions, en proportion de leur valeur relative (art. 1064 al. 1"
+" C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__carrier
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Transporteur"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_form
+msgid "Travaux en cours"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Travaux en cours."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_documents
+msgid "Télécharger"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__portal_contact_phone
+msgid "Téléphone du portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_res_users
+msgid "User"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__pests
+msgid "Vermine"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Visite annulée."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_organisation__visit_ids
+msgid "Visites"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+msgid "Visiteur"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model,name:bf_property_portal.model_bf_property_visit
+msgid "Visiteur annoncé"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/controllers/portal.py:0
+msgid "Visiteur annoncé : %s"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Visiteur arrivé."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "Visiteur reparti."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.actions.act_window,name:bf_property_portal.action_property_visit
+#: model:ir.ui.menu,name:bf_property_portal.menu_property_visit
+msgid "Visiteurs"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "Voir mes demandes"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__website_message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__website_message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_document__website_message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__website_message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__website_message_ids
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_announcement__website_message_ids
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_booking__website_message_ids
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_document__website_message_ids
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_parcel__website_message_ids
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_request__website_message_ids
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_visit__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:mail.template,subject:bf_property_portal.mail_template_resident_invitation
+msgid "{{ ctx.get('bf_organisation') }} : votre accès au portail"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:mail.template,subject:bf_property_portal.mail_template_staff_alert
+msgid "{{ ctx.get('bf_subject') }}"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid ""
+"« %(area)s » est déjà retenue de %(start)s à %(stop)s. Un créneau demandé "
+"retient l'espace au même titre qu'un créneau confirmé, sans quoi deux "
+"personnes attendraient une confirmation sur le même samedi."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid ""
+"« %(area)s » est une partie commune à usage restreint (art. 1043 C.c.Q.) : "
+"sa jouissance est réservée aux fractions %(units)s."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "« %(area)s » ne se réserve pas plus de %(days)d jours à l'avance."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid ""
+"« %(area)s » se réserve au plus %(max)d minutes à la fois ; cette "
+"réservation en demande %(asked)d."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_document.py:0
+msgid ""
+"« %(name)s » est une pièce du registre (%(category)s). L'art. 1070.1 C.c.Q. "
+"veut que le registre se consulte en présence d'un administrateur, à des "
+"heures raisonnables et selon le règlement de l'immeuble, et que la copie "
+"s'obtienne moyennant des frais raisonnables. La publier au portail donne "
+"davantage : c'est possible, mais cela s'assume. Cochez « Publication du "
+"registre assumée »."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid ""
+"« %s » a déjà commencé : ce qui a été constaté ne se réécrit pas. Vous "
+"pouvez encore l'annuler."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "« %s » a déjà été prise en charge."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "« %s » n'est pas arrivé."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "« %s » n'est pas dans un état où les travaux commencent."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "« %s » n'est pas déclarée réservable."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "« %s » n'est pas en attente de confirmation."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "« %s » n'est plus active."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "« %s » n'est plus attendu."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "« %s » n'est plus en cours."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "« %s » n'est plus en dépôt."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_delivery.py:0
+msgid "« %s » repartirait avant d'arriver."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_booking.py:0
+msgid "« %s » se terminerait avant d'avoir commencé."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__portion_type__unknown
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__work_type__unknown
+msgid "À déterminer"
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid "À déterminer : la partie visée n'est pas encore établie."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/models/bf_property_request.py:0
+msgid ""
+"À déterminer : sur une partie commune à usage restreint, la nature des "
+"travaux change qui paie (art. 1064 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_visit__vehicle_plate
+msgid ""
+"À ne remplir que si le syndicat gère un stationnement visiteur. C'est un "
+"renseignement personnel de plus, et il se purge avec le reste."
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_home
+msgid "À quel titre"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_search
+msgid "À venir"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_common_area__booking_horizon_days
+msgid "À zéro, aucune limite."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__category__electrical
+msgid "Électricité"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_request__priority__1
+msgid "Élevée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_announcement__pinned
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_announcements
+msgid "Épinglée"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_booking__state
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_parcel__state
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_request__state
+#: model:ir.model.fields,field_description:bf_property_portal.field_bf_property_visit__state
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_deliveries
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_booking_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_parcel_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_request_search
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.view_property_visit_search
+msgid "État"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__financial_statements
+msgid "États financiers"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields.selection,name:bf_property_portal.selection__bf_property_document__category__contingency_study
+msgid "Étude du fonds de prévoyance"
+msgstr ""
+
+#. module: bf_property_portal
+#: model_terms:ir.ui.view,arch_db:bf_property_portal.portal_property_bookings
+msgid "à"
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_organisation__request_acknowledge_days
+msgid ""
+"⚠️ Aucune disposition n'oblige le syndicat à répondre dans un nombre de "
+"jours : ce n'est pas un délai légal, c'est l'engagement que le syndicat se "
+"donne. À zéro, le module ne compte rien et n'affiche aucun retard."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_common_area__booking_max_minutes
+msgid ""
+"⚠️ Aucune durée n'a de source légale : c'est le règlement de l'immeuble qui "
+"fixe les conditions d'usage des parties communes. À zéro, aucune limite."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_organisation__log_retention_days
+msgid ""
+"⚠️ Le journal des colis dit qui reçoit quoi, celui des visiteurs dit qui "
+"reçoit qui. Tenu sans limite, ce n'est plus un service. Passé ce nombre de "
+"jours, une tâche planifiée SUPPRIME les entrées closes. À zéro, rien n'est "
+"supprimé, et le module l'affiche comme un choix plutôt que comme un défaut."
+msgstr ""
+
+#. module: bf_property_portal
+#: model:ir.model.fields,help:bf_property_portal.field_bf_property_visit__visitor_name
+msgid ""
+"⚠️ Renseignement personnel d'un tiers qui n'a rien consenti. Le nom suffit ;"
+" le journal se purge automatiquement."
+msgstr ""
+
+#. module: bf_property_portal
+#. odoo-python
+#: code:addons/bf_property_portal/controllers/portal.py:0
+msgid "⚠️ Sécurité — nouvelle demande %s"
+msgstr ""

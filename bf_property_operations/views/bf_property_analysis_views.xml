@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ⚠️ Héritage, jamais de fork. Le module d'origine porte DÉJÀ un pivot et
+         un graphe sur les travaux, et un menu d'analyse. On leur ajoute les
+         dimensions du parc immobilier ; on ne recopie pas des vues pour y
+         mettre les mêmes champs. -->
+
+    <record id="view_maintenance_request_search_analysis" model="ir.ui.view">
+        <field name="name">maintenance.request.search.analysis</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref="maintenance.hr_equipment_request_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="todo" position="after">
+                <!-- L'arriéré : ce qui est ouvert, non annulé, et dont
+                     l'échéance est passée. Sans la borne de date, « arriéré »
+                     voudrait dire « tout ce qui n'est pas fini », ce qui
+                     inclut le travail de demain. -->
+                <filter name="bf_backlog" string="Arriéré"
+                        domain="[('stage_id.done', '=', False),
+                                 ('archive', '=', False),
+                                 ('request_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+            </filter>
+            <filter name="stages" position="after">
+                <filter name="bf_group_by_team" string="Équipe"
+                        context="{'group_by': 'maintenance_team_id'}"/>
+                <filter name="bf_group_by_equipment" string="Bien"
+                        context="{'group_by': 'equipment_id'}"/>
+                <filter name="bf_group_by_type" string="Nature"
+                        context="{'group_by': 'maintenance_type'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="action_operations_analysis" model="ir.actions.act_window">
+        <field name="name">Analyse de l'exploitation</field>
+        <field name="res_model">maintenance.request</field>
+        <field name="view_mode">graph,pivot,list,form</field>
+        <field name="search_view_id" ref="maintenance.hr_equipment_request_view_search"/>
+        <field name="context">{
+            'search_default_bf_backlog': 1,
+            'search_default_bf_group_by_building': 1,
+            'search_default_bf_group_by_team': 1,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">L'arriéré, par immeuble et par équipe</p>
+            <p>
+                Le tableau s'ouvre sur l'arriéré. Les autres mesures se
+                composent en changeant le regroupement : par bien pour voir ce
+                qui revient, par nature pour séparer le préventif du correctif.
+            </p>
+        </field>
+    </record>
+
+    <!-- ⚠️ La récurrence sur un même bien ne se calcule pas ici : le module
+         d'origine porte déjà le MTBF et le nombre d'interventions sur la fiche
+         de l'équipement, et on bâtit dessus. Un « taux de
+         récurrence » de plus supposerait un dénominateur, et le dénominateur
+         est un choix, pas un fait. -->
+    <record id="action_operations_equipment_analysis" model="ir.actions.act_window">
+        <field name="name">Ce qui revient, par bien</field>
+        <field name="res_model">maintenance.equipment</field>
+        <field name="view_mode">list,pivot,form</field>
+        <field name="context">{
+            'search_default_bf_group_by_building': 1,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ce qui revient</p>
+            <p>
+                Le nombre d'interventions et le temps moyen entre deux pannes
+                sont portés par le bien lui-même. Un bien qui revient souvent
+                se lit ici, sans qu'aucun taux n'ait été inventé pour le dire.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_maintenance_plan_search_overdue" model="ir.ui.view">
+        <field name="name">bf.property.maintenance.plan.search.overdue</field>
+        <field name="model">bf.property.maintenance.plan</field>
+        <field name="inherit_id" ref="bf_property_operations.view_maintenance_plan_search"/>
+        <field name="arch" type="xml">
+            <filter name="due" position="after">
+                <filter name="overdue" string="Échu"
+                        domain="[('is_overdue', '=', True)]"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_maintenance_plan_list_overdue" model="ir.ui.view">
+        <field name="name">bf.property.maintenance.plan.list.overdue</field>
+        <field name="model">bf.property.maintenance.plan</field>
+        <field name="inherit_id" ref="bf_property_operations.view_maintenance_plan_list"/>
+        <field name="arch" type="xml">
+            <field name="next_date" position="after">
+                <field name="is_overdue" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <menuitem id="menu_operations_analysis"
+              name="Exploitation"
+              parent="maintenance.maintenance_reporting"
+              action="action_operations_analysis"
+              groups="bf_property_operations.group_bf_property_operations"
+              sequence="10"/>
+
+    <menuitem id="menu_operations_equipment_analysis"
+              name="Ce qui revient, par bien"
+              parent="maintenance.maintenance_reporting"
+              action="action_operations_equipment_analysis"
+              groups="bf_property_operations.group_bf_property_operations"
+              sequence="11"/>
+
+</odoo>

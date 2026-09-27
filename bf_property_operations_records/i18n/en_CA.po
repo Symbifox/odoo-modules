@@ -1,0 +1,304 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_property_operations_records
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 01:17+0000\n"
+"PO-Revision-Date: 2026-09-14 01:17+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_operations_records
+#. odoo-python
+#: code:addons/bf_property_operations_records/models/bf_property_maintenance_item.py:0
+msgid "%(date)s, %(work)s : %(reason)s"
+msgstr "%(date)s, %(work)s: %(reason)s"
+
+#. module: bf_property_operations_records
+#. odoo-python
+#: code:addons/bf_property_operations_records/models/maintenance_request.py:0
+msgid "%(date)s, %(work)s : %(reason)s (constaté à l'exploitation)"
+msgstr "%(date)s, %(work)s: %(reason)s (found in operations)"
+
+#. module: bf_property_operations_records
+#. odoo-python
+#: code:addons/bf_property_operations_records/models/maintenance_request.py:0
+msgid ""
+"<p>Entretien prévu non effectué, constaté à l'exploitation (r. 8.01, art. "
+"4). Le carnet porte déjà une raison écrite : celle-ci ne l'écrase "
+"pas.</p><ul><li>Bien : %(item)s</li><li>Occurrence : "
+"%(reason)s</li><li>Travail : %(work)s</li></ul>"
+msgstr ""
+"<p>Planned maintenance not done, found in operations (r. 8.01, s. 4). The "
+"log already carries a written reason: this one does not overwrite "
+"it.</p><ul><li>Item: %(item)s</li><li>Occurrence: %(reason)s</li><li>Work: "
+"%(work)s</li></ul>"
+
+#. module: bf_property_operations_records
+#. odoo-python
+#: code:addons/bf_property_operations_records/models/maintenance_request.py:0
+msgid ""
+"<p>Entretien prévu non effectué, porté au carnet depuis l'exploitation (r. "
+"8.01, art. 4).</p><ul><li>Bien : %(item)s</li><li>Raison : "
+"%(reason)s</li><li>Travail : %(work)s</li></ul>"
+msgstr ""
+"<p>Planned maintenance not done, recorded in the log from operations (r. "
+"8.01, s. 4).</p><ul><li>Item: %(item)s</li><li>Reason: "
+"%(reason)s</li><li>Work: %(work)s</li></ul>"
+
+#. module: bf_property_operations_records
+#. odoo-python
+#: code:addons/bf_property_operations_records/models/maintenance_request.py:0
+msgid ""
+"<p>Entretien requis daté au carnet depuis l'exploitation (r. 8.01, art. 2 "
+"al. 2, par. 2°).</p><ul><li>Bien : %(item)s</li><li>Dernier entretien : "
+"%(date)s%(previous)s</li><li>Travail : %(work)s</li></ul>"
+msgstr ""
+"<p>Required maintenance dated in the log from operations (r. 8.01, s. 2 "
+"para. 2, subpara. 2).</p><ul><li>Item: %(item)s</li><li>Last maintenance: "
+"%(date)s%(previous)s</li><li>Work: %(work)s</li></ul>"
+
+#. module: bf_property_operations_records
+#. odoo-python
+#: code:addons/bf_property_operations_records/models/maintenance_request.py:0
+msgid ""
+"<p>Réparation courante datée au carnet depuis l'exploitation (r. 8.01, art. "
+"2 al. 2, par. 3°).</p><ul><li>Bien : %(item)s</li><li>Dernière réparation "
+"courante : %(date)s%(previous)s</li><li>Travail : %(work)s</li></ul>"
+msgstr ""
+"<p>Ordinary repair dated in the log from operations (r. 8.01, s. 2 para. 2, "
+"subpara. 3).</p><ul><li>Item: %(item)s</li><li>Last ordinary repair: "
+"%(date)s%(previous)s</li><li>Work: %(work)s</li></ul>"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields.selection,name:bf_property_operations_records.selection__bf_property_maintenance_item__equipment_drift__archived
+msgid "Archivé à l'exploitation"
+msgstr "Archived in operations"
+
+#. module: bf_property_operations_records
+#: model:ir.model,name:bf_property_operations_records.model_bf_property_maintenance_item
+msgid "Bien au carnet d'entretien"
+msgstr "Item in the maintenance log"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,field_description:bf_property_operations_records.field_bf_property_maintenance_item__equipment_id
+msgid "Bien à l'exploitation"
+msgstr "Item in operations"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,field_description:bf_property_operations_records.field_maintenance_equipment__bf_maintenance_item_ids
+msgid "Biens au carnet"
+msgstr "Items in the log"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,field_description:bf_property_operations_records.field_bf_property_maintenance_log__bf_skipped_item_count
+msgid "Biens dont un entretien cédulé n'a pas été fait"
+msgstr "Items whose scheduled maintenance was not done"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,field_description:bf_property_operations_records.field_bf_property_maintenance_log__equipment_drift_count
+msgid "Biens en écart avec l'exploitation"
+msgstr "Items out of step with operations"
+
+#. module: bf_property_operations_records
+#: model:ir.model,name:bf_property_operations_records.model_bf_property_maintenance_log
+#: model_terms:ir.ui.view,arch_db:bf_property_operations_records.view_equipment_form_records
+msgid "Carnet d'entretien"
+msgstr "Maintenance log"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,field_description:bf_property_operations_records.field_bf_property_maintenance_item__bf_skipped_count
+msgid "Entretiens cédulés non effectués"
+msgstr "Scheduled maintenance not done"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,help:bf_property_operations_records.field_bf_property_maintenance_item__equipment_id
+msgid ""
+"L'équipement que l'exploitation tient pour ce même bien. La citation ne "
+"déplace aucune donnée : elle sert à voir, depuis le carnet, ce que "
+"l'exploitation en a fait depuis."
+msgstr ""
+"The equipment operations keeps for this same item. The citation moves no "
+"data: it serves to see, from the log, what operations has done with it "
+"since."
+
+#. module: bf_property_operations_records
+#: model_terms:ir.ui.view,arch_db:bf_property_operations_records.view_equipment_form_records
+msgid ""
+"Le carnet est un document réglementaire qu'un\n"
+"                        professionnel indépendant établit. Ce qu'il dit de ce\n"
+"                        bien ne se corrige pas depuis ici."
+msgstr ""
+"The log is a regulatory document established by an\n"
+"                        independent professional. What it says about this\n"
+"                        item is not corrected from here."
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,help:bf_property_operations_records.field_bf_property_maintenance_item__bf_skipped_count
+msgid ""
+"Le nombre d'entretiens préventifs que l'exploitation a déclarés non "
+"effectués sur le bien cité. L'art. 4 en veut la mention ET la raison à "
+"chaque mise à jour annuelle."
+msgstr ""
+"The number of preventive maintenances operations has declared not done on "
+"the cited item. Section 4 wants both the mention AND the reason at each "
+"annual update."
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,help:bf_property_operations_records.field_maintenance_equipment__bf_maintenance_item_ids
+msgid ""
+"Les entrées de carnet d'entretien qui citent cet équipement. Un carnet neuf "
+"remplace le précédent sans l'effacer : le même équipement peut donc être "
+"cité par plusieurs carnets."
+msgstr ""
+"The maintenance log entries citing this equipment. A new log replaces the "
+"previous one without erasing it: the same equipment may therefore be cited "
+"by several logs."
+
+#. module: bf_property_operations_records
+#: model:ir.model,name:bf_property_operations_records.model_maintenance_equipment
+msgid "Maintenance Equipment"
+msgstr "Maintenance Equipment"
+
+#. module: bf_property_operations_records
+#: model:ir.model,name:bf_property_operations_records.model_maintenance_request
+msgid "Maintenance Request"
+msgstr "Maintenance Request"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields.selection,name:bf_property_operations_records.selection__bf_property_maintenance_item__equipment_drift__scrapped
+msgid "Mis au rebut à l'exploitation"
+msgstr "Scrapped in operations"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,help:bf_property_operations_records.field_bf_property_maintenance_log__bf_skipped_item_count
+msgid ""
+"Nombre de biens du carnet dont l'exploitation a déclaré un entretien "
+"préventif non effectué. L'art. 4 du règlement veut, à la mise à jour "
+"annuelle, ce qui n'a pas été fait ET pourquoi."
+msgstr ""
+"Number of items in the log for which operations declared a preventive "
+"maintenance not done. Section 4 of the regulation wants, at the annual "
+"update, what was not done AND why."
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,help:bf_property_operations_records.field_bf_property_maintenance_log__equipment_drift_count
+msgid ""
+"Nombre de biens du carnet dont l'exploitation a retiré l'équipement du "
+"service sans que le carnet ait noté de travaux réalisés."
+msgstr ""
+"Number of items in the log whose equipment operations took out of service "
+"without the log noting any works carried out."
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,field_description:bf_property_operations_records.field_bf_property_maintenance_item__not_done_reason
+msgid "Non effectué, parce que"
+msgstr "Not done, because"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,field_description:bf_property_operations_records.field_bf_property_maintenance_item__bf_skipped_summary
+msgid "Relevé des entretiens non effectués"
+msgstr "Statement of maintenance not done"
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,help:bf_property_operations_records.field_bf_property_maintenance_item__equipment_drift
+msgid ""
+"Signalé quand l'exploitation a retiré le bien du service et que le carnet "
+"n'a pas encore noté de travaux réalisés. L'art. 4 du règlement veut, à la "
+"mise à jour annuelle, ce qui n'a pas été fait ET pourquoi : la raison vient "
+"du conseil, jamais d'ici."
+msgstr ""
+"Flagged when operations took the item out of service and the log has not yet"
+" noted any works carried out. Section 4 of the regulation wants, at the "
+"annual update, what was not done AND why: the reason comes from the board, "
+"never from here."
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,help:bf_property_operations_records.field_bf_property_maintenance_item__bf_skipped_summary
+msgid ""
+"Une ligne par occurrence sautée, avec sa date et sa raison. Le champ « Non "
+"effectué, parce que » n'en tient qu'une : ce relevé existe pour que les "
+"autres ne se perdent pas."
+msgstr ""
+"One line per skipped occurrence, with its date and its reason. The \"Not "
+"done, because\" field holds only one: this statement exists so that the "
+"others are not lost."
+
+#. module: bf_property_operations_records
+#: model_terms:ir.ui.view,arch_db:bf_property_operations_records.view_log_form_operations
+msgid ""
+"bien(s) du carnet citent un équipement que l'exploitation a\n"
+"                    retiré du service, sans que des travaux réalisés aient été\n"
+"                    notés. L'art. 4 du règlement veut, à la mise à jour\n"
+"                    annuelle, ce qui n'a pas été fait et pourquoi : la raison\n"
+"                    vient du conseil."
+msgstr ""
+"item(s) in the log cite equipment that operations took\n"
+"                    out of service, without any works carried out being\n"
+"                    noted. Section 4 of the regulation wants, at the annual\n"
+"                    update, what was not done and why: the reason\n"
+"                    comes from the board."
+
+#. module: bf_property_operations_records
+#: model_terms:ir.ui.view,arch_db:bf_property_operations_records.view_log_form_operations
+msgid ""
+"bien(s) du carnet portent un entretien préventif que\n"
+"                    l'exploitation a déclaré non effectué. L'art. 4 du\n"
+"                    règlement veut, à la mise à jour annuelle, la mention ET la\n"
+"                    raison : la colonne « Relevé des entretiens non effectués »\n"
+"                    les porte toutes, y compris celles que le champ « Non\n"
+"                    effectué, parce que » ne peut pas contenir."
+msgstr ""
+"item(s) in the log carry a preventive maintenance that\n"
+"                    operations declared not done. Section 4 of the\n"
+"                    regulation wants, at the annual update, the mention AND the\n"
+"                    reason: the \"Statement of maintenance not done\" column\n"
+"                    carries them all, including those the \"Not\n"
+"                    done, because\" field cannot hold."
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,help:bf_property_operations_records.field_bf_property_maintenance_item__not_done_reason
+msgid ""
+"r. 8.01, art. 4 : lors de la mise à jour annuelle, si des travaux requis ou "
+"prévus n'ont pas été effectués, le carnet le mentionne ET indique pourquoi. "
+"Le module ne juge pas qu'un travail aurait dû l'être. Deux personnes peuvent"
+" l'écrire : le conseil, et le concierge qui déclare à l'exploitation un "
+"entretien cédulé non effectué. La seconde ne remplace jamais la première ; "
+"elle écrit là où le carnet se taisait, et le relevé ci-dessous porte toutes "
+"les occurrences."
+msgstr ""
+"r. 8.01, s. 4: at the annual update, if required or planned works have not "
+"been carried out, the log mentions it AND states why. The module does not "
+"judge that a work ought to have been done. Two people may write it: the "
+"board, and the caretaker who declares to operations a scheduled maintenance "
+"not done. The second never replaces the first; it writes where the log was "
+"silent, and the statement below carries every occurrence."
+
+#. module: bf_property_operations_records
+#. odoo-python
+#: code:addons/bf_property_operations_records/models/bf_property_maintenance_item.py:0
+msgid ""
+"« %(item)s » est porté à l'immeuble %(building)s et cite un équipement "
+"rattaché à %(other)s."
+msgstr ""
+"\"%(item)s\" is recorded on immovable %(building)s and cites equipment "
+"attached to %(other)s."
+
+#. module: bf_property_operations_records
+#: model:ir.model.fields,field_description:bf_property_operations_records.field_bf_property_maintenance_item__equipment_drift
+msgid "Écart avec l'exploitation"
+msgstr "Gap with operations"

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ⚠️ `noupdate="1"` : la cadence et l'activation de la passe sont des
+         réglages d'exploitation. Une mise à jour du module qui les réécrirait
+         rallumerait une passe que quelqu'un avait éteinte pour une raison, et
+         personne ne ferait le lien. -->
+    <data noupdate="1">
+
+        <record id="cron_generate_preventive_requests" model="ir.cron">
+            <field name="name">Exploitation : ouvrir les entretiens préventifs à échoir</field>
+            <field name="model_id" ref="model_bf_property_maintenance_plan"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_generate_requests()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

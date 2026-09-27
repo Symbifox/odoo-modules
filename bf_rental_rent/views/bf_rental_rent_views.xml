@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bf_rental_term_list" model="ir.ui.view">
+        <field name="name">bf.rental.term.list</field>
+        <field name="model">bf.rental.term</field>
+        <field name="arch" type="xml">
+            <list string="Termes de loyer"
+                  decoration-warning="state == 'partial'"
+                  decoration-danger="state == 'late'">
+                <field name="lease_id"/>
+                <field name="date_due"/>
+                <field name="amount_due"/>
+                <field name="amount_paid"/>
+                <field name="amount_outstanding"/>
+                <field name="days_late" optional="show"/>
+                <field name="state"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_rental_term_form" model="ir.ui.view">
+        <field name="name">bf.rental.term.form</field>
+        <field name="model">bf.rental.term</field>
+        <field name="arch" type="xml">
+            <form string="Terme de loyer">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="lease_id"/>
+                            <field name="date_due"/>
+                            <field name="amount_due"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="amount_paid"/>
+                            <field name="amount_outstanding"/>
+                            <field name="days_late"/>
+                            <field name="state"/>
+                            <!-- ⚠️ Déposé au greffe : le locataire a payé,
+                                 ailleurs. Il n'est pas en défaut. -->
+                            <field name="deposited_at_court"/>
+                        </group>
+                    </group>
+                    <field name="payment_ids">
+                        <list editable="bottom">
+                            <field name="date"/>
+                            <field name="amount"/>
+                            <field name="mode"/>
+                            <field name="receipt_given"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_rental_lease_form_rent" model="ir.ui.view">
+        <field name="name">bf.rental.lease.form.rent</field>
+        <field name="model">bf.rental.lease</field>
+        <field name="inherit_id" ref="bf_rental.view_bf_rental_lease_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='note']" position="before">
+                <group string="Loyer dû">
+                    <field name="arrears_total"/>
+                    <field name="arrears_days"/>
+                    <!-- 🔴 Le libellé dit ce que le seuil change RÉELLEMENT.
+                         Écrire « vous pouvez résilier » serait faux deux fois :
+                         seul le tribunal résilie, et le locataire peut encore
+                         tout arrêter en payant avant jugement (art. 1883). -->
+                    <field name="tribunal_may_grant_time"/>
+                    <field name="term_ids" nolabel="1" colspan="2" readonly="1">
+                        <list>
+                            <field name="date_due"/>
+                            <field name="amount_due"/>
+                            <field name="amount_outstanding"/>
+                            <field name="state"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bf_rental_term" model="ir.actions.act_window">
+        <field name="name">Termes de loyer</field>
+        <field name="res_model">bf.rental.term</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_bf_rental_term" name="Loyer"
+              parent="bf_property_core.menu_property_people"
+              action="action_bf_rental_term" sequence="33"/>
+
+</odoo>

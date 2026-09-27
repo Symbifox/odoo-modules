@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_shift_close_wizard_form" model="ir.ui.view">
+        <field name="name">bf.property.shift.close.wizard.form</field>
+        <field name="model">bf.property.shift.close.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Fermer le quart">
+                <field name="shift_id" invisible="1"/>
+                <field name="carried_count" invisible="1"/>
+                <field name="maintenance_team_id" invisible="1"/>
+                <div class="alert alert-warning" role="alert"
+                     invisible="carried_count == 0">
+                    <field name="carried_count" nolabel="1" readonly="1" class="oe_inline"/>
+                    travaux ne sont pas réglés. Nommez le quart qui les reprend,
+                    et dites ce que la liste ne dit pas : c'est cette passation
+                    qui distingue un quart d'un tableau de tâches.
+                </div>
+                <div class="alert alert-success" role="alert"
+                     invisible="carried_count &gt; 0">
+                    Tout le travail du quart est réglé. Rien à passer.
+                </div>
+                <group>
+                    <field name="next_shift_id"
+                           options="{'no_create': True}"
+                           required="carried_count &gt; 0"
+                           domain="[('state', '!=', 'closed'), ('id', '!=', shift_id),
+                                    ('maintenance_team_id', '=', maintenance_team_id)]"/>
+                </group>
+                <!-- ⚠️ Avec `nolabel`, le champ se lit comme désactivé : du
+                     texte gris sans rien devant. Vu au rendu réel —
+                     l'installation ne l'aurait jamais dit. -->
+                <group>
+                    <label for="handover_note"/>
+                    <field name="handover_note" nolabel="1"
+                           required="carried_count &gt; 0"
+                           placeholder="Le local mécanique du 3 est resté barré, le locataire du 402 doit être rappelé avant 9 h, la pièce du moteur de garage arrive demain."/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Fermer et passer la main"
+                            class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_shift_close_wizard" model="ir.actions.act_window">
+        <field name="name">Fermer le quart</field>
+        <field name="res_model">bf.property.shift.close.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

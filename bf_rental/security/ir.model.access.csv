@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_rental_lease_user,bf.rental.lease consultation,model_bf_rental_lease,bf_property_core.group_bf_property_user,1,0,0,0
+access_bf_rental_lease_manager,bf.rental.lease gestion,model_bf_rental_lease,bf_property_core.group_bf_property_manager,1,1,1,1
+access_bf_rental_abandonment_user,bf.rental.abandonment consultation,model_bf_rental_abandonment,bf_property_core.group_bf_property_user,1,0,0,0
+access_bf_rental_abandonment_manager,bf.rental.abandonment gestion,model_bf_rental_abandonment,bf_property_core.group_bf_property_manager,1,1,1,1

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔴 L'invitation vient de l'organisation qui gère l'immeuble, pas de la
+         société qui héberge l'instance. Le gabarit
+         global du portail, récrit par l'habillage de chaque locataire pour SES
+         clients, promettait « factures, comptes rendus, mandat » à un résident
+         et ne nommait jamais son syndicat. -->
+    <record id="mail_template_lessee_invitation" model="mail.template">
+        <field name="name">Locatif : invitation au portail du locataire</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="subject">{{ ctx.get('bf_organisation') }} : votre accès au portail</field>
+        <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+        <field name="email_to">{{ object.email_formatted }}</field>
+        <field name="lang">{{ object.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+<t t-set="company" t-value="object.company_id or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'"/>
+<div style="margin:0;padding:0;">
+    <p style="margin:0 0 16px 0;font-size:15px;">Bonjour <t t-out="object.name or ''"/>,</p>
+    <p style="margin:0 0 16px 0;font-size:15px;"><t t-out="ctx.get('bf_organisation') or ''"/> vous ouvre un accès à son portail. Vous y trouverez :</p>
+    <ul style="margin:0 0 16px 0;padding-left:20px;font-size:15px;">
+        <li style="margin:0 0 4px 0;">votre bail et ses pièces ;</li>
+        <li style="margin:0 0 4px 0;">les avis qui vous sont adressés ;</li>
+        <li style="margin:0 0 4px 0;">vos loyers et ce qui reste à payer.</li>
+    </ul>
+    <p style="margin:0 0 16px 0;font-size:15px;">Votre identifiant : <strong t-out="object.login or ''"/></p>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
+        <tbody>
+            <tr>
+                <td t-attf-style="border-radius:10px;background-color:{{ brand_primary }};text-align:center;">
+                    <a t-att-href="ctx.get('portal_url')" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none !important;">Choisir mon mot de passe</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <p style="margin:0;font-size:13px;color:#6B7280;">Si vous n'attendiez pas ce courriel, vous pouvez l'ignorer : l'accès reste inutilisable tant qu'aucun mot de passe n'est choisi.</p>
+</div>
+        </field>
+    </record>
+</odoo>

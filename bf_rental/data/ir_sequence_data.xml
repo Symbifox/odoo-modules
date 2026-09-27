@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ⚠️ Sans séquence, le défaut du champ est « Nouveau » et deux baux
+             homonymes entrent sans rien dire — mesuré à la sonde. Le volet
+             financier de la suite fait déjà ainsi.
+             ⚠️ `company_id` vide : la numérotation est commune, comme pour les
+             encaissements. Un bail reste identifié par sa référence même si la
+             société change de nom. -->
+        <record id="seq_rental_lease" model="ir.sequence">
+            <field name="name">Locatif : baux</field>
+            <field name="code">bf.rental.lease</field>
+            <field name="prefix">BAIL/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

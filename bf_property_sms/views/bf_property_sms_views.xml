@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_property_sms_consent_list" model="ir.ui.view">
+            <field name="name">bf.property.sms.consent.list</field>
+            <field name="model">bf.property.sms.consent</field>
+            <field name="arch" type="xml">
+                <list decoration-muted="not active_consent">
+                    <field name="partner_id"/>
+                    <field name="organisation_id"/>
+                    <field name="phone" widget="phone"/>
+                    <field name="channel_parcel"/>
+                    <field name="channel_urgent"/>
+                    <field name="given_date"/>
+                    <field name="withdrawn_date" optional="show"/>
+                    <field name="active_consent" string="En vigueur"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_property_sms_consent_form" model="ir.ui.view">
+            <field name="name">bf.property.sms.consent.form</field>
+            <field name="model">bf.property.sms.consent</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_withdraw" type="object" string="Retirer le consentement"
+                                invisible="withdrawn_date"/>
+                    </header>
+                    <sheet>
+                        <div class="alert alert-info" role="note">
+                            Un numéro de téléphone n'est pas au registre de droit.
+                            L'article 1070 alinéa 1 du Code civil y met le nom et
+                            l'adresse de chaque copropriétaire et de chaque occupant,
+                            et n'y met les autres renseignements personnels que si la
+                            personne y consent expressément. Cette fiche est ce
+                            consentement, et aucun texto ne part sans elle.
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="organisation_id"/>
+                                <field name="phone" widget="phone"/>
+                            </group>
+                            <group>
+                                <field name="channel_parcel"/>
+                                <field name="channel_urgent"/>
+                                <field name="given_date"/>
+                                <field name="withdrawn_date" readonly="1"/>
+                                <field name="active_consent" readonly="1"/>
+                            </group>
+                        </group>
+                        <field name="note"
+                               placeholder="Comment le consentement a été recueilli : formulaire signé, courriel, assemblée."/>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_property_sms_consent" model="ir.actions.act_window">
+            <field name="name">Consentements aux avis par texto</field>
+            <field name="res_model">bf.property.sms.consent</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem id="menu_property_sms_consent"
+                  name="Avis par texto"
+                  parent="bf_property_portal.menu_property_portal"
+                  action="action_property_sms_consent"
+                  sequence="30"/>
+
+        <!-- Le canal, sur la fiche du syndicat. -->
+        <record id="view_property_organisation_form_sms" model="ir.ui.view">
+            <field name="name">bf.property.organisation.form.sms</field>
+            <field name="model">bf.property.organisation</field>
+            <field name="inherit_id" ref="bf_property_portal.view_property_organisation_form_portal"/>
+            <field name="arch" type="xml">
+                <field name="log_retention_days" position="after">
+                    <field name="sms_enabled"/>
+                    <field name="sms_line_id" invisible="not sms_enabled"/>
+                    <field name="sms_consent_count" invisible="not sms_enabled"/>
+                </field>
+                <xpath expr="//page[@name='portal']" position="inside">
+                    <div class="alert alert-warning" role="alert" invisible="not sms_enabled">
+                        Ouvrir le canal ne suffit pas : chaque personne doit avoir
+                        consenti de son côté, et le module n'enverra rien à qui ne
+                        l'a pas fait.
+                        <br/>
+                        Ce que le fournisseur de texto conserve de son côté, et ce
+                        que garde l'appareil du destinataire, ne suit pas la purge du
+                        journal des colis et des visiteurs.
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Le bouton d'envoi urgent, sur l'annonce. -->
+        <record id="view_property_announcement_form_sms" model="ir.ui.view">
+            <field name="name">bf.property.announcement.form.sms</field>
+            <field name="model">bf.property.announcement</field>
+            <field name="inherit_id" ref="bf_property_portal.view_property_announcement_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_unpublish']" position="after">
+                    <button name="action_send_urgent_sms" type="object"
+                            string="Envoyer par texto"
+                            invisible="not published or sms_sent_date"
+                            confirm="Un texto part à chaque personne que cette annonce vise et qui a consenti. C'est irréversible."/>
+                </xpath>
+                <xpath expr="//field[@name='is_visible_now']" position="after">
+                    <field name="sms_sent_date" readonly="1"/>
+                    <field name="sms_sent_count" readonly="1" invisible="not sms_sent_date"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

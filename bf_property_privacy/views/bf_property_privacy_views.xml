@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="view_property_sms_consent_form_privacy" model="ir.ui.view">
+            <field name="name">bf.property.sms.consent.form.privacy</field>
+            <field name="model">bf.property.sms.consent</field>
+            <field name="inherit_id" ref="bf_property_sms.view_property_sms_consent_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="Registre des activités de traitement (Loi 25)">
+                        <div class="alert alert-warning" role="alert" colspan="2"
+                             invisible="privacy_consent_id or not active_consent">
+                            Cette ligne n'a pas de dossier au registre des
+                            traitements. Les consentements recueillis avant
+                            l'installation de ce pont n'en reçoivent pas
+                            rétroactivement : leur en fabriquer un aujourd'hui
+                            donnerait une preuve qui ment sur sa propre date.
+                        </div>
+                        <field name="privacy_consent_id" readonly="1"/>
+                        <field name="privacy_consent_status" readonly="1"
+                               invisible="not privacy_consent_id"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_property_organisation_form_privacy" model="ir.ui.view">
+            <field name="name">bf.property.organisation.form.privacy</field>
+            <field name="model">bf.property.organisation</field>
+            <field name="inherit_id" ref="bf_property_core.view_property_organisation_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="Conservation du journal (Loi 25)">
+                        <div class="alert alert-warning" role="alert" colspan="2"
+                             invisible="not privacy_retention_warning">
+                            <field name="privacy_retention_warning" readonly="1"
+                                   nolabel="1"/>
+                        </div>
+                        <field name="privacy_retention_declared" readonly="1"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

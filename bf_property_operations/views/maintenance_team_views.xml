@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_maintenance_team_form_property" model="ir.ui.view">
+        <field name="name">maintenance.team.form.property</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref="maintenance.maintenance_team_view_form"/>
+        <field name="arch" type="xml">
+            <div class="oe_title" position="before">
+                <div class="oe_button_box" name="bf_button_box"
+                     groups="bf_property_core.group_bf_property_user">
+                    <button name="action_view_bf_buildings" type="object"
+                            class="oe_stat_button" icon="fa-building">
+                        <field name="bf_building_count" widget="statinfo"
+                               string="Immeubles"/>
+                    </button>
+                </div>
+            </div>
+            <field name="member_ids" position="before">
+                <field name="bf_leader_user_id"
+                       groups="bf_property_core.group_bf_property_user"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_maintenance_team_tree_property" model="ir.ui.view">
+        <field name="name">maintenance.team.list.property</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref="maintenance.maintenance_team_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="member_ids" position="before">
+                <field name="bf_leader_user_id"
+                       groups="bf_property_core.group_bf_property_user"
+                       optional="show" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

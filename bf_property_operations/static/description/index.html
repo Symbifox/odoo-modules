@@ -1,0 +1,182 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Properties: operations</h2>
+        <h3 class="oe_slogan">Equipment placed in the built environment, teams that answer for their immovables, preventive schedules and work shifts with a handover</h3>
+        <p style="text-align:center; color:#6c757d; font-size:0.9em">Version française plus bas.</p>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <p class="oe_mt32">
+                Odoo's Maintenance app keeps an equipment register that knows everything about a
+                device except where it is: its only location field is free text. This module builds
+                on Maintenance rather than copying it, and gives the equipment its place in the
+                building: the immovable, the fraction or the common portion. It serves the
+                caretakers and technicians of a syndicate as well as those of a rental building, and
+                it does not require the co-ownership modules.
+            </p>
+            <ul>
+                <li>Equipment attached to an immovable, a fraction or a common portion, with coherence checks between the three</li>
+                <li>Each immovable names the maintenance team that answers for it, and its equipment goes to that team by default</li>
+                <li>Preventive schedules attached to the asset, not to the ticket: a nightly pass opens the work that falls due, whether or not the previous ticket was closed</li>
+                <li>A scheduled job cancelled as "Not done" requires a reason, which the maintenance log receives when the bridge to it is installed (CQLR, c. CCQ, r. 8.01, s. 4)</li>
+                <li>The nature of a repair, ordinary or major, carried on the work, because the regulation records the two in different places</li>
+                <li>Work shifts for a team: the work to do is gathered from open requests and preventive work due, and closing a shift hands every unfinished item to a named shift, with a note</li>
+                <li>A dedicated Operations group that opens the immovable to a caretaker, and leaves fractions, ownership and occupants' requests closed</li>
+                <li>Caretaker accounts created in "Handle in Odoo" mode, so that shift notices reach their phone, and a shift screen that names the accounts that will stay silent</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <img src="equipment_en.png" alt="Equipment form with its place in the building" style="max-width:100%; border:1px solid #ddd; border-radius:4px"/>
+            <p style="text-align:center; color:#6c757d; font-size:0.9em">A piece of equipment placed in the building: the immovable, the common portion, and the team that answers for it.</p>
+            <img class="oe_mt32" src="maintenance_plan_en.png" alt="Preventive maintenance schedules" style="max-width:100%; border:1px solid #ddd; border-radius:4px"/>
+            <p style="text-align:center; color:#6c757d; font-size:0.9em">Preventive schedules carried by the equipment, each with its next due date.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">What the module refuses to do</h3>
+            <ul>
+                <li>No second equipment register. It extends Odoo Maintenance, so a database that already uses Maintenance keeps a single register of its assets.</li>
+                <li>No payroll, attendance or rostering. A shift records what work was done during a span, not how many hours someone worked.</li>
+                <li>No catch-up of inspections nobody promised: a schedule's start date is an anchor, and the first due date is always the next one to come.</li>
+                <li>No wider access for anyone. A technician without the suite's Consultation group sees an unchanged equipment form.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Part of the property suite</h3>
+            <p>
+                Requires Properties: foundation (<code>bf_property_core</code>) and Odoo Maintenance.
+                Three bridges install themselves when their other side is present: Properties: from
+                the request to the work (<code>bf_property_operations_portal</code>), Co-ownership:
+                the maintenance log and operations (<code>bf_property_operations_records</code>), and
+                Operations: privacy bridge, Act 25 (<code>bf_property_operations_privacy</code>).
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Licence</h3>
+            <p>
+                Business Source License 1.1. You may use this module in production for your own
+                internal business operations, which include administering immovables that you own
+                or that you are constituted to administer, and letting a person acting on your
+                behalf use your instance for that purpose. Administering immovables for the account
+                of others, or providing the module to third parties as a product or service, whether
+                hosted, managed or resold, requires a separate written agreement with the licensor.
+                Each version converts to LGPL-3.0-or-later on the Change Date stated in the LICENSE
+                file, which sets out the exact terms.
+            </p>
+        </div>
+    </div>
+</section>
+
+<hr/>
+
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+        <h2 class="oe_slogan">Immeubles : exploitation</h2>
+        <h3 class="oe_slogan">Des équipements situés dans le bâti, des équipes qui répondent de leurs immeubles, des cédules préventives et des quarts de travail avec passation</h3>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <p class="oe_mt32">
+                L'application Maintenance d'Odoo tient un registre d'équipements qui sait tout d'un
+                appareil sauf où il se trouve : son seul champ d'emplacement est un texte libre. Ce
+                module s'appuie sur Maintenance au lieu de la recopier, et donne à l'équipement sa
+                place dans le bâti : l'immeuble, la fraction ou la partie commune. Il sert les
+                concierges et les techniciens d'un syndicat comme ceux d'un immeuble locatif, et
+                n'exige pas les modules de copropriété.
+            </p>
+            <ul>
+                <li>Équipement rattaché à un immeuble, une fraction ou une partie commune, avec des contrôles de cohérence entre les trois</li>
+                <li>Chaque immeuble nomme l'équipe d'entretien qui en répond, et ses équipements reviennent à cette équipe par défaut</li>
+                <li>Cédules préventives portées par le bien et non par le billet : une passe de nuit ouvre les travaux à échoir, que le billet précédent ait été fermé ou non</li>
+                <li>Un travail cédulé annulé comme « Non effectué » exige une raison, que le carnet d'entretien reçoit quand le pont vers lui est installé (RLRQ, c. CCQ, r. 8.01, art. 4)</li>
+                <li>La nature d'une réparation, courante ou majeure, portée sur le travail, parce que le règlement consigne les deux à des endroits différents</li>
+                <li>Quarts de travail par équipe : la liste se compose des demandes en cours et du préventif échu, et fermer un quart passe chaque travail inachevé à un quart nommé, avec un mot</li>
+                <li>Un groupe Exploitation qui ouvre l'immeuble au concierge, et laisse fermés les fractions, la propriété et les demandes des occupants</li>
+                <li>Comptes de concierge créés en mode « Gérer dans Odoo », pour que les avis du quart atteignent le téléphone, et un écran de quart qui nomme les comptes qui resteront muets</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <img src="equipment_fr.png" alt="Fiche d'un équipement avec sa place dans le bâti" style="max-width:100%; border:1px solid #ddd; border-radius:4px"/>
+            <p style="text-align:center; color:#6c757d; font-size:0.9em">Un équipement situé dans le bâti : l'immeuble, la partie commune, et l'équipe qui en répond.</p>
+            <img class="oe_mt32" src="maintenance_plan_fr.png" alt="Cédules d'entretien préventif" style="max-width:100%; border:1px solid #ddd; border-radius:4px"/>
+            <p style="text-align:center; color:#6c757d; font-size:0.9em">Les cédules préventives portées par les équipements, chacune avec sa prochaine échéance.</p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Ce que le module refuse de faire</h3>
+            <ul>
+                <li>Aucun second registre d'équipements. Il prolonge la Maintenance d'Odoo : une base qui s'en sert déjà garde un seul registre de ses biens.</li>
+                <li>Ni paie, ni pointage, ni horaire. Un quart dit quel travail a été fait pendant une plage, pas combien d'heures quelqu'un a travaillé.</li>
+                <li>Aucun rattrapage d'inspections que personne n'avait promises : la date de début d'une cédule est un ancrage, et la première échéance est toujours la prochaine à venir.</li>
+                <li>Aucun accès élargi. Un technicien qui n'a pas le groupe Consultation de la suite voit sa fiche d'équipement inchangée.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Dans la suite immobilière</h3>
+            <p>
+                Exige Immeubles : socle (<code>bf_property_core</code>) et la Maintenance d'Odoo. Trois
+                ponts s'installent d'eux-mêmes quand l'autre côté est présent : Immeubles : de la
+                demande au travail (<code>bf_property_operations_portal</code>), Copropriété : le
+                carnet et l'exploitation (<code>bf_property_operations_records</code>), et
+                Exploitation : pont vie privée, Loi 25 (<code>bf_property_operations_privacy</code>).
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="oe_container oe_dark">
+    <div class="oe_row">
+        <div class="oe_span12">
+            <h3 class="oe_slogan">Licence</h3>
+            <p>
+                Business Source License 1.1. Vous pouvez utiliser ce module en production pour vos
+                propres activités internes, ce qui comprend l'administration des immeubles dont vous
+                êtes propriétaire ou que vous êtes constitué pour administrer, et l'usage de votre
+                instance à cette fin par une personne qui agit pour votre compte. Administrer des
+                immeubles pour le compte d'autrui, ou fournir le module à des tiers comme produit ou
+                service, hébergé, géré ou revendu, exige une entente écrite distincte avec le
+                concédant. Chaque version passe sous LGPL-3.0 ou ultérieure à la date de changement
+                inscrite au fichier LICENSE, qui fait foi.
+            </p>
+        </div>
+    </div>
+</section>

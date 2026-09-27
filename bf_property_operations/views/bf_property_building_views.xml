@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_property_building_form_operations" model="ir.ui.view">
+        <field name="name">bf.property.building.form.operations</field>
+        <field name="model">bf.property.building</field>
+        <field name="inherit_id" ref="bf_property_core.view_property_building_form"/>
+        <field name="arch" type="xml">
+            <field name="cadastre" position="after">
+                <field name="bf_maintenance_team_id"
+                       options="{'no_create_edit': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_property_building_list_operations" model="ir.ui.view">
+        <field name="name">bf.property.building.list.operations</field>
+        <field name="model">bf.property.building</field>
+        <field name="inherit_id" ref="bf_property_core.view_property_building_list"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="bf_maintenance_team_id" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

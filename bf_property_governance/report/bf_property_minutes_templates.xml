@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ⚠️ Ce document est celui du SYNDICAT. Aucune marque d'éditeur, aucune
+         couleur d'éditeur : il est transmis aux copropriétaires et versé au
+         registre de l'art. 1070. Même règle que l'attestation de l'art. 1068.1.
+
+         Un seul gabarit pour les deux organes : l'assemblée (art. 1102.1) et le
+         conseil (art. 1086.1) transmettent le même genre de pièce, et chaque
+         modèle fournit son titre, son article et son identification. -->
+    <template id="report_minutes">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="draft" t-value="not doc.minutes or not doc.minutes_sent_date"/>
+                <div class="article">
+                    <style>
+                        .pv { font-family: Helvetica, Arial, sans-serif; font-size: 10pt; color: #1a1a1a; line-height: 1.45; }
+                        .pv h1 { font-size: 15pt; margin: 0 0 2pt 0; text-transform: uppercase; letter-spacing: 0.5pt; }
+                        .pv .legal { font-size: 9pt; color: #555; margin: 0 0 14pt 0; }
+                        .pv .rule { border-bottom: 1.5pt solid #1a1a1a; margin: 0 0 14pt 0; }
+                        .pv .draft { border: 1pt solid #8a6d3b; background: #fcf8e3; color: #8a6d3b;
+                                     padding: 6pt 8pt; margin: 0 0 12pt 0; font-size: 9pt; }
+                        .pv table.ident { width: 100%; border-collapse: collapse; margin: 0 0 16pt 0; }
+                        .pv table.ident td { padding: 2pt 0; vertical-align: top; }
+                        .pv table.ident td.k { width: 30%; color: #555; }
+                        .pv .body { margin: 0 0 14pt 0; }
+                        .pv .body h2 { font-size: 10.5pt; margin: 0 0 4pt 0; padding: 0 0 2pt 0;
+                                       border-bottom: 0.5pt solid #bbb; page-break-after: avoid; }
+                        .pv .empty { color: #555; font-style: italic; }
+                        .pv .foot { margin-top: 18pt; font-size: 8pt; color: #666;
+                                    border-top: 0.25pt solid #ccc; padding-top: 6pt;
+                                    page-break-inside: avoid; }
+                    </style>
+
+                    <div class="pv">
+                        <h1><t t-esc="doc._report_minutes_title()"/></h1>
+                        <p class="legal"><t t-esc="doc._report_minutes_legal()"/></p>
+                        <div class="rule"/>
+
+                        <div t-if="draft" class="draft">
+                            <t t-if="not doc.minutes">
+                                Projet : le procès-verbal n'a pas encore été rédigé au dossier.
+                            </t>
+                            <t t-else="">
+                                Projet : le procès-verbal n'a pas encore été transmis aux
+                                copropriétaires. La date portée ci-dessous est celle de
+                                l'impression, et non celle d'une transmission.
+                            </t>
+                        </div>
+
+                        <table class="ident">
+                            <tbody>
+                                <tr t-foreach="doc._report_minutes_rows()" t-as="row">
+                                    <td class="k"><t t-esc="row[0]"/></td>
+                                    <td><t t-esc="row[1]"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="body">
+                            <h2>Procès-verbal</h2>
+                            <div t-if="doc.minutes" t-field="doc.minutes"/>
+                            <p t-else="" class="empty">
+                                Aucun procès-verbal n'a été rédigé au dossier. Le module
+                                ne le compose pas à la place du syndicat : ce qui s'est
+                                dit à la séance ne s'invente pas.
+                            </p>
+                        </div>
+
+                        <div class="foot">
+                            <t t-if="doc.minutes_sent_date">
+                                Transmis aux copropriétaires le
+                                <t t-esc="doc.minutes_sent_date"/>.
+                            </t>
+                            <t t-else="">
+                                Document imprimé le <t t-esc="doc._report_minutes_date()"/>,
+                                avant toute transmission.
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

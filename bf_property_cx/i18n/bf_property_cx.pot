@@ -1,0 +1,302 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_property_cx
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-26 22:35+0000\n"
+"PO-Revision-Date: 2026-09-26 22:35+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_property_cx
+#: model:mail.template,body_html:bf_property_cx.mail_template_request_rating
+msgid ""
+"<t t-set=\"partner\" t-value=\"object._rating_get_partner()\"/>\n"
+"<t t-set=\"access_token\" t-value=\"object._rating_get_access_token()\"/>\n"
+"<t t-set=\"company\" t-value=\"object.organisation_id.company_id or user.company_id\"/>\n"
+"<t t-set=\"brand_primary\" t-value=\"(company and 'report_brand_primary' in company._fields and company.report_brand_primary) or '#714B67'\"/>\n"
+"<div style=\"margin:0;padding:0;\">\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">Bonjour <t t-out=\"partner.name or ''\"/>,</p>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:15px;\">\n"
+"        Votre demande «&nbsp;<t t-out=\"object.name or ''\"/>&nbsp;» à <t t-out=\"object.organisation_id.display_name or ''\"/>\n"
+"        a été réglée.\n"
+"    </p>\n"
+"    <p t-if=\"object.resolution\" t-attf-style=\"margin:0 0 16px 0;font-size:15px;padding:12px 16px;background-color:#F8FAFC;border-left:3px solid {{ brand_primary }};\">\n"
+"        <t t-out=\"object.resolution\"/>\n"
+"    </p>\n"
+"    <p style=\"margin:0 0 8px 0;font-size:15px;\">\n"
+"        En un clic, comment ça s'est passé&nbsp;?\n"
+"    </p>\n"
+"    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:16px auto 16px auto;text-align:center;\">\n"
+"        <tbody><tr>\n"
+"            <td style=\"padding:0 16px;\">\n"
+"                <a t-attf-href=\"/rate/{{ access_token }}/5\">\n"
+"                    <img alt=\"Satisfait\" src=\"/rating/static/src/img/rating_5.png\" title=\"Satisfait\"/>\n"
+"                </a>\n"
+"            </td>\n"
+"            <td style=\"padding:0 16px;\">\n"
+"                <a t-attf-href=\"/rate/{{ access_token }}/3\">\n"
+"                    <img alt=\"Correct\" src=\"/rating/static/src/img/rating_3.png\" title=\"Correct\"/>\n"
+"                </a>\n"
+"            </td>\n"
+"            <td style=\"padding:0 16px;\">\n"
+"                <a t-attf-href=\"/rate/{{ access_token }}/1\">\n"
+"                    <img alt=\"Insatisfait\" src=\"/rating/static/src/img/rating_1.png\" title=\"Insatisfait\"/>\n"
+"                </a>\n"
+"            </td>\n"
+"        </tr></tbody>\n"
+"    </table>\n"
+"    <p style=\"margin:0 0 16px 0;font-size:13px;color:#6B7280;\">\n"
+"        Un commentaire libre peut être ajouté après le clic.\n"
+"    </p>\n"
+"    <p style=\"margin:0;font-size:12px;color:#9CA3AF;\">\n"
+"        Vous préférez ne plus recevoir de demandes d'avis&nbsp;?\n"
+"        <a t-att-href=\"partner.bf_cx_unsubscribe_url\" style=\"color:#9CA3AF;\">Me désabonner</a>.\n"
+"    </p>\n"
+"</div>\n"
+"            "
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__rating_avg
+msgid "Average Rating"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__cx_feedback_sent
+msgid "Avis demandé"
+msgstr ""
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid "Avis demandé à %s."
+msgstr ""
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid ""
+"Avis non demandé : %s a été sollicité récemment (garde-fou anti-"
+"sursollicitation)."
+msgstr ""
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid "Avis non demandé : %s n'a pas d'adresse de courriel au registre."
+msgstr ""
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid "Avis non demandé : l'envoi a échoué (%s)."
+msgstr ""
+
+#. module: bf_property_cx
+#: model:mail.template,name:bf_property_cx.mail_template_request_rating
+msgid "Copropriété : avis après une demande réglée"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model,name:bf_property_cx.model_bf_property_request
+msgid "Demande d'entretien"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_request__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_request__message_has_error
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_request__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_property_cx
+#: model_terms:ir.ui.view,arch_db:bf_property_cx.view_syndicat_form_cx
+msgid ""
+"La mesure est ouverte. Deux freins restent hors de votre\n"
+"                        main, et c'est voulu : le garde-fou anti-sursollicitation,\n"
+"                        qui compte par personne, et le lien de désabonnement que\n"
+"                        porte chaque courriel. Le courriel ne porte aucune marque\n"
+"                        d'éditeur : il vient de vous."
+msgstr ""
+
+#. module: bf_property_cx
+#: model_terms:ir.ui.view,arch_db:bf_property_cx.view_syndicat_form_cx
+msgid ""
+"La mesure est à l'arrêt : aucune demande d'avis ne part vers\n"
+"                        un occupant. Une fois ouverte, une demande d'entretien réglée\n"
+"                        fait partir à son demandeur une question en trois émojis, et\n"
+"                        la réponse rejoint le registre d'expérience. Une demande\n"
+"                        refusée n'en fait jamais partir : refuser, c'est dire que la\n"
+"                        demande sort de l'objet du syndicat (art. 1039 C.c.Q.)."
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_organisation__cx_feedback_enabled
+msgid "Mesurer la satisfaction des occupants"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_request__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_request__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model,name:bf_property_cx.model_bf_property_organisation
+msgid "Organisation responsable d'un immeuble"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__rating_avg_text
+msgid "Rating Avg Text"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__rating_last_feedback
+msgid "Rating Last Feedback"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__rating_last_image
+msgid "Rating Last Image"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__rating_last_value
+msgid "Rating Last Value"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__rating_percentage_satisfaction
+msgid "Rating Satisfaction"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__rating_last_text
+msgid "Rating Text"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__rating_count
+msgid "Rating count"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_property_cx
+#: model_terms:ir.ui.view,arch_db:bf_property_cx.view_syndicat_form_cx
+msgid "Satisfaction des occupants"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_request__cx_feedback_sent
+msgid ""
+"Une demande réglée ne fait partir qu'une seule demande d'avis. Rouvrir puis "
+"refermer la demande n'en fait pas partir une deuxième : la personne a déjà "
+"été sollicitée."
+msgstr ""
+
+#. module: bf_property_cx
+#: model:mail.template,subject:bf_property_cx.mail_template_request_rating
+msgid "Votre demande a été réglée : comment ça s'est passé ?"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,field_description:bf_property_cx.field_bf_property_request__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_request__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_property_cx
+#. odoo-python
+#: code:addons/bf_property_cx/models/bf_property_request.py:0
+msgid "le demandeur"
+msgstr ""
+
+#. module: bf_property_cx
+#: model:ir.model.fields,help:bf_property_cx.field_bf_property_organisation__cx_feedback_enabled
+msgid ""
+"⚠️ À l'arrêt par défaut. Une fois ouvert, une demande d'entretien RÉGLÉE "
+"fait partir à son demandeur une demande d'avis en trois émojis. Une demande "
+"refusée n'en fait jamais partir : refuser, c'est dire que la demande sort de"
+" l'objet du syndicat (art. 1039 C.c.Q.), et mesurer la satisfaction juste "
+"après mesurerait le refus."
+msgstr ""

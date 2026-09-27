@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le choix vit dans les PRÉFÉRENCES : chaque personne le règle elle-même. -->
+    <record id="view_users_form_simple_modif_portal_email" model="ir.ui.view">
+        <field name="name">res.users.preferences.bf.property.portal.email</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='notification_type']" position="after">
+                <field name="bf_property_portal_email" invisible="notification_type != 'inbox'" readonly="0"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_form_portal_email" model="ir.ui.view">
+        <field name="name">res.users.form.bf.property.portal.email</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='notification_type']" position="after">
+                <field name="bf_property_portal_email" invisible="notification_type != 'inbox'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

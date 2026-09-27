@@ -1,0 +1,289 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_rental_rent
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 00:09+0000\n"
+"PO-Revision-Date: 2026-09-14 00:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__paid
+msgid "Acquitté"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_payment__mode__cash
+msgid "Argent comptant"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__arrears_total
+msgid "Arrérages"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_payment__mode__other
+msgid "Autre"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__lease_id
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__lease_id
+msgid "Bail"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model,name:bf_rental_rent.model_bf_rental_lease
+msgid "Bail de logement"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_payment__mode__cheque
+msgid "Chèque"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__company_id
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_term__days_late
+msgid ""
+"Compté depuis la date d'exigibilité, et seulement sur ce qui reste dû. Un "
+"terme acquitté en retard n'a plus de retard : il a été payé."
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__create_uid
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__create_date
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__currency_id
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__display_name
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__deposited
+msgid "Déposé au greffe"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__deposited_at_court
+msgid "Déposé au greffe (art. 1907)"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__late
+msgid "En retard"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__date_due
+msgid "Exigible le"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__id
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__days_late
+msgid "Jours de retard"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__write_uid
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__write_date
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__tribunal_may_grant_time
+msgid "Le tribunal peut encore accorder un délai"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.ui.menu,name:bf_rental_rent.menu_bf_rental_term
+msgid "Loyer"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model_terms:ir.ui.view,arch_db:bf_rental_rent.view_bf_rental_lease_form_rent
+msgid "Loyer dû"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__mode
+msgid "Mode"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__amount
+msgid "Montant"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__amount_due
+msgid "Montant dû"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__partial
+msgid "Partiel"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__arrears_days
+msgid "Retard le plus ancien (jours)"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__date
+msgid "Reçu le"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__receipt_given
+msgid "Reçu remis"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__amount_outstanding
+msgid "Solde"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_lease__arrears_total
+msgid ""
+"Somme des soldes ÉCHUS et non déposés au greffe. Un terme à venir n'est pas "
+"un arrérage, et un terme déposé au greffe non plus (art. 1907)."
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__term_id
+msgid "Terme"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model,name:bf_rental_rent.model_bf_rental_term
+#: model_terms:ir.ui.view,arch_db:bf_rental_rent.view_bf_rental_term_form
+msgid "Terme de loyer"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__term_ids
+msgid "Termes"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.actions.act_window,name:bf_rental_rent.action_bf_rental_term
+#: model_terms:ir.ui.view,arch_db:bf_rental_rent.view_bf_rental_term_list
+msgid "Termes de loyer"
+msgstr ""
+
+#. module: bf_rental_rent
+#. odoo-python
+#: code:addons/bf_rental_rent/models/bf_rental_term.py:0
+msgid ""
+"Un terme ne peut pas excéder le loyer convenu de %(rent)s. Réclamer d'un "
+"coup ce qui reste du bail est sans effet (art. 1905 C.c.Q.), et exiger un "
+"versement supérieur à un mois de loyer est interdit (art. 1904 al. 1)."
+msgstr ""
+
+#. module: bf_rental_rent
+#. odoo-python
+#: code:addons/bf_rental_rent/models/bf_rental_payment.py:0
+msgid ""
+"Un versement porte un montant positif. Une correction se fait en modifiant "
+"le versement, pas en en créant un négatif qui ferait mentir l'historique."
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model,name:bf_rental_rent.model_bf_rental_payment
+msgid "Versement de loyer"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__payment_ids
+msgid "Versements"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__amount_paid
+msgid "Versé"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_payment__mode__transfer
+msgid "Virement"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__pending
+msgid "À venir"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__state
+msgid "État"
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_payment__receipt_given
+msgid ""
+"⚠️ Art. 1564 C.c.Q. : le locataire qui paie EN ARGENT COMPTANT a droit à un "
+"reçu. Ce n'est pas une courtoisie, et le formulaire de bail le rappelle dans"
+" ses mentions."
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_term__deposited_at_court
+msgid ""
+"⚠️ Le locataire autorisé par le tribunal dépose son loyer au greffe. Il a "
+"PAYÉ : il n'est pas en défaut, et ce terme ne compte pas dans les arrérages."
+" Le compter serait accuser quelqu'un d'avoir fait ce que la loi lui permet."
+msgstr ""
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_lease__tribunal_may_grant_time
+msgid ""
+"🔴 Art. 1973 : au-delà de trois semaines de retard, le tribunal ne peut PLUS "
+"ordonner au locataire d'exécuter dans un délai : c'est cela que le seuil "
+"change, et non le droit du locateur. Rien ici ne dit que le bail peut être "
+"résilié : seul le tribunal résilie, et le locataire peut encore tout arrêter"
+" en payant avant jugement (art. 1883)."
+msgstr ""

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_property_maintenance_plan_user,bf.property.maintenance.plan employé,model_bf_property_maintenance_plan,base.group_user,1,0,0,0
+access_bf_property_maintenance_plan_manager,bf.property.maintenance.plan gestionnaire d'équipement,model_bf_property_maintenance_plan,maintenance.group_equipment_manager,1,1,1,1
+access_bf_property_shift_operations,bf.property.shift exploitation,model_bf_property_shift,group_bf_property_operations,1,1,1,0
+access_bf_property_shift_line_operations,bf.property.shift.line exploitation,model_bf_property_shift_line,group_bf_property_operations,1,1,1,0
+access_bf_property_building_operations,bf.property.building exploitation,bf_property_core.model_bf_property_building,group_bf_property_operations,1,0,0,0
+access_bf_property_shift_close_wizard,bf.property.shift.close.wizard exploitation,model_bf_property_shift_close_wizard,group_bf_property_operations,1,1,1,1

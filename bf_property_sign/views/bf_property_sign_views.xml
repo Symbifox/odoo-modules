@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ⚠️ Le bouton du carnet n'apparaît qu'une fois le carnet établi : une
+         déclaration d'examen sur place signée avant que le carnet existe
+         attesterait qu'on a pris connaissance de renseignements qui ne sont pas
+         encore là (r. 8.01, art. 6). -->
+    <record id="view_log_form_sign" model="ir.ui.view">
+        <field name="name">bf.property.maintenance.log.form.sign</field>
+        <field name="model">bf.property.maintenance.log</field>
+        <field name="inherit_id" ref="bf_property_records.view_log_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_send_for_signature" type="object"
+                        string="Faire signer la déclaration d'examen"
+                        groups="bf_sign.group_sign_user"
+                        invisible="state != 'established'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_attestation_form_sign" model="ir.ui.view">
+        <field name="name">bf.property.attestation.form.sign</field>
+        <field name="model">bf.property.attestation</field>
+        <field name="inherit_id" ref="bf_property_records.view_attestation_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_send_for_signature" type="object"
+                        string="Envoyer pour signature"
+                        groups="bf_sign.group_sign_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_assembly_form_sign" model="ir.ui.view">
+        <field name="name">bf.property.assembly.form.sign</field>
+        <field name="model">bf.property.assembly</field>
+        <field name="inherit_id" ref="bf_property_governance.view_assembly_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_send_for_signature" type="object"
+                        string="Faire signer le procès-verbal"
+                        groups="bf_sign.group_sign_user"
+                        invisible="not minutes"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_council_meeting_form_sign" model="ir.ui.view">
+        <field name="name">bf.property.council.meeting.form.sign</field>
+        <field name="model">bf.property.council.meeting</field>
+        <field name="inherit_id" ref="bf_property_governance.view_council_meeting_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_send_for_signature" type="object"
+                        string="Faire signer le procès-verbal"
+                        groups="bf_sign.group_sign_user"
+                        invisible="not minutes"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

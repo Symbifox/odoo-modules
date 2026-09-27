@@ -1,0 +1,270 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following module:
+# 	* bf_rental_rent
+#
+# 🔴 Legal wording is taken from the OFFICIAL English text of the Civil Code of
+# Québec, which is enacted in both languages and equally authoritative. The
+# Code's own vocabulary is used throughout: lessor (not landlord), lessee (not
+# tenant), dwelling, instalment, resiliation, repossession, and the
+# Administrative Housing Tribunal.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 00:09+0000\n"
+"PO-Revision-Date: 2026-09-14 00:09+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__paid
+msgid "Acquitté"
+msgstr "Paid"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_payment__mode__cash
+msgid "Argent comptant"
+msgstr "Cash"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__arrears_total
+msgid "Arrérages"
+msgstr "Arrears"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_payment__mode__other
+msgid "Autre"
+msgstr "Other"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__lease_id
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__lease_id
+msgid "Bail"
+msgstr "Lease"
+
+#. module: bf_rental_rent
+#: model:ir.model,name:bf_rental_rent.model_bf_rental_lease
+msgid "Bail de logement"
+msgstr "Lease of a dwelling"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_payment__mode__cheque
+msgid "Chèque"
+msgstr "Cheque"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_term__days_late
+msgid ""
+"Compté depuis la date d'exigibilité, et seulement sur ce qui reste dû. Un "
+"terme acquitté en retard n'a plus de retard : il a été payé."
+msgstr ""
+"Counted from the date payment was due, and only on what is still owed. An "
+"instalment paid late is no longer late: it has been paid."
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__deposited
+msgid "Déposé au greffe"
+msgstr "Deposited in the office of the court"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__deposited_at_court
+msgid "Déposé au greffe (art. 1907)"
+msgstr "Deposited in the office of the court (art. 1907)"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__late
+msgid "En retard"
+msgstr "Late"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__date_due
+msgid "Exigible le"
+msgstr "Payable on"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__days_late
+msgid "Jours de retard"
+msgstr "Days late"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__tribunal_may_grant_time
+msgid "Le tribunal peut encore accorder un délai"
+msgstr "The court may still grant a period"
+
+#. module: bf_rental_rent
+#: model:ir.ui.menu,name:bf_rental_rent.menu_bf_rental_term
+msgid "Loyer"
+msgstr "Rent"
+
+#. module: bf_rental_rent
+#: model_terms:ir.ui.view,arch_db:bf_rental_rent.view_bf_rental_lease_form_rent
+msgid "Loyer dû"
+msgstr "Rent owed"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__mode
+msgid "Mode"
+msgstr "Method"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__amount
+msgid "Montant"
+msgstr "Amount"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__amount_due
+msgid "Montant dû"
+msgstr "Amount owed"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__partial
+msgid "Partiel"
+msgstr "Partial"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__arrears_days
+msgid "Retard le plus ancien (jours)"
+msgstr "Oldest delay (days)"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__date
+msgid "Reçu le"
+msgstr "Received on"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__receipt_given
+msgid "Reçu remis"
+msgstr "Receipt given"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__amount_outstanding
+msgid "Solde"
+msgstr "Balance"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_lease__arrears_total
+msgid ""
+"Somme des soldes ÉCHUS et non déposés au greffe. Un terme à venir n'est pas "
+"un arrérage, et un terme déposé au greffe non plus (art. 1907)."
+msgstr ""
+"Sum of the balances already PAYABLE and not deposited in the office of the "
+"court. An upcoming instalment is not arrears, and neither is one deposited "
+"in the office of the court (art. 1907)."
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__term_id
+msgid "Terme"
+msgstr "Instalment"
+
+#. module: bf_rental_rent
+#: model:ir.model,name:bf_rental_rent.model_bf_rental_term
+#: model_terms:ir.ui.view,arch_db:bf_rental_rent.view_bf_rental_term_form
+msgid "Terme de loyer"
+msgstr "Rent instalment"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__term_ids
+msgid "Termes"
+msgstr "Instalments"
+
+#. module: bf_rental_rent
+#: model:ir.actions.act_window,name:bf_rental_rent.action_bf_rental_term
+#: model_terms:ir.ui.view,arch_db:bf_rental_rent.view_bf_rental_term_list
+msgid "Termes de loyer"
+msgstr "Rent instalments"
+
+#. module: bf_rental_rent
+#. odoo-python
+#: code:addons/bf_rental_rent/models/bf_rental_term.py:0
+msgid ""
+"Un terme ne peut pas excéder le loyer convenu de %(rent)s. Réclamer d'un "
+"coup ce qui reste du bail est sans effet (art. 1905 C.c.Q.), et exiger un "
+"versement supérieur à un mois de loyer est interdit (art. 1904 al. 1)."
+msgstr ""
+"An instalment may not exceed the agreed rent of %(rent)s. A clause making "
+"the full amount of the rent payable at once is without effect (art. 1905 "
+"CCQ), and exacting an instalment in excess of one month's rent is forbidden "
+"(art. 1904 para. 1)."
+
+#. module: bf_rental_rent
+#. odoo-python
+#: code:addons/bf_rental_rent/models/bf_rental_payment.py:0
+msgid ""
+"Un versement porte un montant positif. Une correction se fait en modifiant "
+"le versement, pas en en créant un négatif qui ferait mentir l'historique."
+msgstr ""
+"A payment carries a positive amount. A correction is made by changing the "
+"payment, not by creating a negative one that would make the history lie."
+
+#. module: bf_rental_rent
+#: model:ir.model,name:bf_rental_rent.model_bf_rental_payment
+msgid "Versement de loyer"
+msgstr "Rent payment"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__payment_ids
+msgid "Versements"
+msgstr "Payments"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__amount_paid
+msgid "Versé"
+msgstr "Paid"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_payment__mode__transfer
+msgid "Virement"
+msgstr "Transfer"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__pending
+msgid "À venir"
+msgstr "Upcoming"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_term__state
+msgid "État"
+msgstr "Status"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_payment__receipt_given
+msgid ""
+"⚠️ Art. 1564 C.c.Q. : le locataire qui paie EN ARGENT COMPTANT a droit à un "
+"reçu. Ce n'est pas une courtoisie, et le formulaire de bail le rappelle dans"
+" ses mentions."
+msgstr ""
+"⚠️ Art. 1564 CCQ: a lessee who pays IN CASH is entitled to a receipt. It is "
+"not a courtesy, and the lease form says so in its particulars."
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_term__deposited_at_court
+msgid ""
+"⚠️ Le locataire autorisé par le tribunal dépose son loyer au greffe. Il a "
+"PAYÉ : il n'est pas en défaut, et ce terme ne compte pas dans les arrérages."
+" Le compter serait accuser quelqu'un d'avoir fait ce que la loi lui permet."
+msgstr ""
+"⚠️ A lessee authorized by the court deposits the rent in the office of the "
+"court. The lessee HAS PAID: there is no default, and this instalment does "
+"not count as arrears. Counting it would accuse someone of having done "
+"exactly what the law allows."
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_lease__tribunal_may_grant_time
+msgid ""
+"🔴 Art. 1973 : au-delà de trois semaines de retard, le tribunal ne peut PLUS "
+"ordonner au locataire d'exécuter dans un délai : c'est cela que le seuil "
+"change, et non le droit du locateur. Rien ici ne dit que le bail peut être "
+"résilié : seul le tribunal résilie, et le locataire peut encore tout arrêter"
+" en payant avant jugement (art. 1883)."
+msgstr ""
+"🔴 Art. 1973: where payment of the rent is over three weeks late, the court "
+"may NO LONGER order the debtor to perform within a period it determines: "
+"that is what the threshold changes, not the lessor's right. Nothing here "
+"says the lease may be resiliated: only the court resiliates, and the lessee "
+"may still avoid it by paying before judgment (art. 1883)."

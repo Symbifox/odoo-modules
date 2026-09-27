@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!--
+            🔴 **Ce que ces pages ne diront jamais.** Aucune ne prononce le mot
+            « éviction » à propos d'un retard de loyer : seul le tribunal résilie
+            (art. 1971, « peut obtenir »), le seuil de trois semaines ne touche
+            qu'à la marge du tribunal (art. 1973), et payer avant jugement arrête
+            tout (art. 1883). Aucune n'affiche le fondement d'une résiliation de
+            l'art. 1974.1 — le champ est réservé à la gestion, et il n'aurait
+            rien à faire sur un écran qu'on consulte devant qui que ce soit.
+
+            ⚠️ **Ce qu'elles disent, en revanche** : la date limite de réponse à
+            un avis, et ce que le silence produira. C'est l'information la plus
+            chère du corpus, et elle n'est nulle part ailleurs.
+        -->
+
+        <!-- Cartes sur la page d'accueil du portail. -->
+        <template id="portal_my_home_rental" name="Locatif : accueil du portail"
+                  inherit_id="portal.portal_my_home" priority="45">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/bf_property_core/static/description/icon.png'"/>
+                    <t t-set="title">Mon bail</t>
+                    <t t-set="text">Ce qui a été convenu, et le formulaire signé</t>
+                    <t t-set="url" t-value="'/my/rental'"/>
+                    <t t-set="placeholder_count" t-value="'rental_lease_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/bf_property_core/static/description/icon.png'"/>
+                    <t t-set="title">Les avis reçus</t>
+                    <t t-set="text">Jusqu'à quand répondre, et ce que le silence produit</t>
+                    <t t-set="url" t-value="'/my/rental/notices'"/>
+                    <t t-set="placeholder_count" t-value="'rental_notice_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'/bf_property_core/static/description/icon.png'"/>
+                    <t t-set="title">Mon loyer</t>
+                    <t t-set="text">Ce qui a été payé, et ce qui reste dû</t>
+                    <t t-set="url" t-value="'/my/rental/rent'"/>
+                </t>
+            </xpath>
+        </template>
+
+        <!-- ══════════════════ Mon bail ══════════════════ -->
+        <template id="portal_rental_leases" name="Mon bail">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Mon bail</t>
+                </t>
+
+                <div t-if="not leases" class="alert alert-info" role="status">
+                    Aucun bail n'est rattaché à votre compte. C'est le bail qui
+                    dit qui en est locataire : si votre nom n'y figure pas, rien
+                    ne s'affiche ici, même si vous habitez le logement.
+                </div>
+
+                <div t-foreach="leases" t-as="lease" class="card mb-3">
+                    <div class="card-header d-flex justify-content-between">
+                        <span>
+                            <span t-field="lease.name"/>
+                            <span t-if="lease.portal_unit_name" class="text-muted">
+                                (<span t-field="lease.portal_unit_name"/>)
+                            </span>
+                        </span>
+                        <span t-if="not lease.active" class="badge text-bg-secondary">Terminé</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Le logement</h6>
+                                <p class="mb-3">
+                                    <span t-field="lease.portal_building_name"/><br/>
+                                    <span class="text-muted">Locateur : </span>
+                                    <span t-field="lease.portal_landlord_name"/>
+                                </p>
+
+                                <h6>La durée</h6>
+                                <p class="mb-3">
+                                    <t t-if="lease.duration_kind == 'fixed'">
+                                        Du <span t-field="lease.date_start"/>
+                                        au <span t-field="lease.date_end"/>
+                                    </t>
+                                    <t t-else="">
+                                        Depuis le <span t-field="lease.date_start"/>,
+                                        pour une durée indéterminée
+                                    </t>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Le loyer</h6>
+                                <table class="table table-sm mb-3">
+                                    <tr>
+                                        <td>Loyer</td>
+                                        <td class="text-end">
+                                            <span t-field="lease.rent"
+                                                  t-options='{"widget": "monetary", "display_currency": lease.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="lease.services_cost">
+                                        <td>Services, taxes et frais</td>
+                                        <td class="text-end">
+                                            <span t-field="lease.services_cost"
+                                                  t-options='{"widget": "monetary", "display_currency": lease.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr class="fw-bold">
+                                        <td>Total <span t-field="lease.rent_period"/></td>
+                                        <td class="text-end">
+                                            <span t-field="lease.rent_total"
+                                                  t-options='{"widget": "monetary", "display_currency": lease.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!--
+                            ⚠️ La restriction de l'art. 1955 n'est opposable que
+                            si le bail porte la mention. Le module tient déjà ce
+                            refus ; ici, on dit au locataire ce qu'elle CHANGE
+                            pour lui, et où la relire sur son formulaire.
+                        -->
+                        <div t-if="lease.fixation_restricted" class="alert alert-warning" role="status">
+                            <strong>Votre recours en fixation du loyer est restreint
+                            pendant les cinq premières années</strong>
+                            (art. 1955 C.c.Q.).
+                            <t t-if="lease.restriction_section">
+                                La mention figure à la section
+                                <span t-field="lease.restriction_section"/> de votre bail.
+                            </t>
+                            <t t-if="lease.max_rent_5y">
+                                Le loyer maximal qui y est inscrit est de
+                                <span t-field="lease.max_rent_5y"
+                                      t-options='{"widget": "monetary", "display_currency": lease.currency_id}'/>.
+                            </t>
+                            Le Tribunal administratif du logement renseigne sur ce
+                            que la restriction laisse ouvert.
+                        </div>
+
+                        <h6>Le formulaire signé</h6>
+                        <!--
+                            🔴 `forms` vient du contrôleur, pas du bail. Lire
+                            `lease.lease_attachment_ids` ici demanderait au
+                            lecteur un droit sur `ir.attachment`, et l'accorder
+                            au groupe Portail ouvrirait TOUTES les pièces
+                            jointes de la base.
+                        -->
+                        <t t-set="lease_forms" t-value="forms.get(lease.id) or []"/>
+                        <p t-if="not lease_forms" class="text-muted mb-0">
+                            Le formulaire n'a pas été déposé au dossier. Le
+                            locateur doit vous en remettre une copie dans les dix
+                            jours de la signature (art. 1895 C.c.Q.).
+                        </p>
+                        <ul t-else="" class="list-unstyled mb-0">
+                            <li t-foreach="lease_forms" t-as="form">
+                                <a t-attf-href="/my/rental/lease/{{ lease.id }}/form/{{ form['id'] }}">
+                                    <i class="fa fa-file-o me-1"/><span t-esc="form['name']"/>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div t-if="leases" class="d-flex gap-2">
+                    <a class="btn btn-secondary" href="/my/rental/notices">Les avis reçus</a>
+                    <a class="btn btn-secondary" href="/my/rental/rent">Mon loyer</a>
+                </div>
+            </t>
+        </template>
+
+        <!-- ══════════════════ Les avis ══════════════════ -->
+        <template id="portal_rental_notices" name="Les avis reçus">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Les avis reçus</t>
+                </t>
+
+                <div t-if="not notices" class="alert alert-info" role="status">
+                    Aucun avis n'a été inscrit à votre dossier.
+                </div>
+
+                <!--
+                    🔴 Ce bloc d'abord, et en haut : c'est le seul endroit du
+                    portail où ne rien faire coûte quelque chose. Sur une
+                    modification du bail, le silence vaut ACCEPTATION de tout ce
+                    qui a été demandé (art. 1945).
+                -->
+                <div t-foreach="pending" t-as="notice"
+                     t-attf-class="alert alert-#{notice.silence_effect == 'accept' and 'danger' or 'warning'}"
+                     role="status">
+                    <h6 class="alert-heading"><span t-field="notice.kind"/></h6>
+                    <p class="mb-1">
+                        Vous avez jusqu'au
+                        <strong><span t-field="notice.response_deadline"/></strong>
+                        pour répondre.
+                    </p>
+                    <p class="mb-1" t-if="notice.silence_effect == 'accept'">
+                        <strong>Sans réponse de votre part, l'avis sera réputé
+                        accepté</strong> et votre bail sera reconduit avec ce qui
+                        y est demandé (<span t-field="notice.silence_article"/>
+                        C.c.Q.). Répondre ne coûte rien ; ne pas répondre décide.
+                    </p>
+                    <p class="mb-1" t-if="notice.silence_effect == 'refuse'">
+                        Sans réponse de votre part, l'avis sera réputé
+                        <strong>refusé</strong> (<span t-field="notice.silence_article"/>
+                        C.c.Q.). C'est alors au locateur de s'adresser au Tribunal
+                        administratif du logement.
+                    </p>
+                    <p class="mb-0" t-if="notice.tenant_must_leave_if_refusing">
+                        ⚠️ Ce logement est visé par l'art. 1955 C.c.Q. : refuser la
+                        modification vous oblige à quitter à la fin du bail
+                        (art. 1945 al. 2). Le refus n'est pas ici le maintien.
+                    </p>
+                </div>
+
+                <table t-if="notices" class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Avis</th>
+                            <th>Reçu le</th>
+                            <th>Date visée</th>
+                            <th>À répondre avant</th>
+                            <th>Le silence vaut</th>
+                            <th>État</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="notices" t-as="notice">
+                            <td><span t-field="notice.kind"/></td>
+                            <td>
+                                <span t-if="notice.date_received" t-field="notice.date_received"/>
+                                <!--
+                                    ⚠️ C'est de la RÉCEPTION que court le mois,
+                                    pas de l'envoi. Tant qu'elle est inconnue,
+                                    aucune échéance n'est affichée : une échéance
+                                    calculée sur une date supposée est pire
+                                    qu'une échéance absente.
+                                -->
+                                <span t-else="" class="text-muted">non consignée</span>
+                            </td>
+                            <td><span t-if="notice.target_date" t-field="notice.target_date"/></td>
+                            <td>
+                                <span t-if="notice.response_deadline" t-field="notice.response_deadline"/>
+                                <span t-else="" class="text-muted"/>
+                            </td>
+                            <td>
+                                <t t-if="notice.silence_effect == 'accept'">Acceptation</t>
+                                <t t-elif="notice.silence_effect == 'refuse'">Refus</t>
+                                <t t-else=""><span class="text-muted">cet avis informe</span></t>
+                                <!--
+                                    ⚠️ Le champ porte DÉJÀ « art. » : il vaut
+                                    « art. 1945 », pas « 1945 ». Le préfixer ici
+                                    écrivait « art. art. 1945 » sur la page, et
+                                    le test ne le voyait pas — il cherchait
+                                    « 1945 », qui s'y trouve dans les deux cas.
+                                -->
+                                <span t-if="notice.silence_article" class="text-muted small">
+                                    (<span t-field="notice.silence_article"/>)
+                                </span>
+                            </td>
+                            <td><span t-field="notice.state"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!--
+                    ⚠️ Le SEUL délai du corpus qui joue contre le locateur
+                    (art. 1947 al. 2) : s'il omet de saisir le Tribunal dans le
+                    mois du refus, le bail est reconduit aux conditions
+                    antérieures. Le locataire a tout intérêt à le connaître.
+                -->
+                <div t-if="refused" class="alert alert-info" role="status">
+                    <p class="mb-1">
+                        Vous avez refusé
+                        <t t-if="len(refused) == 1">un avis.</t>
+                        <t t-else=""><span t-esc="len(refused)"/> avis.</t>
+                        Il revient maintenant au locateur de s'adresser au
+                        Tribunal administratif du logement.
+                    </p>
+                    <p class="mb-0">
+                        S'il ne le fait pas avant le
+                        <strong><span t-esc="landlord_deadline"
+                                      t-options='{"widget": "date"}'/></strong>,
+                        le bail est reconduit de plein droit aux conditions
+                        antérieures (art. 1947 al. 2 C.c.Q.).
+                    </p>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a class="btn btn-secondary" href="/my/rental">Mon bail</a>
+                    <a class="btn btn-secondary" href="/my/rental/rent">Mon loyer</a>
+                </div>
+            </t>
+        </template>
+
+        <!-- ══════════════════ Mon loyer ══════════════════ -->
+        <template id="portal_rental_rent" name="Mon loyer">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Mon loyer</t>
+                </t>
+
+                <div t-if="not terms" class="alert alert-info" role="status">
+                    Aucun terme de loyer n'a été inscrit à votre dossier.
+                </div>
+
+                <!--
+                    🔴 Le solde s'affiche terme par terme, et le total ne porte
+                    que ce qui est ÉCHU. Pas de total du bail : l'art. 1905 rend
+                    sans effet la clause qui rendrait le loyer entier exigible,
+                    et l'afficher réclamerait par l'écran ce qu'on ne peut pas
+                    réclamer en droit.
+
+                    🔴 Et rien ici ne parle de résiliation. Seul le tribunal
+                    résilie (art. 1971), le seuil de trois semaines ne touche
+                    qu'à sa marge de manœuvre (art. 1973), et payer avant
+                    jugement arrête tout (art. 1883). Un portail qui ferait peur
+                    dirait trois faussetés et n'aiderait personne.
+                -->
+                <div t-if="outstanding" class="alert alert-warning" role="status">
+                    <p class="mb-0">
+                        Il reste
+                        <strong><span t-esc="outstanding"
+                                      t-options='{"widget": "monetary", "display_currency": currency}'/></strong>
+                        dû sur les termes déjà exigibles. Le détail est ci-dessous,
+                        terme par terme.
+                    </p>
+                </div>
+
+                <table t-if="terms" class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Exigible le</th>
+                            <th class="text-end">Montant</th>
+                            <th class="text-end">Payé</th>
+                            <th class="text-end">Reste</th>
+                            <th>État</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="terms" t-as="term">
+                            <td><span t-field="term.date_due"/></td>
+                            <td class="text-end">
+                                <span t-field="term.amount_due"
+                                      t-options='{"widget": "monetary", "display_currency": term.currency_id}'/>
+                            </td>
+                            <td class="text-end">
+                                <span t-field="term.amount_paid"
+                                      t-options='{"widget": "monetary", "display_currency": term.currency_id}'/>
+                            </td>
+                            <td class="text-end">
+                                <span t-field="term.amount_outstanding"
+                                      t-options='{"widget": "monetary", "display_currency": term.currency_id}'/>
+                            </td>
+                            <td>
+                                <!--
+                                    ⚠️ « Déposé au greffe » n'est pas un impayé.
+                                    L'art. 1907 permet au locataire de déposer
+                                    son loyer au tribunal, sur préavis et
+                                    autorisation : il a payé, ailleurs.
+                                -->
+                                <span t-if="term.state == 'deposited'" class="badge text-bg-info">
+                                    Déposé au greffe
+                                </span>
+                                <span t-elif="term.state == 'paid'" class="badge text-bg-success">
+                                    Acquitté
+                                </span>
+                                <span t-elif="term.state == 'partial'" class="badge text-bg-warning">
+                                    Partiel
+                                </span>
+                                <span t-elif="term.state == 'late'" class="badge text-bg-danger">
+                                    En retard
+                                </span>
+                                <span t-else="" class="badge text-bg-light">À venir</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p t-if="terms" class="text-muted small">
+                    Le locateur doit vous remettre un reçu si vous le demandez
+                    (art. 1908 C.c.Q.), et il ne peut exiger aucune somme autre
+                    que le loyer, sous forme de dépôt ou autrement (art. 1904).
+                </p>
+
+                <div class="d-flex gap-2">
+                    <a class="btn btn-secondary" href="/my/rental">Mon bail</a>
+                    <a class="btn btn-secondary" href="/my/rental/notices">Les avis reçus</a>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

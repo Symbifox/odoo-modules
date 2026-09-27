@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- 🔴 Un bail porte le nom, l'adresse, le courriel et le loyer d'une
+             personne : c'est le contenu le plus sensible de toute la suite.
+             Sans cette règle, un gestionnaire d'une AUTRE société les lit tous,
+             mesuré à la sonde (trois baux visibles, loyer et
+             locataires compris). Tous les autres modèles de la suite qui
+             portent company_id ont la leur ; celui-ci l'avait oubliée.
+
+             ⚠️ `+ [False]` : un bail sans société reste visible de tous, comme
+             partout ailleurs dans la suite. C'est le cas d'une base
+             mono-société où personne n'a jamais renseigné le champ. -->
+        <record id="rule_rental_lease_company" model="ir.rule">
+            <field name="name">Baux : multi-société</field>
+            <field name="model_id" ref="model_bf_rental_lease"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+
+        <!-- Un départ sans préavis nomme le locataire et décrit ses affaires :
+             même sensibilité que le bail, même cloisonnement. -->
+        <record id="rule_rental_abandonment_company" model="ir.rule">
+            <field name="name">Départs sans préavis : multi-société</field>
+            <field name="model_id" ref="model_bf_rental_abandonment"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+    </data>
+</odoo>
