@@ -232,6 +232,13 @@ def _mots():
         "error": _("The server refused:"),
         "actions": _("Actions"),
         "links": _("Linked to"),
+        "layout": _("Layout"),
+        "layout_cards": _("Cards"),
+        "layout_minimal": _("Minimal"),
+        "layout_list": _("List"),
+        "color": _("Color"),
+        "no_color": _("No color"),
+        "keep_color": _("Keep in my colors"),
     }
 
 
@@ -287,6 +294,7 @@ class BfNotePage(http.Controller):
 <header>
   <h1>%(titre)s</h1>
   <span id="reseau" class="reseau hidden"></span>
+  <button id="mise" class="mise" type="button"></button>
 </header>
 <main>
   <form id="saisie" class="saisie" autocomplete="off">
@@ -386,3 +394,9 @@ class BfNotePage(http.Controller):
     @http.route("/notes/api/cibles", type="json", auth="user", methods=["POST"])
     def api_cibles(self, q=None, **kw):
         return _garde(lambda: {"groupes": request.env["bf.note"]._mobile_targets(q)})
+
+    @http.route("/notes/api/preferences", type="json", auth="user", methods=["POST"])
+    def api_preferences(self, **kw):
+        """Sans argument : lit. Avec ``layout``, ``density``, … : écrit."""
+        Note = request.env["bf.note"]
+        return _garde(lambda: Note._mobile_set_prefs(kw) if kw else Note._mobile_prefs())

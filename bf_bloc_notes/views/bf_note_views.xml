@@ -89,7 +89,7 @@
                             bg_color="text-bg-info"
                             invisible="not is_shared or not active or pinned"/>
                     <field name="active" invisible="1"/>
-                    <field name="color" widget="color_picker"/>
+                    <field name="color" invisible="1"/>
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1><field name="name" placeholder="Title (automatic if empty)"/></h1>
@@ -98,7 +98,8 @@
                         <group>
                             <field name="user_id" options="{'no_create': True}"/>
                             <field name="tag_ids" widget="many2many_tags"
-                                   options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                   options="{'color_field': 'color', 'no_create_edit': True, 'bf_color': True}"/>
+                            <field name="color_hex" widget="bf_color" string="Color"/>
                             <field name="deadline_date"/>
                         </group>
                         <group>
@@ -151,7 +152,7 @@
                 <field name="pinned" widget="boolean_toggle"/>
                 <field name="is_shared" widget="boolean_toggle" optional="hide"/>
                 <field name="name"/>
-                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'bf_color': True}"/>
                 <field name="res_name" string="Linked to"/>
                 <field name="deadline_date" optional="show"/>
                 <field name="user_id" widget="many2one_avatar_user"/>
@@ -164,16 +165,22 @@
         <field name="name">bf.note.kanban</field>
         <field name="model">bf.note</field>
         <field name="arch" type="xml">
-            <kanban default_order="pinned desc, write_date desc"
+            <kanban default_order="pinned desc, write_date desc" js_class="bf_note_kanban"
                     class="o_kanban_dashboard o_bf_note_kanban"
                     sample="1">
                 <field name="color"/>
+                <field name="color_resolved"/>
+                <field name="color_text"/>
                 <field name="pinned"/>
                 <field name="is_shared"/>
                 <field name="active"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click o_bf_note_card #{kanban_color(record.color.raw_value)}">
+                        <!-- la couleur résolue passe en variables CSS ; la mise en
+                             page (fond plein ou liseré) décide de l'usage, dans bf_note.scss. -->
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click o_bf_note_card #{record.color_resolved.raw_value ? 'o_bf_note_colored' : kanban_color(record.color.raw_value)}"
+                             t-att-style="record.color_resolved.raw_value ? '--bf-note-bg:' + record.color_resolved.raw_value + ';--bf-note-fg:' + (record.color_text.raw_value or '#000000') : ''"
+                             t-att-data-bf-color="record.color_resolved.raw_value or ''">
                             <div class="o_dropdown_kanban dropdown">
                                 <a role="button" class="dropdown-toggle btn px-1 py-0"
                                    data-bs-toggle="dropdown" data-bs-display="static"
@@ -216,7 +223,7 @@
                             <div class="o_bf_note_card_footer d-flex align-items-center mt-2">
                                 <field name="tag_ids"
                                        widget="many2many_tags"
-                                       options="{'color_field': 'color'}"
+                                       options="{'color_field': 'color', 'bf_color': True}"
                                        class="flex-grow-1"/>
                                 <field name="user_id" widget="many2one_avatar_user"/>
                             </div>

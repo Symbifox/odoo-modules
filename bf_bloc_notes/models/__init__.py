@@ -12,3 +12,4 @@ from . import crm_lead
 from . import res_users
 from . import onboarding_onboarding
 from . import bf_note_mobile
+from . import bf_note_color

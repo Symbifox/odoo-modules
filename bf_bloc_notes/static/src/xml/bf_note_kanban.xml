@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_bloc_notes.NoteKanbanView" t-inherit="web.KanbanView" t-inherit-mode="primary">
+        <xpath expr="//t[@t-set-slot='control-panel-additional-actions']" position="inside">
+            <Dropdown>
+                <button class="btn btn-secondary o_bf_notes_layout_toggle" title="Layout">
+                    <i t-attf-class="fa {{ bfLayoutIcon }}"/>
+                </button>
+                <t t-set-slot="content">
+                    <div class="dropdown-header">Layout</div>
+                    <t t-foreach="bfLayouts" t-as="layout" t-key="layout.value">
+                        <DropdownItem onSelected="() => this.bfSetPref('bf_note_layout', layout.value)"
+                                      class="'o_bf_notes_layout_item_' + layout.value + (bfPrefs.bf_note_layout === layout.value ? ' active' : '')">
+                            <i t-attf-class="fa {{ layout.icon }} me-2"/><t t-out="layout.label"/>
+                        </DropdownItem>
+                    </t>
+                    <div class="dropdown-divider"/>
+                    <DropdownItem onSelected="() => this.bfSetPref('bf_note_density', bfPrefs.bf_note_density === 'compact' ? 'comfortable' : 'compact')"
+                                  class="'o_bf_notes_density_item'">
+                        <i t-attf-class="fa {{ bfPrefs.bf_note_density === 'compact' ? 'fa-check-square-o' : 'fa-square-o' }} me-2"/>Compact
+                    </DropdownItem>
+                    <DropdownItem onSelected="() => this.bfSetPref('bf_note_color_style', bfPrefs.bf_note_color_style === 'stripe' ? 'fill' : 'stripe')"
+                                  class="'o_bf_notes_stripe_item'">
+                        <i t-attf-class="fa {{ bfPrefs.bf_note_color_style === 'stripe' ? 'fa-check-square-o' : 'fa-square-o' }} me-2"/>Color as a stripe
+                    </DropdownItem>
+                </t>
+            </Dropdown>
+        </xpath>
+    </t>
+</templates>

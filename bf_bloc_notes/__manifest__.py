@@ -15,13 +15,20 @@
     #   la migration recalcule aussi le nom stocké sur la note.
     # 18.0.3.0.3: un lien ne change plus de note hors superutilisateur ; le
     #   compteur « Notes » est calculé par personne.
-    "version": "18.0.3.0.3",
+    # 18.0.3.1.0: les fichiers partagés vers une note depuis Symbifox Mobile
+    #   (photo, PDF) s'y joignent, se lisent au téléphone et suivent la note
+    #   quand elle devient une tâche.
+    # 18.0.4.0.0: couleurs libres par bf_color. Les notes lisent leur index
+    #   dans la palette pastel du mobile (aucune donnée réécrite) ; contrat
+    #   mobile : `color_hex`, `text_color`, `tags`, route `/prefs` (mise en
+    #   page, nuanciers) et `features` au ping ; numéro d'API inchangé.
+    "version": "18.0.4.0.0",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',
     "website": "https://symbifox.com",
     'license': 'LGPL-3',
-    "depends": ["web", "mail", "project", "crm", "contacts", "bf_onboarding_base", "bf_chatter_target"],
+    "depends": ["web", "mail", "project", "crm", "contacts", "bf_onboarding_base", "bf_chatter_target", "bf_color"],
     "data": [
         "security/ir.model.access.csv",
         "security/bf_note_security.xml",
@@ -47,6 +54,8 @@
             "bf_bloc_notes/static/src/js/bf_note_quick_create.js",
             "bf_bloc_notes/static/src/js/bf_note_hotkeys.js",
             "bf_bloc_notes/static/src/xml/bf_note_templates.xml",
+            "bf_bloc_notes/static/src/js/bf_note_kanban.js",
+            "bf_bloc_notes/static/src/xml/bf_note_kanban.xml",
         ],
     },
     "installable": True,

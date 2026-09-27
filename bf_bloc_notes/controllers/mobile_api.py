@@ -22,7 +22,7 @@ from odoo import _, fields, http
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 
-from ..models.bf_note_mobile import ACTIONS
+from ..models.bf_note_mobile import ACTIONS, MAX_ATTACHMENT
 
 _logger = logging.getLogger(__name__)
 
@@ -137,10 +137,17 @@ class BfNoteMobileApi(http.Controller):
         return _json({
             "ok": True,
             "module": "bf_bloc_notes",
-            "api": 1,
+            # api 2 : pièces jointes (`/notes/<id>/files`) et leur
+            # liste dans `files` sur chaque note.
+            "api": 2,
             "version": module.installed_version or "",
             "enabled": True,
             "actions": list(ACTIONS),
+            "max_file_bytes": MAX_ATTACHMENT,
+            # ajouts compatibles, sans changer le numéro d'API.
+            # L'application n'envoie `color_hex` et ne lit `/prefs` que si
+            # elle les voit ici.
+            "features": ["color_hex", "tags", "prefs"],
         })
 
     @http.route(f"{BASE}/notes", type="http", auth="public", methods=["GET", "POST"],
@@ -216,6 +223,21 @@ class BfNoteMobileApi(http.Controller):
             "projets": request.env["bf.note"]._mobile_projects(kw.get("q")),
         }))
 
+    @http.route(f"{BASE}/prefs", type="http", auth="public", methods=["GET", "POST"],
+                csrf=False, save_session=False)
+    def prefs(self, **kw):
+        """GET : mise en page, nuanciers, palette. POST : écrit la mise en page."""
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        Note = request.env["bf.note"]
+
+        def run():
+            if request.httprequest.method == "POST":
+                return _json({"ok": True, "prefs": Note._mobile_set_prefs(_corps())})
+            return _json({"ok": True, "prefs": Note._mobile_prefs()})
+
+        return _guarded(run)
+
     @http.route(f"{BASE}/cibles", type="http", auth="public", methods=["GET"],
                 csrf=False, save_session=False)
     def cibles(self, **kw):
@@ -225,3 +247,65 @@ class BfNoteMobileApi(http.Controller):
             "ok": True,
             "groupes": request.env["bf.note"]._mobile_targets(kw.get("q")),
         }))
+
+    @http.route(f"{BASE}/notes/<int:note_id>/files", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def files(self, note_id, **kw):
+        """Joint un fichier (multipart, champ ``file``).
+
+        Idempotent : le même fichier, sous le même nom, n'est joint qu'une fois.
+        """
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+
+        def run():
+            note, refus = _note_ou_404(note_id)
+            if refus:
+                return refus
+            fichier = request.httprequest.files.get("file")
+            if not fichier:
+                raise UserError(_("No file received."))
+            # Un octet de plus que le plafond suffit à savoir qu'il est dépassé,
+            # sans charger en mémoire un fichier de 2 Go.
+            contenu = fichier.read(MAX_ATTACHMENT + 1)
+            resultat = note._mobile_attach(
+                fichier.filename, contenu, fichier.mimetype)
+            return _json({"ok": True, **resultat}, 201 if resultat["created"] else 200)
+
+        return _guarded(run)
+
+    @http.route(f"{BASE}/notes/<int:note_id>/files/<int:file_id>", type="http",
+                auth="public", methods=["GET"], csrf=False, save_session=False)
+    def file(self, note_id, file_id, **kw):
+        """Les octets d'une pièce de la note, pour l'ouvrir au téléphone."""
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+
+        def run():
+            note, refus = _note_ou_404(note_id)
+            if refus:
+                return refus
+            piece = note._mobile_attachment(file_id)
+            if not piece:
+                return _json({"error": "not_found"}, 404)
+            return request.make_response(piece.raw or b"", headers=[
+                ("Content-Type", piece.mimetype or "application/octet-stream"),
+                ("Cache-Control", "private, no-store"),
+                ("X-Content-Type-Options", "nosniff"),
+            ])
+
+        return _guarded(run)
+
+    @http.route(f"{BASE}/notes/<int:note_id>/files/<int:file_id>/delete", type="http",
+                auth="public", methods=["POST"], csrf=False, save_session=False)
+    def file_delete(self, note_id, file_id, **kw):
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+
+        def run():
+            note, refus = _note_ou_404(note_id)
+            if refus:
+                return refus
+            return _json({"ok": True, **note._mobile_detach(file_id)})
+
+        return _guarded(run)

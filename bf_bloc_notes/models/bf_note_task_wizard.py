@@ -121,6 +121,12 @@ class BfNoteTaskWizard(models.TransientModel):
 
         task = Task.create(vals)
 
+        # les fichiers de la note (photo, PDF partagés depuis le
+        # téléphone) suivent la tâche. Copiés, pas déplacés : la note garde
+        # les siens, archivée ou non, et peut encore servir ailleurs.
+        for piece in self.note_id._mobile_attachments():
+            piece.copy({"res_model": "project.task", "res_id": task.id})
+
         if self.link_back:
             existing = self.note_id.link_ids.filtered(
                 lambda l: l.res_model == "project.task" and l.res_id == task.id

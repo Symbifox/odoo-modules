@@ -316,3 +316,68 @@ class TestNoteMobile(TransactionCase):
     def test_la_recherche_de_projet(self):
         projets = self.Note._mobile_projects("Mobile")
         self.assertIn(self.projet.id, [p["id"] for p in projets])
+
+    # ── Pièces jointes ───────────────────────────────────
+
+    def test_un_fichier_partage_se_joint_a_la_note(self):
+        note, _r = self._creer("Photo du tableau")
+        res = note._mobile_attach("tableau.jpg", b"\xff\xd8\xff jpeg", "image/jpeg")
+        self.assertTrue(res["created"])
+        fichiers = res["note"]["files"]
+        self.assertEqual(len(fichiers), 1)
+        self.assertEqual(fichiers[0]["name"], "tableau.jpg")
+        self.assertTrue(fichiers[0]["image"])
+        self.assertEqual(res["note"]["attachments"], 1)
+
+    def test_un_envoi_rejoue_ne_double_pas_la_piece(self):
+        """🔴 Le réseau coupe après l'écriture, l'app rejoue : une seule pièce."""
+        note, _r = self._creer("x")
+        note._mobile_attach("a.pdf", b"%PDF-1.4 un", "application/pdf")
+        res = note._mobile_attach("a.pdf", b"%PDF-1.4 un", "application/pdf")
+        self.assertFalse(res["created"])
+        self.assertEqual(len(res["note"]["files"]), 1)
+
+    def test_un_fichier_vide_ou_trop_gros_est_refuse(self):
+        from ..models.bf_note_mobile import MAX_ATTACHMENT
+        note, _r = self._creer("x")
+        with self.assertRaises(UserError):
+            note._mobile_attach("vide.txt", b"")
+        with self.assertRaises(UserError):
+            note._mobile_attach("gros.bin", b"0" * (MAX_ATTACHMENT + 1))
+        self.assertFalse(note._mobile_payload()["files"])
+
+    def test_un_nom_de_fichier_ne_porte_pas_de_chemin(self):
+        note, _r = self._creer("x")
+        res = note._mobile_attach("../../etc/passwd", b"root")
+        self.assertNotIn("/", res["file"]["name"])
+
+    def test_personne_ne_joint_de_fichier_a_la_note_partagee_d_un_autre(self):
+        note, _r = self._creer("Partagée")
+        note.is_shared = True
+        chez_bruno = self.env["bf.note"].with_user(self.bruno).browse(note.id)
+        with self.assertRaises(AccessError):
+            chez_bruno._mobile_attach("intrus.txt", b"x")
+        self.assertFalse(note._mobile_payload()["files"])
+
+    def test_une_piece_d_une_autre_note_ne_se_lit_pas_par_celle_ci(self):
+        une, _r = self._creer("une")
+        autre, _r = self._creer("autre")
+        piece = une._mobile_attach("a.txt", b"a")["file"]["id"]
+        self.assertIsNone(autre._mobile_attachment(piece))
+        self.assertTrue(une._mobile_attachment(piece))
+
+    def test_retirer_une_piece(self):
+        note, _r = self._creer("x")
+        piece = note._mobile_attach("a.txt", b"a")["file"]["id"]
+        res = note._mobile_detach(piece)
+        self.assertFalse(res["note"]["files"])
+
+    def test_la_tache_tiree_de_la_note_emporte_ses_fichiers(self):
+        note, _r = self._creer("Avec photo")
+        note._mobile_attach("photo.png", b"\x89PNG un", "image/png")
+        res = note._mobile_action("task", {"project_id": self.projet.id})
+        pieces = self.env["ir.attachment"].search([
+            ("res_model", "=", "project.task"), ("res_id", "=", res["task_id"])])
+        self.assertEqual(pieces.mapped("name"), ["photo.png"])
+        # Copiée, pas déplacée : la note garde la sienne.
+        self.assertEqual(len(note._mobile_payload()["files"]), 1)

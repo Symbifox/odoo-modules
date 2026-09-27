@@ -52,6 +52,15 @@ A note taken on a phone has to be written in a second, or it ends up in another 
 - **Token API** at `/bf_bloc_notes/mobile/v1` for the Symbifox Mobile app: the same model methods as the page, so both behave identically. Device tokens are those issued by `bf_sms_archive` or `bf_email_management`; an archived or portal user is refused even with a valid token.
 - The page shell cached for offline use carries **no user data**; the local queue and cache are kept per user, so a second person signing in on the same device never sees or sends the first one's notes.
 
+### Colors and layouts (18.0.4.0.0)
+- **Any color on a note**, through `bf_color`: your swatches, the mobile pastels, or a free `#RRGGBB`. A note's existing 0–11 color is read in the pastel palette the phone already showed; no data is rewritten.
+- **Colored tags**, and a readable text color computed for each background.
+- **Three layouts** for the notes kanban and the `/notes` page: **cards** (a masonry grid, color as background, Google Keep style), **minimal** (one line per note, color as a stripe) and **list** (detailed rows); **compact** or **comfortable** density; color as **fill** or **stripe**; **group by color**. The choice is a user preference, shared by the web client, the page and Symbifox Mobile; a device can keep its own.
+- **Mobile contract**: notes carry `color_hex`, `text_color` and `tags`; `GET/POST /prefs` reads and writes the layout and returns the swatches; the ping announces `features` (`color_hex`, `tags`, `prefs`) so an older app keeps its previous behaviour. The API number is unchanged.
+
+### Attachments from the phone (18.0.3.1.0)
+- Photos, PDFs or any file shared to a note from Symbifox Mobile are attached to it, open and can be removed from the phone, and follow the note when it becomes a task (mobile API 2, `/notes/<id>/files`).
+
 ### Views
 - **Kanban**: colored cards (color picker), built-in pin button, body snippet, tags, primary link, deadline.
 - **List**: direct pin toggle, filters "My notes / Pinned / Shared / Linked / Overdue".
@@ -92,6 +101,8 @@ bf.note.link.mixin (AbstractModel)
 - `project` (smart button + form heritage on `project.task`, `project.project`)
 - `crm` (smart button + form heritage on `crm.lead`) — Odoo Community
 - `contacts` (smart button + form heritage on `res.partner`)
+- `bf_onboarding_base`, `bf_chatter_target` (Symbifox)
+- `bf_color` (free colors, swatches and per-user resolution, since 18.0.4.0.0)
 
 ## Configuration
 
@@ -107,6 +118,14 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 35 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), and the `target_ref` picker on the link row.
 
 ## Changelog
+
+### 18.0.4.0.0
+- **Colors:** free colors through `bf_color`, swatches, colored tags, readable text color.
+- **Layouts:** cards, minimal and list, compact or comfortable, fill or stripe, group by color; a user preference shared with the `/notes` page and the mobile app.
+- **Mobile API:** `color_hex`, `text_color`, `tags`, `/prefs` and `features` at the ping, backward compatible.
+
+### 18.0.3.1.0
+- **Attachments:** files shared to a note from the phone are attached, readable on the phone and carried over when the note becomes a task.
 
 ### 18.0.3.0.3
 - **Security:** the "Notes" counter on a record depends on the current user

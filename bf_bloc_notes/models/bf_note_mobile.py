@@ -35,6 +35,8 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tools import format_date, html2plaintext
 
+from odoo.addons.bf_color.models.color_utils import normalize_hex
+
 #: Gestes rapides offerts au téléphone et sur la carte kanban.
 ACTIONS = ("archive", "unarchive", "pin", "unpin", "activity", "task", "reroute")
 
@@ -59,6 +61,21 @@ MAX_LIMIT = 200
 
 #: Palette kanban d'Odoo : 0 (aucune) à 11.
 MAX_COLOR = 11
+
+#: un fichier partagé vers une note. 25 Mo couvre une photo de
+#: téléphone, un PDF ou une courte vidéo ; au-delà, c'est un dépôt Nextcloud
+#: qu'on veut, pas une pièce de bloc-notes.
+MAX_ATTACHMENT = 25 * 1024 * 1024
+#: Pièces par note : un partage en porte rarement plus de quelques-unes.
+MAX_ATTACHMENTS_PER_NOTE = 20
+#: Préférences d'affichage que le mobile et la page lisent et écrivent,
+#: nom du contrat → champ de ``res.users``.
+PREFS = {
+    "layout": "bf_note_layout",
+    "density": "bf_note_density",
+    "color_style": "bf_note_color_style",
+    "group_by_color": "bf_note_group_by_color",
+}
 
 
 class BfNote(models.Model):
@@ -235,9 +252,7 @@ class BfNote(models.Model):
                 "name": self._mobile_link_name(link),
                 "url": "/odoo/%s/%s" % (link.res_model, link.res_id),
             })
-        attachments = self.env["ir.attachment"].search_count([
-            ("res_model", "=", self._name), ("res_id", "=", self.id),
-        ])
+        pieces = self._mobile_attachments()
         return {
             "id": self.id,
             "client_uuid": self.client_uuid or None,
@@ -245,13 +260,30 @@ class BfNote(models.Model):
             "text": self._mobile_html_to_text(self.body),
             "editable": self._mobile_html_is_plain(self.body),
             "pinned": bool(self.pinned),
+            # `color` reste pour les versions installées de l'application ;
+            # `color_hex` est la couleur résolue pour l'appelant.
             "color": self.color or 0,
+            "color_hex": self.color_resolved or None,
+            "text_color": self.color_text or None,
+            "color_source": self.color_source or None,
+            "tags": [
+                {
+                    "id": tag.id,
+                    "name": tag.name,
+                    "color_hex": tag.color_resolved or None,
+                    "text_color": tag.color_text or None,
+                }
+                for tag in self.tag_ids
+            ],
             "deadline": fields.Date.to_string(self.deadline_date) if self.deadline_date else None,
             "active": bool(self.active),
             "shared": bool(self.is_shared),
             "mine": self.user_id == self.env.user,
             "links": links,
-            "attachments": attachments,
+            # Le nombre, pour les apps d'avant les pièces jointes ; la liste, pour les
+            # suivantes.
+            "attachments": len(pieces),
+            "files": [self._mobile_attachment_payload(a) for a in pieces],
             "url": "/odoo/m-bf.note/%s" % self.id,
             "write_date": self._mobile_datetime(self.write_date),
         }
@@ -333,8 +365,10 @@ class BfNote(models.Model):
             "user_id": self.env.uid,
             "body": self._mobile_text_to_html(text),
             "pinned": bool(vals.get("pinned")),
-            "color": self._mobile_clean_color(vals.get("color")),
         }
+        # Pas de `color` par défaut ici : posé avec `color_hex`, il empêcherait
+        # l'index de suivre la couleur libre (champ par défaut : 0).
+        values.update(self._mobile_color_values(vals))
         # Sans titre, la PREMIÈRE LIGNE fait le titre, comme dans Keep. Laisser
         # `_compute_name` le faire prendrait les 80 premiers caractères de tout
         # le texte, deuxième ligne comprise.
@@ -348,6 +382,54 @@ class BfNote(models.Model):
             if line.strip():
                 return line.strip()[:80]
         return _("Untitled note")
+
+    @api.model
+    def _mobile_color_values(self, vals):
+        """Ce qu'écrire pour la couleur reçue : ``color_hex`` (libre) l'emporte
+        sur ``color`` (index), qu'envoient encore les versions installées."""
+        if "color_hex" in vals:
+            raw = vals.get("color_hex")
+            if raw in (None, False, ""):
+                return {"color_hex": False, "color": 0}
+            value = normalize_hex(raw if isinstance(raw, str) else "")
+            if not value:
+                raise UserError(_("%s is not a hex color.", raw))
+            return {"color_hex": value}
+        if "color" in vals:
+            return {"color": self._mobile_clean_color(vals.get("color"))}
+        return {}
+
+    @api.model
+    def _mobile_prefs(self):
+        """Mise en page, nuanciers et palette : tout ce que l'appareil doit
+        savoir pour afficher les notes comme l'usager les a réglées."""
+        user = self.env.user
+        prefs = {key: user[field] for key, field in PREFS.items()}
+        prefs["group_by_color"] = bool(prefs["group_by_color"])
+        prefs["swatches"] = self.env["bf.color.swatch"].bf_available()
+        prefs["palette"] = self._bf_color_palette()
+        return prefs
+
+    @api.model
+    def _mobile_set_prefs(self, vals):
+        """Écrit les préférences reçues ; une valeur hors liste est refusée."""
+        vals = vals or {}
+        user = self.env.user
+        values = {}
+        for key, field in PREFS.items():
+            if key not in vals:
+                continue
+            spec = user._fields[field]
+            if spec.type == "boolean":
+                values[field] = bool(vals[key])
+                continue
+            allowed = [code for code, _label in spec._description_selection(self.env)]
+            if vals[key] not in allowed:
+                raise UserError(_("Unknown value for %(pref)s: %(value)s", pref=key, value=vals[key]))
+            values[field] = vals[key]
+        if values:
+            user.write(values)
+        return self._mobile_prefs()
 
     @api.model
     def _mobile_clean_color(self, value):
@@ -377,6 +459,90 @@ class BfNote(models.Model):
             return None
         return note
 
+    # ------------------------------------------------------------------
+    # Pièces jointes
+    # ------------------------------------------------------------------
+    def _mobile_attachments(self):
+        """Les pièces de la note, sous les droits de l'appelant.
+
+        ⚠️ Seulement celles rattachées à la NOTE, pas les pièces des messages
+        de son fil : ces dernières portent aussi ``res_model = bf.note``, mais
+        elles vivent avec le message, et le chatter les montre déjà là.
+        """
+        self.ensure_one()
+        return self.env["ir.attachment"].search([
+            ("res_model", "=", self._name), ("res_id", "=", self.id),
+            ("res_field", "=", False),
+        ], order="id asc")
+
+    @api.model
+    def _mobile_attachment_payload(self, attachment):
+        return {
+            "id": attachment.id,
+            "name": attachment.name or "",
+            "mimetype": attachment.mimetype or "application/octet-stream",
+            "size": attachment.file_size or 0,
+            "image": (attachment.mimetype or "").startswith("image/"),
+        }
+
+    def _mobile_attach(self, filename, content, mimetype=None):
+        """Joint un fichier à la note ; rend la note.
+
+        🔴 Idempotent sur (nom, empreinte) : un téléversement que le réseau a
+        coupé APRÈS l'écriture est rejoué par l'app, et la pièce ne doit pas
+        s'y retrouver en double.
+
+        ⚠️ Écrire exige le droit d'écriture sur la note : une note partagée en
+        lecture seule ne reçoit pas les fichiers d'un collègue. C'est l'ORM qui
+        tranche, à la création de la pièce, sous l'usager réel.
+        """
+        self.ensure_one()
+        self.check_access("write")
+        if not content:
+            raise UserError(_("The file is empty."))
+        if len(content) > MAX_ATTACHMENT:
+            raise UserError(_("The file is too large (25 MB at most)."))
+        nom = (filename or "").replace("/", "_").replace("\\", "_").strip()[:MAX_TITLE] \
+            or _("Shared file")
+        Attachment = self.env["ir.attachment"]
+        empreinte = Attachment._compute_checksum(content)
+        deja = self._mobile_attachments().filtered(
+            lambda a: a.checksum == empreinte and a.name == nom)
+        if deja:
+            return {"created": False, "file": self._mobile_attachment_payload(deja[:1]),
+                    "note": self._mobile_payload()}
+        if len(self._mobile_attachments()) >= MAX_ATTACHMENTS_PER_NOTE:
+            raise UserError(_("This note already has %s files.", MAX_ATTACHMENTS_PER_NOTE))
+        vals = {
+            "name": nom,
+            "raw": content,
+            "res_model": self._name,
+            "res_id": self.id,
+        }
+        if mimetype and "/" in mimetype and len(mimetype) < 128:
+            vals["mimetype"] = mimetype
+        piece = Attachment.create(vals)
+        return {"created": True, "file": self._mobile_attachment_payload(piece),
+                "note": self._mobile_payload()}
+
+    def _mobile_attachment(self, attachment_id):
+        """Une pièce de CETTE note, ou ``None`` : l'identifiant seul ne suffit pas."""
+        self.ensure_one()
+        try:
+            attachment_id = int(attachment_id)
+        except (TypeError, ValueError):
+            return None
+        return self._mobile_attachments().filtered(lambda a: a.id == attachment_id)[:1] or None
+
+    def _mobile_detach(self, attachment_id):
+        self.ensure_one()
+        self.check_access("write")
+        piece = self._mobile_attachment(attachment_id)
+        if not piece:
+            raise UserError(_("This file is no longer on the note."))
+        piece.unlink()
+        return {"note": self._mobile_payload()}
+
     def _mobile_update(self, vals):
         """Modifie titre, texte, épingle ou couleur. Refuse sur conflit."""
         self.ensure_one()
@@ -404,8 +570,7 @@ class BfNote(models.Model):
             values["name"] = title
         if "pinned" in vals:
             values["pinned"] = bool(vals["pinned"])
-        if "color" in vals:
-            values["color"] = self._mobile_clean_color(vals["color"])
+        values.update(self._mobile_color_values(vals))
         if values:
             # L'écriture passe par les droits de l'appelant : la règle
             # d'écriture du module (auteur seul) décide, pas ce code.

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-23 00:31+0000\n"
-"PO-Revision-Date: 2026-09-23 00:31+0000\n"
+"POT-Creation-Date: 2026-09-27 02:22+0000\n"
+"PO-Revision-Date: 2026-09-27 02:22+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -31,6 +31,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_activity_wizard.py:0
 msgid "%s activity(ies)."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "%s is not a hex color."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -90,6 +96,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_bloc_notes/controllers/mobile_api.py:0
 msgid "A JSON object is expected."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_link.py:0
+msgid "A link cannot be moved to another note."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -251,6 +263,11 @@ msgid "Author"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_color_style__fill
+msgid "Background"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link_mixin__bf_note_count
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_crm_lead__bf_note_count
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_project_project__bf_note_count
@@ -269,6 +286,22 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_task_wizard_form
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_user_pref_view_form
 msgid "Cancel"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: code:addons/bf_bloc_notes/static/src/js/bf_note_kanban.js:0
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_layout__cards
+msgid "Cards"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_res_users__bf_note_layout
+msgid ""
+"Cards: masonry grid with the color as background, like Google Keep. Minimal:"
+" one line per note, the color as a stripe. List: detailed rows."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -296,14 +329,61 @@ msgid "Close"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__color_resolved_index
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_tag__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__color
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__color
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "Color"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__color_source
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__color_source
+msgid "Color Source"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_kanban.xml:0
+msgid "Color as a stripe"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__color_hex
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_tag__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note__color_resolved
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_tag__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
 msgstr ""
 
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "Colour"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_density__comfortable
+msgid "Comfortable"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_kanban.xml:0
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_density__compact
+msgid "Compact"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -453,6 +533,11 @@ msgid "Device identifier"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_user_pref_view_form
+msgid "Display"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_activity_wizard__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_link__display_name
@@ -460,6 +545,18 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__display_name
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__color_resolved
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__color_resolved
+msgid "Displayed color"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__color_resolved_index
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__color_resolved_index
+msgid "Displayed color (Odoo palette)"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -534,6 +631,11 @@ msgid "Group by"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_res_users__bf_note_group_by_color
+msgid "Group notes by color"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__has_message
 msgid "Has Message"
 msgstr ""
@@ -601,6 +703,12 @@ msgstr ""
 #. module: bf_bloc_notes
 #. odoo-python
 #: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "Keep in my colors"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 msgid "Keep mine"
 msgstr ""
 
@@ -628,6 +736,14 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__write_date
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_task_wizard__write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: code:addons/bf_bloc_notes/static/src/xml/bf_note_kanban.xml:0
+msgid "Layout"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -683,6 +799,15 @@ msgid "Links"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: code:addons/bf_bloc_notes/static/src/js/bf_note_kanban.js:0
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_layout__list
+msgid "List"
+msgstr ""
+
+#. module: bf_bloc_notes
 #. odoo-python
 #: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_kanban
@@ -697,6 +822,15 @@ msgstr ""
 #. module: bf_bloc_notes
 #: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__message_ids
 msgid "Messages"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+#: code:addons/bf_bloc_notes/static/src/js/bf_note_kanban.js:0
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_layout__minimal
+msgid "Minimal"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -827,6 +961,18 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #. odoo-python
+#: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
+msgid "No color"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/controllers/mobile_api.py:0
+msgid "No file received."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_reroute.py:0
 msgid "No link"
 msgstr ""
@@ -869,6 +1015,11 @@ msgstr ""
 #: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid "Note archived."
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_res_users__bf_note_color_style
+msgid "Note color shown as"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -937,6 +1088,16 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.view_project_form_bf_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.view_task_form2_bf_notes
 msgid "Notes"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_res_users__bf_note_density
+msgid "Notes density"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_res_users__bf_note_layout
+msgid "Notes layout"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1010,6 +1171,12 @@ msgstr ""
 #. module: bf_bloc_notes
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_search
 msgid "Overdue"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__color_hex
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__color_hex
+msgid "Own color"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1266,6 +1433,12 @@ msgid "Shared"
 msgstr ""
 
 #. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Shared file"
+msgstr ""
+
+#. module: bf_bloc_notes
 #: model_terms:ir.actions.act_window,help:bf_bloc_notes.bf_note_action
 msgid ""
 "Shortcut: <b>Alt+N</b> for a new note, <b>Alt+Shift+N</b> for the list."
@@ -1288,6 +1461,11 @@ msgid ""
 "Overdue: Due date is already passed\n"
 "Today: Activity date is today\n"
 "Planned: Future activities."
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields.selection,name:bf_bloc_notes.selection__res_users__bf_note_color_style__stripe
+msgid "Stripe"
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1363,9 +1541,33 @@ msgid "Tasks created from the note"
 msgstr ""
 
 #. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note__color_text
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__color_text
+msgid "Text color"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "The author of a note cannot be changed."
+msgstr ""
+
+#. module: bf_bloc_notes
 #. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid "The device identifier is not a valid UUID."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "The file is empty."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "The file is too large (25 MB at most)."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1399,8 +1601,20 @@ msgstr ""
 
 #. module: bf_bloc_notes
 #. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "This file is no longer on the note."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
 #: code:addons/bf_bloc_notes/controllers/page_pwa.py:0
 msgid "This gesture needs the network."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "This note already has %s files."
 msgstr ""
 
 #. module: bf_bloc_notes
@@ -1562,6 +1776,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
 msgid "Unknown mode: %s"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_mobile.py:0
+msgid "Unknown value for %(pref)s: %(value)s"
 msgstr ""
 
 #. module: bf_bloc_notes

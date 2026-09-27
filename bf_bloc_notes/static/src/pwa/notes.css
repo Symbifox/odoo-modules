@@ -266,3 +266,104 @@ button.danger { color: var(--danger); border-color: var(--danger); }
 }
 
 .toast button { color: var(--text); border-color: transparent; font-weight: 600; text-decoration: underline; }
+
+/* ── Couleur libre et mises en page ─────────────────────── */
+
+.mise {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: .6rem;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.2rem;
+}
+
+/* Fond plein (réglage par défaut) : la note prend sa couleur, le texte la
+   couleur lisible calculée. */
+.carte-note.coloree {
+    background: var(--note-bg);
+    color: var(--note-fg);
+    border-left-color: var(--note-bg);
+}
+.carte-note.coloree .texte,
+.carte-note.coloree .liens,
+.carte-note.coloree .menu { color: var(--note-fg); opacity: .85; }
+
+.couleur-lisere .carte-note.coloree {
+    background: var(--surface);
+    color: var(--text);
+    border-left: 6px solid var(--note-bg);
+}
+.couleur-lisere .carte-note.coloree .texte,
+.couleur-lisere .carte-note.coloree .liens,
+.couleur-lisere .carte-note.coloree .menu { color: var(--muted); opacity: 1; }
+
+.carte-note .etiquettes { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .4rem; }
+.carte-note .etiquette {
+    font-size: .75rem;
+    border-radius: 999px;
+    padding: .05rem .5rem;
+    background: var(--line);
+    color: var(--text);
+}
+
+/* Cartes façon Google Keep : deux colonnes et plus, hauteur au contenu. */
+.mise-cards main { max-width: 64rem; }
+.mise-cards .liste {
+    display: block;
+    column-width: 9.5rem;
+    column-gap: .75rem;
+}
+.mise-cards .carte-note {
+    display: inline-block;
+    width: 100%;
+    break-inside: avoid;
+    margin: 0 0 .75rem;
+    border-radius: .9rem;
+}
+
+/* Minimaliste : une ligne par note, la couleur en liseré. */
+.mise-minimal .carte-note {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding-top: .35rem;
+    padding-bottom: .35rem;
+    min-height: 44px;
+}
+.mise-minimal .carte-note.coloree { background: var(--surface); color: var(--text); border-left: 6px solid var(--note-bg); }
+.mise-minimal .carte-note .texte {
+    margin: 0;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    color: var(--muted);
+    opacity: 1;
+}
+.mise-minimal .carte-note .liens,
+.mise-minimal .carte-note .etiquettes { display: none; }
+
+/* Liste : le texte entier. */
+.mise-list .carte-note .texte { -webkit-line-clamp: unset; display: block; }
+
+.densite-compacte .carte-note { padding-top: .3rem; padding-bottom: .3rem; font-size: .9rem; }
+
+/* Choix de couleur dans la fiche. */
+.choix-couleur { margin: .75rem 0; }
+.choix-couleur .choix-titre { font-size: .85rem; color: var(--muted); margin-bottom: .3rem; }
+.choix-couleur .rangee { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .4rem; }
+.pastille {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    padding: 0;
+}
+.pastille.active { outline: 3px solid var(--accent); outline-offset: 2px; }
+.pastille.aucune {
+    background: repeating-linear-gradient(45deg, transparent 0 5px, var(--line) 5px 7px);
+}
+.couleur-libre { width: 44px; height: 44px; border: 0; padding: 0; background: none; }

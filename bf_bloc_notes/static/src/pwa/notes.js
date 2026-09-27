@@ -155,7 +155,9 @@
                     client_uuid: element.client_uuid, title: element.title, text: element.text,
                 });
             } else {
-                var params = { id: element.id, text: element.text };
+                var params = { id: element.id };
+                if (element.text !== undefined) { params.text = element.text; }
+                if (element.color_hex !== undefined) { params.color_hex = element.color_hex; }
                 if (element.title !== undefined) { params.title = element.title; }
                 if (element.write_date) { params.write_date = element.write_date; }
                 appel = appeler("/notes/api/modifier", params);
@@ -208,7 +210,13 @@
             // porte le texte entier, les précédentes sont périmées. Le
             // write_date vu la PREMIÈRE fois reste celui qui détecte le conflit.
             var ancienne = f.filter(function (e) { return e.op === "modifier" && e.id === element.id; })[0];
-            if (ancienne) { element.write_date = ancienne.write_date; }
+            if (ancienne) {
+                element.write_date = ancienne.write_date;
+                // Une couleur puis un texte (ou l'inverse) : garder les deux.
+                ["text", "title", "color_hex"].forEach(function (k) {
+                    if (element[k] === undefined && ancienne[k] !== undefined) { element[k] = ancienne[k]; }
+                });
+            }
             f = f.filter(function (e) { return !(e.op === "modifier" && e.id === element.id); });
         }
         f.push(element);
@@ -279,10 +287,24 @@
                 links: [], editable: false, attente: true,
             }));
         });
-        etat.notes.forEach(function (n) {
+        var notes = etat.notes.slice();
+        if (etat.prefs && etat.prefs.group_by_color) {
+            // Regrouper par couleur, les épinglées d'abord dans chaque groupe.
+            notes.sort(function (a, b) {
+                var ca = a.color_hex || "~", cb = b.color_hex || "~";
+                if (ca !== cb) { return ca < cb ? -1 : 1; }
+                return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+            });
+        }
+        notes.forEach(function (n) {
             var modif = modifsEnAttente[n.id];
-            var vue = modif ? Object.assign({}, n, { text: modif.text, attente: true }) : n;
-            if (modif && modif.title !== undefined) { vue.title = modif.title; }
+            var vue = n;
+            if (modif) {
+                vue = Object.assign({}, n, { attente: true });
+                if (modif.text !== undefined) { vue.text = modif.text; }
+                if (modif.title !== undefined) { vue.title = modif.title; }
+                if (modif.color_hex !== undefined) { vue.color_hex = modif.color_hex || null; vue.text_color = null; }
+            }
             liste.appendChild(carte(vue));
         });
         var vide = !enAttente.length && !etat.notes.length;
@@ -293,6 +315,14 @@
     function carte(note) {
         var li = document.createElement("li");
         li.className = "carte-note couleur-" + (note.color || 0) + (note.pinned ? " epinglee" : "");
+        // la couleur résolue par le serveur (libre, la mienne, celle du
+        // locataire ou d'une règle) ; l'index ne sert qu'aux anciennes données.
+        if (note.color_hex) {
+            li.classList.add("coloree");
+            li.style.setProperty("--note-bg", note.color_hex);
+            li.style.setProperty("--note-fg", note.text_color || encre(note.color_hex));
+            li.dataset.couleur = note.color_hex;
+        }
         var tete = document.createElement("div");
         tete.className = "tete";
         var titre = document.createElement("strong");
@@ -326,6 +356,21 @@
             p.className = "texte";
             p.textContent = texteCourt(corps);
             li.appendChild(p);
+        }
+        if (note.tags && note.tags.length) {
+            var etiquettes = document.createElement("div");
+            etiquettes.className = "etiquettes";
+            note.tags.forEach(function (t) {
+                var puce = document.createElement("span");
+                puce.className = "etiquette";
+                puce.textContent = t.name;
+                if (t.color_hex) {
+                    puce.style.background = t.color_hex;
+                    puce.style.color = t.text_color || encre(t.color_hex);
+                }
+                etiquettes.appendChild(puce);
+            });
+            li.appendChild(etiquettes);
         }
         if (note.links && note.links.length) {
             var liens = document.createElement("div");
@@ -426,6 +471,9 @@
             avis.textContent = dire("read_only");
             fiche.appendChild(avis);
         }
+        if (note.mine !== false) {
+            fiche.appendChild(choixCouleur(note));
+        }
         var pied = document.createElement("div");
         pied.className = "pied";
         pied.appendChild(lienSymbifox(note));
@@ -441,6 +489,121 @@
         }));
         fiche.appendChild(pied);
         fiche.showModal();
+    }
+
+    /* ── Couleur et mise en page ─────────────────────────────── */
+
+    /** Noir ou blanc, le plus lisible sur ``hex`` (contraste WCAG). */
+    function encre(hex) {
+        var m = /^#?([0-9a-f]{6})$/i.exec(hex || "");
+        if (!m) { return "#000000"; }
+        var v = [0, 2, 4].map(function (i) {
+            var c = parseInt(m[1].slice(i, i + 2), 16) / 255;
+            return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        });
+        var l = 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+        return (l + 0.05) / 0.05 >= 1.05 / (l + 0.05) ? "#000000" : "#FFFFFF";
+    }
+
+    function normaliser(hex) {
+        var m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec((hex || "").trim());
+        if (!m) { return null; }
+        var d = m[1].length === 3 ? m[1].replace(/(.)/g, "$1$1") : m[1];
+        return "#" + d.toUpperCase();
+    }
+
+    function poserCouleur(note, hex) {
+        mettreEnFile({ op: "modifier", id: note.id, color_hex: hex || "", write_date: note.write_date });
+        note.color_hex = hex || null;
+        note.text_color = hex ? encre(hex) : null;
+        rendre();
+        viderFile();
+    }
+
+    function pastille(hex, actif, faire) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "pastille" + (actif ? " active" : "") + (hex ? "" : " aucune");
+        if (hex) { b.style.background = hex; b.dataset.couleur = hex; }
+        b.title = hex || dire("no_color");
+        b.setAttribute("aria-label", hex || dire("no_color"));
+        b.addEventListener("click", faire);
+        return b;
+    }
+
+    function choixCouleur(note) {
+        var boite = document.createElement("div");
+        boite.className = "choix-couleur";
+        var titre = document.createElement("div");
+        titre.className = "choix-titre";
+        titre.textContent = dire("color");
+        boite.appendChild(titre);
+        var groupes = [];
+        var prefs = etat.prefs || {};
+        (prefs.swatches || []).forEach(function (sw) { groupes.push(sw.colors); });
+        groupes.push((prefs.palette || []).slice(1));
+        var actuelle = note.color_hex || null;
+        groupes.forEach(function (couleurs) {
+            var rangee = document.createElement("div");
+            rangee.className = "rangee";
+            couleurs.forEach(function (hex) {
+                rangee.appendChild(pastille(hex, hex === actuelle, function () {
+                    poserCouleur(note, hex);
+                    fermerFiche();
+                }));
+            });
+            boite.appendChild(rangee);
+        });
+        var libre = document.createElement("div");
+        libre.className = "rangee";
+        libre.appendChild(pastille(null, !actuelle, function () { poserCouleur(note, null); fermerFiche(); }));
+        var natif = document.createElement("input");
+        natif.type = "color";
+        natif.className = "couleur-libre";
+        natif.value = (actuelle || "#9FB5D9").toLowerCase();
+        natif.setAttribute("aria-label", dire("color"));
+        natif.addEventListener("change", function () {
+            var hex = normaliser(natif.value);
+            if (hex) { poserCouleur(note, hex); fermerFiche(); }
+        });
+        libre.appendChild(natif);
+        boite.appendChild(libre);
+        return boite;
+    }
+
+    var MISES = ["cards", "minimal", "list"];
+
+    function appliquerMise() {
+        var p = etat.prefs || {};
+        var corps = document.body.classList;
+        MISES.forEach(function (m) { corps.toggle("mise-" + m, (p.layout || "cards") === m); });
+        corps.toggle("densite-compacte", p.density === "compact");
+        corps.toggle("couleur-lisere", p.color_style === "stripe");
+        var bouton = $("mise");
+        bouton.textContent = { cards: "▦", minimal: "☰", list: "≣" }[p.layout || "cards"];
+        bouton.title = dire("layout") + " : " + dire("layout_" + (p.layout || "cards"));
+        bouton.setAttribute("aria-label", bouton.title);
+    }
+
+    function chargerPreferences() {
+        return appeler("/notes/api/preferences", {}).then(function (prefs) {
+            if (prefs && !prefs.error) {
+                etat.prefs = prefs;
+                ecrire(CLE_CACHE + ".prefs." + etat.uid, prefs);
+                appliquerMise();
+                rendre();
+            }
+        }, function () { /* hors ligne : on garde la mise en cache */ });
+    }
+
+    function changerMise() {
+        var p = etat.prefs || {};
+        var suivante = MISES[(MISES.indexOf(p.layout || "cards") + 1) % MISES.length];
+        etat.prefs = Object.assign({}, p, { layout: suivante });
+        appliquerMise();
+        appeler("/notes/api/preferences", { layout: suivante }).then(function (prefs) {
+            if (prefs && !prefs.error) { etat.prefs = prefs; appliquerMise(); }
+        }, function () { toast(dire("needs_network")); });
     }
 
     function conflit(element, noteServeur) {
@@ -607,6 +770,9 @@
         $("texte").placeholder = dire("placeholder");
         $("garder").textContent = dire("save");
         $("recherche").placeholder = dire("search");
+        etat.prefs = lire(CLE_CACHE + ".prefs." + etat.uid, null);
+        appliquerMise();
+        $("mise").addEventListener("click", changerMise);
 
         // Ce qu'un partage apporte (menu Partager d'Android), sinon le
         // brouillon d'un onglet interrompu.
@@ -677,6 +843,7 @@
 
         // Apprendre QUI est connecté avant de vider la file (voir l'en-tête).
         charger(!etat.plusRecent).then(function () {
+            chargerPreferences();
             return viderFile();
         }).then(function () { return charger(); });
 

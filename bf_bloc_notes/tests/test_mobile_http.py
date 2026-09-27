@@ -234,3 +234,45 @@ class TestNoteMobileApi(HttpCase):
         self.assertEqual(reponse.status_code, 400)
         note.invalidate_recordset()
         self.assertFalse(note.pinned)
+
+    # ── Pièces jointes ───────────────────────────────────
+
+    def test_joindre_lire_puis_retirer_un_fichier(self):
+        with self._authentifie():
+            cree = self._post(f"{BASE}/notes", {"client_uuid": str(uuid.uuid4()),
+                                                "text": "Partage"}).json()["note"]
+            envoi = self.url_open(f"{BASE}/notes/{cree['id']}/files",
+                                  files={"file": ("reçu.pdf", b"%PDF-1.4 x", "application/pdf")})
+            rejoue = self.url_open(f"{BASE}/notes/{cree['id']}/files",
+                                   files={"file": ("reçu.pdf", b"%PDF-1.4 x", "application/pdf")})
+            piece = envoi.json()["file"]
+            lue = self.url_open(f"{BASE}/notes/{cree['id']}/files/{piece['id']}")
+            retrait = self._post(f"{BASE}/notes/{cree['id']}/files/{piece['id']}/delete", {})
+        self.assertEqual(envoi.status_code, 201)
+        self.assertEqual(rejoue.status_code, 200)
+        self.assertEqual(piece["name"], "reçu.pdf")
+        self.assertEqual(lue.status_code, 200)
+        self.assertEqual(lue.content, b"%PDF-1.4 x")
+        self.assertEqual(lue.headers["Content-Type"], "application/pdf")
+        self.assertEqual(retrait.status_code, 200)
+        self.assertFalse(retrait.json()["note"]["files"])
+
+    def test_sans_fichier_rend_400(self):
+        with self._authentifie():
+            cree = self._post(f"{BASE}/notes", {"client_uuid": str(uuid.uuid4()),
+                                                "text": "x"}).json()["note"]
+            envoi = self.url_open(f"{BASE}/notes/{cree['id']}/files", data={"rien": "1"})
+        self.assertEqual(envoi.status_code, 400)
+
+    def test_le_fichier_d_une_note_d_un_autre_est_introuvable(self):
+        with self._authentifie(self.bruno):
+            cree = self._post(f"{BASE}/notes", {"client_uuid": str(uuid.uuid4()),
+                                                "text": "À Bruno"}).json()["note"]
+            piece = self.url_open(f"{BASE}/notes/{cree['id']}/files",
+                                  files={"file": ("b.txt", b"secret", "text/plain")}).json()["file"]
+        with self._authentifie():
+            lue = self.url_open(f"{BASE}/notes/{cree['id']}/files/{piece['id']}")
+            envoi = self.url_open(f"{BASE}/notes/{cree['id']}/files",
+                                  files={"file": ("a.txt", b"intrus", "text/plain")})
+        self.assertEqual(lue.status_code, 404)
+        self.assertEqual(envoi.status_code, 404)

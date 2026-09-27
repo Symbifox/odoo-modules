@@ -11,6 +11,12 @@
                     <group>
                         <field name="bf_note_default_reminder"/>
                     </group>
+                    <group string="Display">
+                        <field name="bf_note_layout" widget="radio"/>
+                        <field name="bf_note_density" widget="radio"/>
+                        <field name="bf_note_color_style" widget="radio"/>
+                        <field name="bf_note_group_by_color"/>
+                    </group>
                     <p class="text-muted">
                         This reminder will be preselected in the quick creation dialog
                         (systray icon or <kbd>Alt+N</kbd>). You can still change it

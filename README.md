@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**53 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**54 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -101,7 +101,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_babillard_home` | Babillard : accueil | 18.0.1.0.2 | BUSL-1.1 | What you still have to read, on the dashboard |
 | `bf_babillard_pulse` | Babillard : pulse | 18.0.1.0.3 | BUSL-1.1 | The displayable results of a closed pulse wave appear on the noticeboard |
 | `bf_babillard_survey` | Babillard : sondages Odoo | 18.0.1.0.0 | BUSL-1.1 | An editor announces an open Odoo survey on the feed, with its link |
-| `bf_bloc_notes` | BF Bloc-notes | 18.0.3.0.3 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, keyboard shortcuts, and systray icon (Alt+N) |
+| `bf_bloc_notes` | BF Bloc-notes | 18.0.4.0.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_budget` | Budgets opérationnels | 18.0.1.0.4 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.1.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.0.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
@@ -124,6 +124,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.0.0 | BUSL-1.1 | Claude usage section in the daily digest: window usage, reset times and probe state, account by account |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
+| `bf_color` | BF Color | 18.0.1.0.1 | LGPL-3 | Free colors resolved per user, per company and by automatic rules, with saved swatches |
 | `bf_contact_absence` | Symbifox Absences des contacts | 18.0.1.1.0 | BUSL-1.1 | Savoir qu'un contact est absent avant de lui écrire, de lui texter ou de l'appeler |
 | `bf_contact_absence_autoreply` | Symbifox Répondeur d'absence sur statut | 18.0.1.1.0 | BUSL-1.1 | Declare yourself away once, and the responder, the calendar and the return all follow |
 | `bf_contact_absence_calendar` | Symbifox Absences des contacts : calendrier Nextcloud | 18.0.1.1.0 | BUSL-1.1 | Proposer les absences notées à la main dans un calendrier Nextcloud |
@@ -352,7 +353,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **53 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **54 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

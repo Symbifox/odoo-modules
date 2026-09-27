@@ -53,3 +53,103 @@
         font-size: 0.875rem;
     }
 }
+
+// ── Mises en page et couleur libre ─────────────────────────────
+// La carte reçoit --bf-note-bg / --bf-note-fg (couleur résolue et texte
+// lisible dessus) ; la préférence « fond plein » ou « liseré » décide.
+.o_bf_note_kanban {
+    .o_bf_note_card.o_bf_note_colored {
+        .o_bf_note_card_color_strip { display: none; }
+    }
+}
+.o_bf_note_kanban.o_bf_notes_color_fill .o_bf_note_card.o_bf_note_colored {
+    background-color: var(--bf-note-bg);
+    color: var(--bf-note-fg);
+    border-color: color-mix(in srgb, var(--bf-note-bg) 80%, #000);
+    // Le texte secondaire suit la couleur lisible au lieu du gris d'Odoo,
+    // illisible sur un fond foncé.
+    .text-muted, .o_bf_note_card_body, .o_bf_note_pin_btn, .dropdown-toggle {
+        color: var(--bf-note-fg) !important;
+    }
+    .text-muted, .o_bf_note_card_body { opacity: 0.8; }
+    .o_bf_note_quick .btn-light {
+        background-color: color-mix(in srgb, var(--bf-note-fg) 12%, transparent);
+        border-color: transparent;
+        color: var(--bf-note-fg);
+    }
+}
+.o_bf_note_kanban.o_bf_notes_color_stripe .o_bf_note_card.o_bf_note_colored {
+    border-left: 6px solid var(--bf-note-bg);
+}
+
+// Cartes façon Google Keep : maçonnerie, hauteur au contenu.
+.o_bf_note_kanban.o_bf_notes_layout_cards .o_kanban_renderer.o_kanban_ungrouped {
+    display: block !important;
+    column-width: 16rem;
+    column-gap: 0.75rem;
+    padding: 0.75rem;
+    .o_kanban_record {
+        display: inline-block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 0 0.75rem 0 !important;
+        break-inside: avoid;
+    }
+    .o_kanban_ghost { display: none; }
+    .o_bf_note_card {
+        min-height: 0;
+        border-radius: 0.75rem;
+    }
+    .o_bf_note_card_body { max-height: 20rem; }
+}
+
+// Minimaliste : une ligne par note, la couleur en liseré quel que soit le réglage.
+.o_bf_note_kanban.o_bf_notes_layout_minimal .o_kanban_renderer.o_kanban_ungrouped {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    .o_kanban_record { width: 100% !important; min-width: 0 !important; flex: 0 0 auto !important; margin: 0 !important; }
+    .o_kanban_ghost { display: none; }
+    .o_bf_note_card {
+        min-height: 0;
+        border-radius: 0;
+        border-width: 0 0 1px 0;
+        background: transparent !important;
+        color: inherit !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100%;
+        gap: 0.75rem;
+        padding: 0.35rem 0.75rem;
+        text-align: left;
+        &.o_bf_note_colored { border-left: 6px solid var(--bf-note-bg); }
+        .o_bf_note_card_header { order: 1; flex: 0 0 auto; max-width: 40%; }
+        .o_bf_note_card_body {
+            order: 2; flex: 1 1 auto; max-height: 1.5em; white-space: nowrap;
+            text-overflow: ellipsis; opacity: 0.7;
+            * { display: inline; }
+        }
+        .o_bf_note_card_footer { order: 3; margin: 0 !important; flex: 0 0 auto; }
+        .o_bf_note_card_color_strip, .o_bf_note_quick, .o_dropdown_kanban,
+        .o_bf_note_card > .small { display: none !important; }
+    }
+}
+
+// Liste : pleine largeur, le texte en entier, gestes visibles.
+.o_bf_note_kanban.o_bf_notes_layout_list .o_kanban_renderer.o_kanban_ungrouped {
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    padding: 0.5rem 0.75rem;
+    .o_kanban_record { width: 100% !important; min-width: 0 !important; flex: 0 0 auto !important; margin: 0 0 0.5rem 0 !important; }
+    .o_kanban_ghost { display: none; }
+    .o_bf_note_card { min-height: 0; }
+    .o_bf_note_card_body { max-height: none; }
+}
+
+.o_bf_note_kanban.o_bf_notes_density_compact {
+    .o_bf_note_card { padding: 0.35rem 0.5rem; font-size: 0.85rem; }
+    .o_bf_note_card_body { max-height: 6rem; }
+    .o_bf_note_quick { display: none !important; }
+}
