@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le résumé est un gabarit de courriel, pas un courriel composé à la main :
+         c'est ce qui lui donne la mise en page de la maison (bluefox_branding
+         quand il est installé), comme les autres avis de la plateforme. Le
+         contenu voyage dans le contexte (`ctx`), en données simples. -->
+    <record id="mail_template_resume" model="mail.template">
+        <field name="name">Flux RSS : résumé courriel</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="subject">{{ ctx.get('flux_sujet') or 'Vos flux' }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="lang">{{ object.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p style="margin: 0 0 12px 0;">Bonjour <t t-out="object.name or ''"/>,</p>
+    <p style="margin: 0 0 16px 0;">Voici ce que vos listes de flux ont retenu depuis le dernier résumé.</p>
+    <t t-foreach="ctx.get('flux_blocs') or []" t-as="bloc">
+        <h3 style="margin: 20px 0 8px 0; font-size: 16px;">
+            <t t-out="bloc['nom']"/>
+            <span style="font-weight: normal; color: #6B7280; font-size: 13px;">
+                · <t t-out="bloc['total']"/> élément<t t-if="bloc['total'] &gt; 1">s</t>
+            </span>
+        </h3>
+        <ul style="padding-left: 18px; margin: 0;">
+            <li t-foreach="bloc['elements']" t-as="el" style="margin-bottom: 8px;">
+                <a t-att-href="el['lien']" t-out="el['titre']"/>
+                <t t-if="el['emetteur']"><br/><span style="color: #6B7280; font-size: 12px;" t-out="el['emetteur']"/></t>
+            </li>
+        </ul>
+        <p t-if="bloc['autres']" style="margin: 6px 0 0 0; font-size: 13px;">
+            Et <t t-out="bloc['autres']"/> autre<t t-if="bloc['autres'] &gt; 1">s</t> :
+            <a t-att-href="bloc['url']">tout voir dans Odoo</a>.
+        </p>
+    </t>
+    <p style="margin: 24px 0 0 0; font-size: 12px; color: #6B7280;">
+        Vous recevez ce résumé parce que ces listes vous sont adressées, nommément ou par votre service ou l'un de vos projets.
+        <a t-att-href="ctx.get('flux_url_abonnements')">Régler la fréquence ou se désabonner</a>.
+    </p>
+</div>
+        </field>
+    </record>
+</odoo>

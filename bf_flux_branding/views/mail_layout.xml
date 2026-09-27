@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Variante de la mise en page de la maison : seul le titre du bandeau change. -->
+    <template id="mail_layout_flux"
+              inherit_id="bluefox_branding.bf_mail_layout"
+              primary="True"
+              name="Mise en page de la maison, bandeau des flux">
+        <xpath expr="//td[@align='right']/t[@t-out='company.name']" position="replace">
+            <t>Vos flux de nouvelles</t>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_flux_source_user,flux.source.user,model_bf_flux_source,base.group_user,1,0,0,0
+access_flux_source_gestion,flux.source.gestion,model_bf_flux_source,group_flux_gestion,1,1,1,1
+access_flux_element_user,flux.element.user,model_bf_flux_element,base.group_user,1,0,0,0
+access_flux_element_gestion,flux.element.gestion,model_bf_flux_element,group_flux_gestion,1,1,1,1
+access_flux_liste_user,flux.liste.user,model_bf_flux_liste,base.group_user,1,0,0,0
+access_flux_liste_gestion,flux.liste.gestion,model_bf_flux_liste,group_flux_gestion,1,1,1,1
+access_flux_retenue_user,flux.retenue.user,model_bf_flux_retenue,base.group_user,1,0,0,0
+access_flux_retenue_gestion,flux.retenue.gestion,model_bf_flux_retenue,group_flux_gestion,1,1,1,1
+access_flux_preference_user,flux.preference.user,model_bf_flux_preference,base.group_user,1,1,0,0
+access_flux_preference_gestion,flux.preference.gestion,model_bf_flux_preference,group_flux_gestion,1,1,1,1
+access_flux_poser_projet_user,flux.poser.projet.user,model_bf_flux_poser_projet,base.group_user,1,1,1,0
+access_flux_lecture_user,flux.lecture.user,model_bf_flux_lecture,base.group_user,1,1,1,1

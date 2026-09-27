@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_element_form_babillard" model="ir.ui.view">
+        <field name="name">bf.flux.element.form.babillard</field>
+        <field name="model">bf.flux.element</field>
+        <field name="inherit_id" ref="bf_flux.flux_element_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_poser_projet']" position="after">
+                <button name="action_publier_babillard" type="object" string="Publier au babillard"
+                        groups="bf_babillard.group_babillard_redacteur"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="flux_retenue_list_babillard" model="ir.ui.view">
+        <field name="name">bf.flux.retenue.list.babillard</field>
+        <field name="model">bf.flux.retenue</field>
+        <field name="inherit_id" ref="bf_flux.flux_retenue_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_poser_projet']" position="after">
+                <button name="action_publier_babillard" type="object" icon="fa-bullhorn"
+                        title="Publier au babillard" groups="bf_babillard.group_babillard_redacteur"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="flux_retenue_form_babillard" model="ir.ui.view">
+        <field name="name">bf.flux.retenue.form.babillard</field>
+        <field name="model">bf.flux.retenue</field>
+        <field name="inherit_id" ref="bf_flux.flux_retenue_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_poser_projet']" position="after">
+                <button name="action_publier_babillard" type="object" string="Publier au babillard"
+                        groups="bf_babillard.group_babillard_redacteur"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

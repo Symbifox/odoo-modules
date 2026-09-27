@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_liste_list" model="ir.ui.view">
+        <field name="name">bf.flux.liste.list</field>
+        <field name="model">bf.flux.liste</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="source_ids" widget="many2many_tags"/>
+                <field name="department_ids" widget="many2many_tags" optional="show"/>
+                <field name="project_ids" widget="many2many_tags" optional="show"/>
+                <field name="user_ids" widget="many2many_tags" optional="show"/>
+                <field name="membre_count"/>
+                <field name="retenue_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="flux_liste_form" model="ir.ui.view">
+        <field name="name">bf.flux.liste.form</field>
+        <field name="model">bf.flux.liste</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_appliquer_existants" type="object" string="Appliquer aux 7 derniers jours"
+                            help="Applique les règles aux éléments déjà reçus, sans rien diffuser, pour régler la liste sur des cas réels."/>
+                    <button name="action_ouvrir_canal" type="object" string="Ouvrir le canal"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_voir_retenues" type="object" class="oe_stat_button" icon="fa-filter">
+                            <field name="retenue_count" widget="statinfo" string="Retenus"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom de la liste"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="source_ids" widget="many2many_tags"/>
+                            <field name="sources_entieres_ids" widget="many2many_tags"
+                                   domain="[('id', 'in', source_ids)]"/>
+                            <field name="channel_id"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Ce que la liste surveille, pour qui"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Règles" name="regles">
+                            <p class="text-muted">
+                                Une ligne par mot ou expression, sans égard à la casse ni aux accents.
+                                Une ligne qui commence par « re: » est une expression régulière.
+                                Sans terme ni émetteur spécialisé, la liste prend tout ce que ses sources apportent, moins les exclusions.
+                            </p>
+                            <group>
+                                <group>
+                                    <field name="termes" placeholder="défense&#10;forces armées&#10;re:\bdrones?\b"/>
+                                    <field name="emetteurs_seuls" placeholder="Lockheed&#10;Rheinmetall"/>
+                                </group>
+                                <group>
+                                    <field name="emetteurs_notes" placeholder="Bombardier&#10;CAE"/>
+                                    <field name="exclusions" placeholder="conference call&#10;résultats du deuxième trimestre"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Audience" name="audience">
+                            <group>
+                                <field name="department_ids" widget="many2many_tags"/>
+                                <field name="project_ids" widget="many2many_tags"/>
+                                <field name="user_ids" widget="many2many_tags"/>
+                                <field name="membre_count"/>
+                            </group>
+                            <field name="membre_user_ids" widget="many2many_tags" readonly="1"/>
+                        </page>
+                        <page string="Préférences" name="preferences" groups="bf_flux.group_flux_gestion">
+                            <field name="preference_ids">
+                                <list editable="bottom">
+                                    <field name="user_id"/>
+                                    <field name="frequence"/>
+                                    <field name="desabonne"/>
+                                    <field name="dernier_envoi"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_flux_liste" model="ir.actions.act_window">
+        <field name="name">Listes</field>
+        <field name="res_model">bf.flux.liste</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

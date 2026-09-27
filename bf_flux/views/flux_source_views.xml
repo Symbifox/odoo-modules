@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_source_list" model="ir.ui.view">
+        <field name="name">bf.flux.source.list</field>
+        <field name="model">bf.flux.source</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="dernier_etat == 'definitif'" decoration-warning="dernier_etat == 'passager'">
+                <field name="name"/>
+                <field name="url" optional="hide"/>
+                <field name="cadence_heures"/>
+                <field name="derniere_releve"/>
+                <field name="dernier_etat"/>
+                <field name="derniers_vus" optional="show"/>
+                <field name="derniers_nouveaux" optional="show"/>
+                <field name="element_count"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="flux_source_form" model="ir.ui.view">
+        <field name="name">bf.flux.source.form</field>
+        <field name="model">bf.flux.source</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_relever" type="object" string="Relever maintenant" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_voir_elements" type="object" class="oe_stat_button" icon="fa-rss">
+                            <field name="element_count" widget="statinfo" string="Éléments"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom de la source"/></h1>
+                    </div>
+                    <group>
+                        <group string="Flux">
+                            <field name="url" widget="url"/>
+                            <field name="cadence_heures"/>
+                            <field name="langue_preferee"/>
+                            <field name="texte_complet"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Dernière relève">
+                            <field name="derniere_releve"/>
+                            <field name="prochaine_releve"/>
+                            <field name="dernier_etat"/>
+                            <field name="dernier_message" invisible="not dernier_message"/>
+                            <field name="echecs_consecutifs" invisible="not echecs_consecutifs"/>
+                            <field name="derniers_vus"/>
+                            <field name="derniers_nouveaux"/>
+                        </group>
+                    </group>
+                    <group string="Listes qui la lisent">
+                        <field name="liste_ids" widget="many2many_tags" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Texte complet" invisible="not texte_complet">
+                        <field name="coupures" nolabel="1" colspan="2"
+                               placeholder="A photo accompanying this announcement&#10;Une photo accompagnant ce communiqué"/>
+                    </group>
+                    <field name="note" placeholder="Ce que ce flux apporte, sa densité, sa rotation…"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_flux_source" model="ir.actions.act_window">
+        <field name="name">Sources</field>
+        <field name="res_model">bf.flux.source</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajoutez un premier flux RSS ou Atom</p>
+            <p>Réglez sa cadence sur la vitesse à laquelle il renouvelle sa fenêtre.</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_releve" model="ir.cron">
+        <field name="name">Flux RSS : relever les sources dues</field>
+        <field name="model_id" ref="model_bf_flux_source"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_releve()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+    </record>
+    <record id="cron_synchroniser" model="ir.cron">
+        <field name="name">Flux RSS : aligner les canaux sur les services et projets</field>
+        <field name="model_id" ref="model_bf_flux_liste"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_synchroniser()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+    </record>
+    <record id="cron_resume" model="ir.cron">
+        <field name="name">Flux RSS : résumés courriel</field>
+        <field name="model_id" ref="model_bf_flux_preference"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_resume()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+    </record>
+</odoo>

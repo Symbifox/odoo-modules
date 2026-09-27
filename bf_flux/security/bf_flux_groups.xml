@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_flux" model="ir.module.category">
+        <field name="name">Flux RSS</field>
+        <field name="description">La veille par flux RSS et sa diffusion.</field>
+        <field name="sequence">43</field>
+    </record>
+
+    <record id="group_flux_gestion" model="res.groups">
+        <field name="name">Gestion des flux</field>
+        <field name="category_id" ref="module_category_flux"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="comment">Ajoute les sources, règle les listes et leur audience.</field>
+    </record>
+</odoo>

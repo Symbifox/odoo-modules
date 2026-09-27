@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**165 modules are BUSL-1.1.** The source is published and auditable, and **you
+**171 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -184,6 +184,12 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_federation_timesheet` | Fédération : relevés des heures | 18.0.1.0.1 | BUSL-1.1 | Le relevé des heures d'une période, remis au partenaire comme un livrable, avec son accusé de réception |
 | `bf_floorplan` | Plans d'étage | 18.0.1.1.3 | BUSL-1.1 | Floor plans drawn from records: rooms, desks, devices and cables, each shape backed by a form, with a built-in SVG editor, PDF and diagrams.net export |
 | `bf_floorplan_hosting` | Plans d'étage : hébergement | 18.0.1.1.0 | LGPL-3 | Hosting endpoints and servers placed on the floor plan, with attention colours and a jump from the device form to its spot |
+| `bf_flux` | Flux RSS | 18.0.1.1.1 | BUSL-1.1 | RSS and Atom feeds polled at their own pace, de-duplicated by stable id, sorted by rules per list, delivered by department, project or person in Discuss and a daily or weekly digest, with a card reader where opened items leave the to-read list |
+| `bf_flux_babillard` | Flux RSS : babillard | 18.0.1.0.0 | BUSL-1.1 | Turns a retained feed item into a draft noticeboard post addressed to the list's departments; editors only |
+| `bf_flux_branding` | Flux RSS : bandeau de la maison | 18.0.1.0.0 | BUSL-1.1 | Gives the RSS digest the house mail layout with its own banner title instead of the company name |
+| `bf_flux_ia` | Flux RSS : tri par IA | 18.0.1.0.0 | BUSL-1.1 | Second sort after a list's rules: a language model scores each retained item 0-100 with a one-line reason; an outage never blocks delivery |
+| `bf_flux_nextcloud` | Flux RSS : corpus Nextcloud | 18.0.1.0.1 | BUSL-1.1 | Deposits what a list retains into a Nextcloud folder as monthly Markdown files per source, with an index, for a knowledge base read by an agent |
+| `bf_flux_partage` | Flux RSS : partage externe | 18.0.1.0.2 | BUSL-1.1 | Secret share links without login: a public card page and the same items as RSS, one link per recipient, with expiry, visit count and revocation |
 | `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.1.0 | LGPL-3 | Crons that remove non-employee followers and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.2 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
@@ -323,7 +329,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **165 modules: BUSL-1.1.** Production use for your own internal business
+- **171 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

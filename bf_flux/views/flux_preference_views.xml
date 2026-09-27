@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_preference_list" model="ir.ui.view">
+        <field name="name">bf.flux.preference.list</field>
+        <field name="model">bf.flux.preference</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" delete="0">
+                <field name="liste_id" readonly="1"/>
+                <field name="frequence"/>
+                <field name="desabonne"/>
+                <field name="dernier_envoi"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_mes_abonnements" model="ir.actions.server">
+        <field name="name">Mes abonnements</field>
+        <field name="model_id" ref="model_bf_flux_preference"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_mes_abonnements()</field>
+        <field name="path">mes-flux</field>
+    </record>
+</odoo>

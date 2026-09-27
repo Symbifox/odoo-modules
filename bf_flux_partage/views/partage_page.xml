@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Page autonome : ni site web ni paquet de scripts, rien à charger qu'elle-même. -->
+    <template id="page" name="Flux RSS : page de partage">
+        <html lang="fr">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <meta name="referrer" content="no-referrer"/>
+                <title t-out="liste.name"/>
+                <link rel="alternate" type="application/rss+xml" t-att-title="liste.name" t-att-href="partage.url_rss"/>
+                <style t-out="css"/>
+            </head>
+            <body>
+                <header>
+                    <img t-attf-src="/web/binary/company_logo?company={{ societe.id }}" t-att-alt="societe.name"/>
+                    <span>Veille partagée</span>
+                </header>
+                <main>
+                    <h1 t-out="liste.name"/>
+                    <!-- Pas la description de la liste : c'est une note interne
+                         (« pour qui, d'où ») qui n'a pas à sortir. -->
+                    <p class="sous">
+                        <a class="rss" t-att-href="partage.url_rss">S'abonner en RSS</a>
+                    </p>
+                    <div t-if="elements" class="grille">
+                        <article t-foreach="elements" t-as="el" class="carte">
+                            <img t-if="el.image_url" t-att-src="el.image_url" alt="" loading="lazy" referrerpolicy="no-referrer"
+                                 onerror="this.remove()"/>
+                            <div class="corps">
+                                <div class="meta">
+                                    <span t-out="', '.join(partage._flux_sources_de(el).mapped('name'))"/>
+                                    <span t-out="date(el.date_publication)"/>
+                                </div>
+                                <h2><a t-att-href="el.lien" target="_blank" rel="noopener noreferrer" t-out="el.titre"/></h2>
+                                <p t-if="el.resume" t-out="chapeau(el.resume)"/>
+                                <a class="lire" t-att-href="el.lien" target="_blank" rel="noopener noreferrer">Lire l'article →</a>
+                            </div>
+                        </article>
+                    </div>
+                    <div t-else="" class="vide">Rien pour l'instant : les prochaines nouvelles paraîtront ici.</div>
+                </main>
+                <footer>
+                    Partagé par <t t-out="societe.name"/>. Les articles appartiennent à leurs auteurs et s'ouvrent sur leur site.
+                </footer>
+            </body>
+        </html>
+    </template>
+</odoo>

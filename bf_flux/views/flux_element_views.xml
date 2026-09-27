@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_element_list" model="ir.ui.view">
+        <field name="name">bf.flux.element.list</field>
+        <field name="model">bf.flux.element</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="date_publication"/>
+                <field name="titre"/>
+                <field name="emetteur" optional="show"/>
+                <field name="langue" optional="hide"/>
+                <field name="source_ids" widget="many2many_tags" optional="show"/>
+                <field name="texte_etat" optional="hide"/>
+                <field name="lu" optional="show" widget="boolean"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="flux_element_form" model="ir.ui.view">
+        <field name="name">bf.flux.element.form</field>
+        <field name="model">bf.flux.element</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_lire" type="object" string="Lire" class="btn-primary"/>
+                    <button name="action_marquer_lu" type="object" string="Marquer lu" invisible="lu"/>
+                    <button name="action_marquer_non_lu" type="object" string="Remettre à lire" invisible="not lu"/>
+                    <button name="action_poser_projet" type="object" string="Poser au fil du projet"/>
+                    <field name="lu" invisible="1"/>
+                </header>
+                <sheet>
+                    <field name="image_url" widget="image_url" invisible="not image_url" class="float-end ms-3" options="{'size': [220, 140]}"/>
+                    <div class="oe_title">
+                        <h1><field name="titre" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="emetteur" readonly="1"/>
+                            <field name="date_publication" readonly="1"/>
+                            <field name="langue" readonly="1"/>
+                            <field name="source_ids" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="lien" widget="url" readonly="1"/>
+                            <field name="sujets" readonly="1"/>
+                            <field name="cle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Chapeau" name="resume">
+                            <field name="resume" readonly="1"/>
+                        </page>
+                        <page string="Texte complet" name="texte" invisible="texte_etat == 'sans'">
+                            <group>
+                                <field name="texte_etat"/>
+                                <field name="texte_langue"/>
+                                <field name="texte_message" invisible="not texte_message"/>
+                            </group>
+                            <field name="texte" readonly="1"/>
+                        </page>
+                        <page string="Retenu par" name="retenues">
+                            <field name="retenue_ids" readonly="1">
+                                <list>
+                                    <field name="liste_id"/>
+                                    <field name="motifs"/>
+                                    <field name="etat"/>
+                                    <field name="raison" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="flux_element_search" model="ir.ui.view">
+        <field name="name">bf.flux.element.search</field>
+        <field name="model">bf.flux.element</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="titre"/>
+                <field name="emetteur"/>
+                <field name="resume"/>
+                <field name="source_ids"/>
+                <filter name="retenus" string="Retenus par une liste" domain="[('retenue_ids.etat', '=', 'retenu')]"/>
+                <filter name="texte_echec" string="Texte en échec" domain="[('texte_etat', 'in', ('passager', 'definitif'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_emetteur" string="Émetteur" context="{'group_by': 'emetteur'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_flux_element" model="ir.actions.act_window">
+        <field name="name">Tous les éléments</field>
+        <field name="res_model">bf.flux.element</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Retenues -->
+    <record id="flux_retenue_list" model="ir.ui.view">
+        <field name="name">bf.flux.retenue.list</field>
+        <field name="model">bf.flux.retenue</field>
+        <field name="arch" type="xml">
+            <list create="0" decoration-muted="etat == 'ecarte'">
+                <field name="date_publication"/>
+                <field name="liste_id"/>
+                <field name="titre"/>
+                <field name="emetteur" optional="show"/>
+                <field name="motifs"/>
+                <field name="etat" optional="show"/>
+                <field name="note" optional="hide"/>
+                <field name="raison" optional="hide"/>
+                <button name="action_ouvrir_lien" type="object" icon="fa-external-link" title="Ouvrir"/>
+                <button name="action_poser_projet" type="object" icon="fa-thumb-tack" title="Poser au fil du projet"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="flux_retenue_form" model="ir.ui.view">
+        <field name="name">bf.flux.retenue.form</field>
+        <field name="model">bf.flux.retenue</field>
+        <field name="arch" type="xml">
+            <form create="0">
+                <header>
+                    <button name="action_ouvrir_lien" type="object" string="Ouvrir" class="btn-primary"/>
+                    <button name="action_poser_projet" type="object" string="Poser au fil du projet"/>
+                    <field name="etat" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="titre"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="liste_id"/>
+                            <field name="element_id"/>
+                            <field name="emetteur"/>
+                            <field name="date_publication"/>
+                        </group>
+                        <group>
+                            <field name="motifs"/>
+                            <field name="note"/>
+                            <field name="raison"/>
+                            <field name="diffusee"/>
+                            <field name="rattrapage" invisible="not rattrapage"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="flux_retenue_search" model="ir.ui.view">
+        <field name="name">bf.flux.retenue.search</field>
+        <field name="model">bf.flux.retenue</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="titre"/>
+                <field name="liste_id"/>
+                <field name="motifs"/>
+                <filter name="retenus" string="Retenus" domain="[('etat', '=', 'retenu')]"/>
+                <filter name="ecartes" string="Écartés au jugement" domain="[('etat', '=', 'ecarte')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_liste" string="Liste" context="{'group_by': 'liste_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_flux_retenue" model="ir.actions.act_window">
+        <field name="name">Retenus</field>
+        <field name="res_model">bf.flux.retenue</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_retenus': 1}</field>
+    </record>
+</odoo>

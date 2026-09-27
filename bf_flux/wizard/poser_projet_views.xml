@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_poser_projet_form" model="ir.ui.view">
+        <field name="name">bf.flux.poser.projet.form</field>
+        <field name="model">bf.flux.poser.projet</field>
+        <field name="arch" type="xml">
+            <form string="Poser au fil d'un projet">
+                <group>
+                    <field name="element_id"/>
+                    <field name="project_id"/>
+                    <field name="commentaire" placeholder="Pourquoi c'est utile au projet (facultatif)"/>
+                </group>
+                <footer>
+                    <button name="action_poser" type="object" string="Poser" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

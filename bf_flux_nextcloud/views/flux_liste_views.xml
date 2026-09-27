@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_liste_form_nextcloud" model="ir.ui.view">
+        <field name="name">bf.flux.liste.form.nextcloud</field>
+        <field name="model">bf.flux.liste</field>
+        <field name="inherit_id" ref="bf_flux.flux_liste_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_nc_deposer" type="object" string="Déposer maintenant"
+                        invisible="not nc_actif" groups="bf_flux.group_flux_gestion"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Corpus Nextcloud" name="nextcloud" groups="bf_flux.group_flux_gestion">
+                    <group>
+                        <group>
+                            <field name="nc_actif"/>
+                            <field name="nc_config_id" required="nc_actif"/>
+                            <field name="nc_dossier" required="nc_actif"
+                                   placeholder="/Base de connaissances/Veille RSS"/>
+                            <field name="nc_nom_index"/>
+                            <field name="nc_nom_element"/>
+                        </group>
+                        <group>
+                            <field name="nc_derniere"/>
+                            <field name="nc_etat"/>
+                            <field name="nc_message" invisible="not nc_message"/>
+                        </group>
+                    </group>
+                    <label for="nc_intro"/>
+                    <field name="nc_intro" placeholder="Ce que le corpus contient, pour qui, ce qui reste à valider (Markdown)."/>
+                    <field name="nc_depot_ids" readonly="1">
+                        <list>
+                            <field name="chemin"/>
+                            <field name="taille"/>
+                            <field name="date"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

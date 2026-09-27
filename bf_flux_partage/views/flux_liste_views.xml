@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_liste_form_partage" model="ir.ui.view">
+        <field name="name">bf.flux.liste.form.partage</field>
+        <field name="model">bf.flux.liste</field>
+        <field name="inherit_id" ref="bf_flux.flux_liste_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Partage externe" name="partage" groups="bf_flux.group_flux_gestion">
+                    <p class="text-muted">
+                        Un lien par destinataire, sans connexion : la page montre les 50 derniers éléments
+                        retenus (titre, chapeau, lien), jamais le texte complet ni l'interne.
+                        Décocher « Actif » révoque le lien.
+                    </p>
+                    <field name="partage_ids" context="{'active_test': False}">
+                        <list editable="bottom" decoration-muted="etat != 'ouvert'">
+                            <field name="name"/>
+                            <field name="date_echeance"/>
+                            <field name="url" widget="CopyClipboardChar" readonly="1"/>
+                            <field name="url_rss" widget="CopyClipboardChar" readonly="1" optional="show"/>
+                            <field name="acces_count" readonly="1"/>
+                            <field name="dernier_acces" readonly="1" optional="show"/>
+                            <field name="etat" widget="badge" readonly="1"
+                                   decoration-success="etat == 'ouvert'" decoration-warning="etat == 'echu'"
+                                   decoration-danger="etat == 'revoque'"/>
+                            <field name="active" widget="boolean_toggle"/>
+                            <button name="action_regenerer" type="object" icon="fa-refresh"
+                                    title="Nouveau jeton : l'ancien lien cesse de répondre"
+                                    confirm="L'ancien lien cessera de répondre. Continuer ?"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

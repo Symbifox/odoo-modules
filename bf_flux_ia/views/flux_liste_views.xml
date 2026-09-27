@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_liste_form_ia" model="ir.ui.view">
+        <field name="name">bf.flux.liste.form.ia</field>
+        <field name="model">bf.flux.liste</field>
+        <field name="inherit_id" ref="bf_flux.flux_liste_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='regles']" position="after">
+                <page string="Tri par IA" name="ia">
+                    <group>
+                        <group>
+                            <field name="ia_actif"/>
+                            <field name="ia_seuil" invisible="not ia_actif"/>
+                            <field name="ia_delai_heures" invisible="not ia_actif"/>
+                        </group>
+                    </group>
+                    <label for="ia_consigne" invisible="not ia_actif"/>
+                    <field name="ia_consigne" invisible="not ia_actif"
+                           placeholder="Qui lit cette liste, ce qui leur sert, ce qui ne leur sert pas."/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

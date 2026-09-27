@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_flux_racine" name="Flux RSS" web_icon="bf_flux,static/description/icon.png" sequence="44"/>
+    <menuitem id="menu_flux_a_lire" name="À lire" parent="menu_flux_racine" action="action_flux_a_lire" sequence="5"/>
+    <menuitem id="menu_flux_retenues" name="Retenus" parent="menu_flux_racine" action="action_flux_retenue" sequence="10"/>
+    <menuitem id="menu_flux_abonnements" name="Mes abonnements" parent="menu_flux_racine" action="action_mes_abonnements" sequence="20"/>
+    <menuitem id="menu_flux_config" name="Configuration" parent="menu_flux_racine" sequence="90" groups="bf_flux.group_flux_gestion"/>
+    <menuitem id="menu_flux_listes" name="Listes" parent="menu_flux_config" action="action_flux_liste" sequence="10"/>
+    <menuitem id="menu_flux_sources" name="Sources" parent="menu_flux_config" action="action_flux_source" sequence="20"/>
+    <menuitem id="menu_flux_elements" name="Tous les éléments" parent="menu_flux_config" action="action_flux_element" sequence="30"/>
+</odoo>
