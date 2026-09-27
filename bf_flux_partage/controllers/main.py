@@ -31,7 +31,8 @@ POLICE_RE = re.compile(r"^[A-Za-z0-9 _-]{1,40}$")
 CSS = """
 body{margin:0;background:#F8FAFC;color:#374151;font-family:{police},Segoe UI,Arial,sans-serif}
 header{background:{sombre};color:#E6EDF3;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:4px solid {accent}}
-header img{height:40px;width:auto}
+header .logo{background:#fff;border-radius:8px;padding:6px 12px;display:inline-flex;align-items:center}
+header img{height:36px;width:auto;display:block}
 main{max-width:1180px;margin:0 auto;padding:24px}
 h1{font-size:24px;margin:0 0 4px 0;color:#111827}
 .sous{color:#6B7280;margin:0 0 20px 0;font-size:14px}

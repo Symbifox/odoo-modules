@@ -1,0 +1,115 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_flux_ia
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 03:56+0000\n"
+"PO-Revision-Date: 2026-09-27 03:56+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_flux_ia
+#. odoo-python
+#: code:addons/bf_flux_ia/models/flux_retenue.py:0
+msgid "(sans raison)"
+msgstr "(no reason)"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__ia_actif
+msgid "Après les règles, un modèle de langage note chaque élément retenu."
+msgstr "After the rules, a language model scores each retained item."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__ia_consigne
+msgid "Ce qui compte pour cette liste"
+msgstr "What matters for this list"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__ia_seuil
+msgid "De 0 à 100. Sous ce seuil, l'élément est écarté, avec sa raison."
+msgstr ""
+"From 0 to 100. Below this threshold, the item is set aside, with its reason."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__ia_delai_heures
+msgid "Diffuser sans jugement après (h)"
+msgstr "Deliver without judgement after (h)"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__ia_consigne
+msgid ""
+"En mots simples : qui lit, ce qui leur sert, ce qui ne leur sert pas. "
+"Exemple : « Appels d'offres publics et subventions pour les PME. Pas les "
+"résultats financiers ni les avis aux actionnaires. »"
+msgstr ""
+"In plain words: who reads, what helps them, what does not. Example: \"Public"
+" tenders and grants for small businesses. Not financial results or notices "
+"to shareholders.\""
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_retenue__jugement_essais
+msgid "Essais de jugement"
+msgstr "Judgement attempts"
+
+#. module: bf_flux_ia
+#: model:ir.actions.server,name:bf_flux_ia.cron_juger_ir_actions_server
+msgid "Flux RSS : juger ce qui attend"
+msgstr "RSS Feeds: judge pending items"
+
+#. module: bf_flux_ia
+#. odoo-python
+#: code:addons/bf_flux_ia/models/flux_retenue.py:0
+msgid "Jugement indisponible : retenu par les règles seules."
+msgstr "Judgement unavailable: kept by the rules alone."
+
+#. module: bf_flux_ia
+#: model:ir.model.constraint,message:bf_flux_ia.constraint_bf_flux_liste_ia_seuil_borne
+msgid "Le seuil va de 0 à 100."
+msgstr "The threshold ranges from 0 to 100."
+
+#. module: bf_flux_ia
+#: model:ir.model,name:bf_flux_ia.model_bf_flux_liste
+msgid "Liste de distribution de flux"
+msgstr "Feed distribution list"
+
+#. module: bf_flux_ia
+#: model_terms:ir.ui.view,arch_db:bf_flux_ia.flux_liste_form_ia
+msgid "Qui lit cette liste, ce qui leur sert, ce qui ne leur sert pas."
+msgstr "Who reads this list, what helps them, what does not."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__ia_seuil
+msgid "Seuil de pertinence"
+msgstr "Relevance threshold"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__ia_delai_heures
+msgid ""
+"Si le modèle reste indisponible, l'élément est diffusé sur la foi des règles"
+" passé ce délai. Une panne ne bloque jamais la veille."
+msgstr ""
+"If the model stays unavailable, the item is delivered on the strength of the"
+" rules after this delay. An outage never blocks the news watch."
+
+#. module: bf_flux_ia
+#: model_terms:ir.ui.view,arch_db:bf_flux_ia.flux_liste_form_ia
+msgid "Tri par IA"
+msgstr "AI sorting"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__ia_actif
+msgid "Trier par IA"
+msgstr "Sort with AI"
+
+#. module: bf_flux_ia
+#: model:ir.model,name:bf_flux_ia.model_bf_flux_retenue
+msgid "Élément retenu par une liste"
+msgstr "Item retained by a list"

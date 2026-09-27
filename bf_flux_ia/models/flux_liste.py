@@ -11,8 +11,8 @@ class FluxListe(models.Model):
     ia_consigne = fields.Text(
         "Ce qui compte pour cette liste",
         help="En mots simples : qui lit, ce qui leur sert, ce qui ne leur sert "
-             "pas. Exemple : « Contrats, programmes et capacités de défense "
-             "canadiens. Pas les résultats financiers ni les avis aux actionnaires. »")
+             "pas. Exemple : « Appels d'offres publics et subventions "
+             "pour les PME. Pas les résultats financiers ni les avis aux actionnaires. »")
     ia_seuil = fields.Integer(
         "Seuil de pertinence", default=50,
         help="De 0 à 100. Sous ce seuil, l'élément est écarté, avec sa raison.")

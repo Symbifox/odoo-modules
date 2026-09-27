@@ -1,0 +1,213 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_flux_partage
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 03:54+0000\n"
+"PO-Revision-Date: 2026-09-27 03:54+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.page
+msgid ""
+". Les articles appartiennent à leurs auteurs et s'ouvrent sur leur site."
+msgstr ". Articles belong to their authors and open on their own site."
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.page
+msgid "<span>Veille partagée</span>"
+msgstr "<span>Shared news watch</span>"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__active
+msgid "Actif"
+msgstr "Active"
+
+#. module: bf_flux_partage
+#: model:ir.model.constraint,message:bf_flux_partage.constraint_bf_flux_partage_jeton_unique
+msgid "Ce jeton existe déjà."
+msgstr "This token already exists."
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__dernier_acces
+msgid "Dernier accès"
+msgstr "Last access"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,help:bf_flux_partage.field_bf_flux_partage__active
+msgid "Décocher révoque le lien : il répond aussitôt « introuvable »."
+msgstr "Unticking revokes the link: it answers \"not found\" at once."
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__jeton
+msgid "Jeton"
+msgstr "Token"
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.flux_liste_form_partage
+msgid "L'ancien lien cessera de répondre. Continuer ?"
+msgstr "The old link will stop working. Continue?"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,help:bf_flux_partage.field_bf_flux_partage__name
+msgid "Le destinataire ou l'usage du lien : « Client X, projet Y »."
+msgstr "The recipient or purpose of the link: \"Client X, project Y\"."
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__url_rss
+msgid "Lien RSS"
+msgstr "RSS link"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__url
+msgid "Lien de la page"
+msgstr "Page link"
+
+#. module: bf_flux_partage
+#: model:ir.model,name:bf_flux_partage.model_bf_flux_partage
+msgid "Lien de partage externe d'une liste de flux"
+msgstr "External share link of a feed list"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_liste__partage_ids
+msgid "Liens de partage"
+msgstr "Share links"
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.page
+msgid "Lire l'article →"
+msgstr "Read the article →"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__liste_id
+msgid "Liste"
+msgstr "List"
+
+#. module: bf_flux_partage
+#: model:ir.model,name:bf_flux_partage.model_bf_flux_liste
+msgid "Liste de distribution de flux"
+msgstr "Feed distribution list"
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.flux_liste_form_partage
+msgid "Nouveau jeton : l'ancien lien cesse de répondre"
+msgstr "New token: the old link stops working"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields.selection,name:bf_flux_partage.selection__bf_flux_partage__etat__ouvert
+msgid "Ouvert"
+msgstr "Open"
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.flux_liste_form_partage
+msgid "Partage externe"
+msgstr "External sharing"
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.page
+msgid "Partagé par"
+msgstr "Shared by"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__name
+msgid "Pour qui"
+msgstr "For whom"
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.page
+msgid "Rien pour l'instant : les prochaines nouvelles paraîtront ici."
+msgstr "Nothing yet: the next items will appear here."
+
+#. module: bf_flux_partage
+#. odoo-python
+#: code:addons/bf_flux_partage/models/flux_partage.py:0
+msgid "Régénérer un lien est réservé à la gestion des flux."
+msgstr "Regenerating a link is reserved to feed managers."
+
+#. module: bf_flux_partage
+#: model:ir.model.fields.selection,name:bf_flux_partage.selection__bf_flux_partage__etat__revoque
+msgid "Révoqué"
+msgstr "Revoked"
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.page
+msgid "S'abonner en RSS"
+msgstr "Subscribe via RSS"
+
+#. module: bf_flux_partage
+#: model_terms:ir.ui.view,arch_db:bf_flux_partage.flux_liste_form_partage
+msgid ""
+"Un lien par destinataire, sans connexion : la page montre les 50 derniers éléments\n"
+"                        retenus (titre, chapeau, lien), jamais le texte complet ni l'interne.\n"
+"                        Décocher « Actif » révoque le lien."
+msgstr ""
+"One link per recipient, no login: the page shows the latest 50 retained items\n"
+"                        (headline, summary, link), never the full text nor anything internal.\n"
+"                        Untick \"Active\" to revoke the link."
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,help:bf_flux_partage.field_bf_flux_partage__date_echeance
+msgid ""
+"Vide : sans échéance. Un lien oublié reste ouvert, d'où l'échéance par "
+"défaut."
+msgstr ""
+"Empty: no expiry. A forgotten link stays open, hence the default expiry."
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__acces_count
+msgid "Visites"
+msgstr "Visits"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields.selection,name:bf_flux_partage.selection__bf_flux_partage__etat__echu
+msgid "Échu"
+msgstr "Expired"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__date_echeance
+msgid "Échéance"
+msgstr "Expiry"
+
+#. module: bf_flux_partage
+#: model:ir.model.fields,field_description:bf_flux_partage.field_bf_flux_partage__etat
+msgid "État"
+msgstr "State"

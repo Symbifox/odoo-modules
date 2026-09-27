@@ -3,7 +3,7 @@
     "name": "Flux RSS : bandeau de la maison",
     "summary": "Le résumé des flux porte la mise en page de la maison, avec son "
                "propre titre au bandeau au lieu du nom de la société",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

@@ -124,7 +124,7 @@ class FluxListe(models.Model):
         "bf.flux.preference", "liste_id", string="Préférences")
 
     channel_id = fields.Many2one(
-        "discuss.channel", string="Canal Discuss", readonly=True, copy=False,
+        "discuss.channel", string="Canal Discussion", readonly=True, copy=False,
         ondelete="set null")
     retenue_ids = fields.One2many("bf.flux.retenue", "liste_id", string="Éléments retenus")
     retenue_count = fields.Integer("Retenus", compute="_compute_retenue_count")

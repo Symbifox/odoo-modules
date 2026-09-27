@@ -3,7 +3,7 @@
     "name": "Flux RSS : babillard",
     "summary": "Un élément de flux devient un brouillon du babillard, adressé "
                "aux services de la liste qui l'a retenu",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

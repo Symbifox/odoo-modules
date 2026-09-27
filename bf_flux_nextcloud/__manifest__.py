@@ -3,7 +3,7 @@
     "name": "Flux RSS : corpus Nextcloud",
     "summary": "Dépose ce qu'une liste de flux retient dans un dossier Nextcloud, "
                "en Markdown par source et par mois, pour une base de connaissances",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

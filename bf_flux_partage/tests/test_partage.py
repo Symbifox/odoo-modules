@@ -51,6 +51,7 @@ class TestPartage(HttpCase):
         self.assertEqual(rep.status_code, 200)
         page = rep.text
         self.assertTrue(page.startswith("<!DOCTYPE html>"))
+        self.assertIn('<span class="logo"><img', page, "le logo a son fond clair")
         self.assertNotIn("&lt;!DOCTYPE", page)
         self.assertIn("Veille du projet Arctique", page)
         self.assertIn("https://nouvelles.example.com/1", page)

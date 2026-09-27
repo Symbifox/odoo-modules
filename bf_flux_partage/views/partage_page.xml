@@ -14,7 +14,8 @@
             </head>
             <body>
                 <header>
-                    <img t-attf-src="/web/binary/company_logo?company={{ societe.id }}" t-att-alt="societe.name"/>
+                    <!-- Un logo de société est dessiné pour un fond clair : il reçoit le sien. -->
+                    <span class="logo"><img t-attf-src="/web/binary/company_logo?company={{ societe.id }}" t-att-alt="societe.name"/></span>
                     <span>Veille partagée</span>
                 </header>
                 <main>

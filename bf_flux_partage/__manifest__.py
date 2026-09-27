@@ -3,7 +3,7 @@
     "name": "Flux RSS : partage externe",
     "summary": "Un lien secret, sans connexion, pour montrer la veille d'une liste "
                "à un client ou un partenaire : une page, et le même flux en RSS",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.0.3",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

@@ -3,7 +3,7 @@
     "name": "Flux RSS : tri par IA",
     "summary": "Un modèle de langage note la pertinence de ce que les règles "
                "d'une liste ont retenu, et écarte ce qui ne sert pas, en disant pourquoi",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

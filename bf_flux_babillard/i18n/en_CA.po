@@ -1,0 +1,46 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_flux_babillard
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 03:54+0000\n"
+"PO-Revision-Date: 2026-09-27 03:54+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_flux_babillard
+#. odoo-python
+#: code:addons/bf_flux_babillard/models/flux_element.py:0
+msgid "Lire la suite"
+msgstr "Read more"
+
+#. module: bf_flux_babillard
+#: model_terms:ir.ui.view,arch_db:bf_flux_babillard.flux_element_form_babillard
+#: model_terms:ir.ui.view,arch_db:bf_flux_babillard.flux_retenue_form_babillard
+#: model_terms:ir.ui.view,arch_db:bf_flux_babillard.flux_retenue_list_babillard
+msgid "Publier au babillard"
+msgstr "Post to noticeboard"
+
+#. module: bf_flux_babillard
+#. odoo-python
+#: code:addons/bf_flux_babillard/models/flux_element.py:0
+msgid "Seule la rédaction du babillard peut y préparer une carte."
+msgstr "Only noticeboard editors can prepare a card there."
+
+#. module: bf_flux_babillard
+#: model:ir.model,name:bf_flux_babillard.model_bf_flux_element
+msgid "Élément de flux"
+msgstr "Feed item"
+
+#. module: bf_flux_babillard
+#: model:ir.model,name:bf_flux_babillard.model_bf_flux_retenue
+msgid "Élément retenu par une liste"
+msgstr "Item retained by a list"
