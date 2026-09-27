@@ -7,3 +7,4 @@ from . import mail_compose_message
 from . import survey_survey
 from . import onboarding_onboarding
 from . import ir_http
+from . import account_move_send

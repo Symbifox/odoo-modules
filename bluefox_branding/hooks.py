@@ -130,12 +130,15 @@ Cordialement,<br/>
 </body>"""
 
 
-def _extract_templates_from_xml():
-    """Parse mail_template_overrides.xml and extract field values per record XML ID.
+def _extract_templates_from_xml(filename='mail_template_overrides.xml'):
+    """Parse an overrides file and extract field values per record XML ID.
+
+    ``mail_template_overrides.xml`` is the French text, ``mail_template_overrides_en.xml``
+    the English one (same records, same structure).
 
     Returns dict: {xml_id: {field_name: value, ...}}
     """
-    xml_path = os.path.join(os.path.dirname(__file__), 'data', 'mail_template_overrides.xml')
+    xml_path = os.path.join(os.path.dirname(__file__), 'data', filename)
     if not os.path.exists(xml_path):
         _logger.warning("bluefox_branding: %s not found", xml_path)
         return {}
@@ -193,7 +196,12 @@ def post_init_hook(env):
     _logger.info("bluefox_branding: Active languages: %s", active_langs)
 
     # ── Category 1: Templates with XML IDs (noupdate=True in their origin module) ──
+    # 🔴 Until 18.0.3.23.0 the French text was written in EVERY language: an English-speaking
+    # family got its portal invitation, calendar and survey emails in French (found by the
+    # QA with real emails, 2026-09-27). French languages get the French file, the others the
+    # English one.
     templates_data = _extract_templates_from_xml()
+    templates_en = _extract_templates_from_xml('mail_template_overrides_en.xml')
     updated = 0
 
     for xml_id, fields in templates_data.items():
@@ -203,7 +211,8 @@ def post_init_hook(env):
             continue
 
         for lang in active_langs:
-            tmpl.with_context(lang=lang).write(fields)
+            values = fields if lang.startswith('fr') else templates_en.get(xml_id, fields)
+            tmpl.with_context(lang=lang).write(values)
         updated += 1
         _logger.info("bluefox_branding: Updated %s (ID %s) in %d languages — %s",
                       xml_id, tmpl.id, len(active_langs),

@@ -134,7 +134,9 @@ signature, legal links):
 - `bluefox_branding.bf_mail_layout_with_signature`
 
 These are not overrides of `mail.mail_notification_layout`; the composer wizard
-swaps Odoo's default layouts to them for invoices, quotes and contracts.
+swaps Odoo's default layouts to them for quotes and contracts, and invoices sent
+with `account.move.send` (Odoo 18's Send button, which no longer goes through the
+composer) take `bf_mail_layout_with_signature`.
 Chatter / internal notifications stay on Odoo's default.
 
 ### Tenant-neutral standard templates
@@ -142,7 +144,10 @@ Chatter / internal notifications stay on Odoo's default.
 Templates from `om_account_followup`, `contract`, `helpdesk_mgmt`, `survey` and
 `calendar` ship `noupdate=1` in their origin module and cannot be patched
 declaratively. The `post_init_hook` reads `data/mail_template_overrides.xml`
-and writes branded versions over them in every active language. The
+(French) and `data/mail_template_overrides_en.xml` (English, same records and
+structure) and writes the French version in French languages, the English one in
+the others. A change to either file only reaches a tenant through a migration
+that replays the hook. The
 self-contained ones (followups, calendar, survey) and the late-invoice notice
 (stock template 141, no XML ID) read **all** identity from `res.company` — no
 hardcoded brand values — so they follow whichever company owns the record.
