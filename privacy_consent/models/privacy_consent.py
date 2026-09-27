@@ -1,3 +1,4 @@
+import re
 import uuid
 from datetime import timedelta
 
@@ -569,6 +570,53 @@ class PrivacyConsent(models.Model):
             "active": True,
         })
 
+    # === One language per email (2026-09-27) ===
+    # Until 18.0.5.1.0 every consent email was bilingual, with a grey button, a
+    # placeholder privacy address (privacy@example.com) and links that opened in the
+    # visitor's browser language.
+
+    def _privacy_mail_lang(self):
+        """The language of the email being rendered: the contact the code writes to
+        (context), else the recipient, else the company."""
+        self.ensure_one()
+        lang = self.env.context.get("privacy_contact_lang")
+        if not lang:
+            recipient = self._get_email_recipient()
+            lang = recipient.lang or self.company_id.partner_id.lang
+        return lang or self.env.lang or "fr_CA"
+
+    def _privacy_mail_is_en(self):
+        return (self._privacy_mail_lang() or "").startswith("en")
+
+    def _privacy_url_lang(self):
+        """The website's prefix for the email's language ("/fr"), so a link opens in the
+        reader's language rather than the browser's. Empty without the website."""
+        self.ensure_one()
+        if "website" not in self.env:
+            return ""
+        lang = self.env["res.lang"]._lang_get(self._privacy_mail_lang())
+        return "/%s" % lang.url_code if lang and lang.active else ""
+
+    def _privacy_officer_email(self):
+        """The privacy officer's address: the configured one, else the company's."""
+        param = self.env["ir.config_parameter"].sudo().get_param("privacy_consent.privacy_officer_email")
+        company = self[:1].company_id or self.env.company
+        return (param or company.email or "").strip()
+
+    def _privacy_preferences_link_for(self, mail, contact):
+        path = "/my/privacy/preferences"
+        user = contact.sudo().user_ids[:1]
+        if not mail.body_html or path not in mail.body_html or not user or user.login_date:
+            return
+        contact.sudo().signup_prepare(signup_type="reset")
+        url = contact.sudo()._get_signup_url_for_action(url=path)[contact.id]
+        base = self.get_base_url().rstrip("/")
+        prefix = self.with_context(privacy_contact_lang=contact.lang)._privacy_url_lang()
+        if prefix and url.startswith(base + "/"):
+            url = base + prefix + url[len(base):]
+        mail.body_html = re.sub(r'href="[^"]*%s"' % re.escape(path), 'href="%s"' % url.replace("&", "&amp;"),
+                                mail.body_html)
+
     def _get_email_recipient(self):
         """Return the partner to email for this consent.
 
@@ -660,7 +708,10 @@ class PrivacyConsent(models.Model):
             "NOTICE_BODY_PLACEHOLDER",
         ]
 
-        mail_id = template.send_mail(self.id, force_send=False)
+        # The email speaks the contact's language: a guardian may not share the child's.
+        mail_id = template.with_context(
+            privacy_contact_lang=contact.lang or self.company_id.partner_id.lang,
+        ).send_mail(self.id, force_send=False)
         if not mail_id:
             return
 
@@ -694,10 +745,10 @@ class PrivacyConsent(models.Model):
                 f"En tant que responsable de {child.name}</span>",
             )
             mail.body_html = mail.body_html.replace(
-                f"<strong>Hello {child.name},</strong>",
-                f"<strong>Hello {contact.name},</strong><br/>"
-                f"<em style=\"font-size:12px; color:#9CA3AF;\">"
-                f"On behalf of {child.name}</em>",
+                f"Hello {child.name},",
+                f"Hello {contact.name},<br/>"
+                f"<span style=\"font-size:13px; color:#6B7280;\">"
+                f"As guardian of {child.name}</span>",
             )
 
         # Injecter le contenu de l'avis
@@ -726,6 +777,12 @@ class PrivacyConsent(models.Model):
                 mail.body_html = mail.body_html.replace(
                     f"<span>{tag}</span>", val
                 ).replace(tag, val)
+
+        # 🔴 The preferences page needs an account. A contact whose portal account was just
+        # created by _ensure_portal_access (a student from 14, a guardian) never chose a
+        # password and landed on a login screen (QA with real emails, 2026-09-27): the link
+        # lets them choose one, then opens the page, in their language.
+        self._privacy_preferences_link_for(mail, contact)
 
         mail.send()
 

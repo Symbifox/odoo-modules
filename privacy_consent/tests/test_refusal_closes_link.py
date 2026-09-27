@@ -182,7 +182,7 @@ class TestRefusalClosesLinkHttp(HttpCase, RefusalFixture):
             "constater ce qu'elle a refusé.",
         )
         html = reponse.text
-        self.assertIn("Vous avez refusé cette demande", html)
+        self.assertIn("You refused this request", html)  # English page, see 18.0.5.1.0
         self.assertNotIn(
             f"/privacy/consent/{consent.id}/{consent.access_token}/renew", html,
             "La page de détail offre encore le lien de reconsentement.",

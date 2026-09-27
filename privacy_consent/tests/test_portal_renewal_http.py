@@ -180,7 +180,8 @@ class TestPortalRenewalHttp(HttpCase):
         consent = self._consentement()
         reponse = self.url_open(f"/privacy/consent/{consent.id}/jeton-bidon/renew")
         self.assertEqual(reponse.status_code, 200)
-        self.assertIn("Lien invalide", reponse.text)
+        # One language per page (18.0.5.1.0): the anonymous test visitor reads English.
+        self.assertIn("Invalid or expired link", reponse.text)
         self.assertNotIn(MARQUEUR_COURANT, reponse.text)
 
     # ------------------------------------------------------------------
@@ -304,7 +305,7 @@ class TestPortalRenewalHttp(HttpCase):
         reponse = self.url_open(self._url_renew(consent))
         self.assertEqual(reponse.status_code, 200)
         self.assertNotIn('name="notice_read"', reponse.text)
-        self.assertIn("Vous avez refusé cette demande", reponse.text)
+        self.assertIn("You refused this request", reponse.text)  # English page, see 18.0.5.1.0
         consent.invalidate_recordset()
         self.assertFalse(
             consent.renewed_to_id,
