@@ -18,6 +18,7 @@ Une ligne est un mot ou une expression, cherché sans égard à la casse ni aux
 accents, en début de mot. Une ligne qui commence par « re: » est une
 expression régulière, telle quelle.
 """
+import logging
 import re
 import unicodedata
 from datetime import timedelta
@@ -26,6 +27,8 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, ValidationError
+
+_logger = logging.getLogger(__name__)
 
 
 # Motif d'un élément retenu sans filtre. C'est une donnée stockée et comparée,
@@ -127,6 +130,11 @@ class FluxListe(models.Model):
         "discuss.channel", string="Canal Discussion", readonly=True, copy=False,
         ondelete="set null")
     retenue_ids = fields.One2many("bf.flux.retenue", "liste_id", string="Éléments retenus")
+    sujet_ids = fields.One2many(
+        "bf.flux.sujet", "liste_id", string="Sujets surveillés",
+        context={"active_test": False},
+        help="Des noms cherchés partout : dans une recherche tenue par le sujet, "
+             "et dans tout ce que les autres sources apportent.")
     retenue_count = fields.Integer("Retenus", compute="_compute_retenue_count")
 
     # ------------------------------------------------------------------ règles
@@ -149,9 +157,32 @@ class FluxListe(models.Model):
                         "Expression régulière invalide dans « %(champ)s » : %(err)s",
                         champ=liste._fields[champ].string, err=exc)) from exc
 
+    def _flux_sujets_actifs(self):
+        return self.sujet_ids.filtered(lambda s: s.active and s.etat == "actif")
+
     def _flux_motifs(self, element):
-        """Motifs qui retiennent l'élément. Liste vide : écarté."""
+        """Motifs qui retiennent l'élément. Liste vide : écarté.
+
+        Ce qui vient de la recherche d'un sujet, ou d'une source que la liste
+        ne lit pas, n'est retenu que par un sujet : une recherche n'est pas
+        une source « prise en entier », elle ramène aussi les homonymes.
+        """
         self.ensure_one()
+        par_sujet = []
+        for sujet in self._flux_sujets_actifs():
+            try:
+                par_sujet += sujet._flux_motifs(element)
+            except re.error as exc:
+                # Une règle cassée ne doit arrêter qu'elle-même : levée ici, elle
+                # annulait la relève de TOUTES les sources, à chaque passage.
+                _logger.warning("Flux : règle invalide dans le sujet %s : %s", sujet.name, exc)
+        ordinaires = (element.source_ids & self.source_ids).filtered(lambda s: not s.sujet_id)
+        if not ordinaires:
+            return par_sujet
+        motifs = self._flux_motifs_regles(element)
+        return motifs + [m for m in par_sujet if m not in motifs]
+
+    def _flux_motifs_regles(self, element):
         texte = " ".join(filter(None, [
             element.titre, element.resume, element.emetteur, element.sujets]))
         plat = sans_accents(texte)
@@ -180,7 +211,8 @@ class FluxListe(models.Model):
             for elem in elements:
                 if (liste.id, elem.id) in deja:
                     continue
-                if not (elem.source_ids & liste.source_ids):
+                if not (elem.source_ids & liste.source_ids) and not (
+                        liste._flux_sujets_actifs() and liste._flux_meme_societe(elem)):
                     continue
                 motifs = liste._flux_motifs(elem)
                 if motifs:
@@ -190,20 +222,64 @@ class FluxListe(models.Model):
                     })
         return Retenue.create(vals)
 
+    def _flux_meme_societe(self, element):
+        """Un sujet ne lit que les sources de sa société (ou sans société)."""
+        self.ensure_one()
+        return bool(element.source_ids.filtered(
+            lambda s: not s.company_id or not self.company_id or s.company_id == self.company_id))
+
     def action_appliquer_existants(self):
         """Applique les règles aux éléments des sept derniers jours, sans
         rien diffuser : sert à régler une liste sur des cas réels."""
         if not (self.env.su or self.env.user.has_group("bf_flux.group_flux_gestion")):
             raise AccessError(_("Régler une liste est réservé à la gestion des flux."))
         for liste in self:
-            elements = self.env["bf.flux.element"].search([
-                ("source_ids", "in", liste.source_ids.ids),
-                ("date_publication", ">=", fields.Datetime.now() - timedelta(days=7)),
-            ])
-            retenues = liste._flux_evaluer(elements)
+            domaine = [("date_publication", ">=", fields.Datetime.now() - timedelta(days=7))]
+            if not liste._flux_sujets_actifs():
+                domaine.append(("source_ids", "in", liste.source_ids.ids))
+            elif liste.company_id:
+                domaine.append(("source_ids.company_id", "in", [False, liste.company_id.id]))
+            retenues = liste._flux_evaluer(self.env["bf.flux.element"].search(domaine))
+            # Marquées AVANT le jugement : un module de jugement ne doit ni
+            # diffuser ni alerter sur un rattrapage.
+            retenues.write({"rattrapage": True})
             retenues._flux_juger()
-            retenues.write({"diffusee": True, "rattrapage": True})
+            retenues.write({"diffusee": True})
         return True
+
+    def action_proposer_clients(self):
+        """Propose un sujet par client à projet actif, à valider un par un.
+
+        Rien n'est cherché avant validation : un nom de client a souvent des
+        homonymes. Un nom se valide avec sa description et ses exclusions.
+        """
+        if not (self.env.su or self.env.user.has_group("bf_flux.group_flux_gestion")):
+            raise AccessError(_("Proposer des sujets est réservé à la gestion des flux."))
+        self.ensure_one()
+        Sujet = self.env["bf.flux.sujet"].with_context(active_test=False)
+        projets = self.env["project.project"].search([
+            ("partner_id", "!=", False),
+            ("company_id", "in", [False] + self.company_id.ids)])
+        clients = projets.partner_id.commercial_partner_id.filtered("is_company")
+        deja = Sujet.search([("liste_id", "=", self.id)])
+        connus = {sans_accents(n).strip().lower() for s in deja for n in s._flux_noms()}
+        nouveaux = clients.filtered(
+            lambda p: p not in deja.partner_id
+            and len((p.name or "").strip()) >= 3
+            and sans_accents(p.name).strip().lower() not in connus)
+        Sujet.create([{
+            "name": p.name, "partner_id": p.id, "liste_id": self.id, "etat": "propose",
+        } for p in nouveaux.sorted("name")])
+        return {
+            "type": "ir.actions.client", "tag": "display_notification",
+            "params": {
+                "type": "info" if nouveaux else "warning",
+                "message": _("%s sujet(s) proposé(s) : à valider un par un, avec "
+                             "leur description et leurs exclusions.", len(nouveaux))
+                if nouveaux else _("Aucun client à projet actif qui ne soit déjà surveillé."),
+                "next": {"type": "ir.actions.client", "tag": "soft_reload"},
+            },
+        }
 
     # ---------------------------------------------------------------- membres
 
@@ -292,6 +368,9 @@ class FluxListe(models.Model):
         if "name" in vals:
             for liste in self.filtered("channel_id"):
                 liste.channel_id.sudo().name = _("Flux · %s", liste.name)
+        if "active" in vals:
+            # Une liste archivée ne fait plus chercher ses sujets ; rendue, si.
+            self.sujet_ids._flux_aligner_sources()
         return res
 
     # ------------------------------------------------------------- navigation

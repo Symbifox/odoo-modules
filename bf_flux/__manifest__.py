@@ -3,7 +3,7 @@
     "name": "Flux RSS",
     "summary": "Des flux RSS relevés, dédoublonnés et triés par règles, "
                "diffusés par service ou par projet dans Discuss et par courriel",
-    "version": "18.0.1.1.2",
+    "version": "18.0.1.2.3",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -26,6 +26,7 @@
         "views/flux_element_views.xml",
         "views/flux_lecteur_views.xml",
         "views/flux_liste_views.xml",
+        "views/flux_sujet_views.xml",
         "views/flux_preference_views.xml",
         "views/flux_menus.xml",
     ],

@@ -3,7 +3,7 @@
     "name": "Flux RSS : tri par IA",
     "summary": "Un modèle de langage note la pertinence de ce que les règles "
                "d'une liste ont retenu, et écarte ce qui ne sert pas, en disant pourquoi",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.2",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -12,7 +12,9 @@
     # LICENSE qui gouverne, pas cette ligne.
     "license": "Other proprietary",
     "installable": True,
-    "depends": ["bf_flux", "bf_llm"],
+    # Le modèle se joint par bf_llm (clé d'API) ou par bf_ai_bridge (le pont) :
+    # l'un ou l'autre, jamais exigé, pour s'installer chez l'un comme chez l'autre.
+    "depends": ["bf_flux"],
     "data": [
         "data/ir_cron.xml",
         "views/flux_liste_views.xml",
@@ -36,5 +38,11 @@ retenu : le coût suit le volume retenu, pas celui du flux.
 * **Une panne ne bloque rien.** Un élément que le modèle n'a pas pu juger est
   repris au passage suivant. Passé le délai de la liste, il est diffusé sur la
   foi des règles, et sa raison le dit.
+* **L'alerte quand ça presse.** Le modèle dit aussi si un élément ne peut pas
+  attendre le résumé. Un courriel part alors tout de suite, derrière quatre
+  gardes tenues en code : publication récente, un seul courriel par événement
+  (même raconté par cinq sources), plafond par jour, destinataires nommés.
+* **Les homonymes écartés.** Pour une liste de sujets surveillés, le modèle lit
+  la description de chaque sujet et note 0 ce qui porte le nom sans en parler.
 """,
 }

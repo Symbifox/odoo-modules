@@ -78,6 +78,9 @@ class FluxElement(models.Model):
     lien = fields.Char("Lien", required=True)
     langue = fields.Char("Langue")
     emetteur = fields.Char("Émetteur")
+    emetteur_url = fields.Char(
+        "Adresse du diffuseur", readonly=True,
+        help="Donnée par un agrégateur, dont le lien reste chez lui.")
     sujets = fields.Char("Sujets")
     resume = fields.Text("Chapeau")
     date_publication = fields.Datetime("Publié le", index=True)
@@ -188,6 +191,7 @@ class FluxElement(models.Model):
                 [("cle", "in", [r["cle"] for r in recs])])
         }
         pref = source.langue_preferee or ""
+        maintenant = fields.Datetime.now()
         for rec in recs:
             vals = {
                 "titre": (rec.get("titre") or "")[:1000],
@@ -197,7 +201,10 @@ class FluxElement(models.Model):
                 "sujets": ", ".join(rec.get("sujets") or [])[:1000],
                 "resume": rec.get("resume") or "",
                 "image_url": rec.get("image") or False,
-                "date_publication": rec.get("date") or fields.Datetime.now(),
+                "emetteur_url": rec.get("source_url") or False,
+                # Une date absente ou dans le futur ne dit rien de la fraîcheur :
+                # elle vaudrait « neuf » pour toujours aux yeux d'une alerte.
+                "date_publication": min(rec.get("date") or maintenant, maintenant),
             }
             elem = existants.get(rec["cle"])
             if not elem:
@@ -296,8 +303,13 @@ class FluxElement(models.Model):
         """Passe les éléments aux listes abonnées à leurs sources."""
         if not self:
             return self.env["bf.flux.retenue"]
-        listes = self.mapped("source_ids.liste_ids").filtered("active")
-        retenues = listes._flux_evaluer(self)
+        listes = self.mapped("source_ids.liste_ids")
+        listes |= self.env["bf.flux.sujet"].sudo().search([("etat", "=", "actif")]).liste_id.sudo()
+        retenues = listes.filtered("active")._flux_evaluer(self)
+        if self.env.context.get("flux_rattrapage"):
+            # Première relève d'une recherche : sa semaine d'arriéré entre sans
+            # être diffusée, ni reprise au résumé, ni alertée.
+            retenues.write({"rattrapage": True})
         retenues._flux_juger()
         retenues.filtered(lambda r: r.etat == "retenu")._flux_diffuser()
         return retenues

@@ -25,6 +25,9 @@
                     <button name="action_appliquer_existants" type="object" string="Appliquer aux 7 derniers jours"
                             help="Applique les règles aux éléments déjà reçus, sans rien diffuser, pour régler la liste sur des cas réels."/>
                     <button name="action_ouvrir_canal" type="object" string="Ouvrir le canal"/>
+                    <button name="action_proposer_clients" type="object" string="Proposer les clients actifs"
+                            groups="bf_flux.group_flux_gestion"
+                            help="Un sujet proposé par client à projet actif. Rien n'est cherché avant validation."/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -66,6 +69,23 @@
                                     <field name="exclusions" placeholder="conference call&#10;résultats trimestriels"/>
                                 </group>
                             </group>
+                        </page>
+                        <page string="Sujets surveillés" name="sujets">
+                            <p class="text-muted">
+                                Un nom cherché partout : une recherche Google News par langue, tenue par le sujet,
+                                et tout ce que les autres sources apportent. Le nom seul retient ; la description
+                                dit au tri par IA de qui il s'agit et quels homonymes écarter.
+                            </p>
+                            <field name="sujet_ids" context="{'default_liste_id': id}">
+                                <list decoration-muted="etat == 'propose'">
+                                    <field name="name"/>
+                                    <field name="partner_id" optional="show"/>
+                                    <field name="langues" optional="hide"/>
+                                    <field name="etat" widget="badge" decoration-success="etat == 'actif'"/>
+                                    <button name="action_valider" type="object" string="Valider" icon="fa-check"
+                                            invisible="etat == 'actif'" groups="bf_flux.group_flux_gestion"/>
+                                </list>
+                            </field>
                         </page>
                         <page string="Audience" name="audience">
                             <group>

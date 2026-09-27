@@ -109,7 +109,10 @@ class FluxPreference(models.Model):
         base = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         mise_en_page = self._flux_mise_en_page()
         for user, blocs in par_user.items():
-            pleins = [(l, r) for _p, l, r in blocs if r]
+            # Les sujets surveillés d'abord : c'est de nous, ou d'un client.
+            pleins = sorted(
+                ((l, r) for _p, l, r in blocs if r),
+                key=lambda b: (not b[0].sujet_ids, b[0].name))
             for pref, _l, _r in blocs:
                 pref.dernier_envoi = maintenant
             if not pleins or not user.partner_id.email:

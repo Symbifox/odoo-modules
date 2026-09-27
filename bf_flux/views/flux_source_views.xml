@@ -7,7 +7,7 @@
             <list decoration-danger="dernier_etat == 'definitif'" decoration-warning="dernier_etat == 'passager'">
                 <field name="name"/>
                 <field name="url" optional="hide"/>
-                <field name="cadence_heures"/>
+                <field name="cadence_minutes"/>
                 <field name="derniere_releve"/>
                 <field name="dernier_etat"/>
                 <field name="derniers_vus" optional="show"/>
@@ -39,7 +39,7 @@
                     <group>
                         <group string="Flux">
                             <field name="url" widget="url"/>
-                            <field name="cadence_heures"/>
+                            <field name="cadence_minutes"/>
                             <field name="langue_preferee"/>
                             <field name="texte_complet"/>
                             <field name="active" invisible="1"/>

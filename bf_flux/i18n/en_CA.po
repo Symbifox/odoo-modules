@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 03:54+0000\n"
-"PO-Revision-Date: 2026-09-27 03:54+0000\n"
+"POT-Creation-Date: 2026-09-27 11:07+0000\n"
+"PO-Revision-Date: 2026-09-27 11:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_CA\n"
@@ -27,6 +27,14 @@ msgstr ""
 "%(n)s polls in a row without reading anything (%(msg)s). What leaves the "
 "feed's window during the outage is lost: check the address, or whether the "
 "host refuses our requests."
+
+#. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_liste.py:0
+msgid ""
+"%s sujet(s) proposé(s) : à valider un par un, avec leur description et leurs"
+" exclusions."
+msgstr "%s topic(s) proposed: validate them one by one, with their description and exclusions."
 
 #. module: bf_flux
 #: model:mail.template,body_html:bf_flux.mail_template_resume
@@ -110,6 +118,7 @@ msgstr ""
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__active
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__active
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__active
 msgid "Active"
 msgstr ""
 
@@ -134,6 +143,11 @@ msgid "Activity Type Icon"
 msgstr ""
 
 #. module: bf_flux
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_element__emetteur_url
+msgid "Adresse du diffuseur"
+msgstr "Publisher address"
+
+#. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__url
 msgid "Adresse du flux"
 msgstr "Feed address"
@@ -150,6 +164,7 @@ msgstr "Add a first RSS or Atom feed"
 
 #. module: bf_flux
 #: model:ir.model.fields.selection,name:bf_flux.selection__bf_flux_source__langue_preferee__en
+#: model:ir.model.fields.selection,name:bf_flux.selection__bf_flux_sujet__langues__en
 msgid "Anglais"
 msgstr "English"
 
@@ -173,9 +188,19 @@ msgid "Appliquer aux 7 derniers jours"
 msgstr "Apply to the last 7 days"
 
 #. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_form
+msgid "Archivé"
+msgstr "Archived"
+
+#. module: bf_flux
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_liste_form
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_source_form
 msgid "Archivée"
+msgstr "Archived"
+
+#. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_search
+msgid "Archivés"
 msgstr "Archived"
 
 #. module: bf_flux
@@ -185,14 +210,25 @@ msgid "Attachment Count"
 msgstr ""
 
 #. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_liste.py:0
+msgid "Aucun client à projet actif qui ne soit déjà surveillé."
+msgstr "No client with an active project that is not already watched."
+
+#. module: bf_flux
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_liste_form
 msgid "Audience"
-msgstr "Audience"
+msgstr ""
 
 #. module: bf_flux
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_element_search_lecteur
 msgid "Aujourd'hui"
 msgstr "Today"
+
+#. module: bf_flux
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__variantes
+msgid "Autres graphies"
+msgstr "Other spellings"
 
 #. module: bf_flux
 #: model:ir.model.fields,help:bf_flux.field_bf_flux_liste__membre_user_ids
@@ -244,9 +280,23 @@ msgid "Chaque semaine"
 msgstr "Weekly"
 
 #. module: bf_flux
+#: model_terms:ir.actions.act_window,help:bf_flux.action_flux_sujet
+msgid ""
+"Chaque sujet tient sa recherche dans les nouvelles. Décrivez-le pour que le "
+"tri par IA écarte les homonymes."
+msgstr ""
+"Each topic keeps its own news search. Describe it so AI sorting can set "
+"aside namesakes."
+
+#. module: bf_flux
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__partner_id
+msgid "Client"
+msgstr "Client"
+
+#. module: bf_flux
 #: model:ir.ui.menu,name:bf_flux.menu_flux_config
 msgid "Configuration"
-msgstr "Configuration"
+msgstr ""
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__coupures
@@ -261,6 +311,7 @@ msgstr "Cut text from"
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_preference__create_uid
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__create_uid
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__create_uid
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__create_uid
 msgid "Created by"
 msgstr ""
 
@@ -272,6 +323,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_preference__create_date
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__create_date
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__create_date
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__create_date
 msgid "Created on"
 msgstr ""
 
@@ -280,6 +332,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_element_search_lecteur
 msgid "Dans mes listes"
 msgstr "In my lists"
+
+#. module: bf_flux
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__description
+msgid "De qui il s'agit"
+msgstr "Who this is"
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__dernier_message
@@ -298,6 +355,15 @@ msgid "Dernière relève"
 msgstr "Last poll"
 
 #. module: bf_flux
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_liste__sujet_ids
+msgid ""
+"Des noms cherchés partout : dans une recherche tenue par le sujet, et dans "
+"tout ce que les autres sources apportent."
+msgstr ""
+"Names searched everywhere: in a search kept by the topic, and in everything "
+"the other sources bring in."
+
+#. module: bf_flux
 #: model:ir.model.fields,help:bf_flux.field_bf_flux_liste__user_ids
 msgid ""
 "Des personnes abonnées nommément, en plus des services et des projets : une "
@@ -309,7 +375,7 @@ msgstr ""
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__description
 msgid "Description"
-msgstr "Description"
+msgstr ""
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__diffusee
@@ -324,8 +390,14 @@ msgstr "Posted to channel"
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_preference__display_name
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__display_name
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__display_name
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__display_name
 msgid "Display Name"
 msgstr ""
+
+#. module: bf_flux
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_element__emetteur_url
+msgid "Donnée par un agrégateur, dont le lien reste chez lui."
+msgstr "Given by an aggregator, whose link stays on its own site."
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_preference__desabonne
@@ -349,8 +421,15 @@ msgstr "Attempts"
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__exclusions
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__exclusions
 msgid "Exclusions"
-msgstr "Exclusions"
+msgstr ""
+
+#. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_sujet.py:0
+msgid "Expression régulière invalide dans les exclusions : %s"
+msgstr "Invalid regular expression in the exclusions: %s"
 
 #. module: bf_flux
 #. odoo-python
@@ -420,8 +499,14 @@ msgstr ""
 
 #. module: bf_flux
 #: model:ir.model.fields.selection,name:bf_flux.selection__bf_flux_source__langue_preferee__fr
+#: model:ir.model.fields.selection,name:bf_flux.selection__bf_flux_sujet__langues__fr
 msgid "Français"
 msgstr "French"
+
+#. module: bf_flux
+#: model:ir.model.fields.selection,name:bf_flux.selection__bf_flux_sujet__langues__fr_en
+msgid "Français et anglais"
+msgstr "French and English"
 
 #. module: bf_flux
 #: model:res.groups,name:bf_flux.group_flux_gestion
@@ -435,6 +520,13 @@ msgid "Has Message"
 msgstr ""
 
 #. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_form
+msgid ""
+"Herning\n"
+"handball"
+msgstr "Herning\nhandball"
+
+#. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_element__id
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_lecture__id
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__id
@@ -442,6 +534,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_preference__id
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__id
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__id
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__id
 msgid "ID"
 msgstr ""
 
@@ -486,7 +579,7 @@ msgstr ""
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_element__image_url
 msgid "Image"
-msgstr "Image"
+msgstr ""
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__message_is_follower
@@ -502,8 +595,18 @@ msgstr "The feed address must start with http:// or https://."
 
 #. module: bf_flux
 #: model:ir.model.constraint,message:bf_flux.constraint_bf_flux_source_cadence_positive
-msgid "La cadence doit être d'au moins une heure."
-msgstr "The pace must be at least one hour."
+msgid ""
+"La cadence doit être d'au moins 15 minutes : c'est le pas de la relève."
+msgstr ""
+"The interval must be at least 15 minutes: that is how often polling runs."
+
+#. module: bf_flux
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_source__rattrapage_du
+msgid ""
+"La prochaine relève réussie ramènera l'arriéré de la recherche : retenu, "
+"jamais diffusé ni alerté. Reposé à chaque changement d'adresse et à chaque "
+"réactivation."
+msgstr "The next successful poll will bring back the search's backlog: retained, never delivered or alerted. Set again on every address change and every reactivation."
 
 #. module: bf_flux
 #: model:ir.module.category,description:bf_flux.module_category_flux
@@ -535,6 +638,11 @@ msgid "Langue préférée"
 msgstr "Preferred language"
 
 #. module: bf_flux
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__langues
+msgid "Langues"
+msgstr "Languages"
+
+#. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_element__write_uid
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_lecture__write_uid
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__write_uid
@@ -542,6 +650,7 @@ msgstr "Preferred language"
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_preference__write_uid
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__write_uid
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__write_uid
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__write_uid
 msgid "Last Updated by"
 msgstr ""
 
@@ -553,8 +662,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_preference__write_date
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__write_date
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__write_date
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__write_date
 msgid "Last Updated on"
 msgstr ""
+
+#. module: bf_flux
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_sujet__partner_id
+msgid ""
+"Le client dont vient ce sujet, s'il a été proposé depuis les clients actifs."
+msgstr ""
+"The client this topic comes from, if it was proposed from active clients."
 
 #. module: bf_flux
 #: model:ir.model.fields,help:bf_flux.field_bf_flux_liste__project_ids
@@ -601,8 +718,10 @@ msgstr "Read"
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_preference__liste_id
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__liste_id
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__liste_id
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_element_search_lecteur
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_retenue_search
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_search
 msgid "Liste"
 msgstr "List"
 
@@ -700,11 +819,6 @@ msgstr ""
 "without leaving their department or project."
 
 #. module: bf_flux
-#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr ""
-
-#. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__activity_date_deadline
 msgid "Next Activity Deadline"
 msgstr ""
@@ -736,6 +850,16 @@ msgid "Nom de la source"
 msgstr "Source name"
 
 #. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_form
+msgid "Nom exact, tel qu'il paraît dans la presse"
+msgstr "Exact name, as it appears in the press"
+
+#. module: bf_flux
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__name
+msgid "Nom surveillé"
+msgstr "Watched name"
+
+#. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__membre_count
 msgid "Nombre de membres"
 msgstr "Number of members"
@@ -753,7 +877,7 @@ msgstr "Unread"
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__note
 msgid "Note"
-msgstr "Note"
+msgstr ""
 
 #. module: bf_flux
 #: model:ir.model.fields,help:bf_flux.field_bf_flux_retenue__note
@@ -870,9 +994,25 @@ msgid "Posé au fil de « %s »."
 msgstr "Posted to the thread of \"%s\"."
 
 #. module: bf_flux
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_sujet__description
+msgid ""
+"Pour le jugement IA : qui est ce sujet, et quels homonymes ignorer. Exemple "
+": « Firme de consultation TI de Sherbrooke. Pas le club de hockey Herning "
+"Blue Fox ni le club de handball de Montpellier. »"
+msgstr ""
+"For AI judgement: who this topic is, and which namesakes to ignore. Example:"
+" \"IT consulting firm in Sherbrooke. Not the Herning Blue Fox hockey club "
+"nor the Montpellier handball club.\""
+
+#. module: bf_flux
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_poser_projet_form
 msgid "Pourquoi c'est utile au projet (facultatif)"
 msgstr "Why it matters to the project (optional)"
+
+#. module: bf_flux
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__rattrapage_du
+msgid "Première relève à venir"
+msgstr "First poll pending"
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__prochaine_releve
@@ -888,6 +1028,22 @@ msgstr "Project"
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__project_ids
 msgid "Projets"
 msgstr "Projects"
+
+#. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_liste.py:0
+msgid "Proposer des sujets est réservé à la gestion des flux."
+msgstr "Proposing topics is reserved to feed management."
+
+#. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_liste_form
+msgid "Proposer les clients actifs"
+msgstr "Propose active clients"
+
+#. module: bf_flux
+#: model:ir.model.fields.selection,name:bf_flux.selection__bf_flux_sujet__etat__propose
+msgid "Proposé"
+msgstr "Proposed"
 
 #. module: bf_flux
 #: model:ir.model,name:bf_flux.model_bf_flux_preference
@@ -916,6 +1072,11 @@ msgstr ""
 "version wins, even if it arrives later."
 
 #. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_form
+msgid "Qui est ce sujet, et quels homonymes ignorer. Lu par le tri par IA."
+msgstr "Who this topic is, and which namesakes to ignore. Read by AI sorting."
+
+#. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__raison
 msgid "Raison du jugement"
 msgstr "Judgement reason"
@@ -932,8 +1093,21 @@ msgid "Rattrapage"
 msgstr "Backfill"
 
 #. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_sujet.py:0
+msgid "Recherche : %(nom)s (%(lg)s)"
+msgstr "Search: %(nom)s (%(lg)s)"
+
+#. module: bf_flux
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__source_ids
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_form
+msgid "Recherches"
+msgstr "Searches"
+
+#. module: bf_flux
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_element_search
 #: model_terms:ir.ui.view,arch_db:bf_flux.flux_retenue_search
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_search
 msgid "Regrouper par"
 msgstr "Group by"
 
@@ -943,9 +1117,9 @@ msgid "Relever maintenant"
 msgstr "Poll now"
 
 #. module: bf_flux
-#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__cadence_heures
-msgid "Relever toutes les (h)"
-msgstr "Poll every (h)"
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__cadence_minutes
+msgid "Relever toutes les (min)"
+msgstr "Poll every (min)"
 
 #. module: bf_flux
 #. odoo-python
@@ -1041,13 +1215,15 @@ msgid "Réglez sa cadence sur la vitesse à laquelle il renouvelle sa fenêtre."
 msgstr "Set its pace to how fast it renews its window."
 
 #. module: bf_flux
-#: model:ir.model.fields,help:bf_flux.field_bf_flux_source__cadence_heures
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_source__cadence_minutes
 msgid ""
 "Réglez-la sur la vitesse à laquelle le flux renouvelle sa fenêtre : ce qui "
-"en sort entre deux relèves est perdu."
+"en sort entre deux relèves est perdu. La relève passe aux 15 minutes : une "
+"cadence plus courte n'y changerait rien."
 msgstr ""
-"Set it to how fast the feed renews its window: what leaves it between two "
-"polls is lost."
+"Set it to how fast the feed renews its window: whatever drops out between "
+"two polls is lost. Polling runs every 15 minutes: a shorter interval would "
+"change nothing."
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_preference__frequence
@@ -1076,8 +1252,14 @@ msgstr ""
 "pace is too slow: items may have left the window unseen."
 
 #. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_form
+msgid "Sigle, nom commercial, une graphie par ligne"
+msgstr "Acronym, trade name, one spelling per line"
+
+#. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__company_id
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__company_id
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__company_id
 msgid "Société"
 msgstr "Company"
 
@@ -1092,12 +1274,21 @@ msgid "Source de flux"
 msgstr "Feed source"
 
 #. module: bf_flux
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_source__sujet_id
+msgid ""
+"Source de recherche créée et tenue par un sujet surveillé : elle suit le "
+"sujet, ne se règle pas à la main."
+msgstr ""
+"Search source created and kept by a watched topic: it follows the topic and "
+"is not set by hand."
+
+#. module: bf_flux
 #: model:ir.actions.act_window,name:bf_flux.action_flux_source
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_element__source_ids
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__source_ids
 #: model:ir.ui.menu,name:bf_flux.menu_flux_sources
 msgid "Sources"
-msgstr "Sources"
+msgstr ""
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__sources_entieres_ids
@@ -1114,9 +1305,55 @@ msgid ""
 msgstr ""
 
 #. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_sujet.py:0
+msgid "Sujet : %s"
+msgstr "Topic: %s"
+
+#. module: bf_flux
+#: model:ir.model,name:bf_flux.model_bf_flux_sujet
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__sujet_id
+msgid "Sujet surveillé"
+msgstr "Watched topic"
+
+#. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_element__sujets
 msgid "Sujets"
 msgstr "Subjects"
+
+#. module: bf_flux
+#: model:ir.actions.act_window,name:bf_flux.action_flux_sujet
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__sujet_ids
+#: model:ir.ui.menu,name:bf_flux.menu_flux_sujets
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_liste_form
+msgid "Sujets surveillés"
+msgstr "Watched topics"
+
+#. module: bf_flux
+#: model_terms:ir.actions.act_window,help:bf_flux.action_flux_sujet
+msgid "Surveillez un nom : votre société, une marque, un client"
+msgstr "Watch a name: your company, a brand, a client"
+
+#. module: bf_flux
+#: model:ir.model.fields.selection,name:bf_flux.selection__bf_flux_sujet__etat__actif
+msgid "Surveillé"
+msgstr "Watched"
+
+#. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_search
+msgid "Surveillés"
+msgstr "Watched"
+
+#. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_form
+msgid "Suspendre"
+msgstr "Suspend"
+
+#. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_sujet.py:0
+msgid "Suspendre un sujet est réservé à la gestion des flux."
+msgstr "Suspending a topic is reserved to feed management."
 
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_liste__termes
@@ -1174,6 +1411,32 @@ msgstr ""
 "notices."
 
 #. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_liste_form
+msgid ""
+"Un nom cherché partout : une recherche Google News par langue, tenue par le sujet,\n"
+"                                et tout ce que les autres sources apportent. Le nom seul retient ; la description\n"
+"                                dit au tri par IA de qui il s'agit et quels homonymes écarter."
+msgstr ""
+"A name searched everywhere: one Google News search per language, kept by the topic,\n"
+"                                and everything the other sources bring in. The name alone retains; the description\n"
+"                                tells AI sorting who this is and which namesakes to set aside."
+
+#. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_sujet.py:0
+msgid ""
+"Un nom ou une graphie se cherche tel quel dans les nouvelles : pas "
+"d'expression régulière (« %s »)."
+msgstr "A name or spelling is searched as written in the news: no regular expression (\"%s\")."
+
+#. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_sujet.py:0
+msgid ""
+"Un nom surveillé d'une ou deux lettres retiendrait presque tout (« %s »)."
+msgstr "A watched name of one or two letters would retain almost everything (\"%s\")."
+
+#. module: bf_flux
 #: model:ir.model.fields,help:bf_flux.field_bf_flux_liste__emetteurs_notes
 msgid ""
 "Un par ligne. Jamais retenus sur leur seul nom : notés seulement quand un "
@@ -1202,6 +1465,26 @@ msgstr ""
 " notices to shareholders, etc."
 
 #. module: bf_flux
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_sujet__etat
+msgid ""
+"Un sujet proposé depuis les clients n'est pas cherché tant qu'il n'est pas "
+"validé : un nom ambigu surveillé sans exclusions remplirait la liste "
+"d'homonymes."
+msgstr ""
+"A topic proposed from clients is not searched until it is validated: an "
+"ambiguous name watched without exclusions would fill the list with "
+"namesakes."
+
+#. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_liste_form
+msgid ""
+"Un sujet proposé par client à projet actif. Rien n'est cherché avant "
+"validation."
+msgstr ""
+"One proposed topic per client with an active project. Nothing is searched "
+"before validation."
+
+#. module: bf_flux
 #: model:ir.model.constraint,message:bf_flux.constraint_bf_flux_lecture_user_element_unique
 msgid "Un élément n'est lu qu'une fois par personne."
 msgstr "An item is read once per person."
@@ -1228,6 +1511,24 @@ msgstr ""
 "                                With no industry term and no specialised issuer, the list takes everything its sources bring, minus the exclusions."
 
 #. module: bf_flux
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_sujet__variantes
+msgid ""
+"Une par ligne : sigle, nom commercial, ancienne raison sociale. Chacune est "
+"cherchée comme le nom."
+msgstr ""
+"One per line: acronym, trade name, former legal name. Each is searched like "
+"the name."
+
+#. module: bf_flux
+#: model:ir.model.fields,help:bf_flux.field_bf_flux_sujet__exclusions
+msgid ""
+"Une par ligne. Écarte l'élément quoi qu'il contienne d'autre : Herning, "
+"handball…"
+msgstr ""
+"One per line. Sets the item aside whatever else it contains: Herning, "
+"handball…"
+
+#. module: bf_flux
 #. odoo-python
 #: code:addons/bf_flux/models/flux_preference.py:0
 msgid "Une préférence reste à la personne et à la liste qui l'ont créée."
@@ -1252,6 +1553,23 @@ msgid ""
 msgstr ""
 "Fetches each item's page. The feed's summary is not always enough to judge "
 "or to read."
+
+#. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_liste_form
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_list
+msgid "Valider"
+msgstr "Validate"
+
+#. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_form
+msgid "Valider et surveiller"
+msgstr "Validate and watch"
+
+#. module: bf_flux
+#. odoo-python
+#: code:addons/bf_flux/models/flux_sujet.py:0
+msgid "Valider un sujet est réservé à la gestion des flux."
+msgstr "Validating a topic is reserved to feed management."
 
 #. module: bf_flux
 #. odoo-python
@@ -1311,6 +1629,11 @@ msgstr "To read"
 #: model:ir.model.fields.selection,name:bf_flux.selection__bf_flux_element__texte_etat__a_faire
 msgid "À récupérer"
 msgstr "To fetch"
+
+#. module: bf_flux
+#: model_terms:ir.ui.view,arch_db:bf_flux.flux_sujet_search
+msgid "À valider"
+msgstr "To validate"
 
 #. module: bf_flux
 #: model:ir.model.fields.selection,name:bf_flux.selection__bf_flux_retenue__etat__ecarte
@@ -1408,5 +1731,6 @@ msgstr "Dual-line issuers"
 #. module: bf_flux
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_retenue__etat
 #: model:ir.model.fields,field_description:bf_flux.field_bf_flux_source__dernier_etat
+#: model:ir.model.fields,field_description:bf_flux.field_bf_flux_sujet__etat
 msgid "État"
 msgstr "State"

@@ -218,6 +218,13 @@ def analyser(brut):
                 rec["langue"] = val.lower()
             elif nom in ("contributor", "creator"):
                 rec["emetteur"] = html.unescape(val)
+            elif nom == "source":
+                # Un agrégateur (Google News) nomme ici le vrai diffuseur, et
+                # son adresse : le lien de l'élément, lui, reste chez Google.
+                if val:
+                    rec.setdefault("emetteur", html.unescape(val))
+                if re.match(r"^https?://", ch.get("url") or "", re.I):
+                    rec["source_url"] = ch.get("url").strip()[:500]
             elif nom == "author":
                 nom_auteur = next(
                     (a.text for a in ch if _local(a.tag) == "name"), None)
@@ -261,10 +268,11 @@ class FluxSource(models.Model):
     active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one(
         "res.company", string="Société", default=lambda s: s.env.company)
-    cadence_heures = fields.Integer(
-        "Relever toutes les (h)", default=2, required=True, tracking=True,
+    cadence_minutes = fields.Integer(
+        "Relever toutes les (min)", default=120, required=True, tracking=True,
         help="Réglez-la sur la vitesse à laquelle le flux renouvelle sa "
-             "fenêtre : ce qui en sort entre deux relèves est perdu.")
+             "fenêtre : ce qui en sort entre deux relèves est perdu. La relève "
+             "passe aux 15 minutes : une cadence plus courte n'y changerait rien.")
     langue_preferee = fields.Selection(
         [("fr", "Français"), ("en", "Anglais")], string="Langue préférée",
         default="fr",
@@ -280,6 +288,16 @@ class FluxSource(models.Model):
              "complet s'arrête à la première ligne qui commence ainsi : pièces "
              "jointes, « à lire aussi », mentions du diffuseur.")
     note = fields.Text("Note")
+    rattrapage_du = fields.Boolean(
+        "Première relève à venir", readonly=True,
+        help="La prochaine relève réussie ramènera l'arriéré de la recherche : "
+             "retenu, jamais diffusé ni alerté. Reposé à chaque changement "
+             "d'adresse et à chaque réactivation.")
+    sujet_id = fields.Many2one(
+        "bf.flux.sujet", string="Sujet surveillé", readonly=True, index=True,
+        ondelete="cascade",
+        help="Source de recherche créée et tenue par un sujet surveillé : "
+             "elle suit le sujet, ne se règle pas à la main.")
 
     derniere_releve = fields.Datetime("Dernière relève", readonly=True)
     prochaine_releve = fields.Datetime(
@@ -305,8 +323,8 @@ class FluxSource(models.Model):
         string="Listes")
 
     _sql_constraints = [
-        ("cadence_positive", "CHECK(cadence_heures > 0)",
-         "La cadence doit être d'au moins une heure."),
+        ("cadence_positive", "CHECK(cadence_minutes >= 15)",
+         "La cadence doit être d'au moins 15 minutes : c'est le pas de la relève."),
     ]
 
     @api.depends("element_ids")
@@ -334,7 +352,9 @@ class FluxSource(models.Model):
         if not (self.env.su or self.env.user.has_group("bf_flux.group_flux_gestion")):
             raise AccessError(_("Relever une source est réservé à la gestion des flux."))
         for src in self:
-            src._flux_relever()
+            # Relever sans trier perdait les éléments : ils entraient sans
+            # retenue et n'étaient plus jamais « touchés » ensuite.
+            src._flux_relever()._flux_trier_et_diffuser()
         return True
 
     def _flux_relever(self):
@@ -345,7 +365,7 @@ class FluxSource(models.Model):
             return self.env["bf.flux.element"]
         vals = {
             "derniere_releve": maintenant,
-            "prochaine_releve": maintenant + timedelta(hours=self.cadence_heures),
+            "prochaine_releve": maintenant + timedelta(minutes=self.cadence_minutes),
         }
         try:
             brut, _type = self._flux_telecharger(self.url)
@@ -357,7 +377,8 @@ class FluxSource(models.Model):
                 echecs_consecutifs=self.echecs_consecutifs + 1)
             if exc.passager:
                 # On revient vite : la fenêtre du flux, elle, continue de tourner.
-                vals["prochaine_releve"] = maintenant + timedelta(minutes=30)
+                vals["prochaine_releve"] = maintenant + timedelta(
+                    minutes=min(30, self.cadence_minutes))
             self.write(vals)
             _logger.info("Flux %s : %s", self.name, exc)
             if self.echecs_consecutifs == SEUIL_ALERTE:
@@ -367,8 +388,13 @@ class FluxSource(models.Model):
         vals.update(
             dernier_etat="ok", dernier_message=False, echecs_consecutifs=0,
             derniers_vus=len(recs), derniers_nouveaux=len(nouveaux))
+        arriere = self.rattrapage_du
+        if arriere:
+            # Seule une relève RÉUSSIE solde l'arriéré : un 429 à la première
+            # tentative ne doit pas faire passer la semaine suivante pour du neuf.
+            vals["rattrapage_du"] = False
         self.write(vals)
-        return touches
+        return touches.with_context(flux_rattrapage=True) if arriere else touches
 
     def _flux_alerter(self, message):
         """Une panne qui dure se dit : sans ça, « repris au prochain passage »
@@ -395,8 +421,7 @@ class FluxSource(models.Model):
         en_essai = bool(odoo_module.current_test)
         for src in dues:
             try:
-                touches = src._flux_relever()
-                touches._flux_trier_et_diffuser()
+                src._flux_relever()._flux_trier_et_diffuser()
             except Exception:
                 _logger.exception("Relève du flux %s", src.name)
                 if not en_essai:

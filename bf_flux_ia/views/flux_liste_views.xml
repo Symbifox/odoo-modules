@@ -17,7 +17,61 @@
                     <label for="ia_consigne" invisible="not ia_actif"/>
                     <field name="ia_consigne" invisible="not ia_actif"
                            placeholder="Qui lit cette liste, ce qui leur sert, ce qui ne leur sert pas."/>
+                    <group string="Alertes" invisible="not ia_actif">
+                        <group>
+                            <field name="alerte_active"/>
+                            <field name="alerte_user_ids" widget="many2many_tags" invisible="not alerte_active"/>
+                        </group>
+                        <group invisible="not alerte_active">
+                            <field name="alerte_plafond_jour"/>
+                            <field name="alerte_fraicheur_heures"/>
+                        </group>
+                    </group>
+                    <label for="alerte_consigne" invisible="not ia_actif or not alerte_active"/>
+                    <field name="alerte_consigne" invisible="not ia_actif or not alerte_active"
+                           placeholder="Ce qui ne peut pas attendre le résumé du lendemain."/>
                 </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="flux_retenue_list_ia" model="ir.ui.view">
+        <field name="name">bf.flux.retenue.list.ia</field>
+        <field name="model">bf.flux.retenue</field>
+        <field name="inherit_id" ref="bf_flux.flux_retenue_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='raison']" position="after">
+                <field name="urgence" optional="show" widget="badge"
+                       decoration-danger="urgence == 'alerte'" decoration-warning="urgence == 'a_lire'"/>
+                <field name="alerte_etat" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="flux_retenue_form_ia" model="ir.ui.view">
+        <field name="name">bf.flux.retenue.form.ia</field>
+        <field name="model">bf.flux.retenue</field>
+        <field name="inherit_id" ref="bf_flux.flux_retenue_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='raison']" position="after">
+                <field name="urgence" invisible="not urgence"/>
+                <field name="alerte_evenement" invisible="not alerte_evenement"/>
+                <field name="alerte_etat" invisible="not alerte_etat"/>
+                <field name="alerte_le" invisible="not alerte_le"/>
+                <field name="alerte_mail_id" invisible="not alerte_mail_id" groups="base.group_system"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="flux_retenue_search_ia" model="ir.ui.view">
+        <field name="name">bf.flux.retenue.search.ia</field>
+        <field name="model">bf.flux.retenue</field>
+        <field name="inherit_id" ref="bf_flux.flux_retenue_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='ecartes']" position="after">
+                <filter name="alertes" string="Alertes" domain="[('urgence', '=', 'alerte')]"/>
+                <filter name="alertes_retenues" string="Alertes non envoyées"
+                        domain="[('urgence', '=', 'alerte'), ('alerte_etat', 'not in', (False, 'envoyee'))]"/>
             </xpath>
         </field>
     </record>

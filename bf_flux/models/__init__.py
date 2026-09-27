@@ -5,3 +5,4 @@ from . import flux_liste
 from . import flux_retenue
 from . import flux_preference
 from . import flux_lecture
+from . import flux_sujet

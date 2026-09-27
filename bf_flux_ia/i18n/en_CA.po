@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 03:56+0000\n"
-"PO-Revision-Date: 2026-09-27 03:56+0000\n"
+"POT-Creation-Date: 2026-09-27 11:07+0000\n"
+"PO-Revision-Date: 2026-09-27 11:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_CA\n"
@@ -23,14 +23,87 @@ msgid "(sans raison)"
 msgstr "(no reason)"
 
 #. module: bf_flux_ia
+#: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__alerte_plafond_jour
+msgid ""
+"0 : sans plafond propre à la liste ; le plafond de sûreté du locataire (20 "
+"alertes par 24 h, paramètre bf_flux_ia.alertes_par_jour_max) vaut toujours. "
+"Le jour est celui du premier destinataire, dans son fuseau. Une alerte "
+"retenue par un plafond reste visible sur l'élément, avec sa raison."
+msgstr "0: no cap of the list's own; the tenant's safety cap (20 alerts per 24 h, parameter bf_flux_ia.alertes_par_jour_max) always applies. The day is the first recipient's, in their time zone. An alert held back by a cap stays visible on the item, with its reason."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_retenue__alerte_etat
+#: model:ir.model.fields.selection,name:bf_flux_ia.selection__bf_flux_retenue__urgence__alerte
+msgid "Alerte"
+msgstr "Alert"
+
+#. module: bf_flux_ia
+#. odoo-python
+#: code:addons/bf_flux_ia/models/flux_retenue.py:0
+msgid "Alerte %(liste)s : %(titre)s"
+msgstr "Alert %(liste)s: %(titre)s"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__alerte_active
+msgid "Alerter quand c'est urgent"
+msgstr "Alert when urgent"
+
+#. module: bf_flux_ia
+#: model_terms:ir.ui.view,arch_db:bf_flux_ia.flux_liste_form_ia
+#: model_terms:ir.ui.view,arch_db:bf_flux_ia.flux_retenue_search_ia
+msgid "Alertes"
+msgstr "Alerts"
+
+#. module: bf_flux_ia
+#: model_terms:ir.ui.view,arch_db:bf_flux_ia.flux_retenue_search_ia
+msgid "Alertes non envoyées"
+msgstr "Alerts not sent"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__alerte_plafond_jour
+msgid "Alertes par jour au plus"
+msgstr "Maximum alerts per day"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_retenue__alerte_le
+msgid "Alertée le"
+msgstr "Alerted on"
+
+#. module: bf_flux_ia
 #: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__ia_actif
 msgid "Après les règles, un modèle de langage note chaque élément retenu."
 msgstr "After the rules, a language model scores each retained item."
 
 #. module: bf_flux_ia
+#. odoo-python
+#: code:addons/bf_flux_ia/models/flux_retenue.py:0
+msgid "Aucun modèle : installer bf_llm ou bf_ai_bridge."
+msgstr "No model: install bf_llm or bf_ai_bridge."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields.selection,name:bf_flux_ia.selection__bf_flux_retenue__urgence__aucune
+msgid "Aucune"
+msgstr "None"
+
+#. module: bf_flux_ia
 #: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__ia_consigne
 msgid "Ce qui compte pour cette liste"
 msgstr "What matters for this list"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__alerte_consigne
+msgid "Ce qui mérite une alerte"
+msgstr "What deserves an alert"
+
+#. module: bf_flux_ia
+#: model_terms:ir.ui.view,arch_db:bf_flux_ia.flux_liste_form_ia
+msgid "Ce qui ne peut pas attendre le résumé du lendemain."
+msgstr "What cannot wait for the next day's digest."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_retenue__alerte_mail_id
+msgid "Courriel d'alerte"
+msgstr "Alert email"
 
 #. module: bf_flux_ia
 #: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__ia_seuil
@@ -55,6 +128,20 @@ msgstr ""
 "to shareholders.\""
 
 #. module: bf_flux_ia
+#: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__alerte_consigne
+msgid ""
+"En mots simples. Exemple : « Une nouvelle qui change le monde : guerre "
+"déclarée, catastrophe majeure, effondrement des marchés. »"
+msgstr ""
+"In plain words. Example: \"World-changing news: declared war, major "
+"disaster, market collapse.\""
+
+#. module: bf_flux_ia
+#: model:ir.model.fields.selection,name:bf_flux_ia.selection__bf_flux_retenue__alerte_etat__envoyee
+msgid "Envoyée"
+msgstr "Sent"
+
+#. module: bf_flux_ia
 #: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_retenue__jugement_essais
 msgid "Essais de jugement"
 msgstr "Judgement attempts"
@@ -65,10 +152,27 @@ msgid "Flux RSS : juger ce qui attend"
 msgstr "RSS Feeds: judge pending items"
 
 #. module: bf_flux_ia
+#: model:ir.model.fields.selection,name:bf_flux_ia.selection__bf_flux_retenue__urgence__a_lire
+msgid "Importante"
+msgstr "Important"
+
+#. module: bf_flux_ia
 #. odoo-python
 #: code:addons/bf_flux_ia/models/flux_retenue.py:0
 msgid "Jugement indisponible : retenu par les règles seules."
 msgstr "Judgement unavailable: kept by the rules alone."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_retenue__alerte_deja
+msgid ""
+"La retenue déjà alertée qui racontait le même événement, selon le modèle."
+msgstr ""
+"The already alerted item that told the same event, according to the model."
+
+#. module: bf_flux_ia
+#: model:ir.model.constraint,message:bf_flux_ia.constraint_bf_flux_liste_alerte_plafond_positif
+msgid "Le plafond d'alertes ne peut pas être négatif."
+msgstr "The alert cap cannot be negative."
 
 #. module: bf_flux_ia
 #: model:ir.model.constraint,message:bf_flux_ia.constraint_bf_flux_liste_ia_seuil_borne
@@ -76,14 +180,65 @@ msgid "Le seuil va de 0 à 100."
 msgstr "The threshold ranges from 0 to 100."
 
 #. module: bf_flux_ia
+#: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__alerte_active
+msgid ""
+"Le tri par IA dit aussi si un élément ne peut pas attendre le résumé. Si "
+"oui, un courriel part tout de suite aux personnes nommées."
+msgstr ""
+"AI sorting also says whether an item cannot wait for the digest. If so, an "
+"email goes out right away to the named people."
+
+#. module: bf_flux_ia
 #: model:ir.model,name:bf_flux_ia.model_bf_flux_liste
 msgid "Liste de distribution de flux"
 msgstr "Feed distribution list"
 
 #. module: bf_flux_ia
+#. odoo-python
+#: code:addons/bf_flux_ia/models/flux_retenue.py:0
+msgid "Liste « %(liste)s », retenu pour : %(motifs)s."
+msgstr "List \"%(liste)s\", retained for: %(motifs)s."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields.selection,name:bf_flux_ia.selection__bf_flux_retenue__alerte_etat__doublon
+msgid "Même événement qu'une alerte envoyée"
+msgstr "Same event as a sent alert"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_retenue__alerte_deja
+msgid "Même événement que"
+msgstr "Same event as"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__alerte_fraicheur_heures
+msgid "N'alerter que sur du neuf (h)"
+msgstr "Only alert on fresh news (h)"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields.selection,name:bf_flux_ia.selection__bf_flux_retenue__alerte_etat__sans_destinataire
+msgid "Personne à alerter"
+msgstr "Nobody to alert"
+
+#. module: bf_flux_ia
+#. odoo-python
+#: code:addons/bf_flux_ia/models/flux_retenue.py:0
+msgid "Pourquoi maintenant :"
+msgstr "Why now:"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__alerte_user_ids
+msgid "Qui alerter"
+msgstr "Who to alert"
+
+#. module: bf_flux_ia
 #: model_terms:ir.ui.view,arch_db:bf_flux_ia.flux_liste_form_ia
 msgid "Qui lit cette liste, ce qui leur sert, ce qui ne leur sert pas."
 msgstr "Who reads this list, what helps them, what does not."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields.selection,name:bf_flux_ia.selection__bf_flux_retenue__alerte_etat__plafond
+msgid "Retenue par le plafond du jour"
+msgstr "Held back by the daily cap"
 
 #. module: bf_flux_ia
 #: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_liste__ia_seuil
@@ -110,6 +265,42 @@ msgid "Trier par IA"
 msgstr "Sort with AI"
 
 #. module: bf_flux_ia
+#: model:ir.model.fields.selection,name:bf_flux_ia.selection__bf_flux_retenue__alerte_etat__perimee
+msgid "Trop ancienne pour alerter"
+msgstr "Too old to alert"
+
+#. module: bf_flux_ia
+#. odoo-python
+#: code:addons/bf_flux_ia/models/flux_retenue.py:0
+msgid "Une nouvelle qui concerne directement un sujet surveillé."
+msgstr "News that directly concerns a watched topic."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,help:bf_flux_ia.field_bf_flux_liste__alerte_fraicheur_heures
+msgid ""
+"Une recherche ramène aussi des articles anciens : au-delà de ce délai depuis"
+" la publication, l'élément va au résumé, jamais en alerte."
+msgstr ""
+"A search also brings back old articles: past this delay since publication, "
+"the item goes to the digest, never to an alert."
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_retenue__urgence
+msgid "Urgence"
+msgstr "Urgency"
+
+#. module: bf_flux_ia
+#. odoo-python
+#: code:addons/bf_flux_ia/models/flux_retenue.py:0
+msgid "réponse vide du pont"
+msgstr "empty response from the bridge"
+
+#. module: bf_flux_ia
 #: model:ir.model,name:bf_flux_ia.model_bf_flux_retenue
 msgid "Élément retenu par une liste"
 msgstr "Item retained by a list"
+
+#. module: bf_flux_ia
+#: model:ir.model.fields,field_description:bf_flux_ia.field_bf_flux_retenue__alerte_evenement
+msgid "Événement"
+msgstr "Event"

@@ -46,6 +46,17 @@ in quarterly earnings calls from issuers in the right industry.
   read" on one card or on a selection. The digest leaves out what the person
   already read.
 - **Named subscribers**, besides departments and projects.
+- **Watched topics.** A name to watch (your company, a brand, a client) keeps
+  its own Google News search, one per language, polled every 30 minutes. The
+  name is also looked for in everything the other sources bring in. Only the
+  exact name retains an item, never a search result that lacks it, and only
+  when published within seven days: a search also returns old articles. A
+  search's first poll is a backlog, retained but neither delivered nor alerted.
+- **Topics proposed from active clients**, one per client with an active
+  project, searched only once validated: an ambiguous name watched without
+  exclusions fills the list with namesakes.
+- **Polling interval in minutes**, 15 at the least, which is the polling step.
+  Watched topics' lists come first in the email digest.
 
 ## What it does not do
 
@@ -56,4 +67,6 @@ in quarterly earnings calls from issuers in the right industry.
 ## Extension points
 
 - `bf.flux.retenue._flux_juger()`: judge what passed the rules (AI bridge).
+- `bf.flux.sujet.description`: who a watched topic is and which namesakes to
+  ignore, read by the AI bridge.
 - `bf.flux.element._flux_nettoyer_texte()`: strip a site's page template.

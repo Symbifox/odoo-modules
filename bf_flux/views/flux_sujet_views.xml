@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="flux_sujet_list" model="ir.ui.view">
+        <field name="name">bf.flux.sujet.list</field>
+        <field name="model">bf.flux.sujet</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="etat == 'propose'">
+                <field name="name"/>
+                <field name="liste_id"/>
+                <field name="partner_id" optional="show"/>
+                <field name="langues" optional="show"/>
+                <field name="etat" widget="badge" decoration-success="etat == 'actif'"/>
+                <button name="action_valider" type="object" string="Valider" icon="fa-check"
+                        invisible="etat == 'actif'" groups="bf_flux.group_flux_gestion"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="flux_sujet_form" model="ir.ui.view">
+        <field name="name">bf.flux.sujet.form</field>
+        <field name="model">bf.flux.sujet</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_valider" type="object" string="Valider et surveiller" class="btn-primary"
+                            invisible="etat == 'actif'" groups="bf_flux.group_flux_gestion"/>
+                    <button name="action_mettre_en_attente" type="object" string="Suspendre"
+                            invisible="etat != 'actif'" groups="bf_flux.group_flux_gestion"/>
+                    <field name="etat" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom exact, tel qu'il paraît dans la presse"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="liste_id"/>
+                            <field name="partner_id"/>
+                            <field name="langues"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="variantes" placeholder="Sigle, nom commercial, une graphie par ligne"/>
+                            <field name="exclusions" placeholder="Herning&#10;handball"/>
+                        </group>
+                    </group>
+                    <label for="description"/>
+                    <field name="description"
+                           placeholder="Qui est ce sujet, et quels homonymes ignorer. Lu par le tri par IA."/>
+                    <group string="Recherches">
+                        <field name="source_ids" nolabel="1" colspan="2" readonly="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="cadence_minutes"/>
+                                <field name="derniere_releve"/>
+                                <field name="dernier_etat"/>
+                                <field name="derniers_vus"/>
+                                <field name="active" column_invisible="1"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="flux_sujet_search" model="ir.ui.view">
+        <field name="name">bf.flux.sujet.search</field>
+        <field name="model">bf.flux.sujet</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <filter name="a_valider" string="À valider" domain="[('etat', '=', 'propose')]"/>
+                <filter name="surveilles" string="Surveillés" domain="[('etat', '=', 'actif')]"/>
+                <separator/>
+                <filter name="archives" string="Archivés" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="par_liste" string="Liste" context="{'group_by': 'liste_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_flux_sujet" model="ir.actions.act_window">
+        <field name="name">Sujets surveillés</field>
+        <field name="res_model">bf.flux.sujet</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Surveillez un nom : votre société, une marque, un client</p>
+            <p>Chaque sujet tient sa recherche dans les nouvelles. Décrivez-le pour que le tri par IA écarte les homonymes.</p>
+        </field>
+    </record>
+</odoo>
