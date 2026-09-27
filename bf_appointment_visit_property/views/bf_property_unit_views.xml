@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ⚠️ Un bouton de fiche, pas un <header>. Le portail des occupants pose
+         déjà son propre en-tête au même endroit (« Inviter au portail ») : un
+         second <header> inséré avant la feuille en affichait deux, l'un sous
+         l'autre, dès que les deux modules cohabitent. -->
+    <record id="view_bf_property_unit_form_visit" model="ir.ui.view">
+        <field name="name">bf.property.unit.form.visit</field>
+        <field name="model">bf.property.unit</field>
+        <field name="inherit_id" ref="bf_property_core.view_property_unit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_create_visit_listing" type="object"
+                            class="oe_stat_button" icon="fa-calendar-check-o"
+                            string="Faire visiter"
+                            groups="bf_appointment_visit.group_bf_visit_user"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**54 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**55 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -89,6 +89,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.0.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.15.3 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.0.3 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
+| `bf_appointment_visit_property` | Visites de propriétés — pont Immeubles | 18.0.1.0.0 | LGPL-3 | Show a dwelling from your portfolio without retyping its address: address, occupant and the 24-hour notice for a rented unit come from the Immeubles socle |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
 | `bf_avatar` | Symbifox Avatars | 18.0.1.0.1 | BUSL-1.1 | An avatar in your house style for anyone without a photo, and a builder to make your own |
@@ -353,7 +354,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **54 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **55 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

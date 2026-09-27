@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_visit_listing_form_property" model="ir.ui.view">
+        <field name="name">bf.visit.listing.form.property</field>
+        <field name="model">bf.visit.listing</field>
+        <field name="inherit_id" ref="bf_appointment_visit.view_bf_visit_listing_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='listing_kind']" position="before">
+                <field name="unit_id" options="{'no_create': True}"/>
+                <field name="building_id" readonly="1" invisible="not unit_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
