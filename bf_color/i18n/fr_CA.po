@@ -1,0 +1,471 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_color
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_mixin.py:0
+#: code:addons/bf_color/models/bf_color_override.py:0
+#: code:addons/bf_color/models/bf_color_rule.py:0
+#: code:addons/bf_color/models/bf_color_swatch.py:0
+#: code:addons/bf_color/static/src/picker/bf_color_picker.js:0
+msgid "%s is not a hex color."
+msgstr "%s n'est pas une couleur hexadécimale."
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/picker/bf_color_picker.xml:0
+msgid "(shared)"
+msgstr "(partagé)"
+
+#. module: bf_color
+#: model:ir.model.constraint,message:bf_color.constraint_bf_color_override_one_owner
+msgid "A color override belongs to a user or to a company, not both."
+msgstr ""
+"Une couleur propre appartient à un usager ou à une société, pas aux deux."
+
+#. module: bf_color
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_swatch.py:0
+msgid "A shared swatch needs a company."
+msgstr "Un nuancier partagé doit avoir une société."
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__active
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/picker/bf_color_picker.xml:0
+msgid "Apply"
+msgstr "Appliquer"
+
+#. module: bf_color
+#: model:ir.model,name:bf_color.model_bf_color_rule
+msgid "Automatic color rule"
+msgstr "Règle de couleur automatique"
+
+#. module: bf_color
+#: model:ir.model,name:bf_color.model_bf_color_rule_line
+msgid "Automatic color rule value"
+msgstr "Valeur de règle de couleur automatique"
+
+#. module: bf_color
+#: model:ir.actions.act_window,name:bf_color.bf_color_rule_action
+msgid "Automatic color rules"
+msgstr "Règles de couleur automatiques"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_color_mixin__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_note__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_note_tag__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__res_partner_category__color_source__rule
+msgid "Automatic rule"
+msgstr "Règle automatique"
+
+#. module: bf_color
+#: model:ir.ui.menu,name:bf_color.bf_color_menu_rule
+msgid "Automatic rules"
+msgstr "Règles automatiques"
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_mixin__color_resolved_index
+#: model:ir.model.fields,help:bf_color.field_res_partner_category__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+"Indice le plus proche dans la palette d'Odoo, pour les vues qui ne "
+"comprennent que 0 à 11."
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__color_hex
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__color_hex
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__color_hex
+msgid "Color"
+msgstr "Couleur"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_mixin__color_source
+#: model:ir.model.fields,field_description:bf_color.field_res_partner_category__color_source
+msgid "Color Source"
+msgstr "Source de la couleur"
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_mixin__color_hex
+#: model:ir.model.fields,help:bf_color.field_res_partner_category__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr "Couleur de l'enregistrement pour tout le monde (hex)."
+
+#. module: bf_color
+#: model:ir.model,name:bf_color.model_bf_color_override
+msgid "Color override"
+msgstr "Couleur propre"
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_mixin__color_resolved
+#: model:ir.model.fields,help:bf_color.field_res_partner_category__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+"Couleur montrée à l'usager courant, après sa couleur, celle du locataire et "
+"les règles automatiques."
+
+#. module: bf_color
+#: model:ir.model,name:bf_color.model_bf_color_swatch
+msgid "Color swatch"
+msgstr "Nuancier"
+
+#. module: bf_color
+#: model:ir.model,name:bf_color.model_bf_color_swatch_line
+msgid "Color swatch entry"
+msgstr "Couleur de nuancier"
+
+#. module: bf_color
+#: model:ir.actions.act_window,name:bf_color.bf_color_swatch_action
+msgid "Color swatches"
+msgstr "Nuanciers"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__line_ids
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__line_ids
+#: model:ir.ui.menu,name:bf_color.bf_color_menu_root
+msgid "Colors"
+msgstr "Couleurs"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__company_id
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__company_id
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__company_id
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_color_mixin__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_note__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_note_tag__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__res_partner_category__color_source__company
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.xml:0
+msgid "Company color"
+msgstr "Couleur du locataire"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__create_uid
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__create_uid
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__create_uid
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__create_uid
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__create_date
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__create_date
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__create_date
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__create_date
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__field_id
+msgid "Criterion"
+msgstr "Critère"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__display_name
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__display_name
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__display_name
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__display_name
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_mixin__color_resolved
+#: model:ir.model.fields,field_description:bf_color.field_res_partner_category__color_resolved
+msgid "Displayed color"
+msgstr "Couleur affichée"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_mixin__color_resolved_index
+#: model:ir.model.fields,field_description:bf_color.field_res_partner_category__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr "Couleur affichée (palette d'Odoo)"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__fallback_swatch_id
+msgid "Fallback swatch"
+msgstr "Nuancier de repli"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__field_type
+msgid "Field Type"
+msgstr "Type de champ"
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_rule_line__value_res_id
+msgid "For a relational criterion: the record that takes this color."
+msgstr ""
+"Pour un critère relationnel : l'enregistrement qui prend cette couleur."
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_rule_line__value_char
+msgid "For a text, selection, number or yes/no criterion: the raw value."
+msgstr "Pour un critère texte, liste, nombre ou oui/non : la valeur brute."
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_rule_line__value_model
+msgid "For relationship fields, the technical name of the target model"
+msgstr "Pour les champs relationnels, le nom technique du modèle cible"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
+#: code:addons/bf_color/static/src/picker/bf_color_picker.xml:0
+msgid "Free color"
+msgstr "Couleur libre"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__id
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__id
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__id
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__id
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/picker/bf_color_picker.xml:0
+msgid "Keep in my colors"
+msgstr "Garder dans mes couleurs"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__write_uid
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__write_uid
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__write_uid
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__write_uid
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__write_date
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__write_date
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__write_date
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__write_date
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_rule__company_id
+msgid "Leave empty to apply the rule to every company."
+msgstr "Laisser vide pour appliquer la règle à toutes les sociétés."
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_color_mixin__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_note__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_note_tag__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__res_partner_category__color_source__user
+msgid "Mine"
+msgstr "Les miens"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__model_id
+msgid "Model"
+msgstr "Modèle"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__model_name
+msgid "Model name"
+msgstr "Nom du modèle"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.xml:0
+msgid "My color"
+msgstr "Ma couleur"
+
+#. module: bf_color
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_swatch.py:0
+msgid "My colors"
+msgstr "Mes couleurs"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__name
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__name
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.xml:0
+#: code:addons/bf_color/static/src/picker/bf_color_picker.js:0
+msgid "No color"
+msgstr "Aucune couleur"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/picker/bf_color_picker.xml:0
+msgid "Odoo"
+msgstr "Odoo"
+
+#. module: bf_color
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_mixin.py:0
+msgid "Only an administrator can set the company color."
+msgstr "Seul un administrateur peut choisir la couleur du locataire."
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_mixin__color_hex
+#: model:ir.model.fields,field_description:bf_color.field_res_partner_category__color_hex
+msgid "Own color"
+msgstr "Couleur propre"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__user_id
+msgid "Owner"
+msgstr "Propriétaire"
+
+#. module: bf_color
+#: model:ir.model,name:bf_color.model_res_partner_category
+msgid "Partner Tags"
+msgstr "Étiquettes de contact"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__value_res_id
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_color_mixin__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_note__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_note_tag__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__res_partner_category__color_source__record
+msgid "Record"
+msgstr "Enregistrement"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__value_model
+msgid "Related Model"
+msgstr "Modèle lié"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
+msgid "Remove my color"
+msgstr "Retirer ma couleur"
+
+#. module: bf_color
+#. odoo-javascript
+#: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
+msgid "Remove the company color"
+msgstr "Retirer la couleur du locataire"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__res_id
+msgid "Res"
+msgstr "Res"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__res_model
+msgid "Res Model"
+msgstr "Modèle Res"
+
+#. module: bf_color
+#: model:ir.model,name:bf_color.model_bf_color_mixin
+msgid "Resolved free color"
+msgstr "Couleur libre résolue"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__rule_id
+msgid "Rule"
+msgstr "Règle"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__sequence
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__sequence
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__sequence
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_swatch__user_id
+msgid "Set for a personal swatch. Leave empty to share it with the company."
+msgstr ""
+"À remplir pour un nuancier personnel. Laisser vide pour le partager avec la "
+"société."
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__shared
+msgid "Shared"
+msgstr "Partagés"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch_line__swatch_id
+msgid "Swatch"
+msgstr "Nuancier"
+
+#. module: bf_color
+#: model:ir.ui.menu,name:bf_color.bf_color_menu_swatch
+msgid "Swatches"
+msgstr "Nuanciers"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_mixin__color_text
+#: model:ir.model.fields,field_description:bf_color.field_res_partner_category__color_text
+msgid "Text color"
+msgstr "Couleur du texte"
+
+#. module: bf_color
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_rule.py:0
+msgid "The criterion must be a field of %s."
+msgstr "Le critère doit être un champ de %s."
+
+#. module: bf_color
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_rule.py:0
+msgid "This field type cannot be used as a criterion."
+msgstr "Ce type de champ ne peut pas servir de critère."
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_override__user_id
+msgid "User"
+msgstr "Usager"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__value_char
+msgid "Value"
+msgstr "Valeur"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__value_key
+msgid "Value Key"
+msgstr "Clé de valeur"
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_rule__fallback_swatch_id
+msgid "Values without a line get a stable color from this swatch."
+msgstr ""
+"Les valeurs sans ligne reçoivent une couleur stable tirée de ce nuancier."

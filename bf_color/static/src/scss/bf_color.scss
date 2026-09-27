@@ -1,0 +1,28 @@
+.o_bf_color_dot {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    min-width: 1.5rem;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    &.o_bf_color_active {
+        outline: 2px solid $o-action;
+        outline-offset: 1px;
+    }
+    &.o_bf_color_none {
+        background: repeating-linear-gradient(45deg, transparent 0 3px, rgba(0, 0, 0, 0.15) 3px 4px);
+    }
+}
+.o_bf_color_picker {
+    max-width: 17rem;
+    .o_bf_color_native {
+        width: 2rem;
+        height: 2rem;
+    }
+    .o_bf_color_hex {
+        width: 6rem;
+    }
+}
+.o_tag[data-bf-color] .o_delete {
+    color: inherit;
+}

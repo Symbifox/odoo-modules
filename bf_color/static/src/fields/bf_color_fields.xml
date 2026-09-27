@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_color.ColorField">
+        <button type="button" class="o_bf_color_field btn btn-link p-0 d-inline-flex align-items-center gap-2"
+                t-att-disabled="props.readonly" t-on-click="open">
+            <span class="o_bf_color_dot" t-att-class="{ 'o_bf_color_none': !value }"
+                  t-att-style="value ? 'background-color:' + value : ''"/>
+            <span t-if="value" class="text-body" t-out="value"/>
+            <span t-else="" class="text-muted">No color</span>
+        </button>
+    </t>
+
+    <t t-name="bf_color.ResolvedField">
+        <button type="button" class="o_bf_color_resolved btn btn-link p-0 d-inline-flex align-items-center gap-2"
+                t-on-click="open">
+            <span class="o_bf_color_dot" t-att-class="{ 'o_bf_color_none': !value }"
+                  t-att-style="value ? 'background-color:' + value : ''"/>
+            <span t-if="value" class="text-body" t-out="value"/>
+            <span t-else="" class="text-muted">No color</span>
+            <span t-if="sourceLabel" class="badge text-bg-light o_bf_color_source" t-out="sourceLabel"/>
+        </button>
+    </t>
+
+    <t t-name="bf_color.OverridePopover">
+        <div class="o_bf_color_override">
+            <div t-if="canSetCompany" class="btn-group btn-group-sm w-100 p-2 pb-0" role="group">
+                <button type="button" class="btn o_bf_color_scope_mine"
+                        t-att-class="scope === 'mine' ? 'btn-primary' : 'btn-outline-secondary'"
+                        t-on-click="() => this.setScope('mine')">My color</button>
+                <button type="button" class="btn o_bf_color_scope_company"
+                        t-att-class="scope === 'company' ? 'btn-primary' : 'btn-outline-secondary'"
+                        t-on-click="() => this.setScope('company')">Company color</button>
+            </div>
+            <div t-else="" class="small fw-bold px-2 pt-2">My color</div>
+            <BfColorPicker value="props.value" allowClear="true" clearLabel="clearLabel"
+                           onSelect.bind="onSelect"/>
+        </div>
+    </t>
+</templates>

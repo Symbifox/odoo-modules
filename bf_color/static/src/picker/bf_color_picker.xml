@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_color.ColorPicker">
+        <div class="o_bf_color_picker p-2">
+            <t t-foreach="state.swatches" t-as="swatch" t-key="swatch.id">
+                <div class="o_bf_color_group mb-2">
+                    <div class="small text-muted mb-1">
+                        <t t-out="swatch.name"/>
+                        <span t-if="swatch.shared" class="ms-1 fst-italic">(shared)</span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-1">
+                        <button t-foreach="swatch.colors" t-as="color" t-key="color_index"
+                                type="button" class="o_bf_color_dot btn p-0"
+                                t-att-class="{ 'o_bf_color_active': isActive(color) }"
+                                t-att-style="'background-color:' + color"
+                                t-att-title="color" t-att-data-color="color"
+                                t-on-click="() => this.select(color)"/>
+                    </div>
+                </div>
+            </t>
+            <div class="o_bf_color_group mb-2">
+                <div class="small text-muted mb-1">Odoo</div>
+                <div class="d-flex flex-wrap gap-1">
+                    <button t-foreach="palette" t-as="color" t-key="color"
+                            type="button" class="o_bf_color_dot btn p-0"
+                            t-att-class="{ 'o_bf_color_active': isActive(color) }"
+                            t-att-style="'background-color:' + color"
+                            t-att-title="color" t-att-data-color="color"
+                            t-on-click="() => this.select(color)"/>
+                </div>
+            </div>
+            <div class="o_bf_color_custom d-flex align-items-center gap-1">
+                <input type="color" class="o_bf_color_native form-control-color p-0 border-0"
+                       t-att-value="state.custom" t-on-input="onNativeInput" title="Free color"/>
+                <input type="text" class="o_bf_color_hex form-control form-control-sm"
+                       maxlength="7" t-att-value="state.hex" t-on-input="onHexInput"
+                       t-on-keydown="(ev) => ev.key === 'Enter' and this.applyCustom()"/>
+                <button type="button" class="btn btn-sm btn-primary o_bf_color_apply"
+                        t-on-click="applyCustom">Apply</button>
+                <button type="button" class="btn btn-sm btn-link o_bf_color_keep"
+                        title="Keep in my colors" t-on-click="keepCustom">
+                    <i class="fa fa-bookmark-o"/>
+                </button>
+            </div>
+            <button t-if="props.allowClear" type="button"
+                    class="btn btn-sm btn-link px-0 mt-1 o_bf_color_clear"
+                    t-on-click="() => this.select(false)" t-out="clearLabel"/>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_color_override_user,bf.color.override user,model_bf_color_override,base.group_user,1,1,1,1
+access_bf_color_swatch_user,bf.color.swatch user,model_bf_color_swatch,base.group_user,1,1,1,1
+access_bf_color_swatch_line_user,bf.color.swatch.line user,model_bf_color_swatch_line,base.group_user,1,1,1,1
+access_bf_color_rule_user,bf.color.rule user,model_bf_color_rule,base.group_user,1,0,0,0
+access_bf_color_rule_admin,bf.color.rule admin,model_bf_color_rule,base.group_system,1,1,1,1
+access_bf_color_rule_line_user,bf.color.rule.line user,model_bf_color_rule_line,base.group_user,1,0,0,0
+access_bf_color_rule_line_admin,bf.color.rule.line admin,model_bf_color_rule_line,base.group_system,1,1,1,1

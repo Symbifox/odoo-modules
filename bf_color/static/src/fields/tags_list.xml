@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="web.TagsList" t-inherit-mode="extension">
+        <xpath expr="//span[hasclass('o_tag')]" position="attributes">
+            <attribute name="t-att-style">tag.bfColor ? 'background-color:' + tag.bfColor + ';color:' + (tag.bfText or '#000000') : undefined</attribute>
+            <attribute name="t-att-data-bf-color">tag.bfColor or undefined</attribute>
+        </xpath>
+    </t>
+</templates>
