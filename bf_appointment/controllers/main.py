@@ -14,8 +14,24 @@ import pytz
 from odoo import fields
 from odoo.exceptions import ValidationError
 from odoo.http import Controller, request, route
+from odoo.tools import email_normalize
+from odoo.tools.mail import single_email_re
 
 _logger = logging.getLogger(__name__)
+
+
+def _bf_public_email(email):
+    """Adresse saisie sur une page publique, normalisée, ou « » si douteuse.
+
+    🔴 La recherche du contact se faisait par `=ilike` sur l'adresse
+    brute : `%` et `_` y valent des jokers, et « %@client.com » trouvait le
+    premier contact du domaine. On n'accepte qu'UNE adresse bien formée, et on
+    cherche ensuite par égalité sur `email_normalized`, comme le cœur d'Odoo.
+    """
+    email = (email or "").strip()
+    if not email or not single_email_re.match(email):
+        return ""
+    return email_normalize(email, strict=True) or ""
 
 # Cap distinct tracked IPs so a flood of source IPs cannot grow the per-process
 # limiter dicts without bound (same guard as bf_meeting).
@@ -440,11 +456,11 @@ class AppointmentController(Controller):
         if not _check_consent_lookup_rate_limit():
             _logger.info("Consent lookup rate limit hit for IP %s", _client_ip())
             return out
-        email = (email or "").strip()
-        if not email or not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+        email = _bf_public_email(email)
+        if not email:
             return out
         Partner = request.env["res.partner"].sudo()
-        partner = Partner.search([("email", "=ilike", email)], limit=1)
+        partner = Partner.search([("email_normalized", "=", email)], limit=1)
         if not partner:
             return out
         booking_type = self._get_type_by_slug((slug or "").strip())
@@ -484,7 +500,8 @@ class AppointmentController(Controller):
             return request.redirect("/appointment")
         response = request.render(
             "bf_appointment.appointment_type_page",
-            {"booking_type": booking_type, "error": kwargs.get("error")},
+            {"booking_type": booking_type, "error": kwargs.get("error"),
+             "notice": kwargs.get("notice")},
         )
         return _apply_security_headers(response)
 
@@ -545,8 +562,9 @@ class AppointmentController(Controller):
             return request.redirect(
                 f"/appointment/{slug}?error={quote_plus(_msg('Veuillez fournir une adresse ou un lieu reconnaissable.', 'Please give a recognisable address or place.'))}"
             )
-        # Basic email validation
-        if not re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", email):
+        # Validation stricte : une seule adresse, sans joker.
+        email_norm = _bf_public_email(email)
+        if not email_norm:
             return request.redirect(
                 f"/appointment/{slug}?error={quote_plus(_msg('Adresse courriel invalide.', 'Invalid email address.'))}"
             )
@@ -576,7 +594,7 @@ class AppointmentController(Controller):
                 )
         # Find or create partner
         Partner = request.env["res.partner"].sudo()
-        partner = Partner.search([("email", "=ilike", email)], limit=1)
+        partner = Partner.search([("email_normalized", "=", email_norm)], limit=1)
         if not partner:
             partner_vals = {
                 "name": name,
@@ -697,36 +715,39 @@ class AppointmentController(Controller):
         # Une personne peut détenir un lien personnel actif pour ce type et
         # réserver quand même par la page publique : les deux liens voyagent
         # dans le même courriel, celui du bouton et celui de la signature. On
-        # reprend alors sa réservation en attente au lieu d'en ouvrir une
+        # lui renvoie alors son lien au lieu d'ouvrir une réservation
         # neuve — sinon le titre écrit par l'organisateur disparaît, et le lien
         # laissé derrière produit une seconde rencontre au premier clic tardif
         # (cf. `_bf_find_onetime_to_reuse`).
         reprise = Booking._bf_find_onetime_to_reuse(booking_type, partner)
         if reprise:
-            booking = reprise
+            # 🔴 Le lien personnel vaut jeton, et la correspondance
+            # ne tient qu'à l'adresse saisie : rediriger dessus le livrait à
+            # quiconque connaissait l'adresse. On ne touche pas à la
+            # réservation (titre, réponses, invités restent ceux du lien) et
+            # on envoie son lien à l'adresse au dossier ; l'écran dit
+            # seulement d'aller voir sa boîte.
             _logger.info(
-                "Réservation %s : reprise du lien personnel de %s au lieu "
-                "d'ouvrir une réservation neuve", booking.id, partner.email,
+                "Réservation %s : lien personnel renvoyé par courriel au lieu "
+                "d'ouvrir une réservation neuve", reprise.id,
             )
-            # Le formulaire ne réécrit que ce que le visiteur vient de choisir.
-            # Le titre, l'organisateur et les participants restent ceux du
-            # lien : ils viennent de l'organisateur, pas du formulaire.
-            repris = {
-                cle: valeur
-                for cle, valeur in booking_vals.items()
-                if cle in ("location", "duration", "bf_visitor_tz")
-            }
-            if repris:
-                booking.write(repris)
-            # `_save_intake_answers` et `_bf_save_guests` créent sans jamais
-            # nettoyer. Sur un lien repris deux fois (la personne revient au
-            # formulaire), les réponses s'empileraient et la description de
-            # l'événement les afficherait toutes. On repart de ce qu'elle vient
-            # d'écrire.
-            booking.intake_answer_ids.sudo().unlink()
-            booking.guest_ids.sudo().unlink()
-        else:
-            booking = Booking.create(booking_vals)
+            try:
+                ack_template = request.env.ref(
+                    "bf_appointment.mail_template_intake_acknowledgement",
+                    raise_if_not_found=False,
+                )
+                if ack_template:
+                    reprise._send_appointment_email(
+                        ack_template.sudo(), attach_ics=False, recipient="booker")
+            except Exception as e:
+                _logger.warning(
+                    "Échec de l'envoi du lien personnel de la réservation %d : %s",
+                    reprise.id, e,
+                )
+            return request.redirect(
+                f"/appointment/{slug}?notice={quote_plus(_msg('Une invitation personnelle vous attend déjà pour ce type de rencontre : nous venons de vous renvoyer son lien par courriel. Ouvrez-le pour choisir votre créneau.', 'A personal invitation is already waiting for you for this meeting type: we have just e-mailed you its link again. Open it to pick your time.'))}"
+            )
+        booking = Booking.create(booking_vals)
         # Save custom field answers
         self._save_intake_answers(booking, booking_type, kwargs)
         # Invités additionnels : enregistrés EN ATTENTE, rien ne leur est

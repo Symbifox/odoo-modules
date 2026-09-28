@@ -2,6 +2,7 @@
 """Liens de réservation personnels (2.42.0), et leur reprise (2.57.0)."""
 
 import re
+from unittest.mock import patch
 from datetime import timedelta
 
 from odoo import Command, fields
@@ -618,25 +619,36 @@ class TestRepriseParLeFormulairePublic(HttpCase):
         self.lien.name = "Revue des principes | Client x Blue Fox"
         self.env.cr.flush()
 
-    def test_le_formulaire_public_reprend_le_lien_et_garde_le_titre(self):
+    def test_le_formulaire_public_renvoie_le_lien_par_courriel_et_garde_le_titre(self):
         Reservation = self.env["resource.booking"]
         avant = Reservation.search_count([("type_id", "=", self.type_rdv.id)])
         page = self.url_open("/appointment/%s" % self.type_rdv.slug)
         self.assertEqual(page.status_code, 200)
         jeton = re.search(r'name="csrf_token"[^>]*value="([^"]+)"', page.text)
         self.assertTrue(jeton, "le formulaire doit porter son jeton CSRF")
-        reponse = self.url_open(
-            "/appointment/%s/book" % self.type_rdv.slug,
-            data={
-                "csrf_token": jeton.group(1),
-                "name": "Reprise HTTP",
-                "email": "reprise-http@test.invalid",
-                "bf_consent": "on",
-            },
-        )
+        envois = []
+        Modele = type(self.env["resource.booking"])
+
+        def _envoi(rec, template, attach_ics=True, recipient=None):
+            envois.append(rec.id)
+
+        with patch.object(Modele, "_send_appointment_email", _envoi):
+            reponse = self.url_open(
+                "/appointment/%s/book" % self.type_rdv.slug,
+                data={
+                    "csrf_token": jeton.group(1),
+                    "name": "Reprise HTTP",
+                    "email": "reprise-http@test.invalid",
+                    "bf_consent": "on",
+                },
+            )
         self.assertEqual(reponse.status_code, 200)
-        self.assertIn("/appointment/b/%d/" % self.lien.id, reponse.url,
-                      "la page publique doit renvoyer sur le lien détenu")
+        # 🔴 l'adresse seule ne livre plus le lien (il vaut jeton).
+        self.assertNotIn(self.lien.access_token, reponse.url,
+                         "le jeton du lien ne sort jamais sur une simple adresse")
+        self.assertNotIn(self.lien.access_token, reponse.text)
+        self.assertEqual(envois, [self.lien.id],
+                         "le lien part dans la boîte de l'adresse au dossier")
         self.assertEqual(
             avant, Reservation.search_count([("type_id", "=", self.type_rdv.id)]),
             "aucune réservation neuve à côté du lien")

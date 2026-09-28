@@ -177,6 +177,9 @@
                                 <t t-if="error">
                                     <div class="alert alert-danger border-0 rounded-3" t-esc="error"/>
                                 </t>
+                                <t t-if="notice">
+                                    <div class="alert alert-info border-0 rounded-3 bf-notice" t-esc="notice"/>
+                                </t>
                                 <form t-attf-action="/appointment/#{booking_type.slug}/book"
                                       method="post">
                                     <input type="hidden" name="csrf_token"

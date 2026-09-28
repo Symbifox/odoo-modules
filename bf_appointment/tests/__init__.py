@@ -15,3 +15,4 @@ from . import test_annulation_backend
 from . import test_capacite_creneau
 from . import test_deplacement_rdv
 from . import test_deplacement_backoffice
+from . import test_courriel_sans_joker
