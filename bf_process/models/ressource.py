@@ -17,7 +17,7 @@ Le gel de la version validée s'applique : une carte citée ne voit pas ses
 ressources changer sous elle.
 """
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 
 GENRES = [
     ("procedure", "Procédure"),
@@ -125,6 +125,79 @@ class BfProcessNodeResource(models.Model):
                     " deux comptent."
                 ) % rec.name)
 
+    # --- le fichier appartient à la ressource ---------------------------------
+    # la route publique du code QR sert la pièce en sudo. Sans garde,
+    # un gestionnaire de processus pointait une ressource vers n'importe quel
+    # identifiant de pièce jointe (la paie d'une autre société) et le lien
+    # public la servait. Une pièce n'est donc acceptée que si elle est à la
+    # ressource, à son étape ou à son processus — ou libre (téléversée depuis
+    # le formulaire), auquel cas la ressource l'adopte ; une pièce déjà adoptée
+    # par une autre ressource du même processus se partage — et si l'usager peut
+    # la lire lui-même.
+
+    def _porteurs_admis(self):
+        """(modèle, id) auxquels la pièce d'une ressource peut être rattachée."""
+        self.ensure_one()
+        porteurs = {(self._name, self.id)}
+        if self.node_id:
+            porteurs.add(("bf.process.node", self.node_id.id))
+        if self.process_id:
+            porteurs.add(("bf.process", self.process_id.id))
+        return porteurs
+
+    def _piece_admise(self, piece):
+        """La pièce est-elle rattachée à cette ressource (ou à son étape/processus) ?"""
+        self.ensure_one()
+        piece = piece.sudo()
+        if piece.res_field:
+            return False
+        if (piece.res_model, piece.res_id) in self._porteurs_admis():
+            return True
+        # la même pièce partagée par deux ressources du même processus
+        if piece.res_model == self._name and piece.res_id:
+            soeur = self.sudo().browse(piece.res_id).exists()
+            return bool(soeur) and soeur.process_id == self.process_id
+        return False
+
+    @staticmethod
+    def _version_admise(version, piece):
+        """La pièce d'une version publiée : à la version, à son document, ou libre."""
+        piece = piece.sudo()
+        if piece.res_field:
+            return False
+        if not piece.res_model and not piece.res_id:
+            return True
+        return (piece.res_model, piece.res_id) in {
+            ("project.document.version", version.id),
+            ("project.document", version.document_id.id),
+        }
+
+    def _verifier_cibles(self):
+        for rec in self:
+            if rec.attachment_id:
+                piece = rec.attachment_id
+                try:
+                    piece.check("read")
+                    piece.check_access("read")
+                except AccessError:
+                    raise ValidationError(_(
+                        "« %s » : vous n'avez pas accès à ce fichier.") % rec.name)
+                libre = not piece.sudo().res_model and not piece.sudo().res_id \
+                    and not piece.sudo().res_field
+                if libre:
+                    # téléversée depuis la ressource : elle en devient la pièce
+                    piece.sudo().write({"res_model": rec._name, "res_id": rec.id})
+                elif not rec._piece_admise(piece):
+                    raise ValidationError(_(
+                        "« %s » : ce fichier est rattaché à un autre dossier. Joignez-le"
+                        " à l'étape ou téléversez-le dans la ressource.") % rec.name)
+            if rec.document_id:
+                try:
+                    rec.document_id.check_access("read")
+                except AccessError:
+                    raise ValidationError(_(
+                        "« %s » : vous n'avez pas accès à ce document.") % rec.name)
+
     @api.constrains("node_id")
     def _check_porteur(self):
         """Une annotation n'exécute rien, donc elle ne porte pas de consigne."""
@@ -153,11 +226,16 @@ class BfProcessNodeResource(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         self._garde(self._processus_concernes(vals_list))
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        records._verifier_cibles()
+        return records
 
     def write(self, vals):
         self._garde(self._processus_concernes())
-        return super().write(vals)
+        res = super().write(vals)
+        if {"attachment_id", "document_id", "node_id"} & set(vals):
+            self._verifier_cibles()
+        return res
 
     def unlink(self):
         self._garde(self._processus_concernes())
@@ -176,10 +254,21 @@ class BfProcessNodeResource(models.Model):
 
         Celui de la ressource d'abord, puis celui de la version **publiée** du
         document. Une version en brouillon ne compte pas.
+
+        Et seulement une pièce qui appartient bien à la ressource (ou à la
+        version du document qu'elle cite) : un identifiant posé à la main vers
+        la pièce d'un autre dossier ne sort pas.
         """
         self.ensure_one()
-        return self.attachment_id \
-            or self.document_id.latest_version_id.attachment_id
+        vide = self.env["ir.attachment"]
+        if self.attachment_id:
+            return self.attachment_id if self._piece_admise(self.attachment_id) \
+                else vide
+        version = self.document_id.latest_version_id
+        piece = version.attachment_id
+        if piece and self._version_admise(version, piece):
+            return piece
+        return vide
 
     def _corps_a_rendre(self):
         """Le document dont il faut rendre le corps, ou un jeu vide.
