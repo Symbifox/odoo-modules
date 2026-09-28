@@ -331,6 +331,44 @@ def _parse_media(raw):
     return out
 
 
+# Les accusés d'idempotence : voir ``models/mobile_receipt.py``.
+_RECU = "sms.archive.mobile.receipt"
+
+
+def _idempotent(route, brut, run):
+    """Le geste une seule fois par ``client_uuid``.
+
+    🔴 Ici le geste est un SMS parti chez une vraie personne : rejoué, il
+    repart. Sans ``client_uuid``, rien ne change (ancienne version de l'app).
+    Avec, l'accusé déjà posé rend la réponse d'origine telle quelle, plus
+    ``"replay": true`` ; sinon l'envoi s'exécute.
+
+    L'accusé n'est posé que sur une réponse 2xx, c'est-à-dire quand le message
+    a été CRÉÉ, qu'il soit parti ou en ``delivery_state = "failed"`` : un échec
+    chez VOIP.ms est un résultat, que l'app affiche, pas une panne à rejouer.
+    Un refus (400, 404) ne pose rien : rien n'a été créé.
+    """
+    if brut is None or brut == "":
+        return run()
+    Recu = request.env[_RECU].sudo()
+    try:
+        cle = Recu._normalize(brut)
+    except ValueError:
+        return _json({"error": "invalid_client_uuid"}, 400)
+    uid = request.env.uid
+    deja = Recu._acquire(uid, cle)
+    if deja is not None:
+        route_origine, charge = deja
+        if route_origine and route_origine != route:
+            return _json({"error": "invalid_client_uuid",
+                          "detail": "client_uuid already used by another request"}, 400)
+        return _json({**charge, "replay": True})
+    reponse = run()
+    if 200 <= reponse.status_code < 300:
+        Recu._record(uid, cle, route, reponse.get_data(as_text=True))
+    return reponse
+
+
 def _authed(fn):
     """Résout le jeton porteur → charge l'appareil → bascule l'env sur son
     utilisateur. 401 si absent/invalide."""
@@ -422,6 +460,8 @@ class BfSmsMobileApi(http.Controller):
             # Le délai de péremption locale : voir `_peremption_locale`.
             "wipe_after_days": _peremption_locale(request.env),
             "api": 1,
+            # `client_uuid` accepté sur /send.
+            "idempotency": 1,
             "version": module.installed_version or "",
             "branding": _branding(),
         })
@@ -441,9 +481,13 @@ class BfSmsMobileApi(http.Controller):
           de la route un validateur de couples identifiant/mot de passe pour
           n'importe quel compte de l'instance, SMS ou non. La vraie raison part
           au journal serveur, pas au client ;
-        - refus quand le compte porte un TOTP actif : un chemin sans second
-          facteur ne doit pas émettre un jeton porteur durable pour un compte
-          protégé par MFA.
+        - refus dès que /web/login exigerait un second facteur, quel qu'il
+          soit (application TOTP, code par courriel imposé par la politique
+          ``auth_totp.policy``…) : un chemin sans second facteur ne doit pas
+          émettre un jeton porteur durable — qui sert aussi à la VoIP, aux
+          notes, au scan et à la capture — pour un compte protégé par MFA.
+          🔴 Ne tester que ``totp_enabled`` laissait passer le code par
+          courriel, et le 403 distinct confirmait le mot de passe.
         """
         data = _body()
         login = (data.get("login") or "").strip()
@@ -455,28 +499,35 @@ class BfSmsMobileApi(http.Controller):
                 "Mobile API : plafond de connexion atteint (IP %s, identifiant %s)",
                 _login_ip(), login[:64])
             return _json({"error": "rate_limited"}, 429)
+        # Tout refus a le MÊME corps et le même code : mauvais mot de passe,
+        # second facteur exigé ou compte hors du groupe SMS. L'indication vers
+        # l'appariement par /web/login y figure toujours, sans rien confirmer.
+        refus = _json({"error": "invalid_credentials",
+                       "auth_start": f"{BASE}/auth/start"}, 401)
         credential = {"type": "password", "login": login, "password": password}
         try:
             auth_info = request.env["res.users"].sudo().authenticate(
                 request.db, credential, {"interactive": False})
         except AccessDenied:
-            return _json({"error": "invalid_credentials"}, 401)
+            return refus
         uid = auth_info["uid"] if isinstance(auth_info, dict) else auth_info
         user = request.env["res.users"].sudo().browse(uid)
-        # MFA : auth_totp impose le second facteur dans /web/login, pas dans
-        # authenticate(). Renvoyer l'app vers /auth/start plutôt que de contourner.
-        if "totp_enabled" in user._fields and user.totp_enabled:
+        # MFA : la même décision que la session web (odoo.http, Session.authenticate) —
+        # `_mfa_url()` est ce que auth_totp, auth_totp_mail_enforce et tout
+        # module de second facteur surchargent. On l'appelle plutôt que de
+        # redire leurs règles ici.
+        mfa = auth_info.get("mfa") if isinstance(auth_info, dict) else None
+        if mfa != "skip" and user.with_user(user)._mfa_url():
             _logger.info(
                 "Mobile API : connexion par mot de passe refusée pour %s "
-                "(TOTP actif) — utiliser /auth/start", user.login)
-            return _json({"error": "mfa_required",
-                          "auth_start": f"{BASE}/auth/start"}, 403)
+                "(second facteur exigé) — utiliser /auth/start", user.login)
+            return refus
         if not user.has_group(SMS_USER_GROUP):
             # Réponse identique à un mot de passe erroné : pas d'oracle.
             _logger.info(
                 "Mobile API : identifiants valides mais compte hors du groupe "
                 "SMS (%s) — réponse uniforme", user.login)
-            return _json({"error": "invalid_credentials"}, 401)
+            return refus
         device = request.env["sms.archive.mobile.device"]._issue(
             uid, name=data.get("device_name"), platform=data.get("platform", "android"))
         # Remis une fois, puis scellé : seule l'empreinte reste en base.
@@ -652,7 +703,13 @@ class BfSmsMobileApi(http.Controller):
                 csrf=False, save_session=False)
     @_authed
     def send(self, device, **kw):
+        """JSON : ``body``, ``thread_id`` | ``phone``, ``line_id``, ``media``,
+        et ``client_uuid`` facultatif (voir ``_idempotent``)."""
         data = _body()
+        return _idempotent("/send", data.get("client_uuid"),
+                           lambda: self._send(device, data))
+
+    def _send(self, device, data):
         body = data.get("body") or ""
         line_id = data.get("line_id")
         media = _parse_media(data.get("media"))

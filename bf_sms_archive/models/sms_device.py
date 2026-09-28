@@ -75,7 +75,13 @@ class SmsArchiveDevice(models.Model):
         """Lookup an active device by raw token. Returns recordset (possibly empty)."""
         if not raw_token or not isinstance(raw_token, str):
             return self.sudo().browse()
-        return self.sudo().search(
+        device = self.sudo().search(
             [("api_token", "=", raw_token), ("active", "=", True)],
             limit=1,
         )
+        # Le jeton ne vit que tant que son propriétaire est un
+        # interne ACTIF. Archiver le compte ou le passer au portail le coupe,
+        # vérifié à chaque usage (format du jeton inchangé).
+        if device and (not device.owner_id.active or device.owner_id.share):
+            return self.sudo().browse()
+        return device

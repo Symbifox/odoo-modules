@@ -316,8 +316,10 @@ Three routes of that mobile API are the pairing path and therefore carry no
 token yet: `GET …/ping` returns liveness and no data; `POST …/login` is the
 legacy password path, capped per IP and per login, answering with a **uniform**
 failure so it cannot be used as a credential oracle, and refusing outright any
-account with TOTP enabled; `POST …/auth/exchange` trades a one-time pairing
-code for a device token and requires the PKCE verifier. The recommended path is
+account that `/web/login` would ask for a second factor (TOTP app, emailed code
+required by policy, protected account), with the same 401 as a wrong
+password; `POST …/auth/exchange` trades a one-time pairing code for a device
+token and requires the PKCE verifier. The recommended path is
 `…/auth/start`, which delegates to `/web/login` and therefore inherits SSO and
 the second factor.
 
@@ -494,6 +496,36 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 `bf-sms-relay` (LGPL-3, F-Droid-friendly): foreground service when charging (30s tick), WorkManager when on battery (15 min tick), BroadcastReceiver for incoming SMS (real-time). Distribution: signed APK direct, not Play Store (READ_SMS / READ_CALL_LOG are blocked by Play policy).
 
 ## Changelog
+
+### Version 18.0.5.23.2
+
+- **SECURITY:** the Android relay bearer token (`sms.archive.device`) is checked
+  against its owner at every use: it is refused while the owner is archived or
+  is a portal/share user. Token storage is unchanged; reactivating the owner as
+  an internal user makes the same token valid again.
+
+### Version 18.0.5.23.1
+
+- **SECURITY:** the legacy mobile password login (`POST /mobile/v1/login`) is
+  refused whenever `/web/login` would require a second factor
+  (`res.users._mfa_url()`: TOTP app, emailed code enforced by
+  `auth_totp.policy`, API key of a protected account). The refusal is the same
+  401 `invalid_credentials` as a wrong password (a TOTP refusal used to answer
+  403, which confirmed the password), with `auth_start` pointing to pairing
+  through `/web/login`.
+
+### Version 18.0.5.23.0
+
+- **NEW:** offline replay on `POST /mobile/v1/send`. The optional JSON key
+  `client_uuid` (one per message, resent on every retry by the app's offline
+  queue) makes the send idempotent: the call that creates the message records a
+  receipt (`sms.archive.mobile.receipt`, unique per user and identifier) in the
+  same transaction, and a retry returns the original answer as is, plus
+  `"replay": true`, without calling VOIP.ms again. A failed delivery is a
+  result (200, receipt recorded); 400/404 errors record nothing; a value that
+  is not a UUID answers 400 `invalid_client_uuid`. Concurrent retries wait for
+  the first call; receipts are purged after 30 days. `/ping` announces
+  `"idempotency": 1`. Without `client_uuid`, nothing changes.
 
 ### Version 18.0.5.22.0
 

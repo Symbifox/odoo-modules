@@ -61,3 +61,38 @@ msgstr "Refuser"
 #: code:addons/bf_sms_archive/controllers/mobile_api.py:0
 msgid "Your SMS messages and calls"
 msgstr "Vos messages SMS et vos appels"
+
+#. module: bf_sms_archive
+#: model:ir.model,name:bf_sms_archive.model_sms_archive_mobile_receipt
+msgid "Mobile idempotency receipt (messages)"
+msgstr "Accusé d'idempotence mobile (messages)"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__user_id
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__client_uuid
+msgid "Device identifier"
+msgstr "Identifiant de l'appareil"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__route
+msgid "Route"
+msgstr "Route"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,field_description:bf_sms_archive.field_sms_archive_mobile_receipt__response
+msgid "Response"
+msgstr "Réponse"
+
+#. module: bf_sms_archive
+#: model:ir.model.fields,help:bf_sms_archive.field_sms_archive_mobile_receipt__response
+msgid "JSON body returned the first time, returned again on replay."
+msgstr "Corps JSON rendu la première fois, rendu de nouveau au rejeu."
+
+#. module: bf_sms_archive
+#: model:ir.model.constraint,message:bf_sms_archive.constraint_sms_archive_mobile_receipt_user_client_uuid_unique
+msgid "This device identifier was already used by this user."
+msgstr "Cet identifiant d'appareil a déjà servi à cet usager."
