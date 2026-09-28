@@ -3,7 +3,8 @@ from datetime import timedelta
 
 from markupsafe import Markup, escape
 
-from odoo import api, fields, models, tools
+from odoo import _, api, fields, models, tools
+from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -27,6 +28,20 @@ class MeetingDashboard(models.AbstractModel):
     # passe du chargeur sur une base neuve.
 
     @api.model
+    def _check_dashboard_access(self):
+        """Réserver les entrées RPC du tableau de bord à `group_meeting_user`.
+
+        Une méthode publique `@api.model` s'appelle par RPC sans contrôle des
+        droits du modèle ; le SQL brut de `get_dashboard_data()` reproduit les
+        règles de société et de projet, mais pas l'appartenance au groupe. Sans
+        ce contrôle, un usager portail ou un interne hors groupe lisait les
+        rencontres de tous les projets sans abonné. Le
+        superutilisateur (sudo) passe.
+        """
+        if not self.env.su and not self.env.user.has_group('bf_meeting.group_meeting_user'):
+            raise AccessError(_("Le tableau de bord des rencontres est réservé aux utilisateurs Rencontres."))
+
+    @api.model
     def get_dashboard_data(self, limit=60):
         """Aggregate KPIs + cards in a single SQL pass on the dashboard view.
 
@@ -48,6 +63,7 @@ class MeetingDashboard(models.AbstractModel):
         compris). Toute évolution de ``rule_meeting_dashboard_line_user`` dans
         ``security/meeting_security.xml`` doit être répercutée ici.
         """
+        self._check_dashboard_access()
         user = self.env.user
         lookahead = max(1, min(user.bf_meeting_dashboard_lookahead_days or 90, 90))
         lookback = max(1, min(user.bf_meeting_dashboard_lookback_days or 180, 180))
@@ -286,6 +302,7 @@ class MeetingDashboard(models.AbstractModel):
     @api.model
     def open_filtered_list(self, filter_key):
         """Return an act_window action with the given dashboard filter applied."""
+        self._check_dashboard_access()
         ctx = {'search_default_' + filter_key: 1} if filter_key else {}
         return {
             'type': 'ir.actions.act_window',
@@ -300,6 +317,7 @@ class MeetingDashboard(models.AbstractModel):
     @api.model
     def dismiss_event(self, event_id):
         """Mark a calendar.event as excluded from the dashboard."""
+        self._check_dashboard_access()
         if not event_id:
             return False
         event = self.env['calendar.event'].browse(event_id)
@@ -310,6 +328,7 @@ class MeetingDashboard(models.AbstractModel):
     @api.model
     def dismiss_events(self, event_ids):
         """Bulk version of dismiss_event."""
+        self._check_dashboard_access()
         if not event_ids:
             return 0
         events = self.env['calendar.event'].browse(event_ids).exists()
@@ -324,6 +343,7 @@ class MeetingDashboard(models.AbstractModel):
         pending steps (not Done) so the user doesn't have to click each. Done
         steps are preserved. Unskip is per-step only.
         """
+        self._check_dashboard_access()
         if not event_id or not (1 <= int(step_idx) <= 7):
             return False
         event = self.env['calendar.event'].browse(event_id)
@@ -529,6 +549,7 @@ class MeetingDashboard(models.AbstractModel):
 
     @api.model
     def open_record(self, model, res_id):
+        self._check_dashboard_access()
         if not res_id:
             return False
         return {

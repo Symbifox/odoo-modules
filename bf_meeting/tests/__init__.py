@@ -5,3 +5,4 @@ from . import test_report_autosend
 from . import test_report_company_brand
 from . import test_public_company_logo
 from . import test_discussed_tasks
+from . import test_dashboard_access
