@@ -1,4 +1,10 @@
-from odoo import api, fields, models, tools
+from odoo import _, api, fields, models, tools
+from odoo.exceptions import AccessError
+from odoo.tools import SQL
+
+# Filtre « audits en cours » : fragment constant, composé par `SQL` (jamais
+# de texte venant de l'appelant).
+_IN_PROGRESS = SQL("AND c.state = 'in_progress'")
 
 
 class AuditDashboard(models.Model):
@@ -17,7 +23,21 @@ class AuditDashboard(models.Model):
         """)
 
     @api.model
+    def _check_dashboard_access(self):
+        """Réserver le tableau de bord au groupe Utilisateur Audit TI.
+
+        Les méthodes publiques `@api.model` s'appellent par RPC sans que l'ORM
+        vérifie les droits du modèle, et le SQL brut ci-dessous contourne ACL et
+        règles : sans ce contrôle, tout usager connecté (portail compris) lit les
+        faiblesses ouvertes de tous les clients. Le superutilisateur
+        (sudo) passe.
+        """
+        if not self.env.su and not self.env.user.has_group("audit_ti.group_audit_user"):
+            raise AccessError(_("Le tableau de bord Audit TI est réservé aux utilisateurs Audit TI."))
+
+    @api.model
     def get_dashboard_data(self, include_delivered=False):
+        self._check_dashboard_access()
         return {
             "summary": self._get_summary(include_delivered),
             "progress_by_client": self._get_progress_by_client(include_delivered),
@@ -30,38 +50,38 @@ class AuditDashboard(models.Model):
 
     @api.model
     def _get_summary(self, include_delivered=False):
-        state_filter = "" if include_delivered else "AND c.state = 'in_progress'"
-        self.env.cr.execute(f"""
+        state_filter = SQL() if include_delivered else _IN_PROGRESS
+        self.env.cr.execute(SQL("""
             SELECT
                 (SELECT COUNT(*) FROM audit_client c
-                 WHERE c.active = true {state_filter}) AS total_clients,
+                 WHERE c.active = true %(sf)s) AS total_clients,
                 (SELECT COUNT(*) FROM audit_element) AS total_elements,
                 (SELECT COUNT(*) FROM audit_assessment a
                  JOIN audit_client c ON c.id = a.client_id
-                 WHERE c.active = true {state_filter}) AS total_assessments,
+                 WHERE c.active = true %(sf)s) AS total_assessments,
                 (SELECT COUNT(*) FROM audit_assessment a
                  JOIN audit_client c ON c.id = a.client_id
                  WHERE a.status NOT IN ('pending')
-                   AND c.active = true {state_filter}) AS assessed_count,
+                   AND c.active = true %(sf)s) AS assessed_count,
                 (SELECT COUNT(*) FROM audit_assessment a
                  JOIN audit_client c ON c.id = a.client_id
                  WHERE a.status = 'adequate'
-                   AND c.active = true {state_filter}) AS adequate_count,
+                   AND c.active = true %(sf)s) AS adequate_count,
                 (SELECT COUNT(*) FROM audit_watchpoint w
                  JOIN audit_client c ON c.id = w.client_id
                  WHERE w.state != 'resolved'
-                   AND c.active = true {state_filter}) AS open_watchpoints
-        """)
+                   AND c.active = true %(sf)s) AS open_watchpoints
+        """, sf=state_filter))
         row = self.env.cr.dictfetchone()
         total = row["total_assessments"] or 1
         # Count distinct elements covered (adequate) across filtered clients
-        self.env.cr.execute(f"""
+        self.env.cr.execute(SQL("""
             SELECT COUNT(DISTINCT (a.client_id, a.element_id))
             FROM audit_assessment a
             JOIN audit_client c ON c.id = a.client_id
             WHERE a.status = 'adequate'
-              AND c.active = true {state_filter}
-        """)
+              AND c.active = true %(sf)s
+        """, sf=state_filter))
         covered = self.env.cr.fetchone()[0] or 0
         total_possible = row["total_clients"] * row["total_elements"]
         return {
@@ -80,8 +100,8 @@ class AuditDashboard(models.Model):
 
     @api.model
     def _get_progress_by_client(self, include_delivered=False):
-        state_filter = "" if include_delivered else "AND c.state = 'in_progress'"
-        self.env.cr.execute(f"""
+        state_filter = SQL() if include_delivered else _IN_PROGRESS
+        self.env.cr.execute(SQL("""
             SELECT
                 c.id,
                 c.name,
@@ -94,10 +114,10 @@ class AuditDashboard(models.Model):
                 COUNT(a.id) FILTER (WHERE a.status IN ('to_validate', 'declared', 'na')) AS other
             FROM audit_client c
             LEFT JOIN audit_assessment a ON a.client_id = c.id
-            WHERE c.active = true {state_filter}
+            WHERE c.active = true %(sf)s
             GROUP BY c.id, c.name, c.state
             ORDER BY c.name
-        """)
+        """, sf=state_filter))
         results = []
         for row in self.env.cr.dictfetchall():
             total = row["total"] or 1
@@ -118,8 +138,8 @@ class AuditDashboard(models.Model):
 
     @api.model
     def _get_progress_by_supplier(self, include_delivered=False):
-        state_filter = "" if include_delivered else "AND c.state = 'in_progress'"
-        self.env.cr.execute(f"""
+        state_filter = SQL() if include_delivered else _IN_PROGRESS
+        self.env.cr.execute(SQL("""
             SELECT
                 s.id,
                 s.name,
@@ -130,11 +150,11 @@ class AuditDashboard(models.Model):
             FROM audit_supplier s
             LEFT JOIN audit_assessment a ON a.supplier_id = s.id
             JOIN audit_client c ON c.id = a.client_id
-            WHERE s.active = true AND c.active = true {state_filter}
+            WHERE s.active = true AND c.active = true %(sf)s
             GROUP BY s.id, s.name, s.nc_status
             HAVING COUNT(a.id) > 0
             ORDER BY s.name
-        """)
+        """, sf=state_filter))
         results = []
         for row in self.env.cr.dictfetchall():
             total = row["total"] or 1
@@ -151,23 +171,23 @@ class AuditDashboard(models.Model):
 
     @api.model
     def _get_status_distribution(self, include_delivered=False):
-        state_filter = "" if include_delivered else "AND c.state = 'in_progress'"
-        self.env.cr.execute(f"""
+        state_filter = SQL() if include_delivered else _IN_PROGRESS
+        self.env.cr.execute(SQL("""
             SELECT
                 COALESCE(a.status, 'pending') AS status,
                 COUNT(*) AS count
             FROM audit_assessment a
             JOIN audit_client c ON c.id = a.client_id
-            WHERE c.active = true {state_filter}
+            WHERE c.active = true %(sf)s
             GROUP BY a.status
             ORDER BY a.status
-        """)
+        """, sf=state_filter))
         return self.env.cr.dictfetchall()
 
     @api.model
     def _get_recent_assessments(self, include_delivered=False):
-        state_filter = "" if include_delivered else "AND c.state = 'in_progress'"
-        self.env.cr.execute(f"""
+        state_filter = SQL() if include_delivered else _IN_PROGRESS
+        self.env.cr.execute(SQL("""
             SELECT
                 a.id,
                 c.name AS client_name,
@@ -182,10 +202,10 @@ class AuditDashboard(models.Model):
             JOIN audit_element e ON e.id = a.element_id
             WHERE a.status NOT IN ('pending')
               AND a.assessed_date IS NOT NULL
-              AND c.active = true {state_filter}
+              AND c.active = true %(sf)s
             ORDER BY a.assessed_date DESC, a.write_date DESC
             LIMIT 20
-        """)
+        """, sf=state_filter))
         results = []
         for row in self.env.cr.dictfetchall():
             results.append({
@@ -201,8 +221,8 @@ class AuditDashboard(models.Model):
 
     @api.model
     def _get_open_watchpoints(self, include_delivered=False):
-        state_filter = "" if include_delivered else "AND c.state = 'in_progress'"
-        self.env.cr.execute(f"""
+        state_filter = SQL() if include_delivered else _IN_PROGRESS
+        self.env.cr.execute(SQL("""
             SELECT
                 w.id,
                 c.name AS client_name,
@@ -214,7 +234,7 @@ class AuditDashboard(models.Model):
             JOIN audit_client c ON c.id = w.client_id
             LEFT JOIN audit_element e ON e.id = w.element_id
             WHERE w.state != 'resolved'
-              AND c.active = true {state_filter}
+              AND c.active = true %(sf)s
             ORDER BY
                 CASE w.priority
                     WHEN 'high' THEN 1
@@ -223,11 +243,12 @@ class AuditDashboard(models.Model):
                 END,
                 w.id
             LIMIT 20
-        """)
+        """, sf=state_filter))
         return self.env.cr.dictfetchall()
 
     @api.model
     def action_open_client(self, client_id):
+        self._check_dashboard_access()
         return {
             "type": "ir.actions.act_window",
             "name": "Client",
@@ -239,6 +260,7 @@ class AuditDashboard(models.Model):
 
     @api.model
     def action_open_assessments(self, domain=None):
+        self._check_dashboard_access()
         return {
             "type": "ir.actions.act_window",
             "name": "Évaluations",
