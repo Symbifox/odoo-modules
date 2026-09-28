@@ -11,6 +11,9 @@
                             Votre don soutient notre mission. Un reçu officiel aux
                             fins de l'impôt vous sera transmis.
                         </p>
+                        <div class="alert alert-warning mt-3" role="alert" t-if="error.get('rate')">
+                            Trop d'envois en peu de temps. Veuillez réessayer dans quelques minutes.
+                        </div>
                         <form action="/don/submit" method="post" class="mt-4">
                             <input
                                 type="hidden"
@@ -121,7 +124,7 @@
                         </p>
                         <p class="text-muted">
                             Un reçu officiel aux fins de l'impôt sera transmis à
-                            <strong><t t-out="partner.email" /></strong> une fois le
+                            <strong><t t-out="email" /></strong> une fois le
                             don confirmé.
                         </p>
                         <a href="/" class="btn btn-secondary mt-3">Retour à l'accueil</a>

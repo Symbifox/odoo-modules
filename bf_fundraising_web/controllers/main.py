@@ -1,6 +1,50 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+import logging
+import math
+import re
+import threading
+import time
+from collections import defaultdict
+
 from odoo import http
 from odoo.http import request
+from odoo.tools import email_normalize
+
+_logger = logging.getLogger(__name__)
+
+# Validation stricte du courriel (même motif que le formulaire public du
+# soutien) : « a%@% » et autres jokers SQL sont refusés d'emblée.
+EMAIL_RE = re.compile(r"^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$")
+
+# Limiteur par adresse IP des envois publics (même forme que le formulaire
+# public du soutien) : l'IP est celle du pair déjà corrigée par ProxyFix.
+_submit_lock = threading.Lock()
+_submit_data = defaultdict(list)  # IP -> [horodatages des envois acceptés]
+_SUBMIT_MAX = 5  # envois
+_SUBMIT_WINDOW = 600  # par 10 minutes et par IP
+_MAX_TRACKED_IPS = 10000
+
+
+def _client_ip():
+    try:
+        return request.httprequest.remote_addr or "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _check_submit_rate_limit():
+    """Vrai (et l'envoi est compté) si cette IP peut encore soumettre un don."""
+    ip = _client_ip()
+    now = time.monotonic()
+    with _submit_lock:
+        if len(_submit_data) > _MAX_TRACKED_IPS:
+            _submit_data.clear()
+        cutoff = now - _SUBMIT_WINDOW
+        _submit_data[ip] = [t for t in _submit_data[ip] if t > cutoff]
+        if len(_submit_data[ip]) >= _SUBMIT_MAX:
+            return False
+        _submit_data[ip].append(now)
+        return True
 
 
 class FundraisingWebController(http.Controller):
@@ -35,12 +79,17 @@ class FundraisingWebController(http.Controller):
             amount = float((post.get("amount") or "0").replace(",", "."))
         except ValueError:
             amount = 0.0
+        normalized = email_normalize(email) if EMAIL_RE.match(email) else False
         if not name:
             error["name"] = True
-        if not email or "@" not in email:
+        if not normalized:
             error["email"] = True
-        if amount <= 0:
+        # NaN et l'infini passent « amount <= 0 » : on exige un nombre fini.
+        if not math.isfinite(amount) or amount <= 0:
             error["amount"] = True
+        if not error and not _check_submit_rate_limit():
+            _logger.info("bf_fundraising_web: limite d'envois atteinte pour %s", _client_ip())
+            error["rate"] = True
         if error:
             return request.render(
                 "bf_fundraising_web.donation_form",
@@ -48,7 +97,8 @@ class FundraisingWebController(http.Controller):
             )
 
         Partner = request.env["res.partner"].sudo()
-        partner = Partner.search([("email", "=ilike", email)], limit=1)
+        # Correspondance exacte sur le courriel normalisé : aucun joker.
+        partner = Partner.search([("email_normalized", "=", normalized)], limit=1)
         if not partner:
             partner = Partner.create(
                 {
@@ -83,5 +133,7 @@ class FundraisingWebController(http.Controller):
         )
         return request.render(
             "bf_fundraising_web.donation_thanks",
-            {"donation": donation, "partner": partner},
+            # Seulement ce que le visiteur a saisi : jamais les données d'une
+            # fiche existante appariée par courriel.
+            {"donation": donation, "email": email},
         )
