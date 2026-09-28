@@ -13,6 +13,16 @@ _PIXEL = base64.b64decode(
 )
 
 
+# Politique des pages publiques. Le contenu des leurres est rendu brut (voulu
+# pour imiter une marque) ; ces pages n'ont besoin d'aucun script, donc on les
+# interdit tous, ainsi que les plugins, <base> et l'envoi de formulaire ailleurs.
+_CSP = ("script-src 'none'; object-src 'none'; base-uri 'none'; "
+        "form-action 'self'")
+
+# États où la campagne n'accepte plus aucune visite.
+_CLOSED_STATES = ("done", "cancelled")
+
+
 class BfSecurityAwarenessController(http.Controller):
     """Public landing endpoints for simulated phishing.
 
@@ -28,8 +38,20 @@ class BfSecurityAwarenessController(http.Controller):
     def _result_by_token(self, token):
         if not token:
             return request.env["bf.phishing.result"]
-        return request.env["bf.phishing.result"].sudo().search(
+        result = request.env["bf.phishing.result"].sudo().search(
             [("token", "=", token)], limit=1)
+        # Campagne close (terminée, annulée) ou leurre archivé : le jeton se
+        # comporte comme un jeton inconnu. Page neutre, rien d'enregistré.
+        campaign = result.campaign_id
+        if result and (
+                campaign.state in _CLOSED_STATES
+                or not campaign.template_id.active):
+            return request.env["bf.phishing.result"]
+        return result
+
+    def _render(self, template, values):
+        return request.render(
+            template, values, headers={"Content-Security-Policy": _CSP})
 
     def _country_id(self):
         try:
@@ -45,7 +67,7 @@ class BfSecurityAwarenessController(http.Controller):
     def _render_lesson(self, result):
         """Teachable page — also the constant fallback for invalid tokens."""
         template = result.campaign_id.template_id if result else False
-        return request.render(
+        return self._render(
             "bf_security_awareness.phishing_lesson",
             {
                 "result": result,
@@ -75,7 +97,7 @@ class BfSecurityAwarenessController(http.Controller):
 
         mode = result.campaign_id.template_id.landing_mode
         if mode == "credential":
-            return request.render(
+            return self._render(
                 "bf_security_awareness.phishing_credential_form",
                 {
                     "token": token,
@@ -144,7 +166,7 @@ class BfSecurityAwarenessController(http.Controller):
         result = self._result_by_token(token)
         if result:
             result.register_report()
-        return request.render(
+        return self._render(
             "bf_security_awareness.phishing_reported",
             {"result": result},
         )
