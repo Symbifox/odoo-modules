@@ -314,11 +314,18 @@ class TestPortalRenewalHttp(HttpCase):
         )
         self.assertEqual(consent.status, "refused")
 
-    def test_withdrawn_consent_can_be_turned_around(self):
+    def test_withdrawn_consent_is_not_turned_around_from_the_public_link(self):
+        """⚠ un retrait ferme le lien public comme un refus.
+
+        Ce test affirmait l'inverse (« Changer d'avis » depuis le vieux
+        courriel). Quiconque détenait le courriel pouvait ainsi réaccorder un
+        consentement retiré ; le portail authentifié garde ce geste.
+        """
         consent = self._consentement(status="withdrawn")
         reponse = self.url_open(self._url_renew(consent))
         self.assertEqual(reponse.status_code, 200)
-        self.assertIn('name="notice_read"', reponse.text)
+        self.assertNotIn('name="notice_read"', reponse.text)
+        self.assertIn("You withdrew this consent", reponse.text)
 
     def test_renewal_clears_signature_identifiers(self):
         """⚠ Les identifiants DocuSeal et LibreSign se recopient eux aussi.

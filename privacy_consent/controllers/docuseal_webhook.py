@@ -80,6 +80,19 @@ class DocuSealWebhookController(http.Controller):
                          submission_id)
             return self._response(200, "ok", "Submission not tracked")
 
+        # ⚠ Rejeu : la signature est datée (SIGNATURE_TOLERANCE) mais les
+        # livraisons ne sont pas mémorisées, une requête captée se rejoue donc
+        # pendant cinq minutes. Le traitement est rendu idempotent : une
+        # soumission déjà complétée n'est plus retraitée (ni téléchargement, ni
+        # preuve, ni octroi, ni retour à « expirée »), une soumission déjà
+        # expirée non plus. Même règle que LibreSign.
+        if (consent.docuseal_status == "completed"
+                or (event_type == "submission.expired"
+                    and consent.docuseal_status == "expired")):
+            _logger.info("Webhook DocuSeal %s déjà traité pour la soumission %s, "
+                         "ignoré.", event_type, submission_id)
+            return self._response(200, "ok", "Already processed")
+
         # Traiter selon le type d'événement
         if event_type == "submission.completed":
             self._handle_submission_completed(consent, submission_data)

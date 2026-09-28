@@ -38,6 +38,7 @@ class PrivacyDocusealConfig(models.Model):
         compute="_compute_api_key",
         inverse="_inverse_api_key",
         store=False,
+        groups="privacy_consent.group_privacy_manager",
         help="Clé API DocuSeal (chiffrée)",
     )
     api_key_encrypted = fields.Char(
@@ -51,6 +52,7 @@ class PrivacyDocusealConfig(models.Model):
         compute="_compute_webhook_secret",
         inverse="_inverse_webhook_secret",
         store=False,
+        groups="privacy_consent.group_privacy_manager",
         help="Secret pour la vérification de la signature du webhook",
     )
     webhook_secret_encrypted = fields.Char(
@@ -137,28 +139,35 @@ class PrivacyDocusealConfig(models.Model):
             return encrypted_value
 
     # === Computed Fields ===
+    #
+    # ⚠ Le champ en clair est réservé aux gestionnaires vie privée (ceux qui
+    # voient le menu Configuration et ont l'écriture sur ce modèle) : l'ACL
+    # donne la lecture au simple utilisateur vie privée, qui lisait donc le
+    # secret déchiffré. La colonne chiffrée reste réservée à
+    # l'administrateur ; le calcul et l'inverse y passent en sudo, une fois
+    # le contrôle de groupe du champ en clair franchi.
 
     def _compute_api_key(self):
         """Decrypt API key for display."""
         for record in self:
-            record.api_key = record._decrypt_value(record.api_key_encrypted)
+            record.api_key = record._decrypt_value(record.sudo().api_key_encrypted)
 
     def _inverse_api_key(self):
         """Encrypt API key on write."""
         for record in self:
             if record.api_key:
-                record.api_key_encrypted = record._encrypt_value(record.api_key)
+                record.sudo().api_key_encrypted = record._encrypt_value(record.api_key)
 
     def _compute_webhook_secret(self):
         """Decrypt webhook secret for display."""
         for record in self:
-            record.webhook_secret = record._decrypt_value(record.webhook_secret_encrypted)
+            record.webhook_secret = record._decrypt_value(record.sudo().webhook_secret_encrypted)
 
     def _inverse_webhook_secret(self):
         """Encrypt webhook secret on write."""
         for record in self:
             if record.webhook_secret:
-                record.webhook_secret_encrypted = record._encrypt_value(record.webhook_secret)
+                record.sudo().webhook_secret_encrypted = record._encrypt_value(record.webhook_secret)
 
     @api.depends("company_id")
     def _compute_webhook_url(self):

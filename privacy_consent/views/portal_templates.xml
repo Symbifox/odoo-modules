@@ -273,6 +273,15 @@
                     </div>
                 </t>
 
+                <t t-if="request.params.get('error') == 'withdrawn_link_closed'">
+                    <div class="alert alert-secondary">
+<t t-if="is_en">You withdrew this consent. This link can no longer be used to
+                        grant it again.</t><t t-else="">
+                        Vous avez révoqué ce consentement. Ce lien ne permet plus de
+                        l'accorder à nouveau.</t>
+                    </div>
+                </t>
+
                 <t t-if="request.params.get('error') == 'renewal_failed'">
                     <div class="alert alert-danger">
 <t t-if="is_en">An error occurred while renewing your consent. Please try again or contact support.</t><t t-else="">
@@ -475,7 +484,23 @@
                         </t>
 
                         <!-- Renewal/Re-consent button for various statuses -->
-                        <t t-if="consent.status in ('granted', 'expired', 'withdrawn') and not consent.renewed_to_id">
+                        <!-- ⚠ Retrait sur le lien public : même fermeture qu'un
+                             refus. Le lien reste lisible, mais
+                             réaccorder passe par le portail authentifié ou une
+                             nouvelle demande de l'organisation. -->
+                        <t t-if="is_public and consent.status == 'withdrawn' and not consent.renewed_to_id">
+                            <hr/>
+                            <h6><t t-if="is_en">You withdrew this consent</t><t t-else="">Vous avez révoqué ce consentement</t></h6>
+                            <div class="alert alert-secondary mb-0">
+<t t-if="is_en">This link can no longer be used to grant it again. If you change your mind,
+                                contact <strong><t t-esc="consent.company_id.name"/></strong> and a new request will be sent to you.</t><t t-else="">
+                                Ce lien ne permet plus de l'accorder à nouveau. Si vous changez d'avis,
+                                communiquez avec <strong><t t-esc="consent.company_id.name"/></strong> : une nouvelle
+                                demande vous sera envoyée, avec son propre lien.</t>
+                            </div>
+                        </t>
+
+                        <t t-if="consent.status in ('granted', 'expired', 'withdrawn') and not consent.renewed_to_id and not (is_public and consent.status == 'withdrawn')">
                             <t t-set="show_renew" t-value="consent.status in ('expired', 'withdrawn') or (consent.status == 'granted' and consent.expires_at and (consent.expires_at - datetime.datetime.now()).days &lt;= 90)"/>
                             <t t-if="show_renew">
                                 <hr/>

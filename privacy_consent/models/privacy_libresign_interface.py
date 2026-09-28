@@ -23,7 +23,7 @@ class PrivacyLibresignInterface(models.AbstractModel):
     @api.model
     def _get_headers(self, config):
         """Get API headers with Basic Auth."""
-        password = config._decrypt_value(config.password_encrypted)
+        password = config._decrypt_value(config.sudo().password_encrypted)
         if not password or not config.username:
             raise UserError("Les identifiants LibreSign ne sont pas configurés.")
         credentials = base64.b64encode(

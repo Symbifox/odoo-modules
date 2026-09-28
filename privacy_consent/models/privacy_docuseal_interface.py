@@ -21,7 +21,7 @@ class PrivacyDocusealInterface(models.AbstractModel):
     @api.model
     def _get_headers(self, config):
         """Get API headers with authentication."""
-        api_key = config._decrypt_value(config.api_key_encrypted)
+        api_key = config._decrypt_value(config.sudo().api_key_encrypted)
         if not api_key:
             raise UserError("La clé API DocuSeal n'est pas configurée.")
         return {

@@ -65,35 +65,40 @@ class PrivacyConsentRequestWizard(models.TransientModel):
                 wizard.email_recipients_info = False
                 continue
 
+            # Noms et courriels viennent de la fiche contact : Markup % valeur
+            # les échappe (le champ n'est pas assaini au rendu).
             lines = []
             for partner in wizard.partner_ids:
                 if partner.is_minor_child and partner.legal_guardian_ids:
                     guardians = partner.legal_guardian_ids.filtered("email")
                     if guardians:
-                        names = ", ".join(
-                            f"<strong>{g.name}</strong> ({g.email})"
+                        names = Markup(", ").join(
+                            Markup("<strong>%s</strong> (%s)") % (g.name, g.email)
                             for g in guardians
                         )
                         lines.append(
-                            f"<li>{partner.name} (mineur) → {names}</li>"
+                            Markup("<li>%s (mineur) → %s</li>") % (partner.name, names)
                         )
                     else:
                         lines.append(
-                            f'<li>{partner.name} (mineur) → '
-                            f'<span style="color: #dc3545;">Aucun responsable avec courriel</span></li>'
+                            Markup('<li>%s (mineur) → '
+                                   '<span style="color: #dc3545;">Aucun responsable avec courriel</span></li>')
+                            % partner.name
                         )
                 elif partner.email:
                     lines.append(
-                        f"<li><strong>{partner.name}</strong> ({partner.email})</li>"
+                        Markup("<li><strong>%s</strong> (%s)</li>") % (partner.name, partner.email)
                     )
                 else:
                     lines.append(
-                        f'<li>{partner.name} → '
-                        f'<span style="color: #dc3545;">Aucun courriel</span></li>'
+                        Markup('<li>%s → '
+                               '<span style="color: #dc3545;">Aucun courriel</span></li>')
+                        % partner.name
                     )
 
-            wizard.email_recipients_info = Markup(
-                f"<ul style='margin:0; padding-left:16px;'>{''.join(lines)}</ul>"
+            wizard.email_recipients_info = (
+                Markup("<ul style='margin:0; padding-left:16px;'>%s</ul>")
+                % Markup("").join(lines)
             )
 
     @api.onchange("group_id")

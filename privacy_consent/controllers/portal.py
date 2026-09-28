@@ -1,3 +1,4 @@
+import hmac
 import logging
 from datetime import timedelta
 
@@ -17,6 +18,19 @@ _logger = logging.getLogger(__name__)
 # qu'on oppose : il doit refléter des consultations, pas des allers-retours du
 # navigateur.
 RENEW_VIEW_EVIDENCE_DEDUP_MINUTES = 15
+
+
+def _jeton_valide(consent, access_token):
+    """Comparer le jeton de l'URL à celui du consentement en temps constant.
+
+    Comparaison en octets : compare_digest refuse les chaînes non ASCII, et un
+    jeton forgé ne doit pas produire une erreur 500.
+    """
+    if not consent.exists() or not consent.access_token or not access_token:
+        return False
+    return hmac.compare_digest(
+        consent.access_token.encode(), str(access_token).encode()
+    )
 
 
 class PrivacyPortal(CustomerPortal):
@@ -758,7 +772,7 @@ class PrivacyPortal(CustomerPortal):
         consent = request.env["privacy.consent"].sudo().browse(consent_id)
 
         # Valider le jeton
-        if not consent.exists() or consent.access_token != access_token:
+        if not _jeton_valide(consent, access_token):
             return request.render("privacy_consent.portal_consent_invalid_token", {
                 "page_name": "privacy_consent_error",
             })
@@ -784,7 +798,7 @@ class PrivacyPortal(CustomerPortal):
         consent = request.env["privacy.consent"].sudo().browse(consent_id)
 
         # Valider le jeton
-        if not consent.exists() or consent.access_token != access_token:
+        if not _jeton_valide(consent, access_token):
             return request.render("privacy_consent.portal_consent_invalid_token", {
                 "page_name": "privacy_consent_error",
             })
@@ -823,7 +837,7 @@ class PrivacyPortal(CustomerPortal):
         consent = request.env["privacy.consent"].sudo().browse(consent_id)
 
         # Valider le jeton
-        if not consent.exists() or consent.access_token != access_token:
+        if not _jeton_valide(consent, access_token):
             return request.render("privacy_consent.portal_consent_invalid_token", {
                 "page_name": "privacy_consent_error",
             })
@@ -891,7 +905,7 @@ class PrivacyPortal(CustomerPortal):
         consent = request.env["privacy.consent"].sudo().browse(consent_id)
 
         # Valider le jeton
-        if not consent.exists() or consent.access_token != access_token:
+        if not _jeton_valide(consent, access_token):
             return request.render("privacy_consent.portal_consent_invalid_token", {
                 "page_name": "privacy_consent_error",
             })
@@ -900,6 +914,17 @@ class PrivacyPortal(CustomerPortal):
             return request.redirect(
                 f"/privacy/consent/{consent_id}/{access_token}"
                 "?error=refused_link_closed"
+            )
+
+        # ⚠ Un retrait ferme le lien de la même façon qu'un refus : sans cela,
+        # quiconque détient le vieux courriel (boîte partagée, transfert)
+        # pouvait réaccorder d'un clic un consentement que la personne avait
+        # retiré. Le portail authentifié garde « Changer d'avis » : là, c'est
+        # bien la personne qui agit.
+        if consent.status == "withdrawn":
+            return request.redirect(
+                f"/privacy/consent/{consent_id}/{access_token}"
+                "?error=withdrawn_link_closed"
             )
 
         # Peut renouveler les consentements accordés, expirés ou retirés

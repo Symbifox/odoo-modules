@@ -64,6 +64,17 @@ class LibresignWebhookController(http.Controller):
                          file_uuid)
             return self._response(200, "ok", "File not tracked")
 
+        # ⚠ Rejeu : la signature LibreSign ne porte ni horodatage ni
+        # identifiant de livraison (contrairement à DocuSeal), une requête
+        # captée reste donc valide indéfiniment. Faute de pouvoir la dater, on
+        # rend le traitement idempotent : un fichier déjà traité ne l'est pas
+        # une deuxième fois (ni nouveau téléchargement, ni nouvelle preuve, ni
+        # nouvel octroi).
+        if event == "file_signed" and consent.libresign_status == "completed":
+            _logger.info("Webhook LibreSign déjà traité pour le fichier %s, ignoré.",
+                         file_uuid)
+            return self._response(200, "ok", "Already processed")
+
         if event == "file_signed":
             self._handle_file_signed(consent, file_data)
 
