@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dimensions reprises de la base de gabarits de gLabels (licence MIT :
+         « No copyright is claimed on the facts contained within the database »),
+         converties en millimètres. Aucun fichier de gabarit Avery n'est copié.
+         noupdate : un format retouché par l'organisation ne se fait pas écraser. -->
+    <data noupdate="1">
+        <record id="format_letter_5160" model="bf.qr.label.format">
+            <field name="name">Adresse, 30 par feuille</field>
+            <field name="reference">Avery 5160</field>
+            <field name="sequence">10</field>
+            <field name="papier">letter</field>
+            <field name="forme">rect</field>
+            <field name="largeur">66.675</field>
+            <field name="hauteur">25.400</field>
+            <field name="colonnes">3</field>
+            <field name="lignes">10</field>
+            <field name="marge_gauche">3.969</field>
+            <field name="marge_haut">12.700</field>
+            <field name="pas_x">70.644</field>
+            <field name="pas_y">25.400</field>
+            <field name="marge_interne">1.587</field>
+            <field name="source">gLabels, avery-us-templates.xml</field>
+        </record>
+        <record id="format_letter_5163" model="bf.qr.label.format">
+            <field name="name">Expédition, 10 par feuille</field>
+            <field name="reference">Avery 5163</field>
+            <field name="sequence">20</field>
+            <field name="papier">letter</field>
+            <field name="forme">rect</field>
+            <field name="largeur">101.600</field>
+            <field name="hauteur">50.800</field>
+            <field name="colonnes">2</field>
+            <field name="lignes">5</field>
+            <field name="marge_gauche">4.127</field>
+            <field name="marge_haut">12.700</field>
+            <field name="pas_x">106.362</field>
+            <field name="pas_y">50.800</field>
+            <field name="marge_interne">3.175</field>
+            <field name="source">gLabels, avery-us-templates.xml</field>
+        </record>
+        <record id="format_letter_5167" model="bf.qr.label.format">
+            <field name="name">Petite étiquette d'actif, 80 par feuille</field>
+            <field name="reference">Avery 5167</field>
+            <field name="sequence">30</field>
+            <field name="papier">letter</field>
+            <field name="forme">rect</field>
+            <field name="largeur">44.450</field>
+            <field name="hauteur">12.700</field>
+            <field name="colonnes">4</field>
+            <field name="lignes">20</field>
+            <field name="marge_gauche">7.144</field>
+            <field name="marge_haut">12.700</field>
+            <field name="pas_x">52.387</field>
+            <field name="pas_y">12.700</field>
+            <field name="marge_interne">1.587</field>
+            <field name="source">gLabels, avery-us-templates.xml</field>
+        </record>
+        <record id="format_letter_5371" model="bf.qr.label.format">
+            <field name="name">Carte d'affaires, 10 par feuille</field>
+            <field name="reference">Avery 5371</field>
+            <field name="sequence">40</field>
+            <field name="papier">letter</field>
+            <field name="forme">rect</field>
+            <field name="largeur">88.900</field>
+            <field name="hauteur">50.800</field>
+            <field name="colonnes">2</field>
+            <field name="lignes">5</field>
+            <field name="marge_gauche">19.050</field>
+            <field name="marge_haut">12.700</field>
+            <field name="pas_x">88.900</field>
+            <field name="pas_y">50.800</field>
+            <field name="marge_interne">1.587</field>
+            <field name="source">gLabels, avery-us-templates.xml</field>
+        </record>
+        <record id="format_letter_5395" model="bf.qr.label.format">
+            <field name="name">Badge nominatif, 8 par feuille</field>
+            <field name="reference">Avery 5395</field>
+            <field name="sequence">50</field>
+            <field name="papier">letter</field>
+            <field name="forme">rect</field>
+            <field name="largeur">85.725</field>
+            <field name="hauteur">59.267</field>
+            <field name="colonnes">2</field>
+            <field name="lignes">4</field>
+            <field name="marge_gauche">17.462</field>
+            <field name="marge_haut">14.817</field>
+            <field name="pas_x">95.250</field>
+            <field name="pas_y">63.500</field>
+            <field name="marge_interne">1.587</field>
+            <field name="source">gLabels, avery-us-templates.xml</field>
+        </record>
+        <record id="format_letter_3274_1" model="bf.qr.label.format">
+            <field name="name">Carré 2,5 po, 9 par feuille</field>
+            <field name="reference">Avery 3274.1</field>
+            <field name="sequence">60</field>
+            <field name="papier">letter</field>
+            <field name="forme">rect</field>
+            <field name="largeur">63.500</field>
+            <field name="hauteur">63.500</field>
+            <field name="colonnes">3</field>
+            <field name="lignes">3</field>
+            <field name="marge_gauche">7.938</field>
+            <field name="marge_haut">31.750</field>
+            <field name="pas_x">68.263</field>
+            <field name="pas_y">76.200</field>
+            <field name="marge_interne">1.587</field>
+            <field name="source">gLabels, avery-us-templates.xml</field>
+        </record>
+        <record id="format_letter_3274_2" model="bf.qr.label.format">
+            <field name="name">Rond 1,5 po, 20 par feuille</field>
+            <field name="reference">Avery 3274.2</field>
+            <field name="sequence">70</field>
+            <field name="papier">letter</field>
+            <field name="forme">rond</field>
+            <field name="largeur">38.100</field>
+            <field name="hauteur">38.100</field>
+            <field name="colonnes">4</field>
+            <field name="lignes">5</field>
+            <field name="marge_gauche">12.700</field>
+            <field name="marge_haut">19.050</field>
+            <field name="pas_x">50.800</field>
+            <field name="pas_y">50.800</field>
+            <field name="marge_interne">1.587</field>
+            <field name="source">gLabels, avery-us-templates.xml</field>
+        </record>
+        <record id="format_a4_l7160" model="bf.qr.label.format">
+            <field name="name">Adresse, 21 par feuille</field>
+            <field name="reference">Avery L7160</field>
+            <field name="sequence">80</field>
+            <field name="papier">a4</field>
+            <field name="forme">rect</field>
+            <field name="largeur">63.994</field>
+            <field name="hauteur">38.100</field>
+            <field name="colonnes">3</field>
+            <field name="lignes">7</field>
+            <field name="marge_gauche">7.479</field>
+            <field name="marge_haut">15.487</field>
+            <field name="pas_x">66.040</field>
+            <field name="pas_y">38.100</field>
+            <field name="marge_interne">1.764</field>
+            <field name="source">gLabels, avery-iso-templates.xml</field>
+        </record>
+        <record id="format_a4_l7163" model="bf.qr.label.format">
+            <field name="name">Adresse, 14 par feuille</field>
+            <field name="reference">Avery L7163</field>
+            <field name="sequence">90</field>
+            <field name="papier">a4</field>
+            <field name="forme">rect</field>
+            <field name="largeur">99.095</field>
+            <field name="hauteur">38.100</field>
+            <field name="colonnes">2</field>
+            <field name="lignes">7</field>
+            <field name="marge_gauche">3.351</field>
+            <field name="marge_haut">15.169</field>
+            <field name="pas_x">103.011</field>
+            <field name="pas_y">38.100</field>
+            <field name="marge_interne">1.764</field>
+            <field name="source">gLabels, avery-iso-templates.xml</field>
+        </record>
+        <record id="format_a4_l7651" model="bf.qr.label.format">
+            <field name="name">Mini-étiquette, 65 par feuille</field>
+            <field name="reference">Avery L7651</field>
+            <field name="sequence">100</field>
+            <field name="papier">a4</field>
+            <field name="forme">rect</field>
+            <field name="largeur">38.100</field>
+            <field name="hauteur">21.198</field>
+            <field name="colonnes">5</field>
+            <field name="lignes">13</field>
+            <field name="marge_gauche">4.699</field>
+            <field name="marge_haut">10.901</field>
+            <field name="pas_x">40.601</field>
+            <field name="pas_y">21.198</field>
+            <field name="marge_interne">1.764</field>
+            <field name="source">gLabels, avery-iso-templates.xml</field>
+        </record>
+    </data>
+</odoo>

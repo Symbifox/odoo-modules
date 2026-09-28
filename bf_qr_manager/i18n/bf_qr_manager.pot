@@ -1,0 +1,1646 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_qr_manager
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-28 01:12+0000\n"
+"PO-Revision-Date: 2026-09-28 01:12+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "%(e)s figure déjà à la ligne %(l)s."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "%(n)s étiquette(s) → %(g)s : %(q)s"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_batch.py:0
+msgid "%(n)s étiquettes tirées, de %(a)s à %(b)s."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "%s est déjà associée : réinitialisez-la d'abord."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid ""
+"%s ligne(s) en erreur. Corrigez le tableur, ou cochez « Appliquer les lignes"
+" prêtes »."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "%s lignes au plus par tableur."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "%s étiquettes associées."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_reinitialiser.py:0
+msgid "%s étiquettes réinitialisées."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_label_format__papier__a4
+msgid "A4 (210 × 297 mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__url
+msgid "Adresse"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/controllers/main.py:0
+msgid "Adresse publique ouverte."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_a4_l7163
+msgid "Adresse, 14 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_a4_l7160
+msgid "Adresse, 21 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_letter_5160
+msgid "Adresse, 30 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_config_form_qr
+msgid "Ajouter les types suggérés"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_associer_form
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_import_form
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_imprimer_form
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_reinitialiser_form
+msgid "Annuler"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_import__state__apercu
+msgid "Aperçu"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__ignorer_erreurs
+msgid "Appliquer les lignes prêtes et laisser les autres"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_associer_form
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_import_form
+msgid "Associer"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_tag_form_qr
+msgid "Associer cette étiquette"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_qr_import
+msgid "Associer des étiquettes QR par tableur"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_batch.py:0
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_batch_form
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_import_form
+msgid "Associer par tableur"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_associer_form
+msgid "Associer une étiquette"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_qr_associer
+msgid "Associer une étiquette QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Associer « %s »"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__count_associees
+msgid "Associées"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__numero_dernier
+msgid "Au n°"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_imprimer__texte__aucun
+msgid "Aucun"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid "Aucun logo : téléversez-en un, ou décochez « Logo au centre »."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Aucune ligne prête."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid "Aucune étiquette à imprimer."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_label_format__papier__custom
+msgid "Autre"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_import_form
+msgid "Autre fichier"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__avertissement
+msgid "Avertissement"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_label_format_form
+msgid "Avery 22806"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_letter_5395
+msgid "Badge nominatif, 8 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__marge_gauche
+msgid "Bord gauche de la 1re (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__marge_haut
+msgid "Bord haut de la 1re (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_batch__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_label_format_form
+msgid "Carré 2 po, 12 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_letter_3274_1
+msgid "Carré 2,5 po, 9 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_letter_5371
+msgid "Carte d'affaires, 10 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.page_vierge
+msgid "Ce code n'a pas encore été associé à quoi que ce soit."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Ce fichier ne se lit pas comme un tableur : %s"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__gesture_writes
+msgid "Ce geste écrit"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_batch.py:0
+msgid "Ce lot a déjà été généré."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.constraint,message:bf_qr_manager.constraint_bf_nfc_tag_qr_reference_unique
+msgid "Ce numéro d'étiquette existe déjà dans cette société."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__gesture_id
+msgid "Ce qu'elle fait"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_label_format__marge_interne
+msgid ""
+"Ce qu'on laisse vide au bord de chaque étiquette : une coupe d'imprimante "
+"n'est jamais parfaite."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Cette étiquette est déjà associée. Réinitialisez-la d'abord."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_gesture.py:0
+msgid "Cette étiquette n'est pas encore associée."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Choisissez ce que l'étiquette doit faire."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_associer__gesture_writes
+msgid ""
+"Coché dès que le geste modifie quoi que ce soit. Un geste qui écrit demande "
+"une confirmation quand il arrive par le navigateur."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_nfc_tap__door__qr_public
+msgid "Code QR, sans compte"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid "Code de %(c).1f mm : il se lira seulement de près (20 mm conseillés)."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid ""
+"Code de %(c).1f mm : trop petit pour porter un logo (il faut %(m)s mm). "
+"Retirez le logo ou le texte, ou prenez un format plus grand."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.ui.menu,name:bf_qr_manager.menu_qr_root
+msgid "Codes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__colonnes
+msgid "Colonnes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__resume
+msgid "Contenu"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid "Contraste insuffisant (%s:1, il en faut 4)."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__couleur_code
+msgid "Couleur du code"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__couleur_fond
+msgid "Couleur du fond"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid "Couleur non reconnue : écrivez-la en hexadécimal, comme #1A2B3C."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__create_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__create_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__create_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__create_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__create_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__create_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_reinitialiser__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__create_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__create_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__create_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__create_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__create_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__create_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_reinitialiser__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__qr_max_mm
+msgid "Côté du QR, marge blanche comprise (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__cote_mm
+msgid "Côté du code, marge blanche comprise (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_label_format__source
+msgid "D'où viennent ces dimensions."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_label_format__pas_x
+msgid "D'un bord gauche d'étiquette au suivant."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_label_format__pas_y
+msgid "D'un bord haut d'étiquette au suivant."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__display_name
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__display_name
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__display_name
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__display_name
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__display_name
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__display_name
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_reinitialiser__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_label_format.py:0
+msgid "Donnez les dimensions de la feuille."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__numero_premier
+msgid "Du n°"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_reinitialiser__count_deja
+msgid "Déjà vierges"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__count_erreur
+msgid "En erreur"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_res_company__bf_qr_groupe_ids
+msgid "En plus de la gestion des pastilles, qui le peut toujours."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_nfc_config__qr_groupe_ids
+msgid ""
+"En plus de la gestion des pastilles, qui le peut toujours. Vaut pour la "
+"société courante."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_import_ligne__statut__erreur
+msgid "Erreur"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_letter_5163
+msgid "Expédition, 10 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__papier
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_label_format_form
+msgid "Feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__pages
+msgid "Feuilles"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__cible
+msgid "Fiche"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_tag__res_id
+msgid "Fiche cible"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Fiche « %(f)s » introuvable dans « %(t)s »."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_import__state__saisie
+msgid "Fichier"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__fichier_nom
+msgid "Fichier Nom"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__format_id
+msgid "Format"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_label_format_form
+msgid "Format d'étiquettes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_qr_label_format
+msgid "Format de planche d'étiquettes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.actions.act_window,name:bf_qr_manager.action_bf_qr_label_format
+#: model:ir.ui.menu,name:bf_qr_manager.menu_qr_formats
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_label_format_list
+msgid "Formats d'étiquettes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__forme
+msgid "Forme"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_nfc_gesture
+msgid "Geste déclenché par une pastille NFC"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Geste « %s » inconnu."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__gesture_id
+msgid "Gesture"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_res_company__bf_qr_groupe_ids
+msgid "Groupes qui associent les étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_batch__state__done
+msgid "Généré"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__hauteur
+msgid "Hauteur (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__page_hauteur
+msgid "Hauteur de feuille (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__id
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__id
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__id
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__id
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__id
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__id
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_reinitialiser__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_batch__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_batch__message_has_error
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_batch__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_label_format.py:0
+msgid "Il faut au moins une colonne et une ligne."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__import_id
+msgid "Import"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_tag_form_qr
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_batch_form
+msgid "Imprimer"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+#: model:ir.model,name:bf_qr_manager.model_bf_qr_imprimer
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_imprimer_form
+msgid "Imprimer des étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.actions.server,name:bf_qr_manager.action_server_imprimer_qr
+msgid "Imprimer en étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.actions.act_window,help:bf_qr_manager.action_bf_qr_batch
+msgid ""
+"Imprimez les étiquettes avant de savoir où elles iront. Chacune s'associe\n"
+"            au premier scan, se réassocie sans réimpression, et garde son journal."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_batch__prefixe
+msgid ""
+"Imprimé devant le numéro : « QR-0042 ». Lettres et chiffres, 8 au plus."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_nfc_tag__qr_reference
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_associer__reference
+msgid ""
+"Imprimé sous le code et lu à voix haute : « QR-0042 ». Ne change jamais."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.page_vierge
+msgid "Je m'occupe des étiquettes : me connecter"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Joignez un tableur (.xlsx ou .csv)."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid "L'impression des étiquettes est réservée à qui peut les associer."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "L'étiquette %s est déjà associée. Réinitialisez-la d'abord."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_tag_form_qr
+msgid ""
+"L'étiquette redeviendra vierge : son prochain scan mènera à l'association. "
+"Son journal est conservé. Continuer ?"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "La colonne « etiquette » est introuvable dans l'en-tête."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "La colonne « etiquette » est vide."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_config_form_qr
+msgid ""
+"La gestion des pastilles associe et réinitialise toujours les étiquettes.\n"
+"                        Ajoutez ici les groupes qui le peuvent aussi dans cette société."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_label_format.py:0
+msgid ""
+"La grille de « %(nom)s » déborde de la feuille (%(d).1f × %(b).1f mm pour "
+"une feuille de %(l).1f × %(h).1f mm)."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_label_format.py:0
+msgid "La marge intérieure ne laisse aucune place au code."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_label_format__reference
+msgid ""
+"La référence du commerce que ce format reproduit, en texte seul : « Avery "
+"5160 ». Aucune affiliation n'est suggérée."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__largeur
+msgid "Largeur (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__page_largeur
+msgid "Largeur de feuille (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__write_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__write_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__write_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__write_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__write_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__write_uid
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_reinitialiser__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__write_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__write_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__write_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__write_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__write_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__write_date
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_reinitialiser__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid ""
+"Le code doit être plus foncé que son fond : un code inversé n'est pas lu par"
+" la plupart des téléphones."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Le geste « %s » a besoin d'une fiche."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Le geste « %s » est réservé à la gestion des pastilles."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Le geste « %s » vise un autre type de fiche."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid ""
+"Le logo est un SVG, que le tracé des étiquettes ne lit pas. Téléversez une "
+"version PNG dans ce formulaire."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid "Le logo n'est pas une image lisible. Téléversez un PNG ou un JPEG."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_label_format.py:0
+msgid ""
+"Le pas horizontal est plus petit que l'étiquette : elles se chevaucheraient."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_label_format.py:0
+msgid ""
+"Le pas vertical est plus petit que l'étiquette : elles se chevaucheraient."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_label_format__qr_max_mm
+msgid "Le plus grand code qui tient sur l'étiquette, sans texte."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_batch.py:0
+msgid "Le préfixe s'écrit en lettres et chiffres, 8 au plus."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Le tableur est vide, ou n'a qu'un en-tête."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_batch.py:0
+msgid "Les lots d'étiquettes sont réservés à la gestion des pastilles."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid "Les places déjà utilisées vont de 0 à %s."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_label_format_form
+msgid ""
+"Les références du commerce sont citées en texte seul, pour dire quelles\n"
+"                        planches conviennent. Aucune affiliation avec leurs fabricants."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_batch_form
+msgid ""
+"Les étiquettes sont numérotées à la suite du dernier numéro de ce préfixe :\n"
+"                        un deuxième lot « QR » ne recommence jamais à 1."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_label_format__papier__letter
+msgid "Lettre (8,5 × 11 po)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__libelle
+msgid "Libelle"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__name
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_imprimer__texte__libelle
+msgid "Libellé"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__rang
+msgid "Ligne"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_qr_import_ligne
+msgid "Ligne d'un tableur d'association"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__ligne_ids
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__lignes
+msgid "Lignes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__logo
+msgid "Logo"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__avec_logo
+msgid "Logo au centre"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_tag__qr_batch_id
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__name
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__batch_id
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_tag_search_qr
+msgid "Lot"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_qr_batch
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_batch_form
+msgid "Lot d'étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_batch.py:0
+msgid "Lot du %s"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.ui.menu,name:bf_qr_manager.menu_qr_batches
+msgid "Lots d'étiquettes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.actions.act_window,name:bf_qr_manager.action_bf_qr_batch
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_batch_list
+msgid "Lots d'étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__marge_interne
+msgid "Marge intérieure (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__message
+msgid "Message"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_a4_l7651
+msgid "Mini-étiquette, 65 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_gesture__kind
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__gesture_kind
+msgid "Nature"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__name
+msgid "Nom"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__count_total
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__count
+msgid "Nombre d'étiquettes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_batch__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_batch__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_tag__qr_numero
+msgid "Numéro"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.page_vierge
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_tag_list_qr
+msgid "N°"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_tag__qr_reference
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__reference
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_imprimer__texte__reference
+msgid "N° d'étiquette"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_imprimer__texte__les_deux
+msgid "N° et libellé"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_associer__place
+msgid "Où l'étiquette est collée."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_imprimer__logo
+msgid "PNG ou JPEG. Vide : le logo de la société."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__par_feuille
+msgid "Par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__pas_x
+msgid "Pas horizontal (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__pas_y
+msgid "Pas vertical (mm)"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_nfc_tag
+msgid "Pastille NFC"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_letter_5167
+msgid "Petite étiquette d'actif, 80 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__place
+msgid "Place"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__decalage
+msgid "Places déjà utilisées"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_tap__door
+msgid "Porte"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_associer_form
+msgid "Porte de la salle B-204"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_label_format_form
+msgid "Position de la grille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_config_form_qr
+msgid ""
+"Postes et salles des plans d'étage, appareils, équipements, événements, "
+"pages de liens : ceux qui existent dans cette base."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__place
+msgid "Posée sur"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_import__batch_id
+msgid "Pour lire les numéros seuls (« 12 ») dans le préfixe de ce lot."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_batch_form
+msgid "Pour quoi ce lot a été tiré, où il est rangé."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_imprimer__contours
+msgid ""
+"Pour un essai sur papier ordinaire : superposez la feuille à une planche "
+"vierge devant une fenêtre et vérifiez l'alignement avant d'imprimer pour "
+"vrai."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_label_format__largeur
+msgid "Pour une étiquette ronde : son diamètre."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_imprimer_form
+msgid "Produire le PDF"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_label_format_form
+msgid "Provenance"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_tag__qr_prefixe
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__prefixe
+msgid "Préfixe"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_import_ligne__statut__ok
+msgid "Prête"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__count_ok
+msgid "Prêtes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__public
+msgid "Public"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_tag_search_qr
+msgid "QR associées"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_tag_search_qr
+msgid "QR à associer"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__quantite
+msgid "Quantité"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_config__qr_groupe_ids
+msgid "Qui associe les étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_label_format__forme__rect
+msgid "Rectangle"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__res_id
+msgid "Res"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__res_model
+msgid "Res Model"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_qr_label_format__forme__rond
+msgid "Rond"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.qr.label.format,name:bf_qr_manager.format_letter_3274_2
+msgid "Rond 1,5 po, 20 par feuille"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__reference
+msgid "Référence compatible"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_nfc_config
+msgid "Réglages des pastilles NFC"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_tag_form_qr
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_reinitialiser_form
+msgid "Réinitialiser"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_reinitialiser_form
+msgid "Réinitialiser des étiquettes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_qr_reinitialiser
+msgid "Réinitialiser des étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.actions.server,name:bf_qr_manager.action_server_reinitialiser_qr
+msgid "Réinitialiser les étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_tag__qr_public
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__qr_public
+msgid "S'ouvre sans compte"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Seules les étiquettes QR tirées d'un lot s'associent ici."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__company_id
+msgid "Société"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_label_format__source
+msgid "Source"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__state
+msgid "State"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__statut
+msgid "Statut"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_imprimer__decalage
+msgid ""
+"Sur la première feuille, combien d'étiquettes ont déjà été décollées. "
+"L'impression commence à la place suivante, ligne par ligne."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__fichier
+msgid "Tableur"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_batch_form
+msgid "Tableur prérempli"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model,name:bf_qr_manager.model_bf_nfc_tap
+msgid "Tapotement de pastille NFC"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__texte
+msgid "Texte"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_batch_form
+msgid "Tirer les étiquettes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.actions.act_window,help:bf_qr_manager.action_bf_qr_batch
+msgid "Tirer un premier lot d'étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__contours
+msgid "Tracer les contours"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Type de fiche « %s » inconnu ou non permis."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_batch.py:0
+msgid "Un lot compte de 1 à %s étiquettes."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_batch.py:0
+msgid ""
+"Un lot généré ne se supprime pas : ses étiquettes sont peut-être déjà "
+"collées. Archivez les étiquettes plutôt."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Un type de fiche sans fiche : remplissez « fiche »."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_associer__qr_public
+msgid ""
+"Un visiteur sans compte arrive directement à l'adresse, ou à la page "
+"publique de la fiche si elle en a une et qu'elle est publiée."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_nfc_tag__qr_public
+msgid ""
+"Un visiteur sans compte qui scanne l'étiquette arrive directement à "
+"l'adresse, ou à la page publique de la fiche (page de liens publiée, "
+"événement publié). Jamais pour un geste qui écrit."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Une fiche OU une adresse, pas les deux."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Une fiche sans type : remplissez « type »."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_import_form
+msgid ""
+"Une ligne par étiquette ou par plage. Colonnes : <code>etiquette</code>\n"
+"                        (12, 12-20, QR-0012), <code>type</code> et <code>fiche</code>, ou\n"
+"                        <code>adresse</code> ; au besoin <code>geste</code>, <code>libelle</code>,\n"
+"                        <code>posee_sur</code>, <code>public</code>. Rien n'est écrit avant l'aperçu."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_imprimer.py:0
+msgid ""
+"Une pastille signée n'a pas d'adresse fixe : elle ne s'imprime pas en code "
+"QR (%s)."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_qr_label_format.py:0
+msgid "Une étiquette a une largeur et une hauteur."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Une étiquette ne peut pas viser une fiche de type « %s »."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__url
+msgid "Url"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_associer_form
+msgid "Vide : le nom de la fiche"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_associer__name
+msgid "Vide : le nom de la fiche."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.page_vierge
+msgid ""
+"Votre compte ne peut pas associer les étiquettes. Donnez ce numéro à\n"
+"                        la personne qui gère les codes QR."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid ""
+"Vous ne pouvez pas associer ni réinitialiser ces étiquettes. Demandez à la "
+"gestion des pastilles."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_import_form
+msgid "Vérifier"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_batch__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_import_form
+msgid "en erreur,"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_associer_form
+msgid "https://"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,help:bf_qr_manager.field_bf_qr_associer__url
+msgid "https://…"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_import_form
+msgid "ligne(s) prête(s),"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "sans fiche"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_reinitialiser_form
+msgid "sont déjà vierges et ne changent pas."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "« %(t)s » : %(n)s numéro(s) introuvable(s), dont %(p)s-%(x)s."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "« %s » : la plage est à l'envers."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "« %s » : plage trop longue."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid ""
+"« %s » : un numéro seul se lit dans un lot. Lancez l'import depuis le lot, "
+"ou écrivez le numéro complet (QR-0012)."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "« %s » : une plage garde le même préfixe."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "« %s » désigne plusieurs fiches : donnez son identifiant."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "« %s » n'est pas une adresse web (https ou http)."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_nfc_tag__qr_vierge
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__count_vierges
+msgid "À associer"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_imprimer_form
+msgid "À la marque"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_reinitialiser__count_a_vider
+msgid "À réinitialiser"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__state
+msgid "État"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_associer__tag_id
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_label_format_form
+msgid "Étiquette"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.nfc.gesture,description:bf_qr_manager.gesture_vierge
+msgid ""
+"Étiquette QR imprimée d'avance, pas encore associée. Au premier scan, une "
+"personne autorisée l'associe à une fiche ou à une adresse ; les autres "
+"voient une page neutre."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Étiquette associée par %(qui)s : %(geste)s, %(quoi)s."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_tag_form_qr
+msgid ""
+"Étiquette imprimée d'avance, pas encore associée. « Associer cette étiquette »\n"
+"                    choisit ce que son code ouvrira."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.page_vierge
+msgid "Étiquette pas encore en service"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_tag.py:0
+msgid "Étiquette réinitialisée par %(qui)s. Elle menait à : %(avant)s."
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/wizard/bf_qr_import.py:0
+msgid "Étiquette « %s » introuvable."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:bf.nfc.gesture,name:bf_qr_manager.gesture_vierge
+#: model:ir.model.fields.selection,name:bf_qr_manager.selection__bf_nfc_gesture__kind__vierge
+msgid "Étiquette à associer"
+msgstr ""
+
+#. module: bf_qr_manager
+#. odoo-python
+#: code:addons/bf_qr_manager/models/bf_nfc_gesture.py:0
+msgid "Étiquette à associer."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_batch__tag_ids
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import_ligne__tag_ids
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_imprimer__tag_ids
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_reinitialiser__tag_ids
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_batch_form
+msgid "Étiquettes"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.actions.act_window,name:bf_qr_manager.action_bf_qr_etiquettes
+#: model:ir.ui.menu,name:bf_qr_manager.menu_qr_tags
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_nfc_config_form_qr
+msgid "Étiquettes QR"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model:ir.model.fields,field_description:bf_qr_manager.field_bf_qr_import__count_etiquettes
+msgid "Étiquettes touchées"
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_reinitialiser_form
+msgid ""
+"étiquette(s) redeviendront vierges :\n"
+"                    leur prochain scan mènera à l'association. Leur code, leur numéro et leur\n"
+"                    journal sont conservés."
+msgstr ""
+
+#. module: bf_qr_manager
+#: model_terms:ir.ui.view,arch_db:bf_qr_manager.view_bf_qr_import_form
+msgid "étiquette(s) touchée(s)."
+msgstr ""

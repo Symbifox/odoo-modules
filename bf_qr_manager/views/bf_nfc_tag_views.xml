@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_tag_form_qr" model="ir.ui.view">
+        <field name="name">bf.nfc.tag.form.qr</field>
+        <field name="model">bf.nfc.tag</field>
+        <field name="inherit_id" ref="bf_nfc.view_bf_nfc_tag_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="qr_vierge" invisible="1"/>
+                <field name="qr_batch_id" invisible="1"/>
+                <button name="action_associer_qr" type="object" string="Associer cette étiquette"
+                        class="btn-primary" invisible="not qr_vierge"/>
+                <!-- Une étiquette à la fois : une confirmation chacune. En lot, depuis la
+                     liste, une seule confirmation pour toute la sélection. -->
+                <button name="action_reinitialiser_qr" type="object" string="Réinitialiser"
+                        invisible="not qr_batch_id or qr_vierge"
+                        confirm="L'étiquette redeviendra vierge : son prochain scan mènera à l'association. Son journal est conservé. Continuer ?"/>
+                <button name="action_imprimer_qr" type="object" string="Imprimer"
+                        invisible="not qr_batch_id"/>
+            </xpath>
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="alert alert-info" role="status" invisible="not qr_vierge">
+                    Étiquette imprimée d'avance, pas encore associée. « Associer cette étiquette »
+                    choisit ce que son code ouvrira.
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='code']" position="before">
+                <field name="qr_reference" invisible="not qr_batch_id"/>
+                <field name="qr_batch_id" invisible="not qr_batch_id"/>
+            </xpath>
+            <xpath expr="//field[@name='confirm_required']" position="after">
+                <field name="qr_public" invisible="not qr_batch_id or gesture_writes"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_tag_list_qr" model="ir.ui.view">
+        <field name="name">bf.nfc.tag.list.qr</field>
+        <field name="model">bf.nfc.tag</field>
+        <field name="inherit_id" ref="bf_nfc.view_bf_nfc_tag_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="before">
+                <field name="qr_reference" optional="show" string="N°"/>
+            </xpath>
+            <xpath expr="//field[@name='gesture_id']" position="after">
+                <field name="qr_public" optional="hide"/>
+                <field name="qr_batch_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_bf_nfc_tag_search_qr" model="ir.ui.view">
+        <field name="name">bf.nfc.tag.search.qr</field>
+        <field name="model">bf.nfc.tag</field>
+        <field name="inherit_id" ref="bf_nfc.view_bf_nfc_tag_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="qr_reference"/>
+                <field name="qr_batch_id"/>
+            </xpath>
+            <xpath expr="//filter[@name='signees']" position="after">
+                <filter name="qr_vierges" string="QR à associer" domain="[('qr_vierge', '=', True)]"/>
+                <filter name="qr_associees" string="QR associées"
+                        domain="[('qr_batch_id', '!=', False), ('qr_vierge', '=', False)]"/>
+            </xpath>
+            <xpath expr="//filter[@name='par_type']" position="after">
+                <filter name="par_lot" string="Lot" context="{'group_by': 'qr_batch_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bf_qr_etiquettes" model="ir.actions.act_window">
+        <field name="name">Étiquettes QR</field>
+        <field name="res_model">bf.nfc.tag</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('qr_batch_id', '!=', False)]</field>
+        <field name="context">{'search_default_en_service': 1}</field>
+    </record>
+
+    <!-- Depuis la liste : une confirmation pour toute la sélection. -->
+    <record id="action_server_reinitialiser_qr" model="ir.actions.server">
+        <field name="name">Réinitialiser les étiquettes QR</field>
+        <field name="model_id" ref="bf_nfc.model_bf_nfc_tag"/>
+        <field name="binding_model_id" ref="bf_nfc.model_bf_nfc_tag"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_reinitialiser_qr_lot()</field>
+    </record>
+
+    <record id="action_server_imprimer_qr" model="ir.actions.server">
+        <field name="name">Imprimer en étiquettes QR</field>
+        <field name="model_id" ref="bf_nfc.model_bf_nfc_tag"/>
+        <field name="binding_model_id" ref="bf_nfc.model_bf_nfc_tag"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_imprimer_qr()</field>
+    </record>
+</odoo>

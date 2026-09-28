@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_qr_label_format_user,Format d'étiquettes (lecture),model_bf_qr_label_format,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_qr_label_format_manager,Format d'étiquettes (gestion),model_bf_qr_label_format,bf_nfc.group_nfc_manager,1,1,1,1
+access_bf_qr_batch_user,Lot d'étiquettes (lecture),model_bf_qr_batch,bf_nfc.group_nfc_user,1,0,0,0
+access_bf_qr_batch_manager,Lot d'étiquettes (gestion),model_bf_qr_batch,bf_nfc.group_nfc_manager,1,1,1,1
+access_bf_qr_associer_user,Associer une étiquette,model_bf_qr_associer,bf_nfc.group_nfc_user,1,1,1,1
+access_bf_qr_reinitialiser_user,Réinitialiser des étiquettes,model_bf_qr_reinitialiser,bf_nfc.group_nfc_user,1,1,1,1
+access_bf_qr_imprimer_user,Imprimer des étiquettes,model_bf_qr_imprimer,bf_nfc.group_nfc_user,1,1,1,1
+access_bf_qr_import_user,Associer par tableur,model_bf_qr_import,bf_nfc.group_nfc_user,1,1,1,1
+access_bf_qr_import_ligne_user,Ligne de tableur,model_bf_qr_import_ligne,bf_nfc.group_nfc_user,1,1,1,1

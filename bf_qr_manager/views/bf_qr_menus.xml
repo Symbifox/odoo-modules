@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_qr_root" name="Codes QR" parent="bf_nfc.menu_nfc_root" sequence="15"/>
+    <menuitem id="menu_qr_batches" name="Lots d'étiquettes" parent="menu_qr_root"
+              action="action_bf_qr_batch" sequence="10"/>
+    <menuitem id="menu_qr_tags" name="Étiquettes QR" parent="menu_qr_root"
+              action="action_bf_qr_etiquettes" sequence="20"/>
+    <menuitem id="menu_qr_formats" name="Formats d'étiquettes" parent="bf_nfc.menu_nfc_config"
+              action="action_bf_qr_label_format" sequence="40"/>
+</odoo>

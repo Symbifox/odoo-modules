@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_qr_batch_list" model="ir.ui.view">
+        <field name="name">bf.qr.batch.list</field>
+        <field name="model">bf.qr.batch</field>
+        <field name="arch" type="xml">
+            <list string="Lots d'étiquettes QR">
+                <field name="name"/>
+                <field name="prefixe"/>
+                <field name="numero_premier"/>
+                <field name="numero_dernier"/>
+                <field name="count_vierges"/>
+                <field name="count_associees"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_qr_batch_form" model="ir.ui.view">
+        <field name="name">bf.qr.batch.form</field>
+        <field name="model">bf.qr.batch</field>
+        <field name="arch" type="xml">
+            <form string="Lot d'étiquettes QR">
+                <header>
+                    <button name="action_generer" type="object" string="Tirer les étiquettes"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="bf_nfc.group_nfc_manager"/>
+                    <button name="action_imprimer" type="object" string="Imprimer"
+                            class="btn-primary" invisible="state != 'done'"/>
+                    <button name="action_importer" type="object" string="Associer par tableur"
+                            invisible="state != 'done' or not count_vierges"/>
+                    <button name="action_telecharger_modele" type="object" string="Tableur prérempli"
+                            invisible="state != 'done' or not count_vierges"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_voir_etiquettes" type="object" class="oe_stat_button"
+                                icon="fa-qrcode" invisible="state != 'done'">
+                            <field name="count_total" widget="statinfo" string="Étiquettes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="prefixe" readonly="state != 'draft'"/>
+                            <field name="quantite" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group invisible="state != 'done'">
+                            <field name="numero_premier"/>
+                            <field name="numero_dernier"/>
+                            <field name="count_vierges"/>
+                            <field name="count_associees"/>
+                        </group>
+                    </group>
+                    <div class="text-muted" invisible="state != 'draft'">
+                        Les étiquettes sont numérotées à la suite du dernier numéro de ce préfixe :
+                        un deuxième lot « QR » ne recommence jamais à 1.
+                    </div>
+                    <field name="note" placeholder="Pour quoi ce lot a été tiré, où il est rangé."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_qr_batch" model="ir.actions.act_window">
+        <field name="name">Lots d'étiquettes QR</field>
+        <field name="res_model">bf.qr.batch</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Tirer un premier lot d'étiquettes QR</p>
+            <p>Imprimez les étiquettes avant de savoir où elles iront. Chacune s'associe
+            au premier scan, se réassocie sans réimpression, et garde son journal.</p>
+        </field>
+    </record>
+</odoo>

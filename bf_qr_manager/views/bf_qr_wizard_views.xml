@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_qr_associer_form" model="ir.ui.view">
+        <field name="name">bf.qr.associer.form</field>
+        <field name="model">bf.qr.associer</field>
+        <field name="arch" type="xml">
+            <form string="Associer une étiquette">
+                <group>
+                    <field name="tag_id" invisible="1"/>
+                    <field name="reference"/>
+                    <field name="gesture_kind" invisible="1"/>
+                    <field name="gesture_writes" invisible="1"/>
+                    <field name="gesture_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="cible" options="{'no_create': True}"
+                           invisible="gesture_kind == 'url'"/>
+                    <field name="url" widget="url" invisible="gesture_kind != 'url'"
+                           required="gesture_kind == 'url'" placeholder="https://"/>
+                    <field name="name" placeholder="Vide : le nom de la fiche"/>
+                    <field name="place" placeholder="Porte de la salle B-204"/>
+                    <field name="qr_public" invisible="gesture_writes"/>
+                </group>
+                <footer>
+                    <button name="action_associer" type="object" string="Associer" class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_qr_reinitialiser_form" model="ir.ui.view">
+        <field name="name">bf.qr.reinitialiser.form</field>
+        <field name="model">bf.qr.reinitialiser</field>
+        <field name="arch" type="xml">
+            <form string="Réinitialiser des étiquettes">
+                <p>
+                    <field name="count_a_vider" class="fw-bold"/> étiquette(s) redeviendront vierges :
+                    leur prochain scan mènera à l'association. Leur code, leur numéro et leur
+                    journal sont conservés.
+                </p>
+                <p class="text-muted" invisible="not count_deja">
+                    <field name="count_deja"/> sont déjà vierges et ne changent pas.
+                </p>
+                <field name="tag_ids" invisible="1"/>
+                <footer>
+                    <button name="action_reinitialiser" type="object" string="Réinitialiser"
+                            class="btn-primary" invisible="not count_a_vider"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_qr_imprimer_form" model="ir.ui.view">
+        <field name="name">bf.qr.imprimer.form</field>
+        <field name="model">bf.qr.imprimer</field>
+        <field name="arch" type="xml">
+            <form string="Imprimer des étiquettes QR">
+                <field name="tag_ids" invisible="1"/>
+                <div class="alert alert-warning" role="alert" invisible="not avertissement">
+                    <field name="avertissement" nolabel="1"/>
+                </div>
+                <group>
+                    <group>
+                        <field name="format_id" options="{'no_create': True}"/>
+                        <field name="decalage"/>
+                        <field name="texte"/>
+                        <field name="contours"/>
+                    </group>
+                    <group>
+                        <field name="count"/>
+                        <field name="pages"/>
+                        <field name="cote_mm"/>
+                    </group>
+                    <group string="À la marque">
+                        <field name="avec_logo"/>
+                        <field name="logo" widget="image" invisible="not avec_logo"
+                               options="{'size': [90, 90]}"/>
+                        <field name="couleur_code" widget="color"/>
+                        <field name="couleur_fond" widget="color"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_imprimer" type="object" string="Produire le PDF"
+                            class="btn-primary"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_qr_import_form" model="ir.ui.view">
+        <field name="name">bf.qr.import.form</field>
+        <field name="model">bf.qr.import</field>
+        <field name="arch" type="xml">
+            <form string="Associer par tableur">
+                <field name="state" invisible="1"/>
+                <div invisible="state != 'saisie'">
+                    <p class="text-muted">
+                        Une ligne par étiquette ou par plage. Colonnes : <code>etiquette</code>
+                        (12, 12-20, QR-0012), <code>type</code> et <code>fiche</code>, ou
+                        <code>adresse</code> ; au besoin <code>geste</code>, <code>libelle</code>,
+                        <code>posee_sur</code>, <code>public</code>. Rien n'est écrit avant l'aperçu.
+                    </p>
+                    <group>
+                        <field name="batch_id" options="{'no_create': True}"/>
+                        <field name="fichier" filename="fichier_nom"/>
+                        <field name="fichier_nom" invisible="1"/>
+                    </group>
+                </div>
+                <div invisible="state != 'apercu'">
+                    <p>
+                        <field name="count_ok" class="fw-bold"/> ligne(s) prête(s),
+                        <field name="count_erreur" class="fw-bold"/> en erreur,
+                        <field name="count_etiquettes" class="fw-bold"/> étiquette(s) touchée(s).
+                    </p>
+                    <field name="ligne_ids" readonly="1">
+                        <list decoration-danger="statut == 'erreur'" decoration-success="statut == 'ok'">
+                            <field name="rang"/>
+                            <field name="resume"/>
+                            <field name="statut"/>
+                            <field name="message"/>
+                        </list>
+                    </field>
+                    <group invisible="not count_erreur">
+                        <field name="ignorer_erreurs"/>
+                    </group>
+                </div>
+                <footer>
+                    <button name="action_analyser" type="object" string="Vérifier"
+                            class="btn-primary" invisible="state != 'saisie'"/>
+                    <button name="action_appliquer" type="object" string="Associer"
+                            class="btn-primary" invisible="state != 'apercu' or not count_ok"/>
+                    <button name="action_retour" type="object" string="Autre fichier"
+                            invisible="state != 'apercu'"/>
+                    <button special="cancel" string="Annuler"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

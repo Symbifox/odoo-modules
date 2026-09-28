@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- L'état d'une étiquette imprimée d'avance. N'écrit rien : le scan d'une
+         vierge mène à l'association, qui est un geste de la fiche. -->
+    <record id="gesture_vierge" model="bf.nfc.gesture">
+        <field name="name">Étiquette à associer</field>
+        <field name="code">qr_vierge</field>
+        <field name="kind">vierge</field>
+        <field name="sequence">90</field>
+        <field name="writes" eval="False"/>
+        <field name="needs_target" eval="False"/>
+        <field name="description">Étiquette QR imprimée d'avance, pas encore associée. Au premier scan, une personne autorisée l'associe à une fiche ou à une adresse ; les autres voient une page neutre.</field>
+    </record>
+</odoo>

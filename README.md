@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**203 modules are BUSL-1.1.** The source is published and auditable, and **you
+**204 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -262,6 +262,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_property_securetransfer` | Copropriété : remise sécurisée des documents | 18.0.2.4.0 | BUSL-1.1 | Hand the certificate, the statement of charges and documents to a buyer by secure transfer, and know whether they were read |
 | `bf_property_sign` | Copropriété : signature électronique | 18.0.1.2.0 | BUSL-1.1 | E-signature for the logbook declaration, the art. 1068.1 certificate and meeting minutes |
 | `bf_property_sms` | Copropriété : avis par texto | 18.0.2.2.0 | BUSL-1.1 | Text an occupant about a parcel or an urgent notice, with their express consent |
+| `bf_qr_manager` | Codes QR gérés | 18.0.1.0.2 | BUSL-1.1 | Sheets of QR labels printed ahead of time, linked on first scan, re-linked without reprinting; extends Symbifox Pastilles |
 | `bf_receipt_ca` | Reçus de dons — Canada (ARC + Revenu Québec) | 18.0.1.0.5 | AGPL-3 | CRA + Revenu Québec compliant official donation receipts, in French — eligible amount, advantage, in-kind gifts, void/reissue |
 | `bf_recruitment` | Recrutement : cahier d'entrevues | 18.0.1.2.1 | BUSL-1.1 | Role-specific interview scorecards, multiple rounds, blind panel scoring and a consolidated interview book, grafted onto Odoo recruitment, with a catalogue of 32 ready-made scorecard templates, behaviourally anchored |
 | `bf_recruitment_expense` | Recrutement : dépenses et coût par embauche | 18.0.1.0.2 | BUSL-1.1 | Attach recruitment spend to the job, price the panel time the interview book already measures, and state what a hire cost while owning up to what the figure is missing |
@@ -363,7 +364,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **203 modules: BUSL-1.1.** Production use for your own internal business
+- **204 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

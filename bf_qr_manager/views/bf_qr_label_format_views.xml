@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_qr_label_format_list" model="ir.ui.view">
+        <field name="name">bf.qr.label.format.list</field>
+        <field name="model">bf.qr.label.format</field>
+        <field name="arch" type="xml">
+            <list string="Formats d'étiquettes">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="papier"/>
+                <field name="forme" optional="hide"/>
+                <field name="largeur"/>
+                <field name="hauteur"/>
+                <field name="par_feuille"/>
+                <field name="qr_max_mm"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_qr_label_format_form" model="ir.ui.view">
+        <field name="name">bf.qr.label.format.form</field>
+        <field name="model">bf.qr.label.format</field>
+        <field name="arch" type="xml">
+            <form string="Format d'étiquettes">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Carré 2 po, 12 par feuille"/></h1>
+                        <field name="reference" placeholder="Avery 22806"/>
+                    </div>
+                    <group>
+                        <group string="Feuille">
+                            <field name="papier"/>
+                            <field name="page_largeur" invisible="papier != 'custom'" required="papier == 'custom'"/>
+                            <field name="page_hauteur" invisible="papier != 'custom'" required="papier == 'custom'"/>
+                            <field name="colonnes"/>
+                            <field name="lignes"/>
+                            <field name="par_feuille"/>
+                        </group>
+                        <group string="Étiquette">
+                            <field name="forme"/>
+                            <field name="largeur"/>
+                            <field name="hauteur"/>
+                            <field name="marge_interne"/>
+                            <field name="qr_max_mm"/>
+                        </group>
+                        <group string="Position de la grille">
+                            <field name="marge_gauche"/>
+                            <field name="marge_haut"/>
+                            <field name="pas_x"/>
+                            <field name="pas_y"/>
+                        </group>
+                        <group string="Provenance">
+                            <field name="source"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <div class="text-muted small">
+                        Les références du commerce sont citées en texte seul, pour dire quelles
+                        planches conviennent. Aucune affiliation avec leurs fabricants.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_qr_label_format" model="ir.actions.act_window">
+        <field name="name">Formats d'étiquettes</field>
+        <field name="res_model">bf.qr.label.format</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

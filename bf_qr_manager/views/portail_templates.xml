@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ce que voit qui scanne une étiquette pas encore associée sans avoir le
+         droit de l'associer. Neutre : ni le lot, ni ce que l'étiquette visera ;
+         seulement son numéro, pour le donner à qui gère les étiquettes. -->
+    <template id="page_vierge" name="Étiquette QR : pas encore associée">
+        <t t-call="portal.frontend_layout">
+            <div id="wrap" class="oe_structure">
+                <div class="container py-5" style="max-width: 32rem;">
+                    <h1 class="h3 mb-3">Étiquette pas encore en service</h1>
+                    <p>Ce code n'a pas encore été associé à quoi que ce soit.</p>
+                    <p class="text-muted small mb-4">N° <t t-esc="tag.qr_reference or tag.code"/></p>
+                    <a t-if="anonyme" t-att-href="connexion" class="btn btn-primary w-100">
+                        Je m'occupe des étiquettes : me connecter
+                    </a>
+                    <p t-else="" class="text-muted">
+                        Votre compte ne peut pas associer les étiquettes. Donnez ce numéro à
+                        la personne qui gère les codes QR.
+                    </p>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

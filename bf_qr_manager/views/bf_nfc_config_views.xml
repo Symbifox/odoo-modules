@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_nfc_config_form_qr" model="ir.ui.view">
+        <field name="name">bf.nfc.config.form.qr</field>
+        <field name="model">bf.nfc.config</field>
+        <field name="inherit_id" ref="bf_nfc.view_bf_nfc_config_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_types_de_fiche']/.." position="after">
+                <group string="Étiquettes QR">
+                    <div class="text-muted" colspan="2">
+                        La gestion des pastilles associe et réinitialise toujours les étiquettes.
+                        Ajoutez ici les groupes qui le peuvent aussi dans cette société.
+                    </div>
+                    <field name="qr_groupe_ids" widget="many2many_tags"
+                           options="{'no_create': True}"/>
+                    <button name="action_types_suggeres" type="object"
+                            string="Ajouter les types suggérés" colspan="2"
+                            help="Postes et salles des plans d'étage, appareils, équipements, événements, pages de liens : ceux qui existent dans cette base."/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
