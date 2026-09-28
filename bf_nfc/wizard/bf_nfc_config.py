@@ -71,6 +71,14 @@ class BfNfcConfig(models.TransientModel):
         })
         if self.env.user.has_group("base.group_system"):
             valeurs["schemas_appariement"] = icp.get_param(PARAM_SCHEMAS) or SCHEMAS_DEFAUT
+        # ⚠️ Posés ici aussi, pas seulement par ``_compute_cles`` : le formulaire
+        # s'ouvre par un onchange, qui ne recalcule pas un champ sans dépendance.
+        # L'écran affichait « Types dans la liste : 0 » et aucune clé, pour une
+        # base qui en avait.
+        if "type_count" in champs:
+            valeurs["type_count"] = self.env["bf.nfc.target.type"].search_count([])
+        if "cles_ids" in champs:
+            valeurs["cles_ids"] = [(6, 0, self.env["bf.nfc.sdm.key"].search([]).ids)]
         return valeurs
 
     def _compute_cles(self):

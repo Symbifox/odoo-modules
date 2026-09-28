@@ -207,7 +207,8 @@ class BfNfcDevice(models.Model):
         ], limit=1)
         if not appareil:
             return self.sudo().browse()
-        if not appareil.user_id.active:
+        # Ni archivé, ni portail/partage (share), à CHAQUE usage.
+        if not appareil.user_id.active or appareil.user_id.share:
             return self.sudo().browse()
         limite = fields.Datetime.now() - timedelta(days=JOURS_INACTIVITE)
         if appareil.last_seen and appareil.last_seen < limite:

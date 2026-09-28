@@ -43,8 +43,13 @@ class PortailNfc(http.Controller):
         action = "/nfc/%s/agir" % tag.code
         # ⚠️ Un menu ne passe pas par la confirmation : sans choix, il ne fait que
         # lister ses boutons, et `taper` défait tout geste qui pose une question.
-        if tag.gesture_id.kind != "menu" and tag.gesture_id.writes and tag.confirm_required:
-            return self._page_confirmation(tag, action=action)
+        # 🔴 Un geste qui écrit n'agit JAMAIS sur un GET, même sans
+        # confirmation demandée. Sans confirmation, la page se soumet d'elle-même
+        # (un navigateur exécute le script, un scanner de liens ou une
+        # préconnexion non) ; c'est toujours le POST, CSRF compris, qui agit.
+        if tag.gesture_id.kind != "menu" and tag.gesture_id.writes:
+            return self._page_confirmation(tag, action=action,
+                                           auto=not tag.confirm_required)
         return self._agir_et_rendre(tag, "session", kw, action=action)
 
     @http.route("/nfc/<string:code>/agir", type="http", auth="user", methods=["POST"],
@@ -61,28 +66,49 @@ class PortailNfc(http.Controller):
     @http.route("/nfc/s", type="http", auth="public", methods=["GET"], website=True)
     def signee(self, **kw):
         tag, compteur, erreur = self._verifier_signature(kw)
+        if not erreur and not tag._consommer_compteur(compteur):
+            erreur = self._DEJA_SERVI()
         if erreur:
-            return self._page_resultat(None, {"statut": "refused", "titre": _("Refusé"),
-                                              "message": erreur, "url": None})
-        if tag.gesture_id.kind != "menu" and tag.gesture_id.writes and tag.confirm_required:
-            return self._page_confirmation(tag, action="/nfc/s/agir", cache=kw)
-        return self._agir_signe(tag, compteur, kw)
+            return self._page_refus(erreur)
+        # 🔴 Le compteur est consommé : l'adresse ne rejoue plus rien. La suite
+        # (confirmation, choix, formulaire) ne passe que par le jeton de la page.
+        jeton = tag._jeton_de_suite(compteur)
+        # 🔴 Un geste qui écrit n'agit jamais sur un GET : sans confirmation
+        # demandée, la page se soumet d'elle-même, et c'est le POST qui agit.
+        if tag.gesture_id.kind != "menu" and tag.gesture_id.writes:
+            return self._page_confirmation(tag, action="/nfc/s/agir", jeton=jeton,
+                                           auto=not tag.confirm_required)
+        return self._agir_signe(tag, compteur, kw, jeton)
 
     @http.route("/nfc/s/agir", type="http", auth="public", methods=["POST"],
                 website=True)
     def signee_agir(self, **kw):
-        tag, compteur, erreur = self._verifier_signature(kw)
+        # 🔴 Plus de signature de puce au POST : c'était la porte du rejeu. Une
+        # adresse recopiée postée ici, sans jeton, ne fait rien.
+        tag, compteur, erreur = request.env["bf.nfc.tag"]._lire_jeton_de_suite(
+            kw.get("jeton"))
         if erreur:
-            return self._page_resultat(None, {"statut": "refused", "titre": _("Refusé"),
-                                              "message": erreur, "url": None})
-        return self._agir_signe(tag, compteur, kw)
+            return self._page_refus(erreur)
+        return self._agir_signe(tag, compteur, kw, kw.get("jeton"))
+
+    @staticmethod
+    def _DEJA_SERVI():
+        return _("Ce tapotement a déjà servi. Approchez de nouveau le téléphone "
+                 "de la pastille.")
+
+    def _page_refus(self, message):
+        return self._page_resultat(None, {"statut": "refused", "titre": _("Refusé"),
+                                          "message": message, "url": None})
 
     def _verifier_signature(self, kw):
         """Rend (pastille, compteur, None) quand la signature tient.
 
-        🔴 Le compteur est vérifié ici mais n'est **pas** enregistré : seule
-        l'exécution le consomme. Sinon un aperçu de lien brûlerait le
-        tapotement de la personne qui tient encore son téléphone.
+        Le compteur est vérifié ici, et consommé juste après par ``signee``.
+        Jusqu'à la 2.6.1, seule l'exécution le consommait, pour qu'un
+        aperçu de lien ne brûle pas le tapotement ; le prix était une adresse
+        jouable jusqu'au clic. L'adresse d'une pastille s'ouvre dans le
+        navigateur de qui tape, pas dans une messagerie : un aperçu qui passe
+        avant le téléphone est l'exception, et il se règle en retapant.
         """
         picc = kw.get("picc_data") or kw.get("p")
         cmac = kw.get("cmac") or kw.get("c")
@@ -122,12 +148,11 @@ class PortailNfc(http.Controller):
             if compteur <= tag.sdm_counter:
                 _logger.warning("Pastille signée %s : compteur rejoué (%s <= %s)",
                                 uid, compteur, tag.sdm_counter)
-                return None, 0, _("Ce tapotement a déjà servi. Approchez de nouveau "
-                                  "le téléphone de la pastille.")
+                return None, 0, self._DEJA_SERVI()
             return tag, compteur, None
         return None, 0, _("Cette pastille n'est pas reconnue.")
 
-    def _agir_signe(self, tag, compteur, kw):
+    def _agir_signe(self, tag, compteur, kw, jeton):
         """Exécute au nom du compte désigné sur la pastille.
 
         ⚠️ Toujours une page, jamais une redirection : la personne qui tape une
@@ -141,9 +166,9 @@ class PortailNfc(http.Controller):
         tag_acteur = request.env["bf.nfc.tag"].sudo().browse(tag.id)
         resultat = tag_acteur.taper("signed", compteur=compteur, **self._reponse(kw))
         if resultat["statut"] == "choice":
-            # 🔴 Le compteur n'a pas été consommé : une question n'est pas une
-            # exécution. La page renvoie la même signature avec le choix.
-            return self._page_choix(tag_acteur, resultat, "/nfc/s/agir", cache=kw)
+            # Une question ne clôt pas la suite : rien n'est journalisé, et le
+            # même jeton porte le choix au POST suivant.
+            return self._page_choix(tag_acteur, resultat, "/nfc/s/agir", jeton=jeton)
         return self._page_resultat(tag_acteur, resultat)
 
     # ------------------------------------------------------------------
@@ -188,21 +213,20 @@ class PortailNfc(http.Controller):
             return request.redirect(adresse, local=False)
         return request.redirect(adresse)
 
-    def _page_choix(self, tag, resultat, action, cache=None):
+    def _page_choix(self, tag, resultat, action, jeton=None):
         return request.render("bf_nfc.page_choix", {
             "tag": tag,
             "resultat": resultat,
             "action": action,
-            "picc_data": (cache or {}).get("picc_data") or (cache or {}).get("p") or "",
-            "cmac": (cache or {}).get("cmac") or (cache or {}).get("c") or "",
+            "jeton": jeton or "",
         })
 
-    def _page_confirmation(self, tag, action, cache=None):
+    def _page_confirmation(self, tag, action, jeton=None, auto=False):
         return request.render("bf_nfc.page_confirmation", {
             "tag": tag,
             "action": action,
-            "picc_data": (cache or {}).get("picc_data") or (cache or {}).get("p") or "",
-            "cmac": (cache or {}).get("cmac") or (cache or {}).get("c") or "",
+            "jeton": jeton or "",
+            "auto": auto,
         })
 
     def _page_resultat(self, tag, resultat):

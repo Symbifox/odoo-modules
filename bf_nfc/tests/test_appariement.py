@@ -140,3 +140,16 @@ class TestAppariement(TransactionCase):
         autre = new_test_user(self.env, login="voisine", groups="base.group_user")
         vus = self.Device.with_user(autre).search([])
         self.assertFalse(vus, "Les appareils du voisin ne se lisent pas.")
+
+    def test_un_jeton_de_compte_portail_est_refuse(self):
+        """Un compte passé au portail (share) ne garde pas son jeton."""
+        appareil, jeton = self._apparier()
+        self.assertEqual(self.Device._resolve(jeton), appareil)
+        self.personne.groups_id = [(6, 0, [self.env.ref("base.group_portal").id])]
+        self.assertTrue(self.personne.share)
+        self.assertFalse(self.Device._resolve(jeton))
+
+    def test_un_jeton_de_compte_archive_est_refuse(self):
+        appareil, jeton = self._apparier()
+        self.personne.active = False
+        self.assertFalse(self.Device._resolve(jeton))

@@ -2,10 +2,13 @@
 
 🔴 L'essai qui compte le plus est celui du GET : tant qu'un geste qui écrit
 n'est pas parti en POST, l'adresse doit pouvoir être ouverte par un aperçu de
-lien, un antipourriel ou un scanner sans que rien ne bouge.
+lien, un antipourriel ou un scanner sans que rien ne bouge. Sur la porte
+signée, l'ouverture consomme le compteur de la puce : aucun geste ne
+part, mais l'adresse ne rejoue plus rien.
 """
 import json
 import re
+from unittest.mock import patch
 
 from odoo.tests import HttpCase, tagged
 
@@ -75,6 +78,30 @@ class TestPortes(HttpCase):
         self.assertFalse(self.tag_ecrit.tap_ids,
                          "Un GET ne laisse même pas de ligne de journal : rien n'a été tenté.")
 
+    def test_sans_confirmation_demandee_le_get_n_ecrit_toujours_rien(self):
+        """🔴 ``confirm_required=False`` ne rend pas le GET actif.
+
+        La page se soumet d'elle-même dans un navigateur, mais un scanner de
+        liens ou une préconnexion qui ne fait que lire l'adresse ne touche à rien.
+        """
+        self.tag_ecrit.confirm_required = False
+        self.authenticate("admin", "admin")
+        for _ in range(3):
+            reponse = self.url_open("/nfc/%s" % self.tag_ecrit.code)
+            self.assertEqual(reponse.status_code, 200)
+            self.assertIn('id="nfc-confirmer"', reponse.text)
+            self.assertIn(".submit()", reponse.text)
+        self.partenaire.invalidate_recordset(["ref"])
+        self.assertFalse(self.partenaire.ref)
+        self.assertFalse(self.tag_ecrit.tap_ids)
+        reponse = self.url_open(
+            "/nfc/%s/agir" % self.tag_ecrit.code,
+            data={"csrf_token": self._csrf_de_la_page(self.tag_ecrit.code)},
+            allow_redirects=False)
+        self.assertEqual(reponse.status_code, 200)
+        self.partenaire.invalidate_recordset(["ref"])
+        self.assertEqual(self.partenaire.ref, "TAPE")
+
     def test_le_post_agit(self):
         self.authenticate("admin", "admin")
         reponse = self.url_open(
@@ -97,6 +124,97 @@ class TestPortes(HttpCase):
         trouve = re.search(r'<input[^>]*name="csrf_token"[^>]*value="([^"]+)"', page)
         self.assertTrue(trouve, "Page de confirmation sans jeton CSRF")
         return trouve.group(1)
+
+    # ------------------------------------------------------------------
+    # La suite d'un tapotement signé
+    # ------------------------------------------------------------------
+    def _champ(self, page, nom):
+        trouve = re.search(r'<input[^>]*name="%s"[^>]*value="([^"]*)"' % nom, page)
+        return trouve and trouve.group(1)
+
+    def test_confirmation_signee_l_adresse_ne_rejoue_plus_rien(self):
+        """🔴 Le trou de la 2.6.1 : l'adresse restait jouable jusqu'au clic.
+
+        Ouverte, la page de confirmation consomme le compteur et ne remet que
+        le jeton de suite. L'adresse recopiée ne rouvre rien, ni en GET ni en
+        POST, et le geste ne part qu'une fois.
+        """
+        tag = self._preparer_signee(self.geste_ecrit)
+        adresse = "/nfc/s?picc_data=%s&cmac=%s" % (PICC, CMAC)
+        page = self.url_open(adresse).text
+        self.assertIn("Confirmer", page)
+        self.assertNotIn(PICC, page, "La page ne doit plus porter la signature de la puce.")
+        jeton, csrf = self._champ(page, "jeton"), self._champ(page, "csrf_token")
+        self.assertTrue(jeton)
+        tag.invalidate_recordset(["sdm_counter"])
+        self.assertEqual(tag.sdm_counter, 61, "Le compteur se consomme à l'ouverture.")
+        self.partenaire.invalidate_recordset(["ref"])
+        self.assertFalse(self.partenaire.ref, "Ouvrir la page n'agit toujours pas.")
+
+        self.assertIn("déjà servi", self.url_open(adresse).text)
+        vole = self.url_open("/nfc/s/agir", data={
+            "csrf_token": csrf, "picc_data": PICC, "cmac": CMAC})
+        self.assertIn("déjà servi", vole.text)
+        self.partenaire.invalidate_recordset(["ref"])
+        self.assertFalse(self.partenaire.ref, "Une adresse postée sans jeton ne fait rien.")
+
+        self.url_open("/nfc/s/agir", data={"csrf_token": csrf, "jeton": jeton})
+        self.partenaire.invalidate_recordset(["ref"])
+        self.assertEqual(self.partenaire.ref, "TAPE")
+        encore = self.url_open("/nfc/s/agir", data={"csrf_token": csrf, "jeton": jeton})
+        self.assertIn("déjà servi", encore.text, "Le jeton ne sert qu'une suite.")
+        self.assertEqual(len(tag.tap_ids.filtered(lambda t: t.status == "ok")), 1)
+
+    def test_jeton_altere_ou_depasse_refuse(self):
+        tag = self._preparer_signee(self.geste_ecrit)
+        page = self.url_open("/nfc/s?picc_data=%s&cmac=%s" % (PICC, CMAC)).text
+        jeton, csrf = self._champ(page, "jeton"), self._champ(page, "csrf_token")
+        tag_id, compteur, expire, signature = jeton.split(".")
+        for faux in ("%s.%s.%s.%s" % (tag_id, compteur, int(expire) + 3600, signature),
+                     "%s.%s.%s.%s" % (tag_id, compteur, expire, "0" * len(signature)),
+                     "", "n.importe.quoi.ici"):
+            reponse = self.url_open("/nfc/s/agir", data={"csrf_token": csrf, "jeton": faux})
+            self.assertIn("déjà servi", reponse.text, faux)
+        # Un tapotement plus récent de la même puce dépasse l'ancienne page.
+        tag.sdm_counter = 62
+        reponse = self.url_open("/nfc/s/agir", data={"csrf_token": csrf, "jeton": jeton})
+        self.assertIn("déjà servi", reponse.text)
+        self.partenaire.invalidate_recordset(["ref"])
+        self.assertFalse(self.partenaire.ref)
+
+    def test_jeton_echu_refuse(self):
+        tag = self._preparer_signee(self.geste_ecrit)
+        tag._consommer_compteur(61)
+        with patch.object(type(tag), "DUREE_SUITE", -1):
+            jeton = tag._jeton_de_suite(61)
+        _tag, _c, erreur = self.env["bf.nfc.tag"]._lire_jeton_de_suite(jeton)
+        self.assertTrue(erreur)
+        _tag, _c, erreur = self.env["bf.nfc.tag"]._lire_jeton_de_suite(tag._jeton_de_suite(61))
+        self.assertFalse(erreur)
+
+    def test_deux_ouvertures_de_la_meme_adresse_une_seule_passe(self):
+        """⚠️ Le compteur se retient par un UPDATE conditionnel, jamais « lire puis écrire »."""
+        tag = self._preparer_signee()
+        self.assertTrue(tag._consommer_compteur(70))
+        self.assertFalse(tag._consommer_compteur(70))
+        self.assertFalse(tag._consommer_compteur(69))
+        self.assertEqual(tag.sdm_counter, 70)
+
+    def test_menu_signe_le_choix_passe_par_le_jeton(self):
+        """Une question ne clôt pas la suite : le même jeton porte le choix."""
+        tag = self._preparer_signee(self.env.ref("bf_nfc.gesture_menu"))
+        ligne = self.env["bf.nfc.tag.choice"].create({
+            "tag_id": tag.id, "name": "Marquer", "sequence": 1,
+            "gesture_id": self.geste_ecrit.id,
+        })
+        page = self.url_open("/nfc/s?picc_data=%s&cmac=%s" % (PICC, CMAC)).text
+        self.assertIn("Marquer", page)
+        jeton, csrf = self._champ(page, "jeton"), self._champ(page, "csrf_token")
+        self.assertTrue(jeton, "La page de choix doit porter le jeton de suite.")
+        self.url_open("/nfc/s/agir", data={
+            "csrf_token": csrf, "jeton": jeton, "choix": str(ligne.id)})
+        self.partenaire.invalidate_recordset(["ref"])
+        self.assertEqual(self.partenaire.ref, "TAPE")
 
     # ------------------------------------------------------------------
     # Porte « application »

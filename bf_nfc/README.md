@@ -42,6 +42,16 @@ and Gen skills.
 - **Nothing acts on a GET.** Link previews, spam filters and security scanners
   open URLs nobody touched. Through the browser, a gesture that writes goes
   through a one-button confirmation page, and the POST acts.
+  When the tag asks for no confirmation, that page submits itself: a browser
+  runs the script, a link preview does not (since 18.0.2.6.3).
+- **A signed chip's address works once, at opening.** The first valid GET on
+  `/nfc/s` consumes the chip's read counter, atomically. The confirmation or
+  choice page then carries a follow-up token signed by the database (tag,
+  counter, 30-minute expiry), and only that token opens the POST. The address
+  itself, copied from a history or a proxy log, replays nothing. The token dies
+  once the gesture reaches a result, or when a newer tap of the same chip
+  supersedes it. (Up to 18.0.2.6.1, the counter was consumed only when the
+  gesture ran, so the address stayed playable until the person clicked.)
 - **One entry point, `bf.nfc.tag.taper()`.** Every door establishes identity,
   then calls it. It runs the gesture in a savepoint, refuses a second identical
   tap within 20 seconds, and logs every tap, including refused ones.
@@ -116,11 +126,21 @@ read.
 
 `/bf_nfc/mobile/v1` (api 2): `ping` (public, returns the company's branding and the
 local expiry delay), pairing
-(`auth/start`, `auth/exchange`, `logout`), `tap`, `pastille/infos`, `pastilles`,
+(`auth/start`, `auth/exchange`, `auth/mobile`, `logout`), `tap`, `pastille/infos`, `pastilles`,
 `journal`, `cibles` (target search on a whitelist of models), `catalogue`,
 `pastille` (create), `liens` (link pages, when `bf_linkpage` is installed),
 and `gravure/debut` + `gravure/suite`, which write a signed chip (below).
 Every route runs as the device's person, in their language.
+
+Since 18.0.2.6.3, pairing opens a consent page: the code is issued only on an
+"Authorize" POST carrying the CSRF token. A device token is refused at every
+call once its account is archived or turned into a portal user.
+
+`auth/mobile` (since 18.0.2.6.0) pairs without a browser: an app already signed
+in to Symbifox Mobile presents its bearer token, and the server runs the same
+one-time code and PKCE exchange on both ends, so the device cap and token rules
+still apply. It requires the NFC user group, like browser pairing, and a new
+pairing replaces the previous one from the same phone.
 
 Since 18.0.2.5.0, `ping` also announces `wipe_after_days`: the app wipes what it
 keeps after that many days without a successful authenticated call, which covers

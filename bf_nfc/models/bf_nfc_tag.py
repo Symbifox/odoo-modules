@@ -12,6 +12,7 @@ méthode. Un geste ajouté demain hérite donc du journal, de la garde contre le
 double tapotement et du point de reprise sans qu'on y touche.
 """
 import base64
+import hmac as hmac_std
 import json
 import logging
 import secrets
@@ -19,6 +20,7 @@ from datetime import datetime, timedelta, timezone
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
+from odoo.tools.misc import hmac as odoo_hmac
 
 _logger = logging.getLogger(__name__)
 
@@ -78,8 +80,13 @@ class BfNfcTag(models.Model):
     )
     gesture_writes = fields.Boolean(related="gesture_id.writes", readonly=True)
     res_model = fields.Char(string="Modèle cible", tracking=True)
+    # 🔴 PAS de suivi sur ``res_id`` : Odoo ne sait pas suivre un Many2oneReference.
+    # Avec ``tracking=True``, toute écriture de la fiche visée levait « Unsupported
+    # tracking on field res_id » au vidage final de la transaction, donc après le
+    # clic, jamais dans un essai qui s'arrête avant. ``res_model`` reste
+    # suivi, et ``cible`` dit à l'écran quelle fiche est visée.
     res_id = fields.Many2oneReference(
-        string="Fiche cible", model_field="res_model", tracking=True,
+        string="Fiche cible", model_field="res_model",
     )
     # 🔴 Ce que l'écran montre, à la place du nom technique tapé à la main
     # (« project.task ») et d'une « Fiche cible » bloquée tant qu'il était vide.
@@ -296,6 +303,75 @@ class BfNfcTag(models.Model):
             ("sdm_uid", "=ilike", uid_hex.strip()),
             ("sdm_enabled", "=", True),
         ], limit=1)
+
+    # ------------------------------------------------------------------
+    # La suite d'un tapotement signé
+    # ------------------------------------------------------------------
+    # 🔴 Jusqu'à la 2.6.1, le compteur n'était consommé qu'à l'exécution. Une
+    # pastille à confirmation ou à menu laissait donc son adresse jouable
+    # jusqu'au clic de la personne : recopiée depuis l'historique ou un journal
+    # de mandataire, elle se jouait à sa place. Le compteur se consomme
+    # maintenant à la première ouverture valide, et la page remet un jeton de
+    # suite, signé par la base, qui seul ouvre le POST.
+    DUREE_SUITE = 30 * 60  # un relevé à plusieurs champs se remplit sur place
+
+    def _consommer_compteur(self, compteur):
+        """Retient ``compteur`` s'il est neuf. Rend False si quelqu'un est passé avant.
+
+        ⚠️ Un UPDATE conditionnel, pas un « lire puis écrire » : deux ouvertures
+        simultanées de la même adresse lisent toutes deux l'ancien compteur, et
+        les deux passeraient. Ici la seconde attend la première, relit la
+        condition, et ne touche aucune ligne.
+
+        ⚠️ ``COALESCE`` : une pastille jamais tapée porte NULL en base, pas 0,
+        et ``NULL < 61`` n'est pas vrai. Le premier tapotement était refusé.
+        """
+        self.ensure_one()
+        self.flush_recordset(["sdm_counter"])
+        self.env.cr.execute(
+            "UPDATE bf_nfc_tag SET sdm_counter = %s "
+            "WHERE id = %s AND COALESCE(sdm_counter, 0) < %s",
+            (int(compteur), self.id, int(compteur)))
+        retenu = self.env.cr.rowcount == 1
+        self.invalidate_recordset(["sdm_counter"])
+        return retenu
+
+    def _jeton_de_suite(self, compteur):
+        """Le jeton que la page remet au POST suivant : pastille, compteur, échéance."""
+        self.ensure_one()
+        expire = int(datetime.now(timezone.utc).timestamp()) + self.DUREE_SUITE
+        charge = "%d.%d.%d" % (self.id, int(compteur), expire)
+        return "%s.%s" % (charge, odoo_hmac(self.env(su=True), "bf_nfc.suite_signee", charge))
+
+    @api.model
+    def _lire_jeton_de_suite(self, jeton):
+        """Rend (pastille, compteur, None) quand le jeton ouvre encore la suite.
+
+        Refusé quand il est altéré ou échu, quand un tapotement plus récent l'a
+        dépassé, ou quand la suite est close : un geste l'a déjà menée à un
+        résultat (réussi, refusé ou en erreur), ce que dit le journal.
+        """
+        refus = _("Ce tapotement a déjà servi. Approchez de nouveau le téléphone "
+                  "de la pastille.")
+        morceaux = (jeton or "").split(".")
+        if len(morceaux) != 4 or not all(m.isdigit() for m in morceaux[:3]):
+            return self.browse(), 0, refus
+        charge = ".".join(morceaux[:3])
+        attendu = odoo_hmac(self.env(su=True), "bf_nfc.suite_signee", charge)
+        if not hmac_std.compare_digest(attendu, morceaux[3]):
+            _logger.warning("Pastille signée : jeton de suite altéré")
+            return self.browse(), 0, refus
+        tag_id, compteur, expire = (int(m) for m in morceaux[:3])
+        if expire < datetime.now(timezone.utc).timestamp():
+            return self.browse(), 0, refus
+        tag = self.sudo().browse(tag_id).exists()
+        if not tag or not tag.sdm_enabled or tag.sdm_counter != compteur:
+            return self.browse(), 0, refus
+        if self.env["bf.nfc.tap"].sudo().search_count([
+                ("tag_id", "=", tag.id), ("door", "=", "signed"),
+                ("counter", "=", compteur)], limit=1):
+            return self.browse(), 0, refus
+        return tag, compteur, None
 
     def _cible(self, superutilisateur=False):
         """L'enregistrement visé, lu avec les droits de la personne qui tape.

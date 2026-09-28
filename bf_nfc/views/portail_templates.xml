@@ -3,7 +3,8 @@
     <!-- 🔴 La page de confirmation n'est pas de la politesse, c'est la barrière.
          Tant que le geste n'est pas parti en POST, un aperçu de lien, un
          antipourriel ou un scanner peuvent ouvrir cette adresse autant de fois
-         qu'ils veulent : ils ne feront rien. -->
+         qu'ils veulent : ils ne feront rien. Sur la porte signée, seul le jeton
+         de suite ouvre le POST : l'adresse de la puce ne sert qu'à l'ouverture. -->
     <template id="page_confirmation" name="Pastille : confirmer le geste">
         <t t-call="portal.frontend_layout">
             <div id="wrap" class="oe_structure">
@@ -13,18 +14,21 @@
                     <div t-if="tag.gesture_id.description" class="alert alert-light" role="status">
                         <t t-esc="tag.gesture_id.description"/>
                     </div>
-                    <form t-att-action="action" method="post">
+                    <form id="nfc-confirmer" t-att-action="action" method="post">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                        <input type="hidden" name="picc_data" t-att-value="picc_data"/>
-                        <input type="hidden" name="cmac" t-att-value="cmac"/>
+                        <input t-if="jeton" type="hidden" name="jeton" t-att-value="jeton"/>
                         <button type="submit" class="btn btn-primary btn-lg w-100">
                             Confirmer
                         </button>
                     </form>
-                    <p class="text-muted small mt-3 mb-0">
+                    <p t-if="not auto" class="text-muted small mt-3 mb-0">
                         Rien n'a encore été fait. Ce geste modifie des données, alors
                         il attend que vous le disiez.
                     </p>
+                    <!-- Pastille sans confirmation demandée. Le
+                         navigateur soumet le formulaire de lui-même ; un aperçu
+                         de lien n'exécute pas le script et ne fait donc rien. -->
+                    <script t-if="auto">document.getElementById("nfc-confirmer").submit();</script>
                 </div>
             </div>
         </t>
@@ -41,8 +45,7 @@
                     <!-- Un formulaire : UN seul POST pour tous les champs, un bouton par choix. -->
                     <form t-if="resultat.get('formulaire')" t-att-action="action" method="post">
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                        <input type="hidden" name="picc_data" t-att-value="picc_data"/>
-                        <input type="hidden" name="cmac" t-att-value="cmac"/>
+                        <input t-if="jeton" type="hidden" name="jeton" t-att-value="jeton"/>
                         <t t-foreach="resultat.get('formulaire')" t-as="champ">
                             <t t-set="nom" t-value="'r.%s' % champ.get('cle')"/>
                             <fieldset class="mb-3">
@@ -87,8 +90,7 @@
                     <t t-foreach="not resultat.get('formulaire') and resultat.get('choix') or []" t-as="option">
                         <form t-att-action="action" method="post" class="mb-2">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                            <input type="hidden" name="picc_data" t-att-value="picc_data"/>
-                            <input type="hidden" name="cmac" t-att-value="cmac"/>
+                            <input t-if="jeton" type="hidden" name="jeton" t-att-value="jeton"/>
                             <input type="hidden" name="choix" t-att-value="option.get('cle')"/>
                             <textarea t-if="option.get('saisie') == 'texte'" name="texte" rows="3"
                                       class="form-control mb-2" required="required"
