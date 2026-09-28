@@ -1,6 +1,6 @@
 {
     "name": "Chronomètre : application Android",
-    "version": "18.0.1.1.0",
+    "version": "18.0.1.3.1",
     "category": "Services/Timesheets",
     "summary": "L'API de Symbifox Chronomètre : appariement d'un téléphone et gestes du chrono",
     "description": """
@@ -27,9 +27,31 @@ Ce qu'il ajoute
 Ce qu'il ne change pas
 ----------------------
 
-Il n'écrit rien dans le chronomètre. Chaque geste appelle les méthodes de
-``bf.timer`` au nom de la personne, avec ses droits : une feuille de temps
-saisie depuis le téléphone est identique à celle saisie depuis le navigateur.
+Chaque geste appelle les méthodes de ``bf.timer`` au nom de la personne, avec
+ses droits : une feuille de temps saisie depuis le téléphone est identique à
+celle saisie depuis le navigateur. Seuls deux champs s'ajoutent au chrono
+(voir plus bas), et les méthodes publiques gardent leur signature.
+
+Rejeu hors ligne (18.0.1.3.0)
+----------------------------------------
+
+L'app garde en file les gestes faits hors ligne et les rejoue.
+
+* ``client_uuid`` (clé JSON facultative) sur démarrer, pause, reprendre,
+  enregistrer et abandonner : le premier appel réussi pose un accusé
+  (``bf.timer.mobile.receipt``) dans la même transaction, un appel suivant au
+  même identifiant rend la réponse d'origine avec ``"replay": true``. Pas un
+  UUID : 400 ``invalid_client_uuid``. Sans identifiant, rien ne change.
+* Le ``client_uuid`` du démarrage est gardé sur le chrono
+  (``bf.timer.client_uuid``) : un démarrage rejoué rend le chrono existant,
+  même après la purge des accusés (30 jours).
+* ``timer_uuid`` vaut ``timer_id`` partout : une pause mise en file avant que
+  le démarrage soit monté vise le chrono par l'identifiant de son démarrage.
+* ``at`` (millisecondes epoch UTC, facultatif) sur démarrer, pause et reprendre
+  : l'heure réelle du geste. Hors bornes, elle est RAMENÉE, jamais refusée : au
+  delà de 2 minutes dans le futur, à maintenant ; avant le dernier geste du
+  chrono (``paused_at``, noté à chaque pause, borne la reprise), à ce geste.
+  Seule une valeur illisible rend 400 ``invalid_at``.
 
 ⚠️ **Enregistrer arrête ET saisit dans la même requête.** Le téléphone
 n'appelle jamais l'arrêt seul : un chrono arrêté que personne ne confirme reste

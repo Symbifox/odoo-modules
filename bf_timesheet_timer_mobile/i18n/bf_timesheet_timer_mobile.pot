@@ -148,3 +148,61 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__last_seen
 msgid "Vu la dernière fois"
 msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model,name:bf_timesheet_timer_mobile.model_bf_timer_mobile_receipt
+msgid "Mobile idempotency receipt (timer)"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__user_id
+msgid "User"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__client_uuid
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer__client_uuid
+msgid "Device identifier"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__route
+msgid "Route"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__response
+msgid "Response"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,help:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__response
+msgid "JSON body returned the first time, returned again on replay."
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.constraint,message:bf_timesheet_timer_mobile.constraint_bf_timer_mobile_receipt_user_client_uuid_unique
+msgid "This device identifier was already used by this user."
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,help:bf_timesheet_timer_mobile.field_bf_timer__client_uuid
+msgid ""
+"Identifier drawn by the phone when it started this timer. A replayed start "
+"returns this timer instead of creating another one."
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer__paused_at
+msgid "Paused at"
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,help:bf_timesheet_timer_mobile.field_bf_timer__paused_at
+msgid "When the timer was last paused. A resume cannot be dated before it."
+msgstr ""
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.constraint,message:bf_timesheet_timer_mobile.constraint_bf_timer_client_uuid_user_unique
+msgid "This device identifier is already used by another timer."
+msgstr ""

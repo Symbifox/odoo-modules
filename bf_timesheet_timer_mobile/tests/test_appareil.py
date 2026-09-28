@@ -158,6 +158,19 @@ class TestAppareil(TransactionCase):
         self.assertNotIn("pending_code", champs)
         self.assertTrue(appareil)
 
+    def test_un_jeton_de_compte_portail_est_refuse(self):
+        """Un compte passé au portail (share) ne garde pas son jeton."""
+        appareil, jeton = self._apparier()
+        self.assertEqual(self.Device._resolve(jeton), appareil)
+        self.personne.groups_id = [(6, 0, [self.env.ref("base.group_portal").id])]
+        self.assertTrue(self.personne.share)
+        self.assertFalse(self.Device._resolve(jeton))
+
+    def test_un_jeton_de_compte_archive_est_refuse(self):
+        appareil, jeton = self._apparier()
+        self.personne.active = False
+        self.assertFalse(self.Device._resolve(jeton))
+
 
 @tagged("post_install", "-at_install", "bf_timesheet_timer_mobile")
 class TestUsurpation(TransactionCase):

@@ -20,6 +20,9 @@ requête. Les chronos en attente venus du navigateur sont figés à leur arrêt
 depuis ``bf_timesheet_timer`` 18.0.1.12.0 ; ce module refuse de
 s'installer sur une version antérieure (voir ``hooks.py``).
 """
+import base64
+import hashlib
+import secrets
 import logging
 import re
 import urllib.parse
@@ -28,7 +31,11 @@ from werkzeug.utils import redirect as wz_redirect
 
 from odoo import fields, http
 from odoo.exceptions import AccessError, MissingError, UserError, ValidationError
+from markupsafe import Markup
+
 from odoo.http import request
+
+from ..models.bf_timer import InvalidAt
 
 _logger = logging.getLogger(__name__)
 
@@ -96,6 +103,9 @@ GROUPE_ACCES = "hr_timesheet.group_hr_timesheet_user"
 COULEURS_ODOO = {"#714B67", "#875A7B", "#212529", "#017E84"}
 
 ETATS_FERMES = ("1_done", "1_canceled")
+
+# Les accusés d'idempotence : voir ``models/mobile_receipt.py``.
+_RECU = "bf.timer.mobile.receipt"
 
 
 # ── Outils ─────────────────────────────────────────────────────────────
@@ -196,7 +206,7 @@ def _message(exc):
     return exc.args[0] if exc.args else str(exc)
 
 
-def _servir(corps):
+def _servir(corps, route=None):
     """Le cadre de toute route porteur : identité, point de reprise, erreurs.
 
     ``corps`` rend ``(charge, statut)``. Il s'exécute au nom de la personne à
@@ -206,6 +216,12 @@ def _servir(corps):
     ``env.companies`` vaut toutes les sociétés de la personne et ``env.company``
     sa société principale. Le téléphone n'a pas de sélecteur de sociétés, et une
     seule société cacherait les tâches des autres.
+
+    ``route`` nomme une route qui écrit : elle accepte alors un ``client_uuid``
+    dans son JSON. Sans lui, rien ne change (ancienne version de
+    l'app). Avec, un accusé déjà posé rend la réponse d'origine telle quelle,
+    plus ``"replay": true`` ; sinon le geste s'exécute et, s'il réussit (200),
+    l'accusé est posé dans la même transaction.
     """
     appareil = _appareil_du_jeton()
     if not appareil:
@@ -216,9 +232,40 @@ def _servir(corps):
                 if cle != "allowed_company_ids"}
     contexte.update(lang=usager.lang or "en_US", tz=usager.tz or "UTC")
     request.update_env(user=usager.id, context=contexte)
+    cle = None
+    if route:
+        brut = _corps().get("client_uuid")
+        if brut is not None and brut != "":
+            Recu = request.env[_RECU].sudo()
+            try:
+                cle = Recu._normalize(brut)
+            except ValueError:
+                return _json({"error": "invalid_client_uuid"}, 400)
+            deja = Recu._acquire(usager.id, cle)
+            if deja is not None:
+                route_origine, charge = deja
+                if route_origine and route_origine != route:
+                    return _json({"error": "invalid_client_uuid",
+                                  "message": "client_uuid already used by another request"},
+                                 400)
+                return _json({**charge, "replay": True})
+    reponse = _executer(corps)
+    if cle and 200 <= reponse.status_code < 300:
+        request.env[_RECU].sudo()._record(
+            usager.id, cle, route, reponse.get_data(as_text=True))
+    return reponse
+
+
+def _executer(corps):
     try:
         with request.env.cr.savepoint():
             charge, statut = corps()
+    except _UuidInvalide:
+        return _json({"error": "invalid_timer_uuid"}, 400)
+    except InvalidAt as exc:
+        # Avant UserError : ce n'en est pas une, et sans cette ligne l'heure
+        # hors bornes remonterait en page d'erreur 500.
+        return _json({"error": "invalid_at", "message": str(exc)}, 400)
     except MissingError as exc:
         return _json({"error": "not_found", "message": _message(exc)}, 404)
     except AccessError as exc:
@@ -227,6 +274,192 @@ def _servir(corps):
     except (UserError, ValidationError) as exc:
         return _json({"error": "refused", "message": _message(exc)}, 400)
     return _json(charge, statut)
+
+
+_NOM_APP = "Symbifox Chronomètre"
+_MODELE_APPAREIL = "bf.timer.device"
+
+
+def _ACCES_DEMANDE(env):
+    return env._("Your timers and timesheets")
+
+
+# ── Page d'accord à l'appariement ─────────────────────────────────────
+# Recopiée de bf_email_management plutôt que partagée : les modules
+# mobiles s'installent indépendamment les uns des autres.
+_ENTETES_ACCORD = [
+    ("Content-Type", "text/html; charset=utf-8"),
+    # Jamais dans un cadre : « Autoriser » se ferait taper à l'aveugle.
+    ("X-Frame-Options", "DENY"),
+    # ⚠️ Pas de `form-action` : Chrome l'applique aussi à la redirection qui
+    # suit l'envoi, et le rebond vers le schéma de l'app serait bloqué.
+    ("Content-Security-Policy",
+     "frame-ancestors 'none'; default-src 'none'; style-src 'unsafe-inline'"),
+    # La page porte le jeton CSRF de la session.
+    ("Cache-Control", "no-store"),
+    ("Referrer-Policy", "no-referrer"),
+]
+
+_STYLE_ACCORD = Markup(
+    "body{margin:0;background:#f4f5f7;color:#1f2328;"
+    "font:16px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}"
+    "main{max-width:26rem;margin:0 auto;padding:2rem 1.25rem}"
+    "h1{font-size:1.35rem;line-height:1.3;margin:0 0 1.25rem}"
+    "dl{background:#fff;border:1px solid #d8dce1;border-radius:.5rem;"
+    "padding:.25rem 1rem;margin:0 0 1.25rem}"
+    "dt{font-size:.8rem;color:#57606a;margin-top:.75rem}"
+    "dd{margin:0 0 .75rem;overflow-wrap:anywhere}"
+    "small{color:#57606a}p{margin:0 0 1.5rem;color:#3d444d}"
+    "button{display:block;width:100%;font:inherit;font-weight:600;"
+    "padding:.8rem;border-radius:.5rem;margin-bottom:.75rem;cursor:pointer}"
+    ".yes{background:#1f2328;color:#fff;border:1px solid #1f2328}"
+    ".no{background:#fff;color:#1f2328;border:1px solid #8c959f}"
+)
+
+
+def _rebondir(demande, **params):
+    """Retour au lien profond de l'app, ``state`` toujours joint. 303 après le
+    POST de la page d'accord, pour que le navigateur ne le renvoie pas."""
+    redirect = demande["redirect"]
+    separateur = "&" if "?" in redirect else "?"
+    requete = urllib.parse.urlencode({**params, "state": demande["state"]})
+    code = 303 if request.httprequest.method == "POST" else 302
+    return wz_redirect(f"{redirect}{separateur}{requete}", code=code)
+
+
+def _demande_appariement(kw):
+    """``(réponse d'erreur, None)`` ou ``(None, demande)``. UNE définition pour
+    le GET et le POST, sinon la page d'accord finirait par accepter ce que la
+    page de départ refuse."""
+    redirect = kw.get("redirect") or ""
+    if not _redirection_permise(redirect):
+        return request.make_response(
+            "Redirection non autorisée.", status=400,
+            headers=[("Content-Type", "text/plain; charset=utf-8")]), None
+    demande = {
+        "redirect": redirect,
+        "state": kw.get("state") or "",
+        "code_challenge": (kw.get("code_challenge") or "").strip(),
+        "code_challenge_method": (kw.get("code_challenge_method") or "S256").upper(),
+        "device_name": (kw.get("device_name") or "").strip()[:120],
+    }
+    if not request.env.user.has_group(GROUPE_ACCES):
+        return _rebondir(demande, error="no_access"), None
+    # 🔴 PKCE obligatoire. Un schéma d'application personnalisé n'est pas
+    # exclusif sur Android : sans défi, qui intercepte le code l'échange.
+    if not demande["code_challenge"] or demande["code_challenge_method"] != "S256":
+        return _rebondir(demande, error="pkce_required"), None
+    return None, demande
+
+
+def _page_accord(demande):
+    """La page qui dit à la personne ce qu'elle s'apprête à autoriser.
+
+    Sans JavaScript, lisible sur un téléphone, dans sa langue. Rien de secret :
+    ni jeton porteur, ni code. Tout ce qui vient de l'URL est échappé
+    (``Markup`` échappe ce qu'il interpole).
+    """
+    env = request.env
+    user = env.user
+    caches = Markup("").join(
+        Markup('<input type="hidden" name="%s" value="%s"/>') % (nom, demande[nom])
+        for nom in ("redirect", "state", "code_challenge",
+                    "code_challenge_method", "device_name"))
+    appareil = Markup("")
+    if demande["device_name"]:
+        appareil = Markup("<dt>%s</dt><dd>%s</dd>") % (env._("Device"), demande["device_name"])
+    page = Markup(
+        '<!DOCTYPE html><html lang="%(lang)s"><head><meta charset="utf-8"/>'
+        '<meta name="viewport" content="width=device-width, initial-scale=1"/>'
+        '<meta name="robots" content="noindex"/>'
+        "<title>%(app)s</title><style>%(style)s</style></head>"
+        "<body><main><h1>%(titre)s</h1>"
+        "<dl><dt>%(l_compte)s</dt><dd>%(nom)s<br/><small>%(login)s</small></dd>"
+        "%(appareil)s"
+        "<dt>%(l_acces)s</dt><dd>%(acces)s</dd></dl>"
+        "<p>%(avis)s</p>"
+        '<form method="post" action="%(action)s">'
+        '<input type="hidden" name="csrf_token" value="%(csrf)s"/>%(caches)s'
+        '<button class="yes" type="submit" name="decision" value="allow">%(oui)s</button>'
+        '<button class="no" type="submit" name="decision" value="deny">%(non)s</button>'
+        "</form></main></body></html>"
+    ) % {
+        "lang": (env.lang or "en_US").split("_")[0],
+        "app": _NOM_APP,
+        "style": _STYLE_ACCORD,
+        "titre": env._("%s wants to access your account", _NOM_APP),
+        "l_compte": env._("Account"),
+        "nom": user.name or "",
+        "login": user.login or "",
+        "appareil": appareil,
+        "l_acces": env._("Access requested"),
+        "acces": _ACCES_DEMANDE(env),
+        "avis": env._("Only allow this if you just started signing in from the "
+                      "app on your phone."),
+        "action": f"{BASE}/auth/consent",
+        "csrf": request.csrf_token(),
+        "caches": caches,
+        "oui": env._("Allow"),
+        "non": env._("Deny"),
+    }
+    return request.make_response(page, headers=_ENTETES_ACCORD)
+
+
+class _UuidInvalide(ValueError):
+    pass
+
+
+def _uuid(brut):
+    """La forme canonique d'un UUID, ``None`` s'il est absent, ou lève."""
+    if brut is None or brut == "":
+        return None
+    try:
+        return request.env[_RECU]._normalize(brut)
+    except ValueError:
+        raise _UuidInvalide()
+
+
+def _chrono_vise(charge):
+    """Le chrono désigné par ``timer_id`` ou, à défaut, par ``timer_uuid``.
+
+    ``timer_uuid`` est le ``client_uuid`` du démarrage : une pause mise en file
+    sur le téléphone AVANT que le démarrage soit monté ne connaît pas encore le
+    numéro du chrono, seulement l'identifiant qu'elle lui a donné.
+
+    Même filtre explicite sur la personne que ``_mon_chrono``. Lève
+    ``_UuidInvalide`` sur un ``timer_uuid`` qui n'est pas un UUID.
+    """
+    chrono = _mon_chrono(charge.get("timer_id"))
+    if chrono:
+        return chrono
+    cle = _uuid(charge.get("timer_uuid"))
+    if not cle:
+        return chrono
+    return request.env["bf.timer"].search([
+        ("client_uuid", "=", cle),
+        ("user_id", "=", request.env.uid),
+    ], limit=1)
+
+
+def _forme_chrono(chrono):
+    """La forme de ``get_active_timers`` pour un chrono, même arrêté."""
+    forme = _chrono_actif(chrono.id)
+    if forme:
+        return forme
+    Timer = request.env["bf.timer"]
+    return {
+        "id": chrono.id,
+        "project_name": Timer._project_label(chrono.project_id)[0],
+        "task_name": chrono.task_id.name,
+        "task_id": chrono.task_id.id,
+        "project_id": chrono.project_id.id,
+        "start_time_iso": _iso(chrono.start_time),
+        "elapsed_seconds": chrono._elapsed_seconds(),
+        "description": chrono.description or chrono.task_id.name,
+        "is_paused": chrono.is_paused,
+        "accumulated_seconds": chrono.accumulated_seconds,
+        "is_active": chrono.is_active,
+    }
 
 
 def _introuvable(message):
@@ -323,6 +556,61 @@ def _totaux():
             "semaine": float(Timer.get_week_total() or 0.0)}
 
 
+
+# ── Emprunt de la session de Symbifox Mobile ──────────────────────────────
+# Symbifox Mobile réunit désormais cette application. Ses modèles d'appareil
+# sont ceux dont la session vaut ici, comme pour l'enregistreur (bf_capture).
+_APPAREILS_MOBILE = ("sms.archive.mobile.device", "bf.email.mobile.device")
+
+
+def _appareil_mobile():
+    """L'appareil Symbifox Mobile derrière l'en-tête Authorization, ou rien.
+
+    ⚠️ Même exigence que pour un appareil d'ici : une personne INTERNE et
+    ACTIVE. Un compte archivé ou partagé (portail) n'emprunte rien.
+    """
+    entete = request.httprequest.headers.get("Authorization", "")
+    if not entete.startswith("Bearer "):
+        return None
+    jeton = entete[7:].strip()
+    if not jeton:
+        return None
+    for modele in _APPAREILS_MOBILE:
+        if modele not in request.env:
+            continue
+        appareil = request.env[modele].sudo()._resolve(jeton)
+        usager = appareil.user_id if appareil else None
+        if usager and usager.active and not usager.share:
+            return appareil
+    return None
+
+
+def _emprunter(modele_local, appareil_mobile, nom):
+    """Apparie un appareil d'ici au nom de la personne de Mobile, sans navigateur.
+
+    Rend ``(appareil, jeton_en_clair)``. On passe par les MÊMES étapes que
+    l'appariement ordinaire (code à usage unique, puis échange vérifié par
+    PKCE), le serveur tenant les deux bouts : aucune règle de l'appareil
+    (plafond, activation, empreinte du jeton) n'est court-circuitée.
+
+    🔴 Un emprunt remplace le précédent du MÊME téléphone Mobile : sans ça,
+    chaque réinstallation ajouterait un appareil et le plafond serait vite
+    atteint. Le nom porte donc l'identité de l'appareil Mobile.
+    """
+    appareils = request.env[modele_local].sudo()
+    usager = appareil_mobile.user_id
+    # Lisible dans « Mes appareils », et propre à CE téléphone Mobile : la
+    # lettre distingue les deux modèles d'appareil, dont les numéros se croisent.
+    lettre = "c" if appareil_mobile._name == "bf.email.mobile.device" else "s"
+    # Couper AVANT le suffixe : c'est lui qui borne l'emprunt à CE téléphone.
+    nom = f"{nom[:80]} (Symbifox Mobile {lettre}{appareil_mobile.id})"
+    appareils.search([("user_id", "=", usager.id), ("name", "=", nom)]).write({"active": False})
+    verificateur = secrets.token_urlsafe(48)
+    defi = base64.urlsafe_b64encode(
+        hashlib.sha256(verificateur.encode("utf-8")).digest()).decode().rstrip("=")
+    code = appareils._issue_pending(usager.id, name=nom, platform="android", challenge=defi)
+    return appareils._exchange(code, verificateur)
+
 class MobileChronometre(http.Controller):
 
     # ── Découverte ────────────────────────────────────────────────────
@@ -338,6 +626,10 @@ class MobileChronometre(http.Controller):
             # Le délai de péremption locale : voir `_peremption_locale`.
             "wipe_after_days": _peremption_locale(request.env),
             "api": 1,
+            # `client_uuid` sur les routes qui écrivent,
+            # `timer_uuid` à la place de `timer_id`, `at` sur démarrer, pause
+            # et reprendre.
+            "idempotency": 1,
             "version": module.latest_version or "",
             # La marque voyage dès le ping : l'application se peint AVANT
             # l'appariement, sinon elle se repeint sous les yeux de la personne
@@ -346,48 +638,51 @@ class MobileChronometre(http.Controller):
         })
 
     # ── Appariement ───────────────────────────────────────────────────
+    # 🔴 /auth/start émettait le code sur un simple GET et rebondissait
+    # aussitôt vers le schéma de l'application. Une app
+    # tierce du téléphone qui déclare ce schéma pouvait ouvrir l'URL dans le
+    # navigateur où la personne est connectée, avec SON défi PKCE, et apparier
+    # un appareil sans qu'elle voie rien. Même correctif que la messagerie
+    # (bf_email_management) : le GET montre la demande, seul un POST
+    # « Autoriser », jeton CSRF compris, émet le code.
     @http.route(f"{BASE}/auth/start", type="http", auth="user", methods=["GET"],
                 csrf=False)
     def auth_start(self, **kw):
-        """Émet un code à usage unique et rebondit vers l'application.
+        """Valide la demande et rend la page d'accord. N'émet AUCUN code.
 
         🔴 ``auth="user"`` fait tout le travail : ouverte dans un onglet
         personnalisé, cette route profite de la session du navigateur.
-        Quelqu'un déjà connecté ne voit aucun écran de connexion.
 
         ⚠️ Les échecs repartent par le lien profond en ``?error=``, jamais en
         page HTML : une page d'erreur laisserait l'application attendre pour
         toujours un retour qui n'arrive pas.
         """
-        redirect = kw.get("redirect") or ""
-        state = kw.get("state") or ""
-        if not _redirection_permise(redirect):
-            return request.make_response(
-                "Redirection non autorisée.", status=400,
-                headers=[("Content-Type", "text/plain; charset=utf-8")])
+        erreur, demande = _demande_appariement(kw)
+        if erreur is not None:
+            return erreur
+        return _page_accord(demande)
 
-        separateur = "&" if "?" in redirect else "?"
+    @http.route(f"{BASE}/auth/consent", type="http", auth="user",
+                methods=["POST"], csrf=True)
+    def auth_consent(self, **kw):
+        """La réponse de la page d'accord. ``csrf=True`` : sans le jeton de la
+        session, Odoo refuse le POST avant de nous appeler.
 
-        def rebondir(**params):
-            requete = urllib.parse.urlencode({**params, "state": state})
-            return wz_redirect(f"{redirect}{separateur}{requete}", code=302)
-
-        utilisateur = request.env.user
-        if not utilisateur.has_group(GROUPE_ACCES):
-            return rebondir(error="no_access")
-
-        defi = (kw.get("code_challenge") or "").strip()
-        methode = (kw.get("code_challenge_method") or "S256").upper()
-        if not defi or methode != "S256":
-            return rebondir(error="pkce_required")
-
+        ⚠️ Tout est REVALIDÉ : les champs cachés viennent du navigateur, donc
+        de n'importe qui. La personne vient de la session, jamais du formulaire.
+        """
+        erreur, demande = _demande_appariement(kw)
+        if erreur is not None:
+            return erreur
+        if kw.get("decision") != "allow":
+            return _rebondir(demande, error="access_denied")
         try:
-            code = request.env["bf.timer.device"]._issue_pending(
-                utilisateur.id, name=(kw.get("device_name") or "")[:120],
-                challenge=defi)
+            code = request.env[_MODELE_APPAREIL]._issue_pending(
+                request.env.user.id, name=demande["device_name"],
+                challenge=demande["code_challenge"])
         except UserError:
-            return rebondir(error="too_many_devices")
-        return rebondir(code=code)
+            return _rebondir(demande, error="too_many_devices")
+        return _rebondir(demande, code=code)
 
     @http.route(f"{BASE}/auth/exchange", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
@@ -408,6 +703,35 @@ class MobileChronometre(http.Controller):
             maj["app_version"] = charge["app_version"].strip()[:40]
         if maj:
             appareil.sudo().write(maj)
+        usager = appareil.user_id
+        request.update_env(user=usager.id)
+        return _json({
+            "token": jeton,
+            "user": {"name": usager.name or "", "login": usager.login or ""},
+            "branding": _marque(),
+        })
+
+    @http.route(f"{BASE}/auth/mobile", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def auth_mobile(self, **kw):
+        """Appariement sans navigateur, par la session de Symbifox Mobile."""
+        mobile = _appareil_mobile()
+        if not mobile:
+            return _json({"error": "unauthorized"}, 401)
+        # 🔴 Le même droit que l'appariement par le navigateur : avoir Mobile
+        # (courriel ou SMS) ne donne pas accès à ce module.
+        if not mobile.user_id.has_group(GROUPE_ACCES):
+            return _json({"error": "no_access"}, 403)
+        charge = _corps()
+        nom = charge.get("device_name") if isinstance(charge.get("device_name"), str) else ""
+        try:
+            appareil, jeton = _emprunter("bf.timer.device", mobile, nom.strip() or "Chronomètre")
+        except UserError as exc:
+            return _json({"error": "too_many_devices", "message": str(exc)}, 409)
+        if not appareil:
+            return _json({"error": "invalid_or_expired_code"}, 401)
+        if isinstance(charge.get("app_version"), str) and charge["app_version"].strip():
+            appareil.sudo().write({"app_version": charge["app_version"].strip()[:40]})
         usager = appareil.user_id
         request.update_env(user=usager.id)
         return _json({
@@ -495,36 +819,66 @@ class MobileChronometre(http.Controller):
     @http.route(f"{BASE}/chrono/demarrer", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
     def demarrer(self, **kw):
+        """``{task_id, client_uuid?, at?}``.
+
+        ``client_uuid`` déjà connu pour cette personne : le chrono qu'il a
+        démarré est rendu tel quel (200, ``replay``), même si l'accusé a été
+        purgé. ``at`` : l'heure du geste sur le téléphone, en millisecondes
+        epoch UTC (voir ``bf.timer._mobile_moment``).
+        """
         def corps():
-            tache = _tache_visible(_corps().get("task_id"))
+            charge = _corps()
+            Timer = request.env["bf.timer"]
+            cle = _uuid(charge.get("client_uuid"))
+            if cle:
+                existant = Timer.search([
+                    ("user_id", "=", request.env.uid), ("client_uuid", "=", cle),
+                ], limit=1)
+                if existant:
+                    return {"ok": True, "chrono": _forme_chrono(existant),
+                            "replay": True}, 200
+            tache = _tache_visible(charge.get("task_id"))
             if not tache:
                 return _introuvable("Cette tâche n'existe pas ou vous n'y avez pas accès.")
-            chrono = request.env["bf.timer"].start_timer(tache.id)
+            moment = Timer._mobile_moment(charge.get("at"))
+            chrono = Timer._mobile_start_timer(tache.id, at=moment)
+            if cle:
+                Timer.browse(chrono["id"]).write({"client_uuid": cle})
             chrono["start_time_iso"] = _iso(chrono.get("start_time_iso"))
             return {"ok": True, "chrono": chrono}, 200
-        return _servir(corps)
+        return _servir(corps, route="/chrono/demarrer")
 
     @http.route(f"{BASE}/chrono/pause", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
     def pause(self, **kw):
+        """``{timer_id | timer_uuid, client_uuid?, at?}``."""
         def corps():
-            chrono = _mon_chrono(_corps().get("timer_id"))
+            charge = _corps()
+            chrono = _chrono_vise(charge)
             if not chrono:
                 return _introuvable("Ce chrono n'existe pas ou n'est pas le vôtre.")
-            request.env["bf.timer"].pause_timer(chrono.id)
+            Timer = request.env["bf.timer"]
+            moment = Timer._mobile_moment(
+                charge.get("at"), not_before=chrono._mobile_last_event())
+            Timer._mobile_pause_timer(chrono.id, at=moment)
             return {"ok": True, "chrono": _chrono_actif(chrono.id)}, 200
-        return _servir(corps)
+        return _servir(corps, route="/chrono/pause")
 
     @http.route(f"{BASE}/chrono/reprendre", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
     def reprendre(self, **kw):
+        """``{timer_id | timer_uuid, client_uuid?, at?}``."""
         def corps():
-            chrono = _mon_chrono(_corps().get("timer_id"))
+            charge = _corps()
+            chrono = _chrono_vise(charge)
             if not chrono:
                 return _introuvable("Ce chrono n'existe pas ou n'est pas le vôtre.")
-            request.env["bf.timer"].resume_timer(chrono.id)
+            Timer = request.env["bf.timer"]
+            moment = Timer._mobile_moment(
+                charge.get("at"), not_before=chrono._mobile_last_event())
+            Timer._mobile_resume_timer(chrono.id, at=moment)
             return {"ok": True, "chrono": _chrono_actif(chrono.id)}, 200
-        return _servir(corps)
+        return _servir(corps, route="/chrono/reprendre")
 
     @http.route(f"{BASE}/chrono/apercu", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
@@ -537,7 +891,7 @@ class MobileChronometre(http.Controller):
         depuis quand un chrono arrêté au navigateur attend sa confirmation.
         """
         def corps():
-            chrono = _mon_chrono(_corps().get("timer_id"))
+            chrono = _chrono_vise(_corps())
             if not chrono:
                 return _introuvable("Ce chrono n'existe pas ou n'est pas le vôtre.")
             Timer = request.env["bf.timer"]
@@ -581,7 +935,7 @@ class MobileChronometre(http.Controller):
                 return {"error": "bad_minutes",
                         "message": "La durée doit être un nombre entier de minutes, "
                                    "plus grand que zéro."}, 400
-            chrono = _mon_chrono(charge.get("timer_id"))
+            chrono = _chrono_vise(charge)
             if not chrono:
                 return _introuvable("Ce chrono n'existe pas ou n'est pas le vôtre.")
             description = charge.get("description")
@@ -595,18 +949,19 @@ class MobileChronometre(http.Controller):
             Timer.confirm_timesheet(chrono.id, heures, description or None)
             return {"ok": True, "minutes": minutes, "heures": heures,
                     "totaux": _totaux()}, 200
-        return _servir(corps)
+        return _servir(corps, route="/chrono/enregistrer")
 
     @http.route(f"{BASE}/chrono/abandonner", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
     def abandonner(self, **kw):
+        """``{timer_id | timer_uuid, client_uuid?}``."""
         def corps():
-            chrono = _mon_chrono(_corps().get("timer_id"))
+            chrono = _chrono_vise(_corps())
             if not chrono:
                 return _introuvable("Ce chrono n'existe pas ou n'est pas le vôtre.")
             request.env["bf.timer"].discard_timer(chrono.id)
             return {"ok": True}, 200
-        return _servir(corps)
+        return _servir(corps, route="/chrono/abandonner")
 
     @http.route(f"{BASE}/tache/epingler", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)

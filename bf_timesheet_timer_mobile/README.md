@@ -22,6 +22,20 @@ that.
   code valid 5 minutes, **PKCE S256 mandatory**, a bearer token stored **hashed**
   on the server, at most 10 paired devices per person, devices deactivated after
   180 days without a call.
+- **Consent page before pairing** (since 18.0.1.3.1): `GET /auth/start` no
+  longer issues the code and bounces straight to the app. It shows a page naming
+  the device and the account (no JavaScript, `X-Frame-Options: DENY`, CSP
+  `frame-ancestors 'none'`, not cached), and only an **Authorize** POST to
+  `/auth/consent`, CSRF token included, issues the code; declining returns
+  `error=access_denied`. Before, another app on the phone declaring the same URL
+  scheme could open the start URL in the browser where the person is signed in
+  and pair a device with its own PKCE challenge, without the person seeing
+  anything.
+- **Single sign-on from Symbifox Mobile** (since 18.0.1.2.0): `POST /auth/mobile`
+  accepts the device token of the Symbifox Mobile app (mail or SMS module, when
+  installed) and runs the ordinary pairing server-side, returning a local device
+  token. The person must hold the same access right as for browser pairing; a
+  new borrowed pairing replaces the previous one from the same phone.
 - **`/bf_timer/mobile/v1`**: one read for the main screen (`/etat`: active and
   pending timers, recent and pinned tasks, day and week totals, rounding,
   description presets), task search and lookup, and the gestures: start, pause,
@@ -29,6 +43,18 @@ that.
 - **Branding before pairing**: the public `/ping` returns the company name,
   colours and logo URL, so the app is painted in the right colours before the
   person signs in.
+- **Offline replay** (since 18.0.1.3.0): the app queues gestures made offline
+  and replays them. An optional `client_uuid` on start, pause, resume, log and
+  discard makes each gesture idempotent: the first successful call stores a
+  receipt (`bf.timer.mobile.receipt`, purged after 30 days) in the same
+  transaction, and a repeat returns the original answer with `"replay": true`.
+  The start's `client_uuid` is kept on the timer, so a replayed start finds its
+  timer even after the purge, and `timer_uuid` can target a timer whose start
+  was still queued. An optional `at` (epoch milliseconds, UTC) dates start,
+  pause and resume at the real moment of the gesture; out-of-range values are
+  **clamped**, never refused (no later than 2 minutes ahead, no earlier than the
+  timer's last gesture), because a refused gesture would be dropped from the
+  queue and leave a timer running.
 - **Local wipe deadline** (since 18.0.1.1.0): `/ping` also announces
   `wipe_after_days`, the number of days without a successful authenticated call
   after which the app erases its own data. A revoked token already makes the app
@@ -51,6 +77,9 @@ that.
 - **Every bearer route runs in a savepoint.** An error returned as JSON leaves
   nothing written; Odoo does not roll back a request whose controller caught the
   exception.
+- **Only active internal users keep a token.** A device token stops working, on
+  every call, once its owner is archived **or turned into a portal / shared
+  user** (since 18.0.1.3.1; before, only archiving was checked).
 - **A device's owner cannot be changed**, and revoking a device erases its token
   hash in the same write: reactivating the record does not bring the token back.
   Managers can read and delete devices; only system administrators can write.
@@ -73,7 +102,9 @@ that.
 `tests/test_appareil.py` covers pairing, PKCE, expiry, the device cap,
 revocation and reassignment; `tests/test_api.py` plays the HTTP routes as an
 ordinary internal user, including the refusals and the rollback of a failed
-request; `tests/test_crochet.py` covers the install guard.
+request; `tests/test_idempotence.py` covers offline replay and the clamping of
+`at`; `tests/test_accord_appariement.py` covers the consent page;
+`tests/test_crochet.py` covers the install guard.
 
 ## License
 

@@ -199,7 +199,8 @@ class BfTimerDevice(models.Model):
             ("token_hash", "=", self._hash_token(token)),
             ("active", "=", True),
         ], limit=1)
-        if not appareil or not appareil.user_id.active:
+        # Ni archivé, ni portail/partage (share), à CHAQUE usage.
+        if not appareil or not appareil.user_id.active or appareil.user_id.share:
             return vide
         limite = fields.Datetime.now() - timedelta(days=JOURS_INACTIVITE)
         if appareil.last_seen and appareil.last_seen < limite:

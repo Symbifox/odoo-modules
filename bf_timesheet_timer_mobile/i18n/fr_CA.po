@@ -154,3 +154,65 @@ msgstr "Version de l'application"
 #: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_device__last_seen
 msgid "Vu la dernière fois"
 msgstr "Vu la dernière fois"
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model,name:bf_timesheet_timer_mobile.model_bf_timer_mobile_receipt
+msgid "Mobile idempotency receipt (timer)"
+msgstr "Accusé d'idempotence mobile (chronomètre)"
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__user_id
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__client_uuid
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer__client_uuid
+msgid "Device identifier"
+msgstr "Identifiant de l'appareil"
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__route
+msgid "Route"
+msgstr "Route"
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__response
+msgid "Response"
+msgstr "Réponse"
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,help:bf_timesheet_timer_mobile.field_bf_timer_mobile_receipt__response
+msgid "JSON body returned the first time, returned again on replay."
+msgstr "Corps JSON rendu la première fois, rendu de nouveau au rejeu."
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.constraint,message:bf_timesheet_timer_mobile.constraint_bf_timer_mobile_receipt_user_client_uuid_unique
+msgid "This device identifier was already used by this user."
+msgstr "Cet identifiant d'appareil a déjà servi à cet usager."
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,help:bf_timesheet_timer_mobile.field_bf_timer__client_uuid
+msgid ""
+"Identifier drawn by the phone when it started this timer. A replayed start "
+"returns this timer instead of creating another one."
+msgstr ""
+"Identifiant tiré par le téléphone au démarrage de ce chrono. Un démarrage "
+"rejoué rend ce chrono au lieu d'en créer un autre."
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,field_description:bf_timesheet_timer_mobile.field_bf_timer__paused_at
+msgid "Paused at"
+msgstr "En pause depuis"
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.fields,help:bf_timesheet_timer_mobile.field_bf_timer__paused_at
+msgid "When the timer was last paused. A resume cannot be dated before it."
+msgstr ""
+"Moment de la dernière pause du chrono. Une reprise ne peut pas être datée "
+"avant."
+
+#. module: bf_timesheet_timer_mobile
+#: model:ir.model.constraint,message:bf_timesheet_timer_mobile.constraint_bf_timer_client_uuid_user_unique
+msgid "This device identifier is already used by another timer."
+msgstr "Cet identifiant d'appareil sert déjà à un autre chrono."

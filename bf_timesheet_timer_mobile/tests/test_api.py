@@ -8,6 +8,8 @@ droits.
 réponse : une erreur rendue en JSON n'annule rien toute seule.
 """
 import base64
+import html
+import re
 import hashlib
 import json
 import math
@@ -103,8 +105,16 @@ class TestApi(HttpCase):
                    "code_challenge_method": "S256", "device_name": "Pixel 10 d'essai"}
         valeurs.update(params)
         valeurs = {k: v for k, v in valeurs.items() if v is not None}
-        return self.url_open(API + "/auth/start?" + urllib.parse.urlencode(valeurs),
-                             allow_redirects=False)
+        reponse = self.url_open(API + "/auth/start?" + urllib.parse.urlencode(valeurs),
+                                allow_redirects=False)
+        if reponse.status_code != 200:
+            return reponse
+        # Le GET ne rend qu'une page d'accord ; « Autoriser » la
+        # soumet, jeton CSRF compris.
+        champs = dict(re.findall(r'name="([a-z_]+)" value="([^"]*)"', reponse.text))
+        champs = {k: html.unescape(v) for k, v in champs.items()}
+        champs["decision"] = "allow"
+        return self.url_open(API + "/auth/consent", data=champs, allow_redirects=False)
 
     @staticmethod
     def _requete_de(reponse):
@@ -123,7 +133,7 @@ class TestApi(HttpCase):
     def test_appariement_complet_par_le_navigateur(self):
         self.authenticate("chrono_ordinaire", "chrono_ordinaire")
         reponse = self._debut_appariement()
-        self.assertEqual(reponse.status_code, 302)
+        self.assertEqual(reponse.status_code, 303)
         self.assertTrue(reponse.headers["Location"].startswith(SCHEMA + "?"))
         requete = self._requete_de(reponse)
         self.assertEqual(requete["state"], ["etat-42"])
