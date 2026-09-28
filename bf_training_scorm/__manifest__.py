@@ -1,6 +1,6 @@
 {
     "name": "Registre de formation : contenus SCORM",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Human Resources",
     "summary": "Jouer un paquet SCORM 1.2 ou 2004 dans l'eLearning d'Odoo, et porter "
                "sa complétion au registre",

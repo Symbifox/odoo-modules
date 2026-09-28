@@ -9,7 +9,12 @@
                     Elles ne sont pas appliquées : le contenu jouera son premier
                     SCO. Le module l'annonce plutôt que de faire semblant.
                 </div>
+                <!-- 🔴 Le contenu d'un paquet est du code arbitraire : cloisonné
+                     ici, et aussi par l'en-tête CSP du serveur (qui tient même
+                     hors de l'iframe). Jamais `allow-same-origin`. -->
                 <iframe t-att-src="url_contenu" style="width:100%;height:80vh;border:0;"
+                        sandbox="allow-scripts allow-forms allow-popups"
+                        referrerpolicy="no-referrer"
                         allowfullscreen="allowfullscreen"/>
             </div>
         </t>

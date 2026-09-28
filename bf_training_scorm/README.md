@@ -73,6 +73,13 @@ une écriture sans rapport apparent avec le module.
 - **Le module ne sert que des fichiers du paquet.** Un chemin qui en sort est
   refusé sous toutes ses formes : `../`, `a/../../`, absolu, ou avec les barres
   obliques inverses de Windows.
+- **Le contenu d'un paquet ne parle pas à Odoo en votre nom** (18.0.1.0.2).
+  C'est du code arbitraire : il est servi avec `Content-Security-Policy: sandbox
+  allow-scripts allow-forms allow-popups` (origine opaque, sans la session) dans
+  une iframe elle-même cloisonnée, sous une adresse à jeton signé et daté (12 h).
+  L'API SCORM est posée dans chaque page HTML du paquet, et les écritures
+  remontent au lecteur par `postMessage`. Un contenu qui appelle `parent.API`
+  en dur, sans chercher d'abord sur sa propre fenêtre, ne trouvera plus l'API.
 - **La durée d'un SCORM n'est pas devinée.** Le natif estime celle d'un document
   par son nombre de pages ; un paquet n'a pas de page, et une durée inventée
   entrerait au registre comme des heures de formation.
