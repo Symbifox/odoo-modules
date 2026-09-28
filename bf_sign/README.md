@@ -235,8 +235,14 @@ overriding `_sign_report_ref()` (return the PDF report's xmlid), and adding the
   time (`hmac.compare_digest`), **manager-only** (the requester cannot sign on
   their own behalf); a manager revealing it is **logged**.
 - **Email OTP** (optional): proof of inbox control at the moment of signing;
-  expiry plus an attempt cap; the `/document` and `/submit` routes are blocked
-  until verified.
+  expiry plus an attempt cap; the `/document`, `/submit` and `/refuse` routes
+  are blocked until verified.
+- **Refusal passes the same gates as signing**: refusing cancels the whole
+  request, so it requires an open request, the email code when the request
+  requires one, and the signer's turn in sequential mode. A forwarded link is
+  not enough to cancel a request.
+- **Closed requests stop serving the document**: once a request is cancelled,
+  expired or refused, `/document` returns 404; a completed request keeps it.
 - **Anti-brute-force**: per-IP rate limiting of token failures (in memory, per
   worker — see `SECURITY.md`).
 - **Integrity**: SHA-256 hashes plus a **chained append-only log**; the PAdES

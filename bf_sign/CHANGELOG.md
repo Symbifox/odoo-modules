@@ -2,6 +2,21 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.26.4
+
+- Sécurité : le refus de signer passe les mêmes portes que la signature —
+  demande encore ouverte, code courriel vérifié si la demande l'exige, tour du
+  signataire en ordre séquentiel. Avant, un lien transféré suffisait à refuser,
+  donc à annuler, toute la demande.
+- La page publique ne sert plus le PDF quand la demande est annulée, expirée ou
+  refusée ; une demande complétée garde l'accès au document.
+
+## 18.0.3.26.3
+
+- Alignement interne des arbres de déploiement sur la copie publiée (textes du
+  sceau numérique, socle d'essai). Rien ne change dans ce dépôt ni à
+  l'exécution.
+
 ## 18.0.3.26.2
 
 - La date d'expiration du rappel s'écrivait dans la langue de la personne qui a

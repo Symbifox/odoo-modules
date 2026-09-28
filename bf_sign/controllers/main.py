@@ -229,6 +229,11 @@ class BfSignController(Controller):
         req_sudo, signer = self._resolve_signer(request_id, access_token)
         if not signer or not req_sudo.document_file:
             return request.not_found()
+        # Une demande annulée, expirée ou refusée ne sert plus le
+        # document. Une demande complétée le garde : le signataire le relit
+        # (et télécharge l'exemplaire signé par /download).
+        if req_sudo.state in ("cancelled", "expired", "refused"):
+            return request.not_found()
         if signer._otp_required():
             return request.not_found()
         pdf = base64.b64decode(req_sudo.document_file)
@@ -288,6 +293,15 @@ class BfSignController(Controller):
             return request.not_found()
         if signer.state == "signed":
             return request.redirect("/sign/%s/%s/done" % (request_id, access_token))
+        # Refuser annule la demande entière — mêmes portes que signer
+        # (état, code courriel, ordre de signature). Sans elles, un lien
+        # transféré suffisait à tout refuser.
+        if req_sudo.state in ("cancelled", "expired", "refused"):
+            return request.render("bf_sign.sign_unavailable", {"req": req_sudo})
+        if signer._otp_required():
+            return request.redirect("/sign/%s/%s" % (request_id, access_token))
+        if not req_sudo._signer_can_sign(signer):
+            return request.render("bf_sign.sign_waiting", {"req": req_sudo, "signer": signer})
         reason = (post.get("reason") or "").strip()[:1000]
         try:
             req_sudo.register_signer_refusal(
