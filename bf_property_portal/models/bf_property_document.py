@@ -212,6 +212,47 @@ class BfPropertyDocument(models.Model):
             document.message_post(body=_("Retirée du portail."))
         return True
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        documents = super().create(vals_list)
+        documents._bf_attach_file()
+        return documents
+
+    def _bf_attach_file(self):
+        """Rattache à la pièce le fichier qu'on vient de lui joindre.
+
+        Même règle que les formulaires signés du bail (`bf_rental_portal`) :
+        seul un fichier orphelin déposé par l'appelant est rattaché. Un
+        identifiant de pièce glissé par RPC ne doit pas faire passer au
+        portail le fichier de quelqu'un d'autre.
+        """
+        uid = self.env.uid
+        for document in self:
+            attachment = document.sudo().attachment_id
+            if (
+                attachment
+                and not attachment.res_id
+                and not attachment.res_field
+                and attachment.res_model in (False, document._name)
+                and (attachment.create_uid.id == uid or self.env.su)
+            ):
+                attachment.write({"res_model": document._name, "res_id": document.id})
+
+    def _bf_portal_file(self):
+        """Le fichier que le portail peut servir : celui RATTACHÉ à la pièce.
+
+        🔴 Odoo ne contrôle aucun droit sur la pièce jointe qu'on pose dans un
+        many2one : un gestionnaire pouvait y mettre l'identifiant de n'importe
+        quelle pièce de la base (la paie d'une autre société) et la faire
+        télécharger en `sudo` par la route du portail. Seul le fichier
+        rattaché à cette pièce-ci sort.
+        """
+        self.ensure_one()
+        return self.sudo().attachment_id.filtered(
+            lambda a: a.res_model == self._name and a.res_id == self.id
+            and not a.res_field
+        )
+
     def write(self, vals):
         """Changer de nature en cours de route ne doit pas laisser un trou.
 
@@ -220,6 +261,8 @@ class BfPropertyDocument(models.Model):
         et on le dit, plutôt que de laisser filer.
         """
         result = super().write(vals)
+        if "attachment_id" in vals:
+            self._bf_attach_file()
         if "category" in vals:
             for document in self:
                 if (

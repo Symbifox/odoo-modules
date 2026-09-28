@@ -528,6 +528,42 @@ class TestPropertyPortalPages(HttpCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"proces-verbal", response.content)
 
+    def test_the_download_route_refuses_a_foreign_attachment(self):
+        """🔴 l'identifiant d'une pièce jointe d'un autre dossier,
+        posé sur une pièce publiée, ne doit pas sortir par la route."""
+        dossier = self.env["res.partner"].create({"name": "Dossier RH"})
+        foreign = self.env["ir.attachment"].create(
+            {"name": "paie.pdf", "raw": b"PAIE-CONFIDENTIELLE",
+             "mimetype": "application/pdf",
+             "res_model": "res.partner", "res_id": dossier.id}
+        )
+        document = self.env["bf.property.document"].create(
+            {
+                "name": "Avis piégé",
+                "organisation_id": self.syndicat.id,
+                "category": "notice",
+                "audience": "owners",
+                "attachment_id": foreign.id,
+            }
+        )
+        document.action_publish()
+        self.assertEqual((foreign.res_model, foreign.res_id),
+                         ("res.partner", dossier.id))
+        self.authenticate("page_owner", "page_owner_pwd")
+        response = self.url_open(
+            "/my/property/document/%d" % document.id, allow_redirects=False
+        )
+        self.assertNotEqual(response.status_code, 200)
+        self.assertNotIn(b"PAIE-CONFIDENTIELLE", response.content or b"")
+
+    def test_an_orphan_file_is_attached_to_its_document(self):
+        """Le fichier déposé sur la pièce lui est rattaché, et il sort."""
+        attachment = self.owners_document.sudo().attachment_id
+        self.assertEqual(
+            (attachment.res_model, attachment.res_id),
+            ("bf.property.document", self.owners_document.id),
+        )
+
     def test_the_occupant_page_hides_the_quote_part(self):
         """⚠️ La quote-part est la part du COPROPRIÉTAIRE dans les charges.
 

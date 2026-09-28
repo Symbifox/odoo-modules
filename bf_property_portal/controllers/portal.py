@@ -527,7 +527,10 @@ class PropertyPortal(CustomerPortal):
         if not document:
             return request.redirect("/my/property/documents")
         try:
-            attachment = document.sudo().attachment_id
+            # seul le fichier rattaché à la pièce sort
+            attachment = document._bf_portal_file()
+            if not attachment:
+                return request.redirect("/my/property/documents")
             stream = request.env["ir.binary"]._get_stream_from(attachment, "raw")
         except (AccessError, MissingError):
             return request.redirect("/my/property/documents")
