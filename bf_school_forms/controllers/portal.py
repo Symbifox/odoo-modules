@@ -29,7 +29,7 @@ class SchoolFormsPortal(CustomerPortal):
     def _own_answer(self, answer_id):
         """This adult's own answer, or None. Someone else's answers a 404."""
         answer = request.env["bf.school.form.answer"].sudo().browse(answer_id).exists()
-        if not answer or answer.partner_id != request.env.user.partner_id:
+        if not answer or answer.partner_id != request.env.user.partner_id or not answer._school_still_signs():
             return None
         return answer
 
@@ -53,7 +53,7 @@ class SchoolFormsPortal(CustomerPortal):
 
     def _token_answer(self, answer_id, token):
         answer = request.env["bf.school.form.answer"].sudo().browse(answer_id).exists()
-        if not answer or not answer._check_token(token):
+        if not answer or not answer._check_token(token) or not answer._school_still_signs():
             return None
         return answer
 

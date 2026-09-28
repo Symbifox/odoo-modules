@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : présences",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "Roll call by half-day or period, absences declared and justified by the "
                "families on the portal, same-day notice of an unjustified absence",

@@ -16,6 +16,10 @@ class SchoolAttendancePortal(CustomerPortal):
     def _children(self):
         return request.env["bf.school.attendance.line"]._school_portal_children(request.env.user.partner_id)
 
+    def _declarable(self):
+        # 🔴 Declaring an absence commits the child: parental authority, not notices alone.
+        return request.env.user.partner_id._school_authority_links().student_id
+
     @http.route("/my/school/attendance", type="http", auth="user", website=True)
     def portal_school_attendance(self, **kw):
         children = self._children()
@@ -27,6 +31,7 @@ class SchoolAttendancePortal(CustomerPortal):
         values = self._prepare_portal_layout_values()
         values.update({
             "page_name": "school_attendance", "children": children, "lines": lines,
+            "declarable": self._declarable(),
             "reasons": reasons, "today": fields.Date.context_today(request.env.user),
             "message": request.session.pop("school_attendance_message", None),
         })
@@ -35,8 +40,7 @@ class SchoolAttendancePortal(CustomerPortal):
     @http.route("/my/school/attendance/declare", type="http", auth="user", methods=["POST"], website=True)
     def portal_school_attendance_declare(self, student_id=None, date_from=None, date_to=None,
                                          part="full", reason_id=None, comment=None, **kw):
-        children = self._children()
-        student = children.filtered(lambda s: str(s.id) == str(student_id))
+        student = self._declarable().filtered(lambda s: str(s.id) == str(student_id))
         if not student:
             raise request.not_found()
         reason = request.env["bf.school.absence.reason"].sudo().browse(int(reason_id or 0)).exists()

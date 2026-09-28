@@ -8,7 +8,8 @@ class SchoolConductPortal(CustomerPortal):
 
     @http.route("/my/school/conduct", type="http", auth="user", website=True)
     def portal_school_conduct(self, **kw):
-        children = request.env.user.partner_id._school_portal_links().filtered("receives_notices").student_id
+        # 🔴 Conduct is for the holders of parental authority, not every adult who receives notices.
+        children = request.env.user.partner_id._school_authority_links().filtered("receives_notices").student_id
         # 🔴 A family sees a breach only once it has been informed of it: the school decides
         # when (and, for sexual violence from 14, only with the student's consent).
         incidents = request.env["bf.school.incident"].sudo().search([

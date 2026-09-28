@@ -180,3 +180,49 @@ class TestSchoolHealth(HttpCase):
         if self.env["res.lang"]._lang_get("fr_CA").active:
             self.assertEqual(Dose.with_context(lang="fr_CA").default_get(["dose", "emergency_epinephrine"])["dose"],
                              "1 auto-injecteur")
+
+    # Adversarial review (2026-09-27)
+    def test_state_and_signature_are_not_written_by_hand(self):
+        med = self._med()
+        nurse_med = med.with_user(self.nurse)
+        for vals in ({"state": "active"}, {"signed_by_id": self.p.partner_id.id},
+                     {"signed_on": fields.Datetime.now()}, {"text_hash": "x"}):
+            with self.assertRaises(UserError):
+                nurse_med.write(vals)
+        signed = self._signed()
+        with self.assertRaises(UserError):
+            signed.with_user(self.nurse).write({"state": "draft"})
+        self.assertEqual(signed.state, "active")
+
+    def test_a_refusal_after_a_yes_stops_the_medication(self):
+        other = new_test_user(self.env, login="school_he_p2", groups="base.group_portal", email="p2@essai.test")
+        self.env["bf.school.guardian.link"].create({"student_id": self.a.id, "guardian_id": other.partner_id.id})
+        med = self._signed()
+        self.assertEqual(med.state, "active")
+        med._school_sign(other.partner_id, False, ip="127.0.0.1")
+        self.assertEqual(med.state, "refused")
+        self.assertEqual(med.signed_by_id, other.partner_id)
+        self.assertFalse(med._is_valid_on(self.today))
+
+    def test_a_dose_is_not_rewritten(self):
+        med = self._signed()
+        dose = self.env["bf.school.medication.administration"].with_user(self.nurse).create(
+            {"student_id": self.a.id, "medication_id": med.id, "dose": "1 comprimé"})
+        for vals in ({"dose": "2 comprimés"}, {"given_on": fields.Datetime.now() - timedelta(days=3)},
+                     {"given_by_id": self.staff.id}, {"emergency_epinephrine": True}):
+            with self.assertRaises(UserError):
+                dose.write(vals)
+        dose.write({"note": "Pris avec de l'eau"})
+
+    def test_epinephrine_cannot_borrow_another_students_medication(self):
+        med = self._signed()
+        with self.assertRaises(UserError):
+            self.env["bf.school.medication.administration"].with_user(self.staff).create({
+                "student_id": self.b.id, "medication_id": med.id, "dose": "1 auto-injecteur",
+                "emergency_epinephrine": True})
+
+    def test_portal_health_is_for_parental_authority(self):
+        self._signed()
+        self.authenticate("school_he_r", "school_he_r")
+        page = self.url_open("/my/school/health").text
+        self.assertNotIn("Méthylphénidate", page, "r receives notices but holds no parental authority")

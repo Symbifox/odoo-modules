@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 22:30+0000\n"
+"POT-Creation-Date: 2026-09-27 20:37+0000\n"
 "PO-Revision-Date: 2026-09-26 22:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -16,12 +16,8 @@ msgstr ""
 #. module: bf_school_core
 #. odoo-python
 #: code:addons/bf_school_core/models/guardian_link.py:0
-msgid ""
-"%(adult)s signs for %(student)s without parental authority. Only a holder of"
-" parental authority or a tutor signs for a minor."
-msgstr ""
-"%(adult)s signe pour %(student)s sans autorité parentale. Seul un titulaire "
-"de l'autorité parentale ou un tuteur signe pour un mineur."
+msgid "%(adult)s signs for %(student)s without parental authority. Only a holder of parental authority or a tutor signs for a minor."
+msgstr "%(adult)s signe pour %(student)s sans autorité parentale. Seul un titulaire de l'autorité parentale ou un tuteur signe pour un mineur."
 
 #. module: bf_school_core
 #. odoo-python
@@ -32,12 +28,8 @@ msgstr "%s a déjà une année scolaire en cours. Fermez-la d'abord."
 #. module: bf_school_core
 #. odoo-python
 #: code:addons/bf_school_core/models/res_partner.py:0
-msgid ""
-"%s is not a permanent code: four letters then eight digits, for example "
-"ABCD12345678."
-msgstr ""
-"%s n'est pas un code permanent : quatre lettres puis huit chiffres, par "
-"exemple ABCD12345678."
+msgid "%s is not a permanent code: four letters then eight digits, for example ABCD12345678."
+msgstr "%s n'est pas un code permanent : quatre lettres puis huit chiffres, par exemple ABCD12345678."
 
 #. module: bf_school_core
 #. odoo-python
@@ -114,8 +106,7 @@ msgstr "Âge"
 #. module: bf_school_core
 #: model:ir.model.constraint,message:bf_school_core.constraint_bf_school_guardian_link_student_guardian_unique
 msgid "An adult is linked only once to a student. Tick several roles instead."
-msgstr ""
-"Un adulte n'est lié qu'une fois à un élève. Cochez plutôt plusieurs rôles."
+msgstr "Un adulte n'est lié qu'une fois à un élève. Cochez plutôt plusieurs rôles."
 
 #. module: bf_school_core
 #: model_terms:ir.ui.view,arch_db:bf_school_core.bf_school_group_view_form
@@ -222,6 +213,11 @@ msgstr "Nom d'affichage"
 #: model:ir.model.fields.selection,name:bf_school_core.selection__bf_school_level__stage__elementary
 msgid "Elementary"
 msgstr "Primaire"
+
+#. module: bf_school_core
+#: model:ir.model,name:bf_school_core.model_mail_template
+msgid "Email Templates"
+msgstr "Modèles de courriel"
 
 #. module: bf_school_core
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school_guardian_link__is_emergency_contact
@@ -368,12 +364,8 @@ msgstr "A un message"
 
 #. module: bf_school_core
 #: model:ir.model.fields,help:bf_school_core.field_bf_school_guardian_link__has_parental_authority
-msgid ""
-"Holds parental authority or tutorship. Only these adults consent and sign "
-"for a minor."
-msgstr ""
-"Détient l'autorité parentale ou la tutelle. Seuls ces adultes consentent et "
-"signent pour un mineur."
+msgid "Holds parental authority or tutorship. Only these adults consent and sign for a minor."
+msgstr "Détient l'autorité parentale ou la tutelle. Seuls ces adultes consentent et signent pour un mineur."
 
 #. module: bf_school_core
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school__id
@@ -803,20 +795,13 @@ msgstr ""
 #. module: bf_school_core
 #: model:ir.model.fields,help:bf_school_core.field_res_partner__student_permanent_code
 #: model:ir.model.fields,help:bf_school_core.field_res_users__student_permanent_code
-msgid ""
-"The code the Ministry of Education gives every student: four letters then "
-"eight digits."
-msgstr ""
-"Le code que le ministère de l'Éducation attribue à chaque élève : quatre "
-"lettres puis huit chiffres."
+msgid "The code the Ministry of Education gives every student: four letters then eight digits."
+msgstr "Le code que le ministère de l'Éducation attribue à chaque élève : quatre lettres puis huit chiffres."
 
 #. module: bf_school_core
 #: model:ir.model.fields,help:bf_school_core.field_bf_school__code
-msgid ""
-"The code the Ministry of Education gives the school (code d'organisme)."
-msgstr ""
-"Le code que le ministère de l'Éducation attribue à l'école (code "
-"d'organisme)."
+msgid "The code the Ministry of Education gives the school (code d'organisme)."
+msgstr "Le code que le ministère de l'Éducation attribue à l'école (code d'organisme)."
 
 #. module: bf_school_core
 #. odoo-python
@@ -831,11 +816,8 @@ msgstr "La fiche de l'école elle-même : adresse, téléphone, courriel."
 
 #. module: bf_school_core
 #: model:ir.model.fields,help:bf_school_core.field_bf_school_group__teacher_ids
-msgid ""
-"The staff members who teach this group. They see its students and families."
-msgstr ""
-"Les membres du personnel qui enseignent à ce groupe. Ils voient ses élèves "
-"et ses familles."
+msgid "The staff members who teach this group. They see its students and families."
+msgstr "Les membres du personnel qui enseignent à ce groupe. Ils voient ses élèves et ses familles."
 
 #. module: bf_school_core
 #: model:ir.model.constraint,message:bf_school_core.constraint_res_partner_student_permanent_code_unique
@@ -855,8 +837,7 @@ msgstr "Visible par le personnel de l'école seulement."
 #. module: bf_school_core
 #: model:ir.model.fields,help:bf_school_core.field_bf_school_guardian_link__note
 msgid "Visible to the school staff only. Never shown to families."
-msgstr ""
-"Visible par le personnel de l'école seulement. Jamais montré aux familles."
+msgstr "Visible par le personnel de l'école seulement. Jamais montré aux familles."
 
 #. module: bf_school_core
 #: model:ir.model.fields,field_description:bf_school_core.field_bf_school__website_message_ids
@@ -869,8 +850,3 @@ msgstr "Messages du site web"
 #: model:ir.model.fields,help:bf_school_core.field_bf_school_group__website_message_ids
 msgid "Website communication history"
 msgstr "Historique de communication du site web"
-
-#. module: bf_school_core
-#: model:ir.model,name:bf_school_core.model_mail_template
-msgid "Email Templates"
-msgstr "Modèles de courriel"

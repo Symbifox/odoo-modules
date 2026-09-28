@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : portail des familles",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "One portal account per adult for all their children: groups, teachers, "
                "and what the school allows them to do",

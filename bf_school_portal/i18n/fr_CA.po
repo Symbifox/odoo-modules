@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 22:30+0000\n"
+"POT-Creation-Date: 2026-09-27 20:37+0000\n"
 "PO-Revision-Date: 2026-09-26 22:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -16,12 +16,8 @@ msgstr ""
 #. module: bf_school_portal
 #. odoo-python
 #: code:addons/bf_school_portal/models/res_partner.py:0
-msgid ""
-"%(invited)s invited, %(already)s already had access, %(unreachable)s without"
-" a usable email."
-msgstr ""
-"%(invited)s invitation(s), %(already)s avai(en)t déjà accès, %(unreachable)s"
-" sans courriel utilisable."
+msgid "%(invited)s invited, %(already)s already had access, %(unreachable)s without a usable email."
+msgstr "%(invited)s invitation(s), %(already)s avai(en)t déjà accès, %(unreachable)s sans courriel utilisable."
 
 #. module: bf_school_portal
 #: model_terms:ir.ui.view,arch_db:bf_school_portal.portal_my_school
@@ -35,8 +31,7 @@ msgstr ""
 #. module: bf_school_portal
 #: model_terms:ir.ui.view,arch_db:bf_school_portal.portal_my_school
 msgid "<small class=\"text-muted d-block mb-1\">On file for you:</small>"
-msgstr ""
-"<small class=\"text-muted d-block mb-1\">Inscrit à votre dossier :</small>"
+msgstr "<small class=\"text-muted d-block mb-1\">Inscrit à votre dossier :</small>"
 
 #. module: bf_school_portal
 #: model:ir.model,name:bf_school_portal.model_res_partner
@@ -45,13 +40,8 @@ msgstr "Contact"
 
 #. module: bf_school_portal
 #: model_terms:ir.ui.view,arch_db:bf_school_portal.bf_school_view_form_portal
-msgid ""
-"Every guardian who receives notices for a student enrolled this year and has"
-" no portal access yet will receive an invitation by email. Continue?"
-msgstr ""
-"Chaque responsable qui reçoit les avis d'un élève inscrit cette année et qui"
-" n'a pas encore accès au portail recevra une invitation par courriel. "
-"Continuer?"
+msgid "Every guardian who receives notices for a student enrolled this year and has no portal access yet will receive an invitation by email. Continue?"
+msgstr "Chaque responsable qui reçoit les avis d'un élève inscrit cette année et qui n'a pas encore accès au portail recevra une invitation par courriel. Continuer?"
 
 #. module: bf_school_portal
 #. odoo-python
@@ -135,8 +125,7 @@ msgstr "L'école n'a encore lié aucun enfant à votre compte."
 #. module: bf_school_portal
 #: model_terms:ir.ui.view,arch_db:bf_school_portal.portal_my_home_school
 msgid "Their groups, their teachers, and what the school has on file for you"
-msgstr ""
-"Leurs groupes, leurs enseignants et ce que l'école a inscrit à votre dossier"
+msgstr "Leurs groupes, leurs enseignants et ce que l'école a inscrit à votre dossier"
 
 #. module: bf_school_portal
 #. odoo-python

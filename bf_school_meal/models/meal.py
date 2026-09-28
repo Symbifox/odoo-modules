@@ -195,6 +195,7 @@ class MealOrder(models.Model):
             student = self.env["res.partner"].browse(vals["student_id"])
             day = Day.browse(vals["day_id"])
             account = Account._school_get(self._school_payer(student), day.company_id, day.school_id)
+            account._school_lock()
             vals.update({"account_id": account.id, "mode": account.mode,
                          "price": Item.browse(vals["item_id"]).sudo().price})
         orders = super().create(vals_list)
@@ -205,6 +206,10 @@ class MealOrder(models.Model):
     def write(self, vals):
         if {"student_id", "day_id", "item_id"} & set(vals):
             raise UserError(_("An order is not changed: cancel it and order again."))
+        # 🔴 Price, payment and state move only through the methods of the model: by RPC, an
+        # order put back to "ordered" and cancelled again was refunded twice.
+        if not self.env.su and {"price", "mode", "account_id", "invoice_id", "state"} & set(vals):
+            raise UserError(_("An order is cancelled or credited with its buttons."))
         return super().write(vals)
 
     def _school_release(self, state):
@@ -212,12 +217,13 @@ class MealOrder(models.Model):
         for order in self:
             if order.invoice_id:
                 raise UserError(_("This meal is already on a monthly invoice."))
-            order.write({"state": state})
+            order.sudo().write({"state": state})
             if order.mode == "prepaid" and order.price:
                 order.account_id._school_credit(order)
 
     def action_cancel(self):
         """The office cancels at any time before the meal is billed."""
+        self.check_access("write")
         self.filtered(lambda o: o.state == "ordered")._school_release("cancelled")
         return True
 
@@ -227,7 +233,9 @@ class MealOrder(models.Model):
     def _school_place(self, partner, student, day, item):
         """A family orders. Every check lives here; the controller only calls it."""
         links = partner._school_portal_links().filtered(lambda l: l.student_id == student)
-        if not links.filtered(lambda l: l.receives_notices or l.is_payer or l.can_sign):
+        # 🔴 An order spends the payer's money: the payer or a holder of parental authority orders,
+        # not a step-parent who only receives notices.
+        if not links.filtered(lambda l: l.is_payer or l.has_parental_authority):
             raise UserError(_("You do not order for this student."))
         if day.school_id not in student.sudo().student_group_ids.school_id:
             raise UserError(_("This menu is for another school."))
@@ -242,7 +250,8 @@ class MealOrder(models.Model):
     def _school_cancel_by(self, partner):
         self.ensure_one()
         order = self.sudo()
-        if order.student_id not in partner._school_portal_links().student_id:
+        if order.student_id not in partner._school_portal_links().filtered(
+                lambda l: l.is_payer or l.has_parental_authority).student_id:
             raise UserError(_("You do not order for this student."))
         if order.state != "ordered":
             raise UserError(_("This meal is no longer ordered."))

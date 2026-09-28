@@ -13,7 +13,8 @@ class SchoolHealthPortal(CustomerPortal):
     def portal_school_health(self, **kw):
         partner = request.env.user.partner_id
         links = partner._school_portal_links()
-        children = links.filtered("receives_notices").student_id | links.filtered("can_sign").student_id
+        # 🔴 Health is for the holders of parental authority, not for every adult who receives notices.
+        children = links.filtered("has_parental_authority").student_id
         Med = request.env["bf.school.medication"].sudo()
         since = fields.Datetime.now() - timedelta(days=60)
         values = self._prepare_portal_layout_values()

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 00:41+0000\n"
+"POT-Creation-Date: 2026-09-27 20:37+0000\n"
 "PO-Revision-Date: 2026-09-27 00:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -23,9 +23,7 @@ msgstr "%(guardian)s : %(decision)s pour %(student)s."
 #. odoo-python
 #: code:addons/bf_school_forms/models/school_form.py:0
 msgid "%s signing guardian(s) have no email address: reach them another way."
-msgstr ""
-"%s responsable(s) qui signe(nt) n'ont pas d'adresse courriel : les joindre "
-"autrement."
+msgstr "%s responsable(s) qui signe(nt) n'ont pas d'adresse courriel : les joindre autrement."
 
 #. module: bf_school_forms
 #. odoo-python
@@ -99,12 +97,8 @@ msgstr "Un responsable répond une seule fois par élève."
 #. module: bf_school_forms
 #. odoo-python
 #: code:addons/bf_school_forms/models/school_form.py:0
-msgid ""
-"A sent authorisation is not edited: its text is what the families answered. "
-"Close it and send a new one."
-msgstr ""
-"Une autorisation envoyée ne se modifie pas : son texte est ce à quoi les "
-"familles ont répondu. Fermez-la et envoyez-en une nouvelle."
+msgid "A sent authorisation is not edited: its text is what the families answered. Close it and send a new one."
+msgstr "Une autorisation envoyée ne se modifie pas : son texte est ce à quoi les familles ont répondu. Fermez-la et envoyez-en une nouvelle."
 
 #. module: bf_school_forms
 #: model:ir.model.constraint,message:bf_school_forms.constraint_bf_school_form_response_form_student_unique
@@ -269,12 +263,8 @@ msgstr "Date de l'activité"
 
 #. module: bf_school_forms
 #: model_terms:ir.ui.view,arch_db:bf_school_forms.bf_school_form_view_form
-msgid ""
-"Every guardian who signs for a student of these groups will receive an "
-"email. The text can no longer be edited afterwards. Send?"
-msgstr ""
-"Chaque responsable qui signe pour un élève de ces groupes recevra un "
-"courriel. Le texte ne pourra plus être modifié ensuite. Envoyer?"
+msgid "Every guardian who signs for a student of these groups will receive an email. The text can no longer be edited afterwards. Send?"
+msgstr "Chaque responsable qui signe pour un élève de ces groupes recevra un courriel. Le texte ne pourra plus être modifié ensuite. Envoyer?"
 
 #. module: bf_school_forms
 #: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__requires_all_signers
@@ -512,12 +502,8 @@ msgstr "Réponse"
 
 #. module: bf_school_forms
 #: model:ir.model.fields,help:bf_school_forms.field_bf_school_form__body_hash
-msgid ""
-"SHA-256 of the text as sent. Every answer keeps the fingerprint of the text "
-"it answered: the proof that nobody changed the text afterwards."
-msgstr ""
-"SHA-256 du texte tel qu'envoyé. Chaque réponse garde l'empreinte du texte "
-"auquel elle répond : la preuve que personne n'a changé le texte ensuite."
+msgid "SHA-256 of the text as sent. Every answer keeps the fingerprint of the text it answered: the proof that nobody changed the text afterwards."
+msgstr "SHA-256 du texte tel qu'envoyé. Chaque réponse garde l'empreinte du texte auquel elle répond : la preuve que personne n'a changé le texte ensuite."
 
 #. module: bf_school_forms
 #: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__message_has_sms_error
@@ -558,8 +544,7 @@ msgstr "Envoyé le"
 #. odoo-python
 #: code:addons/bf_school_forms/models/school_form.py:0
 msgid "Sent: %(students)s student(s), %(sent)s email(s) to guardians."
-msgstr ""
-"Envoyée : %(students)s élève(s), %(sent)s courriel(s) aux responsables."
+msgstr "Envoyée : %(students)s élève(s), %(sent)s courriel(s) aux responsables."
 
 #. module: bf_school_forms
 #: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__sequence
@@ -632,14 +617,8 @@ msgstr "Réponse inconnue."
 
 #. module: bf_school_forms
 #: model:ir.model.fields,help:bf_school_forms.field_bf_school_form_type__requires_all_signers
-msgid ""
-"Unticked, one guardian's authorisation is enough (Civil Code art. 603: "
-"towards a third party in good faith, one parent is presumed to act with the "
-"other's agreement). Ticked, the school waits for every guardian who signs."
-msgstr ""
-"Décoché, l'autorisation d'un seul responsable suffit (Code civil, art. 603 :"
-" à l'égard des tiers de bonne foi, un parent est présumé agir avec l'accord "
-"de l'autre). Coché, l'école attend chaque responsable qui signe."
+msgid "Unticked, one guardian's authorisation is enough (Civil Code art. 603: towards a third party in good faith, one parent is presumed to act with the other's agreement). Ticked, the school waits for every guardian who signs."
+msgstr "Décoché, l'autorisation d'un seul responsable suffit (Code civil, art. 603 : à l'égard des tiers de bonne foi, un parent est présumé agir avec l'accord de l'autre). Coché, l'école attend chaque responsable qui signe."
 
 #. module: bf_school_forms
 #: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_answer__user_agent
@@ -676,11 +655,14 @@ msgstr "Vous avez autorisé le"
 #. module: bf_school_forms
 #. odoo-python
 #: code:addons/bf_school_forms/models/school_form.py:0
-msgid ""
-"You have already answered. To change your answer, contact the school office."
-msgstr ""
-"Vous avez déjà répondu. Pour changer votre réponse, contactez le "
-"secrétariat."
+msgid "You have already answered. To change your answer, contact the school office."
+msgstr "Vous avez déjà répondu. Pour changer votre réponse, contactez le secrétariat."
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "You no longer sign for this student."
+msgstr "Vous ne signez plus pour cet élève."
 
 #. module: bf_school_forms
 #: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
@@ -689,19 +671,13 @@ msgstr "Vous avez refusé le"
 
 #. module: bf_school_forms
 #: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_form
-msgid ""
-"Your answer is final and dated. To change it afterwards, contact the school "
-"office."
-msgstr ""
-"Votre réponse est définitive et datée. Pour la changer ensuite, contactez le"
-" secrétariat."
+msgid "Your answer is final and dated. To change it afterwards, contact the school office."
+msgstr "Votre réponse est définitive et datée. Pour la changer ensuite, contactez le secrétariat."
 
 #. module: bf_school_forms
 #: model:mail.template,subject:bf_school_forms.mail_template_school_form
-msgid ""
-"{{ ctx.get('school_child') }}: authorisation, {{ object.form_id.name }}"
-msgstr ""
-"{{ ctx.get('school_child') }} : autorisation, {{ object.form_id.name }}"
+msgid "{{ ctx.get('school_child') }}: authorisation, {{ object.form_id.name }}"
+msgstr "{{ ctx.get('school_child') }} : autorisation, {{ object.form_id.name }}"
 
 #. module: bf_school_forms
 #: model_terms:ir.ui.view,arch_db:bf_school_forms.portal_school_forms

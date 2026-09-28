@@ -19,6 +19,15 @@ class ResPartner(models.Model):
         return self.sudo().guardian_student_link_ids.filtered(
             lambda l: l.student_id.active and l.student_id.is_student)
 
+    def _school_authority_links(self):
+        """The links that hold parental authority: health, conduct and what commits the child.
+
+        🔴 "Receives notices" is the school's announcements. A step-parent or grandparent
+        who receives them does not see the medication, the breaches of conduct, nor
+        declares absences.
+        """
+        return self._school_portal_links().filtered("has_parental_authority")
+
     # --- Invitations --------------------------------------------------------
 
     def action_school_invite_guardians(self):

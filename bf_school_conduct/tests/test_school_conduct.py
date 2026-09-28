@@ -168,3 +168,42 @@ class TestConductFrench(ConductCase):
                                                    "Enfant Essai : nouvelles de l'école"])
         self.assertIn("L'école vous informe d'une situation", mails[0].body_html)
         self.assertIn("Voir le suivi", mails[1].body_html)
+
+
+@tagged("post_install", "-at_install")
+class TestConductGuards(ConductCase):
+    """Adversarial review (2026-09-27): what the screen hides, RPC could write."""
+
+    def test_teacher_cannot_mark_the_parents_informed(self):
+        incident = self._incident(student=self.teen, rule=self.sexual).with_user(self.t2)
+        with self.assertRaises(UserError):
+            incident.write({"parents_informed_on": fields.Datetime.now()})
+        with self.assertRaises(UserError):
+            incident.action_inform_parents()
+        self.assertFalse(incident.parents_informed_on)
+
+    def test_teacher_cannot_move_a_breach_to_another_student(self):
+        incident = self._incident().with_user(self.t1)
+        with self.assertRaises(UserError):
+            incident.write({"student_id": self.teen.id})
+
+    def test_conduct_is_for_parental_authority(self):
+        step = new_test_user(self.env, login="school_cnd_step", name="Beau-parent", email="cnd.step@example.invalid",
+                             groups="base.group_portal")
+        self.env["bf.school.guardian.link"].create({"student_id": self.kid.id, "guardian_id": step.partner_id.id,
+                                                    "has_parental_authority": False, "can_sign": False,
+                                                    "receives_notices": True})
+        incident = self._incident(description="Cellulaire pendant l'examen.")
+        incident.action_inform_parents()
+        self.assertTrue(self._mails_to(self.p.partner_id))
+        self.assertFalse(self._mails_to(step.partner_id), "notices without parental authority")
+        self.authenticate("school_cnd_step", "school_cnd_step")
+        self.assertNotIn("Cellulaire pendant", self.url_open("/my/school/conduct").text)
+        self.authenticate("school_cnd_p", "school_cnd_p")
+        self.assertIn("Cellulaire pendant", self.url_open("/my/school/conduct").text)
+
+    def test_teacher_of_a_past_year_does_not_read_the_breach(self):
+        incident = self._incident()
+        self.assertTrue(self.env["bf.school.incident"].with_user(self.t1).search([("id", "=", incident.id)]))
+        self.kid.student_enrollment_ids.write({"state": "left"})
+        self.assertFalse(self.env["bf.school.incident"].with_user(self.t1).search([("id", "=", incident.id)]))

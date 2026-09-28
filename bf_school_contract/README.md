@@ -25,7 +25,10 @@ be bargained away, so they are enforced as constraints, not as warnings.
   pas céder ou vendre le présent contrat" followed by the signature space, and the
   face-uncovered clause of s. 68.1 (L.Q. 2025, c. 29), required on pain of nullity.
 - Sent for signature through `bf_sign` to every guardian who signs (roles of
-  `bf_school_core`); the contract turns to **Signed** when the request is completed.
+  `bf_school_core`), one request at a time; the contract turns to **Signed** when every
+  client of the contract has signed, and only from the draft. What the family signs
+  (amounts, dates, signers) is frozen from the moment the request is created, and the
+  state moves only with the buttons.
 - Termination by the client (s. 71): the amount the school may keep (s. 72 before
   the services, s. 73 after: the months provided plus the penalty) and the refund
   due within ten days (s. 74) are computed.

@@ -222,6 +222,12 @@ class SchoolFormAnswer(models.Model):
         self.ensure_one()
         return bool(token) and consteq(self.access_token or "", token)
 
+    def _school_still_signs(self):
+        """🔴 The link was sent while the adult signed: they answer only while they still do."""
+        self.ensure_one()
+        return bool(self.student_id.sudo().student_guardian_link_ids.filtered(
+            lambda l: l.guardian_id == self.partner_id and l.can_sign))
+
     def _school_decide(self, decision, channel, ip=None, user_agent=None, answering_user=None):
         """Record a guardian's decision. Final: to change it, the family calls the school.
 
@@ -236,6 +242,8 @@ class SchoolFormAnswer(models.Model):
                               "contact the school office."))
         if self.form_id.state != "sent":
             raise UserError(_("This authorisation no longer takes answers."))
+        if not self._school_still_signs():
+            raise UserError(_("You no longer sign for this student."))
         self.sudo().write({
             "decision": decision, "answered_on": fields.Datetime.now(), "channel": channel,
             "ip_address": ip, "user_agent": (user_agent or "")[:500],

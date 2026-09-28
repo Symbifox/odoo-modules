@@ -16,6 +16,9 @@ ROUTES = [
 ]
 
 
+#: Moved only by the methods of the model, never written by hand.
+SIGNATURE_FIELDS = {"state", "text_hash", "signed_by_id", "signed_on", "signed_ip", "access_token"}
+
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
@@ -99,7 +102,15 @@ class MedicationAuthorisation(models.Model):
                   "self_administered", "date_from", "date_to", "student_id"}
         if frozen & set(vals) and any(m.state not in ("draft", "refused") for m in self):
             raise UserError(_("A medication sent to the family is not edited: revoke it and create a new one."))
+        # 🔴 `readonly` guards the screen only: by RPC, the health group wrote state="active" and
+        # a parent as signatory, and the medication became administrable without any signature.
+        # The state and the evidence move only through the methods below, in sudo.
+        if not self.env.su and SIGNATURE_FIELDS & set(vals):
+            raise UserError(_("The state and the signature of an authorisation are not edited by hand."))
         return super().write(vals)
+
+    def _school_check_staff_write(self):
+        self.check_access("write")
 
     def _fingerprint(self):
         self.ensure_one()
@@ -117,7 +128,8 @@ class MedicationAuthorisation(models.Model):
         for med in self:
             if med.state != "draft":
                 raise UserError(_("Only a draft authorisation is sent."))
-            med.write({"state": "asked", "text_hash": med._fingerprint()})
+            med._school_check_staff_write()
+            med.sudo().write({"state": "asked", "text_hash": med._fingerprint()})
             signers = med.student_id.student_guardian_link_ids.filtered("can_sign").guardian_id.filtered("email")
             for adult in signers:
                 if template:
@@ -132,11 +144,16 @@ class MedicationAuthorisation(models.Model):
     def _school_sign(self, partner, accept, ip=None):
         """A guardian who signs answers. Every check lives here."""
         self.ensure_one()
-        if self.state != "asked":
-            raise UserError(_("This authorisation no longer takes answers."))
         signers = self.student_id.sudo().student_guardian_link_ids.filtered("can_sign").guardian_id
         if partner not in signers:
             raise AccessError(_("Only a guardian who signs for this student answers."))
+        # 🔴 A refusal always wins: the other guardian's "no" after a "yes" stops the medication.
+        if self.state == "active" and not accept and partner != self.signed_by_id:
+            self.sudo().write({"state": "refused", "signed_by_id": partner.id,
+                               "signed_on": fields.Datetime.now(), "signed_ip": ip})
+            return True
+        if self.state != "asked":
+            raise UserError(_("This authorisation no longer takes answers."))
         self.sudo().write({"state": "active" if accept else "refused", "signed_by_id": partner.id,
                            "signed_on": fields.Datetime.now(), "signed_ip": ip})
         return True
@@ -146,7 +163,9 @@ class MedicationAuthorisation(models.Model):
         return bool(token) and consteq(self.access_token or "", token)
 
     def action_revoke(self):
-        self.filtered(lambda m: m.state == "active").write({"state": "revoked"})
+        active = self.filtered(lambda m: m.state == "active")
+        active._school_check_staff_write()
+        active.sudo().write({"state": "revoked"})
         return True
 
 
@@ -190,8 +209,17 @@ class MedicationAdministration(models.Model):
         records.filtered("emergency_epinephrine")._tell_family_now()
         return records
 
+    def write(self, vals):
+        # 🔴 The register is trusted because it is not rewritten: who, when, what and how much
+        # are set once. A note may be added.
+        if not self.env.su and set(vals) - {"note"}:
+            raise UserError(_("A dose recorded is not changed: add a note, or record the correction."))
+        return super().write(vals)
+
     def _check_authorised(self):
         self.ensure_one()
+        if self.medication_id and self.medication_id.sudo().student_id != self.student_id:
+            raise UserError(_("This authorisation is for another student."))
         if self.emergency_epinephrine:
             return
         # Any staff member may record emergency epinephrine; the rest is the health group's.

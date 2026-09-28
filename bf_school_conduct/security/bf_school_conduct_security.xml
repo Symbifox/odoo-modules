@@ -6,7 +6,7 @@
         <field name="name">Breach: students I teach</field>
         <field name="model_id" ref="model_bf_school_incident"/>
         <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
-        <field name="domain_force">[('student_id.student_enrollment_ids.group_id.teacher_ids', 'in', [user.id])]</field>
+        <field name="domain_force">[('student_id.student_enrollment_ids', 'any', [('group_id.teacher_ids', 'in', [user.id]), ('state', '=', 'active'), ('year_id.state', '=', 'current')])]</field>
     </record>
     <record id="rule_incident_manager" model="ir.rule">
         <field name="name">Breach: the office sees all</field>
@@ -18,7 +18,7 @@
         <field name="name">Follow-up: students I teach</field>
         <field name="model_id" ref="model_bf_school_followup"/>
         <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
-        <field name="domain_force">[('student_id.student_enrollment_ids.group_id.teacher_ids', 'in', [user.id])]</field>
+        <field name="domain_force">[('student_id.student_enrollment_ids', 'any', [('group_id.teacher_ids', 'in', [user.id]), ('state', '=', 'active'), ('year_id.state', '=', 'current')])]</field>
     </record>
     <record id="rule_followup_manager" model="ir.rule">
         <field name="name">Follow-up: the office sees all</field>
@@ -30,7 +30,7 @@
         <field name="name">Monthly news: students I teach</field>
         <field name="model_id" ref="model_bf_school_followup_communication"/>
         <field name="groups" eval="[(6, 0, [ref('bf_school_core.group_school_user')])]"/>
-        <field name="domain_force">[('student_id.student_enrollment_ids.group_id.teacher_ids', 'in', [user.id])]</field>
+        <field name="domain_force">[('student_id.student_enrollment_ids', 'any', [('group_id.teacher_ids', 'in', [user.id]), ('state', '=', 'active'), ('year_id.state', '=', 'current')])]</field>
     </record>
     <record id="rule_followup_communication_manager" model="ir.rule">
         <field name="name">Monthly news: the office sees all</field>

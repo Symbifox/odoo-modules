@@ -280,3 +280,41 @@ class TestSchoolMeal(HttpCase):
         self.assertIn("Pâtes sauce tomate", day.display_name, "the calendar shows the meals, not the date")
         day.action_close("Tempête")
         self.assertNotIn("Pâtes", day.display_name)
+
+    # Adversarial review (2026-09-27)
+    def test_order_state_and_price_move_with_the_buttons_only(self):
+        self._fund(20)
+        office = new_test_user(self.env, login="school_ml_office", groups="bf_school_core.group_school_manager")
+        order = self._place().with_user(office)
+        order.action_cancel()
+        for vals in ({"state": "ordered"}, {"price": 0.5}, {"mode": "monthly"}, {"invoice_id": False}):
+            with self.assertRaises(UserError):
+                order.write(vals)
+        self.assertEqual(self._account().balance, 20, "refunded once")
+
+    def test_an_adult_who_only_receives_notices_does_not_spend(self):
+        step = new_test_user(self.env, login="school_ml_step", groups="base.group_portal", email="step@essai.test")
+        self.env["bf.school.guardian.link"].create({"student_id": self.a.id, "guardian_id": step.partner_id.id,
+                                                    "relationship": "other", "receives_notices": True})
+        self._fund(20)
+        with self.assertRaises(UserError):
+            self._place(partner=step)
+        self.assertEqual(self._account().balance, 20)
+
+    def test_topup_amount_must_be_a_number(self):
+        account = self._account()
+        for amount in (float("nan"), float("inf")):
+            with self.assertRaises(UserError):
+                account._school_topup(amount)
+
+    def test_undone_payment_takes_the_credit_back(self):
+        account = self._account()
+        topup = account._school_topup(50)
+        payment = self.env["account.payment.register"].with_context(
+            active_model="account.move", active_ids=topup.invoice_id.ids).create({})._create_payments()
+        self.assertEqual(account.balance, 50)
+        payment.action_draft()
+        self.assertEqual(topup.state, "pending")
+        self.assertEqual(account.balance, 0, "the credit follows the payment")
+        payment.action_post()
+        self.assertEqual(account.balance, 0, "posting again does not reconcile by itself")

@@ -165,6 +165,20 @@ class TestAttendancePortal(AttendanceCase):
         self.assertEqual(response.status_code, 404)
         self.assertFalse(self.env["bf.school.absence.declaration"].search([("student_id", "=", self.b.id)]))
 
+    def test_notices_without_authority_do_not_declare(self):
+        """Adversarial review (2026-09-27): declaring commits the child."""
+        step = new_test_user(self.env, login="school_att_step", email="att.step@example.invalid",
+                             groups="base.group_portal")
+        self.env["bf.school.guardian.link"].create({"student_id": self.a.id, "guardian_id": step.partner_id.id,
+                                                    "relationship": "other", "receives_notices": True})
+        self.authenticate("school_att_step", "school_att_step")
+        page = "/my/school/attendance"
+        self.assertNotIn("Declare an absence", self.url_open(page).text)
+        response = self.url_open(page + "/declare", data={
+            "csrf_token": self._csrf("/my/account"), "student_id": self.a.id, "date_from": str(self.today),
+            "reason_id": self.illness.id})
+        self.assertEqual(response.status_code, 404)
+
     def test_too_old_goes_to_the_office(self):
         self.authenticate("school_att_p", "school_att_p")
         page = "/my/school/attendance"

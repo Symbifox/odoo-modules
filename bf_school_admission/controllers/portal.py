@@ -57,6 +57,10 @@ class SchoolAdmissionPortal(CustomerPortal):
             elif (upload.mimetype or "") not in ALLOWED_TYPES:
                 error = _("Documents are accepted as PDF, JPEG, PNG or HEIC only.")
             documents.append((upload.filename, content))
+        ip = request.httprequest.remote_addr
+        if not error and campaign._school_submissions_exceeded(ip, email_normalize(post.get("guardian1_email") or "")):
+            error = _("Too many applications were sent from here in the last hour. Try again later, "
+                      "or contact the school office.")
         if error:
             return request.render("bf_school_admission.admission_form", {
                 "campaign": campaign, "accepting": True, "error": error, "values": post})
@@ -84,12 +88,15 @@ class SchoolAdmissionPortal(CustomerPortal):
             "level_id": int(post["level_id"]),
             "guardian_ids": [(6, 0, guardians.ids)],
             "payer_id": guardians[0].id,
+            "client_ip": ip,
         })
         for name, content in documents:
             env["ir.attachment"].create({
                 "name": name, "datas": base64.b64encode(content),
                 "res_model": application._name, "res_id": application.id})
-        application._school_create_fee_invoice()
+        # 🔴 A draft until the office checks the application: an anonymous form posted invoices
+        # that could not be deleted, as many as a robot sent.
+        application._school_create_fee_invoice(post=False)
         application._school_fee_paid()  # a campaign without fee is submitted at once
         return request.redirect(application._status_url())
 
@@ -158,11 +165,16 @@ class SchoolAdmissionPortal(CustomerPortal):
         student, campaign, existing = offer
         if existing:
             return request.redirect(existing._status_url())
+        # 🔴 Two clicks at once both saw no application and left two invoices. Updating the
+        # campaign row serializes them: the replayed one finds the first application.
+        request.env.cr.execute("UPDATE bf_school_admission_campaign SET write_date = now() at time zone 'UTC' "
+                               "WHERE id = %s", [campaign.id])
         env = request.env(su=True)
         links = student.student_guardian_link_ids
         payer = links.filtered("is_payer").guardian_id[:1] or request.env.user.partner_id
         level = campaign.level_ids.filtered(lambda l: str(l.id) == str(level_id))[:1]
-        application = env["bf.school.admission"].create({
+        # The parent is not made a follower of the office's file.
+        application = env["bf.school.admission"].with_context(mail_create_nosubscribe=True).create({
             "campaign_id": campaign.id, "state": "awaiting_fee", "student_id": student.id,
             "level_id": level.id or False,
             "guardian_ids": [(6, 0, links.filtered("receives_notices").guardian_id.ids)],

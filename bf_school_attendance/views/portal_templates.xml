@@ -24,7 +24,7 @@
             <div t-if="message" class="alert alert-info mt-3" t-out="message"/>
             <div t-if="not children" class="alert alert-info mt-3">The school has not linked any child to your account yet.</div>
             <t t-if="children">
-                <div class="card mt-3">
+                <div t-if="declarable" class="card mt-3">
                     <div class="card-body">
                         <h5>Declare an absence</h5>
                         <p class="text-muted small">Today or later, or to justify an absence already noted.</p>
@@ -32,7 +32,7 @@
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                             <div class="col-md-4"><label class="form-label">Child</label>
                                 <select class="form-select" name="student_id" required="1">
-                                    <option t-foreach="children" t-as="child" t-att-value="child.id" t-out="child.name"/>
+                                    <option t-foreach="declarable" t-as="child" t-att-value="child.id" t-out="child.name"/>
                                 </select></div>
                             <div class="col-md-4"><label class="form-label">From</label>
                                 <input class="form-control" type="date" name="date_from" required="1" t-att-value="today"/></div>

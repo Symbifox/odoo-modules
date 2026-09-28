@@ -6,14 +6,16 @@ The caterer's menus and meal orders on the family portal.
 
 - **Menus**: the meals with their price and allergens; one menu per school day,
   in a calendar.
-- **Family portal** (**Meals**): order for each child up to the school's deadline
+- **Family portal** (**Meals**), for the adult who pays and the adults with parental
+  authority: order for each child up to the school's deadline
   (2 days ahead by default), cancel until the hour set on the day (8:00 by default,
   school time zone). The office orders or cancels at any time before billing.
 - **Two ways to pay**, as the school decides or as the family chooses:
   - **prepaid balance**: the family tops it up by an invoice it pays online (any
     payment provider) or that the office records as paid; a meal is taken from the
     balance when ordered, given back when cancelled; an order the balance cannot
-    cover is refused;
+    cover is refused, even when two are sent at once; a top-up is credited with what
+    was actually paid, and taken back if the payment is undone;
   - **monthly invoice**: the meals of the month on one invoice, sent at the start of
     the next month to the adult who pays.
   The mode is frozen on each order: a family that changes mode does not change what
@@ -22,7 +24,8 @@ The caterer's menus and meal orders on the family portal.
   allergy of the student cannot be ordered; the kitchen list shows every allergy.
 - **Closed day** (storm, closure): every order is cancelled and credited at once.
 - **The balance is a register**: movements are never edited or deleted; the office
-  records an adjustment with its reason.
+  records an adjustment with its reason. An order's price, state and invoice move only
+  with its buttons.
 
 ## Taxes
 

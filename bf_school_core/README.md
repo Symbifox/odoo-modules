@@ -24,6 +24,10 @@ answer.
   pays, may pick up, emergency contact, lives with. An adult is linked once per
   student; roles are ticked, not duplicated.
 - A signer must hold parental authority or tutorship.
+- A grandparent or "other" adult starts without parental authority, signature or
+  notices: the school ticks what it decides. Health, conduct, declaring an absence and
+  ordering meals are for the holders of parental authority (or the payer, for meals),
+  not for every adult who receives notices.
 - The links with parental authority are mirrored into `legal_guardian_ids` of
   `privacy_consent`: consents and signatures reach the right adults without the
   consent module knowing about schools.

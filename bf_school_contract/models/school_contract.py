@@ -10,6 +10,12 @@ MAX_ADMISSION_FEE = 200.0       # s. 12, or 1/10 of the total price if lower
 MAX_PENALTY = 500.0             # s. 13, for s. 72 and 73 of the Act
 
 
+#: Moved only by the methods of the model.
+SYSTEM_FIELDS = {"state", "signed_on", "termination_due", "termination_refund", "refund_deadline"}
+#: What the family signs: frozen once the contract leaves the draft.
+SIGNED_TERMS = {"student_id", "school_id", "year_id", "date_start", "date_end", "client_ids",
+                "eligibility_fee", "admission_fee", "tuition", "accessory_ids", "installment_count"}
+
 class School(models.Model):
     _inherit = "bf.school"
 
@@ -36,6 +42,29 @@ class SchoolContractAccessory(models.Model):
     name = fields.Char("Service", required=True)
     price = fields.Monetary(required=True)
     currency_id = fields.Many2one(related="contract_id.currency_id")
+
+    @api.constrains("price", "contract_id")
+    def _check_contract(self):
+        # A line written on its own does not trigger the contract's constraint.
+        if any(line.price < 0 for line in self):
+            raise ValidationError(_("An amount of the contract is not negative."))
+        self.contract_id._check_caps()
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        lines = super().create(vals_list)
+        lines.contract_id._school_check_editable()
+        return lines
+
+    def write(self, vals):
+        self.contract_id._school_check_editable()
+        result = super().write(vals)
+        self.contract_id._school_check_editable()
+        return result
+
+    def unlink(self):
+        self.contract_id._school_check_editable()
+        return super().unlink()
 
 
 class SchoolContract(models.Model):
@@ -137,12 +166,36 @@ class SchoolContract(models.Model):
                     "can_sign").guardian_id.ids)]
         return super().create(vals_list)
 
+    def _school_check_editable(self):
+        """What the family signed does not change under the signature."""
+        if self.env.su or not self:
+            return
+        # The PDF is rendered when the request is created: from then on, it is what gets signed.
+        pending = self.env["bf.sign.request"].sudo().search_count([
+            ("res_model", "=", self._name), ("res_id", "in", self.ids),
+            ("state", "in", ("draft", "sent", "in_progress"))])
+        if pending or any(c.state != "draft" for c in self):
+            raise UserError(_("A contract sent for signature or signed is not edited: terminate it "
+                              "and make a new one."))
+
+    def write(self, vals):
+        if not self.env.su:
+            # 🔴 `readonly` guards the screen only: by RPC, the state was written by hand, and the
+            # amounts could change after the family signed.
+            if SYSTEM_FIELDS & set(vals):
+                raise UserError(_("The state of a contract moves with its buttons."))
+            if set(vals) & SIGNED_TERMS:
+                self._school_check_editable()
+        return super().write(vals)
+
     # --- The Act's caps (public order, s. 76) -----------------------------------
 
     @api.constrains("eligibility_fee", "admission_fee", "tuition", "accessory_ids", "installment_count",
                     "date_start", "date_end")
     def _check_caps(self):
         for contract in self:
+            if min(contract.eligibility_fee, contract.admission_fee, contract.tuition) < 0:
+                raise ValidationError(_("An amount of the contract is not negative."))
             if contract.eligibility_fee > MAX_ELIGIBILITY_FEE:
                 raise ValidationError(_(
                     "The eligibility fee is at most %s $ (Regulation E-9.1, r. 3, s. 11).",
@@ -202,8 +255,9 @@ class SchoolContract(models.Model):
                 raise UserError(_("Only a signed contract is terminated."))
             if not contract.termination_date:
                 raise UserError(_("Enter the date the notice of termination was received."))
+            contract.check_access("write")
             due = min(contract._termination_amounts(contract.termination_date), contract.total_price)
-            contract.write({
+            contract.sudo().write({
                 "state": "terminated",
                 "termination_due": due,
                 "termination_refund": max(0.0, contract.amount_paid - due),
@@ -224,9 +278,26 @@ class SchoolContract(models.Model):
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only a draft contract is sent for signature."))
+        if self.env["bf.sign.request"].sudo().search_count([
+                ("res_model", "=", self._name), ("res_id", "=", self.id),
+                ("state", "in", ("draft", "sent", "in_progress"))]):
+            raise UserError(_("This contract already has a signature request: cancel it first."))
         if not self.client_ids:
             raise UserError(_("Nobody signs this contract: tick « Signs » on a guardian link."))
         return super().action_send_for_signature()
 
     def _sign_on_signed(self, request):
-        self.write({"state": "signed", "signed_on": fields.Datetime.now()})
+        # 🔴 Signed means signed by every client of the contract, while it is still a draft: a
+        # request whose signers were changed, or completed after a termination, moves nothing.
+        signed = request.sudo().signer_ids.filtered(lambda s: s.state == "signed").partner_id
+        for contract in self.sudo():
+            if contract.state != "draft":
+                continue
+            missing = contract.client_ids - signed
+            if missing or not contract.client_ids:
+                contract.message_post(body=_(
+                    "Signature request completed without %s: the contract stays a draft.",
+                    ", ".join(missing.mapped("name")) or _("any client")),
+                    message_type="notification", subtype_xmlid="mail.mt_note")
+                continue
+            contract.write({"state": "signed", "signed_on": fields.Datetime.now()})

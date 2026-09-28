@@ -82,9 +82,15 @@ class TestPublicForm(AdmissionCase):
         self.assertEqual(app.state, "awaiting_fee")
         self.assertEqual(set(app.guardian_ids.mapped("email")), {"adm.un@example.invalid", "adm.deux@example.invalid"})
         self.assertEqual(app.payer_id.email, "adm.un@example.invalid")
+        self.assertEqual(app.invoice_id.state, "draft", "an anonymous form posts no invoice")
+        self.assertFalse(app._payment_url(), "nothing to pay before the office checks")
+        self.assertNotIn("Élève", app.invoice_id.invoice_line_ids.name, "the child's name outlives no purge")
+        app.action_request_fee()
         self.assertEqual(app.invoice_id.state, "posted")
         self.assertEqual(app.invoice_id.amount_total, 50.0, "no tax on an educational fee")
         self.assertFalse(app.invoice_id.invoice_pdf_report_id, "not in the family's request")
+        self.assertEqual(len(self.env["mail.mail"].sudo().search([("model", "=", app._name), ("res_id", "=", app.id)])), 2,
+                         "each guardian is asked for the fee")
         self.env["bf.school.admission"]._cron_fee_invoice_pdf()
         self.assertTrue(app.invoice_id.invoice_pdf_report_id, "the official PDF, not a proforma")
         self.assertFalse(self.env["mail.mail"].sudo().search([("model", "=", "account.move"), ("res_id", "=", app.invoice_id.id)]),
@@ -98,6 +104,9 @@ class TestPublicForm(AdmissionCase):
         app = self._last()
         page = self.url_open(app._status_url()).text
         self.assertIn(app.name, page)
+        self.assertIn("The school is checking the application", page)
+        app.action_request_fee()
+        page = self.url_open(app._status_url()).text
         self.assertIn(app._payment_url().split("?")[0], page, "the page offers to pay")
         self.assertEqual(self.url_open("/school/admission/status/%s/%s" % (app.id, "x" * 43)).status_code, 404)
 
@@ -111,6 +120,22 @@ class TestPublicForm(AdmissionCase):
         page = self.url_open(app._status_url()).text
         self.assertIn("13:30", page)
         self.assertNotIn("17:30", page)
+
+    def test_too_many_from_one_address(self):
+        for __ in range(3):
+            self._apply()
+        before = self.env["bf.school.admission"].search_count([])
+        response = self._apply()
+        self.assertEqual(self.env["bf.school.admission"].search_count([]), before)
+        self.assertIn("Too many applications", response.text)
+
+    def test_buttons_only_move_an_application(self):
+        self._apply()
+        app = self._last()
+        office = new_test_user(self.env, login="school_adm_rpc", groups="bf_school_core.group_school_manager")
+        for vals in ({"state": "accepted"}, {"decided_by_id": office.id}, {"invoice_id": False}):
+            with self.assertRaises(UserError):
+                app.with_user(office).write(vals)
 
     def test_robot_field_creates_nothing(self):
         before = self.env["bf.school.admission"].search_count([])
@@ -135,9 +160,11 @@ class TestPublicForm(AdmissionCase):
     def test_fee_paid_at_the_office_submits(self):
         self._apply()
         app = self._last()
+        app.action_request_fee()
+        before = self.env["mail.mail"].sudo().search([("recipient_ids", "in", app.guardian_ids.ids)])
         self._pay(app.invoice_id)
         self.assertEqual(app.state, "submitted")
-        mails = self.env["mail.mail"].sudo().search([("recipient_ids", "in", app.guardian_ids.ids)])
+        mails = self.env["mail.mail"].sudo().search([("recipient_ids", "in", app.guardian_ids.ids)]) - before
         self.assertEqual(len(mails), 2, "one email per guardian")
 
     def test_campaign_without_fee_submits_at_once(self):
@@ -219,6 +246,25 @@ class TestDecision(AdmissionCase):
         self.assertFalse(self.env["ir.attachment"].search([("res_model", "=", gone._name), ("res_id", "=", gone.id)]))
         self.assertEqual(kept.student_firstname, "Alpha", "an enrolled student is not purged")
 
+    def test_purge_leaves_no_trace_and_spares_the_accepted(self):
+        """Adversarial review (2026-09-27): contacts, score history and the status link survived."""
+        waiting = self._submitted("Charlie", 70)
+        waiting.action_mark_evaluated()
+        waiting.action_accept()
+        gone = self._submitted("Delta", 30)
+        gone.action_mark_evaluated()
+        gone.write({"score": 31})
+        token, guardians = gone.access_token, gone.guardian_ids
+        self.campaign.action_close()
+        self.campaign.action_purge()
+        self.assertEqual(waiting.student_firstname, "Charlie", "accepted, not enrolled yet: kept")
+        self.assertTrue(gone.purged)
+        self.assertNotEqual(gone.access_token, token, "the old status link is dead")
+        self.assertFalse(self.env["mail.tracking.value"].search([
+            ("mail_message_id.model", "=", gone._name), ("mail_message_id.res_id", "=", gone.id)]))
+        for partner in guardians.with_context(active_test=False).exists():
+            self.assertFalse(partner.active and partner.email, "a contact the form created is gone or emptied")
+
     def test_teacher_has_no_access(self):
         with self.assertRaises(AccessError):
             self.env["bf.school.admission"].with_user(self.teacher).search([])
@@ -296,8 +342,11 @@ class TestAdmissionFrench(AdmissionCase):
         self._apply()
         app = self._last()
         app.guardian_ids.write({"lang": "fr_CA"})
+        app.action_request_fee()
+        before = self.env["mail.mail"].sudo().search([("recipient_ids", "in", app.guardian_ids[:1].ids)])
+        self.assertIn("Les droits sont maintenant", before.body_html)
         self._pay(app.invoice_id)
-        mail = self.env["mail.mail"].sudo().search([("recipient_ids", "in", app.guardian_ids[:1].ids)])
+        mail = self.env["mail.mail"].sudo().search([("recipient_ids", "in", app.guardian_ids[:1].ids)]) - before
         self.assertEqual(len(mail), 1)
         self.assertIn("Nous avons reçu la demande", mail.body_html)
         self.assertTrue(mail.subject.startswith("École des Essais : Admission 2027-2028, "))

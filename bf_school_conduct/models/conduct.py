@@ -74,7 +74,7 @@ class Incident(models.Model):
                                                  "rule this school year. An aid: a person decides.")
     student_consent = fields.Boolean(
         "Student agrees that the parents be informed",
-        help="Required for sexual violence when the student is 14 or older.")
+        help="Required for sexual violence when the student is 14 or older.", tracking=True)
     parents_informed_on = fields.Datetime(readonly=True, tracking=True)
     state = fields.Selection([("open", "Open"), ("closed", "Closed")], default="open", required=True, tracking=True)
 
@@ -126,8 +126,10 @@ class Incident(models.Model):
             if incident.is_sexual and (age is None or age >= 14) and not incident.student_consent:
                 raise UserError(_("Sexual violence: from 14, the parents are informed only with the "
                                   "student's consent. Record it first, or contact the student protector."))
-            incident.parents_informed_on = fields.Datetime.now()
-            adults = incident.student_id.student_guardian_link_ids.filtered("receives_notices").guardian_id
+            incident.check_access("write")
+            incident.sudo().parents_informed_on = fields.Datetime.now()
+            adults = incident.student_id.student_guardian_link_ids.filtered(
+                lambda l: l.receives_notices and l.has_parental_authority).guardian_id
             for adult in adults.filtered("email"):
                 if not template:
                     break
@@ -138,6 +140,17 @@ class Incident(models.Model):
                     email_values={"recipient_ids": [(6, 0, adult.ids)], "email_to": False})
         self.env.ref("mail.ir_cron_mail_scheduler_action").sudo()._trigger()
         return True
+
+    def write(self, vals):
+        if not self.env.su:
+            # 🔴 `readonly` guards the screen only. By RPC, a teacher set the date the parents
+            # were informed and a breach of sexual violence reached the portal without the
+            # student's consent; or moved a breach to a student outside their groups.
+            if "parents_informed_on" in vals:
+                raise UserError(_("The parents are informed with the button, which checks the conditions."))
+            if "student_id" in vals and not self.env.user.has_group("bf_school_core.group_school_manager"):
+                raise UserError(_("A breach is not moved to another student: the office does it."))
+        return super().write(vals)
 
     def action_close(self):
         self.write({"state": "closed"})
@@ -231,7 +244,8 @@ class FollowupCommunication(models.Model):
         if not template:
             return
         for communication in self.sudo():
-            adults = communication.student_id.student_guardian_link_ids.filtered("receives_notices").guardian_id
+            adults = communication.student_id.student_guardian_link_ids.filtered(
+                lambda l: l.receives_notices and l.has_parental_authority).guardian_id
             for adult in adults.filtered("email"):
                 lang = adult.lang or communication.company_id.partner_id.lang or "fr_CA"
                 template.with_context(lang=lang, school_lang=lang).send_mail(

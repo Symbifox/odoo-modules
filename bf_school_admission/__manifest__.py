@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : admission et réinscription",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "Admission of new students (public form, fee, exam, waiting list, decision by "
                "a person) and re-enrolment from the family portal",

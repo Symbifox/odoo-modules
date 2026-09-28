@@ -202,3 +202,24 @@ class TestSchoolMail(TransactionCase):
     def test_other_emails_are_untouched(self):
         mail, base = self._send(lang="fr_CA")
         self.assertIn('href="%s/my/school"' % base, mail.body_html)
+
+
+@tagged("post_install", "-at_install")
+class TestGuardianDefaults(SchoolCase):
+    """Adversarial review (2026-09-27): a grandparent saw health and conduct by default."""
+
+    def test_grandparent_and_other_start_without_authority(self):
+        for relationship in ("grandparent", "other"):
+            adult = self.env["res.partner"].create({"name": "Adulte %s" % relationship})
+            link = self.env["bf.school.guardian.link"].create(
+                {"student_id": self.child.id, "guardian_id": adult.id, "relationship": relationship})
+            self.assertEqual((link.has_parental_authority, link.can_sign, link.receives_notices),
+                             (False, False, False), relationship)
+        parent = self.env["bf.school.guardian.link"].create(
+            {"student_id": self.child.id, "guardian_id": self.env["res.partner"].create({"name": "Parent"}).id,
+             "relationship": "parent"})
+        self.assertTrue(parent.has_parental_authority)
+        explicit = self.env["bf.school.guardian.link"].create(
+            {"student_id": self.child.id, "guardian_id": self.env["res.partner"].create({"name": "Mamie"}).id,
+             "relationship": "grandparent", "receives_notices": True})
+        self.assertTrue(explicit.receives_notices, "the school decides")

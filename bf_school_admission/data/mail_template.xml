@@ -31,6 +31,7 @@
 <div>
     <t t-set="event" t-value="ctx.get('school_event')"/>
     <p style="margin:0 0 12px 0;">Hello,</p>
+    <p t-if="event == 'fee'" style="margin:0 0 12px 0;">The school has checked the application. The fee is now to pay, online from the application page or at the school office; the application is studied once it is paid.</p>
     <p t-if="event == 'received'" style="margin:0 0 12px 0;">We have received the application and its fee. We will write to you at the next step.</p>
     <p t-if="event == 'convened'" style="margin:0 0 12px 0;">You are convened to the admission exam: <strong t-out="format_datetime(object.campaign_id.exam_datetime, tz=object.company_id.partner_id.tz or 'America/Toronto') or ''"/><t t-if="object.campaign_id.exam_location">, <t t-out="object.campaign_id.exam_location"/></t>.</p>
     <p t-if="event == 'accepted'" style="margin:0 0 12px 0;">Good news: the application is accepted. The school will contact you to complete the registration.</p>

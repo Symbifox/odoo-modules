@@ -10,6 +10,9 @@ RELATIONSHIPS = [
     ("other", "Other"),
 ]
 
+#: Relationships that start without parental authority, signature or notices.
+NO_AUTHORITY_BY_DEFAULT = ("grandparent", "other")
+
 
 class GuardianLink(models.Model):
     """The link between a student and an adult, with what that adult may do.
@@ -78,8 +81,19 @@ class GuardianLink(models.Model):
                     "Only a holder of parental authority or a tutor signs for a minor.",
                     adult=link.guardian_id.name, student=link.student_id.name))
 
+    @api.onchange("relationship")
+    def _onchange_relationship(self):
+        if self.relationship in NO_AUTHORITY_BY_DEFAULT:
+            self.update({"has_parental_authority": False, "can_sign": False, "receives_notices": False})
+
     @api.model_create_multi
     def create(self, vals_list):
+        # 🔴 A grandparent or "other" adult holds no parental authority unless the school says
+        # so: with every box ticked by default, they saw health and conduct on the portal.
+        for vals in vals_list:
+            if vals.get("relationship") in NO_AUTHORITY_BY_DEFAULT:
+                for key in ("has_parental_authority", "can_sign", "receives_notices"):
+                    vals.setdefault(key, False)
         links = super().create(vals_list)
         links.student_id._school_sync_legal_guardians()
         return links

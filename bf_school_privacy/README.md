@@ -19,6 +19,10 @@ the portal pages.
   links of `bf_school_core`); from 14, to the student (Private Sector Act s. 4.1 and
   14; Access Act s. 53.1 and 64.1). The minor flag is refreshed from the birth date
   at the moment of the request.
+- A student the consent module would get wrong is left out and named in a note on the
+  school: no birth date, a minor without an adult holding parental authority (the
+  module would ask the child), or a recipient whose address is another account's login
+  or whose account is archived (the request would fail).
 - "My children" on the family portal links to the consents page.
 
 ## Before the first request

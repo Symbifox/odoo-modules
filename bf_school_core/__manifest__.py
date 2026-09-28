@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "Schools, school years, levels, groups, students and their guardians, "
                "with roles for shared custody",

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 02:29+0000\n"
+"POT-Creation-Date: 2026-09-27 20:37+0000\n"
 "PO-Revision-Date: 2026-09-27 02:29+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -88,21 +88,19 @@ msgstr "<strong>Soutien :</strong>"
 #. module: bf_school_conduct
 #. odoo-python
 #: code:addons/bf_school_conduct/models/conduct.py:0
-msgid ""
-"A suspension notice gives its reasons and the support measures (Education "
-"Act s. 96.27, Private Education Act s. 63.6)."
-msgstr ""
-"Un avis de suspension donne ses motifs et les mesures de soutien (LIP, art. "
-"96.27; LEP, art. 63.6)."
+msgid "A breach is not moved to another student: the office does it."
+msgstr "Un manquement ne se déplace pas vers un autre élève : le secrétariat s'en charge."
+
+#. module: bf_school_conduct
+#. odoo-python
+#: code:addons/bf_school_conduct/models/conduct.py:0
+msgid "A suspension notice gives its reasons and the support measures (Education Act s. 96.27, Private Education Act s. 63.6)."
+msgstr "Un avis de suspension donne ses motifs et les mesures de soutien (LIP, art. 96.27; LEP, art. 63.6)."
 
 #. module: bf_school_conduct
 #: model:ir.model.fields,help:bf_school_conduct.field_bf_school_sanction__is_suspension
-msgid ""
-"A suspension requires the reasons and the support measures in the parents' "
-"notice."
-msgstr ""
-"Une suspension exige les motifs et les mesures de soutien dans l'avis aux "
-"parents."
+msgid "A suspension requires the reasons and the support measures in the parents' notice."
+msgstr "Une suspension exige les motifs et les mesures de soutien dans l'avis aux parents."
 
 #. module: bf_school_conduct
 #: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__message_needaction
@@ -245,14 +243,8 @@ msgstr "Comportement non conforme aux règles de conduite"
 #. module: bf_school_conduct
 #: model:ir.model.fields,help:bf_school_conduct.field_bf_school_conduct_rule__is_violence
 #: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__is_violence
-msgid ""
-"Counted in the annual report on bullying and violence, and the parents of "
-"the students involved are informed promptly (Education Act s. 96.12, Private"
-" Education Act s. 63.5)."
-msgstr ""
-"Compté au rapport annuel sur l'intimidation et la violence; les parents des "
-"élèves concernés sont informés promptement (LIP, art. 96.12; LEP, art. "
-"63.5)."
+msgid "Counted in the annual report on bullying and violence, and the parents of the students involved are informed promptly (Education Act s. 96.12, Private Education Act s. 63.5)."
+msgstr "Compté au rapport annuel sur l'intimidation et la violence; les parents des élèves concernés sont informés promptement (LIP, art. 96.12; LEP, art. 63.5)."
 
 #. module: bf_school_conduct
 #: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_conduct_rule__create_uid
@@ -344,9 +336,7 @@ msgstr "Icône Font Awesome par ex. fa-tasks"
 #: model:ir.model.fields,help:bf_school_conduct.field_bf_school_conduct_rule__is_sexual
 #: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__is_sexual
 msgid "From 14, the parents are informed only with the student's consent."
-msgstr ""
-"À partir de 14 ans, les parents ne sont informés qu'avec le consentement de "
-"l'élève."
+msgstr "À partir de 14 ans, les parents ne sont informés qu'avec le consentement de l'élève."
 
 #. module: bf_school_conduct
 #: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_followup__has_message
@@ -594,8 +584,7 @@ msgstr "Motifs de la suspension"
 #. module: bf_school_conduct
 #: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__student_consent
 msgid "Required for sexual violence when the student is 14 or older."
-msgstr ""
-"Requis pour une violence à caractère sexuel quand l'élève a 14 ans ou plus."
+msgstr "Requis pour une violence à caractère sexuel quand l'élève a 14 ans ou plus."
 
 #. module: bf_school_conduct
 #: model:bf.school.conduct.rule,name:bf_school_conduct.rule_respect
@@ -704,13 +693,8 @@ msgstr "Violence à caractère sexuel"
 #. module: bf_school_conduct
 #. odoo-python
 #: code:addons/bf_school_conduct/models/conduct.py:0
-msgid ""
-"Sexual violence: from 14, the parents are informed only with the student's "
-"consent. Record it first, or contact the student protector."
-msgstr ""
-"Violence à caractère sexuel : à partir de 14 ans, les parents ne sont "
-"informés qu'avec le consentement de l'élève. Consignez-le d'abord, ou "
-"communiquez avec le protecteur de l'élève."
+msgid "Sexual violence: from 14, the parents are informed only with the student's consent. Record it first, or contact the student protector."
+msgstr "Violence à caractère sexuel : à partir de 14 ans, les parents ne sont informés qu'avec le consentement de l'élève. Consignez-le d'abord, ou communiquez avec le protecteur de l'élève."
 
 #. module: bf_school_conduct
 #: model:ir.model.fields,field_description:bf_school_conduct.field_bf_school_incident__state
@@ -759,21 +743,19 @@ msgstr "Mesures de soutien et de réintégration"
 
 #. module: bf_school_conduct
 #: model_terms:ir.ui.view,arch_db:bf_school_conduct.bf_school_incident_view_form
-msgid ""
-"The adults who receive notices will get an email, and the breach will appear"
-" in their family portal. Continue?"
-msgstr ""
-"Les adultes qui reçoivent les avis recevront un courriel, et le manquement "
-"paraîtra dans leur portail des familles. Continuer?"
+msgid "The adults who receive notices will get an email, and the breach will appear in their family portal. Continue?"
+msgstr "Les adultes qui reçoivent les avis recevront un courriel, et le manquement paraîtra dans leur portail des familles. Continuer?"
 
 #. module: bf_school_conduct
 #: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__suggested_sanction_id
-msgid ""
-"The next level after the previous breaches of the same rule this school "
-"year. An aid: a person decides."
-msgstr ""
-"Le palier suivant après les manquements précédents à la même règle cette "
-"année scolaire. Une aide : une personne décide."
+msgid "The next level after the previous breaches of the same rule this school year. An aid: a person decides."
+msgstr "Le palier suivant après les manquements précédents à la même règle cette année scolaire. Une aide : une personne décide."
+
+#. module: bf_school_conduct
+#. odoo-python
+#: code:addons/bf_school_conduct/models/conduct.py:0
+msgid "The parents are informed with the button, which checks the conditions."
+msgstr "Les parents sont avisés par le bouton, qui vérifie les conditions."
 
 #. module: bf_school_conduct
 #: model:ir.model.fields,help:bf_school_conduct.field_bf_school_sanction__level
@@ -810,8 +792,7 @@ msgstr "Historique de communication du site web"
 #. module: bf_school_conduct
 #: model_terms:ir.ui.view,arch_db:bf_school_conduct.bf_school_incident_view_form
 msgid "What happened, in plain words. The family reads it once informed."
-msgstr ""
-"Ce qui s'est passé, en mots simples. La famille le lit une fois informée."
+msgstr "Ce qui s'est passé, en mots simples. La famille le lit une fois informée."
 
 #. module: bf_school_conduct
 #: model:ir.model.fields,help:bf_school_conduct.field_bf_school_incident__description

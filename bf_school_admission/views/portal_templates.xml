@@ -90,7 +90,8 @@
                     <strong>Status:</strong> <span t-field="app.state"/>
                 </div>
                 <t t-if="app.state == 'awaiting_fee'">
-                    <p>The application is studied once the fee is paid. Pay online now, or at the school office.</p>
+                    <p t-if="app._payment_url()">The application is studied once the fee is paid. Pay online now, or at the school office.</p>
+                    <p t-else="">The school is checking the application. You will receive an email when the fee can be paid.</p>
                     <a t-if="app._payment_url()" t-att-href="app._payment_url()" class="btn btn-primary">
                         Pay <t t-out="app.campaign_id.fee_amount" t-options="{'widget': 'monetary', 'display_currency': app.currency_id}"/>
                     </a>

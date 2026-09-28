@@ -213,3 +213,14 @@ class TestFormFrench(SchoolFormsCase):
         self.assertEqual(mail.subject, "Alpha : autorisation, Sortie au musée")
         self.assertIn("Répondre", mail.body_html)
         self.assertIn("Départ 9 h", mail.body_html)
+
+    # Adversarial review (2026-09-27)
+    def test_a_guardian_who_no_longer_signs_cannot_answer(self):
+        form = self._sent()
+        answer = self._answer(form, self.alpha, self.dad)
+        link = self.alpha.student_guardian_link_ids.filtered(lambda l: l.guardian_id == self.dad)
+        link.write({"can_sign": False, "has_parental_authority": False})
+        with self.assertRaises(UserError):
+            answer._school_decide("refused", "link")
+        self.assertEqual(answer.decision, "pending")
+        self.assertEqual(self.url_open("/school/form/%s/%s" % (answer.id, answer.access_token)).status_code, 404)

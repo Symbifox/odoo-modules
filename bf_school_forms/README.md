@@ -38,7 +38,8 @@ phone call the morning of.
   authorised, not the evidence (IP address, browser): that stays with the office.
 - Nobody writes an answer by hand: answers come from the guardians only.
 - Portal pages read through the adult's own answers; another family's answer is a
-  404. The personal link is checked in constant time.
+  404. The personal link is checked in constant time, and works only while the adult
+  still signs for the student.
 
 ## What has not been confirmed
 

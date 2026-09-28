@@ -82,6 +82,9 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <field name="invoice_state" invisible="1"/>
+                    <button name="action_request_fee" type="object" string="Ask for the fee" class="btn-primary"
+                            invisible="state != 'awaiting_fee' or invoice_state != 'draft'"/>
                     <button name="action_convene" type="object" string="Convene to the exam" class="btn-primary"
                             invisible="state != 'submitted' or kind != 'admission'"/>
                     <button name="action_mark_evaluated" type="object" string="Evaluated"

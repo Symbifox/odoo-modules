@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 00:41+0000\n"
+"POT-Creation-Date: 2026-09-27 20:37+0000\n"
 "PO-Revision-Date: 2026-09-27 00:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -43,6 +43,7 @@ msgid ""
 "<div>\n"
 "    <t t-set=\"event\" t-value=\"ctx.get('school_event')\"/>\n"
 "    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p t-if=\"event == 'fee'\" style=\"margin:0 0 12px 0;\">The school has checked the application. The fee is now to pay, online from the application page or at the school office; the application is studied once it is paid.</p>\n"
 "    <p t-if=\"event == 'received'\" style=\"margin:0 0 12px 0;\">We have received the application and its fee. We will write to you at the next step.</p>\n"
 "    <p t-if=\"event == 'convened'\" style=\"margin:0 0 12px 0;\">You are convened to the admission exam: <strong t-out=\"format_datetime(object.campaign_id.exam_datetime, tz=object.company_id.partner_id.tz or 'America/Toronto') or ''\"/><t t-if=\"object.campaign_id.exam_location\">, <t t-out=\"object.campaign_id.exam_location\"/></t>.</p>\n"
 "    <p t-if=\"event == 'accepted'\" style=\"margin:0 0 12px 0;\">Good news: the application is accepted. The school will contact you to complete the registration.</p>\n"
@@ -59,8 +60,9 @@ msgstr ""
 "<div>\n"
 "    <t t-set=\"event\" t-value=\"ctx.get('school_event')\"/>\n"
 "    <p style=\"margin:0 0 12px 0;\">Bonjour,</p>\n"
+"    <p t-if=\"event == 'fee'\" style=\"margin:0 0 12px 0;\">L'école a vérifié la demande. Les droits sont maintenant à payer, en ligne depuis la page de la demande ou au secrétariat; la demande est étudiée une fois les droits payés.</p>\n"
 "    <p t-if=\"event == 'received'\" style=\"margin:0 0 12px 0;\">Nous avons reçu la demande et ses frais. Nous vous écrirons à la prochaine étape.</p>\n"
-"    <p t-if=\"event == 'convened'\" style=\"margin:0 0 12px 0;\">Vous êtes convoqué à l'examen d'admission : <strong t-out=\"format_datetime(object.campaign_id.exam_datetime, tz=object.company_id.partner_id.tz or 'America/Toronto') or ''\"/><t t-if=\"object.campaign_id.exam_location\">, <t t-out=\"object.campaign_id.exam_location\"/></t>.</p>\n"
+"    <p t-if=\"event == 'convened'\" style=\"margin:0 0 12px 0;\">Votre convocation à l'examen d'admission : <strong t-out=\"format_datetime(object.campaign_id.exam_datetime, tz=object.company_id.partner_id.tz or 'America/Toronto') or ''\"/><t t-if=\"object.campaign_id.exam_location\">, <t t-out=\"object.campaign_id.exam_location\"/></t>.</p>\n"
 "    <p t-if=\"event == 'accepted'\" style=\"margin:0 0 12px 0;\">Bonne nouvelle : la demande est acceptée. L'école communiquera avec vous pour compléter l'inscription.</p>\n"
 "    <p t-if=\"event == 'waitlisted'\" style=\"margin:0 0 12px 0;\">La demande est sur la liste d'attente. Nous vous écrirons si une place se libère.</p>\n"
 "    <p t-if=\"event == 'refused'\" style=\"margin:0 0 12px 0;\">Nous sommes désolés : l'école ne peut pas offrir de place cette année.</p>\n"
@@ -152,14 +154,14 @@ msgstr "Admission de nouveaux élèves"
 
 #. module: bf_school_admission
 #: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__fee_amount
-msgid ""
-"Admission: fee for studying the application, at most 50 $ (Regulation E-9.1,"
-" r. 3, s. 11). Re-enrolment: registration fee, at most 200 $ (s. 12); it is "
-"part of the price of the contract for educational services."
-msgstr ""
-"Admission : frais d'étude du dossier, au plus 50 $ (Règlement E-9.1, r. 3, "
-"art. 11). Réinscription : droits d'inscription, au plus 200 $ (art. 12); ils"
-" font partie du prix du contrat de services éducatifs."
+msgid "Admission: fee for studying the application, at most 50 $ (Regulation E-9.1, r. 3, s. 11). Re-enrolment: registration fee, at most 200 $ (s. 12); it is part of the price of the contract for educational services."
+msgstr "Admission : frais d'étude du dossier, au plus 50 $ (Règlement E-9.1, r. 3, art. 11). Réinscription : droits d'inscription, au plus 200 $ (art. 12); ils font partie du prix du contrat de services éducatifs."
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "An application moves with its buttons."
+msgstr "Une demande avance avec ses boutons."
 
 #. module: bf_school_admission
 #: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__application_count
@@ -186,6 +188,11 @@ msgid "Applications"
 msgstr "Candidatures"
 
 #. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
+msgid "Ask for the fee"
+msgstr "Demander les droits"
+
+#. module: bf_school_admission
 #. odoo-python
 #: code:addons/bf_school_admission/controllers/portal.py:0
 msgid "At most %s documents."
@@ -205,12 +212,8 @@ msgstr "En attente de paiement"
 
 #. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
-msgid ""
-"Birth certificate and the latest report card. PDF, JPEG, PNG or HEIC, up to "
-"10 MB each, 5 documents at most."
-msgstr ""
-"Certificat de naissance et dernier bulletin. PDF, JPEG, PNG ou HEIC, jusqu'à"
-" 10 Mo chacun, 5 documents au plus."
+msgid "Birth certificate and the latest report card. PDF, JPEG, PNG or HEIC, up to 10 MB each, 5 documents at most."
+msgstr "Certificat de naissance et dernier bulletin. PDF, JPEG, PNG ou HEIC, jusqu'à 10 Mo chacun, 5 documents au plus."
 
 #. module: bf_school_admission
 #: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__student_birthdate
@@ -274,8 +277,7 @@ msgstr "Confirmer la réinscription"
 
 #. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.reenroll_form
-msgid ""
-"Contact information to change? Write to the school office before confirming."
+msgid "Contact information to change? Write to the school office before confirming."
 msgstr "Des coordonnées à changer? Écrivez au secrétariat avant de confirmer."
 
 #. module: bf_school_admission
@@ -355,6 +357,11 @@ msgid "Email *"
 msgstr "Courriel *"
 
 #. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__fee_label
+msgid "Empty: the application fee for an admission, the registration fee for a re-enrolment."
+msgstr "Vide : les frais d'étude de dossier pour une admission, les droits d'inscription pour une réinscription."
+
+#. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_form
 msgid "Enrol"
 msgstr "Inscrire"
@@ -414,6 +421,11 @@ msgstr "Frais payés"
 #: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__invoice_id
 msgid "Fee invoice"
 msgstr "Facture des frais"
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__invoice_state
+msgid "Fee invoice state"
+msgstr "État de la facture des droits"
 
 #. module: bf_school_admission
 #: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission_campaign__fee_label
@@ -641,6 +653,12 @@ msgid "Only an accepted application is enrolled."
 msgstr "Seule une demande acceptée s'inscrit."
 
 #. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Only an application whose fee is not requested yet is asked for it."
+msgstr "Seule une demande dont les droits ne sont pas encore demandés peut les recevoir."
+
+#. module: bf_school_admission
 #: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission_campaign__state__open
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
 msgid "Open"
@@ -653,14 +671,8 @@ msgstr "Ouvre le"
 
 #. module: bf_school_admission
 #: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__rank
-msgid ""
-"Order by score within the campaign and the level, among the evaluated and "
-"waiting-listed applications. An aid: the decision is always taken by a "
-"person."
-msgstr ""
-"Ordre selon la note dans la campagne et le niveau, parmi les demandes "
-"évaluées et en liste d'attente. Une aide : la décision est toujours prise "
-"par une personne."
+msgid "Order by score within the campaign and the level, among the evaluated and waiting-listed applications. An aid: the decision is always taken by a person."
+msgstr "Ordre selon la note dans la campagne et le niveau, parmi les demandes évaluées et en liste d'attente. Une aide : la décision est toujours prise par une personne."
 
 #. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
@@ -685,8 +697,7 @@ msgstr "Téléphone"
 #. module: bf_school_admission
 #. odoo-python
 #: code:addons/bf_school_admission/controllers/portal.py:0
-msgid ""
-"Please confirm that you have read how the school uses this information."
+msgid "Please confirm that you have read how the school uses this information."
 msgstr "Confirmez avoir lu comment l'école utilise ces renseignements."
 
 #. module: bf_school_admission
@@ -709,6 +720,12 @@ msgstr "Purger les demandes non inscrites"
 #: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__purged
 msgid "Purged"
 msgstr "Purgée"
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Purged contact"
+msgstr "Contact purgé"
 
 #. module: bf_school_admission
 #: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__rank
@@ -753,6 +770,12 @@ msgid "Refused"
 msgstr "Refusée"
 
 #. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid "Registration fee"
+msgstr "Droits d'inscription"
+
+#. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.reenroll_form
 msgid "Registration fee:"
 msgstr "Droits d'inscription :"
@@ -787,13 +810,17 @@ msgstr "École : PDF officiel des factures de frais"
 #. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
 msgid "Second parent or guardian <small class=\"text-muted\">(optional)</small>"
-msgstr ""
-"Deuxième parent ou tuteur <small class=\"text-muted\">(facultatif)</small>"
+msgstr "Deuxième parent ou tuteur <small class=\"text-muted\">(facultatif)</small>"
 
 #. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
 msgid "Send the application"
 msgstr "Envoyer la demande"
+
+#. module: bf_school_admission
+#: model:ir.model.fields,field_description:bf_school_admission.field_bf_school_admission__client_ip
+msgid "Sent from"
+msgstr "Envoyée depuis"
 
 #. module: bf_school_admission
 #. odoo-python
@@ -836,23 +863,20 @@ msgid "Text of the public form"
 msgstr "Texte du formulaire public"
 
 #. module: bf_school_admission
+#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission__client_ip
+msgid "The address the public form was sent from, to limit abuse."
+msgstr "L'adresse d'où le formulaire public a été envoyé, pour limiter les abus."
+
+#. module: bf_school_admission
 #. odoo-python
 #: code:addons/bf_school_admission/models/admission.py:0
-msgid ""
-"The admission application fee is at most 50 $ (Regulation E-9.1, r. 3, s. "
-"11)."
-msgstr ""
-"Les frais d'étude d'une demande d'admission sont d'au plus 50 $ (Règlement "
-"E-9.1, r. 3, art. 11)."
+msgid "The admission application fee is at most 50 $ (Regulation E-9.1, r. 3, s. 11)."
+msgstr "Les frais d'étude d'une demande d'admission sont d'au plus 50 $ (Règlement E-9.1, r. 3, art. 11)."
 
 #. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
-msgid ""
-"The application is studied once the fee is paid. Pay online now, or at the "
-"school office."
-msgstr ""
-"La demande est étudiée une fois les frais payés. Payez en ligne maintenant, "
-"ou au secrétariat."
+msgid "The application is studied once the fee is paid. Pay online now, or at the school office."
+msgstr "La demande est étudiée une fois les frais payés. Payez en ligne maintenant, ou au secrétariat."
 
 #. module: bf_school_admission
 #. odoo-python
@@ -867,14 +891,8 @@ msgstr "Les documents et l'identité de l'élève ont été détruits."
 
 #. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
-msgid ""
-"The documents, the student's identity and the evaluation of every "
-"application that did not lead to an enrolment will be destroyed. The fee "
-"invoices are kept. This cannot be undone. Continue?"
-msgstr ""
-"Les documents, l'identité de l'élève et l'évaluation de chaque demande qui "
-"n'a pas mené à une inscription seront détruits. Les factures des frais sont "
-"conservées. C'est irréversible. Continuer?"
+msgid "The documents, the student's identity and the evaluation of every application that did not lead to an enrolment will be destroyed. The fee invoices are kept. This cannot be undone. Continue?"
+msgstr "Les documents, l'identité de l'élève et l'évaluation de chaque demande qui n'a pas mené à une inscription seront détruits. Les factures des frais sont conservées. C'est irréversible. Continuer?"
 
 #. module: bf_school_admission
 #. odoo-python
@@ -884,19 +902,19 @@ msgstr "L'adresse courriel n'est pas valide."
 
 #. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
-msgid ""
-"The re-enrolment is confirmed. The school will send the contract for "
-"signature."
-msgstr ""
-"La réinscription est confirmée. L'école enverra le contrat pour signature."
+msgid "The re-enrolment is confirmed. The school will send the contract for signature."
+msgstr "La réinscription est confirmée. L'école enverra le contrat pour signature."
 
 #. module: bf_school_admission
 #. odoo-python
 #: code:addons/bf_school_admission/models/admission.py:0
 msgid "The registration fee is at most 200 $ (Regulation E-9.1, r. 3, s. 12)."
-msgstr ""
-"Les droits d'inscription sont d'au plus 200 $ (Règlement E-9.1, r. 3, art. "
-"12)."
+msgstr "Les droits d'inscription sont d'au plus 200 $ (Règlement E-9.1, r. 3, art. 12)."
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
+msgid "The school is checking the application. You will receive an email when the fee can be paid."
+msgstr "L'école vérifie la demande. Vous recevrez un courriel quand les droits pourront être payés."
 
 #. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
@@ -918,6 +936,12 @@ msgstr "Cette demande n'attend pas de décision."
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_search
 msgid "To decide"
 msgstr "À décider"
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid "Too many applications were sent from here in the last hour. Try again later, or contact the school office."
+msgstr "Trop de demandes ont été envoyées d'ici dans la dernière heure. Réessayez plus tard, ou communiquez avec le secrétariat."
 
 #. module: bf_school_admission
 #: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission__state__waitlisted
@@ -965,24 +989,5 @@ msgstr "pour"
 
 #. module: bf_school_admission
 #: model:mail.template,subject:bf_school_admission.mail_template_admission_update
-msgid ""
-"{{ object.school_id.name }}: {{ object.campaign_id.name }}, {{ object.name "
-"}}"
-msgstr ""
-"{{ object.school_id.name }} : {{ object.campaign_id.name }}, {{ object.name "
-"}}"
-
-#. module: bf_school_admission
-#. odoo-python
-#: code:addons/bf_school_admission/models/admission.py:0
-msgid "Registration fee"
-msgstr "Droits d'inscription"
-
-#. module: bf_school_admission
-#: model:ir.model.fields,help:bf_school_admission.field_bf_school_admission_campaign__fee_label
-msgid ""
-"Empty: the application fee for an admission, the registration fee for a re-"
-"enrolment."
-msgstr ""
-"Vide : les frais d'étude de dossier pour une admission, les droits "
-"d'inscription pour une réinscription."
+msgid "{{ object.school_id.name }}: {{ object.campaign_id.name }}, {{ object.name }}"
+msgstr "{{ object.school_id.name }} : {{ object.campaign_id.name }}, {{ object.name }}"

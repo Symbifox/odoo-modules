@@ -11,7 +11,7 @@ class SchoolMealPortal(CustomerPortal):
 
     def _meal_context(self):
         partner = request.env.user.partner_id
-        links = partner._school_portal_links().filtered(lambda l: l.receives_notices or l.is_payer or l.can_sign)
+        links = partner._school_portal_links().filtered(lambda l: l.is_payer or l.has_parental_authority)
         return partner, links.student_id
 
     @http.route("/my/school/meals", type="http", auth="user", website=True)

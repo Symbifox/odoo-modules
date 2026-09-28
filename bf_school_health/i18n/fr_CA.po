@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 03:21+0000\n"
+"POT-Creation-Date: 2026-09-27 20:37+0000\n"
 "PO-Revision-Date: 2026-09-27 03:21+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -12,6 +12,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "1 auto-injector"
+msgstr "1 auto-injecteur"
 
 #. module: bf_school_health
 #: model:mail.template,body_html:bf_school_health.mail_template_epinephrine
@@ -65,12 +71,14 @@ msgstr "<i class=\"fa fa-medkit me-1\"/>Santé"
 #. module: bf_school_health
 #. odoo-python
 #: code:addons/bf_school_health/models/health.py:0
-msgid ""
-"A medication sent to the family is not edited: revoke it and create a new "
-"one."
-msgstr ""
-"Un médicament envoyé à la famille ne se modifie pas : révoquer "
-"l'autorisation et en créer une nouvelle."
+msgid "A dose recorded is not changed: add a note, or record the correction."
+msgstr "Une dose inscrite ne se modifie pas : ajoutez une note, ou inscrivez la correction."
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "A medication sent to the family is not edited: revoke it and create a new one."
+msgstr "Un médicament envoyé à la famille ne se modifie pas : révoquer l'autorisation et en créer une nouvelle."
 
 #. module: bf_school_health
 #: model:ir.model.constraint,message:bf_school_health.constraint_bf_school_health_record_one_per_student
@@ -114,12 +122,8 @@ msgstr "Une autorisation se termine après son début."
 
 #. module: bf_school_health
 #: model:ir.model.fields,help:bf_school_health.field_bf_school_medication_administration__emergency_epinephrine
-msgid ""
-"Anyone may give epinephrine for a severe allergic reaction, without written "
-"authorisation. The family is told at once."
-msgstr ""
-"Toute personne peut donner l'épinéphrine lors d'une réaction allergique "
-"grave, sans autorisation écrite. La famille est avisée sur-le-champ."
+msgid "Anyone may give epinephrine for a severe allergic reaction, without written authorisation. The family is told at once."
+msgstr "Toute personne peut donner l'épinéphrine lors d'une réaction allergique grave, sans autorisation écrite. La famille est avisée sur-le-champ."
 
 #. module: bf_school_health
 #: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__as_needed
@@ -159,12 +163,8 @@ msgstr "Autorisé"
 
 #. module: bf_school_health
 #: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__storage
-msgid ""
-"Auto-injectors are kept unlocked and reachable; other medication as the "
-"school decides."
-msgstr ""
-"Les auto-injecteurs restent accessibles, sans cadenas; les autres "
-"médicaments, selon la décision de l'école."
+msgid "Auto-injectors are kept unlocked and reachable; other medication as the school decides."
+msgstr "Les auto-injecteurs restent accessibles, sans cadenas; les autres médicaments, selon la décision de l'école."
 
 #. module: bf_school_health
 #: model:ir.model.fields,field_description:bf_school_health.field_bf_school_health_record__company_id
@@ -202,8 +202,7 @@ msgstr "Nom d'affichage"
 #. module: bf_school_health
 #: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__self_administered
 msgid "Distribution, not administration: the staff only hands it over."
-msgstr ""
-"Distribution, et non administration : le personnel ne fait que le remettre."
+msgstr "Distribution, et non administration : le personnel ne fait que le remettre."
 
 #. module: bf_school_health
 #: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__dosage
@@ -259,12 +258,8 @@ msgstr "Épinéphrine en urgence"
 
 #. module: bf_school_health
 #: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
-msgid ""
-"Every staff member of the school sees this alert. To change it, write to the"
-" school office."
-msgstr ""
-"Tout le personnel de l'école voit cette alerte. Pour la changer, écrire au "
-"secrétariat."
+msgid "Every staff member of the school sees this alert. To change it, write to the school office."
+msgstr "Tout le personnel de l'école voit cette alerte. Pour la changer, écrire au secrétariat."
 
 #. module: bf_school_health
 #: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__text_hash
@@ -475,8 +470,7 @@ msgstr "Nasale"
 #. odoo-python
 #: code:addons/bf_school_health/models/health.py:0
 msgid "No medication is given without the family's written authorisation."
-msgstr ""
-"Aucun médicament n'est donné sans l'autorisation écrite de la famille."
+msgstr "Aucun médicament n'est donné sans l'autorisation écrite de la famille."
 
 #. module: bf_school_health
 #: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication_administration__note
@@ -521,10 +515,8 @@ msgstr "Seules les personnes qui signent pour cet élève répondent."
 
 #. module: bf_school_health
 #: model:ir.model.fields,help:bf_school_health.field_bf_school_medication__prescriber
-msgid ""
-"Only a prescribed medication may be given by school staff (C-26 s. 39.8)."
-msgstr ""
-"Le personnel scolaire ne donne qu'un médicament prescrit (C-26, art. 39.8)."
+msgid "Only a prescribed medication may be given by school staff (C-26 s. 39.8)."
+msgstr "Le personnel scolaire ne donne qu'un médicament prescrit (C-26, art. 39.8)."
 
 #. module: bf_school_health
 #. odoo-python
@@ -618,12 +610,8 @@ msgstr "Grave"
 #. module: bf_school_health
 #: model:ir.model.fields,help:bf_school_health.field_res_partner__health_alert
 #: model:ir.model.fields,help:bf_school_health.field_res_users__health_alert
-msgid ""
-"Short, for every staff member: the allergy or condition and what to do. "
-"Example: severe peanut allergy, auto-injector in the backpack."
-msgstr ""
-"Courte, pour tout le personnel : l'allergie ou le problème et quoi faire. "
-"Exemple : allergie grave aux arachides, auto-injecteur dans le sac à dos."
+msgid "Short, for every staff member: the allergy or condition and what to do. Example: severe peanut allergy, auto-injector in the backpack."
+msgstr "Courte, pour tout le personnel : l'allergie ou le problème et quoi faire. Exemple : allergie grave aux arachides, auto-injecteur dans le sac à dos."
 
 #. module: bf_school_health
 #: model_terms:ir.ui.view,arch_db:bf_school_health.bf_school_medication_view_form
@@ -672,9 +660,21 @@ msgstr ""
 "            de médicaments, registre des doses données."
 
 #. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "The state and the signature of an authorisation are not edited by hand."
+msgstr "L'état et la signature d'une autorisation ne se modifient pas à la main."
+
+#. module: bf_school_health
 #: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__self_administered
 msgid "The student takes it alone"
 msgstr "Prise par l'élève sans aide"
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "This authorisation is for another student."
+msgstr "Cette autorisation vise un autre élève."
 
 #. module: bf_school_health
 #. odoo-python
@@ -770,9 +770,3 @@ msgstr "· Voie :"
 #: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
 msgid "· until"
 msgstr "· jusqu'au"
-
-#. module: bf_school_health
-#. odoo-python
-#: code:addons/bf_school_health/models/health.py:0
-msgid "1 auto-injector"
-msgstr "1 auto-injecteur"

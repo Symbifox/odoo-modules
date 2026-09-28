@@ -35,7 +35,8 @@ when a child is missing without a reason.
 
 A teacher takes and reads the roll calls of the groups they teach. The office sees and
 corrects everything. Families have no access right: the portal reads through the
-adult's own guardian links.
+adult's own guardian links. Declaring an absence is for the adults with parental
+authority.
 
 ## What has not been confirmed
 

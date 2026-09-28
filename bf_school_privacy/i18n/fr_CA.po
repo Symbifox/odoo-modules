@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-26 22:30+0000\n"
+"POT-Creation-Date: 2026-09-27 20:37+0000\n"
 "PO-Revision-Date: 2026-09-26 22:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -14,20 +14,26 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_school_privacy
+#. odoo-python
+#: code:addons/bf_school_privacy/models/school.py:0
+msgid "%s: their account is archived"
+msgstr "%s : son compte est archivé"
+
+#. module: bf_school_privacy
+#. odoo-python
+#: code:addons/bf_school_privacy/models/school.py:0
+msgid "%s: this address is already another account's login"
+msgstr "%s : cette adresse est déjà l'identifiant d'un autre compte"
+
+#. module: bf_school_privacy
 #: model_terms:ir.ui.view,arch_db:bf_school_privacy.portal_my_school_consents_link
 msgid "<i class=\"fa fa-shield me-1\"/>Consents"
 msgstr "<i class=\"fa fa-shield me-1\"/>Consentements"
 
 #. module: bf_school_privacy
 #: model_terms:privacy.purpose,plain_language_summary:bf_school_privacy.purpose_school_edtech
-msgid ""
-"An account for your child on educational platforms chosen by the school "
-"(reading, mathematics, languages). Some are hosted outside Québec: the "
-"school assessed them before choosing them."
-msgstr ""
-"Un compte pour votre enfant sur des plateformes éducatives choisies par "
-"l'école (lecture, mathématiques, langues). Certaines sont hébergées hors du "
-"Québec : l'école les a évaluées avant de les choisir."
+msgid "An account for your child on educational platforms chosen by the school (reading, mathematics, languages). Some are hosted outside Québec: the school assessed them before choosing them."
+msgstr "Un compte pour votre enfant sur des plateformes éducatives choisies par l'école (lecture, mathématiques, langues). Certaines sont hébergées hors du Québec : l'école les a évaluées avant de les choisir."
 
 #. module: bf_school_privacy
 #. odoo-python
@@ -35,6 +41,18 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_school_privacy.bf_school_view_form_privacy
 msgid "Ask this year's consents"
 msgstr "Demander les consentements de l'année"
+
+#. module: bf_school_privacy
+#. odoo-python
+#: code:addons/bf_school_privacy/models/school.py:0
+msgid "Ask this year's consents (%s left out: see the note on the school)"
+msgstr "Demander les consentements de l'année (%s mis de côté : voir la note sur l'école)"
+
+#. module: bf_school_privacy
+#. odoo-python
+#: code:addons/bf_school_privacy/models/school.py:0
+msgid "Consents not asked, to fix first: %s"
+msgstr "Consentements non demandés, à corriger d'abord : %s"
 
 #. module: bf_school_privacy
 #: model:privacy.purpose,name:bf_school_privacy.purpose_school_edtech
@@ -45,6 +63,12 @@ msgstr "Plateformes éducatives hors de l'école"
 #: model:privacy.purpose,name:bf_school_privacy.purpose_school_directory
 msgid "Family contact list of the group"
 msgstr "Liste de contacts des familles du groupe"
+
+#. module: bf_school_privacy
+#. odoo-python
+#: code:addons/bf_school_privacy/models/school.py:0
+msgid "No student can be asked yet: see the note on the school."
+msgstr "Aucun élève ne peut encore être sollicité : voir la note sur l'école."
 
 #. module: bf_school_privacy
 #. odoo-python
@@ -65,23 +89,13 @@ msgstr "Photos et vidéos à l'intérieur de l'école"
 
 #. module: bf_school_privacy
 #: model_terms:privacy.purpose,plain_language_summary:bf_school_privacy.purpose_school_photo_public
-msgid ""
-"Photos and videos of your child published where anyone can see them: the "
-"school's website, its social media accounts, local newspapers."
-msgstr ""
-"Photos et vidéos de votre enfant publiées là où tout le monde peut les voir "
-": site Web de l'école, ses comptes de médias sociaux, journaux locaux."
+msgid "Photos and videos of your child published where anyone can see them: the school's website, its social media accounts, local newspapers."
+msgstr "Photos et vidéos de votre enfant publiées là où tout le monde peut les voir : site Web de l'école, ses comptes de médias sociaux, journaux locaux."
 
 #. module: bf_school_privacy
 #: model_terms:privacy.purpose,plain_language_summary:bf_school_privacy.purpose_school_photo_internal
-msgid ""
-"Photos and videos of your child taken during school activities, shown only "
-"inside the school: classroom boards, the family portal, the yearbook given "
-"to families."
-msgstr ""
-"Photos et vidéos de votre enfant prises lors des activités scolaires, "
-"montrées seulement à l'intérieur de l'école : tableaux de la classe, portail"
-" des familles, album remis aux familles."
+msgid "Photos and videos of your child taken during school activities, shown only inside the school: classroom boards, the family portal, the yearbook given to families."
+msgstr "Photos et vidéos de votre enfant prises lors des activités scolaires, montrées seulement à l'intérieur de l'école : tableaux de la classe, portail des familles, album remis aux familles."
 
 #. module: bf_school_privacy
 #: model:privacy.purpose,name:bf_school_privacy.purpose_school_photo_public
@@ -120,9 +134,17 @@ msgstr "École : consentements de l'année"
 
 #. module: bf_school_privacy
 #: model_terms:privacy.purpose,plain_language_summary:bf_school_privacy.purpose_school_directory
-msgid ""
-"Your name and email shared with the other families of your child's group, "
-"for carpooling and birthday invitations."
-msgstr ""
-"Votre nom et votre courriel communiqués aux autres familles du groupe de "
-"votre enfant, pour le covoiturage et les invitations d'anniversaire."
+msgid "Your name and email shared with the other families of your child's group, for carpooling and birthday invitations."
+msgstr "Votre nom et votre courriel communiqués aux autres familles du groupe de votre enfant, pour le covoiturage et les invitations d'anniversaire."
+
+#. module: bf_school_privacy
+#. odoo-python
+#: code:addons/bf_school_privacy/models/school.py:0
+msgid "no adult with parental authority"
+msgstr "aucun adulte titulaire de l'autorité parentale"
+
+#. module: bf_school_privacy
+#. odoo-python
+#: code:addons/bf_school_privacy/models/school.py:0
+msgid "no birth date"
+msgstr "aucune date de naissance"

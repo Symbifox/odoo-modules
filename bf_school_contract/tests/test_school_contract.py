@@ -87,7 +87,7 @@ class TestSchoolContract(TransactionCase):
 
     def test_termination_after_three_months(self):
         contract = self._contract()
-        contract.state = "signed"
+        contract.sudo().state = "signed"
         contract.write({"termination_date": date(2026, 11, 20), "amount_paid": 3100.0})
         contract.action_terminate()
         # 200 $ + 5 800 $ x 3/10 + 300 $ = 2 240 $; paid 3 100 $: 860 $ back within ten days.
@@ -117,6 +117,14 @@ class TestSchoolContract(TransactionCase):
             [("res_model", "=", contract._name), ("res_id", "=", contract.id)])
         self.assertEqual(len(request), 1)
         self.assertEqual(request.signer_ids.partner_id, self.mom | self.dad)
+        with self.assertRaises(UserError):
+            contract.action_send_for_signature()  # one request at a time
+        contract._sign_on_signed(request)
+        self.assertEqual(contract.state, "draft", "nobody has signed yet")
+        request.signer_ids.filtered(lambda s: s.partner_id == self.mom).sudo().write({"state": "signed"})
+        contract._sign_on_signed(request)
+        self.assertEqual(contract.state, "draft", "one parent of two is not the contract signed")
+        request.signer_ids.sudo().write({"state": "signed"})
         contract._sign_on_signed(request)
         self.assertEqual(contract.state, "signed")
         with self.assertRaises(UserError):
@@ -131,3 +139,40 @@ class TestSchoolContract(TransactionCase):
         contract = self._contract()
         with self.assertRaises(AccessError), mute_logger("odoo.models"):
             contract.with_user(self.teacher).read(["total_price"])
+
+    # Adversarial review (2026-09-27)
+    def test_state_is_not_written_by_hand(self):
+        office = new_test_user(self.env, login="school_ctr_rpc", groups="bf_school_core.group_school_manager")
+        contract = self._contract().with_user(office)
+        for vals in ({"state": "signed"}, {"signed_on": "2026-09-01 10:00:00"}, {"termination_refund": 0}):
+            with self.assertRaises(UserError):
+                contract.write(vals)
+
+    def test_signed_terms_are_frozen(self):
+        office = new_test_user(self.env, login="school_ctr_rpc2", groups="bf_school_core.group_school_manager")
+        contract = self._contract().with_user(office)
+        contract.action_send_for_signature()
+        with self.assertRaises(UserError):
+            contract.write({"tuition": 1.0})
+        with self.assertRaises(UserError):
+            contract.accessory_ids[:1].write({"price": 0.0})
+
+    def test_a_late_signature_does_not_revive_a_terminated_contract(self):
+        contract = self._contract()
+        contract.action_send_for_signature()
+        request = self.env["bf.sign.request"].search([("res_model", "=", contract._name), ("res_id", "=", contract.id)])
+        request.signer_ids.sudo().write({"state": "signed"})
+        contract._sign_on_signed(request)
+        contract.write({"termination_date": contract.date_start, "amount_paid": 0})
+        contract.action_terminate()
+        contract._sign_on_signed(request)
+        self.assertEqual(contract.state, "terminated")
+
+    def test_no_negative_amount(self):
+        # Admission fee at 0: the cap of 1/10 of the price must not be what refuses it.
+        with self.assertRaises(ValidationError):
+            self._contract(tuition=-1.0, admission_fee=0.0)
+        with self.assertRaises(ValidationError):
+            self._contract(admission_fee=0.0, eligibility_fee=-10.0)
+        with self.assertRaises(ValidationError):
+            self._contract(accessory_ids=[(0, 0, {"name": "Rabais déguisé", "price": -100.0})])

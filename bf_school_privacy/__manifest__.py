@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : consentements",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "Law 25 consents for a school: photos, publication, family contact list, "
                "educational platforms, asked each year of the right person",

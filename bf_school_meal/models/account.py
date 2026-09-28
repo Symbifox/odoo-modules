@@ -1,4 +1,5 @@
 import logging
+import math
 from datetime import date
 
 from dateutil.relativedelta import relativedelta
@@ -46,11 +47,21 @@ class MealAccount(models.Model):
             account = self.sudo().create({"partner_id": partner.id, "company_id": company.id, "mode": mode})
         return account
 
+    def _school_lock(self):
+        """Serialize the orders of one account.
+
+        🔴 A row lock alone does not do it: under REPEATABLE READ, the transaction that waited
+        for the lock still reads the balance and the orders of its old snapshot. UPDATING the
+        account row does: the second transaction fails to serialize, Odoo replays it, and the
+        replay sees the first order (its debit, or its twin).
+        """
+        self.env.cr.execute("UPDATE bf_school_meal_account SET write_date = now() at time zone 'UTC' "
+                            "WHERE id IN %s", [tuple(self.ids)])
+
     def _school_debit(self, order):
         self.ensure_one()
-        # 🔴 Read and written in one statement's transaction, with a row lock: two orders in two
-        # tabs must not both spend the last $6.
-        self.env.cr.execute("SELECT id FROM bf_school_meal_account WHERE id = %s FOR UPDATE", [self.id])
+        # 🔴 Two orders sent at once must not both spend the last $6 (see _school_lock).
+        self._school_lock()
         self.invalidate_recordset(["balance"])
         if self.balance < order.price:
             raise UserError(_("The meal balance is too low (%(balance)s): top it up first.",
@@ -80,7 +91,7 @@ class MealAccount(models.Model):
         self.ensure_one()
         if self.mode != "prepaid":
             raise UserError(_("This account is billed monthly: there is nothing to top up."))
-        if amount < 5 or amount > 500:
+        if not math.isfinite(amount) or amount < 5 or amount > 500:
             raise UserError(_("A top-up is between 5 and 500."))
         move = self.env["account.move"].sudo().with_company(self.company_id).create({
             "move_type": "out_invoice", "partner_id": self.partner_id.id,
@@ -204,10 +215,27 @@ class MealTopup(models.Model):
 
     def _school_paid(self):
         for topup in self.filtered(lambda t: t.state == "pending"):
+            # 🔴 Credit what was paid, not what was asked: a partial credit note plus a small
+            # payment also leaves the invoice "paid".
+            invoice = topup.invoice_id
+            paid = invoice.amount_total - invoice.amount_residual - sum(
+                invoice.reversal_move_ids.filtered(lambda m: m.state == "posted").mapped("amount_total"))
+            if paid <= 0:
+                continue
             topup.state = "paid"
             self.env["bf.school.meal.entry"].sudo().create({
-                "account_id": topup.account_id.id, "amount": topup.amount, "kind": "topup",
+                "account_id": topup.account_id.id, "amount": min(paid, topup.amount), "kind": "topup",
                 "topup_id": topup.id})
+
+    def _school_unpaid(self):
+        """The payment was undone (cancelled, unreconciled, reset to draft): the credit is taken back."""
+        for topup in self.filtered(lambda t: t.state == "paid"):
+            credited = sum(topup.account_id.entry_ids.filtered(lambda e: e.topup_id == topup).mapped("amount"))
+            topup.state = "pending"
+            if credited:
+                self.env["bf.school.meal.entry"].sudo().create({
+                    "account_id": topup.account_id.id, "amount": -credited, "kind": "adjustment",
+                    "topup_id": topup.id, "note": _("Payment of the top-up undone")})
 
 
 class AccountMove(models.Model):
@@ -217,4 +245,17 @@ class AccountMove(models.Model):
         """Paid online (any provider) or recorded by the office: the balance is credited once."""
         result = super()._invoice_paid_hook()
         self.env["bf.school.meal.topup"].sudo().search([("invoice_id", "in", self.ids)])._school_paid()
+        return result
+
+
+class AccountPartialReconcile(models.Model):
+    _inherit = "account.partial.reconcile"
+
+    def unlink(self):
+        """Every undone payment passes here (payment cancelled, unreconciled, invoice reset to draft)."""
+        moves = (self.debit_move_id | self.credit_move_id).move_id
+        result = super().unlink()
+        topups = self.env["bf.school.meal.topup"].sudo().search(
+            [("invoice_id", "in", moves.ids), ("state", "=", "paid")])
+        topups.filtered(lambda t: t.invoice_id.payment_state not in ("paid", "in_payment"))._school_unpaid()
         return result

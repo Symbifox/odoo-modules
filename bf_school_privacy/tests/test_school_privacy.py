@@ -114,3 +114,23 @@ class TestSchoolPrivacy(TransactionCase):
         self.assertTrue(self.teen.is_minor_child)
         consents = self._request().filtered(lambda c: c.subject_partner_id == self.teen)
         self.assertFalse(any(consents.mapped("is_minor")))
+
+    # Adversarial review (2026-09-27)
+    def test_nobody_to_ask_is_left_out_not_the_child_asked(self):
+        today = fields.Date.context_today(self.env["res.partner"])
+        group = self.child.student_enrollment_ids.group_id
+        unknown = self.env["res.partner"].create({"name": "Sans Date Essai", "is_student": True,
+                                                  "email": "sansdate@example.invalid"})
+        alone = self.env["res.partner"].create({"name": "Seul Essai", "is_student": True,
+                                                "email": "seul@example.invalid",
+                                                "student_birthdate": today - relativedelta(years=8)})
+        for kid in unknown | alone:
+            self.env["bf.school.enrollment"].create({"student_id": kid.id, "group_id": group.id})
+        action = self.school.action_school_request_consents()
+        students = self.env["res.partner"].browse(action["context"]["default_partner_ids"][0][2])
+        self.assertNotIn(unknown, students)
+        self.assertNotIn(alone, students)
+        self.assertIn(self.child, students)
+        note = self.school.message_ids[:1].body
+        self.assertIn("Sans Date Essai", note)
+        self.assertIn("Seul Essai", note)
