@@ -57,7 +57,11 @@ class LetterDocument(models.Model):
         string="Date", default=fields.Date.context_today, tracking=True,
     )
     salutation = fields.Char(string="Appel", help="Ex. : Madame, Monsieur,")
-    body_html = fields.Html(string="Corps", sanitize=False, tracking=True)
+    # Corps saisi par tout usager interne et relu par les autres (écran, PDF,
+    # courriel) : on le nettoie, en gardant les styles en ligne permis.
+    body_html = fields.Html(
+        string="Corps", sanitize=True, sanitize_style=True, tracking=True,
+    )
     closing = fields.Char(
         string="Salutation finale",
         help="Ex. : Veuillez agréer, Madame, mes salutations distinguées.",

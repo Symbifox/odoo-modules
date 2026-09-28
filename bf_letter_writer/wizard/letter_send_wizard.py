@@ -1,6 +1,6 @@
 import base64
 
-from markupsafe import Markup
+from markupsafe import Markup, escape
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -68,9 +68,9 @@ class LetterSendWizard(models.TransientModel):
         company = self.letter_id.company_id or self.env.company
         return Markup(
             _BRANDED_WRAPPER.format(
-                primary=company.report_brand_primary or "#714B67",
-                dark=company.report_brand_dark or "#212529",
-                company_name=company.name or "",
+                primary=escape(company.report_brand_primary or "#714B67"),
+                dark=escape(company.report_brand_dark or "#212529"),
+                company_name=escape(company.name or ""),
                 logo_url="/web/image/res.company/%d/logo" % company.id,
                 content=str(inner_html or ""),
             )

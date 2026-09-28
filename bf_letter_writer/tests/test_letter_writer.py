@@ -514,3 +514,32 @@ class TestLetterWriter(TransactionCase):
         )
         self.assertEqual(letter2.letterhead_style, "classic",
                          "Le modèle prime sur le défaut de la société")
+
+    # -- corps nettoyé, en-tête du courriel échappé --------------
+    def test_30_body_sanitized_formatting_kept(self):
+        letter = self._make_letter()
+        letter.write({"body_html": (
+            '<p style="text-align: center; color: #29ABE1;">'
+            '<strong>Gras</strong> <em>italique</em> <u>souligné</u></p>'
+            '<ul><li>point</li></ul>'
+            '<img src="x" onerror="alert(1)"/>'
+            '<script>alert(2)</script>'
+        )})
+        body = str(letter.body_html)
+        self.assertNotIn("onerror", body)
+        self.assertNotIn("<script", body)
+        self.assertNotIn("alert(2)", body)
+        for kept in ("<strong>Gras</strong>", "<em>italique</em>",
+                     "<u>souligné</u>", "<li>point</li>", "text-align",
+                     "#29ABE1"):
+            self.assertIn(kept, body)
+
+    def test_31_send_wrapper_escapes_company(self):
+        self.company.name = 'QA <img src=x onerror="alert(1)">'
+        letter = self._make_letter()
+        letter.body_html = "<p>Corps.</p>"
+        wizard = self.env["letter.send.wizard"].create({"letter_id": letter.id})
+        wrapped = str(wizard._wrap_branded_body("<p>test</p>"))
+        self.assertNotIn("<img src=x", wrapped)
+        self.assertIn("QA &lt;img src=x", wrapped)
+        self.assertIn("<p>test</p>", wrapped)
