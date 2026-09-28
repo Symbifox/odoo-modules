@@ -439,6 +439,10 @@
                     <t t-out="'This poll is limited to certain e-mail domains. Use your work address, or ask the organiser.' if _en
                               else 'Ce sondage est réservé à certains domaines de courriel. Utilisez votre adresse professionnelle, ou écrivez à l\'organisateur.'"/>
                 </div>
+                <div t-if="motif == 'sent'" class="alert alert-info">
+                    <t t-out="'You were invited to this poll by name: your personal link has just been e-mailed to you.' if _en
+                              else 'Vous êtes invité(e) nommément à ce sondage : votre lien personnel vient de vous être envoyé par courriel.'"/>
+                </div>
                 <div t-if="motif == 'invalid'" class="alert alert-warning">
                     <t t-out="'That e-mail address does not look valid.' if _en
                               else 'Cette adresse courriel ne semble pas valide.'"/>

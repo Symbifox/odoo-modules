@@ -1305,12 +1305,40 @@ class TestPollInvitationsAndSelfSignup(TestAppointmentPoll):
         self.assertEqual(un, deux, "l'adresse est la clé : une seule place, un seul jeton")
         self.assertEqual(len(poll.participant_ids.filtered("self_signup")), 1)
 
-    def test_an_invited_person_who_uses_the_link_keeps_her_own_seat(self):
+    def test_an_invited_person_who_uses_the_link_gets_her_link_by_mail(self):
+        """🔴 le lien partagé et l'adresse d'une invitée suffisaient à
+        recevoir SON jeton personnel à l'écran. On le lui envoie par courriel,
+        et le lien partagé ne rend rien."""
         poll = self._open_signup_poll()
-        p, _m = poll._self_signup_join("Obligatoire", "obligatoire@test.invalid")
-        self.assertEqual(p, self.required_participant)
-        self.assertTrue(p.required, "passer par le lien ne dégrade pas une invitation")
-        self.assertFalse(p.self_signup)
+        avant = self._sent_count()
+        p, motif = poll._self_signup_join("Obligatoire", "obligatoire@test.invalid")
+        self.assertFalse(p, "le jeton d'une invitée ne sort jamais par le lien partagé")
+        self.assertEqual(motif, "sent")
+        self.assertEqual(self._sent_count(), avant + 1,
+                         "l'invitée reçoit son lien dans SA boîte")
+        self.assertTrue(self.required_participant.required)
+        self.assertFalse(self.required_participant.self_signup)
+        self.assertEqual(len(poll.participant_ids.filtered(
+            lambda x: x.email == "obligatoire@test.invalid")), 1,
+            "aucune seconde place pour la même adresse")
+
+    def test_a_closed_poll_reveals_nobody_by_the_shared_link(self):
+        """🔴 la recherche passait avant le contrôle d'ouverture."""
+        poll = self._open_signup_poll()
+        inscrite, _m = poll._self_signup_join("Inconnue", "inconnue@test.invalid")
+        self.assertTrue(inscrite)
+        poll.action_close()
+        p, motif = poll._self_signup_join("Inconnue", "inconnue@test.invalid")
+        self.assertFalse(p)
+        self.assertEqual(motif, "closed")
+
+    def test_the_domain_list_is_checked_before_any_lookup(self):
+        poll = self._open_signup_poll(self_signup_domains="@client.com")
+        avant = self._sent_count()
+        p, motif = poll._self_signup_join("Obligatoire", "obligatoire@test.invalid")
+        self.assertFalse(p)
+        self.assertEqual(motif, "domain")
+        self.assertEqual(self._sent_count(), avant, "hors domaine : aucun envoi")
 
     def test_the_cap_closes_the_door(self):
         poll = self._open_signup_poll(self_signup_max=2)

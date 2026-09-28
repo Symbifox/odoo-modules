@@ -792,21 +792,35 @@ class AppointmentPoll(models.Model):
         if not email:
             return self.env["appointment.poll.participant"], "invalid"
 
-        # ⚠ Une personne DÉJÀ inscrite repasse toujours, plafond atteint ou
+        # 🔴 (18.0.1.15.4) Les contrôles d'ouverture et de domaine
+        # passent AVANT toute recherche : le lien partagé ne doit rien rendre
+        # d'un sondage fermé, ni à une adresse hors des domaines permis.
+        ouvert, motif = self._self_signup_state()
+        if not ouvert and motif != "full":
+            return self.env["appointment.poll.participant"], motif
+        if not self._email_matches_list(email, self.self_signup_domains):
+            return self.env["appointment.poll.participant"], "domain"
+
+        # 🔴 Une personne invitée nommément ne récupère JAMAIS son lien à
+        # l'écran par le lien partagé : n'importe qui connaissant son adresse
+        # entrait sous son nom. On lui renvoie son invitation par courriel.
+        invitee = self._self_signup_invitee(email)
+        if invitee:
+            invitee.sudo()._send_invitation()
+            return self.env["appointment.poll.participant"], "sent"
+
+        # ⚠ Une personne DÉJÀ inscrite par le lien repasse, plafond atteint ou
         # non : sinon le 26e arrivant fermerait la porte aux 25 premiers qui
         # reviennent corriger leurs réponses. C'est aussi ce qui rend le lien
         # utilisable sans courriel de confirmation — on retrouve sa place en
-        # ressaisissant son adresse.
+        # ressaisissant son adresse (la modification des réponses reste gardée
+        # par un code, cf. `_edit_needs_otp`).
         deja = self._self_signup_find(email)
         if deja:
             deja._remember_tz(tz)
             return deja, ""
-
-        ouvert, motif = self._self_signup_state()
         if not ouvert:
             return self.env["appointment.poll.participant"], motif
-        if not self._email_matches_list(email, self.self_signup_domains):
-            return self.env["appointment.poll.participant"], "domain"
 
         self.env.cr.execute(
             "SELECT id FROM appointment_poll WHERE id = %s FOR UPDATE", (self.id,))
@@ -846,13 +860,24 @@ class AppointmentPoll(models.Model):
         return participant, ""
 
     def _self_signup_find(self, email):
-        """Le participant déjà inscrit à cette adresse, quel que soit son mode
-        d'entrée : une personne invitée nommément qui passe par le lien
-        retrouve SON inscription, elle n'en crée pas une seconde."""
+        """Le participant déjà inscrit PAR LE LIEN à cette adresse.
+
+        🔴 Seuls les inscrits libres sont cherchés : rendre ici une
+        personne invitée nommément livrait son jeton personnel à quiconque
+        connaissait son adresse. Voir `_self_signup_invitee`."""
         self.ensure_one()
         email = (email or "").strip().lower()
         return self.participant_ids.filtered(
-            lambda p: (p.email or "").strip().lower() == email)[:1]
+            lambda p: p.self_signup
+            and (p.email or "").strip().lower() == email)[:1]
+
+    def _self_signup_invitee(self, email):
+        """La personne invitée nommément à cette adresse, s'il y en a une."""
+        self.ensure_one()
+        email = (email or "").strip().lower()
+        return self.participant_ids.filtered(
+            lambda p: not p.self_signup
+            and (p.email or "").strip().lower() == email)[:1]
 
     def _waiting_for_seeder(self):
         """Vrai quand un répondant arrive avant que la grille existe."""

@@ -140,6 +140,10 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 
 ## Changelog
 
+### 18.0.1.15.4
+
+- **Security.** The shared sign-up link only matches people who signed up through it, and only after the open and allowed-domain checks. A named invitee's personal link is never returned for a typed e-mail address: the invitation is e-mailed to them instead.
+
 ### 18.0.1.15.3
 
 - Brand fallbacks (`--bf-appt-primary`) default to the brand accent instead of Odoo purple; translucent tints use `color-mix()` on the brand variable rather than a fixed rgba.
