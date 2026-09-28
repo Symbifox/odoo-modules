@@ -47,6 +47,18 @@ class TestAccordAppariement(HttpCase):
         return {k: html.unescape(v) for k, v in
                 re.findall(r'name="([a-z_]+)" value="([^"]*)"', page)}
 
+    def test_la_page_suit_la_langue_de_la_personne(self):
+        """Une personne en fr_CA lit la page d'accord en français, pas en anglais."""
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_nfc"], ["fr_CA"], overwrite=True)
+        self.personne.lang = "fr_CA"
+        reponse = self._depart()
+        self.assertEqual(reponse.status_code, 200)
+        self.assertIn("Autoriser", reponse.text)
+        self.assertIn("Refuser", reponse.text)
+        self.assertIn("veut accéder à votre compte", html.unescape(reponse.text))
+        self.assertNotIn(">Allow<", reponse.text)
+
     def test_le_get_rend_la_page_et_n_emet_rien(self):
         avant = self._en_attente()
         reponse = self._depart()

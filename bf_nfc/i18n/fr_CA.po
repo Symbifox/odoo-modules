@@ -2715,3 +2715,235 @@ msgid ""
 msgstr ""
 "Évacuation ; porte de l'escalier\n"
 "Photocopieur ; salle de repos"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "%s wants to access your account"
+msgstr "%s veut accéder à votre compte"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Access requested"
+msgstr "Accès demandé"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Account"
+msgstr "Compte"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Allow"
+msgstr "Autoriser"
+
+#. module: bf_nfc
+#: model:ir.model.constraint,message:bf_nfc.constraint_bf_nfc_enrolement_jeton_unique
+msgid "Ce jeton de session existe déjà."
+msgstr "Ce jeton de session existe déjà."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "Cette gravure a expiré. Recommencez, la puce n'a rien perdu."
+msgstr "Cette gravure a expiré. Recommencez, la puce n'a rien perdu."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Cette gravure a été ouverte par un autre appareil."
+msgstr "Cette gravure a été ouverte par un autre appareil."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "Cette gravure est close."
+msgstr "Cette gravure est close."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid ""
+"Cette pastille a déjà été gravée. Créez-en une neuve plutôt que de remettre "
+"son compteur à zéro."
+msgstr ""
+"Cette pastille a déjà été gravée. Créez-en une neuve plutôt que de remettre "
+"son compteur à zéro."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid ""
+"Cette société n'a pas de clés de pastille signée. Posez-les avant de graver."
+msgstr ""
+"Cette société n'a pas de clés de pastille signée. Posez-les avant de graver."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Deny"
+msgstr "Refuser"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Device"
+msgstr "Appareil"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_enrolement__state__encours
+msgid "En cours"
+msgstr "En cours"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_enrolement__state__expiree
+msgid "Expirée"
+msgstr "Expirée"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "Graver une pastille signée est réservé à la gestion."
+msgstr "Graver une pastille signée est réservé à la gestion."
+
+#. module: bf_nfc
+#: model:ir.model,name:bf_nfc.model_bf_nfc_enrolement
+msgid "Gravure d'une pastille signée"
+msgstr "Gravure d'une pastille signée"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_enrolement__name
+msgid "Jeton de session"
+msgstr "Jeton de session"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "L'UID d'une puce fait 7 octets, soit 14 caractères."
+msgstr "L'UID d'une puce fait 7 octets, soit 14 caractères."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_sdm_key.py:0
+msgid ""
+"La clé maîtresse doit compter 32 caractères hexadécimaux (16 octets AES)."
+msgstr ""
+"La clé maîtresse doit compter 32 caractères hexadécimaux (16 octets AES)."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "La puce a refusé l'écriture de l'adresse (%s)."
+msgstr "La puce a refusé l'écriture de l'adresse (%s)."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "La puce a refusé l'étape précédente (%s)."
+msgstr "La puce a refusé l'étape précédente (%s)."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "La puce a refusé la dernière clé (%s)."
+msgstr "La puce a refusé la dernière clé (%s)."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid ""
+"La puce est gravée, mais sa clé d'usine n'a pas été remplacée : n'importe "
+"qui peut la regraver. Posez une clé maîtresse."
+msgstr ""
+"La puce est gravée, mais sa clé d'usine n'a pas été remplacée : n'importe "
+"qui peut la regraver. Posez une clé maîtresse."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "La puce n'a pas d'application NDEF (%s)."
+msgstr "La puce n'a pas d'application NDEF (%s)."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "Le défi de la puce a été perdu, recommencez."
+msgstr "Le défi de la puce a été perdu, recommencez."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_sdm_key__master_key_enc
+msgid "Master Key Enc"
+msgstr "Clé maîtresse chiffrée"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid ""
+"Only allow this if you just started signing in from the app on your phone."
+msgstr ""
+"N'autorisez que si vous venez de lancer la connexion depuis l'application de"
+" votre téléphone."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "Pastille gravée."
+msgstr "Pastille gravée."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_sdm_key.py:0
+msgid "Poser la clé maîtresse est réservé à la gestion."
+msgstr "Poser la clé maîtresse est réservé à la gestion."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_sdm_key.py:0
+msgid "Posez d'abord la paire de clés de cette société."
+msgstr "Posez d'abord la paire de clés de cette société."
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_enrolement__etape
+msgid "Prochaine étape"
+msgstr "Prochaine étape"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_enrolement__rnda_enc
+msgid "Rnda Enc"
+msgstr "Défi RndA chiffré"
+
+#. module: bf_nfc
+#: model:ir.model.fields,field_description:bf_nfc.field_bf_nfc_enrolement__session_enc
+msgid "Session Enc"
+msgstr "Session chiffrée"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_enrolement__state__termine
+msgid "Terminée"
+msgstr "Terminée"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "Une puce portant cet UID a déjà été gravée ici."
+msgstr "Une puce portant cet UID a déjà été gravée ici."
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/controllers/mobile.py:0
+msgid "Your NFC tag actions"
+msgstr "Vos gestes par pastille NFC"
+
+#. module: bf_nfc
+#: model:ir.model.fields.selection,name:bf_nfc.selection__bf_nfc_enrolement__state__echouee
+msgid "Échouée"
+msgstr "Échouée"
+
+#. module: bf_nfc
+#. odoo-python
+#: code:addons/bf_nfc/models/bf_nfc_enrolement.py:0
+msgid "Étape inconnue : %s"
+msgstr "Étape inconnue : %s"

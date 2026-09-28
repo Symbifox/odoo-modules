@@ -1,6 +1,6 @@
 {
     "name": "Gestes par pastille NFC",
-    "version": "18.0.2.6.3",
+    "version": "18.0.2.6.4",
     "category": "Productivity",
     "summary": "Une pastille, un geste, et le nom de la personne qui a tape",
     "description": """
