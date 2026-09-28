@@ -10,11 +10,17 @@ automatic on every access via google-auth's built-in Credentials.refresh().
 import json
 import logging
 import secrets
+from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
+
+# Durée de vie du state OAuth : le temps de passer l'écran de consentement
+# Google. Au-delà, le retour est refusé et il faut relancer depuis les
+# préférences.
+OAUTH_STATE_TTL_MINUTES = 10
 
 GOOGLE_SCOPES = [
     "https://www.googleapis.com/auth/calendar",
@@ -62,6 +68,13 @@ class ResUsers(models.Model):
         groups="base.group_system",
         copy=False,
         help="Random state value for in-flight OAuth flow (CSRF protection)",
+    )
+    x_google_oauth_state_date = fields.Datetime(
+        string="OAuth State Created",
+        groups="base.group_system",
+        copy=False,
+        help="Creation time of the in-flight OAuth state; the state expires "
+        "after OAUTH_STATE_TTL_MINUTES.",
     )
     x_google_pkce_verifier = fields.Char(
         string="OAuth PKCE Verifier",
@@ -304,7 +317,10 @@ class ResUsers(models.Model):
         """Generate a random CSRF state and persist it on the user record."""
         self.ensure_one()
         state = secrets.token_urlsafe(32)
-        self.sudo().write({"x_google_oauth_state": state})
+        self.sudo().write({
+            "x_google_oauth_state": state,
+            "x_google_oauth_state_date": fields.Datetime.now(),
+        })
         return state
 
     def _validate_oauth_state(self, state):
@@ -330,12 +346,32 @@ class ResUsers(models.Model):
         users = self.sudo().search(
             [("x_google_oauth_state", "!=", False)]
         )
+        limite = fields.Datetime.now() - timedelta(
+            minutes=OAUTH_STATE_TTL_MINUTES)
         for user in users:
             if user.x_google_oauth_state and secrets.compare_digest(
                 user.x_google_oauth_state, state
             ):
+                # Un state sans date (antérieur à 18.0.2.19.1) ou trop vieux
+                # ne vaut plus rien : on le consomme et on refuse.
+                date = user.x_google_oauth_state_date
+                if not date or date < limite:
+                    user._consume_oauth_state()
+                    return self.browse()
                 return user
         return self.browse()
+
+    def _consume_oauth_state(self):
+        """Invalide le state en cours et la copie du vérificateur PKCE.
+
+        Usage unique : appelé dès que le retour OAuth a trouvé son usager,
+        avant tout échange de jeton, pour qu'un même (code, state) ne se
+        rejoue pas.
+        """
+        self.sudo().write({
+            "x_google_oauth_state": False,
+            "x_google_oauth_state_date": False,
+        })
 
     def _store_google_pkce_verifier(self, verifier):
         """Persist the PKCE code_verifier on the user record."""
@@ -366,6 +402,16 @@ class ResUsers(models.Model):
         """Clear OAuth tokens. Does NOT revoke with Google — user can do
         that manually via https://myaccount.google.com/permissions."""
         self.ensure_one()
+        # Soi-même ou un administrateur seulement : le bouton est
+        # appelable par RPC sur n'importe quelle fiche usager lisible.
+        if (
+            not self.env.su
+            and self != self.env.user
+            and not self.env.user.has_group("base.group_system")
+        ):
+            raise AccessError(_(
+                "You can only disconnect your own Google Calendar."
+            ))
         self.sudo().write({
             "x_google_oauth_token_encrypted": False,
             "x_google_oauth_refresh_token_encrypted": False,
@@ -373,6 +419,7 @@ class ResUsers(models.Model):
             "x_google_oauth_scope": False,
             "x_google_email": False,
             "x_google_oauth_state": False,
+            "x_google_oauth_state_date": False,
             "x_google_pkce_verifier": False,
         })
         return {

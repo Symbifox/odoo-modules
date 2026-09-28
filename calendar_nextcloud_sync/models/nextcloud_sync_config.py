@@ -76,10 +76,16 @@ class NextcloudCalendarSyncConfig(models.Model):
         compute="_compute_app_password",
         inverse="_inverse_app_password",
         store=False,
+        groups="base.group_system",
         help="Nextcloud app password for CalDAV authentication",
     )
+    # Réservés aux administrateurs : le calcul déchiffre avec la
+    # clé lue en sudo, donc sans `groups` tout usager interne lisait le secret
+    # en clair par search_read. Le code de synchronisation passe par
+    # _get_app_password() / _get_webhook_secret(), qui lisent en sudo.
     nextcloud_app_password_encrypted = fields.Char(
         string="App Password (encrypted)",
+        groups="base.group_system",
     )
     calendar_color = fields.Char(
         string="Calendar Color",
@@ -132,10 +138,12 @@ class NextcloudCalendarSyncConfig(models.Model):
         compute="_compute_webhook_secret",
         inverse="_inverse_webhook_secret",
         store=False,
+        groups="base.group_system",
         help="Secret token for webhook authentication (min 32 chars)",
     )
     webhook_secret_encrypted = fields.Char(
         string="Webhook Secret (encrypted)",
+        groups="base.group_system",
     )
 
     # Statistics
@@ -303,6 +311,20 @@ class NextcloudCalendarSyncConfig(models.Model):
             _logger.error("Decryption failed: %s", e)
             return encrypted_value
 
+    def _get_app_password(self):
+        """Mot de passe d'application en clair, pour l'usage interne.
+
+        Lu en sudo : le champ est réservé à base.group_system, mais la
+        poussée d'un usager ordinaire doit continuer de s'authentifier.
+        """
+        self.ensure_one()
+        return self.sudo().nextcloud_app_password
+
+    def _get_webhook_secret(self):
+        """Secret du webhook en clair, pour l'usage interne (lu en sudo)."""
+        self.ensure_one()
+        return self.sudo().webhook_secret
+
     # === Computed Fields ===
 
     def _compute_app_password(self):
@@ -381,7 +403,7 @@ class NextcloudCalendarSyncConfig(models.Model):
         """Test connection to Nextcloud CalDAV endpoint via PROPFIND."""
         self.ensure_one()
 
-        password = self.nextcloud_app_password
+        password = self._get_app_password()
         if not password:
             self.write(
                 {
@@ -852,7 +874,7 @@ class NextcloudCalendarSyncConfig(models.Model):
         if self.backend_type != "nextcloud":
             vide["erreur"] = "Agenda non Nextcloud : rien à relire ici."
             return vide
-        password = self.nextcloud_app_password
+        password = self._get_app_password()
         if not password or not self.nextcloud_user:
             vide["erreur"] = "Identifiants Nextcloud absents sur cette fiche."
             return vide
@@ -936,7 +958,7 @@ class NextcloudCalendarSyncConfig(models.Model):
         """Pull all events from Nextcloud via CalDAV REPORT and upsert."""
         self.ensure_one()
 
-        password = self.nextcloud_app_password
+        password = self._get_app_password()
         if not password:
             return self._sync_notification(
                 "No app password configured.", "warning"
@@ -1260,7 +1282,7 @@ class NextcloudCalendarSyncConfig(models.Model):
         If the server doesn't support it, leaves the field False.
         """
         self.ensure_one()
-        password = self.nextcloud_app_password
+        password = self._get_app_password()
         if not password:
             return
 
@@ -1326,7 +1348,7 @@ class NextcloudCalendarSyncConfig(models.Model):
         """
         self.ensure_one()
 
-        password = self.nextcloud_app_password
+        password = self._get_app_password()
         if not password:
             return
 

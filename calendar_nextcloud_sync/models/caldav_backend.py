@@ -390,7 +390,7 @@ class CalDavBackend(models.AbstractModel):
 
     @api.model
     def _auth(self, config):
-        password = config.nextcloud_app_password
+        password = config._get_app_password()
         if not password or not config.nextcloud_user:
             return None
         return (config.nextcloud_user, password)

@@ -216,6 +216,8 @@ class GoogleCalendarOAuthController(http.Controller):
         resolve the user from the ``state`` parameter (32-byte CSRF
         token persisted on ``res.users.x_google_oauth_state`` by
         ``initiate()``) instead of relying on ``request.env.user``.
+        The state is single-use, expires after 10 minutes, and when a
+        session IS present it must belong to the state's owner.
         """
         if error:
             _logger.warning(
@@ -243,19 +245,33 @@ class GoogleCalendarOAuthController(http.Controller):
         # Clear the state IMMEDIATELY after lookup to prevent replay of the
         # same (code, state) pair. Even if token exchange below fails, the
         # state is consumed — user must restart the flow.
-        target_user.sudo().write({"x_google_oauth_state": False})
+        target_user._consume_oauth_state()
+        db_verifier = target_user._pop_google_pkce_verifier()
+        session_verifier = request.session.pop("google_pkce_verifier", None)
+
+        # Le state seul ne prouve pas QUI revient de Google : un collègue
+        # pouvait lancer le flux puis faire suivre l'URL de consentement, et
+        # les jetons Google de la victime atterrissaient sur son compte à lui.
+        # Si le navigateur porte une session Odoo, elle doit être celle du
+        # propriétaire du state.
+        session_uid = request.session.uid
+        if session_uid and session_uid != target_user.id:
+            _logger.warning(
+                "OAuth callback: state of user %s presented by session of "
+                "user %s — rejected", target_user.id, session_uid,
+            )
+            return _render_error(
+                _("État OAuth invalide"),
+                _("Cette autorisation a été lancée par un autre compte. "
+                  "Réessayez depuis vos propres préférences."),
+            )
 
         try:
             flow = _build_flow()
             # Restore the PKCE code_verifier. Session may have been lost on
             # the cross-site redirect, so the DB copy persisted by
-            # initiate() is the reliable path.
-            verifier = request.session.pop("google_pkce_verifier", None)
-            if not verifier:
-                verifier = target_user._pop_google_pkce_verifier()
-            else:
-                # Session had it — clear the DB copy too so it can't be reused.
-                target_user._pop_google_pkce_verifier()
+            # initiate() is the fallback. Both copies are already cleared.
+            verifier = session_verifier or db_verifier
             if verifier:
                 flow.code_verifier = verifier
             flow.fetch_token(code=code)

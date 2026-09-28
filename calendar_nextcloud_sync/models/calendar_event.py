@@ -284,7 +284,10 @@ class CalendarEvent(models.Model):
             # Skip if no calendar config or sync direction doesn't allow it
             if not event.x_nc_calendar_id:
                 continue
-            config = event.x_nc_calendar_id
+            # sudo : le secret est réservé aux administrateurs et l'état de
+            # synchronisation s'écrit sur la configuration, que l'usager
+            # ordinaire ne peut que lire.
+            config = event.x_nc_calendar_id.sudo()
             if config.backend_type != "nextcloud":
                 continue
             if config.sync_direction == "nc_to_odoo":
@@ -322,8 +325,9 @@ class CalendarEvent(models.Model):
             try:
                 payload = event._get_sync_payload(action)
                 headers = {"Content-Type": "application/json"}
-                if config.webhook_secret:
-                    headers["X-Webhook-Secret"] = config.webhook_secret
+                webhook_secret = config._get_webhook_secret()
+                if webhook_secret:
+                    headers["X-Webhook-Secret"] = webhook_secret
 
                 response = requests.post(
                     config.webhook_url,
@@ -362,7 +366,10 @@ class CalendarEvent(models.Model):
         for event in self:
             if not event.x_nc_calendar_id:
                 continue
-            config = event.x_nc_calendar_id
+            # sudo : même règle que la poussée Nextcloud — l'état de
+            # synchronisation s'écrit sur la configuration, que l'usager
+            # ordinaire ne peut que lire.
+            config = event.x_nc_calendar_id.sudo()
             if config.backend_type != "google":
                 continue
             if config.sync_direction == "nc_to_odoo":

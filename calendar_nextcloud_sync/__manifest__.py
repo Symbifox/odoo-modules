@@ -81,7 +81,16 @@
     #   l'avis à l'usager ne mente pas. Mesuré sur une base réelle : UN
     #   événement sur 841 tenait 837 événements en retéléchargement quatre fois
     #   par heure.
-    "version": "18.0.2.19.0",
+    # 18.0.2.19.1: correctifs de sécurité. Le mot de passe
+    #   d'application Nextcloud et le secret du webhook (et leurs colonnes
+    #   chiffrées) sont réservés à base.group_system : tout usager interne les
+    #   lisait en clair par search_read. La poussée d'un usager ordinaire lit
+    #   la configuration en sudo et continue de fonctionner. Le retour OAuth
+    #   Google refuse un state de plus de 10 minutes et, si une session Odoo
+    #   est ouverte, exige qu'elle soit celle du propriétaire du state. Seul
+    #   l'usager lui-même ou un administrateur peut déconnecter un agenda
+    #   Google.
+    "version": "18.0.2.19.2",
     "category": "Calendar",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

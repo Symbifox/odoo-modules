@@ -5,3 +5,4 @@ from . import test_pull_additive
 from . import test_etag_normalisation
 from . import test_ics_vtimezone_extensions
 from . import test_ics_sequence
+from . import test_securite_correctifs
