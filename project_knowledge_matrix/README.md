@@ -2,7 +2,11 @@
 
 A comprehensive Odoo 18 module for knowledge management, document control, and project implementation tracking. Designed for organizations needing systematic document versioning, client documentation distribution, internal policy compliance, and structured project information gathering.
 
-*Developed and maintained by [Les services de consultation Blue Fox, Inc.](https://symbifox.com) This module stores encrypted credentials — see [SECURITY.md](SECURITY.md) for the trust model.*
+*Developed and maintained by [Les services de consultation Blue Fox, Inc.](https://symbifox.com) See [SECURITY.md](SECURITY.md) for the trust model.*
+
+> **Corporate governance moved out in 18.0.12.0.0.** Resolutions, the director and officer registers, the compliance calendar and the minute book now live in `bf_corporate_governance`, which depends on this module. Existing databases keep their records: the upgrade reassigns the tables, it does not recreate them.
+
+> **The credential vault moved out in 18.0.13.0.0.** Encrypted passwords, API keys, key files, credential types and the rotation wizard now live in `bf_credentials`, on the same terms — the tables are reassigned, not recreated, and the encryption key stays in `ir.config_parameter` so stored secrets remain readable. This module no longer depends on `cryptography`.
 
 ## Overview
 
@@ -14,10 +18,7 @@ Project Knowledge Matrix helps project managers, documentation teams, and compli
 - **Gather project information** in a timely and organized fashion
 - **Track decisions** organized by implementation phase and section
 - **Monitor deadlines** with expiration alerts and review reminders
-- **Store credentials securely** with encrypted passwords and key file support
 - **Visualize KPIs** through a comprehensive dashboard filterable by project
-- **Corporate governance** with resolutions, directors, officers, and compliance calendar
-- **Generate branded PDFs** for corporate resolutions ready for signing
 - **Print knowledge matrix reports** as branded Symbifox PDFs with KPIs, progress bar, and items grouped by section
 - **Email matrix reports** manually or on a configurable schedule (weekly, biweekly, monthly, custom interval)
 - **Capture knowledge from chatter** with one-click message-to-matrix-item creation
@@ -38,17 +39,19 @@ The module opens with a comprehensive dashboard showing:
 - **Internal Compliance**: Employee acknowledgment rates, overdue procedures
 - **Content Quality**: Documents without versions, stale content
 - **Knowledge Matrices**: Completion rates, blocked items, in-progress items
-- **Credentials**: Active, expiring, expired, and revoked credentials
 - **Distribution Activity**: Monthly trends and overdue acknowledgments
 
 All dashboard metrics are clickable, navigating directly to filtered views.
 
-**Project Filtering**: A dropdown selector allows filtering all dashboard metrics by project. When filtered, corporate governance metrics (which are company-wide, not project-specific) are hidden. The dashboard can also be opened pre-filtered from a project's smart button.
+**Project Filtering**: A dropdown selector allows filtering all dashboard metrics by project. The dashboard can also be opened pre-filtered from a project's smart button.
+
+**Extension point**: modules installed on top can add their own rows to the dashboard. They override `knowledge.dashboard.get_dashboard_data` for the figures and extend the `project_knowledge_matrix.DashboardExtraRows` OWL template for the markup. `bf_corporate_governance` does exactly that.
 
 ### Document Management
 
 - **Document Types**: 22 pre-configured types including client documentation (Manual, Contract, Guide, Specification, Release Notes, Training), internal policies (Policy, Procedure, HR Policy, IT Procedure, Safety, Handbook, Onboarding, Confidential), and Loi 25 compliance (Privacy Policy, Form, Template, Registry, Annex, Assessment, Letter, Other)
 - **Version Control**: Full version history with changelog, change types (Major, Minor, Editorial), and release tracking
+- **Release from the document form**: a "Publish a version" wizard numbers, dates and releases a version without leaving the document. "Activate" on a document that has no released version opens it first, since until a version is released the PDF is stamped as an unpublished draft
 - **Internal vs Client Documents**: Separate workflows for policies/procedures and client-facing documentation
 - **Expiration Tracking**: Set expiration dates with automatic status updates and reminders at 90, 60, 30, and 7 days
 - **Review Scheduling**: Periodic review dates with overdue tracking
@@ -144,18 +147,6 @@ Edit matrix items directly in the project form:
 - **Kanban View**: Drag-and-drop workflow with priority and deadline display
 - **Rich Filters**: Overdue, Due This Week, High Priority, Blocked, By Phase
 
-### Corporate Governance
-
-Full corporate governance module for Quebec LSAQ-compliant companies:
-
-- **Resolutions**: Board and shareholder resolutions with full lifecycle (Draft → Proposed → Adopted/Rejected/Superseded)
-- **Director Register**: Track active and former directors with appointment/end dates, domicile (LSAQ Canadian residency), and linked resolutions
-- **Officer Register**: Track corporate officers (President, VP, Secretary, Treasurer, DG) with appointment history
-- **Compliance Calendar**: Annual compliance events (REQ annual declaration, AGM, director elections, auditor appointment, financial approval) with automatic deadline reminders
-- **Minute Book**: Filtered document view for minute book sections, integrated with the document management system
-- **Signatories**: Name who signs a resolution and in what capacity, per resolution. Without them the PDF falls back to the board in office on the meeting date, so a reprinted document names the directors of the day rather than today's
-- **PDF Generation**: Branded resolution PDFs with dark banner header, Symbifox corporate styling, signature blocks, and "Livre des minutes" footer — ready for printing and signing
-
 ### Knowledge Matrix PDF Report
 
 Generate professional branded PDF reports directly from any knowledge matrix:
@@ -181,21 +172,6 @@ Send branded PDF reports by email — manually or on a configurable schedule:
 - **Audit Trail**: Each send updates `last_report_date`, posts a chatter note with recipient names, and attaches the PDF
 - **PDF Preview**: Preview the PDF directly from the wizard before sending
 
-- **Automated Cron**: Daily compliance deadline check creates activities for Corporate Governance Managers when events are due within 30 days
-
-#### Resolution Types
-
-| Type | Description |
-|------|-------------|
-| Board Resolution | Standard board resolution |
-| Shareholder Resolution | Standard shareholder resolution |
-| Written Board Resolution | Written resolution in lieu of meeting |
-| Written Shareholder Resolution | Written shareholder resolution |
-
-#### Subject Categories
-
-Officer Appointment, Director Election, Dividend Declaration, Share Issuance, Bylaw Amendment, Contract Approval, Bank Authorization, Auditor Appointment, Fiscal Year, Financial Approval, Dissolution, Other
-
 ### Automatic Follow-up Activities
 
 Daily cron job creates Odoo activities to keep matrix items on track:
@@ -204,6 +180,7 @@ Daily cron job creates Odoo activities to keep matrix items on track:
 - **Overdue items**: Urgent activity when deadline has passed and item is still pending/in_progress
 - **Stale items** (>30 days no update): Reminder activity for items stuck in_progress with no recent writes
 - **Deduplication**: Each pass checks for existing activities of the same type to avoid duplicates
+- **Portal owners skipped**: items assigned to a portal account get no activity, since the client could not open it; the matrix report covers them
 - **Auto-close**: When an item's state changes, all related follow-up activities are automatically marked done
 - **3 custom activity types**: `knowledge_deadline`, `knowledge_overdue`, `knowledge_stale`
 
@@ -223,15 +200,6 @@ Server actions for efficient multi-select operations:
 - **Template System**: Create template matrices and copy to new projects
 - **Section Management**: Customize sections for your methodology
 
-### Credential Storage
-
-- **Encrypted Storage**: Passwords and API keys encrypted at rest using Fernet symmetric encryption
-- **File Support**: Upload SSH keys, certificates (.pem, .key, .p12, .ppk)
-- **Type-Based Fields**: 9 pre-configured credential types with configurable field visibility
-- **Lifecycle Management**: Track expiration dates, rotation history, and verification status
-- **Access Control**: Restricted credentials visible only to managers
-- **Password Rotation**: Wizard with audit trail and reason tracking
-
 ## Installation
 
 1. Copy the `project_knowledge_matrix` folder to your Odoo addons directory
@@ -243,7 +211,6 @@ Server actions for efficient multi-select operations:
 - `project` (Odoo Project Management)
 - `mail` (Discuss/Chatter)
 - `bf_onboarding_base` (brand fields on `res.company` for PDF reports and email templates)
-- `cryptography` (Python package for credential encryption)
 
 ## Configuration
 
@@ -275,9 +242,6 @@ Sections can be customized at: **Knowledge Matrix** → **Configuration** → **
 | Document User | Read/write documents and distributions for accessible projects/partners |
 | Document Manager | Full access to documents, types, delete permissions |
 | Distribution & Acknowledgment | Feature switch, granted by the settings checkbox. Grants nothing on its own: it carries the three distribution menus and answers "is the subsystem on?" for the crons, the dashboard and the report |
-| Credential User | Read/write credentials for accessible projects |
-| Credential Manager | Full access to credentials, view encrypted passwords, manage types |
-| Corporate Governance Manager | Full access to resolutions, directors, officers, compliance events |
 
 ## Usage
 
@@ -455,82 +419,6 @@ DIS1;Discovery;Top 3 Objectives;Q1;S1;Sponsor;3 objectives + KPIs;Project Charte
 | role | Selection | R (Responsible) / A (Accountable) / C (Consulted) / I (Informed) |
 | item_count | Integer | Number of items with this role |
 
-### Corporate Governance Models
-
-#### corporate.resolution
-
-| Field | Type | Description |
-|-------|------|-------------|
-| name | Char | Resolution title |
-| sequence | Char | Auto-generated reference (RES-YYYY-NNN) |
-| resolution_type | Selection | board / shareholder / written_board / written_shareholder |
-| meeting_type | Selection | regular / special / agm / written |
-| subject_category | Selection | 12 categories (dividend, director election, etc.) |
-| status | Selection | draft / proposed / adopted / rejected / superseded |
-| meeting_date | Date | Date of meeting or written resolution |
-| whereas_text | Html | ATTENDU QUE preamble clauses |
-| resolved_text | Html | IL EST RESOLU QUE body |
-| mover_id | Many2one | Mover (res.partner) |
-| seconder_id | Many2one | Seconder (res.partner) |
-| vote_for / vote_against / vote_abstain | Integer | Vote counts |
-| unanimously_adopted | Boolean | Unanimous adoption flag |
-| effective_date | Date | When resolution takes effect |
-| company_id | Many2one | Company |
-
-#### corporate.resolution.signatory
-
-| Field | Type | Description |
-|-------|------|-------------|
-| resolution_id | Many2one | Parent resolution |
-| sequence | Integer | Print order in the signature block |
-| partner_id | Many2one | Signatory (res.partner) |
-| capacity | Selection | Capacity in which the person signs, or `other` |
-| capacity_custom | Char | Free-text capacity, required when `capacity` is `other` |
-| capacity_label | Char | Computed label actually printed under the name |
-| purpose | Char | Why this person signs (attestation, disclosure of interest, …) |
-
-#### corporate.director
-
-| Field | Type | Description |
-|-------|------|-------------|
-| partner_id | Many2one | Director (res.partner) |
-| appointment_date | Date | Date of appointment |
-| end_date | Date | Date of departure |
-| end_reason | Selection | resignation / removal / term_expired / other |
-| appointment_resolution_id | Many2one | Linked appointment resolution |
-| end_resolution_id | Many2one | Linked end resolution |
-| domicile | Char | Domicile (LSAQ Canadian residency) |
-| is_active | Boolean | Computed from end_date |
-| company_id | Many2one | Company |
-
-#### corporate.officer
-
-| Field | Type | Description |
-|-------|------|-------------|
-| partner_id | Many2one | Officer (res.partner) |
-| title | Selection | president / vice_president / secretary / treasurer / director_general / other |
-| title_custom | Char | Custom title when title=other |
-| appointment_date | Date | Date of appointment |
-| end_date | Date | Date of departure |
-| appointment_resolution_id | Many2one | Linked appointment resolution |
-| is_active | Boolean | Computed from end_date |
-| company_id | Many2one | Company |
-
-#### corporate.compliance.event
-
-| Field | Type | Description |
-|-------|------|-------------|
-| name | Char | Event name |
-| event_type | Selection | annual_declaration / agm / director_election / auditor_appointment / financial_approval / bylaw_review / other |
-| fiscal_year | Char | Fiscal year reference |
-| due_date | Date | Compliance deadline |
-| completed_date | Date | When completed |
-| status | Selection | Computed: upcoming / due_soon / overdue / completed |
-| resolution_id | Many2one | Linked resolution |
-| filing_reference | Char | REQ confirmation number |
-| reminder_sent | Boolean | Cron reminder flag |
-| company_id | Many2one | Company |
-
 ## API Examples
 
 ### Create a matrix programmatically
@@ -619,6 +507,14 @@ This module follows Odoo 18 best practices:
 - Efficient SQL constraints for uniqueness
 
 ## Changelog
+
+### 18.0.13.3.1
+
+- **Publish a version from the document form**: a new wizard releases a version of a document in one step: it picks up a version already in preparation if there is one, otherwise proposes the next number (`1.0` for a first release, `2.0` → `2.1` after that), and refuses a number the document already uses. Until a version is released, `current_version` stays empty and the PDF reads "Draft (unpublished)" even on an active document, which is what made active documents look unpublished.
+- **"Activate" offers to release**: the Activate button on a document with no released version now opens that wizard, with "Activate and publish the version" and "Activate without publishing" as its two choices. The button passes a context flag for this, so a programmatic `action_set_active()` still activates directly, unchanged. Once the document is active, a "Publish a version" button stays on its form for as long as no version is released.
+- **Security fix, report email escaping**: the project or matrix name, the sender's name and the company values (name, email, phone, website, brand colours) are now HTML-escaped before they enter the report email body, both in the send wizard and in the scheduled report. A name containing markup could otherwise put a live link or tag into mail sent to external recipients. The branded wrapper is now built by one shared helper instead of two copies.
+- **No follow-up activities for portal users**: the three daily follow-up passes (approaching deadline, overdue, stale) now skip items whose owner is a portal account. An item is often assigned to the client, which is correct for the RACI, but an activity on it sent them an internal reminder they could not open. Those items are followed through the matrix report instead.
+- **Tests**: nine tests for the release wizard (button routing, activate with or without releasing, reuse of a pending version, next-number proposal, duplicate number refused) and three for the escaping of the report email.
 
 ### 18.0.11.5.0
 

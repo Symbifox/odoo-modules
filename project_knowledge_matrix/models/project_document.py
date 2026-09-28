@@ -139,8 +139,7 @@ class ProjectDocument(models.Model):
     # Les alertes d'expiration ont leurs propres drapeaux. Tant qu'elles
     # partageaient ceux des révisions, un document portant les deux dates ne
     # recevait jamais que le rappel de révision : la passe le marquait, et la
-    # recherche d'expiration l'excluait aussitôt. Sur ce parc, 107 documents
-    # actifs sur 194 portent les deux dates.
+    # recherche d'expiration l'excluait aussitôt.
     expiration_reminder_sent_90 = fields.Boolean(
         string="Alerte d'expiration 90 jours envoyée",
         default=False,
@@ -404,8 +403,35 @@ class ProjectDocument(models.Model):
         }
 
     def action_set_active(self):
-        """Set document to active state."""
+        """Set document to active state.
+
+        Depuis le bouton « Activer » (contexte ``pkm_propose_release``), un
+        document sans version publiée passe d'abord par l'assistant de
+        publication: sans version, le PDF reste marqué « Brouillon ».
+        """
+        if self.env.context.get('pkm_propose_release') and len(self) == 1 \
+                and not self.latest_version_id:
+            return self._action_open_release_wizard(activate=True)
         self.write({'state': 'active'})
+
+    def action_open_release_wizard(self):
+        """Publier une version depuis la fiche du document."""
+        self.ensure_one()
+        return self._action_open_release_wizard(activate=False)
+
+    def _action_open_release_wizard(self, activate):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Publier une version',
+            'res_model': 'project.document.release.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_document_id': self.id,
+                'default_activate': activate,
+            },
+        }
 
     def action_set_archived(self):
         """Archive the document."""

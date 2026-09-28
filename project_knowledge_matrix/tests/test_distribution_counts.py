@@ -1,6 +1,6 @@
 """Compteurs de distribution — le filet.
 
-Les cinq compteurs ont été réécrits en ``_read_group`` le 19 août. Trois choses
+Les cinq compteurs ont été réécrits en ``_read_group``. Trois choses
 peuvent casser sans que rien ne se voie à l'écran : une valeur fausse, un
 compteur qui se remplit bien pour un enregistrement seul mais pas pour un lot,
 et un retour silencieux au ``search()`` par enregistrement.
@@ -151,9 +151,8 @@ class TestDistributionCounts(KnowledgeCase):
     def test_document_counters_cost_one_query_whatever_the_volume(self):
         """Le coût de l'agrégation ne suit pas le nombre de documents.
 
-        C'est l'invariant que la réécriture du 19 août a acheté : 414 ms à
-        101 ms sur 205 documents. Un retour au ``search()`` par enregistrement
-        rendrait les mêmes valeurs et repasserait ce test au rouge.
+        C'est l'invariant qu'a acheté la réécriture en requêtes groupées. Un
+        retour au ``search()`` par enregistrement rendrait les mêmes valeurs et repasserait ce test au rouge.
         """
         Document = self.env['project.document']
         supplementaires = Document.create([
@@ -189,7 +188,7 @@ class TestDistributionCounts(KnowledgeCase):
         self.assertEqual(appels['search'], 0, appels)
 
     # ------------------------------------------------------------------
-    # Recalcul — les @api.depends ajoutés le 19 août
+    # Recalcul — les @api.depends ajoutés avec la réécriture
     # ------------------------------------------------------------------
 
     def test_counters_follow_a_state_change(self):

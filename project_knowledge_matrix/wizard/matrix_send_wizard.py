@@ -1,6 +1,6 @@
 import base64
 
-from markupsafe import Markup
+from markupsafe import Markup, escape
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
@@ -76,6 +76,27 @@ width:50%;">&nbsp;</td>\
 </td></tr></tbody></table>"""
 
 
+def render_branded_body(company, inner_html):
+    """Enveloppe ``inner_html`` (déjà sûr) dans la mise en page de la société.
+
+    Les valeurs de la société sont échappées : elles entrent telles quelles
+    dans du HTML par ``.format`` et un nom saisi avec des balises en ferait.
+    """
+    website = company.website or 'https://bluefoxconsultant.com'
+    return Markup(_BRANDED_WRAPPER.format(
+        primary=escape(company.report_brand_primary or '#714B67'),
+        dark=escape(company.report_brand_dark or '#212529'),
+        company_name=escape(company.name or 'Blue Fox'),
+        company_email=escape(company.email or 'service@example.com'),
+        company_phone=escape(company.phone or ''),
+        company_website=escape(website),
+        logo_url='/web/image/res.company/%d/logo' % company.id,
+        privacy_url=escape(website.rstrip('/') + '/r/politique-de-confidentialite'),
+        terms_url=escape(website.rstrip('/') + '/r/termes-et-conditions'),
+        content=str(inner_html or ''),
+    ))
+
+
 class MatrixSendWizard(models.TransientModel):
     _name = 'knowledge.matrix.send.wizard'
     _description = "Envoi du rapport de matrice de connaissances"
@@ -113,11 +134,11 @@ class MatrixSendWizard(models.TransientModel):
                 '<p style="font-size:16px;line-height:26px;color:#374151;'
                 'margin:0;">Cordialement,<br/>%s</p>'
             ) % (
-                label,
+                escape(label),
                 progress,
                 matrix.completed_count,
                 matrix.item_count,
-                self.env.user.name,
+                escape(self.env.user.name),
             )
 
     @api.model_create_multi
@@ -133,20 +154,7 @@ class MatrixSendWizard(models.TransientModel):
         Colors pulled from bf_lexend company fields; falls back to canonical hex.
         Logo, website, and policy/terms URLs are tenant-aware so each company
         in the database sends emails with its own visual identity."""
-        company = self.env.company
-        website = company.website or 'https://bluefoxconsultant.com'
-        return Markup(_BRANDED_WRAPPER.format(
-            primary=company.report_brand_primary or '#714B67',
-            dark=company.report_brand_dark or '#212529',
-            company_name=company.name or 'Blue Fox',
-            company_email=company.email or 'service@example.com',
-            company_phone=company.phone or '',
-            company_website=website,
-            logo_url='/web/image/res.company/%d/logo' % company.id,
-            privacy_url=website.rstrip('/') + '/r/politique-de-confidentialite',
-            terms_url=website.rstrip('/') + '/r/termes-et-conditions',
-            content=str(inner_html or ''),
-        ))
+        return render_branded_body(self.env.company, inner_html)
 
     def action_preview_pdf(self):
         """Generate PDF preview and re-open wizard with download link."""

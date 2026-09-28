@@ -1,6 +1,6 @@
 {
     'name': 'Project Knowledge Matrix',
-    'version': '18.0.13.2.0',
+    'version': '18.0.13.3.1',
     'category': 'Services/Project',
     'summary': 'Base de connaissances projets, politiques et documentation',
     'description': """
@@ -29,9 +29,6 @@ Fonctionnalités:
 * Déclenchement manuel des rapports depuis les paramètres
 * Traductions complètes en français canadien (fr_CA)
 * Suivi formel des décisions avec métadonnées (ADR pattern)
-* Gouvernance corporative: résolutions, administrateurs, dirigeants
-* Calendrier de conformité corporative avec rappels automatiques
-* Livre des minutes intégré à la gestion documentaire
 * Rapport PDF brandé Symbifox pour les matrices de connaissances
 * Envoi de rapports par courriel (manuel et automatisé)
 * Planification flexible : hebdomadaire, bimensuel, mensuel ou intervalle personnalisé
@@ -68,6 +65,7 @@ Fonctionnalités:
         # Wizards
         'wizard/import_csv_wizard_views.xml',
         'wizard/matrix_send_wizard_views.xml',
+        'wizard/document_release_wizard_views.xml',
         # Views
         'views/knowledge_section_views.xml',
         'views/knowledge_item_views.xml',

@@ -1,8 +1,7 @@
 """Matrices et éléments — le vrai produit, celui qui reste après le découpage.
 
-Des dizaines de matrices et des centaines d'éléments par base. C'est le
-seul sous-système que les deux locataires emploient, donc le seul dont une
-régression touche un client.
+C'est le sous-système que toute base en service emploie, donc celui dont une
+régression touche le plus sûrement un client.
 """
 
 from odoo.exceptions import ValidationError

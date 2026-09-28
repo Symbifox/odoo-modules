@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="document_release_wizard_form" model="ir.ui.view">
+        <field name="name">project.document.release.wizard.form</field>
+        <field name="model">project.document.release.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Publier une version">
+                <field name="document_id" invisible="1"/>
+                <field name="activate" invisible="1"/>
+                <div class="alert alert-info" role="alert">
+                    Aucune version de ce document n'est publiée. Tant que c'est
+                    le cas, le PDF affiche « Brouillon (non publié) ».
+                    Publier une version fige le contenu actuel et met son
+                    numéro sur le PDF.
+                </div>
+                <group>
+                    <group>
+                        <field name="pending_version_id"
+                               options="{'no_create': True, 'no_open': True}"/>
+                        <field name="version_number"/>
+                        <field name="effective_date"/>
+                    </group>
+                    <group>
+                        <field name="change_type"/>
+                        <field name="change_summary"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_release" type="object"
+                            string="Activer et publier la version"
+                            class="btn-primary" invisible="not activate"/>
+                    <button name="action_activate_only" type="object"
+                            string="Activer sans publier"
+                            class="btn-secondary" invisible="not activate"/>
+                    <button name="action_release" type="object"
+                            string="Publier la version"
+                            class="btn-primary" invisible="activate"/>
+                    <button string="Annuler" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

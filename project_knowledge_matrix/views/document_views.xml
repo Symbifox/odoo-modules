@@ -120,7 +120,11 @@
                             class="btn-secondary" icon="fa-file-pdf-o"
                             invisible="not matrix_id"/>
                     <button name="action_set_active" string="Activer" type="object"
-                            class="btn-primary" invisible="state != 'draft'"/>
+                            class="btn-primary" invisible="state != 'draft'"
+                            context="{'pkm_propose_release': True}"/>
+                    <button name="action_open_release_wizard" string="Publier une version"
+                            type="object" class="btn-primary"
+                            invisible="state != 'active' or current_version"/>
                     <button name="action_set_archived" string="Archiver" type="object"
                             invisible="state != 'active'"/>
                     <button name="action_set_draft" string="Remettre en brouillon" type="object"

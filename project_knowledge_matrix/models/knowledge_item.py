@@ -684,6 +684,13 @@ class KnowledgeItem(models.Model):
         1. Échéance ≤7 jours (pas encore notifié)
         2. En retard (doublon évité)
         3. Sans progression >30 jours (doublon évité)
+
+        Les trois passes ignorent les éléments dont le responsable est un compte
+        de portail (`assigned_user_id.share`). Un élément de matrice est souvent
+        assigné au client lui-même — c'est le « R » du RACI et c'est exact —
+        mais planifier une activité dessus lui envoie un rappel interne qu'il ne
+        peut pas ouvrir. Le suivi de ces éléments-là se fait par le rapport de
+        matrice, pas par une activité.
         """
         today = fields.Date.today()
         deadline_type = self.env.ref(
@@ -711,6 +718,7 @@ class KnowledgeItem(models.Model):
             ('deadline', '>=', today),
             ('deadline', '<=', horizon),
             ('assigned_user_id', '!=', False),
+            ('assigned_user_id.share', '=', False),
             ('followup_activity_created', '=', False),
         ])
         for item in approaching:
@@ -729,6 +737,7 @@ class KnowledgeItem(models.Model):
             ('state', 'in', active_states),
             ('deadline', '<', today),
             ('assigned_user_id', '!=', False),
+            ('assigned_user_id.share', '=', False),
         ])
         if overdue:
             existing_overdue = self.env['mail.activity'].sudo().search([
@@ -757,6 +766,7 @@ class KnowledgeItem(models.Model):
                 fields.Datetime.now() - timedelta(days=30)
             )),
             ('assigned_user_id', '!=', False),
+            ('assigned_user_id.share', '=', False),
         ])
         if stale:
             existing_stale = self.env['mail.activity'].sudo().search([

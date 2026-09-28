@@ -2,11 +2,11 @@
 
 Trois familles d'invariants :
 
-* la dépendance ``hr``, retirée le 19 août, ne doit pas revenir par la bande ;
+* la dépendance ``hr``, retirée, ne doit pas revenir par la bande ;
 * les deux modèles du catalogue de logiciels, supprimés, doivent rester morts ;
 * tout modèle porté par le module doit avoir des droits d'accès et un manifeste
-  dont les fichiers existent — c'est le contrôle qui dira, aux chantiers 06 et
-  07, qu'une extraction a oublié une ligne d'ACL ou un fichier de données.
+  dont les fichiers existent — c'est le contrôle qui dira, lors d'une extraction
+  vers un autre module, qu'elle a oublié une ligne d'ACL ou un fichier de données.
 """
 
 import os
@@ -39,7 +39,7 @@ class TestModuleBoundaries(TransactionCase):
         """Aucun champ du module ne pointe vers ``hr.*``.
 
         Deux ``Many2one`` typés vers ``hr.department`` faisaient de ``hr`` une
-        dépendance dure, pour un champ rempli sur 1 document sur 205. Un champ
+        dépendance dure, pour un champ presque jamais rempli. Un champ
         relationnel typé suffit à la faire revenir, et ça ne se voit qu'en
         installation neuve.
         """
@@ -80,8 +80,8 @@ class TestModuleBoundaries(TransactionCase):
 
         Un champ relationnel typé vers ``corporate.*`` rendrait la dépendance
         circulaire : ``bf_corporate_governance`` dépend du socle, le socle ne
-        peut pas dépendre de lui. Comme pour ``hr`` au 19 août, ça ne se voit
-        qu'en installation neuve — chez le prochain locataire, jamais ici.
+        peut pas dépendre de lui. Comme pour ``hr``, ça ne se voit
+        qu'en installation neuve, jamais sur une base déjà en service.
         """
         champs = self._champs_du_module()
         self.assertTrue(champs, 'Aucun champ recensé pour %s' % MODULE)
