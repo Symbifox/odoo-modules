@@ -30,7 +30,13 @@ class PulseInvitation(models.Model):
         "hr.employee", string="Personne invitée", required=True,
         ondelete="cascade", index=True,
     )
-    token = fields.Char(string="Jeton", required=True, index=True, copy=False)
+    # 🔴 Le jeton vaut une procuration : qui le lit répond à la place de la
+    # personne. Ni l'agent ni le gestionnaire RH ne le lisent ; le
+    # gabarit et le contrôleur l'atteignent sans passer par `read`.
+    token = fields.Char(
+        string="Jeton", required=True, index=True, copy=False,
+        groups="base.group_system",
+    )
     used = fields.Boolean(
         string="A répondu", default=False,
         help="Sans date. Le module sait que vous avez répondu, pour ne pas "

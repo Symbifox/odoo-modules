@@ -39,9 +39,10 @@ class PulseCampaign(models.Model):
     )
 
     score_threshold = fields.Integer(
-        string="Seuil d'un score", default=3, required=True,
+        string="Seuil d'un score", default=5, required=True,
         help="Nombre de répondants sous lequel un score chiffré ne s'affiche "
-             "pas. Trois est la pratique du marché.",
+             "pas. Cinq : plus sévère que les trois du marché, et jamais "
+             "abaissable.",
     )
     text_threshold = fields.Integer(
         string="Seuil des commentaires", default=5, required=True,
@@ -79,11 +80,11 @@ class PulseCampaign(models.Model):
     @api.constrains("score_threshold", "text_threshold")
     def _check_thresholds(self):
         for rec in self:
-            if rec.score_threshold < 3:
+            if rec.score_threshold < 5:
                 raise ValidationError(
-                    "Le seuil d'un score ne descend pas sous trois "
-                    "répondants. Sous ce nombre, un score se lit comme une "
-                    "réponse individuelle."
+                    "Le seuil d'un score ne descend pas sous cinq "
+                    "répondants. Sous ce nombre, un département se "
+                    "désanonymise par soustraction."
                 )
             if rec.text_threshold < rec.score_threshold:
                 raise ValidationError(

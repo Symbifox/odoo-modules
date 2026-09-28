@@ -84,11 +84,17 @@ comments would be readable straight from the database.
 
 | Threshold | Default | Why |
 |---|---:|---|
-| Numeric score | 3 respondents | Market practice. Below three, an average reads as one person's answer. |
-| Written comments | 5 respondents | A verbatim is recognisable by its voice; a number is not. |
+| Numeric score | 5 respondents | Stricter than the market's three, and it cannot be lowered: below five, a department can be de-anonymised by subtraction. |
+| Written comments | 5 respondents, can be set higher | A verbatim is recognisable by its voice; a number is not. |
 
 Below the threshold the screen says "not enough answers". Never zero, never an
 approximation.
+
+The raw score and eNPS of each line are readable only by technical
+administrators: HR users read, search, sort and group on the *published*
+values, which equal the raw value above the threshold and zero below it. The
+same goes for the invitation token, which is as good as a proxy vote: HR can
+send the invitations and see who has answered, but cannot read the token.
 
 ### A rolling window
 
@@ -149,7 +155,7 @@ kept for rules, borders and selected states.
 
 ## Tests
 
-59 tests. Fresh install from an empty database, and the journey played over HTTP
+65 tests. Fresh install from an empty database, and the journey played over HTTP
 by a **signed-in** user — which is the only place the native module's trap shows
 itself.
 

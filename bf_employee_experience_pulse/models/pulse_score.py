@@ -40,13 +40,32 @@ class PulseScore(models.Model):
         help="Nombre de réponses distinctes derrière ce score, sur la "
              "fenêtre glissante.",
     )
-    score = fields.Float(string="Score brut", digits=(3, 1))
+    # 🔴 Les valeurs brutes ne se lisent pas hors de l'administration
+    # technique, même sous le seuil. Sans `groups`, un agent RH
+    # lisait `score` par RPC sur un segment d'une personne, et apprenait sa
+    # réponse. Tout ce qui s'affiche passe par les valeurs publiées, qui
+    # valent zéro sous le seuil du segment.
+    score = fields.Float(
+        string="Score brut", digits=(3, 1), groups="base.group_system",
+    )
     is_displayable = fields.Boolean(string="Au-dessus du seuil")
     display_score = fields.Char(
         string="Score", compute="_compute_display", store=False,
     )
+    score_publie = fields.Float(
+        string="Score moyen", digits=(3, 1), aggregator="avg",
+        compute="_compute_publie", store=True,
+        help="Le score brut quand le segment passe le seuil, zéro sinon.",
+    )
 
-    enps = fields.Float(string="eNPS", digits=(4, 0))
+    enps = fields.Float(
+        string="eNPS brut", digits=(4, 0), groups="base.group_system",
+    )
+    enps_publie = fields.Float(
+        string="eNPS", digits=(4, 0), aggregator="avg",
+        compute="_compute_publie", store=True,
+        help="L'eNPS brut quand le segment passe le seuil, zéro sinon.",
+    )
     is_enps_metric = fields.Boolean(string="Axe eNPS")
 
     verbatim_count = fields.Integer(string="Nombre de commentaires", default=0)
@@ -58,15 +77,22 @@ class PulseScore(models.Model):
              "n'est lisible par aucun rôle.",
     )
 
-    @api.depends("score", "is_displayable", "enps", "is_enps_metric")
+    @api.depends("score", "enps", "is_displayable")
+    def _compute_publie(self):
+        for rec in self:
+            rec.score_publie = rec.score if rec.is_displayable else 0.0
+            rec.enps_publie = rec.enps if rec.is_displayable else 0.0
+
+    @api.depends("score_publie", "is_displayable", "enps_publie",
+                 "is_enps_metric")
     def _compute_display(self):
         for rec in self:
             if not rec.is_displayable:
                 rec.display_score = SOUS_LE_SEUIL
             elif rec.is_enps_metric:
-                rec.display_score = "%+d" % round(rec.enps)
+                rec.display_score = "%+d" % round(rec.enps_publie)
             else:
-                rec.display_score = "%.1f / 10" % rec.score
+                rec.display_score = "%.1f / 10" % rec.score_publie
 
     @api.depends("verbatims_displayable", "campaign_id", "metric_id",
                  "segment_key")

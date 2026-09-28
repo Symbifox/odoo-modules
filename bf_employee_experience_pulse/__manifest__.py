@@ -2,7 +2,7 @@
     "name": "Expérience employé : pulse",
     "summary": "Sondage d'humeur anonyme, eNPS, seuils d'affichage et scores "
                "par axe",
-    "version": "18.0.1.1.2",
+    "version": "18.0.1.2.1",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -46,8 +46,9 @@ Comment celui-ci s'y prend
   au hasard. Les identifiants ne racontent plus l'ordre d'arrivée.
 * **Des seuils qui tiennent vraiment.** Le registre des réponses n'est
   accessible à aucun rôle : la seule porte est l'agrégat, et c'est lui qui
-  applique les seuils. Trois répondants pour un score, cinq pour les
-  commentaires écrits, parce qu'un verbatim se reconnaît à la plume.
+  applique les seuils. Cinq répondants pour un score comme pour les
+  commentaires écrits, et le seuil des commentaires peut monter plus haut :
+  un verbatim se reconnaît à la plume.
 * **Une fenêtre glissante de 90 jours**, qui permet à une petite équipe
   d'atteindre le seuil sur le trimestre plutôt que jamais sur la semaine.
 

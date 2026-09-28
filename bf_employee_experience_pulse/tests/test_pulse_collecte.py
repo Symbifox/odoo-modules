@@ -89,7 +89,7 @@ class TestPulseCollecte(PulseCase):
         self.assertEqual(set(reponses.mapped("metric_id")), {axe_origine})
 
     def test_la_passe_periodique_verse_et_recalcule(self):
-        campaign = self._campaign(score_threshold=3, text_threshold=5)
+        campaign = self._campaign(score_threshold=5, text_threshold=5)
         campaign.action_open()
         for invitation in campaign.invitation_ids[:6]:
             self._repondre(invitation, note=9)
