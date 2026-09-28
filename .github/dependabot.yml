@@ -1,0 +1,9 @@
+# Mises à jour des actions de la CI, épinglées par SHA : Dependabot propose le
+# nouveau SHA quand l'action publie une version.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
