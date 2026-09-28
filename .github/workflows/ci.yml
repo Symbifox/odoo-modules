@@ -59,7 +59,9 @@ jobs:
           import pathlib, sys, xml.etree.ElementTree as ET
           bad = []
           for f in sorted(pathlib.Path(".").rglob("*.xml")):
-              if ".git" in f.parts:
+              # tests/fixtures/ porte des XML volontairement hostiles (ex. entité XXE de bf_flux) :
+              # ils existent pour prouver que le code les refuse, pas pour être bien formés.
+              if ".git" in f.parts or "fixtures" in f.parts:
                   continue
               try:
                   ET.parse(f)
