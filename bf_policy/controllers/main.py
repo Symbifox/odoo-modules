@@ -232,9 +232,16 @@ class BfPolicyController(http.Controller):
         user, error = _resolve_person(org)
         if error:
             return error
-        _logger.info("[bf_policy] served policy for user=%s ip=%s",
-                     user.login, _client_ip())
-        return _json_response(org.get_policy_json(user), 200)
+        # Le mot de passe de liaison LDAP ne part qu'a un jeton emis au client
+        # d'installation, meme quand la verification d'audience est coupee :
+        # un jeton d'une autre application du meme fournisseur obtient la
+        # politique, pas le compte de service de l'annuaire.
+        credential = _authorization()[len("Bearer "):].strip()
+        own_client = _issued_to(_jwt_claims(credential), org.oidc_client_id or "")
+        _logger.info("[bf_policy] served policy for user=%s ip=%s bind=%s",
+                     user.login, _client_ip(), "oui" if own_client else "non")
+        return _json_response(
+            org.get_policy_json(user, bind_password=own_client), 200)
 
     # ------------------------------------------------------------------ enrol
     @http.route("/api/v1/policy/enroll", type="http", auth="public",

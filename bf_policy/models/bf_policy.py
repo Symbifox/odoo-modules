@@ -95,14 +95,16 @@ class BfPolicyOrg(models.Model):
         string="Identity claim", default="email", required=True,
         help="Userinfo claim matched (exactly, case-insensitively) against the "
              "Odoo login. Several matching users, or none, means refusal.")
-    # Verification du client emetteur du jeton (aud/azp). Desactivee par
-    # defaut : le point userinfo accepte le jeton de n'importe quel client du
-    # meme fournisseur d'identite, et ne dit pas lequel l'a demande. La
-    # verification lit donc les revendications du jeton d'acces lui-meme ; elle
-    # suppose un jeton JWT et un client d'installation fixe.
+    # Verification du client emetteur du jeton (aud/azp). Le point userinfo
+    # accepte le jeton de n'importe quel client du meme fournisseur d'identite,
+    # et ne dit pas lequel l'a demande. La verification lit donc les
+    # revendications du jeton d'acces lui-meme ; elle suppose un jeton JWT et
+    # un client d'installation fixe. Un Client ID vide vaut refus.
+    # Active par defaut pour les NOUVELLES fiches (18.0.2.11.1) : les
+    # fiches existantes gardent leur valeur, aucune migration ne l'allume.
     token_audience_check = fields.Boolean(
         string="Require install client in token",
-        default=False,
+        default=True,
         help="Refuse a bearer whose access token was not issued to the OIDC "
              "Client ID above (checked on the token's aud/azp claims). Needs "
              "the identity provider to issue JWT access tokens.")
@@ -577,8 +579,12 @@ class BfPolicyOrg(models.Model):
                 if ext.id not in skip]
 
     @api.private
-    def get_policy_json(self, user) -> dict:
-        """Merged org-defaults + per-user overrides payload for /api/v1/policy/me."""
+    def get_policy_json(self, user, bind_password=True) -> dict:
+        """Merged org-defaults + per-user overrides payload for /api/v1/policy/me.
+
+        ``bind_password=False`` retient le mot de passe de liaison LDAP : /me le
+        passe a faux quand le jeton n'a pas ete emis au client d'installation.
+        """
         self.ensure_one()
         # Une politique en mode sssd sans annuaire ni compte de liaison produit
         # une machine qui n'ouvre AUCUNE session. On le dit dans le
@@ -661,7 +667,8 @@ class BfPolicyOrg(models.Model):
                     # comptes locaux n'ecrit pas de sssd.conf et n'a aucune
                     # raison de recevoir le compte de service de l'annuaire.
                     "bind_password": (self._read_ldap_bind_password()
-                                      if self.login_mode == "sssd" else ""),
+                                      if self.login_mode == "sssd"
+                                      and bind_password else ""),
                 },
             },
             "policies": {

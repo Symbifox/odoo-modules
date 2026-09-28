@@ -153,6 +153,9 @@ Linux, which is why this catalogue targets Blue Fox OS machines.
 
 ## Changelog
 
+- **18.0.2.11.1** — `/me` returns the directory bind password only to a token issued
+  to the install client (`aud`/`azp` = the configured client id), even while the
+  audience check is off; new organisations have the audience check on by default.
 - **18.0.2.11.0** — Access hardening: portal, archived and out-of-company users
   refused in every provisioning mode and at every machine sync; new orgs default
   to group-based authorisation; bearer mapped to a user by one exact-match

@@ -119,6 +119,9 @@ class _HttpBase(HttpCase):
         cls.org = cls.Org.create({
             "company_id": cls.company.id, "domain": _HOST,
             "provision_mode": "any", "disk_escrow": True,
+            # Etat de la production au 2026-09-27 : verification coupee. Les
+            # essais d'audience l'allument eux-memes.
+            "token_audience_check": False,
             "authentik_userinfo_url": "https://idp.example.test/userinfo/"})
         cls.key = _a_key()
 
@@ -214,16 +217,19 @@ class TestBearerIdentity(_HttpBase):
         resp = self._call("/api/v1/policy/me", {"email": "%@example.test"})
         self.assertEqual(resp.status_code, 401)
 
-    def test_audience_check_is_off_by_default_and_enforced_when_on(self):
-        self.assertFalse(self.org.token_audience_check)
+    @staticmethod
+    def _jwt(claims):
         import base64
+        body = base64.urlsafe_b64encode(json.dumps(claims).encode()).decode()
+        return "e30." + body.rstrip("=") + ".sig"
 
-        def jwt(claims):
-            body = base64.urlsafe_b64encode(json.dumps(claims).encode()).decode()
-            return "e30." + body.rstrip("=") + ".sig"
+    def test_audience_check_is_on_for_a_new_org(self):
+        company = self.env["res.company"].create({"name": "New Co."})
+        self.assertTrue(self.Org.create({"company_id": company.id}).token_audience_check)
 
+    def test_audience_check_enforced_when_on(self):
         claims = {"email": "jane.doe@example.test"}
-        foreign = jwt({"aud": "another-client", "azp": "another-client"})
+        foreign = self._jwt({"aud": "another-client", "azp": "another-client"})
         self.assertEqual(
             self._call("/api/v1/policy/me", claims, bearer=foreign).status_code, 200)
         self.org.write({"token_audience_check": True, "oidc_client_id": "install-client"})
@@ -232,9 +238,40 @@ class TestBearerIdentity(_HttpBase):
             self._call("/api/v1/policy/me", claims, bearer=foreign).status_code, 401)
         self.assertEqual(
             self._call("/api/v1/policy/me", claims, bearer="opaque").status_code, 401)
-        own = jwt({"aud": "install-client", "azp": "install-client"})
+        own = self._jwt({"aud": "install-client", "azp": "install-client"})
         self.assertEqual(
             self._call("/api/v1/policy/me", claims, bearer=own).status_code, 200)
+
+    def test_audience_check_refuses_when_no_client_id_is_set(self):
+        # Un Client ID vide ne doit pas laisser tout passer.
+        self.org.write({"token_audience_check": True, "oidc_client_id": False})
+        self.env.flush_all()
+        claims = {"email": "jane.doe@example.test"}
+        for bearer in (self._jwt({"aud": "", "azp": ""}), self._jwt({}), "opaque"):
+            self.assertEqual(
+                self._call("/api/v1/policy/me", claims, bearer=bearer).status_code,
+                401, bearer)
+
+    def test_bind_password_only_for_a_token_of_the_install_client(self):
+        # Verification coupee (etat de la production) : un jeton d'une autre
+        # application obtient la politique, mais pas le compte de l'annuaire.
+        with self._with_key():
+            self.org.write({"login_mode": "sssd", "oidc_client_id": "install-client",
+                            "ldap_uri": "ldaps://ldap.example.test:636",
+                            "ldap_bind_dn": "cn=svc,dc=example,dc=test"})
+            self.org.ldap_bind_password = "mdp-essai-annuaire"
+        claims = {"email": "jane.doe@example.test"}
+
+        def bind(bearer):
+            resp = self._call("/api/v1/policy/me", claims, bearer=bearer)
+            self.assertEqual(resp.status_code, 200)
+            return resp.json()["install"]["login"]["bind_password"]
+
+        self.assertEqual(bind(self._jwt({"aud": "another-client",
+                                         "azp": "another-client"})), "")
+        self.assertEqual(bind("opaque"), "")
+        self.assertEqual(bind(self._jwt({"aud": "install-client"})),
+                         "mdp-essai-annuaire")
 
 
 @tagged("post_install", "-at_install")
