@@ -344,7 +344,9 @@ class TestSecureTransferHttpRoutes(BaseNeuve, HttpCase):
 
     def test_a_gated_transfer_can_actually_be_reported(self):
         """Rendering the button is half of it: the route must accept the post
-        without the visitor ever holding a code, and suspend the transfer."""
+        without the visitor ever holding a code. Sans la porte, le
+        signalement devient un drapeau pour les gestionnaires — le jeton seul
+        ne met plus le lien hors ligne."""
         transfer = self._create(message="non sollicité")
         transfer.force_recipient_otp = True
         transfer._register_file("piece.pdf", 4096)
@@ -355,9 +357,24 @@ class TestSecureTransferHttpRoutes(BaseNeuve, HttpCase):
             response = self._open("/s/%s/report" % token,
                                   data={"reason": "je ne connais pas"})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(transfer.sudo().state, "suspended")
+        self.assertEqual(transfer.sudo().state, "active")
         self.assertIn("abuse_report",
                       transfer.sudo().access_log_ids.mapped("action"))
+        self.assertTrue(self.env["mail.activity"].sudo().search([
+            ("res_model", "=", "secure.transfer"),
+            ("res_id", "=", transfer.id)]))
+
+    def test_an_ungated_transfer_report_still_suspends(self):
+        """Sans mot de passe ni code, le jeton EST la porte de lecture : le
+        signalement garde son effet immédiat."""
+        transfer = self._create(message="non sollicité")
+        transfer._register_file("piece.pdf", 4096)
+        with patch(S3_MOD + ".head_object", side_effect=self._head_for(transfer)):
+            transfer.action_finalize()
+        token = transfer.sudo().token
+        with patch(MAIL_SEND, lambda self, *a, **k: True):
+            self._open("/s/%s/report" % token, data={"reason": "abus"})
+        self.assertEqual(transfer.sudo().state, "suspended")
 
     def test_recipient_otp_gate_never_serves_the_bytes(self):
         """Without a verified session the download route must redirect and

@@ -420,6 +420,46 @@ class TestOpenAudience(BaseNeuve, TransactionCase):
         t._audience_confirm(member)
         self.assertEqual(member.state, "confirmed")
 
+    def test_declared_mode_blocked_recipient_gets_no_new_code(self):
+        """un destinataire nommé bloqué ne rentre pas en redemandant
+        un code — ni l'envoi ni la confirmation ne lèvent le blocage."""
+        t = self._transfer(recipient_emails="connu@example.com")
+        member = t._audience_join("email", "connu@example.com")
+        t._audience_confirm(member)
+        member.action_block()
+        with patch.object(type(t), "_otp_email") as sent:
+            otp_hash, expiry = t._send_recipient_otp("connu@example.com")
+        self.assertFalse(otp_hash)
+        self.assertFalse(sent.called)
+        self.assertFalse(t._audience_confirm(member))
+        member._confirm()
+        self.assertEqual(member.state, "blocked")
+
+    def test_declared_mode_caps_code_sends_per_recipient(self):
+        """temporisation et plafond horaire par destinataire nommé,
+        en base — des IP qui tournent ne contournent pas un compteur par
+        personne."""
+        from datetime import timedelta
+        from odoo import fields
+        t = self._transfer(recipient_emails="connu@example.com")
+        with patch.object(type(t), "_otp_email") as sent:
+            self.assertTrue(t._send_recipient_otp("connu@example.com", ip="1.1.1.1")[0])
+            # renvoi immédiat, autre IP : temporisation
+            self.assertFalse(t._send_recipient_otp("connu@example.com", ip="2.2.2.2")[0])
+            member = t._audience_for("email", "connu@example.com")
+            Audience = type(member)
+            for i in range(Audience.MAX_OTP_PER_HOUR_NAMED - 1):
+                member.last_otp_at = fields.Datetime.now() - timedelta(minutes=2)
+                self.assertTrue(t._send_recipient_otp(
+                    "connu@example.com", ip="3.3.3.%d" % i)[0])
+            member.last_otp_at = fields.Datetime.now() - timedelta(minutes=2)
+            self.assertFalse(t._send_recipient_otp("connu@example.com", ip="4.4.4.4")[0])
+            self.assertEqual(sent.call_count, Audience.MAX_OTP_PER_HOUR_NAMED)
+            # une heure plus tard, la fenêtre repart
+            member.otp_window_start = fields.Datetime.now() - timedelta(hours=2)
+            self.assertTrue(t._send_recipient_otp("connu@example.com", ip="5.5.5.5")[0])
+        self.assertEqual(member.state, "pending")
+
     def test_declared_mode_refuses_to_anchor_a_stranger(self):
         t = self._transfer(recipient_emails="connu@example.com")
         self.assertFalse(t._audience_join("email", "intrus@example.com"))

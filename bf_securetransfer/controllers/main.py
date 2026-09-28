@@ -694,7 +694,7 @@ class SecureTransferController(Controller):
             return request.redirect("/s/%s" % token, code=303)
         # Un visiteur bloqué garde son cookie de session : c'est ici qu'on le
         # renvoie à la porte, pas à la première requête suivante.
-        if transfer.audience_mode == "open" and member.state == "blocked":
+        if member.state == "blocked":
             transfer._log("expired_hit", ip=ip, ua=ua,
                           actor=member.display_identity, note="blocked")
             response = _render_page("bf_securetransfer.page_unavailable", {
@@ -811,7 +811,14 @@ class SecureTransferController(Controller):
             kind = chal.get("kind") or "email"
             value = chal.get("value") or chal.get("email") or ""
             member = transfer._audience_join(kind, value, ip=ip, ua=ua)
-            transfer._audience_confirm(member, ip=ip, ua=ua)
+            member = transfer._audience_confirm(member, ip=ip, ua=ua)
+            if transfer._recipient_otp_required() and not member:
+                # Identité bloquée par l'opérateur (ou retirée de la liste
+                # entre-temps) : le code juste n'ouvre rien.
+                request.session.pop("st_otp_ok_%d" % transfer.id, None)
+                request.session.pop("st_identity_%d" % transfer.id, None)
+                _otp_fail_limiter.hit(key)
+                return request.redirect("/s/%s?otp_error=1" % token, code=303)
             if member:
                 request.session["st_identity_%d" % transfer.id] = {
                     "kind": member.identity_kind,
@@ -1007,22 +1014,38 @@ class SecureTransferController(Controller):
         # the limiter cannot be probed from the outside.
         if _report_limiter.consume(ip, _REPORT_MAX):
             reason = (post.get("reason") or "").strip()[:500]
-            transfer._log("abuse_report", ip=ip, ua=ua, note=reason or None)
-            # Auto-suspend immediately: the link goes dark and stays dark until
-            # an admin reactivates (false report) or purges (confirmed abuse).
-            transfer._suspend_for_abuse(ip=ip, ua=ua)
+            # mettre le lien hors ligne exige la même porte que le
+            # voir (mot de passe, puis code du destinataire). Sans elle, le
+            # jeton seul suffisait à couper un transfert protégé. Le
+            # signalement d'un visiteur resté à la porte reste reçu — un envoi
+            # non sollicité se signale AVANT d'avoir le code — mais il devient
+            # un drapeau pour les gestionnaires, pas une suspension.
+            verified = not (
+                (transfer.has_password
+                 and not request.session.get("st_unlock_%d" % transfer.id))
+                or (transfer._recipient_otp_required()
+                    and not request.session.get("st_otp_ok_%d" % transfer.id)))
+            note = reason or None
+            if not verified:
+                note = "[%s] %s" % (_("non vérifié, à revoir"), reason or "")
+            transfer._log("abuse_report", ip=ip, ua=ua, note=note)
+            if verified:
+                # Auto-suspend immediately: the link goes dark and stays dark
+                # until an admin reactivates (false report) or purges.
+                transfer._suspend_for_abuse(ip=ip, ua=ua)
             try:
-                _notify_abuse_managers(transfer, reason, ip)
+                _notify_abuse_managers(transfer, note or "", ip)
             except Exception:
                 _logger.exception(
                     "bf_securetransfer: abuse activity creation failed for %s",
                     transfer.name)
-            try:
-                transfer._send_abuse_notice(reason=reason, ip=ip)
-            except Exception:
-                _logger.exception(
-                    "bf_securetransfer: abuse notice email failed for %s",
-                    transfer.name)
+            if verified:
+                try:
+                    transfer._send_abuse_notice(reason=reason, ip=ip)
+                except Exception:
+                    _logger.exception(
+                        "bf_securetransfer: abuse notice email failed for %s",
+                        transfer.name)
         else:
             _logger.info(
                 "bf_securetransfer: abuse report rate limit hit for IP %s", ip)

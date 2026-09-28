@@ -1,6 +1,6 @@
 {
     'name': 'Transfert sécurisé (Secure Transfer)',
-    'version': '18.0.1.21.4',
+    'version': '18.0.1.21.5',
     'category': 'Website',
     'summary': "Transfert de fichiers sécurisé : téléversement direct navigateur → S3, "
                "liens tokenisés avec expiration et mot de passe, journal d'accès "

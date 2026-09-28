@@ -93,6 +93,12 @@ class SecureTransferAudience(models.Model):
     download_count = fields.Integer(
         string="Téléchargements", default=0, readonly=True,
     )
+    # Fenêtre glissante d'une heure pour les destinataires nommés : leur
+    # budget n'est pas un plafond à vie (ils reviennent pendant toute la vie du
+    # transfert), mais il doit exister — sinon un lien fuité, avec des IP qui
+    # tournent, sert à inonder la boîte ou le mobile d'un destinataire.
+    otp_window_start = fields.Datetime(string="Début de la fenêtre de codes", readonly=True)
+    otp_window_count = fields.Integer(string="Codes dans la fenêtre", default=0, readonly=True)
     ip = fields.Char(string="IP (première demande)", readonly=True)
     user_agent = fields.Char(string="Agent utilisateur", readonly=True)
 
@@ -112,6 +118,9 @@ class SecureTransferAudience(models.Model):
     MAX_SMS_PER_IDENTITY = 3
     # Un renvoi trop rapproché n'aide personne et double le coût d'un SMS.
     OTP_COOLDOWN_SECONDS = 60
+    # Destinataires nommés : codes par heure et par destinataire.
+    MAX_OTP_PER_HOUR_NAMED = 5
+    OTP_WINDOW_SECONDS = 3600
 
     @api.depends("identity_kind", "email", "phone")
     def _compute_display_identity(self):
@@ -165,6 +174,14 @@ class SecureTransferAudience(models.Model):
         self.ensure_one()
         if self.state == "blocked":
             return False, "blocked"
+        if self.transfer_id.audience_mode != "open":
+            elapsed = self._seconds_since_last_otp()
+            if elapsed is not None and elapsed < self.OTP_COOLDOWN_SECONDS:
+                return False, "cooldown"
+            if self._otp_window_open() \
+                    and self.otp_window_count >= self.MAX_OTP_PER_HOUR_NAMED:
+                return False, "otp_cap"
+            return True, ""
         if self.otp_send_count >= self.MAX_OTP_PER_IDENTITY:
             return False, "otp_cap"
         if self.identity_kind == "sms" \
@@ -175,22 +192,34 @@ class SecureTransferAudience(models.Model):
             return False, "cooldown"
         return True, ""
 
+    def _otp_window_open(self):
+        """La fenêtre horaire en cours n'est pas échue."""
+        self.ensure_one()
+        return bool(self.otp_window_start) and (
+            fields.Datetime.now() - self.otp_window_start
+        ).total_seconds() < self.OTP_WINDOW_SECONDS
+
     def _record_otp_sent(self):
         """Compter un code effectivement parti. Appelé APRÈS la livraison : un
         envoi que le fournisseur a refusé ne doit pas consommer le budget du
         visiteur (sinon un opérateur SMS en panne verrouille l'accès)."""
         self.ensure_one()
+        now = fields.Datetime.now()
+        window = self._otp_window_open()
         self.sudo().write({
+            "otp_window_start": self.otp_window_start if window else now,
+            "otp_window_count": (self.otp_window_count + 1) if window else 1,
             "otp_send_count": self.otp_send_count + 1,
             "sms_send_count": self.sms_send_count
             + (1 if self.identity_kind == "sms" else 0),
-            "last_otp_at": fields.Datetime.now(),
+            "last_otp_at": now,
         })
 
     def _confirm(self):
         """Le code a été validé : le visiteur entre dans l'audience."""
         self.ensure_one()
-        if self.state == "confirmed":
+        if self.state in ("confirmed", "blocked"):
+            # « blocked » ne se lève que par le bouton de l'opérateur.
             return self
         self.sudo().write({
             "state": "confirmed",

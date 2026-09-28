@@ -1183,12 +1183,10 @@ class SecureTransfer(models.Model):
         email = email_normalize(email or "") or ""
         if not email:
             return False
-        if self.audience_mode == "open":
-            return self._audience_admissible("email", email)[0]
-        return email in [
-            email_normalize(e) for e in (self.recipient_emails or "").split(",")
-            if e.strip()
-        ]
+        # Les deux modes passent par `_audience_admissible` : c'est là que le
+        # blocage posé par l'opérateur est lu. Sans cela, un destinataire nommé
+        # bloqué rentrait en redemandant simplement un code.
+        return self._audience_admissible("email", email)[0]
 
     # ------------------------------------------------------------------ audience ouverte
     def _audience_limits(self):
@@ -1313,8 +1311,10 @@ class SecureTransfer(models.Model):
             "user_agent": (ua or "")[:512],
         })
         self._log("audience_requested", actor=rec.display_identity, ip=ip, ua=ua,
-                  note=_("Identité auto-déclarée sur une audience ouverte (%s)")
-                  % (_("SMS") if kind == "sms" else _("courriel")))
+                  note=(_("Identité auto-déclarée sur une audience ouverte (%s)")
+                        % (_("SMS") if kind == "sms" else _("courriel")))
+                  if self.audience_mode == "open"
+                  else _("Code demandé par un destinataire nommé"))
         return rec
 
     def _audience_confirm(self, member, ip=None, ua=None):
@@ -1326,6 +1326,11 @@ class SecureTransfer(models.Model):
         self.ensure_one()
         if not member:
             return member
+        if member.state == "blocked":
+            # Un code valide ne lève pas un blocage : seul l'opérateur le fait.
+            self._log("otp_fail", actor=member.display_identity, ip=ip, ua=ua,
+                      note="blocked")
+            return member.browse()
         was_confirmed = member.state == "confirmed"
         member._confirm()
         if not was_confirmed:
@@ -1475,6 +1480,17 @@ class SecureTransfer(models.Model):
         if not self._is_recipient_email(email):
             return None, None
         email = email_normalize(email)
+        # Plafond par destinataire, en base : les limiteurs du
+        # contrôleur sont par IP et en mémoire, ils ne bornent rien face à des
+        # IP qui tournent. La ligne d'audience ancre déjà le destinataire ; on
+        # la crée dès la demande pour y compter les envois.
+        member = self._audience_join("email", email, ip=ip, ua=ua)
+        if member:
+            allowed, reason = member._may_receive_otp()
+            if not allowed:
+                self._log("otp_fail", actor=email, ip=ip, ua=ua,
+                          note=_("Demande de code refusée (%s)") % reason)
+                return None, None
         code = "%06d" % secrets.randbelow(1_000_000)
         expiry = fields.Datetime.now() + timedelta(minutes=15)
         channel = self._otp_channel_for(email)
@@ -1488,6 +1504,8 @@ class SecureTransfer(models.Model):
                 channel = "email"
         if channel == "email":
             self.with_context(lang=lang)._otp_email(email, code, "recipient")
+        if member:
+            member._record_otp_sent()
         self._log("otp_sent", actor=email, ip=ip, ua=ua,
                   note=_("Code de confirmation envoyé au destinataire (%s)")
                   % (_("SMS") if channel == "sms" else _("courriel")))
