@@ -117,6 +117,19 @@ class TestMobileHttp(HttpCase):
         self.assertEqual(body["user_name"], "Porteur HTTP")
         self.assertTrue(body["accounts"])
 
+    def test_config_carries_the_organisation_time_zone(self):
+        """L'horloge de l'organisation dans Symbifox Mobile."""
+        param = self.env["ir.config_parameter"].sudo()
+        param.set_param("bf_timezone.default_tz", "Pacific/Auckland")
+        self.assertEqual(self._get("/config", self._auth()).json()["org_tz"], "Pacific/Auckland")
+        # Sans paramètre, la fiche de la société prend le relais.
+        param.set_param("bf_timezone.default_tz", False)
+        self.env.company.partner_id.tz = "Europe/Paris"
+        self.assertEqual(self._get("/config", self._auth()).json()["org_tz"], "Europe/Paris")
+        # Un nom illisible rend "" : l'app n'affiche rien plutôt qu'une heure fausse.
+        param.set_param("bf_timezone.default_tz", "Mars/Olympus")
+        self.assertEqual(self._get("/config", self._auth()).json()["org_tz"], "")
+
     # ------------------------------------------------------------- erreurs
     def test_a_bad_parameter_is_a_400_not_a_500(self):
         """Un 500 dirait à l'app de réessayer indéfiniment une requête fautive."""

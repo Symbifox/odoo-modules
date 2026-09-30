@@ -52,3 +52,5 @@ from . import test_isolation_menage
 from . import test_isolation_messageid
 from . import test_isolation_adverse
 from . import test_regle_expression_securite
+from . import test_rappel_mobile
+from . import test_imip_reply

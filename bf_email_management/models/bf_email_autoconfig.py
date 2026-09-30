@@ -546,6 +546,8 @@ class BfEmailAutoconfig(models.AbstractModel):
             return False
         try:
             ctx = ssl.create_default_context()
+            # Plancher explicite : ne pas dépendre de la politique OpenSSL de l'image.
+            ctx.minimum_version = ssl.TLSVersion.TLSv1_2
             with socket.create_connection((hote, port), timeout=DELAI_IMAP) as brut:
                 with ctx.wrap_socket(brut, server_hostname=hote) as tls:
                     tls.settimeout(DELAI_IMAP)

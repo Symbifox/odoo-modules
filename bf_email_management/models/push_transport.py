@@ -295,7 +295,9 @@ class BfEmailUnifiedPush(models.AbstractModel):
         """
         # "wake": the offboarding killswitch's nudge (offboarding). It goes
         # out through ``_envoyer_a`` like every other type here.
-        return ["mail", "mail_clear", "mail_clear_all", "wake"]
+        # "rappel", "rappel_clear" : les rappels de calendrier, qui
+        # passent par ``_envoyer_a`` depuis ``calendar.attendee``.
+        return ["mail", "mail_clear", "mail_clear_all", "wake", "rappel", "rappel_clear"]
 
     @api.model
     def _post(self, endpoint, payload, p256dh=None, auth=None):
@@ -332,7 +334,12 @@ class BfEmailUnifiedPush(models.AbstractModel):
         Split out of ``_send`` for the killswitch: revoking one phone from "My
         devices" must wake that phone, not the person's three others, which
         still work.
+
+        Rend le nombre d'appareils qui ont accepté l'envoi (2xx) : le rappel de
+        calendrier s'en sert pour retomber sur ntfy quand aucun n'a reçu.
+        Les autres appelants l'ignorent.
         """
+        recus = 0
         for dev in appareils:
             # Re-checked at send time, not only at registration: DNS can be
             # repointed at an internal address after the endpoint was stored.
@@ -358,8 +365,11 @@ class BfEmailUnifiedPush(models.AbstractModel):
                 elif resp.status_code >= 400:
                     _logger.warning("bf.email push: HTTP %s — %s",
                                     resp.status_code, resp.text[:150])
+                else:
+                    recus += 1
             except Exception:  # noqa: BLE001
                 _logger.warning("bf.email push: erreur d'envoi.", exc_info=True)
+        return recus
 
     @api.model
     def _notify_new_emails(self, emails):

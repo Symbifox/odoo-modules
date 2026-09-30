@@ -167,8 +167,10 @@ class TestWebpushDevice(TransactionCase):
     def test_the_types_this_server_encrypts(self):
         # "wake" is the offboarding killswitch's nudge (offboarding): it goes
         # out through ``_envoyer_a`` like the others, so it belongs here.
-        self.assertEqual(self.env["bf.email.unifiedpush"]._webpush_types(),
-                         ["mail", "mail_clear", "mail_clear_all", "wake"])
+        # Les types du socle en tête ; un module peut en ajouter après
+        # (la messagerie entre collègues : discuss, discuss_clear).
+        self.assertEqual(self.env["bf.email.unifiedpush"]._webpush_types()[:6],
+                         ["mail", "mail_clear", "mail_clear_all", "wake", "rappel", "rappel_clear"])
 
     def test_clearing_or_replacing_the_endpoint_takes_the_keys(self):
         sub = subscription()
@@ -284,7 +286,10 @@ class TestRegisterPushHttp(HttpCase):
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.json(), {
             "ok": True, "webpush": True,
-            "webpush_types": ["mail", "mail_clear", "mail_clear_all", "wake"]})
+            # Ce que le serveur chiffre VRAIMENT, modules ajoutés compris.
+            "webpush_types": self.env["bf.email.unifiedpush"]._webpush_types()})
+        self.assertEqual(response.json()["webpush_types"][:6],
+                         ["mail", "mail_clear", "mail_clear_all", "wake", "rappel", "rappel_clear"])
         device = self.device.sudo()
         device.invalidate_recordset()
         self.assertEqual((device.push_p256dh, device.push_auth), (p256dh, auth))

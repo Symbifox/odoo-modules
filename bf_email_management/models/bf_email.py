@@ -18,6 +18,7 @@ from markupsafe import Markup
 
 from odoo import _, api, fields, models, tools
 from odoo.exceptions import AccessError, UserError
+from odoo.osv import expression
 from odoo.http import request
 
 from . import bf_email_imap
@@ -5050,9 +5051,16 @@ class BfEmail(models.Model):
         """
         try:
             ICP = self.env["ir.config_parameter"].sudo()
-            if ICP.get_param(
+            add_invites = ICP.get_param(
                 "bf_email.auto_add_calendar_invites", "1"
-            ).strip().lower() not in ("1", "true", "yes"):
+            ).strip().lower() in ("1", "true", "yes")
+            # A guest's answer to a meeting the owner organizes. Its own
+            # switch: turning off the auto-added invitations must not also
+            # stop the owner's calendar from learning who is coming.
+            apply_replies = ICP.get_param(
+                "bf_email.apply_calendar_replies", "1"
+            ).strip().lower() in ("1", "true", "yes")
+            if not (add_invites or apply_replies):
                 return
             if (folder or "").strip().lower() == "sent":
                 return
@@ -5077,6 +5085,16 @@ class BfEmail(models.Model):
             )
 
             for ev in events:
+                if ev["method"] == "REPLY":
+                    if apply_replies:
+                        self._imip_apply_reply_safely(
+                            ev, owner, sender, self_addrs,
+                            dmarc_failed=imip.dmarc_failed(msg),
+                            received_at=imip.received_at(msg),
+                        )
+                    continue
+                if not add_invites:
+                    continue
                 if ev["method"] not in imip.ACTIONABLE_METHODS:
                     continue
                 # Skip echoes of our own Odoo-originated events: the owner is
@@ -5148,6 +5166,316 @@ class BfEmail(models.Model):
             _logger.exception(
                 "bf_email: calendar invite ingestion failed (non-fatal)"
             )
+
+    # ------------------------------------------------------------------
+    # Guests' answers (iMIP METHOD:REPLY) -> calendar.attendee.state
+    # ------------------------------------------------------------------
+    def _imip_apply_reply_safely(self, ev, owner, sender, self_addrs,
+                                 dmarc_failed=False, received_at=None):
+        """``_imip_apply_reply`` inside a savepoint: a failure here must not
+        poison the transaction that is storing the email itself."""
+        try:
+            with self.env.cr.savepoint():
+                return self._imip_apply_reply(
+                    ev, owner, sender, self_addrs,
+                    dmarc_failed=dmarc_failed, received_at=received_at,
+                )
+        except Exception:  # noqa: BLE001 - must never break ingestion
+            _logger.exception(
+                "bf_email iMIP: réponse %s de %s non appliquée (non fatal)",
+                ev.get("uid"), sender,
+            )
+            return self.env["calendar.attendee"]
+
+    def _imip_apply_reply(self, ev, owner, sender, self_addrs,
+                          dmarc_failed=False, received_at=None):
+        """Write a guest's answer on their line of the meeting they answered.
+
+        The answer to an invitation travels back as an email to the
+        ORGANIZER. For a meeting the mailbox owner organizes, that email lands
+        here and nowhere else: Nextcloud does not read this mailbox, and core
+        Odoo only hears the links of its OWN invitation, which Gmail's
+        Yes/No/Maybe buttons never click. Measured on a real mailbox: nearly
+        half of the answers received over two months had never reached their
+        meeting.
+
+        Guards, all required:
+
+        * the owner is the organizer of what is being answered;
+        * the sender IS the guest whose answer is applied, and only their own
+          PARTSTAT is read (a REPLY may list others; they speak for nobody);
+        * the guest already has a line on the meeting: nothing is ever
+          created, so an unknown address changes nothing;
+        * the owner is a participant of the meeting found under that UID, and
+          its organizer (``user_id``, or the owner of the synced calendar it
+          lives in, since the Nextcloud pull creates events as uid 1);
+        * the owner's OWN line is never changed by an inbound message;
+        * the receiving server did not record a DMARC failure;
+        * the meeting is not a booking: ``resource.booking.state`` is computed
+          from the booker's answer, and a tenant may run an automation that
+          emails the client when a booking becomes "confirmed". Bookings keep
+          their own confirmation flow.
+
+        Order: the last answer GIVEN wins, not the last one read. The guest's
+        ``DTSTAMP`` (capped at the message's own date, and replaced by it when
+        missing) is kept on the line; only a strictly newer answer replaces
+        it. A tie is the same answer read twice (a second catch-up, a copy in
+        a second mailbox): re-applying it would undo whatever changed the line
+        in between. A line answered by another path (Odoo's own link, a manual
+        edit) carries no stamp: an emailed answer beats it only when newer than
+        the line's ``write_date``, which can only be LATER than that change.
+
+        ⚠️ Not core's ``do_accept()`` / ``do_decline()``: they post under the
+        public "Invitation" subtype, which notifies whoever follows it. The
+        trace here is an internal note that notifies nobody.
+
+        Returns the ``calendar.attendee`` records whose state changed.
+        """
+        Attendee = self.env["calendar.attendee"].sudo()
+        organizer = ev.get("organizer") or ""
+        if not organizer or organizer not in self_addrs:
+            return Attendee
+        if not sender or sender in self_addrs:
+            return Attendee
+        if dmarc_failed:
+            _logger.info(
+                "bf_email iMIP: REPLY %s ignoré, échec DMARC pour %r",
+                ev.get("uid"), sender,
+            )
+            return Attendee
+        answer = (ev.get("partstats") or {}).get(sender) or ""
+        state = imip.REPLY_PARTSTATS.get(answer)
+        if not state:
+            _logger.info(
+                "bf_email iMIP: REPLY %s ignoré, pas de réponse lisible de "
+                "l'expéditeur %r", ev.get("uid"), sender,
+            )
+            return Attendee
+        events = self._imip_reply_events(ev, owner)
+        lines = events.attendee_ids.filtered(
+            lambda a: (tools.email_normalize(a.email or "") or "") == sender
+        )
+        now = fields.Datetime.now()
+        received = min(received_at, now) if received_at else now
+        stamp = fields.Datetime.to_datetime(ev.get("dtstamp"))
+        stamp = min(stamp, received) if stamp else received
+        eligible = Attendee
+        for line in lines:
+            if line.bf_imip_reply_stamp:
+                if stamp <= line.bf_imip_reply_stamp:
+                    continue
+            elif line.state != "needsAction":
+                if line.write_date and stamp <= line.write_date:
+                    continue
+            eligible |= line
+        if not eligible:
+            return Attendee
+        quiet = dict(
+            tracking_disable=True,
+            mail_notrack=True,
+            no_mail_to_attendees=True,
+            dont_notify=True,
+        )
+        # Stamp every eligible line, changed or not: an older answer read
+        # later must lose even when this one changed nothing.
+        eligible.with_context(**quiet).write({"bf_imip_reply_stamp": stamp})
+        changed = eligible.filtered(lambda a: a.state != state)
+        if not changed:
+            return Attendee
+        changed.with_context(**quiet).write({"state": state})
+        self._imip_reply_note(changed, state, owner)
+        return changed
+
+    def _imip_reply_events(self, ev, owner):
+        """The meetings a REPLY speaks for, among the owner's.
+
+        Looked up by the UIDs Odoo itself sends out: ``x_nc_uid`` (the
+        CalDAV identity, which ``bf_calendar_invite`` also reuses) and
+        ``bf_ics_uid`` (the identity ``bf_calendar_invite`` mints). Both links
+        are soft: this module runs on tenants that have neither.
+
+        * A ``RECURRENCE-ID`` names one occurrence: that one only.
+        * Otherwise, on a series, the answer covers the occurrences still to
+          end when the guest answered (and, for a series Google split on its
+          side, those from the split onward). A past occurrence the guest
+          attended is not rewritten by a later "no".
+        """
+        Event = self.env["calendar.event"].sudo()
+        uid_fields = [f for f in ("x_nc_uid", "bf_ics_uid") if f in Event._fields]
+        me = owner.partner_id
+        if not uid_fields or not me or not ev.get("uid"):
+            return Event
+        uids = [ev["uid"]]
+        original, split_start = imip.google_source_uid(ev["uid"])
+        if original:
+            uids.append(original)
+        domain = expression.OR([[(f, "in", uids)] for f in uid_fields])
+        occurrences = Event
+        for event in Event.search(domain):
+            if not self._imip_organized_by(event, owner):
+                continue
+            # Widen to the series ONLY from its base event. A moved occurrence
+            # that bf_calendar_invite sent under its OWN UID (no original slot
+            # recorded, so no RECURRENCE-ID) is found as itself: answering it
+            # must not answer every other week (adversarial review).
+            recurrence = event.recurrence_id
+            if recurrence and recurrence.base_event_id == event:
+                occurrences |= recurrence.calendar_event_ids
+            else:
+                occurrences |= event
+        occurrences = occurrences.filtered(
+            lambda e: me in e.partner_ids and not self._imip_booking_owned(e)
+        )
+
+        rid = ev.get("recurrence_id")
+        if rid:
+            return occurrences.filtered(
+                lambda e: rid in self._imip_occurrence_keys(e)
+            )
+        if not any(e.recurrence_id for e in occurrences):
+            return occurrences
+        stamp = fields.Datetime.to_datetime(ev.get("dtstamp")) or fields.Datetime.now()
+        occurrences = occurrences.filtered(lambda e: e.stop and e.stop >= stamp)
+        if split_start:
+            split = fields.Datetime.to_datetime(split_start)
+            occurrences = occurrences.filtered(lambda e: e.start >= split)
+        return occurrences
+
+    @staticmethod
+    def _imip_organized_by(event, owner):
+        """Does ``owner`` organize ``event``? ``user_id`` alone is not enough:
+        the Nextcloud pull creates events as uid 1, so an event of the owner's
+        synced calendar is theirs when that calendar's owner is them."""
+        if event.user_id == owner:
+            return True
+        if "x_nc_calendar_id" not in event._fields:
+            return False
+        config = event.x_nc_calendar_id
+        return bool(
+            config
+            and "calendar_owner_id" in config._fields
+            and config.calendar_owner_id == owner
+        )
+
+    @staticmethod
+    def _imip_booking_owned(event):
+        """Is this meeting a booking, whose attendees Odoo's booking flow owns?
+
+        Same predicate as the Nextcloud sync when it exists, so the two ends
+        never drift apart; a soft check on ``resource_booking_ids`` otherwise.
+        """
+        if hasattr(event, "_bf_odoo_owns_attendees"):
+            return event._bf_odoo_owns_attendees()
+        return bool(
+            "resource_booking_ids" in event._fields and event.resource_booking_ids
+        )
+
+    @staticmethod
+    def _imip_occurrence_keys(event):
+        """The values a ``RECURRENCE-ID`` may carry for ``event``: its slot,
+        and the slot it was moved from when ``bf_calendar_invite`` kept it."""
+        keys = set()
+        if event.allday and event.start_date:
+            keys.add(fields.Date.to_string(event.start_date))
+        elif event.start:
+            keys.add(fields.Datetime.to_string(event.start))
+        moved = event["bf_ics_recurrence_id"] if "bf_ics_recurrence_id" in event._fields else False
+        if moved:
+            keys.add(fields.Datetime.to_string(moved))
+        return keys
+
+    def _imip_reply_note(self, attendees, state, owner):
+        """One log line per guest, on the first meeting answered.
+
+        ``_message_log`` and not ``message_post``: a log notifies nobody by
+        construction, accepts an author without an address, and is a
+        ``notification``, not a ``comment``. That last point is measured, not
+        cosmetic: ``bf_gamification``, when installed, credits XP to the author
+        of every ``comment`` who has a user account, and a client with a portal
+        account would have levelled up and earned a badge for the notes a
+        catch-up writes in their name (measured on a dry run).
+
+        Accessory: the answer is already written. A line that cannot be
+        logged is reported, never allowed to undo it.
+        """
+        env = self.with_context(lang=owner.lang or self.env.lang).env
+        labels = dict(
+            env["calendar.attendee"]._fields["state"]._description_selection(env)
+        )
+        for partner in attendees.partner_id:
+            lines = attendees.filtered(lambda a: a.partner_id == partner)
+            event = lines.event_id.sorted("start")[:1]
+            if not event:
+                continue
+            body = env._(
+                "%(name)s a répondu « %(answer)s » à l'invitation, par courriel.",
+                name=partner.name or lines[:1].email or "",
+                answer=labels.get(state, state),
+            )
+            if len(lines) > 1:
+                body = "%s %s" % (
+                    body, env._("(%(count)s occurrences)", count=len(lines)),
+                )
+            try:
+                with self.env.cr.savepoint():
+                    event._message_log(
+                        body=Markup.escape(body),
+                        author_id=partner.id,
+                    )
+            except Exception:  # noqa: BLE001 - the answer is already written
+                _logger.warning(
+                    "bf_email iMIP: note de réponse non postée sur %s",
+                    event.id, exc_info=True,
+                )
+
+    def _imip_replay_replies(self, since=None):
+        """Apply the answers already received, oldest first.
+
+        For the catch-up of a mailbox that received REPLYs before this path
+        existed. Reads the raw message kept on each row; a row whose raw copy
+        is gone is skipped. Returns one dict per attendee line changed.
+        """
+        domain = [
+            ("direction", "=", "in"),
+            ("raw_rfc822", "!=", False),
+            "|", ("has_calendar_part", "=", True), ("is_invitation", "=", True),
+        ]
+        if since:
+            domain.append(("date", ">=", since))
+        report = []
+        for row in self.sudo().with_context(active_test=False).search(
+            domain, order="date asc, id asc"
+        ):
+            owner = row.account_id.user_id
+            if not owner:
+                continue
+            try:
+                raw = base64.b64decode(row.raw_rfc822)
+                msg = email_mod.message_from_bytes(raw, policy=email.policy.default)
+            except Exception:  # noqa: BLE001
+                continue
+            sender = parseaddr(str(msg.get("From", "")))[1].strip().lower()
+            self_addrs = self._get_self_addresses(owner)
+            dmarc_failed = imip.dmarc_failed(msg)
+            for ev in imip.parse_imip_events(msg):
+                if ev["method"] != "REPLY":
+                    continue
+                changed = self._imip_apply_reply_safely(
+                    ev, owner, sender, self_addrs,
+                    dmarc_failed=dmarc_failed,
+                    # Its own date, capped at when WE ingested it: stable from
+                    # one catch-up to the next, whatever the guest's clock said.
+                    received_at=min(d for d in (row.date, row.create_date) if d),
+                )
+                for line in changed:
+                    report.append({
+                        "bf_email": row.id,
+                        "event": line.event_id.id,
+                        "attendee": line.id,
+                        "email": sender,
+                        "state": line.state,
+                    })
+        return report
 
     def _imip_create_vals(self, ev, owner):
         """Build calendar.event vals for a freshly received invitation."""

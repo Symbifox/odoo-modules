@@ -4,6 +4,87 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.50.0] - 2026-09-29
+
+### Added
+
+- **Guests' answers to your invitations.** When a guest clicks Yes / Maybe /
+  No in Gmail or Outlook, the answer travels back as an iMIP email
+  (`text/calendar; method=REPLY`) to the organizer's address. For a meeting the
+  mailbox owner organizes, this module is the only thing that reads that
+  mailbox, and it used to drop those emails on purpose. The answer is now
+  written on the guest's `calendar.attendee` line, with a log line on the
+  meeting.
+- A `RECURRENCE-ID` answers for that one occurrence; without it, a series
+  answer covers the occurrences not yet over when the guest answered, and only
+  when the UID found is the series' base event.
+- Google rewrites a foreign UID once it splits a series on its side
+  (`_<base32hex(UID)>_R<start>@google.com`); those are decoded.
+- `bf.email._imip_replay_replies(since=None)` replays the answers already
+  stored, oldest first, idempotent.
+- Switch `bf_email.apply_calendar_replies` (default `1`), separate from
+  `bf_email.auto_add_calendar_invites`.
+- New field `calendar.attendee.bf_imip_reply_stamp`.
+
+### Security
+
+- **No outbound effect.** The trace is `_message_log` (a `notification`), not
+  `message_post`: it notifies nobody, accepts an author without an address,
+  and earns the guest no `bf_gamification` XP. Core's `do_accept()` /
+  `do_decline()` are deliberately not used: they post under the public
+  "Invitation" subtype.
+- **Bookings are left alone.** `resource.booking.state` is computed from the
+  booker's answer, and a tenant may run an automation that emails the client
+  when a booking becomes confirmed. Same predicate as `calendar_nextcloud_sync`
+  (`_bf_odoo_owns_attendees`).
+- Guards, all required: the REPLY's organizer is one of the owner's addresses,
+  and so is the meeting's real organizer (`user_id`, or the owner of the
+  synced calendar it lives in); the sender **is** the guest whose answer is
+  read, and never the owner; the guest already has a line on the meeting (no
+  attendee is ever created); the owner is a participant; the receiving server
+  did not record `dmarc=fail` in the topmost `Authentication-Results` header.
+- The last answer **given** wins: the `DTSTAMP`, capped at the message's own
+  date, is kept on the line; only a strictly newer answer replaces it, so the
+  same answer read twice never undoes a click made in between. A line
+  answered by another path yields only to an emailed answer newer than its
+  `write_date`.
+
+## [18.0.11.48.1] - 2026-09-28
+
+### Added
+
+- **Calendar reminders on Symbifox Mobile.** A reminder is pushed to the
+  attendee's up-to-date phones first, with its buttons; ntfy is only used for
+  someone without the app (or with an old app still in use), so an up-to-date
+  phone does not ring twice. Snoozing or dismissing at the desk clears the phone
+  notification, and a phone rings again when a snooze ends. New push types
+  `rappel` / `rappel_clear`. Only active internal users are pushed to
+  Symbifox Mobile, and declined attendees are skipped. The ntfy fallback is
+  unchanged: it still covers every attendee who is not reached on Mobile.
+- `bf.email.unifiedpush._envoyer_a()` returns the number of devices that
+  accepted the push (2xx); a failed send no longer counts as delivered.
+
+### Changed
+
+- Without a ntfy relay configured, the reminder cron no longer stops early:
+  a person with Symbifox Mobile still gets the reminder.
+
+## [18.0.11.48.0] - 2026-09-28
+
+### Added
+
+- The mobile configuration endpoint returns `org_tz`, the organisation's time
+  zone (`bf_timezone.default_tz`, else the company's), for the app's clock. An
+  unknown zone name returns `""` rather than a wrong time.
+
+## [18.0.11.46.1] - 2026-09-28
+
+### Security
+
+- The IMAP probe the account setup assistant uses to discover a mailbox's
+  server sets an explicit TLS 1.2 floor instead of depending on the image's
+  OpenSSL policy.
+
 ## [18.0.11.46.0] - 2026-09-23
 
 ### Security

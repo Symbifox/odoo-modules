@@ -49,6 +49,13 @@ class CalendarAttendee(models.Model):
              "the current alarm trigger. Compared against the alarm "
              "notify_at to suppress repeat firing.",
     )
+    bf_imip_reply_stamp = fields.Datetime(
+        string="Emailed answer stamp",
+        copy=False,
+        help="DTSTAMP of the last guest answer (iMIP REPLY) applied to this "
+             "line. An older answer that arrives later is ignored: the last "
+             "answer GIVEN wins, not the last one read.",
+    )
     bf_ntfy_pushed_at = fields.Datetime(
         string="ntfy pushed at",
         help="Timestamp of the last ntfy push for this attendee. Used by the "
@@ -82,8 +89,7 @@ class CalendarAttendee(models.Model):
         réimporte la série récurrente : elle rase la récurrence et toutes ses
         occurrences avant de les recréer avec des ``id`` neufs. L'accusé, lui,
         est classé sous l'UID CalDAV de la série et l'heure de l'occurrence,
-        que le ``.ics`` conserve. Voir ``bf_calendar_reminder_ack.py`` et la
-        tâche BF.
+        que le ``.ics`` conserve. Voir ``bf_calendar_reminder_ack.py``.
         """
         for attendee in self:
             if not attendee.partner_id or not attendee.event_id:
@@ -110,6 +116,11 @@ class CalendarAttendee(models.Model):
             "bf_calendar_reminder/close",
             {"event_id": int(event_id), "reason": reason},
         )
+        # Et le téléphone. Un report ou un « vu » posé au bureau
+        # laissait la notification de Symbifox Mobile affichée.
+        for attendee in self:
+            attendee._bf_push_mobile({"type": "rappel_clear", "event_id": int(event_id),
+                                      "reason": reason})
 
     @api.model
     def bf_snooze(self, event_id, minutes=None, until=None):
@@ -183,6 +194,10 @@ class CalendarAttendee(models.Model):
         # Also rewind the partner ack so get_next_notif() returns the alarm
         # again (it filters out alarms with notify_at <= calendar_last_notif_ack).
         expired.write({"bf_snoozed_until": False})
+        # 🔴 L'accusé durable aussi. Le filtre du gestionnaire
+        # d'alarmes recopie l'accusé sur la fiche : laissé en place, le report
+        # revenait sur la fiche à la lecture suivante, et la relance aussi.
+        expired._bf_record_reminder_ack(snoozed_until=False, ntfy_pushed_at=False)
         for partner in partners:
             partner.write({
                 "calendar_last_notif_ack": now - timedelta(days=1),
@@ -190,6 +205,12 @@ class CalendarAttendee(models.Model):
         # Allow re-push to ntfy for the new alarm window
         expired.write({"bf_ntfy_pushed_at": False})
         self.env["calendar.alarm_manager"]._notify_next_alarm(partners.ids)
+        # Le téléphone resonne lui aussi à la fin du report : la
+        # tâche ntfy ne regarde qu'une fenêtre d'une minute autour de l'alarme,
+        # où l'échéance d'un report ne tombe presque jamais.
+        for attendee in expired:
+            if attendee.event_id and attendee.state != "declined":
+                attendee._bf_push_rappel_mobile(attendee.event_id)
 
     # ------------------------------------------------------------------
     # Cron — push ntfy reminder for imminent alarms (gated by snooze state)
@@ -204,8 +225,8 @@ class CalendarAttendee(models.Model):
         url = self.env["ir.config_parameter"].sudo().get_param(
             NTFY_REMINDER_URL_PARAM, NTFY_REMINDER_DEFAULT_URL,
         )
-        if not url:
-            return
+        # Sans relais ntfy, on continue quand même : une personne
+        # qui a Symbifox Mobile reçoit le rappel par lui.
         now = fields.Datetime.now()
         # The cron fires a reminder up to PUSH_LEAD *before* notify_at, so the
         # de-dup guards below must allow for that lead. Keeping the two in one
@@ -271,7 +292,100 @@ class CalendarAttendee(models.Model):
                     if (ntfy_pushed_at
                             and ntfy_pushed_at >= notify_at - PUSH_LEAD):
                         continue
-                    self._bf_push_ntfy_attendee(url, attendee, event, alarm)
+                    # Symbifox Mobile d'abord, avec ses boutons ; ntfy seulement
+                    # pour qui n'a pas Mobile, sinon le téléphone sonnerait deux fois.
+                    if attendee._bf_push_rappel_mobile(event, alarm):
+                        continue
+                    if url:
+                        self._bf_push_ntfy_attendee(url, attendee, event, alarm)
+
+    # ------------------------------------------------------------------
+    # Symbifox Mobile — le rappel et son effacement
+    # ------------------------------------------------------------------
+
+    def _bf_utilisateur_interne(self):
+        """L'usager interne du participant, ou rien (invité externe, portail)."""
+        self.ensure_one()
+        return self.partner_id.user_ids.filtered(lambda u: u.active and not u.share)[:1]
+
+    # La première version de Symbifox Mobile qui sait afficher « rappel ». Une
+    # plus ancienne ignore ce type : lui envoyer le rappel au lieu de ntfy, ce
+    # serait ne plus rien recevoir du tout jusqu'à la mise à jour.
+    VERSION_MOBILE_RAPPELS = (3, 5, 0)
+
+    @staticmethod
+    def _bf_version(texte):
+        try:
+            return tuple(int(x) for x in (texte or "").split("-")[0].split(".")[:3])
+        except ValueError:
+            return ()
+
+    def _bf_push_mobile(self, payload, version_min=None):
+        """Pousse ``payload`` vers les appareils Symbifox Mobile du participant.
+
+        Rend vrai si au moins un appareil l'a reçu en charge. Ne lève jamais :
+        un rappel manqué ne doit pas faire échouer un report ou une tâche.
+        """
+        self.ensure_one()
+        usager = self._bf_utilisateur_interne()
+        if not usager:
+            return False
+        push = self.env["bf.email.unifiedpush"].sudo()
+        try:
+            appareils = push._devices(usager)
+            if version_min:
+                a_jour = [
+                    a for a in appareils
+                    if self._bf_version(getattr(a, "app_version", "")) >= version_min
+                ]
+                # 🔴 Un téléphone trop ancien ENCORE UTILISÉ (vu dans la semaine)
+                # dépend de ntfy : on rend faux pour que ntfy parte aussi, sinon
+                # ce téléphone ne recevrait plus rien. Un vieil appareil oublié
+                # ne compte pas, sinon le téléphone à jour sonnerait deux fois.
+                recent = fields.Datetime.now() - timedelta(days=7)
+                anciens_actifs = [
+                    a for a in appareils
+                    if a not in a_jour and getattr(a, "last_seen", False)
+                    and a.last_seen >= recent
+                ]
+                appareils = a_jour
+            else:
+                anciens_actifs = []
+            if not appareils:
+                return False
+            # Reçu par au moins un appareil (2xx), sinon ntfy prend le relais :
+            # un envoi échoué ne doit pas compter comme parti (relevé à l'audit).
+            recus = push._envoyer_a(appareils, payload) or 0
+            return recus > 0 and not anciens_actifs
+        except Exception:  # noqa: BLE001
+            _logger.warning("Rappel vers Mobile : envoi échoué (participant %s).",
+                            self.id, exc_info=True)
+            return False
+
+    def _bf_push_rappel_mobile(self, event, alarm=None):
+        """Le rappel lui-même, avec de quoi reporter, marquer vu et ouvrir la fiche.
+
+        Rend vrai s'il est parti vers Mobile ; l'horodatage d'envoi est alors
+        posé comme pour ntfy, et sert de garde contre le double envoi.
+        """
+        self.ensure_one()
+        payload = {
+            "type": "rappel",
+            "event_id": event.id,
+            "key": self.env["bf.calendar.reminder.ack"]._bf_reminder_key(event),
+            "name": event.name or "",
+            "start": fields.Datetime.to_string(event.start) if event.start else "",
+            "allday": bool(event.allday),
+            "location": event.location or "",
+            "videocall": event.videocall_location or "",
+            "duration_minutes": alarm.duration_minutes if alarm else 0,
+        }
+        if not self._bf_push_mobile(payload, version_min=self.VERSION_MOBILE_RAPPELS):
+            return False
+        pushed_at = fields.Datetime.now()
+        self.write({"bf_ntfy_pushed_at": pushed_at})
+        self._bf_record_reminder_ack(ntfy_pushed_at=pushed_at)
+        return True
 
     def _bf_push_ntfy_attendee(self, url, attendee, event, alarm):
         """POST one ntfy reminder to the webhook relay."""

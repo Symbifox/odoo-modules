@@ -30,6 +30,7 @@ import json
 import logging
 import urllib.parse
 
+import pytz
 from markupsafe import Markup
 from werkzeug.utils import redirect as wz_redirect
 
@@ -301,6 +302,20 @@ def _authed(fn):
     return wrapper
 
 
+
+def _org_tz():
+    """Le fuseau de l'organisation, pour l'horloge de Symbifox Mobile.
+
+    Celui de ``bf_timezone.default_tz`` (lu tel quel : ce module n'en dépend
+    pas), sinon celui de la fiche de la société. Un nom que pytz ne connaît pas
+    rend "" : l'appli n'affiche alors rien plutôt qu'une heure fausse.
+    """
+    env = request.env
+    tz = (env["ir.config_parameter"].sudo().get_param("bf_timezone.default_tz") or "").strip()
+    if not tz:
+        tz = (env.company.partner_id.tz or "").strip()
+    return tz if tz in pytz.all_timezones_set else ""
+
 class BfEmailMobileApi(http.Controller):
 
     # ── Discovery ─────────────────────────────────────────────────────
@@ -444,7 +459,9 @@ class BfEmailMobileApi(http.Controller):
                 csrf=False, save_session=False)
     @_authed
     def config(self, device, **kw):
-        return _json(request.env["bf.email"].get_mobile_config())
+        data = request.env["bf.email"].get_mobile_config()
+        data["org_tz"] = _org_tz()
+        return _json(data)
 
     # ── Reading ───────────────────────────────────────────────────────
     @http.route(f"{BASE}/threads", type="http", auth="public", methods=["GET"],

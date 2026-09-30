@@ -505,6 +505,56 @@ entire quoted thread.
   direct `/calendar/notify` poll is never filtered. Reminders for a meeting that
   is already over are not pushed at all.
 
+Since 11.48.1 a reminder is pushed to the attendee's **Symbifox Mobile** phones first, with its buttons; ntfy is only used for someone not reached on an up-to-date app, so an up-to-date phone does not ring twice. Snoozing or dismissing at the desk clears the phone notification. Only active internal users are pushed to Symbifox Mobile; the ntfy fallback is unchanged.
+
+### Guests' answers to your invitations (11.50+)
+
+When a guest clicks Yes / Maybe / No in Gmail or Outlook, their answer travels
+back as an iMIP email (`text/calendar; method=REPLY`) to the **organizer's**
+address. For a meeting the mailbox owner organizes, this module is the only
+thing that reads that mailbox: Nextcloud does not, and core Odoo only hears the
+links of its own invitation. The answer is now written on the guest's
+`calendar.attendee` line, with a log line on the meeting (`_message_log`, a
+`notification`, not a `comment`): it notifies nobody by construction, and it
+earns the guest no `bf_gamification` XP.
+
+Guards, all required (11.50.0): the REPLY's organizer is one of the owner's
+addresses, and so is the meeting's real organizer (`user_id`, or the owner of
+the synced calendar it lives in); the sender **is** the guest whose answer is
+read (a REPLY may list others) and never the owner; the guest already has a
+line on the meeting (no attendee is ever created); the owner is a participant;
+the receiving server did not record `dmarc=fail` (topmost
+`Authentication-Results` only); the meeting is **not a booking**
+(`resource.booking.state` follows the booker's answer, and a tenant may email
+the client when a booking becomes confirmed). Meetings are found by the UIDs Odoo sends out,
+`x_nc_uid` (`calendar_nextcloud_sync`) and `bf_ics_uid` (`bf_calendar_invite`),
+both soft links.
+
+- A `RECURRENCE-ID` answers for that one occurrence. Without it, a series
+  answer covers the occurrences not yet over when the guest answered, and only
+  when the UID found is the series' base event: an occurrence moved under its
+  own UID answers for itself.
+- The last answer **given** wins: the `DTSTAMP` applied is kept on the line
+  (`bf_imip_reply_stamp`), capped at the message's own date (and replaced by
+  it when missing). Only a strictly newer answer replaces it: a tie is the
+  same answer read twice and must not undo a click made in between. A line
+  answered by another path (Odoo's own link, a manual edit) yields only to an
+  emailed answer newer than its `write_date`.
+- Google rewrites a foreign UID once it splits a series on its side
+  (`_<base32hex(UID)>_R<start>@google.com`). Those are decoded, and the split
+  start bounds the occurrences touched.
+- Switch: `bf_email.apply_calendar_replies` (default `1`), separate from
+  `bf_email.auto_add_calendar_invites`.
+- Catch-up: `bf.email._imip_replay_replies(since=None)` replays the answers
+  already stored (oldest first, idempotent) and returns what changed. Same
+  ordering rules as live mail; each message is capped at the moment it was
+  ingested, so a replay is stable from one run to the next.
+
+⚠️ Odoo only. A meeting born in Nextcloud is never pushed back on update, so
+its CalDAV copy keeps `PARTSTAT=NEEDS-ACTION`. For a **series** pulled from
+Nextcloud, the pull deletes and recreates every occurrence when the series
+changes there, and a per-occurrence answer is lost with it.
+
 ### IMAP Folder Browser (3.5+, OWL client action)
 A mail-client-style view of any IMAP folder, no permanent ingestion required.
 
