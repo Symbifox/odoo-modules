@@ -754,3 +754,8 @@ class TestReviewFixes(TransactionCase):
         last = mine.with_user(self.agent).bf_client_last_csat
         self.assertTrue(last and "4/5" in last and other.number in last, last)
 
+    # Le menu racine ne porte pas le nom de l'éditeur
+    def test_root_menu_label_is_generic(self):
+        menu = self.env.ref("helpdesk_mgmt.helpdesk_ticket_main_menu")
+        self.assertEqual(menu.with_context(lang="en_US").name, "Helpdesk")
+

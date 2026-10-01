@@ -9,12 +9,14 @@
     </record>
 
 
-  <!-- Override the OCA helpdesk_mgmt root menu so the BF-branded fox icon
-       and a clearer label appear in the app launcher. The model and actions
-       remain shared with helpdesk_mgmt — this is just visual rebrand. -->
+  <!-- Override the OCA helpdesk_mgmt root menu so the module's icon appears
+       in the app launcher. The model and actions remain shared with
+       helpdesk_mgmt. Le libellé reste « Helpdesk » (« Assistance » en
+       français) : « Helpdesk Blue Fox » s'affichait aux usagers anglophones
+       de tout locataire. -->
   <menuitem
       id="helpdesk_mgmt.helpdesk_ticket_main_menu"
-      name="Helpdesk Blue Fox"
+      name="Helpdesk"
       web_icon="bf_helpdesk,static/description/icon.png"
       sequence="16"
       groups="helpdesk_mgmt.group_helpdesk_user_own"/>
