@@ -33,6 +33,10 @@ GENRES = dict([
     ("store", "réserve de données"),
 ])
 
+#: Les deux tons d'une annotation, dits en mots : le plan imprimé n'est pas
+#: le lieu des clés techniques.
+TONS = {"ai": "piste d'amélioration", "risk": "fragilité"}
+
 #: Les portées, dans l'ordre où elles se lisent, avec leur titre de bloc.
 PORTEES = (
     ("niveau", "Niveaux"),
@@ -88,6 +92,10 @@ def calculer_ecarts(avant, apres):
     actuel), `apres` celle qu'on lui compare (la version récente, ou le
     processus souhaité). Rend une liste de dictionnaires plats : le rapport
     HTML les groupe, le semis les enregistre.
+
+    Un changement se dit « A vers B », jamais avec une flèche : le plan de
+    transformation s'imprime en Lexend, qui n'a pas de glyphe pour « → »
+    (U+2192), et reportlab pose alors un carré blanc à sa place.
     """
     av_n, av_no, av_f, av_m = _index(avant)
     ap_n, ap_no, ap_f, ap_m = _index(apres)
@@ -105,7 +113,7 @@ def calculer_ecarts(avant, apres):
         if av_n[code].title != ap_n[code].title:
             out.append(_ecart(
                 "niveau", "renommage", f"niveau:renommage:{code}",
-                f"« {av_n[code].title} » → « {ap_n[code].title} »",
+                f"« {av_n[code].title} » vers « {ap_n[code].title} »",
                 code, ap_n[code].title))
 
     for cle in sorted(set(ap_no) - set(av_no)):
@@ -129,35 +137,36 @@ def calculer_ecarts(avant, apres):
         if (a.name or "") != (b.name or ""):
             out.append(_ecart(
                 "noeud", "renommage", f"noeud:renommage:{cle[0]}:{cle[1]}",
-                f"« {a.name or a.code} » → « {b.name or b.code} »{ou}", *commun))
+                f"« {a.name or a.code} » vers « {b.name or b.code} »{ou}", *commun))
         if a.kind != b.kind:
             out.append(_ecart(
                 "noeud", "nature", f"noeud:nature:{cle[0]}:{cle[1]}",
                 f"« {b.name or b.code} » : {GENRES.get(a.kind, a.kind)} "
-                f"→ {GENRES.get(b.kind, b.kind)}{ou}", *commun))
+                f"vers {GENRES.get(b.kind, b.kind)}{ou}", *commun))
         if (a.lane_id.code or "") != (b.lane_id.code or ""):
             out.append(_ecart(
                 "noeud", "couloir", f"noeud:couloir:{cle[0]}:{cle[1]}",
                 f"« {b.name or b.code} » : {a.lane_id.name or 'aucun'} "
-                f"→ {b.lane_id.name or 'aucun'}{ou}", *commun))
+                f"vers {b.lane_id.name or 'aucun'}{ou}", *commun))
         if (a.tone or "") != (b.tone or ""):
             out.append(_ecart(
                 "noeud", "ton", f"noeud:ton:{cle[0]}:{cle[1]}",
                 f"annotation « {(b.name or '')[:40]}… » : "
-                f"{a.tone or 'aucun'} → {b.tone or 'aucun'}{ou}", *commun))
+                f"{TONS.get(a.tone, a.tone or 'aucun')} vers "
+                f"{TONS.get(b.tone, b.tone or 'aucun')}{ou}", *commun))
 
     for cle in sorted(set(ap_f) - set(av_f), key=str):
         f = ap_f[cle]
         out.append(_ecart(
             "flux", "ajout", f"flux:ajout:{cle[0]}:{cle[1]}>{cle[2]}",
-            f"{f.source_id.name or f.source_id.code} → "
+            f"{f.source_id.name or f.source_id.code} vers "
             f"{f.target_id.name or f.target_id.code}",
             cle[0], f.diagram_id.title))
     for cle in sorted(set(av_f) - set(ap_f), key=str):
         f = av_f[cle]
         out.append(_ecart(
             "flux", "retrait", f"flux:retrait:{cle[0]}:{cle[1]}>{cle[2]}",
-            f"{f.source_id.name or f.source_id.code} → "
+            f"{f.source_id.name or f.source_id.code} vers "
             f"{f.target_id.name or f.target_id.code}",
             cle[0], f.diagram_id.title))
     for cle in sorted(set(av_f) & set(ap_f), key=str):
@@ -165,9 +174,9 @@ def calculer_ecarts(avant, apres):
         if (a.label or "") != (b.label or ""):
             out.append(_ecart(
                 "flux", "porte", f"flux:porte:{cle[0]}:{cle[1]}>{cle[2]}",
-                f"{b.source_id.name or b.source_id.code} → "
+                f"{b.source_id.name or b.source_id.code} vers "
                 f"{b.target_id.name or b.target_id.code} : "
-                f"« {a.label or 'sans porte'} » → « {b.label or 'sans porte'} »",
+                f"« {a.label or 'sans porte'} » vers « {b.label or 'sans porte'} »",
                 cle[0], b.diagram_id.title))
 
     for cle in sorted(set(ap_m) - set(av_m), key=str):
@@ -186,7 +195,7 @@ def calculer_ecarts(avant, apres):
             out.append(_ecart(
                 "message", "libelle",
                 f"message:libelle:{cle[0]}:{cle[1]}:{cle[2]}",
-                f"« {a.label} » → « {b.label} »", cle[0], b.diagram_id.title))
+                f"« {a.label} » vers « {b.label} »", cle[0], b.diagram_id.title))
     return out
 
 

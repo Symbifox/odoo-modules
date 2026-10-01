@@ -10,7 +10,9 @@ from odoo.exceptions import UserError, ValidationError
 from odoo.tests import TransactionCase, tagged
 from psycopg2 import IntegrityError
 from odoo.tools import mute_logger
+from reportlab.pdfbase.ttfonts import TTFontFile
 
+from ..generateur.pdf import POLICES
 from .test_aller_retour import CARTE
 
 
@@ -171,6 +173,44 @@ class TestDelta(TransactionCase):
         self.assertEqual(len(cible.ecart_ids), 1)
         self.assertIn("Qualifier automatiquement", cible.ecart_ids.libelle)
         self.assertEqual(cible.ecart_ids.intention, "simplifier")
+
+    def test_chaque_libelle_d_ecart_s_imprime_en_lexend(self):
+        """🔴 La flèche « → » sortait en carré blanc dans le plan imprimé.
+
+        Lexend n'a pas de glyphe pour U+2192, et reportlab ne le dit pas : il
+        pose un carré de la bonne taille à la bonne place, si bien qu'aucun
+        contrôle de rendu ne le voyait. On sème donc les neuf genres d'écart et
+        on lit chaque caractère contre les deux polices embarquées.
+        """
+        cible = self._cible()
+        niveau = cible.diagram_ids
+        par_code = {n.code: n for n in niveau.node_ids}
+        flux = {(f.source_id.code, f.target_id.code): f for f in niveau.flow_ids}
+        niveau.title = "Traiter une demande, version cible"
+        par_code["t1"].write({"name": "Qualifier automatiquement la demande",
+                              "kind": "user"})
+        par_code["e"].lane_id = par_code["s"].lane_id
+        par_code["n1"].tone = "ai"
+        flux[("g", "t1")].label = "Oui, recevable"
+        flux[("t1", "e")].target_id = par_code["e2"]
+        niveau.message_ids.label = "Demande écrite"
+        cible.action_semer_ecarts()
+        # un genre qui manque ici est un libellé que le contrôle ne lit pas
+        self.assertEqual(
+            set(cible.ecart_ids.mapped(lambda e: (e.portee, e.genre))),
+            {("niveau", "renommage"), ("noeud", "renommage"),
+             ("noeud", "nature"), ("noeud", "couloir"), ("noeud", "ton"),
+             ("flux", "ajout"), ("flux", "retrait"), ("flux", "porte"),
+             ("message", "libelle")})
+        # le ton se dit en mots, pas par sa clé
+        ton = cible.ecart_ids.filtered(lambda e: e.genre == "ton")
+        self.assertIn("fragilité vers piste d'amélioration", ton.libelle)
+        for police in ("Lexend-Regular.ttf", "Lexend-SemiBold.ttf"):
+            glyphes = TTFontFile(str(POLICES / police)).charToGlyph
+            for ecart in cible.ecart_ids:
+                absents = sorted({c for c in ecart.libelle
+                                  if ord(c) not in glyphes})
+                self.assertFalse(absents, f"{police} : {ecart.libelle}")
 
     def test_un_ecart_disparu_sans_travail_s_en_va(self):
         cible = self._cible()

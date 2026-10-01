@@ -147,6 +147,13 @@ dated and versioned, because those widths belong to the engine and not to the
 font. Anything outside both tables raises `MesureImpossible`, naming the
 character. Guessing a width would let the map drift silently.
 
+The measurement knows those fallback characters; `reportlab` does not. It
+draws with Lexend alone and leaves an empty box, at the right size and in the
+right place, wherever a glyph is missing, so no layout check sees it. Text the
+module writes itself therefore stays inside Lexend: a gap label says a change
+as « A vers B », never with an arrow (Lexend has no U+2192), and an annotation's
+tone change is spelled out in words rather than by its key.
+
 `generateur/pdf.py` then draws with `reportlab`, at 1:1 — the page is cut to
 the map, so the PDF's coordinates are literally the records' coordinates. A
 page only scales down if it would exceed the maximum size a PDF page can have,
@@ -355,8 +362,9 @@ same name and number allowed on both sides, and the refusals for a target
 without an origin, a current state with one, and a target of a target), the
 seeding (what it finds, refreshes, deletes and keeps as stale, and that a
 hand-written gap survives every pass), the tints on both sides including the
-two-target ambiguity, the delta PDF, and the transformation plan reaching the
-deliverable.
+two-target ambiguity, the delta PDF, the transformation plan reaching the
+deliverable, and every one of the nine gap kinds producing a label whose
+characters all exist in both embedded fonts.
 `tests/test_edition.py` covers the pixels→grid inversion (one column width
 advances exactly one column), the snap, the lane change, dense sequences after
 create and delete, links and their refusals, and the freeze closing the editor
