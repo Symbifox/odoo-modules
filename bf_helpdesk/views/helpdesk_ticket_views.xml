@@ -9,29 +9,56 @@
 
       <!-- Convert-to-meeting button + smart-button counter -->
       <xpath expr="//div[@name='button_box']" position="inside">
+        <!-- Réservé à qui lit les rencontres : sans le groupe, la fiche
+             entière tombait en AccessError. -->
         <button name="action_view_meeting_records" type="object"
                 class="oe_stat_button" icon="fa-comments-o"
-                invisible="meeting_record_count == 0">
+                invisible="meeting_record_count == 0"
+                groups="bf_meeting.group_meeting_user">
           <field name="meeting_record_count" widget="statinfo"
                  string="Rencontres"/>
         </button>
       </xpath>
+      <xpath expr="//header/button[@name='assign_to_me']" position="attributes">
+        <attribute name="data-hotkey">o</attribute>
+      </xpath>
       <xpath expr="//header" position="inside">
+        <field name="closed" invisible="1"/>
+        <button name="action_bf_toggle_waiting_client" type="object"
+                string="Attente client"
+                class="btn-secondary"
+                data-hotkey="w"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"
+                invisible="waiting_state == 'client' or closed"/>
+        <button name="action_bf_toggle_waiting_client" type="object"
+                string="Fin de l'attente"
+                class="btn-secondary"
+                data-hotkey="w"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"
+                invisible="waiting_state != 'client' or closed"/>
+        <button name="action_create_article" type="object"
+                string="Créer un article d'aide"
+                class="btn-secondary"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"
+                invisible="not closed"/>
         <button name="action_apply_macro" type="object"
+                data-hotkey="e"
                 string="Appliquer macro"
                 class="btn-secondary"
                 groups="helpdesk_mgmt.group_helpdesk_user_team"/>
         <button name="action_create_meeting_record" type="object"
                 string="Convertir en rencontre"
                 class="btn-secondary"
-                groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+                groups="bf_meeting.group_meeting_user"/>
         <button name="action_triage_with_claude" type="object"
+                data-hotkey="y"
                 string="Triage IA"
                 class="btn-secondary"
                 groups="helpdesk_mgmt.group_helpdesk_user_team"
                 invisible="triage_state == 'pending'"
-                confirm="Lancer un appel Anthropic pour suggérer stage, assignation et brouillon de réponse ?"/>
+                confirm="Demander au modèle d'IA de suggérer l'étape, l'assignation et un brouillon de réponse ?"/>
         <button name="action_send_client_update" type="object"
+                data-hotkey="d"
                 string="Envoyer une mise à jour"
                 class="btn-secondary"
                 groups="helpdesk_mgmt.group_helpdesk_user_team"
@@ -47,19 +74,53 @@
       <xpath expr="//notebook" position="inside">
         <page string="Triage IA" name="bf_triage_panel"
               invisible="triage_state == 'none'">
+          <div class="mb-2" invisible="triage_state != 'done'">
+            <button name="action_triage_apply" type="object" string="Appliquer la suggestion"
+                    class="btn-primary me-2" groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+            <button name="action_triage_use_reply" type="object" string="Utiliser le brouillon de réponse"
+                    class="btn-secondary me-2" invisible="not triage_reply"
+                    groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+            <button name="action_triage_reject" type="object" string="Rejeter"
+                    class="btn-link" groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+          </div>
           <group>
-            <field name="triage_state" widget="badge"
-                   decoration-info="triage_state == 'pending'"
-                   decoration-success="triage_state == 'done'"
-                   decoration-danger="triage_state == 'error'"/>
-            <field name="triage_last_run" readonly="1"/>
+            <group>
+              <field name="triage_state" widget="badge"
+                     decoration-info="triage_state in ('pending', 'queued')"
+                     decoration-success="triage_state in ('done', 'applied')"
+                     decoration-danger="triage_state == 'error'"/>
+              <field name="triage_confidence" invisible="not triage_confidence"/>
+              <field name="triage_sentiment" invisible="not triage_sentiment"/>
+              <field name="triage_language" invisible="not triage_language"/>
+            </group>
+            <group>
+              <field name="triage_category_id" readonly="1" invisible="not triage_category_id"/>
+              <field name="triage_priority" readonly="1" invisible="not triage_priority"/>
+              <field name="triage_user_id" readonly="1" invisible="not triage_user_id"/>
+              <field name="triage_stage_id" readonly="1" invisible="not triage_stage_id"/>
+              <field name="triage_last_run" readonly="1"/>
+            </group>
           </group>
           <field name="triage_suggestion_html" readonly="1" nolabel="1"/>
+          <!-- Journal du triage : lisible à partir de « Billets de l'équipe » ; un agent
+               en « Billets personnels » ne pouvait plus ouvrir la fiche. -->
+          <field name="triage_log_ids" readonly="1" invisible="not triage_log_ids" groups="helpdesk_mgmt.group_helpdesk_user_team">
+            <list>
+              <field name="create_date" string="Le"/>
+              <field name="user_id"/>
+              <field name="outcome"/>
+              <field name="fields_applied"/>
+              <field name="fields_suggested"/>
+            </list>
+          </field>
         </page>
       </xpath>
 
       <!-- Add waiting_state next to priority in the header -->
       <xpath expr="//field[@name='priority']" position="after">
+        <field name="guard_words_hit" invisible="not guard_words_hit"
+               decoration-danger="1" widget="badge"/>
+        <field name="theme_id" invisible="not theme_id" options="{'no_create': True}"/>
         <field name="waiting_state" widget="badge"
                decoration-warning="waiting_state == 'client'"
                decoration-info="waiting_state == 'external'"/>
@@ -108,6 +169,7 @@
 
       <!-- SLA breach ribbons -->
       <xpath expr="//sheet" position="before">
+        <widget name="bf_ticket_presence"/>
         <div class="alert alert-danger text-center mb-0"
              role="alert"
              invisible="not sla_response_breach">
@@ -120,14 +182,41 @@
           <strong>⚠ SLA résolution dépassé.</strong>
           Le ticket aurait dû être fermé.
         </div>
+        <div class="alert alert-warning text-center mb-0"
+             role="alert"
+             invisible="sla_state != 'at_risk'">
+          <strong>SLA à risque.</strong>
+          Il reste moins du quart du temps alloué.
+        </div>
       </xpath>
       <xpath expr="//field[@name='closed_date']" position="after">
         <field name="sla_response_deadline" readonly="1"
                invisible="not sla_response_deadline"/>
         <field name="sla_resolve_deadline" readonly="1"
                invisible="not sla_resolve_deadline"/>
+        <field name="first_response_date"
+               invisible="not first_response_date"/>
+        <field name="sla_state" widget="badge"
+               invisible="sla_state == 'none'"
+               decoration-success="sla_state in ('ok', 'met')"
+               decoration-warning="sla_state == 'at_risk'"
+               decoration-danger="sla_state == 'breached'"
+               decoration-info="sla_state == 'paused'"/>
+        <field name="sla_paused_hours" widget="float_time"
+               invisible="not sla_paused_hours"/>
         <field name="sla_response_breach" invisible="1"/>
         <field name="sla_resolve_breach" invisible="1"/>
+        <field name="ack_sent_date" invisible="not ack_sent_date"/>
+        <field name="reminder_excluded" invisible="waiting_state != 'client'"/>
+        <field name="client_muted_partner_ids" widget="many2many_tags"
+               invisible="not client_muted_partner_ids"/>
+        <field name="reminder_next_date" invisible="not reminder_next_date"/>
+        <field name="reminder_count" invisible="not reminder_count"/>
+        <field name="reminder_auto_closed" invisible="not reminder_auto_closed"/>
+        <field name="csat_rating" widget="badge" invisible="not csat_rating"
+               decoration-danger="csat_rating in ('1', '2')"
+               decoration-success="csat_rating in ('4', '5')"/>
+        <field name="portal_status"/>
       </xpath>
 
       <!-- CSAT response link -->
@@ -144,7 +233,18 @@
 
       <!-- Persona panel — quick composer hints when answering the ticket -->
       <xpath expr="//notebook" position="inside">
+        <page string="Articles d'aide" name="bf_articles">
+          <field name="article_ids" options="{'no_create': True}">
+            <list>
+              <field name="name"/>
+              <field name="summary"/>
+              <field name="is_published" string="Publié"/>
+              <field name="website_url" widget="url"/>
+            </list>
+          </field>
+        </page>
         <page string="Persona" name="bf_persona_panel"
+              groups="bf_persona.group_persona_user"
               invisible="not partner_id">
           <group>
             <group string="Communication">
@@ -196,7 +296,10 @@
 
       <!-- Timesheets — direct time entry on the ticket -->
       <xpath expr="//notebook" position="inside">
-        <page string="Feuilles de temps" name="bf_timesheets">
+        <!-- Réservé à qui lit les feuilles de temps (account.analytic.line) :
+             un agent sans ce groupe ne pouvait plus ouvrir la fiche. -->
+        <page string="Feuilles de temps" name="bf_timesheets"
+              groups="hr_timesheet.group_hr_timesheet_user">
           <group>
             <field name="project_id"
                    options="{'no_create': True, 'no_create_edit': True}"/>
@@ -235,6 +338,12 @@
         <field name="waiting_state" optional="show"
                decoration-warning="waiting_state == 'client'"
                decoration-info="waiting_state == 'external'"/>
+        <field name="sla_state" optional="show" widget="badge"
+               decoration-success="sla_state in ('ok', 'met')"
+               decoration-warning="sla_state == 'at_risk'"
+               decoration-danger="sla_state == 'breached'"
+               decoration-info="sla_state == 'paused'"/>
+        <field name="sla_resolve_deadline" optional="hide"/>
       </xpath>
     </field>
   </record>
@@ -250,9 +359,18 @@
                 domain="[('waiting_state', '=', 'client')]"/>
         <filter string="Attente — Externe" name="filter_waiting_external"
                 domain="[('waiting_state', '=', 'external')]"/>
+        <separator/>
+        <filter string="SLA à risque" name="filter_sla_at_risk"
+                domain="[('sla_state', '=', 'at_risk')]"/>
+        <filter string="SLA dépassé" name="filter_sla_breached"
+                domain="[('sla_state', '=', 'breached'), ('stage_id.closed', '=', False)]"/>
+        <filter string="SLA en pause" name="filter_sla_paused"
+                domain="[('sla_state', '=', 'paused')]"/>
         <group expand="0" string="Group By">
           <filter string="État d'attente" name="group_waiting_state"
                   context="{'group_by': 'waiting_state'}"/>
+          <filter string="État SLA" name="group_sla_state"
+                  context="{'group_by': 'sla_state'}"/>
         </group>
       </xpath>
     </field>

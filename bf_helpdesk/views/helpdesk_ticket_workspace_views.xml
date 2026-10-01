@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Poste de l'agent : vues de travail, file de l'équipe triée par
+       échéance, et vue 360 du client sur la fiche. -->
+
+  <record id="view_helpdesk_ticket_search_workspace" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.search.bf.workspace</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="inherit_id" ref="helpdesk_mgmt.helpdesk_ticket_view_search"/>
+    <field name="arch" type="xml">
+      <xpath expr="//filter[@name='open']" position="after">
+        <filter string="Ouverts de mes équipes" name="my_teams_open"
+                domain="[('closed', '=', False), ('team_id.user_ids', 'in', [uid])]"/>
+        <filter string="En attente" name="waiting_any"
+                domain="[('closed', '=', False), ('waiting_state', '!=', False)]"/>
+        <filter string="SLA à risque ou dépassé" name="sla_attention"
+                domain="[('closed', '=', False), ('sla_state', 'in', ('at_risk', 'breached'))]"/>
+        <filter string="Résolus récemment" name="recently_closed"
+                domain="[('closed', '=', True), ('closed_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- File de l'équipe : la plus proche échéance en haut. -->
+  <record id="view_helpdesk_ticket_list_queue" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.list.bf.queue</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_tree"/>
+    <field name="mode">primary</field>
+    <field name="arch" type="xml">
+      <xpath expr="//list" position="attributes">
+        <attribute name="default_order">sla_resolve_deadline, priority desc, create_date</attribute>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="action_helpdesk_ticket_queue" model="ir.actions.act_window">
+    <field name="name">File de mes équipes</field>
+    <field name="res_model">helpdesk.ticket</field>
+    <field name="view_mode">list,kanban,form</field>
+    <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('view_helpdesk_ticket_list_queue')})]"/>
+    <field name="context">{'search_default_my_teams_open': 1}</field>
+  </record>
+
+  <menuitem id="menu_helpdesk_ticket_queue"
+            name="File de mes équipes"
+            parent="helpdesk_mgmt.helpdesk_ticket_menu"
+            action="action_helpdesk_ticket_queue"
+            sequence="5"/>
+
+  <!-- Vue 360 du client -->
+  <record id="view_helpdesk_ticket_form_client360" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.form.bf.client360</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//page[@name='description']" position="after">
+        <page string="Client 360" name="bf_client360" invisible="not partner_id">
+          <group>
+            <group string="Relation">
+              <field name="bf_client_open_ticket_count"/>
+              <field name="hour_bank_balance" invisible="not hour_bank_id"/>
+              <field name="bf_client_last_csat" invisible="not bf_client_last_csat"/>
+            </group>
+            <group string="Compte">
+              <field name="bf_company_currency_id" invisible="1"/>
+              <field name="bf_client_overdue_count"/>
+              <field name="bf_client_overdue_amount"
+                     invisible="not bf_client_overdue_count"/>
+              <label for="bf_client_hosting_count"/>
+              <div>
+                <field name="bf_client_hosting_count" class="oe_inline"/>
+                <button name="action_bf_open_client_hosting" type="object"
+                        string="Voir" class="btn-link oe_inline"
+                        invisible="not bf_client_hosting_count"/>
+              </div>
+            </group>
+          </group>
+          <group string="Derniers billets du client">
+            <field name="bf_client_ticket_ids" nolabel="1" colspan="2" readonly="1">
+              <list>
+                <field name="number"/>
+                <field name="name"/>
+                <field name="stage_id"/>
+                <field name="sla_state" widget="badge"
+                       decoration-success="sla_state in ('ok', 'met')"
+                       decoration-warning="sla_state == 'at_risk'"
+                       decoration-danger="sla_state == 'breached'"
+                       decoration-info="sla_state == 'paused'"/>
+                <field name="create_date" widget="date"/>
+              </list>
+            </field>
+          </group>
+          <button name="action_bf_open_client_tickets" type="object"
+                  string="Tous les billets du client" class="btn-secondary"/>
+        </page>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

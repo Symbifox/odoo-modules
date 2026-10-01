@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Statut côté client : le libellé client de l'étape, ou l'attente.
+       Le nom interne de l'étape ne sort plus au portail. -->
+  <template id="portal_ticket_list_status" name="BF Helpdesk — statut client (liste)"
+            inherit_id="helpdesk_mgmt.portal_ticket_list">
+    <xpath expr="//span[@t-esc='ticket.stage_id.name']" position="attributes">
+      <attribute name="t-esc">ticket.portal_status</attribute>
+      <attribute name="t-attf-class">badge rounded-pill #{'text-bg-warning' if ticket.waiting_state == 'client' and not ticket.stage_id.closed else 'bf-hd-status'}</attribute>
+      <attribute name="title">Statut de la demande</attribute>
+    </xpath>
+    <xpath expr="//span[@t-field='tickets[0].sudo().stage_id.name']" position="replace">
+      <span class="text-truncate"
+            t-out="tickets[0].sudo().stage_id.portal_label or tickets[0].sudo().stage_id.name"/>
+    </xpath>
+  </template>
+
+  <template id="portal_ticket_page_status" name="BF Helpdesk — statut client (fiche)"
+            inherit_id="helpdesk_mgmt.portal_helpdesk_ticket_page">
+    <xpath expr="//span[@t-field='ticket.stage_id.name']" position="replace">
+      <span t-out="ticket.portal_status"
+            t-attf-class="badge rounded-pill #{'text-bg-warning' if ticket.waiting_state == 'client' and not ticket.stage_id.closed else 'bf-hd-status'}"
+            title="Statut de la demande"/>
+    </xpath>
+    <xpath expr="//div[hasclass('d-flex')][hasclass('mb-3')]" position="after">
+      <div t-if="ticket.portal_status_hint"
+           t-attf-class="alert #{'alert-warning' if ticket.waiting_state == 'client' else 'alert-info'} mb-3"
+           role="status">
+        <t t-out="ticket.portal_status_hint"/>
+      </div>
+    </xpath>
+  </template>
+
+  <!-- Barre de recherche des billets (copie propre à helpdesk_mgmt du
+       gabarit du portail) : deux boutons n'avaient qu'une icône, sans nom
+       pour un lecteur d'écran (WCAG 4.1.2). -->
+  <template id="portal_searchbar_names" name="BF Helpdesk — noms des boutons de recherche"
+            inherit_id="helpdesk_mgmt.portal_searchbar">
+    <xpath expr="//button[hasclass('border-end')]" position="attributes">
+      <attribute name="aria-label">Choisir où chercher</attribute>
+    </xpath>
+    <xpath expr="//button[@type='submit']" position="attributes">
+      <attribute name="aria-label">Rechercher</attribute>
+    </xpath>
+  </template>
+
+</odoo>

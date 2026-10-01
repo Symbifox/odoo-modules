@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_helpdesk_ticket_duplicate_user,helpdesk.ticket.duplicate user,model_helpdesk_ticket_duplicate,helpdesk_mgmt.group_helpdesk_user_team,1,1,0,0
+access_helpdesk_ticket_duplicate_manager,helpdesk.ticket.duplicate manager,model_helpdesk_ticket_duplicate,helpdesk_mgmt.group_helpdesk_manager,1,1,1,1
+access_helpdesk_incident_link_user,helpdesk.incident.link user,model_helpdesk_incident_link,helpdesk_mgmt.group_helpdesk_user_team,1,1,1,1
+access_helpdesk_incident_reply_user,helpdesk.incident.reply user,model_helpdesk_incident_reply,helpdesk_mgmt.group_helpdesk_user_team,1,1,1,1

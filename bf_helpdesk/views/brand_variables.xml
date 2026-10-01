@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Couleurs de marque des pages de l'assistance, calculées côté serveur
+       (res.company.helpdesk_brand_*) : le CSS ne sait pas choisir une
+       couleur de texte lisible sur une couleur quelconque. Trois variables
+       préfixées, sans effet sur le reste du site. -->
+  <template id="frontend_brand_variables" name="BF Helpdesk — variables de marque"
+            inherit_id="web.frontend_layout">
+    <xpath expr="//head" position="inside">
+      <style t-if="res_company">
+        :root {
+          --bf-hd-brand: <t t-out="res_company.helpdesk_brand_color or '#1F6F95'"/>;
+          --bf-hd-on-brand: <t t-out="res_company.helpdesk_brand_text_color or '#FFFFFF'"/>;
+          --bf-hd-link: <t t-out="res_company.helpdesk_brand_link_color or '#1F6F95'"/>;
+        }
+      </style>
+    </xpath>
+  </template>
+
+</odoo>

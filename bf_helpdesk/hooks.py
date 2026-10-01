@@ -5,7 +5,6 @@ FIELDS_TO_OPT_IN = [
     "partner_email",
     "team_id",
     "channel_id",
-    "attachment_ids",
 ]
 
 
@@ -37,3 +36,6 @@ def post_init_hook(env):
     for team in teams_without_slug:
         team.slug = Team._slugify(team.name)
     teams_without_slug._ensure_unique_slugs()
+    # Gabarit de fermeture Blue Fox à la place de celui de l'OCA.
+    from .models.closing_template import use_bf_closing_template
+    use_bf_closing_template(env)

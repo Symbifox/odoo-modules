@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <template id="csat_page" name="BF Helpdesk — Satisfaction">
+    <t t-call="website.layout">
+      <t t-set="additional_title" t-value="'Your feedback' if en else 'Votre avis'"/>
+      <div class="bf-support-page">
+        <div class="container py-5" style="max-width: 640px;">
+          <h1 class="bf-support-title"><t t-if="en">Your feedback on request</t><t t-else="">Votre avis sur la demande</t> <t t-esc="ticket.number"/></h1>
+          <p class="bf-support-tagline" t-esc="ticket.name"/>
+
+          <div t-if="error" class="alert alert-danger" role="alert" t-esc="error"/>
+
+          <form t-attf-action="/helpdesk/csat/#{csat.sudo().token}/submit" method="post"
+                class="bf-support-form">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+            <fieldset class="mb-4">
+              <legend class="form-label fw-bold fs-6">
+                <t t-if="en">How satisfied are you with the way we handled your request?</t><t t-else="">Êtes-vous satisfait de la façon dont nous avons traité votre demande ?</t>
+              </legend>
+              <t t-foreach="ratings" t-as="r">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="rating"
+                         t-att-id="'csat_rating_%s' % r[0]" t-att-value="r[0]"
+                         t-att-checked="'checked' if selected == r[0] else None"
+                         required="required"/>
+                  <label class="form-check-label" t-att-for="'csat_rating_%s' % r[0]">
+                    <t t-esc="r[0]"/> — <t t-esc="r[1]"/>
+                  </label>
+                </div>
+              </t>
+            </fieldset>
+
+            <fieldset class="mb-4">
+              <legend class="form-label fw-bold fs-6">
+                <t t-if="en">If you are dissatisfied, what went wrong?</t><t t-else="">Si vous êtes insatisfait, qu'est-ce qui n'a pas fonctionné ?</t>
+                <span class="text-muted fw-normal"><t t-if="en">(optional)</t><t t-else="">(facultatif)</t></span>
+              </legend>
+              <t t-foreach="reasons" t-as="r">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="reason"
+                         t-att-id="'csat_reason_%s' % r[0]" t-att-value="r[0]"
+                         t-att-checked="'checked' if csat.reason == r[0] else None"/>
+                  <label class="form-check-label" t-att-for="'csat_reason_%s' % r[0]" t-esc="r[1]"/>
+                </div>
+              </t>
+            </fieldset>
+
+            <fieldset class="mb-4" t-if="team.csat_ces_enabled">
+              <legend class="form-label fw-bold fs-6">
+                <t t-if="en">The team made it easy to resolve my request.</t><t t-else="">L'équipe m'a rendu la tâche facile pour régler ma demande.</t>
+                <span class="text-muted fw-normal"><t t-if="en">(optional)</t><t t-else="">(facultatif)</t></span>
+              </legend>
+              <t t-foreach="ces_scale" t-as="c">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="ces"
+                         t-att-id="'csat_ces_%s' % c[0]" t-att-value="c[0]"
+                         t-att-checked="'checked' if csat.ces == c[0] else None"/>
+                  <label class="form-check-label" t-att-for="'csat_ces_%s' % c[0]" t-esc="c[1]"/>
+                </div>
+              </t>
+            </fieldset>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold" for="csat_comment">
+                <t t-if="en">Any comment?</t><t t-else="">Un commentaire ?</t> <span class="text-muted fw-normal"><t t-if="en">(optional)</t><t t-else="">(facultatif)</t></span>
+              </label>
+              <textarea id="csat_comment" name="comment" class="form-control" rows="4"
+                        maxlength="2000"><t t-esc="csat.comment or ''"/></textarea>
+            </div>
+
+            <button type="submit" class="btn bf-support-submit"><t t-if="en">Send my feedback</t><t t-else="">Envoyer mon avis</t></button>
+          </form>
+        </div>
+      </div>
+    </t>
+  </template>
+
+  <template id="csat_thanks" name="BF Helpdesk — Satisfaction, merci">
+    <t t-call="website.layout">
+      <t t-set="additional_title" t-value="'Thank you' if en else 'Merci'"/>
+      <div class="bf-support-page">
+        <div class="container py-5 text-center" style="max-width: 640px;">
+          <div class="bf-support-success-card">
+            <h1 class="bf-support-title"><t t-if="en">Thank you for your feedback.</t><t t-else="">Merci pour votre avis.</t></h1>
+            <p t-if="negative" class="bf-support-tagline">
+              <t t-if="en">We are sorry the experience fell short. Someone from the team will contact you.</t>
+              <t t-else="">Nous sommes désolés que l'expérience n'ait pas été à la hauteur.
+              Une personne de l'équipe communiquera avec vous.</t>
+            </p>
+            <p t-else="" class="bf-support-tagline">
+              <t t-if="en">It helps us improve our service. You can come back to this link to change your answer.</t>
+              <t t-else="">Il nous aide à améliorer notre service. Vous pouvez revenir à ce lien
+              pour corriger votre réponse.</t>
+            </p>
+          </div>
+        </div>
+      </div>
+    </t>
+  </template>
+
+  <template id="csat_closed" name="BF Helpdesk — Satisfaction, lien fermé">
+    <t t-call="website.layout">
+      <t t-set="additional_title" t-value="'Link expired' if en else 'Lien expiré'"/>
+      <div class="bf-support-page">
+        <div class="container py-5 text-center" style="max-width: 640px;">
+          <h1 class="bf-support-title"><t t-if="en">This link is no longer active.</t><t t-else="">Ce lien n'est plus actif.</t></h1>
+          <p class="bf-support-tagline">
+            <t t-if="en">The time to answer this survey has passed, or the link is not valid.
+            To share a comment, simply reply to the email of your request.</t>
+            <t t-else="">Le délai pour répondre à ce sondage est passé, ou le lien n'est pas valide.
+            Pour nous faire part d'un commentaire, répondez simplement au courriel
+            de votre demande.</t>
+          </p>
+        </div>
+      </div>
+    </t>
+  </template>
+
+</odoo>

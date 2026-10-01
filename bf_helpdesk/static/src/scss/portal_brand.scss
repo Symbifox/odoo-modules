@@ -19,31 +19,41 @@ body[data-website-id] {
   .o_portal_wrap .o_portal_chatter h2 {
     font-family: "Lexend", sans-serif;
     color: var(--brand-dark, #2E3132);
-    border-left: 4px solid var(--brand-primary, #29ABE2);
+    border-left: 4px solid var(--bf-hd-brand, #29ABE2);
     padding-left: 12px;
   }
 
   // Highlight the ticket number badge
   .o_portal_my_doc .badge-info,
   .o_portal_my_doc .o_helpdesk_ticket_number {
-    background-color: var(--brand-primary, #29ABE2) !important;
-    color: #FFFFFF !important;
+    background-color: var(--bf-hd-brand, #1F6F95) !important;
+    color: var(--bf-hd-on-brand, #FFFFFF) !important;
   }
 
   // Stage statusbar in BF blue
   .o_portal_my_doc .o_statusbar_status .btn-primary {
-    background-color: var(--brand-primary, #29ABE2) !important;
-    border-color: var(--brand-primary, #29ABE2) !important;
+    background-color: var(--bf-hd-brand, #1F6F95) !important;
+    border-color: var(--bf-hd-brand, #1F6F95) !important;
+    color: var(--bf-hd-on-brand, #FFFFFF) !important;
   }
 
   // Primary action buttons match brand
   .o_portal_my_doc .btn-primary {
-    background-color: var(--brand-primary, #29ABE2);
-    border-color: var(--brand-primary, #29ABE2);
+    background-color: var(--bf-hd-brand, #1F6F95);
+    border-color: var(--bf-hd-brand, #1F6F95);
+    color: var(--bf-hd-on-brand, #FFFFFF);
 
     &:hover, &:focus {
-      background-color: #1F8FBF;
-      border-color: #1F8FBF;
+      background-color: var(--bf-hd-brand, #1F6F95);
+      border-color: var(--bf-hd-brand, #1F6F95);
+      color: var(--bf-hd-on-brand, #FFFFFF);
+      text-decoration: underline;
     }
   }
+}
+
+// Statut du billet au portail : aplat de la marque, texte calculé pour 4,5:1.
+.bf-hd-status {
+  background-color: var(--bf-hd-brand, #1F6F95);
+  color: var(--bf-hd-on-brand, #FFFFFF);
 }

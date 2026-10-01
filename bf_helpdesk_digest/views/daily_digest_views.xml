@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_daily_digest_config_form_helpdesk" model="ir.ui.view">
+        <field name="name">daily.digest.config.form.helpdesk</field>
+        <field name="model">daily.digest.config</field>
+        <field name="inherit_id" ref="daily_todo_digest.view_daily_digest_config_form"/>
+        <field name="arch" type="xml">
+            <field name="include_quote" position="after">
+                <field name="include_helpdesk"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -13,3 +13,16 @@ from . import test_ticket_triage
 from . import test_ticket_csat
 from . import test_imap_gateway
 from . import test_phase4
+from . import test_ticket_sla
+from . import test_workspace
+from . import test_presence
+from . import test_client_journey
+from . import test_waiting_reminders
+from . import test_csat_v2
+from . import test_help_center
+from . import test_mail_layout
+from . import test_accessibility
+from . import test_client_notify
+from . import test_agent_notify
+from . import test_triage
+from . import test_review_fixes

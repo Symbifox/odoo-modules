@@ -52,8 +52,10 @@ class TestTeamSlug(TransactionCase):
         """Critical regression: bf_helpdesk's post_init must un-blacklist
         helpdesk.ticket fields for the website form builder.
         """
+        # attachment_ids n'y est plus : un one2many qu'un visiteur pointerait
+        # vers n'importe quelle pièce jointe.
         FIELDS = ["name", "description", "partner_name",
-                  "partner_email", "team_id", "channel_id", "attachment_ids"]
+                  "partner_email", "team_id", "channel_id"]
         rows = self.IModelFields.search([
             ("model", "=", "helpdesk.ticket"),
             ("name", "in", FIELDS),

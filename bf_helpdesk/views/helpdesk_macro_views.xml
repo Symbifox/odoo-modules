@@ -18,7 +18,19 @@
             </group>
           </group>
           <group string="Contenu">
-            <field name="body_html" nolabel="1"/>
+            <field name="body_html" nolabel="1" colspan="2"/>
+          </group>
+          <group>
+            <group string="Actions à l'application">
+              <field name="post_as_note"/>
+              <field name="set_stage_id"/>
+              <field name="add_tag_ids" widget="many2many_tags"/>
+              <field name="assign_to_me"/>
+              <field name="set_waiting_state"/>
+            </group>
+            <group string="Variables disponibles">
+              <field name="variables_help" nolabel="1" colspan="2" readonly="1"/>
+            </group>
           </group>
         </sheet>
       </form>
@@ -60,9 +72,17 @@
           <field name="ticket_id" invisible="1"/>
           <field name="ticket_team_id" invisible="1"/>
           <field name="macro_id" required="1"/>
-          <field name="preview_html" readonly="1" nolabel="1"
-                 invisible="not macro_id"/>
         </group>
+        <div class="alert alert-warning" role="alert"
+             invisible="not collision_warning">
+          <field name="collision_warning" nolabel="1"/>
+        </div>
+        <group invisible="not macro_id">
+          <field name="post_as_note"/>
+          <field name="actions_summary" invisible="not actions_summary"/>
+        </group>
+        <field name="body_html" nolabel="1" invisible="not macro_id"
+               options="{'collaborative': false}"/>
         <footer>
           <button name="action_apply" type="object"
                   string="Appliquer" class="btn-primary"/>

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Adresse lisible de la liste des billets : /odoo/helpdesk-tickets/<id>.
+         Les liens des avis (ntfy, condensés, alertes de pic, digest) la
+         supposaient, et elle n'existait pas : « L'action helpdesk-tickets
+         n'existe pas ». -->
+    <record id="helpdesk_mgmt.helpdesk_ticket_action" model="ir.actions.act_window">
+        <field name="path">helpdesk-tickets</field>
+    </record>
+
 
   <!-- Override the OCA helpdesk_mgmt root menu so the BF-branded fox icon
        and a clearer label appear in the app launcher. The model and actions

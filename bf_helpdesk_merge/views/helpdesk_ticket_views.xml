@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_helpdesk_ticket_form_merge" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.form.bf.merge</field>
+    <field name="model">helpdesk.ticket</field>
+    <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button name="action_view_merged_tickets" type="object"
+                class="oe_stat_button" icon="fa-compress"
+                invisible="merged_count == 0">
+          <field name="merged_count" widget="statinfo" string="Fusionnés"/>
+        </button>
+        <button name="action_view_incident_children" type="object"
+                class="oe_stat_button" icon="fa-sitemap"
+                invisible="child_incident_count == 0">
+          <field name="child_incident_count" widget="statinfo" string="Billets liés"/>
+        </button>
+      </xpath>
+      <xpath expr="//header" position="inside">
+        <button name="action_incident_reply" type="object" class="btn-secondary"
+                string="Répondre aux billets de l'incident"
+                invisible="child_incident_count == 0"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+        <button name="action_open_incident_link" type="object" class="btn-secondary"
+                string="Rattacher à un incident"
+                invisible="parent_incident_id or child_incident_count"
+                groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+      </xpath>
+      <xpath expr="//sheet" position="before">
+        <div class="alert alert-info mb-0" role="status" invisible="not merged_into_id">
+          Billet fusionné dans <field name="merged_into_id" readonly="1" class="d-inline"/>.
+          La suite de la conversation se trouve là.
+        </div>
+        <div class="alert alert-info mb-0" role="status" invisible="not parent_incident_id">
+          Ce billet fait partie de l'incident <field name="parent_incident_id" readonly="1" class="d-inline"/>.
+        </div>
+        <!-- Doublons : lisibles à partir de « Billets de l'équipe » (voir leurs règles). -->
+        <field name="duplicate_open_count" invisible="1" groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+        <div class="alert alert-warning mb-0" role="status" invisible="not duplicate_open_count" groups="helpdesk_mgmt.group_helpdesk_user_team">
+          <strong>Doublon possible.</strong> Vérifiez avant de répondre : rien n'est fusionné sans vous.
+          <field name="duplicate_open_ids" nolabel="1" readonly="1">
+            <list create="0" delete="0">
+              <field name="candidate_number" string="Billet"/>
+              <field name="candidate_name" string="Sujet"/>
+              <field name="candidate_partner_id" string="Contact"/>
+              <field name="candidate_create_date" string="Créé le" widget="remaining_days"/>
+              <field name="score"/>
+              <field name="recommendation" string="Suggestion"/>
+              <field name="state" column_invisible="1"/>
+              <field name="same_contact" column_invisible="1"/>
+              <button name="action_merge" type="object" string="Fusionner" class="btn-link"
+                      groups="helpdesk_mgmt.group_helpdesk_user"
+                      invisible="not same_contact"/>
+              <button name="action_link_incident" type="object" string="Incident" class="btn-link"/>
+              <button name="action_dismiss" type="object" string="Pas un doublon" class="btn-link"/>
+            </list>
+          </field>
+        </div>
+      </xpath>
+      <xpath expr="//notebook" position="inside">
+        <page string="Incident" name="bf_incident"
+              invisible="not parent_incident_id and not child_incident_count">
+          <group>
+            <field name="parent_incident_id"/>
+          </group>
+          <field name="child_incident_ids" readonly="1" invisible="not child_incident_count">
+            <list>
+              <field name="number"/>
+              <field name="name"/>
+              <field name="partner_id"/>
+              <field name="stage_id"/>
+            </list>
+          </field>
+        </page>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="view_helpdesk_incident_link_form" model="ir.ui.view">
+    <field name="name">helpdesk.incident.link.form</field>
+    <field name="model">helpdesk.incident.link</field>
+    <field name="arch" type="xml">
+      <form>
+        <p class="text-muted">Même cause, demandeurs différents : chaque billet garde son
+          client et son fil. Pour une même demande envoyée deux fois, fusionnez plutôt.</p>
+        <group>
+          <field name="ticket_ids" widget="many2many_tags"/>
+          <field name="mode" widget="radio"/>
+          <field name="parent_id" invisible="mode != 'existing'" required="mode == 'existing'"/>
+          <field name="name" invisible="mode != 'new'" required="mode == 'new'"/>
+          <field name="team_id" invisible="mode != 'new'"/>
+        </group>
+        <footer>
+          <button name="action_link" type="object" string="Rattacher" class="btn-primary"/>
+          <button special="cancel" string="Annuler"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_helpdesk_incident_reply_form" model="ir.ui.view">
+    <field name="name">helpdesk.incident.reply.form</field>
+    <field name="model">helpdesk.incident.reply</field>
+    <field name="arch" type="xml">
+      <form>
+        <p class="text-muted">Le message part sur chacun des <field name="child_count" readonly="1" class="d-inline"/>
+          billets ouverts de l'incident, dans le fil de chaque client : aucun client ne voit les autres.</p>
+        <field name="parent_id" invisible="1"/>
+        <field name="body" placeholder="Nous avons trouvé la cause de la panne…"/>
+        <group>
+          <field name="close_children"/>
+          <field name="close_stage_id" invisible="not close_children" required="close_children"/>
+        </group>
+        <footer>
+          <button name="action_send" type="object" string="Envoyer" class="btn-primary"/>
+          <button special="cancel" string="Annuler"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <!-- Depuis la liste des billets : sélectionner puis « Rattacher à un incident » -->
+  <record id="action_helpdesk_incident_link" model="ir.actions.act_window">
+    <field name="name">Rattacher à un incident</field>
+    <field name="res_model">helpdesk.incident.link</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="binding_model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+    <field name="binding_view_types">list</field>
+  </record>
+
+  <record id="view_helpdesk_theme_form_problem" model="ir.ui.view">
+    <field name="name">helpdesk.theme.form.problem</field>
+    <field name="model">helpdesk.theme</field>
+    <field name="inherit_id" ref="bf_helpdesk.view_helpdesk_theme_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//header" position="inside">
+        <button name="action_create_problem" type="object" string="Créer un problème"
+                class="btn-secondary" groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+      </xpath>
+    </field>
+  </record>
+
+
+    <!-- Onglet de l'OCA (helpdesk_ticket_related) en anglais dans une fiche
+         française : « Billets liés ». -->
+    <record id="view_helpdesk_ticket_form_related_label" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.bf.related.label</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_ticket_related.view_helpdesk_ticket_form_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[field[@name='related_ticket_ids']]" position="attributes">
+                <attribute name="string">Billets liés</attribute>
+                <attribute name="name">bf_related_tickets</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

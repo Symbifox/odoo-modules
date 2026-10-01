@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_helpdesk_ticket_stage_form_bf" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.stage.form.bf</field>
+    <field name="model">helpdesk.ticket.stage</field>
+    <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_ticket_stage_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='mail_template_id']" position="before">
+        <field name="portal_label" placeholder="Vide = le nom de l'étape"/>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>

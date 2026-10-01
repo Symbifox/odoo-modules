@@ -88,11 +88,7 @@ class TestTicketTimesheet(TransactionCase):
         })
         ticket = self.Ticket.create({
             "name": "No project ticket",
-            # `description` est requis chez helpdesk_mgmt (OCA) et devient une
-            # colonne NOT NULL : l'omettre lève une NotNullViolation avant
-            # d'atteindre ce que le test vérifie. `_make_ticket` le passe déjà ;
-            # cette création écrite à la main l'avait oublié.
-            "description": "<p>desc</p>",
+            "description": "<p>No project</p>",
             "team_id": team_no_project.id,
         })
         ticket.project_id = False
@@ -103,3 +99,22 @@ class TestTicketTimesheet(TransactionCase):
         ticket = self._make_ticket(project=self.project)
         with self.assertRaises(ValidationError):
             ticket.action_bf_create_chatter_timesheet(0, "x")
+
+    def test_onchange_to_unreadable_ticket_hides_client(self):
+        """Changer le billet d'une ligne existante pour un billet illisible ne rend pas son client."""
+        from odoo.tests import new_test_user
+        mine = self._make_ticket(project=self.project)
+        line = self.env["account.analytic.line"].browse(
+            mine.action_bf_create_chatter_timesheet(1.0, "<p>x</p>")["id"])
+        other_team = self.Team.create({"name": "Équipe fermée temps"})
+        client = self.env["res.partner"].create({"name": "Client caché", "email": "cache@test.invalid"})
+        foreign = self.Ticket.create({"name": "Caché", "description": "<p>x</p>",
+                                     "team_id": other_team.id, "partner_id": client.id})
+        agent = new_test_user(self.env, login="agent-temps-onchange", email="temps.onchange@test.invalid",
+                              groups="base.group_user,helpdesk_mgmt.group_helpdesk_user_team")
+        self.team.user_ids = [(4, agent.id)]
+        self.env.invalidate_all()
+        draft = self.env["account.analytic.line"].with_user(agent).new(
+            {"ticket_id": foreign.id}, origin=line).sudo()
+        draft._compute_ticket_partner_id()
+        self.assertNotEqual(draft.ticket_partner_id, client)

@@ -26,6 +26,8 @@ class TestPhase4(TransactionCase):
             "alias_id": cls.alias.id,
             "sla_response_hours": 4.0,
             "sla_resolve_hours": 48.0,
+            # Heures civiles : l'horaire d'affaires a ses propres essais.
+            "sla_calendar_id": False,
         })
 
     # -------------------------- SLA ----------------------------
@@ -138,5 +140,5 @@ class TestPhase4(TransactionCase):
     # -------------------------- Auto-ack -----------------------
 
     def test_auto_ack_template_exists(self):
-        tpl = self.env.ref("bf_helpdesk.mail_template_public_form_ack")
+        tpl = self.env.ref("bf_helpdesk.mail_template_ticket_ack")
         self.assertEqual(tpl.model, "helpdesk.ticket")

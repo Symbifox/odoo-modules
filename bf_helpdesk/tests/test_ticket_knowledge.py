@@ -84,3 +84,23 @@ class TestTicketKnowledge(TransactionCase):
         self.item_pending.state = "done"
         ticket.invalidate_recordset(["scope_aligned"])
         self.assertEqual(ticket.scope_aligned, "aligned")
+
+    def test_linking_needs_read_access_on_the_item(self):
+        """Un agent sans accès à l'élément ne le lie pas : la matrice et l'état en sortiraient."""
+        from odoo.exceptions import AccessError
+        from odoo.tests import new_test_user
+        agent = new_test_user(self.env, login="agent-matrice-lien", email="matrice.lien@test.invalid",
+                              groups="base.group_user,helpdesk_mgmt.group_helpdesk_user")
+        ticket = self._ticket()
+        with self.assertRaises(AccessError):
+            ticket.with_user(agent).write({"knowledge_item_id": self.item_done.id})
+
+    def test_scope_readable_without_item_access(self):
+        """La portée se lit même par un agent qui ne lit pas l'élément lié."""
+        from odoo.tests import new_test_user
+        agent = new_test_user(self.env, login="agent-portee", email="portee@test.invalid",
+                              groups="base.group_user,helpdesk_mgmt.group_helpdesk_user")
+        ticket = self._ticket(self.item_done)
+        expected = ticket.scope_aligned
+        self.env.invalidate_all()
+        self.assertEqual(ticket.with_user(agent).read(["scope_aligned"])[0]["scope_aligned"], expected)

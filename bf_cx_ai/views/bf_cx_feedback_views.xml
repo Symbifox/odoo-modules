@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cx_feedback_form_ai" model="ir.ui.view">
+        <field name="name">bf.cx.feedback.form.inherit.bf.cx.ai</field>
+        <field name="model">bf.cx.feedback</field>
+        <field name="inherit_id" ref="bf_cx.view_cx_feedback_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_ai_analyze" type="object"
+                        string="Analyser (IA)"
+                        invisible="not comment"
+                        help="Analyser le commentaire (sentiment, thèmes, résumé) par le pont IA : le texte du commentaire est transmis au modèle d'IA."/>
+            </xpath>
+            <xpath expr="//group[@name='score']" position="inside">
+                <field name="sentiment"/>
+                <field name="ai_summary" invisible="not ai_summary"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_cx_feedback_list_ai" model="ir.ui.view">
+        <field name="name">bf.cx.feedback.list.inherit.bf.cx.ai</field>
+        <field name="model">bf.cx.feedback</field>
+        <field name="inherit_id" ref="bf_cx.view_cx_feedback_list"/>
+        <field name="arch" type="xml">
+            <field name="comment" position="after">
+                <field name="sentiment" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_cx_feedback_search_ai" model="ir.ui.view">
+        <field name="name">bf.cx.feedback.search.inherit.bf.cx.ai</field>
+        <field name="model">bf.cx.feedback</field>
+        <field name="inherit_id" ref="bf_cx.view_cx_feedback_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_my']" position="after">
+                <separator/>
+                <filter string="Sentiment négatif (IA)" name="filter_ai_negative"
+                        domain="[('sentiment', '=', 'negatif')]"/>
+                <filter string="Non analysés (IA)" name="filter_ai_pending"
+                        domain="[('comment', '!=', False), ('ai_analyzed', '=', False)]"/>
+            </xpath>
+            <xpath expr="//filter[@name='group_month']" position="after">
+                <filter string="Sentiment (IA)" name="group_sentiment"
+                        context="{'group_by': 'sentiment'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

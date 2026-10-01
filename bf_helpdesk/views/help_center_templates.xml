@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <template id="help_center_index" name="BF Helpdesk — Centre d'aide">
+    <t t-call="website.layout">
+      <t t-set="additional_title">Centre d'aide</t>
+      <div class="bf-support-page">
+        <div class="container py-5" style="max-width: 760px;">
+          <h1 class="bf-support-title">Centre d'aide</h1>
+          <p class="bf-support-tagline">Les réponses aux questions qui reviennent souvent.</p>
+
+          <form action="/aide" method="get" role="search" class="mb-4">
+            <label class="visually-hidden" for="bf_help_q">Rechercher dans le centre d'aide</label>
+            <div class="input-group">
+              <input type="search" id="bf_help_q" name="q" class="form-control"
+                     t-att-value="q" placeholder="Décrivez votre problème en quelques mots"/>
+              <button type="submit" class="btn bf-support-submit">Rechercher</button>
+            </div>
+          </form>
+
+          <p t-if="q and not articles" class="text-muted">
+            Aucun article ne correspond à « <t t-esc="q"/> ». Essayez d'autres mots,
+            ou écrivez-nous : nous répondons à chaque demande.
+          </p>
+          <p t-if="not q and not articles" class="text-muted">
+            Aucun article pour l'instant.
+          </p>
+
+          <ul class="list-unstyled bf-help-list" t-if="articles">
+            <li t-foreach="articles" t-as="article" class="mb-3 pb-3 border-bottom">
+              <a t-att-href="article.website_url" class="fs-5 fw-bold" t-esc="article.name"/>
+              <p t-if="article.summary" class="mb-0 text-muted" t-esc="article.summary"/>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </t>
+  </template>
+
+  <template id="help_center_article" name="BF Helpdesk — Article d'aide">
+    <t t-call="website.layout">
+      <t t-set="additional_title" t-value="article.name"/>
+      <t t-set="meta_description" t-value="article.summary"/>
+      <div class="bf-support-page">
+        <div class="container py-5" style="max-width: 760px;">
+          <nav aria-label="Fil d'Ariane" class="mb-3">
+            <a href="/aide">Centre d'aide</a>
+          </nav>
+          <article>
+            <h1 class="bf-support-title" t-esc="article.name"/>
+            <p t-if="article.summary" class="bf-support-tagline mb-4" t-esc="article.summary"/>
+            <div class="bf-help-body" t-out="article.body"/>
+          </article>
+
+          <section id="bf-help-vote" class="mt-5 pt-4 border-top" aria-labelledby="bf_help_vote_title">
+            <t t-if="voted or request.params.get('merci')">
+              <p class="mb-0">Merci pour votre retour.</p>
+            </t>
+            <t t-else="">
+              <h2 id="bf_help_vote_title" class="fs-6 fw-bold">Cet article vous a-t-il aidé ?</h2>
+              <form t-attf-action="/aide/#{article.slug}/vote" method="post" class="d-flex gap-2">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <button type="submit" name="vote" value="yes" class="btn btn-outline-secondary">Oui</button>
+                <button type="submit" name="vote" value="no" class="btn btn-outline-secondary">Non</button>
+              </form>
+            </t>
+            <t t-set="help_team" t-value="article.team_ids.filtered(lambda t: t.public_form_enabled and t.slug)[:1]"/>
+            <p class="mt-3 mb-0">
+              Toujours besoin d'aide ?
+              <a t-if="help_team" t-attf-href="/support/#{help_team.slug}">Écrivez à l'équipe <t t-esc="help_team.name"/></a>
+              <a t-elif="not request.env.user._is_public()" href="/new/ticket">Ouvrez une demande</a>
+              <t t-else="">Répondez au courriel de votre demande, ou écrivez-nous.</t>
+            </p>
+          </section>
+        </div>
+      </div>
+    </t>
+  </template>
+
+  <!-- Suggestions pendant la saisie du sujet : formulaire public et portail -->
+  <template id="public_form_suggestions" inherit_id="bf_helpdesk.public_form_page"
+            name="BF Helpdesk — suggestions d'articles (formulaire public)">
+    <xpath expr="//input[@id='bf_support_subject']" position="attributes">
+      <attribute name="data-bf-help-suggest">1</attribute>
+      <attribute name="t-att-data-bf-help-team">team.slug</attribute>
+      <attribute name="aria-describedby">bf_help_suggestions</attribute>
+    </xpath>
+    <xpath expr="//input[@id='bf_support_subject']" position="after">
+      <div id="bf_help_suggestions" class="bf-help-suggestions mt-2" aria-live="polite"/>
+    </xpath>
+  </template>
+
+  <template id="portal_create_ticket_suggestions" inherit_id="helpdesk_mgmt.portal_create_ticket"
+            name="BF Helpdesk — suggestions d'articles (portail)">
+    <xpath expr="//input[@name='subject']" position="attributes">
+      <attribute name="data-bf-help-suggest">1</attribute>
+      <attribute name="aria-describedby">bf_help_suggestions</attribute>
+      <!-- Les étiquettes de helpdesk_mgmt visent for="subject" et
+           for="description", mais les champs n'avaient pas d'id : aucune
+           étiquette n'était reliée à son champ (WCAG 1.3.1, 4.1.2). -->
+      <attribute name="id">subject</attribute>
+    </xpath>
+    <xpath expr="//textarea[@name='description']" position="attributes">
+      <attribute name="id">description</attribute>
+    </xpath>
+    <xpath expr="//input[@name='subject']" position="after">
+      <div id="bf_help_suggestions" class="bf-help-suggestions mt-2" aria-live="polite"/>
+    </xpath>
+  </template>
+
+</odoo>

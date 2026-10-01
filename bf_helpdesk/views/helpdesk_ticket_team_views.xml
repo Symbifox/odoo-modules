@@ -8,13 +8,13 @@
     <field name="arch" type="xml">
       <xpath expr="//sheet" position="inside">
         <notebook>
-          <page string="Public form" name="bf_public_form">
+          <page string="Formulaire public" name="bf_public_form">
             <group>
               <group>
                 <field name="public_form_enabled"/>
                 <field name="slug"
-                       placeholder="my-support-team"
-                       help="URL slug. Public form will be at /support/&lt;slug&gt;."/>
+                       placeholder="soutien-informatique"
+                       help="Le formulaire public sera à /support/&lt;adresse courte&gt;."/>
               </group>
               <group>
                 <field name="public_form_url" widget="url"
@@ -22,11 +22,11 @@
                        invisible="not public_form_enabled or not slug"/>
               </group>
             </group>
-            <group string="Form content">
+            <group string="Contenu du formulaire">
               <field name="public_form_intro_html" nolabel="1"
-                     placeholder="Optional intro text shown above the form…"/>
+                     placeholder="Texte d'introduction facultatif, affiché au-dessus du formulaire…"/>
             </group>
-            <group string="Tag selector (e.g. Département)">
+            <group string="Choix d'étiquette (p. ex. Département)">
               <group>
                 <field name="public_form_tag_label"/>
                 <field name="public_form_tag_required"/>
@@ -36,20 +36,31 @@
                        options="{'no_create': True}"/>
               </group>
             </group>
-            <group string="Success message">
+            <group string="Message de confirmation">
               <field name="public_form_success_html" nolabel="1"
-                     placeholder="Optional message shown after a ticket is filed…"/>
+                     placeholder="Message facultatif affiché après l'envoi d'une demande…"/>
             </group>
           </page>
-          <page string="SLA &amp; auto-tag" name="bf_sla_autotag">
+          <page string="SLA et étiquettes automatiques" name="bf_sla_autotag">
             <group>
               <group string="SLA">
                 <field name="sla_response_hours"/>
                 <field name="sla_resolve_hours"/>
+                <field name="sla_calendar_id"/>
               </group>
-              <group string="Formulaire public">
-                <field name="public_form_auto_ack"/>
+              <group string="Accusé de réception">
+                <field name="ack_channel_ids" widget="many2many_tags"
+                       options="{'no_create': True}"/>
+                <field name="business_hours_text"
+                       placeholder="Vide = résumé de l'horaire d'affaires"/>
+                <field name="business_hours_summary" string="Annoncé au client"
+                       invisible="business_hours_text"/>
+                <field name="ack_notice_until"/>
               </group>
+            </group>
+            <group string="Avis temporaire dans l'accusé (congés, fort volume)">
+              <field name="ack_notice_html" nolabel="1" colspan="2"
+                     placeholder="Par exemple : nos bureaux sont fermés du 24 décembre au 2 janvier. Les délais de réponse sont allongés."/>
             </group>
             <group string="Règles auto-tag">
               <field name="auto_tag_rule_ids" nolabel="1">
@@ -63,19 +74,65 @@
               </field>
             </group>
           </page>
-          <page string="Hour bank &amp; alerts" name="bf_hour_bank">
+          <page string="Relances" name="bf_reminders">
+            <group>
+              <group string="Client en attente">
+                <field name="reminder_enabled"/>
+                <field name="reminder_first_days" invisible="not reminder_enabled"/>
+                <field name="reminder_second_days" invisible="not reminder_enabled"/>
+                <field name="reminder_close_days" invisible="not reminder_enabled"/>
+                <field name="reminder_close_stage_id" invisible="not reminder_enabled"
+                       options="{'no_create': True}"/>
+              </group>
+              <group>
+                <div class="text-muted" colspan="2" invisible="not reminder_enabled">
+                  Deux relances, puis la fermeture annoncée au client. Une réponse
+                  du client lève l'attente, remet le cycle à zéro et rouvre un billet
+                  fermé par les relances. Un « absent du bureau » n'est pas une réponse.
+                  Une réponse publique d'un agent fait repartir le cycle.
+                </div>
+              </group>
+            </group>
+          </page>
+          <page string="IA et alertes" name="bf_triage">
+            <group>
+              <group string="Triage par Gen">
+                <field name="triage_auto"/>
+                <div class="text-muted" colspan="2">
+                  Suggestion seulement : l'agent applique, modifie ou rejette. Les issues
+                  alimentent le rapport de précision (Rapports › Triage IA). Active aussi
+                  le regroupement hebdomadaire par thème des billets fermés.
+                </div>
+              </group>
+              <group string="Sans IA">
+                <field name="guard_words_enabled"/>
+                <field name="spike_enabled"/>
+                <field name="spike_scope" invisible="not spike_enabled"/>
+                <field name="spike_threshold" invisible="not spike_enabled"/>
+                <field name="spike_window_hours" invisible="not spike_enabled"/>
+              </group>
+            </group>
+          </page>
+          <page string="Banque d'heures et alertes" name="bf_hour_bank">
             <group>
               <group string="Banque d'heures">
                 <field name="hour_bank_id"/>
                 <field name="hour_bank_alert_threshold_hours"/>
               </group>
-              <group string="ntfy critical">
+              <group string="Alerte ntfy des billets critiques">
                 <field name="ntfy_critical_enabled"/>
                 <field name="ntfy_priority_threshold"
                        invisible="not ntfy_critical_enabled"/>
               </group>
-              <group string="CSAT">
-                <field name="csat_survey_id"/>
+              <group string="Satisfaction">
+                <field name="csat_mode"/>
+                <field name="csat_delay_hours" invisible="csat_mode != 'native'"/>
+                <field name="csat_expiry_days" invisible="csat_mode != 'native'"/>
+                <field name="csat_ces_enabled" invisible="csat_mode != 'native'"/>
+                <field name="csat_followup_user_id" invisible="csat_mode != 'native'"
+                       placeholder="L'agent du billet"/>
+                <field name="csat_survey_id" invisible="csat_mode != 'survey'"
+                       required="csat_mode == 'survey'"/>
               </group>
             </group>
           </page>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.bf.cx.ai</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bf_cx.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='bf_cx_loop_block']" position="inside">
+                <setting string="Analyse IA automatique des verbatims"
+                         help="Chaque jour, analyser (sentiment, thèmes, résumé) jusqu'à 20 commentaires récents non analysés par le pont IA : le texte des commentaires est transmis au modèle d'IA.">
+                    <field name="bf_cx_ai_auto_analyze"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

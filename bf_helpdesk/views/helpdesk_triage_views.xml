@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_helpdesk_triage_apply_form" model="ir.ui.view">
+    <field name="name">helpdesk.triage.apply.form</field>
+    <field name="model">helpdesk.triage.apply</field>
+    <field name="arch" type="xml">
+      <form>
+        <p class="text-muted">Décochez ce que vous ne retenez pas. L'issue (acceptée,
+          modifiée ou rejetée) est notée pour mesurer la justesse du triage.</p>
+        <field name="ticket_id" invisible="1"/>
+        <group>
+          <field name="apply_category" invisible="not has_category"/>
+          <field name="category_id" readonly="1" invisible="not has_category"/>
+          <field name="apply_priority" invisible="not has_priority"/>
+          <field name="priority" readonly="1" invisible="not has_priority"/>
+          <field name="apply_user" invisible="not has_user"/>
+          <field name="user_id" readonly="1" invisible="not has_user"/>
+          <field name="apply_stage" invisible="not has_stage"/>
+          <field name="stage_id" readonly="1" invisible="not has_stage"/>
+          <field name="has_category" invisible="1"/>
+          <field name="has_priority" invisible="1"/>
+          <field name="has_user" invisible="1"/>
+          <field name="has_stage" invisible="1"/>
+        </group>
+        <footer>
+          <button name="action_apply" type="object" string="Appliquer" class="btn-primary"/>
+          <button special="cancel" string="Annuler"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <!-- Rapport de précision du triage : taux d'acceptation par mois et par
+       tranche de confiance. -->
+  <record id="view_helpdesk_triage_log_pivot" model="ir.ui.view">
+    <field name="name">helpdesk.triage.log.pivot</field>
+    <field name="model">helpdesk.triage.log</field>
+    <field name="arch" type="xml">
+      <pivot>
+        <field name="create_date" interval="month" type="row"/>
+        <field name="outcome" type="col"/>
+        <field name="accepted_value" type="measure"/>
+      </pivot>
+    </field>
+  </record>
+  <record id="view_helpdesk_triage_log_list" model="ir.ui.view">
+    <field name="name">helpdesk.triage.log.list</field>
+    <field name="model">helpdesk.triage.log</field>
+    <field name="arch" type="xml">
+      <list create="0">
+        <field name="create_date" string="Le"/>
+        <field name="ticket_id"/>
+        <field name="team_id"/>
+        <field name="user_id"/>
+        <field name="outcome"/>
+        <field name="confidence"/>
+        <field name="confidence_band"/>
+        <field name="fields_applied"/>
+        <field name="fields_suggested"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_helpdesk_triage_log_search" model="ir.ui.view">
+    <field name="name">helpdesk.triage.log.search</field>
+    <field name="model">helpdesk.triage.log</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="team_id"/>
+        <filter name="by_month" string="Mois" context="{'group_by': 'create_date:month'}"/>
+        <filter name="by_band" string="Tranche de confiance" context="{'group_by': 'confidence_band'}"/>
+        <filter name="by_team" string="Équipe" context="{'group_by': 'team_id'}"/>
+      </search>
+    </field>
+  </record>
+  <record id="action_helpdesk_triage_log" model="ir.actions.act_window">
+    <field name="name">Triage IA : précision</field>
+    <field name="res_model">helpdesk.triage.log</field>
+    <field name="view_mode">pivot,list</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">Aucune suggestion tranchée pour l'instant</p>
+      <p>Chaque suggestion appliquée, modifiée ou rejetée s'inscrit ici. Le taux
+        d'acceptation par mois et par tranche de confiance dit si le triage mérite
+        la confiance qu'on lui accorde.</p>
+    </field>
+  </record>
+  <menuitem id="menu_helpdesk_triage_log" name="Triage IA"
+            parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+            action="action_helpdesk_triage_log" sequence="30"/>
+
+  <!-- Thèmes -->
+  <record id="view_helpdesk_theme_list" model="ir.ui.view">
+    <field name="name">helpdesk.theme.list</field>
+    <field name="model">helpdesk.theme</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="count_week"/>
+        <field name="count_prev_avg"/>
+        <field name="trend"/>
+        <field name="count_total"/>
+      </list>
+    </field>
+  </record>
+  <record id="view_helpdesk_theme_form" model="ir.ui.view">
+    <field name="name">helpdesk.theme.form</field>
+    <field name="model">helpdesk.theme</field>
+    <field name="arch" type="xml">
+      <form>
+        <header/>
+        <sheet>
+          <div class="oe_title"><h1><field name="name"/></h1></div>
+          <group>
+            <group>
+              <field name="count_week"/>
+              <field name="count_prev_avg"/>
+              <field name="trend"/>
+            </group>
+            <group>
+              <field name="count_total"/>
+              <field name="active" invisible="1"/>
+            </group>
+          </group>
+          <field name="ticket_ids" readonly="1">
+            <list>
+              <field name="number"/>
+              <field name="name"/>
+              <field name="partner_id"/>
+              <field name="closed_date"/>
+            </list>
+          </field>
+        </sheet>
+      </form>
+    </field>
+  </record>
+  <record id="action_helpdesk_theme" model="ir.actions.act_window">
+    <field name="name">Thèmes</field>
+    <field name="res_model">helpdesk.theme</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">Aucun thème pour l'instant</p>
+      <p>Chaque semaine, les billets fermés des équipes en triage automatique sont
+        rangés par thème. Une tendance ne s'affiche qu'à partir de 10 billets ;
+        en dessous, le nombre reste visible, sans conclusion.</p>
+    </field>
+  </record>
+  <menuitem id="menu_helpdesk_theme" name="Thèmes"
+            parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+            action="action_helpdesk_theme" sequence="35"/>
+
+  <!-- Alertes de pic -->
+  <record id="view_helpdesk_spike_alert_list" model="ir.ui.view">
+    <field name="name">helpdesk.spike.alert.list</field>
+    <field name="model">helpdesk.spike.alert</field>
+    <field name="arch" type="xml">
+      <list create="0">
+        <field name="create_date" string="Le"/>
+        <field name="team_id"/>
+        <field name="scope_label"/>
+        <field name="count"/>
+        <field name="ticket_ids" widget="many2many_tags"/>
+      </list>
+    </field>
+  </record>
+  <record id="action_helpdesk_spike_alert" model="ir.actions.act_window">
+    <field name="name">Alertes de pic</field>
+    <field name="res_model">helpdesk.spike.alert</field>
+    <field name="view_mode">list</field>
+  </record>
+  <menuitem id="menu_helpdesk_spike_alert" name="Alertes de pic"
+            parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+            action="action_helpdesk_spike_alert" sequence="40"/>
+
+</odoo>

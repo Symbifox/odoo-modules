@@ -1,5 +1,7 @@
-// Blue Fox brand canon.
-// Lexend everywhere. #29ABE2 accent. #2E3132 anthracite.
+// Pages publiques de l'assistance (formulaire, centre d'aide, sondage).
+// Couleurs : celles du locataire, calculées côté serveur pour tenir 4,5:1
+// (--bf-hd-brand, --bf-hd-on-brand, --bf-hd-link, posées par
+// views/brand_variables.xml). Les valeurs de repli sont lisibles aussi.
 
 .bf-support-page {
   font-family: "Lexend", -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -12,20 +14,20 @@
     font-family: "Lexend", sans-serif;
     font-weight: 700;
     color: var(--brand-dark, #2E3132);
-    border-left: 4px solid var(--brand-primary, #29ABE2);
+    border-left: 4px solid var(--bf-hd-brand, #29ABE2);
     padding-left: 16px;
     margin-bottom: 8px;
   }
 
   .bf-support-tagline {
-    color: #6B7280;
+    color: #4B5563;
     margin-bottom: 0;
     font-size: 1.05rem;
   }
 
   .bf-support-intro {
     background: #FFFFFF;
-    border-left: 4px solid var(--brand-primary, #29ABE2);
+    border-left: 4px solid var(--bf-hd-brand, #29ABE2);
     padding: 16px 20px;
     border-radius: 4px;
   }
@@ -41,38 +43,53 @@
       color: var(--brand-dark, #2E3132);
     }
 
-    .form-control {
-      border: 1px solid #E5E7EB;
+    .form-control, .form-select {
+      border: 1px solid #6B7280;
       border-radius: 4px;
       padding: 10px 12px;
       font-family: inherit;
 
-      &:focus {
-        border-color: var(--brand-primary, #29ABE2);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary, #29ABE2) 15%, transparent);
-        outline: none;
+      // Indicateur de focus visible (WCAG 2.4.7, contraste 3:1 en 1.4.11).
+      &:focus, &:focus-visible {
+        border-color: var(--bf-hd-link, #1F6F95);
+        outline: 2px solid var(--bf-hd-link, #1F6F95);
+        outline-offset: 1px;
+        box-shadow: none;
       }
     }
 
     .bf-required {
-      color: var(--brand-primary, #29ABE2);
+      color: var(--bf-hd-link, #1F6F95);
     }
   }
 
+  // Le texte du bouton est calculé contre l'aplat : blanc sur une marque
+  // foncée, encre sur une marque claire comme le bleu Blue Fox.
   .bf-support-submit {
-    background: var(--brand-primary, #29ABE2);
-    color: #FFFFFF;
+    background: var(--bf-hd-brand, #1F6F95);
+    color: var(--bf-hd-on-brand, #FFFFFF);
     border: none;
     padding: 12px 28px;
     font-weight: 600;
     border-radius: 4px;
-    transition: background 0.2s;
     font-family: inherit;
 
+    // Pas d'aplat plus foncé au survol : il ferait retomber le contraste.
     &:hover {
-      background: #1F8FBF;
-      color: #FFFFFF;
+      background: var(--bf-hd-brand, #1F6F95);
+      color: var(--bf-hd-on-brand, #FFFFFF);
+      text-decoration: underline;
     }
+
+    &:focus-visible {
+      outline: 3px solid var(--bf-hd-link, #1F6F95);
+      outline-offset: 2px;
+    }
+  }
+
+  a:not(.btn) {
+    color: var(--bf-hd-link, #1F6F95);
+    text-decoration: underline;
   }
 
   .bf-support-success-card {

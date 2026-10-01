@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="rule_helpdesk_ticket_duplicate_company" model="ir.rule">
+    <field name="name">helpdesk.ticket.duplicate : sociétés permises</field>
+    <field name="model_id" ref="model_helpdesk_ticket_duplicate"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|', ('ticket_id.company_id', '=', False), ('ticket_id.company_id', 'in', company_ids)]</field>
+  </record>
+
+  <!-- Doublons : les DEUX billets de la paire doivent être visibles, sinon la liste des doublons montrerait le sujet et le client d'un billet caché : visibles selon les billets, comme helpdesk_mgmt le fait pour
+       les billets eux-mêmes. « Billets de l'équipe » : ceux des équipes de
+       l'usager et ceux sans équipe ; « Tous les billets » : tout. -->
+  <record id="rule_helpdesk_ticket_duplicate_team" model="ir.rule">
+    <field name="name">helpdesk.ticket.duplicate : billets de l'équipe</field>
+    <field name="model_id" ref="model_helpdesk_ticket_duplicate"/>
+    <field name="domain_force">['&amp;', '|', ('ticket_id.team_id', 'in', user.helpdesk_team_ids.ids), ('ticket_id.team_id', '=', False), '|', ('candidate_id.team_id', 'in', user.helpdesk_team_ids.ids), ('candidate_id.team_id', '=', False)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user_team'))]"/>
+  </record>
+  <record id="rule_helpdesk_ticket_duplicate_all" model="ir.rule">
+    <field name="name">helpdesk.ticket.duplicate : tous les billets</field>
+    <field name="model_id" ref="model_helpdesk_ticket_duplicate"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user'))]"/>
+  </record>
+
+  <!-- Assistants : chacun ne voit que les siens. Un modèle transitoire n'a
+       aucune règle implicite dans Odoo 18, et ces lignes portent des billets,
+       un titre d'incident ou un brouillon de réponse au client. -->
+  <record id="rule_helpdesk_incident_link_own" model="ir.rule">
+    <field name="name">helpdesk.incident.link : les miens</field>
+    <field name="model_id" ref="model_helpdesk_incident_link"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+  </record>
+  <record id="rule_helpdesk_incident_reply_own" model="ir.rule">
+    <field name="name">helpdesk.incident.reply : les miens</field>
+    <field name="model_id" ref="model_helpdesk_incident_reply"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+  </record>
+  <record id="rule_helpdesk_ticket_merge_own" model="ir.rule">
+    <field name="name">helpdesk.ticket.merge : les miens</field>
+    <field name="model_id" ref="helpdesk_mgmt_merge.model_helpdesk_ticket_merge"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+  </record>
+</odoo>

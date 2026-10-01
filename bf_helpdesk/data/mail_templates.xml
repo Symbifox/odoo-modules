@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Gabarits de courriel de l'assistance, en français et en anglais.
+
+       La langue suit le billet (client_lang : langue du client, sinon celle
+       du formulaire rempli, sinon celle de la société). Les deux versions
+       vivent dans le même gabarit : le module est écrit en français, qui
+       occupe la case source (en_US) des champs traduits, et un .po ne peut
+       pas « traduire » vers la langue source.
+
+       Contenu seul : le gabarit maître bf_helpdesk.mail_layout_helpdesk
+       fournit l'en-tête, la marque, le pied et la référence du billet.
+
+       noupdate : un -u ne les réécrit pas. La migration 18.0.4.8.0 recharge
+       ce fichier une fois, si aucun gabarit n'a été retouché à la main. -->
+  <data noupdate="1">
+
+    <record id="mail_template_ticket_ack" model="mail.template">
+      <field name="name">Helpdesk : Accusé de réception</field>
+      <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+      <field name="subject">{{ ('Request received' if (object.client_lang or '').startswith('en') else 'Demande reçue') }} : [{{ object.number }}] {{ object.email_thread_subject or object.name }}</field>
+      <field name="email_from">{{ object._bf_email_from() }}</field>
+      <field name="email_to">{{ object.partner_email or (object.partner_id.email or '') }}</field>
+      <field name="lang">{{ object.client_lang }}</field>
+      <field name="auto_delete" eval="False"/>
+      <field name="body_html" type="html">
+        <div style="margin:0;padding:0;">
+          <t t-if="(object.client_lang or '').startswith('en')">
+            <p style="margin:0 0 16px 0;">Hello <t t-out="object.partner_name or (object.partner_id.name or 'there')"/>,</p>
+            <p style="margin:0 0 16px 0;">
+              We have received your request <strong><t t-out="object.number"/></strong>.
+              <t t-if="object.ack_expected_text"><t t-out="object.ack_expected_text"/></t>
+              <t t-else="">A member of the <t t-out="object.team_id.name"/> team will get back to you as soon as possible.</t>
+            </p>
+            <p t-if="object.team_id.business_hours_summary" style="margin:0 0 16px 0;">
+              Our team's hours: <t t-out="object.team_id.business_hours_summary"/>.
+            </p>
+            <div t-if="object.team_id.ack_notice_active" style="margin:0 0 16px 0;">
+              <t t-out="object.team_id.ack_notice_html"/>
+            </div>
+            <p t-if="object.partner_has_portal_access" style="margin:0 0 16px 0;">
+              You can follow your request at any time: <a t-att-href="object.portal_ticket_url">view request <t t-out="object.number"/></a>.
+            </p>
+            <p style="margin:0 0 16px 0;">To add details, simply reply to this email.</p>
+            <p style="margin:0;">Thank you for your trust.</p>
+          </t>
+          <t t-else="">
+            <p style="margin:0 0 16px 0;">Bonjour <t t-out="object.partner_name or (object.partner_id.name or 'à vous')"/>,</p>
+            <p style="margin:0 0 16px 0;">
+              Nous avons bien reçu votre demande <strong><t t-out="object.number"/></strong>.
+              <t t-if="object.ack_expected_text"><t t-out="object.ack_expected_text"/></t>
+              <t t-else="">Un membre de l'équipe <t t-out="object.team_id.name"/> vous répondra dans les meilleurs délais.</t>
+            </p>
+            <p t-if="object.team_id.business_hours_summary" style="margin:0 0 16px 0;">
+              Notre équipe répond <t t-out="object.team_id.business_hours_summary"/>.
+            </p>
+            <div t-if="object.team_id.ack_notice_active" style="margin:0 0 16px 0;">
+              <t t-out="object.team_id.ack_notice_html"/>
+            </div>
+            <p t-if="object.partner_has_portal_access" style="margin:0 0 16px 0;">
+              Vous pouvez suivre votre demande en tout temps : <a t-att-href="object.portal_ticket_url">voir la demande <t t-out="object.number"/></a>.
+            </p>
+            <p style="margin:0 0 16px 0;">Pour ajouter une précision, répondez simplement à ce courriel.</p>
+            <p style="margin:0;">Merci pour votre confiance.</p>
+          </t>
+        </div>
+      </field>
+    </record>
+
+    <!-- object.reminder_count vaut 0 à la première relance, 1 à la seconde :
+         il n'est incrémenté qu'une fois le courriel en file. -->
+    <record id="mail_template_waiting_reminder" model="mail.template">
+      <field name="name">Helpdesk : Relance, réponse attendue</field>
+      <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+      <field name="subject">{{ ('Reminder: your request is waiting for your reply' if (object.client_lang or '').startswith('en') else 'Rappel : votre demande attend votre réponse') }} [{{ object.number }}] {{ object.email_thread_subject or object.name }}</field>
+      <field name="email_from">{{ object._bf_email_from() }}</field>
+      <field name="email_to">{{ object.partner_email or (object.partner_id.email or '') }}</field>
+      <field name="lang">{{ object.client_lang }}</field>
+      <field name="auto_delete" eval="False"/>
+      <field name="body_html" type="html">
+        <div style="margin:0;padding:0;">
+          <t t-if="(object.client_lang or '').startswith('en')">
+            <p style="margin:0 0 16px 0;">Hello <t t-out="object.partner_name or (object.partner_id.name or 'there')"/>,</p>
+            <p style="margin:0 0 16px 0;">We are waiting for your reply to move forward with your request <strong><t t-out="object.number"/></strong>.</p>
+            <p t-if="object.reminder_count &gt;= 1 and object.team_id.reminder_close_stage_id" style="margin:0 0 16px 0;">
+              If we don't hear from you within <t t-out="object.team_id.reminder_close_days"/> business days,
+              we will close the request. A reply from you will reopen it at any time.
+            </p>
+            <p t-if="object.partner_has_portal_access" style="margin:0 0 16px 0;">
+              <a t-att-href="object.portal_ticket_url">View the request and our last message</a>.
+            </p>
+            <p style="margin:0 0 16px 0;">Just reply to this email. If the issue is solved on your side, simply let us know.</p>
+            <p style="margin:0;">Thank you!</p>
+          </t>
+          <t t-else="">
+            <p style="margin:0 0 16px 0;">Bonjour <t t-out="object.partner_name or (object.partner_id.name or 'à vous')"/>,</p>
+            <p style="margin:0 0 16px 0;">Nous attendons votre réponse pour poursuivre le traitement de votre demande <strong><t t-out="object.number"/></strong>.</p>
+            <p t-if="object.reminder_count &gt;= 1 and object.team_id.reminder_close_stage_id" style="margin:0 0 16px 0;">
+              Sans nouvelles de votre part d'ici <t t-out="object.team_id.reminder_close_days"/> jours ouvrables,
+              nous fermerons la demande. Une réponse de votre part la rouvrira en tout temps.
+            </p>
+            <p t-if="object.partner_has_portal_access" style="margin:0 0 16px 0;">
+              <a t-att-href="object.portal_ticket_url">Voir la demande et notre dernier message</a>.
+            </p>
+            <p style="margin:0 0 16px 0;">Il suffit de répondre à ce courriel. Si la demande est réglée de votre côté, dites-le-nous simplement.</p>
+            <p style="margin:0;">Merci !</p>
+          </t>
+        </div>
+      </field>
+    </record>
+
+    <record id="mail_template_waiting_autoclose" model="mail.template">
+      <field name="name">Helpdesk : Fermeture faute de réponse</field>
+      <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+      <field name="subject">{{ ('Request closed' if (object.client_lang or '').startswith('en') else 'Demande fermée') }} : [{{ object.number }}] {{ object.email_thread_subject or object.name }}</field>
+      <field name="email_from">{{ object._bf_email_from() }}</field>
+      <field name="email_to">{{ object.partner_email or (object.partner_id.email or '') }}</field>
+      <field name="lang">{{ object.client_lang }}</field>
+      <field name="auto_delete" eval="False"/>
+      <field name="body_html" type="html">
+        <div style="margin:0;padding:0;">
+          <t t-if="(object.client_lang or '').startswith('en')">
+            <p style="margin:0 0 16px 0;">Hello <t t-out="object.partner_name or (object.partner_id.name or 'there')"/>,</p>
+            <p style="margin:0 0 16px 0;">As we have not heard back from you, we have closed your request <strong><t t-out="object.number"/></strong>.</p>
+            <p style="margin:0 0 16px 0;">If you still need help, simply reply to this email: the request will be reopened
+              and the <t t-out="object.team_id.name"/> team will pick up where it left off.</p>
+            <p style="margin:0;">Thank you for your trust.</p>
+          </t>
+          <t t-else="">
+            <p style="margin:0 0 16px 0;">Bonjour <t t-out="object.partner_name or (object.partner_id.name or 'à vous')"/>,</p>
+            <p style="margin:0 0 16px 0;">Faute de réponse, nous avons fermé votre demande <strong><t t-out="object.number"/></strong>.</p>
+            <p style="margin:0 0 16px 0;">Si vous avez encore besoin d'aide, répondez simplement à ce courriel : la demande sera rouverte
+              et l'équipe <t t-out="object.team_id.name"/> reprendra là où elle s'était arrêtée.</p>
+            <p style="margin:0;">Merci pour votre confiance.</p>
+          </t>
+        </div>
+      </field>
+    </record>
+
+    <!-- Fermeture par un agent (étapes Terminé, Annulé, Rejeté) : remplace le
+         « Ticket fermé » de l'OCA (vocabulaire, expéditeur nu). Se tait quand le
+         sondage part à la fermeture : il annonce déjà la fin de la demande. -->
+    <record id="mail_template_ticket_closed" model="mail.template">
+      <field name="name">Helpdesk : Demande fermée</field>
+      <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+      <field name="subject">{{ ('Request closed' if (object.client_lang or '').startswith('en') else 'Demande fermée') }} : [{{ object.number }}] {{ object.email_thread_subject or object.name }}</field>
+      <field name="email_from">{{ object._bf_email_from() }}</field>
+      <field name="email_to">{{ object.partner_email or (object.partner_id.email or '') }}</field>
+      <field name="lang">{{ object.client_lang }}</field>
+      <field name="auto_delete" eval="False"/>
+      <field name="body_html" type="html">
+        <div style="margin:0;padding:0;">
+          <t t-if="(object.client_lang or '').startswith('en')">
+            <p style="margin:0 0 16px 0;">Hello <t t-out="object.partner_name or (object.partner_id.name or 'there')"/>,</p>
+            <p style="margin:0 0 16px 0;">Your request <strong><t t-out="object.number"/></strong> is now closed (<t t-out="object.stage_id.with_context(lang='en_US').name"/>).</p>
+            <p style="margin:0 0 16px 0;">If something is still not right, simply reply to this email: the request will be reopened
+              and the <t t-out="object.team_id.name"/> team will pick up where it left off.</p>
+            <p style="margin:0;">Thank you for your trust.</p>
+          </t>
+          <t t-else="">
+            <p style="margin:0 0 16px 0;">Bonjour <t t-out="object.partner_name or (object.partner_id.name or 'à vous')"/>,</p>
+            <p style="margin:0 0 16px 0;">Votre demande <strong><t t-out="object.number"/></strong> est maintenant fermée (<t t-out="object.stage_id.name"/>).</p>
+            <p style="margin:0 0 16px 0;">Si quelque chose ne va toujours pas, répondez simplement à ce courriel : la demande sera rouverte
+              et l'équipe <t t-out="object.team_id.name"/> reprendra là où elle s'était arrêtée.</p>
+            <p style="margin:0;">Merci pour votre confiance.</p>
+          </t>
+        </div>
+      </field>
+    </record>
+
+    <!-- Le clic ouvre la page de réponse avec la note présélectionnée ;
+         rien n'est enregistré avant l'envoi du formulaire. -->
+    <record id="mail_template_csat_v2" model="mail.template">
+      <field name="name">Helpdesk : Satisfaction (une question)</field>
+      <field name="model_id" ref="bf_helpdesk.model_helpdesk_ticket_csat"/>
+      <field name="subject">{{ ('Your feedback on request' if (object.ticket_id.client_lang or '').startswith('en') else 'Votre avis sur la demande') }} [{{ object.ticket_id.number }}] {{ object.ticket_id.email_thread_subject or object.ticket_id.name }}</field>
+      <field name="email_from">{{ object.ticket_id._bf_email_from() }}</field>
+      <field name="email_to">{{ object.ticket_id.partner_email or (object.ticket_id.partner_id.email or '') }}</field>
+      <field name="lang">{{ object.ticket_id.client_lang }}</field>
+      <field name="auto_delete" eval="False"/>
+      <field name="body_html" type="html">
+        <div style="margin:0;padding:0;">
+          <t t-set="en" t-value="(object.ticket_id.client_lang or '').startswith('en')"/>
+          <t t-set="scale" t-value="[('1', 'Very dissatisfied'), ('2', 'Dissatisfied'), ('3', 'Neutral'), ('4', 'Satisfied'), ('5', 'Very satisfied')] if en else [('1', 'Très insatisfait'), ('2', 'Insatisfait'), ('3', 'Neutre'), ('4', 'Satisfait'), ('5', 'Très satisfait')]"/>
+          <p style="margin:0 0 16px 0;">
+            <t t-if="en">Hello <t t-out="object.ticket_id.partner_name or (object.ticket_id.partner_id.name or 'there')"/>,</t>
+            <t t-else="">Bonjour <t t-out="object.ticket_id.partner_name or (object.ticket_id.partner_id.name or 'à vous')"/>,</t>
+          </p>
+          <p style="margin:0 0 16px 0;">
+            <t t-if="en">Your request <strong><t t-out="object.ticket_id.number"/></strong> has been resolved.</t>
+            <t t-else="">Votre demande <strong><t t-out="object.ticket_id.number"/></strong> a été réglée.</t>
+          </p>
+          <p style="margin:0 0 12px 0;font-weight:bold;">
+            <t t-if="en">How satisfied are you with the way we handled it?</t>
+            <t t-else="">Êtes-vous satisfait de la façon dont nous l'avons traitée ?</t>
+          </p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px 0;">
+            <tr>
+              <td t-foreach="scale" t-as="r" style="padding:0 6px 6px 0;">
+                <a t-attf-href="{{ object.access_url_base }}/{{ r[0] }}"
+                   style="display:inline-block;min-width:44px;padding:10px 12px;border:1px solid #1F2328;border-radius:6px;text-decoration:none;color:#1F2328;font-size:15px;text-align:center;">
+                  <strong t-out="r[0]"/><br/><span style="font-size:12px;" t-out="r[1]"/>
+                </a>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:0 0 16px 0;font-size:13px;color:#4B5563;">
+            <t t-if="en">A click opens a page where you confirm your rating and can add a comment. The link stays active for <t t-out="object.ticket_id.team_id.csat_expiry_days"/> days.</t>
+            <t t-else="">Un clic ouvre une page où vous confirmez votre note et pouvez ajouter un commentaire. Le lien reste actif <t t-out="object.ticket_id.team_id.csat_expiry_days"/> jours.</t>
+          </p>
+          <p style="margin:0;"><t t-if="en">Thank you!</t><t t-else="">Merci !</t></p>
+        </div>
+      </field>
+    </record>
+
+    <!-- Mise à jour manuelle : ouverte dans le rédacteur par le bouton
+         « Envoyer une mise à jour », modifiable, jamais envoyée seule. -->
+    <record id="mail_template_client_update" model="mail.template">
+      <field name="name">Helpdesk : Mise à jour au client</field>
+      <field name="model_id" ref="helpdesk_mgmt.model_helpdesk_ticket"/>
+      <field name="subject">{{ ('Update' if (object.client_lang or '').startswith('en') else 'Mise à jour') }} : [{{ object.number }}] {{ object.email_thread_subject or object.name }}</field>
+      <field name="email_from">{{ object._bf_email_from() or user.email_formatted }}</field>
+      <field name="email_to">{{ object.partner_email or (object.partner_id.email or '') }}</field>
+      <field name="lang">{{ object.client_lang }}</field>
+      <field name="email_layout_xmlid">bf_helpdesk.mail_layout_helpdesk</field>
+      <field name="body_html" type="html">
+        <div style="margin:0;padding:0;">
+          <t t-if="(object.client_lang or '').startswith('en')">
+            <p style="margin:0 0 16px 0;">Hello <t t-out="object.partner_name or (object.partner_id.name or 'there')"/>,</p>
+            <p style="margin:0 0 16px 0;">Here is an update on your request <strong><t t-out="object.number"/></strong>.</p>
+            <p style="margin:0 0 16px 0;">[Describe the progress, the next step or your question to the client.]</p>
+            <p style="margin:0;">Best regards,</p>
+          </t>
+          <t t-else="">
+            <p style="margin:0 0 16px 0;">Bonjour <t t-out="object.partner_name or (object.partner_id.name or 'à vous')"/>,</p>
+            <p style="margin:0 0 16px 0;">Voici une mise à jour concernant votre demande <strong><t t-out="object.number"/></strong>.</p>
+            <p style="margin:0 0 16px 0;">[Décrivez ici l'avancement, la prochaine étape ou la question au client.]</p>
+            <p style="margin:0;">Au plaisir,</p>
+          </t>
+        </div>
+      </field>
+    </record>
+
+  </data>
+</odoo>

@@ -15,7 +15,10 @@
             <t t-out="team.public_form_intro_html"/>
           </div>
 
-          <div t-if="error" class="alert alert-danger" role="alert">
+          <!-- Le focus va sur l'erreur au rechargement : sans cela, un
+               lecteur d'écran repart du haut de la page sans l'annoncer. -->
+          <div t-if="error" id="bf_support_error" class="alert alert-danger"
+               role="alert" tabindex="-1" autofocus="autofocus">
             <t t-esc="error"/>
           </div>
 
@@ -36,7 +39,7 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label" for="bf_support_email">Courriel <span class="bf-required">*</span></label>
+              <label class="form-label" for="bf_support_email">Courriel <span class="bf-required" aria-hidden="true">*</span></label>
               <input type="email" id="bf_support_email" name="email" class="form-control"
                      required="required" t-att-value="prefill.get('email', '')"/>
             </div>
@@ -59,14 +62,14 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label" for="bf_support_subject">Sujet <span class="bf-required">*</span></label>
+              <label class="form-label" for="bf_support_subject">Sujet <span class="bf-required" aria-hidden="true">*</span></label>
               <input type="text" id="bf_support_subject" name="subject" class="form-control"
                      required="required" t-att-value="prefill.get('subject', '')"
                      placeholder="Ex. Imprimante en panne au poste 3"/>
             </div>
 
             <div class="mb-3">
-              <label class="form-label" for="bf_support_description">Description <span class="bf-required">*</span></label>
+              <label class="form-label" for="bf_support_description">Description <span class="bf-required" aria-hidden="true">*</span></label>
               <textarea id="bf_support_description" name="description" class="form-control" rows="6"
                         required="required"
                         placeholder="Que se passe-t-il ? Quand est-ce arrivé ? Y a-t-il un message d'erreur ?"
@@ -79,6 +82,7 @@
               <small class="text-muted">Capture d'écran, log, document — max ~25 Mo par fichier.</small>
             </div>
 
+            <p class="small text-muted mb-3"><span aria-hidden="true">* </span>Champ obligatoire</p>
             <button type="submit" class="btn bf-support-submit">Envoyer la demande</button>
           </form>
         </div>

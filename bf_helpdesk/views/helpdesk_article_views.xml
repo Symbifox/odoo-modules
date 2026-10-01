@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_helpdesk_article_list" model="ir.ui.view">
+    <field name="name">helpdesk.article.list</field>
+    <field name="model">helpdesk.article</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="sequence" widget="handle"/>
+        <field name="name"/>
+        <field name="summary" optional="show"/>
+        <field name="team_ids" widget="many2many_tags" optional="show"/>
+        <field name="is_published" string="Publié"/>
+        <field name="view_count" optional="show"/>
+        <field name="helpful_ratio" optional="show"/>
+        <field name="ticket_count" string="Billets" optional="show"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_helpdesk_article_form" model="ir.ui.view">
+    <field name="name">helpdesk.article.form</field>
+    <field name="model">helpdesk.article</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <div class="oe_button_box" name="button_box">
+            <field name="is_published" widget="website_redirect_button"/>
+            <button name="action_view_tickets" type="object" class="oe_stat_button"
+                    icon="fa-life-ring" invisible="not ticket_count">
+              <field name="ticket_count" widget="statinfo" string="Billets"/>
+            </button>
+          </div>
+          <widget name="web_ribbon" title="Archivé" bg_color="text-bg-danger" invisible="active"/>
+          <div class="oe_title">
+            <h1><field name="name" placeholder="Ex. Mon imprimante n'imprime plus"/></h1>
+          </div>
+          <group>
+            <group>
+              <field name="summary"/>
+              <field name="keywords" placeholder="imprimante, impression, bourrage"/>
+              <field name="slug"/>
+            </group>
+            <group>
+              <field name="is_published" string="Publié"/>
+              <field name="website_url" widget="url" invisible="not is_published"/>
+              <field name="team_ids" widget="many2many_tags" options="{'no_create': True}"
+                     placeholder="Toutes les équipes"/>
+              <field name="source_ticket_id" invisible="not source_ticket_id"/>
+              <field name="active" invisible="1"/>
+              <field name="company_id" groups="base.group_multi_company"/>
+            </group>
+          </group>
+          <group string="Lecture" invisible="not view_count">
+            <field name="view_count"/>
+            <field name="helpful_yes"/>
+            <field name="helpful_no"/>
+            <field name="helpful_ratio"/>
+          </group>
+          <field name="body" placeholder="Le problème, puis la solution, étape par étape."/>
+        </sheet>
+        <chatter/>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_helpdesk_article_search" model="ir.ui.view">
+    <field name="name">helpdesk.article.search</field>
+    <field name="model">helpdesk.article</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name"/>
+        <field name="keywords"/>
+        <field name="team_ids"/>
+        <filter name="published" string="Publiés" domain="[('is_published', '=', True)]"/>
+        <filter name="draft" string="Non publiés" domain="[('is_published', '=', False)]"/>
+        <filter name="archived" string="Archivés" domain="[('active', '=', False)]"/>
+      </search>
+    </field>
+  </record>
+
+  <record id="action_helpdesk_article" model="ir.actions.act_window">
+    <field name="name">Articles d'aide</field>
+    <field name="res_model">helpdesk.article</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">Aucun article d'aide</p>
+      <p>Un article répond une fois pour toutes à une question qui revient.
+        Le bouton « Créer un article d'aide » d'un billet fermé en prépare un.
+        Publié, il paraît sous /aide et dans les suggestions du formulaire.</p>
+    </field>
+  </record>
+
+  <menuitem id="menu_helpdesk_article"
+            name="Articles d'aide"
+            parent="helpdesk_mgmt.helpdesk_ticket_main_menu"
+            action="action_helpdesk_article"
+            sequence="30"
+            groups="helpdesk_mgmt.group_helpdesk_user_team"/>
+
+</odoo>

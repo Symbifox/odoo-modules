@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**55 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**57 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -25,7 +25,7 @@ already BUSL keep their earlier date, and anything flipped since converts four
 years from its own release. The `LICENSE` file inside each module states its
 exact parameters, and it governs.
 
-**5 modules are AGPL-3**, and not by choice: the fundraising and donation-receipt
+**6 modules are AGPL-3**, and not by choice: the fundraising and donation-receipt
 modules extend Odoo Community Association code that is itself AGPL-3, so they
 inherit it.
 
@@ -140,6 +140,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.0.0 | LGPL-3 | The minute book of a share corporation kept in Odoo: resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.3.0.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
 | `bf_cx` | Expérience client | 18.0.1.12.1 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
+| `bf_cx_ai` | Expérience client : analyse IA des verbatims | 18.0.1.2.3 | LGPL-3 | Sentiment, themes and a one-line summary of customer comments, through the AI bridge |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.1.2 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
 | `bf_cx_crm` | Expérience client - sondage post-perte CRM | 18.0.1.1.0 | BUSL-1.1 | Automatic win/loss survey when a CRM opportunity is marked lost |
 | `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.1.2 | BUSL-1.1 | NPS tile with pending detractors and open complaints on the Symbifox dashboard |
@@ -202,7 +203,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.3 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
 | `bf_gamification` | Fox Quest | 18.0.2.6.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
 | `bf_gantt` | Échéancier | 18.0.1.5.7 | BUSL-1.1 | Gantt schedules for Odoo Community, on a project or standalone, shareable on the portal without a seat, exportable to branded PDF, PNG, SVG, XLSX and MS Project |
-| `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.5.2 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
+| `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.15.3 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
+| `bf_helpdesk_digest` | Helpdesk — Section du digest quotidien | 18.0.1.0.1 | LGPL-3 | Adds an « Assistance » section to the daily digest: the reader's open tickets and their daily helpdesk notifications |
+| `bf_helpdesk_merge` | Helpdesk — Doublons, fusion et incidents | 18.0.1.3.2 | AGPL-3 | Complete ticket merge (timesheets, attachments, followers, internal notes), duplicate suggestions at creation, parent incidents with a grouped reply |
 | `bf_home` | Accueil Symbifox | 18.0.2.0.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.5.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.1.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
@@ -373,9 +376,9 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **55 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **57 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
-- **5 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
+- **6 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising
   and donation-receipt modules; `bf_helpdesk` is a fork-style extension of
   OCA `helpdesk_mgmt`.

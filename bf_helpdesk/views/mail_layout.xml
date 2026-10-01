@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Courriels d'assistance dans la mise en page Blue Fox : bluefox_branding fait foi pour l'habillage.
+
+       Deux temps, dans mail_layout_helpdesk ci-dessous :
+       1. mail_body_helpdesk rend les blocs propres à l'assistance : titre et
+          numéro de la demande, message, bouton, historique cité, référence,
+          lien « ne plus recevoir les courriels » ;
+       2. ce résultat devient le corps de bf_onboarding_base.bf_mail_layout,
+          que bluefox_branding remplace par sa propre mise en page quand il est
+          installé (sinon, copie de sa dernière version connue).
+       Les blocs ne dessinent aucun cadre : en-tête, logo, barre d'accent, pied
+       et police viennent de la mise en page commune. Le bouton de la mise en
+       page commune est coupé : celui des blocs dit « Voir la demande HTxxxxx »
+       et garde un texte lisible sur la couleur de marque (4,5:1). -->
+  <template id="mail_body_helpdesk" name="BF Helpdesk — blocs d'assistance des courriels">
+<t t-set="bf_ticket" t-value="record if record and 'number' in record else (record.ticket_id if record and 'ticket_id' in record else False)"/>
+<t t-set="bf_lang_code" t-value="lang or (bf_ticket and bf_ticket.client_lang) or 'fr_CA'"/>
+<t t-set="bf_lang" t-value="bf_lang_code.replace('_', '-')"/>
+<t t-set="bf_en" t-value="bf_lang_code.startswith('en')"/>
+<t t-set="bf_brand" t-value="company.helpdesk_brand_color or '#2D3031'"/>
+<t t-set="bf_on_brand" t-value="company.helpdesk_brand_text_color or '#FFFFFF'"/>
+<t t-set="bf_link" t-value="company.helpdesk_brand_link_color or '#2D3031'"/>
+<div t-att-lang="bf_lang" dir="ltr" class="bf_hd_mail">
+    <div t-if="bf_ticket" style="margin: 0 0 16px 0;">
+        <h1 style="margin: 0; font-size: 20px; line-height: 1.3; color: #1F2328; font-weight: bold;">
+            <t t-out="bf_ticket.email_thread_subject or bf_ticket.name"/>
+        </h1>
+        <p style="margin: 4px 0 0 0; font-size: 13px; color: #4B5563;">
+            <t t-if="bf_en">Request</t><t t-else="">Demande</t> <t t-out="bf_ticket.number"/>
+        </p>
+    </div>
+    <t t-out="message.body"/>
+    <div t-if="email_add_signature and not is_html_empty(signature)" style="margin-top: 16px; font-size: 14px;">
+        <t t-out="signature"/>
+    </div>
+    <!-- Hors billet (condensé, alerte d'équipe), le bouton mènerait à une fiche
+         de contact ou d'équipe sous le libellé « Voir la demande ». -->
+    <p t-if="has_button_access and bf_ticket" style="margin: 20px 0 0 0;">
+        <a t-att-href="button_access['url']"
+           t-attf-style="display: inline-block; padding: 10px 20px; background-color: {{ bf_brand }}; color: {{ bf_on_brand }}; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 10px;">
+            <t t-if="bf_en">View request</t><t t-else="">Voir la demande</t> <t t-out="bf_ticket.number"/>
+        </a>
+    </p>
+    <div t-if="bf_history" style="margin: 24px 0 0 0;">
+        <p style="margin: 0 0 8px 0; font-size: 13px; font-weight: bold; color: #4B5563;"><t t-if="bf_en">Previous messages</t><t t-else="">Messages précédents</t></p>
+        <t t-foreach="bf_history" t-as="old">
+            <div style="margin: 0 0 12px 0; padding: 0 0 0 12px; border-left: 3px solid #D1D5DB; font-size: 14px; line-height: 1.5; color: #374151;">
+                <p style="margin: 0 0 4px 0; font-size: 12px; color: #4B5563;">
+                    <t t-out="old.author_id.name or old.email_from"/>,
+                    <!-- Heure du client (calendrier de l'équipe, puis son fuseau), pas
+                         celle de la société, qui peut être sur un autre continent. -->
+                    <span t-out="bf_ticket._bf_format_client_datetime(old.date) if bf_ticket else old.date"/>
+                </p>
+                <t t-out="old.body"/>
+            </div>
+        </t>
+    </div>
+    <div t-if="bf_ticket" style="margin: 24px 0 0 0; font-size: 12px; line-height: 1.5; color: #4B5563;">
+        <p style="margin: 0 0 6px 0;">
+            <t t-if="bf_en">Reference: <t t-out="bf_ticket.number"/>. To add details, reply to this email
+            without changing the subject.</t>
+            <t t-else="">Référence : <t t-out="bf_ticket.number"/>. Pour ajouter une précision, répondez à ce courriel
+            sans changer le sujet.</t>
+        </p>
+        <p style="margin: 0;">
+            <span id="bf_hd_mute"><a href="/helpdesk/courriels/__bf_mute__" t-attf-style="color: {{ bf_link }};"><t t-if="bf_en">Stop receiving emails for this request</t><t t-else="">Ne plus recevoir les courriels de cette demande</t></a></span>
+        </p>
+    </div>
+</div>
+  </template>
+
+  <!-- Point d'entrée de tous les courriels d'assistance (email_layout_xmlid),
+       quel que soit le chemin : fil du billet (message_post) ou gabarit
+       (mail.template.send_mail, qui rend la mise en page directement). Les
+       blocs deviennent le corps d'un message virtuel, et la mise en page
+       commune ne montre pas son propre bouton. -->
+  <template id="mail_layout_helpdesk" name="BF Helpdesk — courriels dans la mise en page Blue Fox">
+    <t t-set="bf_hd_body"><t t-call="bf_helpdesk.mail_body_helpdesk"/></t>
+    <t t-call="bf_onboarding_base.bf_mail_layout">
+      <!-- L'aperçu (texte caché que la messagerie montre sous le sujet) reste
+           celui du message, pas le titre et le bouton des blocs. -->
+      <t t-set="message" t-value="message.new({'body': bf_hd_body, 'preview': message.preview})"/>
+      <t t-set="has_button_access" t-value="False"/>
+      <t t-set="email_add_signature" t-value="False"/>
+      <t t-set="tracking_values" t-value="[]"/>
+    </t>
+  </template>
+
+</odoo>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Chaque agent ne voit et ne règle que ses propres préférences ;
+       le responsable de l'assistance voit celles de toute l'équipe. -->
+  <record id="rule_helpdesk_notify_pref_own" model="ir.rule">
+    <field name="name">Préférences de notification : les siennes</field>
+    <field name="model_id" ref="model_helpdesk_notify_pref"/>
+    <field name="domain_force">[('user_id', '=', user.id)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user_team'))]"/>
+  </record>
+  <record id="rule_helpdesk_notify_pref_manager" model="ir.rule">
+    <field name="name">Préférences de notification : toutes (responsable)</field>
+    <field name="model_id" ref="model_helpdesk_notify_pref"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_manager'))]"/>
+  </record>
+  <!-- Règles de société : sans elles, un
+       agent d'une société lisait les sondages, articles, thèmes et journaux
+       d'une autre, et pouvait publier un article sur /aide d'une autre. -->
+  <record id="rule_helpdesk_ticket_csat_company" model="ir.rule">
+    <field name="name">helpdesk.ticket.csat : sociétés permises</field>
+    <field name="model_id" ref="model_helpdesk_ticket_csat"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+  </record>
+  <record id="rule_helpdesk_article_company" model="ir.rule">
+    <field name="name">helpdesk.article : sociétés permises</field>
+    <field name="model_id" ref="model_helpdesk_article"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+  </record>
+  <record id="rule_helpdesk_theme_company" model="ir.rule">
+    <field name="name">helpdesk.theme : sociétés permises</field>
+    <field name="model_id" ref="model_helpdesk_theme"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+  </record>
+  <record id="rule_helpdesk_triage_log_company" model="ir.rule">
+    <field name="name">helpdesk.triage.log : sociétés permises</field>
+    <field name="model_id" ref="model_helpdesk_triage_log"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|', ('ticket_id.company_id', '=', False), ('ticket_id.company_id', 'in', company_ids)]</field>
+  </record>
+  <record id="rule_helpdesk_spike_alert_company" model="ir.rule">
+    <field name="name">helpdesk.spike.alert : sociétés permises</field>
+    <field name="model_id" ref="model_helpdesk_spike_alert"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|', ('team_id.company_id', '=', False), ('team_id.company_id', 'in', company_ids)]</field>
+  </record>
+  <record id="rule_helpdesk_client_digest_item_company" model="ir.rule">
+    <field name="name">helpdesk.client.digest.item : sociétés permises</field>
+    <field name="model_id" ref="model_helpdesk_client_digest_item"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|', ('ticket_id.company_id', '=', False), ('ticket_id.company_id', 'in', company_ids)]</field>
+  </record>
+  <record id="rule_helpdesk_agent_notify_item_company" model="ir.rule">
+    <field name="name">helpdesk.agent.notify.item : sociétés permises</field>
+    <field name="model_id" ref="model_helpdesk_agent_notify_item"/>
+    <field name="global" eval="True"/>
+    <field name="domain_force">['|', ('ticket_id.company_id', '=', False), ('ticket_id.company_id', 'in', company_ids)]</field>
+  </record>
+
+  <!-- Assistants : chacun ne voit que les siens. Un modèle transitoire n'a
+       aucune règle implicite dans Odoo 18, et ces lignes portent un message
+       rendu, des extraits de notes internes ou un brouillon de réponse. -->
+  <record id="rule_helpdesk_macro_apply_wizard_own" model="ir.rule">
+    <field name="name">helpdesk.macro.apply.wizard : les miens</field>
+    <field name="model_id" ref="model_helpdesk_macro_apply_wizard"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+  </record>
+  <record id="rule_helpdesk_triage_apply_own" model="ir.rule">
+    <field name="name">helpdesk.triage.apply : les miens</field>
+    <field name="model_id" ref="model_helpdesk_triage_apply"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+  </record>
+
+  <!-- Articles : publiés, ou sans billet d'origine, ou tirés d'un billet que
+       l'agent voit. Un brouillon copié d'un billet porte le texte du client. -->
+  <record id="rule_helpdesk_article_team" model="ir.rule">
+    <field name="name">helpdesk.article : billets de l'équipe</field>
+    <field name="model_id" ref="model_helpdesk_article"/>
+    <field name="domain_force">['|', '|', '|', ('is_published', '=', True), ('source_ticket_id', '=', False), ('source_ticket_id.team_id', 'in', user.helpdesk_team_ids.ids), ('source_ticket_id.team_id', '=', False)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user_team'))]"/>
+  </record>
+  <record id="rule_helpdesk_article_all" model="ir.rule">
+    <field name="name">helpdesk.article : tous les billets</field>
+    <field name="model_id" ref="model_helpdesk_article"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user'))]"/>
+  </record>
+
+  <record id="rule_helpdesk_ticket_presence_company" model="ir.rule">
+    <field name="name">helpdesk.ticket.presence : sociétés de l'usager</field>
+    <field name="model_id" ref="model_helpdesk_ticket_presence"/>
+    <field name="domain_force">['|', ('ticket_id.company_id', '=', False), ('ticket_id.company_id', 'in', company_ids)]</field>
+  </record>
+
+  <!-- Sondages (notes et commentaires) : visibles selon les billets, comme helpdesk_mgmt le fait pour
+       les billets eux-mêmes. « Billets de l'équipe » : ceux des équipes de
+       l'usager et ceux sans équipe ; « Tous les billets » : tout. -->
+  <record id="rule_helpdesk_ticket_csat_team" model="ir.rule">
+    <field name="name">helpdesk.ticket.csat : billets de l'équipe</field>
+    <field name="model_id" ref="model_helpdesk_ticket_csat"/>
+    <field name="domain_force">['|', ('ticket_id.team_id', 'in', user.helpdesk_team_ids.ids), ('ticket_id.team_id', '=', False)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user_team'))]"/>
+  </record>
+  <record id="rule_helpdesk_ticket_csat_all" model="ir.rule">
+    <field name="name">helpdesk.ticket.csat : tous les billets</field>
+    <field name="model_id" ref="model_helpdesk_ticket_csat"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user'))]"/>
+  </record>
+
+  <!-- Journal du triage : visibles selon les billets, comme helpdesk_mgmt le fait pour
+       les billets eux-mêmes. « Billets de l'équipe » : ceux des équipes de
+       l'usager et ceux sans équipe ; « Tous les billets » : tout. -->
+  <record id="rule_helpdesk_triage_log_team" model="ir.rule">
+    <field name="name">helpdesk.triage.log : billets de l'équipe</field>
+    <field name="model_id" ref="model_helpdesk_triage_log"/>
+    <field name="domain_force">['|', ('ticket_id.team_id', 'in', user.helpdesk_team_ids.ids), ('ticket_id.team_id', '=', False)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user_team'))]"/>
+  </record>
+  <record id="rule_helpdesk_triage_log_all" model="ir.rule">
+    <field name="name">helpdesk.triage.log : tous les billets</field>
+    <field name="model_id" ref="model_helpdesk_triage_log"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user'))]"/>
+  </record>
+
+  <!-- Alertes de pic : celles des équipes de l'usager. -->
+  <record id="rule_helpdesk_spike_alert_team" model="ir.rule">
+    <field name="name">helpdesk.spike.alert : équipes de l'usager</field>
+    <field name="model_id" ref="model_helpdesk_spike_alert"/>
+    <field name="domain_force">['|', ('team_id', 'in', user.helpdesk_team_ids.ids), ('team_id', '=', False)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user_team'))]"/>
+  </record>
+  <record id="rule_helpdesk_spike_alert_all" model="ir.rule">
+    <field name="name">helpdesk.spike.alert : toutes les équipes</field>
+    <field name="model_id" ref="model_helpdesk_spike_alert"/>
+    <field name="domain_force">[(1, '=', 1)]</field>
+    <field name="groups" eval="[(4, ref('helpdesk_mgmt.group_helpdesk_user'))]"/>
+  </record>
+</odoo>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_helpdesk_ticket_csat_list" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.csat.list</field>
+    <field name="model">helpdesk.ticket.csat</field>
+    <field name="arch" type="xml">
+      <list create="0" decoration-danger="negative" decoration-muted="state in ('expired', 'cancelled')">
+        <field name="answered_date"/>
+        <field name="ticket_id"/>
+        <field name="partner_id"/>
+        <field name="team_id"/>
+        <field name="user_id" widget="many2one_avatar_user"/>
+        <field name="rating_value" string="Note"/>
+        <field name="rating"/>
+        <field name="reason"/>
+        <field name="ces_value" string="CES" optional="show"/>
+        <field name="comment" optional="show"/>
+        <field name="followup_state" widget="badge"
+               decoration-warning="followup_state == 'todo'"
+               decoration-success="followup_state == 'done'"/>
+        <field name="state" optional="hide"/>
+        <field name="negative" column_invisible="1"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="view_helpdesk_ticket_csat_form" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.csat.form</field>
+    <field name="model">helpdesk.ticket.csat</field>
+    <field name="arch" type="xml">
+      <form create="0">
+        <header>
+          <field name="state" widget="statusbar" statusbar_visible="scheduled,sent,answered"/>
+        </header>
+        <sheet>
+          <group>
+            <group>
+              <field name="ticket_id"/>
+              <field name="partner_id"/>
+              <field name="team_id"/>
+              <field name="user_id"/>
+            </group>
+            <group>
+              <field name="scheduled_date"/>
+              <field name="sent_date"/>
+              <field name="answered_date"/>
+              <field name="cancel_reason" invisible="not cancel_reason"/>
+            </group>
+          </group>
+          <group>
+            <group>
+              <field name="rating"/>
+              <field name="reason" invisible="not reason"/>
+              <field name="ces" invisible="not ces"/>
+            </group>
+            <group>
+              <field name="followup_state"/>
+              <field name="followup_activity_id" invisible="not followup_activity_id"/>
+            </group>
+          </group>
+          <field name="comment" readonly="1"/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_helpdesk_ticket_csat_search" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.csat.search</field>
+    <field name="model">helpdesk.ticket.csat</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="ticket_id"/>
+        <field name="partner_id"/>
+        <field name="user_id"/>
+        <filter name="answered" string="Répondus" domain="[('state', '=', 'answered')]"/>
+        <filter name="negative" string="Notes négatives" domain="[('negative', '=', True)]"/>
+        <filter name="followup_todo" string="Suivi à faire"
+                domain="[('negative', '=', True), ('followup_activity_id', '!=', False)]"/>
+        <separator/>
+        <filter name="last_90" string="90 derniers jours"
+                domain="[('answered_date', '&gt;=', (context_today() - relativedelta(days=90)).strftime('%Y-%m-%d'))]"/>
+        <group>
+          <filter name="by_team" string="Équipe" context="{'group_by': 'team_id'}"/>
+          <filter name="by_agent" string="Agent" context="{'group_by': 'user_id'}"/>
+          <filter name="by_reason" string="Raison" context="{'group_by': 'reason'}"/>
+          <filter name="by_month" string="Mois" context="{'group_by': 'answered_date:month'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="view_helpdesk_ticket_csat_pivot" model="ir.ui.view">
+    <field name="name">helpdesk.ticket.csat.pivot</field>
+    <field name="model">helpdesk.ticket.csat</field>
+    <field name="arch" type="xml">
+      <pivot>
+        <field name="team_id" type="row"/>
+        <field name="answered_date" interval="month" type="col"/>
+        <field name="rating_value" type="measure"/>
+        <field name="ces_value" type="measure"/>
+      </pivot>
+    </field>
+  </record>
+
+  <record id="action_helpdesk_ticket_csat" model="ir.actions.act_window">
+    <field name="name">Satisfaction</field>
+    <field name="res_model">helpdesk.ticket.csat</field>
+    <field name="view_mode">list,pivot,form</field>
+    <field name="context">{'search_default_answered': 1}</field>
+  </record>
+
+  <menuitem id="menu_helpdesk_ticket_csat"
+            name="Satisfaction"
+            parent="helpdesk_mgmt.helpdesk_ticket_reporting_menu"
+            action="action_helpdesk_ticket_csat"
+            sequence="20"/>
+
+</odoo>

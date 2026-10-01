@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+  <t t-name="bf_helpdesk.TicketPresence">
+    <div t-if="message" class="alert alert-info mb-0 py-1 px-3 o_bf_ticket_presence"
+         role="status" aria-live="polite">
+      <i class="fa fa-eye me-2" aria-hidden="true"/>
+      <t t-esc="message"/>
+    </div>
+  </t>
+</templates>

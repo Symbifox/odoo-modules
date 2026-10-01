@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Page du lien « ne plus recevoir les courriels de cette demande ».
+       Rien ne change avant le bouton : un filtre de liens n'y touche pas. -->
+  <template id="ticket_emails_page" name="BF Helpdesk — courriels d'une demande">
+    <t t-call="website.layout">
+      <t t-set="en" t-value="(ticket.client_lang or '').startswith('en')"/>
+      <t t-set="additional_title" t-value="'Emails' if en else 'Courriels'"/>
+      <div class="bf-support-page">
+        <div class="container py-5" style="max-width: 640px;">
+          <h1 class="bf-support-title">
+            <t t-if="en">Emails for request <t t-esc="ticket.number"/></t>
+            <t t-else="">Courriels de la demande <t t-esc="ticket.number"/></t>
+          </h1>
+          <p class="bf-support-tagline" t-esc="ticket.email_thread_subject or ticket.name"/>
+          <div t-if="done" class="alert alert-success mt-3" role="status" tabindex="-1" autofocus="autofocus">
+            <t t-if="en">Your choice has been saved.</t><t t-else="">Votre choix est enregistré.</t>
+          </div>
+          <p class="mt-4" t-if="muted">
+            <t t-if="en">You no longer receive our replies to this request by email. You will still be emailed if we need information from you, and when the request is resolved.</t>
+            <t t-else="">Vous ne recevez plus nos réponses à cette demande par courriel. Vous recevrez quand même un courriel si nous avons besoin d'une information de votre part, et à la résolution.</t>
+          </p>
+          <p class="mt-4" t-else="">
+            <t t-if="en">You receive our replies to this request by email. You can stop them: you will still be emailed if we need information from you, and when the request is resolved.</t>
+            <t t-else="">Vous recevez nos réponses à cette demande par courriel. Vous pouvez les arrêter : vous recevrez quand même un courriel si nous avons besoin d'une information de votre part, et à la résolution.</t>
+          </p>
+          <form method="post" t-att-action="action_url">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <input type="hidden" name="action" t-att-value="'unmute' if muted else 'mute'"/>
+            <button type="submit" class="btn bf-support-submit">
+              <t t-if="muted"><t t-if="en">Receive emails again</t><t t-else="">Recevoir de nouveau les courriels</t></t>
+              <t t-else=""><t t-if="en">Stop emails for this request</t><t t-else="">Arrêter les courriels de cette demande</t></t>
+            </button>
+          </form>
+        </div>
+      </div>
+    </t>
+  </template>
+
+  <!-- Portail, fiche du billet : couper ou rétablir les courriels -->
+  <template id="portal_ticket_page_emails" name="BF Helpdesk — courriels (fiche portail)"
+            inherit_id="helpdesk_mgmt.portal_helpdesk_ticket_page">
+    <xpath expr="//div[@name='portal_ticket_col_1']" position="inside">
+      <t t-set="bf_me" t-value="request.env.user.partner_id"/>
+      <t t-set="bf_en" t-value="(request.env.lang or '').startswith('en')"/>
+      <form method="post" t-attf-action="/my/ticket/#{ticket.id}/courriels" class="mt-2">
+        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+        <t t-if="bf_me in ticket.sudo().client_muted_partner_ids">
+          <input type="hidden" name="action" value="unmute"/>
+          <button type="submit" class="btn btn-link p-0"><t t-if="bf_en">Receive emails for this request again</t><t t-else="">Recevoir de nouveau les courriels de cette demande</t></button>
+        </t>
+        <t t-else="">
+          <input type="hidden" name="action" value="mute"/>
+          <button type="submit" class="btn btn-link p-0"><t t-if="bf_en">Stop emails for this request</t><t t-else="">Ne plus recevoir les courriels de cette demande</t></button>
+        </t>
+      </form>
+    </xpath>
+  </template>
+
+  <!-- Portail, liste des billets : chaque réponse ou résumé quotidien -->
+  <template id="portal_my_tickets_notify_mode" name="BF Helpdesk — préférence de notification"
+            inherit_id="helpdesk_mgmt.portal_my_tickets">
+    <xpath expr="//t[@t-call='helpdesk_mgmt.portal_searchbar']" position="after">
+      <t t-set="bf_mode" t-value="request.env.user.partner_id.sudo().helpdesk_notify_mode or 'each'"/>
+      <t t-set="bf_en" t-value="(request.env.lang or '').startswith('en')"/>
+      <form method="post" action="/my/helpdesk/preferences" class="d-flex flex-wrap align-items-center gap-2 my-3">
+        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+        <label for="bf_hd_mode" class="mb-0"><t t-if="bf_en">Receive the team's replies:</t><t t-else="">Recevoir les réponses de l'équipe :</t></label>
+        <select id="bf_hd_mode" name="mode" class="form-select w-auto">
+          <option value="each" t-att-selected="bf_mode == 'each' or None"><t t-if="bf_en">with each reply</t><t t-else="">à chaque réponse</t></option>
+          <option value="daily" t-att-selected="bf_mode == 'daily' or None"><t t-if="bf_en">in a daily summary</t><t t-else="">dans un résumé quotidien</t></option>
+        </select>
+        <button type="submit" class="btn btn-secondary"><t t-if="bf_en">Save</t><t t-else="">Enregistrer</t></button>
+        <small class="text-muted w-100"><t t-if="bf_en">Requests for information and the resolution of a request always reach you right away.</t><t t-else="">Les demandes d'information et la résolution d'une demande vous parviennent toujours tout de suite.</t></small>
+      </form>
+    </xpath>
+  </template>
+
+  <!-- Fiche contact : la préférence, lisible et modifiable par l'équipe -->
+  <record id="view_partner_form_helpdesk_notify" model="ir.ui.view">
+    <field name="name">res.partner.form.helpdesk.notify</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='lang']" position="after">
+        <field name="helpdesk_notify_mode" invisible="is_company"/>
+      </xpath>
+    </field>
+  </record>
+
+</odoo>
