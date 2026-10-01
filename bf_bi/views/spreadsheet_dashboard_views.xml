@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_bi_dashboard_view_list" model="ir.ui.view">
+        <field name="name">spreadsheet.dashboard.list.bf_bi</field>
+        <field name="model">spreadsheet.dashboard</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <list string="Dashboards">
+                <field name="name"/>
+                <field name="dashboard_group_id" string="Section"/>
+                <field name="group_ids" string="Visible to" widget="many2many_tags"/>
+                <field name="bf_is_shipped" string="Shipped" optional="show"/>
+                <field name="bf_revision" optional="hide"/>
+                <field name="write_uid" string="Modified by" optional="show"/>
+                <field name="write_date" string="Modified on" optional="show"/>
+                <button name="action_edit_dashboard" type="object" string="Edit" icon="fa-pencil"
+                        invisible="bf_is_shipped"/>
+                <button name="action_edit_dashboard" type="object" string="Duplicate and edit" icon="fa-copy"
+                        invisible="not bf_is_shipped"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_bi_dashboard_view_form" model="ir.ui.view">
+        <field name="name">spreadsheet.dashboard.form.bf_bi</field>
+        <field name="model">spreadsheet.dashboard</field>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <form string="Dashboard">
+                <header>
+                    <button name="action_edit_dashboard" type="object" string="Edit" class="btn-primary"
+                            invisible="not id or bf_is_shipped"/>
+                    <button name="action_edit_dashboard" type="object" string="Duplicate and edit" class="btn-primary"
+                            invisible="not id or not bf_is_shipped"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-info" role="status" invisible="not bf_is_shipped">
+                        This dashboard is shipped by a module: an update rewrites it.
+                        “Duplicate and edit” makes a copy that belongs to you.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Hours and margin per customer"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="dashboard_group_id" string="Section"/>
+                            <field name="group_ids" string="Visible to" widget="many2many_tags"
+                                   help="Only members of these groups see the dashboard. Figures drawn from Odoo stay filtered by each person's rights."/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="bf_is_shipped" string="Shipped by a module"/>
+                            <field name="bf_revision"/>
+                            <field name="write_uid" string="Modified by"/>
+                            <field name="write_date" string="Modified on"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Versions" name="versions">
+                            <field name="bf_version_ids" readonly="1">
+                                <list>
+                                    <field name="revision"/>
+                                    <field name="create_uid" string="By"/>
+                                    <field name="create_date" string="On"/>
+                                    <button name="action_restore" type="object" string="Restore"
+                                            icon="fa-undo" confirm="Put this version back in service? The current state will stay in the history."/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_bi_action_design_dashboards" model="ir.actions.act_window">
+        <field name="name">Design</field>
+        <field name="res_model">spreadsheet.dashboard</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('bf_bi_dashboard_view_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('bf_bi_dashboard_view_form')})]"/>
+        <field name="context" eval="{'default_group_ids': [(6, 0, [ref('bf_bi.group_bi_designer')])]}"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a dashboard</p>
+            <p>Or build a pivot or graph view anywhere in Odoo, then
+               “Add to a dashboard”.</p>
+        </field>
+    </record>
+
+    <menuitem id="bf_bi_menu_design"
+              name="Design"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="bf_bi_action_design_dashboards"
+              groups="bf_bi.group_bi_designer"
+              sequence="50"/>
+</odoo>

@@ -1,0 +1,1321 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-30 02:15+0000\n"
+"PO-Revision-Date: 2026-09-30 02:15+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_dashboard_version.py:0
+msgid "%(name)s, revision %(rev)s"
+msgstr "%(name)s, révision %(rev)s"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid ""
+"%s saved a newer version (revision %s) while you were working. Reload it "
+"(your changes since the last save will be lost) or replace it with yours "
+"(theirs will stay in the version history)."
+msgstr ""
+"%s a enregistré une version plus récente (révision %s) pendant que vous "
+"travailliez. Rechargez-la (vos changements depuis le dernier enregistrement "
+"seront perdus) ou remplacez-la par la vôtre (la sienne restera dans "
+"l'historique des versions)."
+
+#. module: bf_bi
+#: model_terms:ir.actions.act_window,help:bf_bi.bf_bi_action_connections
+msgid ""
+"A Grist document, for example, readable in dashboards by the groups you "
+"choose."
+msgstr ""
+"Un document Grist, par exemple, lisible dans les tableaux de bord par les "
+"groupes que vous choisissez."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid ""
+"A filter of this view follows the person looking (for example “My\n"
+"                    Timesheets”): everyone will see their own lines, not yours."
+msgstr ""
+"Un filtre de cette vue suit la personne qui regarde (par exemple « Mes feuilles\n"
+"                    de temps ») : chacun y verra ses propres lignes, pas les vôtres."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__active
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__active
+msgid "Active"
+msgstr "Active"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "Add and open"
+msgstr "Ajouter et ouvrir"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "Add as"
+msgstr "Forme de l'ajout"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "Add to a dashboard"
+msgstr "Ajouter à un tableau de bord"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__kind__aggregate
+msgid "Aggregate"
+msgstr "Agrégat"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__aggregator
+msgid "Aggregation"
+msgstr "Agrégation"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__unit__currency
+msgid "Amount"
+msgstr "Montant"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "An aggregate measure needs a model."
+msgstr "Une mesure d'agrégat demande un modèle."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "Archived"
+msgstr "Archivée"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__group_ids
+msgid "Authorized groups"
+msgstr "Groupes autorisés"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__user_ids
+msgid "Authorized people"
+msgstr "Personnes autorisées"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__aggregator__avg
+msgid "Average"
+msgstr "Moyenne"
+
+#. module: bf_bi
+#: model:spreadsheet.dashboard.group,name:bf_bi.dashboard_group_bi
+msgid "BI"
+msgstr "BI"
+
+#. module: bf_bi
+#: model:res.groups,name:bf_bi.group_bi_designer
+msgid "BI Designer"
+msgstr "Concepteur BI"
+
+#. module: bf_bi
+#: model:ir.model,name:bf_bi.model_bf_bi_connection
+msgid "BI data connection"
+msgstr "Connexion de données BI"
+
+#. module: bf_bi
+#: model:ir.model,name:bf_bi.model_bf_bi_measure
+msgid "BI named measure"
+msgstr "Mesure nommée BI"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_version_view_list
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid "By"
+msgstr "Par"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "Chart"
+msgstr "Graphique"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid ""
+"Closed: nobody sees this source's data in dashboards\n"
+"                        until a group or a person is authorized."
+msgstr ""
+"Fermée : personne ne voit les données de cette source dans les tableaux de bord\n"
+"                        tant qu'aucun groupe ni aucune personne n'est autorisé."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__code
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__code
+msgid "Code"
+msgstr "Code"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/source_function.js:0
+msgid "Code of the data connection."
+msgstr "Code de la connexion de données."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/measure_function.js:0
+msgid "Code of the named measure."
+msgstr "Code de la mesure nommée."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__company_id
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__comparison
+msgid "Compare with previous period"
+msgstr "Comparer à la période précédente"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid ""
+"Computed for each person who opens the dashboard, under their own access rights,\n"
+"                    and following the dashboard's Period and Customer filters."
+msgstr ""
+"Calculée pour chaque personne qui ouvre le tableau de bord, sous ses propres droits,\n"
+"                    et selon les filtres Période et Client du tableau de bord."
+
+#. module: bf_bi
+#: model_terms:ir.actions.act_window,help:bf_bi.bf_bi_action_connections
+msgid "Connect an external source"
+msgstr "Brancher une source externe"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Connection"
+msgstr "Connexion"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection successful: %(n)s table(s) (%(names)s)."
+msgstr "Connexion réussie : %(n)s table(s) (%(names)s)."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Connection “%s” is incomplete: address, document and key are required."
+msgstr "Connexion « %s » incomplète : adresse, document et clé sont requis."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__spreadsheet_data
+msgid "Content"
+msgstr "Contenu"
+
+#. module: bf_bi
+#: model:ir.model,name:bf_bi.model_spreadsheet_dashboard_share
+msgid "Copy of a shared dashboard"
+msgstr "Copie d'un tableau de bord partagé"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__aggregator__count
+msgid "Count"
+msgstr "Nombre"
+
+#. module: bf_bi
+#: model_terms:ir.actions.act_window,help:bf_bi.bf_bi_action_design_dashboards
+msgid "Create a dashboard"
+msgstr "Créer un tableau de bord"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__create_uid
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__create_uid
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__create_date
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__create_date
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_bi
+#: model:res.groups,comment:bf_bi.group_bi_designer
+msgid "Creates and edits the dashboards they can see."
+msgstr "Crée et modifie les tableaux de bord qu'il peut voir."
+
+#. module: bf_bi
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+#: code:addons/bf_bi/static/src/bundle/insert.js:0
+msgid "Customer"
+msgstr "Client"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__partner_field_id
+msgid "Customer field"
+msgstr "Champ client"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.js:0
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__dashboard_id
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Dashboard name"
+msgstr "Nom du tableau de bord"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid "Dashboard not saved: %s"
+msgstr "Tableau de bord non enregistré : %s"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_spreadsheet_dashboard__bf_is_shipped
+msgid ""
+"Dashboard provided by a module: an update rewrites it. Duplicate it to edit "
+"it."
+msgstr ""
+"Tableau de bord fourni par un module : une mise à jour le réécrit. On le "
+"duplique pour le modifier."
+
+#. module: bf_bi
+#: model:ir.model,name:bf_bi.model_bf_bi_dashboard_version
+msgid "Dashboard version"
+msgstr "Version de tableau de bord"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_list
+msgid "Dashboards"
+msgstr "Tableaux de bord"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Data connection"
+msgstr "Connexion de données"
+
+#. module: bf_bi
+#: model:ir.actions.act_window,name:bf_bi.bf_bi_action_connections
+#: model:ir.ui.menu,name:bf_bi.bf_bi_menu_connections
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_list
+msgid "Data connections"
+msgstr "Connexions de données"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__date_field_id
+msgid "Date field"
+msgstr "Champ de date"
+
+#. module: bf_bi
+#: model_terms:ir.actions.act_window,help:bf_bi.bf_bi_action_measures
+msgid "Define a measure once"
+msgstr "Définir une mesure une fois"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__description
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_bi
+#: model:ir.actions.act_window,name:bf_bi.bf_bi_action_design_dashboards
+#: model:ir.ui.menu,name:bf_bi.bf_bi_menu_design
+msgid "Design"
+msgstr "Concevoir"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__display_name
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__display_name
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_list
+msgid "Duplicate and edit"
+msgstr "Dupliquer et modifier"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid ""
+"Each person who opens the dashboard sees this data only if the\n"
+"                    connection is open to them; otherwise the cell shows “access denied”."
+msgstr ""
+"Chaque personne qui ouvre le tableau de bord ne voit ces données que si la\n"
+"                    connexion lui est ouverte ; sinon la cellule affiche « accès refusé »."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_list
+msgid "Edit"
+msgstr "Modifier"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Edit this dashboard"
+msgstr "Modifier ce tableau de bord"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__field_id
+msgid "Empty: count the records."
+msgstr "Vide : compter les enregistrements."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/source_function.js:0
+msgid "External sources are unavailable here."
+msgstr "Sources externes indisponibles ici."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__field_id
+msgid "Field"
+msgstr "Champ"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__date_field_name
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__field_name
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__partner_field_name
+msgid "Field Name"
+msgstr "Nom du champ"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__date_field_type
+msgid "Field Type"
+msgstr "Type de champ"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__partner_field_id
+msgid "Field the dashboard's Customer filter applies to."
+msgstr "Champ auquel s'applique le filtre Client du tableau de bord."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__date_field_id
+msgid "Field the dashboard's Period filter applies to."
+msgstr "Champ auquel s'applique le filtre Période du tableau de bord."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__domain
+msgid "Filter"
+msgstr "Filtre"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__expression
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__kind__formula
+msgid "Formula"
+msgstr "Formule"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_spreadsheet_dashboard__bf_revision
+msgid ""
+"Goes up with every save. A save made on an outdated revision is refused: it "
+"would overwrite someone else's work."
+msgstr ""
+"Augmente à chaque enregistrement. Un enregistrement fait sur une révision "
+"dépassée est refusé : il écraserait le travail de quelqu'un d'autre."
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_connection__kind__grist
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Grist"
+msgstr "Grist"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__grist_api_key
+msgid "Grist API key"
+msgstr "Clé d'API Grist"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__grist_doc_id
+msgid "Grist document ID"
+msgstr "Identifiant du document Grist"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__grist_url
+msgid "Grist server address"
+msgstr "Adresse du serveur Grist"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__unit__hours
+msgid "Hours"
+msgstr "Heures"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__comparison
+msgid ""
+"How an indicator tile shows the change. In points for a value that can be "
+"negative (NPS) or that is already a rate (margin rate): a percentage of a "
+"percentage reads badly."
+msgstr ""
+"Comment une tuile indicateur montre la variation. En points pour une valeur "
+"qui peut être négative (NPS) ou qui est déjà un taux (taux de marge) : un "
+"pourcentage de pourcentage se lit mal."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__id
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__id
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid ""
+"In a dashboard: <code>=BF.MEASURE(\"code\")</code>, or <code>=BF.MEASURE(\"code\", -1)</code>\n"
+"                        for the previous period; or the editor's “Insert a measure” button. The value is always\n"
+"                        computed for the person looking at the dashboard, under their own access rights, and\n"
+"                        follows the dashboard's Period and Customer filters."
+msgstr ""
+"Dans un tableau de bord : <code>=BF.MEASURE(\"code\")</code>, ou <code>=BF.MEASURE(\"code\", -1)</code>\n"
+"                        pour la période précédente ; ou le bouton « Insérer une mesure » de l'éditeur. La valeur est\n"
+"                        toujours calculée pour la personne qui regarde le tableau de bord, sous ses propres droits,\n"
+"                        et suit les filtres Période et Client du tableau de bord."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid ""
+"In a dashboard: <code>=BF.SOURCE(\"code\", \"Table\")</code>, or the editor's\n"
+"                        “Insert a source” button. Every read checks the rights of the person\n"
+"                        who opens the dashboard; the key never leaves the server."
+msgstr ""
+"Dans un tableau de bord : <code>=BF.SOURCE(\"code\", \"Table\")</code>, ou le bouton\n"
+"                        « Insérer une source » de l'éditeur. Chaque lecture vérifie les droits de la personne\n"
+"                        qui ouvre le tableau de bord ; la clé ne quitte jamais le serveur."
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__comparison__percentage
+msgid "In percent"
+msgstr "En %"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__comparison__difference
+msgid "In points"
+msgstr "En points"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "Indicator"
+msgstr "Indicateur"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Indicators"
+msgstr "Indicateurs"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Insert"
+msgstr "Insérer"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Insert a measure"
+msgstr "Insérer une mesure"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Insert a source"
+msgstr "Insérer une source"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Insert an external source"
+msgstr "Insérer une source externe"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Insert named measures"
+msgstr "Insérer des mesures nommées"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+msgid "Invalid dashboard content."
+msgstr "Contenu de tableau de bord invalide."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+msgid "Invalid dashboard name."
+msgstr "Nom de tableau de bord invalide."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Invalid filters."
+msgstr "Filtres invalides."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__kind
+msgid "Kind"
+msgstr "Sorte"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__write_uid
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__write_uid
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__write_date
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__write_date
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__aggregator__max
+msgid "Maximum"
+msgstr "Maximum"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/source_function.js:0
+msgid "Maximum number of rows shown, header included."
+msgstr "Nombre maximal de lignes affichées, en-tête compris."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__row_limit
+msgid "Maximum rows"
+msgstr "Lignes au plus"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%s” refers to itself."
+msgstr "La mesure « %s » renvoie à elle-même."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%s”: formulas are nested too deeply."
+msgstr "Mesure « %s » : formules imbriquées trop profondément."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%s”: no value for “%s”."
+msgstr "Mesure « %s » : pas de valeur pour « %s »."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid ""
+"Measure “%s”: only measure codes, numbers, + - * / and parentheses are "
+"allowed."
+msgstr ""
+"Mesure « %s » : seuls les codes de mesures, les nombres, + - * / et les "
+"parenthèses sont permis."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%s”: only numbers are allowed as constants."
+msgstr "Mesure « %s » : seuls des nombres sont permis comme constantes."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%s”: the filter is not a valid domain."
+msgstr "Mesure « %s » : le filtre n'est pas un domaine valide."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%s”: the formula cannot be read."
+msgstr "Mesure « %s » : la formule est illisible."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Measure “%s”: the result is too large."
+msgstr "Mesure « %s » : le résultat est trop grand."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__group_ids
+msgid ""
+"Members of these groups see this source's data in dashboards. Empty and with"
+" no authorized person: the connection is open to nobody."
+msgstr ""
+"Membres de ces groupes : ils voient les données de cette source dans les "
+"tableaux de bord. Vide et sans personne autorisée : la connexion n'est "
+"ouverte à personne."
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__aggregator__min
+msgid "Minimum"
+msgstr "Minimum"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Missing table name."
+msgstr "Nom de table manquant."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__model_id
+msgid "Model"
+msgstr "Modèle"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__model_name
+msgid "Model name"
+msgstr "Nom du modèle"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_list
+msgid "Modified by"
+msgstr "Modifié par"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_list
+msgid "Modified on"
+msgstr "Modifié le"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__name
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "Name of the new dashboard"
+msgstr "Nom du nouveau tableau de bord"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/source_function.js:0
+msgid "Name of the table in the source."
+msgstr "Nom de la table dans la source."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "Named measure"
+msgstr "Mesure nommée"
+
+#. module: bf_bi
+#: model:ir.actions.act_window,name:bf_bi.bf_bi_action_measures
+#: model:ir.ui.menu,name:bf_bi.bf_bi_menu_measures
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_list
+msgid "Named measures"
+msgstr "Mesures nommées"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/measure_function.js:0
+msgid "Named measures are unavailable here."
+msgstr "Mesures nommées indisponibles ici."
+
+#. module: bf_bi
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "New dashboard"
+msgstr "Nouveau tableau de bord"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+msgid "No dashboard section exists yet."
+msgstr "Aucune section de tableaux de bord n'existe encore."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid ""
+"No value for you, without filters (nothing to measure, or a division by "
+"zero)."
+msgstr ""
+"Aucune valeur pour vous, sans filtre (rien à mesurer, ou une division par "
+"zéro)."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__note
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Notes"
+msgstr "Notes"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__unit__number
+msgid "Number"
+msgstr "Nombre"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "Number of records"
+msgstr "Nombre d'enregistrements"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_version_view_list
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid "On"
+msgstr "Le"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "One big number: the total of"
+msgstr "Un grand nombre : le total de"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+msgid "Only a BI designer can edit a dashboard."
+msgstr "Seul un concepteur BI peut modifier un tableau de bord."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Only administrators can test a data connection."
+msgstr "Seuls les administrateurs peuvent tester une connexion de données."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid ""
+"Only members of these groups see the dashboard. Figures drawn from Odoo stay"
+" filtered by each person's rights."
+msgstr ""
+"Seuls les membres de ces groupes voient le tableau de bord. Les chiffres "
+"tirés d'Odoo restent filtrés selon les droits de chacun."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_list
+msgid "Open"
+msgstr "Ouverte"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__is_open
+msgid "Open to someone"
+msgstr "Ouverte à quelqu'un"
+
+#. module: bf_bi
+#: model_terms:ir.actions.act_window,help:bf_bi.bf_bi_action_design_dashboards
+msgid ""
+"Or build a pivot or graph view anywhere in Odoo, then\n"
+"               “Add to a dashboard”."
+msgstr ""
+"Ou bâtissez une vue tableau croisé ou graphique n'importe où dans Odoo, puis\n"
+"               « Ajouter à un tableau de bord »."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__expression
+msgid ""
+"Other measures' codes with + - * / and parentheses, e.g. revenue - cost."
+msgstr ""
+"Codes d'autres mesures avec + - * / et des parenthèses, ex. revenus - couts."
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__unit__percent
+msgid "Percentage"
+msgstr "Pourcentage"
+
+#. module: bf_bi
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+#: code:addons/bf_bi/static/src/bundle/insert.js:0
+msgid "Period"
+msgstr "Période"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/measure_function.js:0
+msgid "Period offset: -1 for the previous period."
+msgstr "Décalage de période : -1 pour la période précédente."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "Pivot table"
+msgstr "Tableau croisé"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid ""
+"Put this version back in service? The current state will stay in the "
+"history."
+msgstr ""
+"Remettre cette version en service? L'état actuel restera dans l'historique."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__domain
+msgid ""
+"Records to keep. May use uid: \"My timesheets\" then gives each person their"
+" own."
+msgstr ""
+"Enregistrements à garder. Peut utiliser uid : « Mes feuilles de temps » "
+"donne alors à chacun les siennes."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid "Reload their version"
+msgstr "Recharger sa version"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid "Replace with mine"
+msgstr "Remplacer par la mienne"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid "Restore"
+msgstr "Remettre en service"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_dashboard_version__revision
+#: model:ir.model.fields,field_description:bf_bi.field_spreadsheet_dashboard__bf_revision
+msgid "Revision"
+msgstr "Révision"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_dashboard_version.py:0
+msgid "Revision %(rev)s restored (new revision %(new)s)."
+msgstr "Révision %(rev)s remise en service (nouvelle révision %(new)s)."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid "Save blocked: newer version on the server"
+msgstr "Enregistrement bloqué : version plus récente sur le serveur"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid "Save failed"
+msgstr "Échec de l'enregistrement"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid "Saved"
+msgstr "Enregistré"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid "Saving…"
+msgstr "Enregistrement…"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_list
+msgid "Section"
+msgstr "Section"
+
+#. module: bf_bi
+#: model:res.groups,name:bf_bi.group_bi_share
+msgid "Share a dashboard by public link"
+msgstr "Partager un tableau de bord par lien public"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard_share.py:0
+msgid ""
+"Sharing by public link is reserved to the “Share a dashboard by public link”"
+" group."
+msgstr ""
+"Le partage par lien public est réservé au groupe « Partager un tableau de "
+"bord par lien public »."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_list
+msgid "Shipped"
+msgstr "Livré"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_spreadsheet_dashboard__bf_is_shipped
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid "Shipped by a module"
+msgstr "Livré par un module"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_measure__code
+msgid ""
+"Short name used in formulas: =BF.MEASURE(\"code\"). Lowercase letters, "
+"digits and _ only."
+msgstr ""
+"Nom court utilisé dans les formules : =BF.MEASURE(\"code\"). Lettres "
+"minuscules, chiffres et _ seulement."
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__code
+msgid ""
+"Short name used in formulas: =BF.SOURCE(\"code\", \"Table\"). Lowercase "
+"letters, digits and _ only."
+msgstr ""
+"Nom court utilisé dans les formules : =BF.SOURCE(\"code\", \"Table\"). "
+"Lettres minuscules, chiffres et _ seulement."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_dashboard_version.py:0
+msgid "Someone saved this dashboard meanwhile. Reload it and try again."
+msgstr ""
+"Quelqu'un a enregistré ce tableau de bord entre-temps. Rechargez-le et "
+"réessayez."
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Source"
+msgstr "Source"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Source “%(code)s”: Grist answered %(status)s."
+msgstr "Source « %(code)s » : Grist a répondu %(status)s."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Source “%s” unreachable."
+msgstr "Source « %s » injoignable."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "Source “%s”: access denied."
+msgstr "Source « %s » : accès refusé."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/source_function.js:0
+msgid ""
+"Spills a table from an external data connection (Grist), with its header."
+msgstr ""
+"Déploie une table d'une connexion de données externe (Grist), avec son en-"
+"tête."
+
+#. module: bf_bi
+#: model:ir.model,name:bf_bi.model_spreadsheet_dashboard
+msgid "Spreadsheet Dashboard"
+msgstr "Tableau de bord"
+
+#. module: bf_bi
+#: model:ir.model.fields.selection,name:bf_bi.selection__bf_bi_measure__aggregator__sum
+msgid "Sum"
+msgstr "Somme"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Table"
+msgstr "Table"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "Test"
+msgstr "Tester"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Test the connection"
+msgstr "Tester la connexion"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The Grist address must start with https:// (or http://)."
+msgstr "L'adresse Grist doit commencer par https:// (ou http://)."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The code only takes lowercase letters, digits and _ (40 at most)."
+msgstr "Le code ne prend que des minuscules, des chiffres et _ (40 au plus)."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid ""
+"The code starts with a lowercase letter, then lowercase letters, digits and "
+"_ (40 at most)."
+msgstr ""
+"Le code commence par une lettre minuscule, puis des minuscules, des chiffres"
+" et _ (40 au plus)."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "The dashboard's “Period” filter will also apply to this addition."
+msgstr ""
+"Le filtre « Période » du tableau de bord s'appliquera aussi à cet ajout."
+
+#. module: bf_bi
+#: model:res.groups,comment:bf_bi.group_bi_share
+msgid ""
+"The public link shows a snapshot of what the sharing person sees, to anyone "
+"who has the link."
+msgstr ""
+"Le lien public montre un instantané de ce que voit la personne qui partage, "
+"à quiconque a le lien."
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_connection.py:0
+msgid "The row limit goes from 1 to 50,000."
+msgstr "Le plafond de lignes va de 1 à 50 000."
+
+#. module: bf_bi
+#: model:ir.model.constraint,message:bf_bi.constraint_bf_bi_connection_code_unique
+msgid "This connection code already exists."
+msgstr "Ce code de connexion existe déjà."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid "This dashboard has changed"
+msgstr "Ce tableau de bord a changé"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid ""
+"This dashboard is shipped by a module: an update rewrites it.\n"
+"                        “Duplicate and edit” makes a copy that belongs to you."
+msgstr ""
+"Ce tableau de bord est livré par un module : une mise à jour le réécrit.\n"
+"                        « Dupliquer et modifier » en fait une copie qui vous appartient."
+
+#. module: bf_bi
+#: model:ir.model.constraint,message:bf_bi.constraint_bf_bi_measure_code_unique
+msgid "This measure code already exists."
+msgstr "Ce code de mesure existe déjà."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Tick one or more measures; they are added in the order you tick them."
+msgstr ""
+"Cochez une ou plusieurs mesures ; elles s'ajoutent dans l'ordre où vous les "
+"cochez."
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_connection__kind
+msgid "Type"
+msgstr "Type"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_bf_bi_measure__unit
+msgid "Unit"
+msgstr "Unité"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Unknown measure “%s”."
+msgstr "Mesure « %s » inconnue."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.js:0
+msgid "Unsaved changes"
+msgstr "Modifications non enregistrées"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/bf_bi_measure.py:0
+msgid "Value for you, without filters: %s"
+msgstr "Valeur pour vous, sans filtre : %s"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/measure_function.js:0
+msgid ""
+"Value of a named measure, for the person looking, following the dashboard's "
+"filters."
+msgstr ""
+"Valeur d'une mesure nommée, pour la personne qui regarde, selon les filtres "
+"du tableau de bord."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "Values in cells"
+msgstr "Valeurs dans des cellules"
+
+#. module: bf_bi
+#: model:ir.model.fields,field_description:bf_bi.field_spreadsheet_dashboard__bf_version_ids
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid "Versions"
+msgstr "Versions"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/dashboard_editor.xml:0
+msgid "View the dashboard"
+msgstr "Voir le tableau de bord"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_list
+msgid "Visible to"
+msgstr "Visible par"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "What this measure means, for the people who read it"
+msgstr "Ce que veut dire cette mesure, pour les personnes qui la lisent"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "Who sees this data"
+msgstr "Qui voit ces données"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "e.g. Billable hours"
+msgstr "ex. Heures facturables"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "e.g. Budgets per customer (Grist)"
+msgstr "ex. Budgets par client (Grist)"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_dashboard_view_form
+msgid "e.g. Hours and margin per customer"
+msgstr "ex. Heures et marge par client"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "e.g. billable_hours"
+msgstr "ex. heures_facturables"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_connection_view_form
+msgid "e.g. budgets"
+msgstr "ex. budgets"
+
+#. module: bf_bi
+#: model:ir.model.fields,help:bf_bi.field_bf_bi_connection__grist_url
+msgid "e.g. https://grist.example.com"
+msgstr "ex. https://grist.exemple.com"
+
+#. module: bf_bi
+#: model_terms:ir.ui.view,arch_db:bf_bi.bf_bi_measure_view_form
+msgid "e.g. revenue - cost"
+msgstr "ex. revenus - couts"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid ""
+"over the\n"
+"                    chosen period, compared with the whole previous period."
+msgstr ""
+"sur la\n"
+"                    période choisie, comparé à la période précédente entière."
+
+#. module: bf_bi
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+#: code:addons/bf_bi/static/src/bundle/insert.js:0
+msgid "vs matching period"
+msgstr "vs période équivalente"
+
+#. module: bf_bi
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+#: code:addons/bf_bi/static/src/bundle/insert.js:0
+msgid "vs previous period"
+msgstr "vs période précédente"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+msgid "vs previous period, same length"
+msgstr "vs période précédente, même durée"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+msgid "vs whole previous period"
+msgstr "vs période précédente entière"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/lazy/add_to_dashboard.xml:0
+msgid "will be added as:"
+msgstr "sera ajouté comme :"
+
+#. module: bf_bi
+#. odoo-python
+#: code:addons/bf_bi/models/spreadsheet_dashboard.py:0
+msgid ""
+"“%s” is shipped by a module: an update would rewrite it. Duplicate it to "
+"edit it."
+msgstr ""
+"« %s » est livré par un module : une mise à jour le réécrirait. Dupliquez-le"
+" pour le modifier."
+
+#. module: bf_bi
+#: model_terms:ir.actions.act_window,help:bf_bi.bf_bi_action_measures
+msgid ""
+"“Margin”, “Billable hours”, “Budget variance”: reusable in every dashboard, "
+"computed for each reader."
+msgstr ""
+"« Marge », « Heures facturables », « Écart au budget » : réutilisables dans "
+"tous les tableaux de bord, calculées pour chaque lecteur."
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/source_function.js:0
+msgid "… %s more rows not shown"
+msgstr "… %s lignes de plus non affichées"
+
+#. module: bf_bi
+#. odoo-javascript
+#: code:addons/bf_bi/static/src/bundle/source_function.js:0
+msgid "… table cut at the connection's row limit"
+msgstr "… table tronquée au plafond de la connexion"

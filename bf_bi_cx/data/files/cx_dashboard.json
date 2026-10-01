@@ -1,0 +1,316 @@
+{
+ "version": 22,
+ "sheets": [
+  {
+   "id": "sheet1",
+   "name": "Dashboard",
+   "colNumber": 26,
+   "rowNumber": 100,
+   "cells": {
+    "A24": {
+     "content": "Promoters"
+    },
+    "B24": {
+     "content": "=BF.MEASURE(\"promoters\")"
+    },
+    "A25": {
+     "content": "Detractors"
+    },
+    "B25": {
+     "content": "=BF.MEASURE(\"detractors\")"
+    },
+    "A28": {
+     "content": "=PIVOT(1, 46)"
+    }
+   },
+   "figures": [
+    {
+     "id": "cx-01",
+     "x": 0,
+     "y": 0,
+     "width": 272,
+     "height": 130,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "NPS"
+      },
+      "background": "#FFFFFF",
+      "keyValue": "'bf_bi calculs'!A1",
+      "baseline": "'bf_bi calculs'!B1",
+      "baselineMode": "difference",
+      "baselineDescr": "vs matching period",
+      "baselineColorUp": "#00A04A",
+      "baselineColorDown": "#DC6965",
+      "humanize": true
+     }
+    },
+    {
+     "id": "cx-02",
+     "x": 288,
+     "y": 0,
+     "width": 272,
+     "height": 130,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "NPS responses"
+      },
+      "background": "#FFFFFF",
+      "keyValue": "'bf_bi calculs'!A2",
+      "baseline": "'bf_bi calculs'!B2",
+      "baselineMode": "percentage",
+      "baselineDescr": "vs matching period",
+      "baselineColorUp": "#00A04A",
+      "baselineColorDown": "#DC6965",
+      "humanize": true
+     }
+    },
+    {
+     "id": "cx-03",
+     "x": 576,
+     "y": 0,
+     "width": 272,
+     "height": 130,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Open complaints"
+      },
+      "background": "#FFFFFF",
+      "keyValue": "'bf_bi calculs'!A3",
+      "baseline": "'bf_bi calculs'!B3",
+      "baselineMode": "percentage",
+      "baselineDescr": "vs matching period",
+      "baselineColorUp": "#00A04A",
+      "baselineColorDown": "#DC6965",
+      "humanize": true
+     }
+    },
+    {
+     "id": "cx-04",
+     "x": 864,
+     "y": 0,
+     "width": 272,
+     "height": 130,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Average resolution time (days)"
+      },
+      "background": "#FFFFFF",
+      "keyValue": "'bf_bi calculs'!A4",
+      "baseline": "'bf_bi calculs'!B4",
+      "baselineMode": "percentage",
+      "baselineDescr": "vs matching period",
+      "baselineColorUp": "#00A04A",
+      "baselineColorDown": "#DC6965",
+      "humanize": true
+     }
+    },
+    {
+     "id": "cx-05",
+     "x": 0,
+     "y": 146,
+     "width": 560,
+     "height": 320,
+     "tag": "chart",
+     "data": {
+      "type": "odoo_bar",
+      "title": {
+       "text": "NPS responses per month"
+      },
+      "background": "#FFFFFF",
+      "legendPosition": "top",
+      "verticalAxisPosition": "left",
+      "stacked": true,
+      "actionXmlId": null,
+      "metaData": {
+       "groupBy": [
+        "date:month",
+        "nps_bucket"
+       ],
+       "measure": "__count",
+       "order": null,
+       "resModel": "bf.cx.feedback",
+       "mode": "bar"
+      },
+      "searchParams": {
+       "comparison": null,
+       "context": {},
+       "domain": "[('kind', '=', 'nps')]",
+       "groupBy": [
+        "date:month",
+        "nps_bucket"
+       ],
+       "orderBy": []
+      },
+      "fieldMatching": {
+       "bf_bi_periode": {
+        "chain": "date",
+        "type": "date",
+        "offset": 0
+       },
+       "bf_bi_client": {
+        "chain": "partner_id",
+        "type": "many2one"
+       }
+      }
+     }
+    },
+    {
+     "id": "cx-06",
+     "x": 576,
+     "y": 146,
+     "width": 560,
+     "height": 320,
+     "tag": "chart",
+     "data": {
+      "type": "odoo_pie",
+      "title": {
+       "text": "Complaints per severity"
+      },
+      "background": "#FFFFFF",
+      "legendPosition": "right",
+      "verticalAxisPosition": "left",
+      "stacked": false,
+      "actionXmlId": null,
+      "metaData": {
+       "groupBy": [
+        "severity"
+       ],
+       "measure": "__count",
+       "order": null,
+       "resModel": "bf.cx.complaint",
+       "mode": "pie"
+      },
+      "searchParams": {
+       "comparison": null,
+       "context": {},
+       "domain": "[]",
+       "groupBy": [
+        "severity"
+       ],
+       "orderBy": []
+      },
+      "fieldMatching": {
+       "bf_bi_periode": {
+        "chain": "date_received",
+        "type": "datetime",
+        "offset": 0
+       },
+       "bf_bi_client": {
+        "chain": "partner_id",
+        "type": "many2one"
+       }
+      }
+     }
+    }
+   ],
+   "isVisible": true,
+   "cols": {
+    "0": {
+     "size": 230
+    }
+   }
+  },
+  {
+   "id": "calc",
+   "name": "bf_bi calculs",
+   "colNumber": 5,
+   "rowNumber": 20,
+   "cells": {
+    "A1": {
+     "content": "=BF.MEASURE(\"nps\")"
+    },
+    "B1": {
+     "content": "=IF(OR(BF.MEASURE(\"nps\",-1)=\"\",BF.MEASURE(\"nps\",-1)=0),\"\",BF.MEASURE(\"nps\",-1))"
+    },
+    "A2": {
+     "content": "=BF.MEASURE(\"nps_responses\")"
+    },
+    "B2": {
+     "content": "=IF(OR(BF.MEASURE(\"nps_responses\",-1)=\"\",BF.MEASURE(\"nps_responses\",-1)=0),\"\",BF.MEASURE(\"nps_responses\",-1))"
+    },
+    "A3": {
+     "content": "=BF.MEASURE(\"open_complaints\")"
+    },
+    "B3": {
+     "content": "=IF(OR(BF.MEASURE(\"open_complaints\",-1)=\"\",BF.MEASURE(\"open_complaints\",-1)=0),\"\",BF.MEASURE(\"open_complaints\",-1))"
+    },
+    "A4": {
+     "content": "=BF.MEASURE(\"resolution_days\")"
+    },
+    "B4": {
+     "content": "=IF(OR(BF.MEASURE(\"resolution_days\",-1)=\"\",BF.MEASURE(\"resolution_days\",-1)=0),\"\",BF.MEASURE(\"resolution_days\",-1))"
+    }
+   },
+   "figures": [],
+   "isVisible": false
+  }
+ ],
+ "pivots": {
+  "cx-pivot-1": {
+   "type": "ODOO",
+   "name": "Complaints per severity and state",
+   "model": "bf.cx.complaint",
+   "domain": "[]",
+   "context": {},
+   "measures": [
+    {
+     "id": "__count:sum",
+     "fieldName": "__count",
+     "aggregator": "sum"
+    }
+   ],
+   "rows": [
+    {
+     "fieldName": "severity"
+    }
+   ],
+   "columns": [
+    {
+     "fieldName": "state"
+    }
+   ],
+   "sortedColumn": null,
+   "formulaId": "1",
+   "fieldMatching": {
+    "bf_bi_periode": {
+     "chain": "date_received",
+     "type": "datetime",
+     "offset": 0
+    },
+    "bf_bi_client": {
+     "chain": "partner_id",
+     "type": "many2one"
+    }
+   }
+  }
+ },
+ "pivotNextId": 2,
+ "lists": {},
+ "listNextId": 1,
+ "globalFilters": [
+  {
+   "id": "bf_bi_periode",
+   "type": "date",
+   "label": "Period",
+   "rangeType": "fixedPeriod",
+   "defaultValue": "this_year"
+  },
+  {
+   "id": "bf_bi_client",
+   "type": "relation",
+   "label": "Customer",
+   "modelName": "res.partner",
+   "defaultValue": []
+  }
+ ],
+ "uniqueFigureIds": true,
+ "odooVersion": 12
+}

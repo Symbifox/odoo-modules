@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate : on peut ajuster une mesure livrée sans qu'une mise à jour l'écrase. -->
+    <data noupdate="1">
+        <record id="measure_hour_bank_adjustments" model="bf.bi.measure">
+            <field name="name">Hour bank adjustments</field>
+            <field name="code">hour_bank_adjustments</field>
+            <field name="kind">aggregate</field>
+            <field name="unit">hours</field>
+            <field name="comparison">percentage</field>
+            <field name="company_id" eval="False"/>
+            <field name="description">Hours added to or removed from customers' hour banks.</field>
+            <field name="model_id" search="[('model', '=', 'hour.bank.adjustment')]"/>
+            <field name="aggregator">sum</field>
+            <field name="domain">[]</field>
+            <field name="field_id" search="[('model', '=', 'hour.bank.adjustment'), ('name', '=', 'hours')]"/>
+            <field name="date_field_id" search="[('model', '=', 'hour.bank.adjustment'), ('name', '=', 'date')]"/>
+            <field name="partner_field_id" search="[('model', '=', 'hour.bank.adjustment'), ('name', '=', 'partner_id')]"/>
+        </record>
+    </data>
+</odoo>

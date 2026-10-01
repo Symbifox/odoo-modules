@@ -1,0 +1,763 @@
+{
+ "version": 22,
+ "sheets": [
+  {
+   "id": "sheet1",
+   "name": "Dashboard",
+   "colNumber": 26,
+   "rowNumber": 151,
+   "cells": {
+    "A24": {
+     "content": "Failed backups"
+    },
+    "B24": {
+     "content": "=BF.MEASURE(\"failed_backups\")"
+    },
+    "A25": {
+     "content": "Average storage used (%)"
+    },
+    "B25": {
+     "content": "=BF.MEASURE(\"average_storage_used\")"
+    },
+    "A28": {
+     "content": "=ODOO.LIST.HEADER(1,\"name\")"
+    },
+    "A29": {
+     "content": "=ODOO.LIST(1,1,\"name\")"
+    },
+    "A30": {
+     "content": "=ODOO.LIST(1,2,\"name\")"
+    },
+    "A31": {
+     "content": "=ODOO.LIST(1,3,\"name\")"
+    },
+    "A32": {
+     "content": "=ODOO.LIST(1,4,\"name\")"
+    },
+    "A33": {
+     "content": "=ODOO.LIST(1,5,\"name\")"
+    },
+    "A34": {
+     "content": "=ODOO.LIST(1,6,\"name\")"
+    },
+    "A35": {
+     "content": "=ODOO.LIST(1,7,\"name\")"
+    },
+    "A36": {
+     "content": "=ODOO.LIST(1,8,\"name\")"
+    },
+    "A37": {
+     "content": "=ODOO.LIST(1,9,\"name\")"
+    },
+    "A38": {
+     "content": "=ODOO.LIST(1,10,\"name\")"
+    },
+    "A39": {
+     "content": "=ODOO.LIST(1,11,\"name\")"
+    },
+    "A40": {
+     "content": "=ODOO.LIST(1,12,\"name\")"
+    },
+    "A41": {
+     "content": "=ODOO.LIST(1,13,\"name\")"
+    },
+    "A42": {
+     "content": "=ODOO.LIST(1,14,\"name\")"
+    },
+    "A43": {
+     "content": "=ODOO.LIST(1,15,\"name\")"
+    },
+    "A44": {
+     "content": "=ODOO.LIST(1,16,\"name\")"
+    },
+    "A45": {
+     "content": "=ODOO.LIST(1,17,\"name\")"
+    },
+    "A46": {
+     "content": "=ODOO.LIST(1,18,\"name\")"
+    },
+    "A47": {
+     "content": "=ODOO.LIST(1,19,\"name\")"
+    },
+    "A48": {
+     "content": "=ODOO.LIST(1,20,\"name\")"
+    },
+    "A49": {
+     "content": "=ODOO.LIST(1,21,\"name\")"
+    },
+    "A50": {
+     "content": "=ODOO.LIST(1,22,\"name\")"
+    },
+    "A51": {
+     "content": "=ODOO.LIST(1,23,\"name\")"
+    },
+    "A52": {
+     "content": "=ODOO.LIST(1,24,\"name\")"
+    },
+    "A53": {
+     "content": "=ODOO.LIST(1,25,\"name\")"
+    },
+    "A54": {
+     "content": "=ODOO.LIST(1,26,\"name\")"
+    },
+    "A55": {
+     "content": "=ODOO.LIST(1,27,\"name\")"
+    },
+    "A56": {
+     "content": "=ODOO.LIST(1,28,\"name\")"
+    },
+    "A57": {
+     "content": "=ODOO.LIST(1,29,\"name\")"
+    },
+    "A58": {
+     "content": "=ODOO.LIST(1,30,\"name\")"
+    },
+    "A59": {
+     "content": "=ODOO.LIST(1,31,\"name\")"
+    },
+    "A60": {
+     "content": "=ODOO.LIST(1,32,\"name\")"
+    },
+    "A61": {
+     "content": "=ODOO.LIST(1,33,\"name\")"
+    },
+    "A62": {
+     "content": "=ODOO.LIST(1,34,\"name\")"
+    },
+    "A63": {
+     "content": "=ODOO.LIST(1,35,\"name\")"
+    },
+    "A64": {
+     "content": "=ODOO.LIST(1,36,\"name\")"
+    },
+    "A65": {
+     "content": "=ODOO.LIST(1,37,\"name\")"
+    },
+    "A66": {
+     "content": "=ODOO.LIST(1,38,\"name\")"
+    },
+    "A67": {
+     "content": "=ODOO.LIST(1,39,\"name\")"
+    },
+    "A68": {
+     "content": "=ODOO.LIST(1,40,\"name\")"
+    },
+    "A69": {
+     "content": "=ODOO.LIST(1,41,\"name\")"
+    },
+    "A70": {
+     "content": "=ODOO.LIST(1,42,\"name\")"
+    },
+    "A71": {
+     "content": "=ODOO.LIST(1,43,\"name\")"
+    },
+    "A72": {
+     "content": "=ODOO.LIST(1,44,\"name\")"
+    },
+    "A73": {
+     "content": "=ODOO.LIST(1,45,\"name\")"
+    },
+    "A74": {
+     "content": "=ODOO.LIST(1,46,\"name\")"
+    },
+    "A75": {
+     "content": "=ODOO.LIST(1,47,\"name\")"
+    },
+    "A76": {
+     "content": "=ODOO.LIST(1,48,\"name\")"
+    },
+    "B28": {
+     "content": "=ODOO.LIST.HEADER(1,\"partner_id\")"
+    },
+    "B29": {
+     "content": "=ODOO.LIST(1,1,\"partner_id\")"
+    },
+    "B30": {
+     "content": "=ODOO.LIST(1,2,\"partner_id\")"
+    },
+    "B31": {
+     "content": "=ODOO.LIST(1,3,\"partner_id\")"
+    },
+    "B32": {
+     "content": "=ODOO.LIST(1,4,\"partner_id\")"
+    },
+    "B33": {
+     "content": "=ODOO.LIST(1,5,\"partner_id\")"
+    },
+    "B34": {
+     "content": "=ODOO.LIST(1,6,\"partner_id\")"
+    },
+    "B35": {
+     "content": "=ODOO.LIST(1,7,\"partner_id\")"
+    },
+    "B36": {
+     "content": "=ODOO.LIST(1,8,\"partner_id\")"
+    },
+    "B37": {
+     "content": "=ODOO.LIST(1,9,\"partner_id\")"
+    },
+    "B38": {
+     "content": "=ODOO.LIST(1,10,\"partner_id\")"
+    },
+    "B39": {
+     "content": "=ODOO.LIST(1,11,\"partner_id\")"
+    },
+    "B40": {
+     "content": "=ODOO.LIST(1,12,\"partner_id\")"
+    },
+    "B41": {
+     "content": "=ODOO.LIST(1,13,\"partner_id\")"
+    },
+    "B42": {
+     "content": "=ODOO.LIST(1,14,\"partner_id\")"
+    },
+    "B43": {
+     "content": "=ODOO.LIST(1,15,\"partner_id\")"
+    },
+    "B44": {
+     "content": "=ODOO.LIST(1,16,\"partner_id\")"
+    },
+    "B45": {
+     "content": "=ODOO.LIST(1,17,\"partner_id\")"
+    },
+    "B46": {
+     "content": "=ODOO.LIST(1,18,\"partner_id\")"
+    },
+    "B47": {
+     "content": "=ODOO.LIST(1,19,\"partner_id\")"
+    },
+    "B48": {
+     "content": "=ODOO.LIST(1,20,\"partner_id\")"
+    },
+    "B49": {
+     "content": "=ODOO.LIST(1,21,\"partner_id\")"
+    },
+    "B50": {
+     "content": "=ODOO.LIST(1,22,\"partner_id\")"
+    },
+    "B51": {
+     "content": "=ODOO.LIST(1,23,\"partner_id\")"
+    },
+    "B52": {
+     "content": "=ODOO.LIST(1,24,\"partner_id\")"
+    },
+    "B53": {
+     "content": "=ODOO.LIST(1,25,\"partner_id\")"
+    },
+    "B54": {
+     "content": "=ODOO.LIST(1,26,\"partner_id\")"
+    },
+    "B55": {
+     "content": "=ODOO.LIST(1,27,\"partner_id\")"
+    },
+    "B56": {
+     "content": "=ODOO.LIST(1,28,\"partner_id\")"
+    },
+    "B57": {
+     "content": "=ODOO.LIST(1,29,\"partner_id\")"
+    },
+    "B58": {
+     "content": "=ODOO.LIST(1,30,\"partner_id\")"
+    },
+    "B59": {
+     "content": "=ODOO.LIST(1,31,\"partner_id\")"
+    },
+    "B60": {
+     "content": "=ODOO.LIST(1,32,\"partner_id\")"
+    },
+    "B61": {
+     "content": "=ODOO.LIST(1,33,\"partner_id\")"
+    },
+    "B62": {
+     "content": "=ODOO.LIST(1,34,\"partner_id\")"
+    },
+    "B63": {
+     "content": "=ODOO.LIST(1,35,\"partner_id\")"
+    },
+    "B64": {
+     "content": "=ODOO.LIST(1,36,\"partner_id\")"
+    },
+    "B65": {
+     "content": "=ODOO.LIST(1,37,\"partner_id\")"
+    },
+    "B66": {
+     "content": "=ODOO.LIST(1,38,\"partner_id\")"
+    },
+    "B67": {
+     "content": "=ODOO.LIST(1,39,\"partner_id\")"
+    },
+    "B68": {
+     "content": "=ODOO.LIST(1,40,\"partner_id\")"
+    },
+    "B69": {
+     "content": "=ODOO.LIST(1,41,\"partner_id\")"
+    },
+    "B70": {
+     "content": "=ODOO.LIST(1,42,\"partner_id\")"
+    },
+    "B71": {
+     "content": "=ODOO.LIST(1,43,\"partner_id\")"
+    },
+    "B72": {
+     "content": "=ODOO.LIST(1,44,\"partner_id\")"
+    },
+    "B73": {
+     "content": "=ODOO.LIST(1,45,\"partner_id\")"
+    },
+    "B74": {
+     "content": "=ODOO.LIST(1,46,\"partner_id\")"
+    },
+    "B75": {
+     "content": "=ODOO.LIST(1,47,\"partner_id\")"
+    },
+    "B76": {
+     "content": "=ODOO.LIST(1,48,\"partner_id\")"
+    },
+    "C28": {
+     "content": "=ODOO.LIST.HEADER(1,\"date_expiration\")"
+    },
+    "C29": {
+     "content": "=ODOO.LIST(1,1,\"date_expiration\")"
+    },
+    "C30": {
+     "content": "=ODOO.LIST(1,2,\"date_expiration\")"
+    },
+    "C31": {
+     "content": "=ODOO.LIST(1,3,\"date_expiration\")"
+    },
+    "C32": {
+     "content": "=ODOO.LIST(1,4,\"date_expiration\")"
+    },
+    "C33": {
+     "content": "=ODOO.LIST(1,5,\"date_expiration\")"
+    },
+    "C34": {
+     "content": "=ODOO.LIST(1,6,\"date_expiration\")"
+    },
+    "C35": {
+     "content": "=ODOO.LIST(1,7,\"date_expiration\")"
+    },
+    "C36": {
+     "content": "=ODOO.LIST(1,8,\"date_expiration\")"
+    },
+    "C37": {
+     "content": "=ODOO.LIST(1,9,\"date_expiration\")"
+    },
+    "C38": {
+     "content": "=ODOO.LIST(1,10,\"date_expiration\")"
+    },
+    "C39": {
+     "content": "=ODOO.LIST(1,11,\"date_expiration\")"
+    },
+    "C40": {
+     "content": "=ODOO.LIST(1,12,\"date_expiration\")"
+    },
+    "C41": {
+     "content": "=ODOO.LIST(1,13,\"date_expiration\")"
+    },
+    "C42": {
+     "content": "=ODOO.LIST(1,14,\"date_expiration\")"
+    },
+    "C43": {
+     "content": "=ODOO.LIST(1,15,\"date_expiration\")"
+    },
+    "C44": {
+     "content": "=ODOO.LIST(1,16,\"date_expiration\")"
+    },
+    "C45": {
+     "content": "=ODOO.LIST(1,17,\"date_expiration\")"
+    },
+    "C46": {
+     "content": "=ODOO.LIST(1,18,\"date_expiration\")"
+    },
+    "C47": {
+     "content": "=ODOO.LIST(1,19,\"date_expiration\")"
+    },
+    "C48": {
+     "content": "=ODOO.LIST(1,20,\"date_expiration\")"
+    },
+    "C49": {
+     "content": "=ODOO.LIST(1,21,\"date_expiration\")"
+    },
+    "C50": {
+     "content": "=ODOO.LIST(1,22,\"date_expiration\")"
+    },
+    "C51": {
+     "content": "=ODOO.LIST(1,23,\"date_expiration\")"
+    },
+    "C52": {
+     "content": "=ODOO.LIST(1,24,\"date_expiration\")"
+    },
+    "C53": {
+     "content": "=ODOO.LIST(1,25,\"date_expiration\")"
+    },
+    "C54": {
+     "content": "=ODOO.LIST(1,26,\"date_expiration\")"
+    },
+    "C55": {
+     "content": "=ODOO.LIST(1,27,\"date_expiration\")"
+    },
+    "C56": {
+     "content": "=ODOO.LIST(1,28,\"date_expiration\")"
+    },
+    "C57": {
+     "content": "=ODOO.LIST(1,29,\"date_expiration\")"
+    },
+    "C58": {
+     "content": "=ODOO.LIST(1,30,\"date_expiration\")"
+    },
+    "C59": {
+     "content": "=ODOO.LIST(1,31,\"date_expiration\")"
+    },
+    "C60": {
+     "content": "=ODOO.LIST(1,32,\"date_expiration\")"
+    },
+    "C61": {
+     "content": "=ODOO.LIST(1,33,\"date_expiration\")"
+    },
+    "C62": {
+     "content": "=ODOO.LIST(1,34,\"date_expiration\")"
+    },
+    "C63": {
+     "content": "=ODOO.LIST(1,35,\"date_expiration\")"
+    },
+    "C64": {
+     "content": "=ODOO.LIST(1,36,\"date_expiration\")"
+    },
+    "C65": {
+     "content": "=ODOO.LIST(1,37,\"date_expiration\")"
+    },
+    "C66": {
+     "content": "=ODOO.LIST(1,38,\"date_expiration\")"
+    },
+    "C67": {
+     "content": "=ODOO.LIST(1,39,\"date_expiration\")"
+    },
+    "C68": {
+     "content": "=ODOO.LIST(1,40,\"date_expiration\")"
+    },
+    "C69": {
+     "content": "=ODOO.LIST(1,41,\"date_expiration\")"
+    },
+    "C70": {
+     "content": "=ODOO.LIST(1,42,\"date_expiration\")"
+    },
+    "C71": {
+     "content": "=ODOO.LIST(1,43,\"date_expiration\")"
+    },
+    "C72": {
+     "content": "=ODOO.LIST(1,44,\"date_expiration\")"
+    },
+    "C73": {
+     "content": "=ODOO.LIST(1,45,\"date_expiration\")"
+    },
+    "C74": {
+     "content": "=ODOO.LIST(1,46,\"date_expiration\")"
+    },
+    "C75": {
+     "content": "=ODOO.LIST(1,47,\"date_expiration\")"
+    },
+    "C76": {
+     "content": "=ODOO.LIST(1,48,\"date_expiration\")"
+    },
+    "A80": {
+     "content": "=PIVOT(1, 46)"
+    }
+   },
+   "figures": [
+    {
+     "id": "hosting-01",
+     "x": 0,
+     "y": 0,
+     "width": 272,
+     "height": 130,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Active services"
+      },
+      "background": "#FFFFFF",
+      "keyValue": "'bf_bi calculs'!A1",
+      "baseline": "",
+      "baselineMode": "percentage",
+      "baselineDescr": "",
+      "baselineColorUp": "#00A04A",
+      "baselineColorDown": "#DC6965",
+      "humanize": true
+     }
+    },
+    {
+     "id": "hosting-02",
+     "x": 288,
+     "y": 0,
+     "width": 272,
+     "height": 130,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Services down"
+      },
+      "background": "#FFFFFF",
+      "keyValue": "'bf_bi calculs'!A2",
+      "baseline": "",
+      "baselineMode": "percentage",
+      "baselineDescr": "",
+      "baselineColorUp": "#00A04A",
+      "baselineColorDown": "#DC6965",
+      "humanize": true
+     }
+    },
+    {
+     "id": "hosting-03",
+     "x": 576,
+     "y": 0,
+     "width": 272,
+     "height": 130,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Backup success rate"
+      },
+      "background": "#FFFFFF",
+      "keyValue": "'bf_bi calculs'!A3",
+      "baseline": "'bf_bi calculs'!B3",
+      "baselineMode": "difference",
+      "baselineDescr": "vs matching period",
+      "baselineColorUp": "#00A04A",
+      "baselineColorDown": "#DC6965",
+      "humanize": true
+     }
+    },
+    {
+     "id": "hosting-04",
+     "x": 864,
+     "y": 0,
+     "width": 272,
+     "height": 130,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Domains expiring within 90 days"
+      },
+      "background": "#FFFFFF",
+      "keyValue": "'bf_bi calculs'!A4",
+      "baseline": "",
+      "baselineMode": "percentage",
+      "baselineDescr": "",
+      "baselineColorUp": "#00A04A",
+      "baselineColorDown": "#DC6965",
+      "humanize": true
+     }
+    },
+    {
+     "id": "hosting-05",
+     "x": 0,
+     "y": 146,
+     "width": 560,
+     "height": 320,
+     "tag": "chart",
+     "data": {
+      "type": "odoo_bar",
+      "title": {
+       "text": "Backups per month and result"
+      },
+      "background": "#FFFFFF",
+      "legendPosition": "top",
+      "verticalAxisPosition": "left",
+      "stacked": true,
+      "actionXmlId": null,
+      "metaData": {
+       "groupBy": [
+        "run_date:month",
+        "result"
+       ],
+       "measure": "__count",
+       "order": null,
+       "resModel": "hosting.saas.backup.run",
+       "mode": "bar"
+      },
+      "searchParams": {
+       "comparison": null,
+       "context": {},
+       "domain": "[]",
+       "groupBy": [
+        "run_date:month",
+        "result"
+       ],
+       "orderBy": []
+      },
+      "fieldMatching": {
+       "bf_bi_periode": {
+        "chain": "run_date",
+        "type": "datetime",
+        "offset": 0
+       },
+       "bf_bi_client": {
+        "chain": "partner_id",
+        "type": "many2one"
+       }
+      }
+     }
+    },
+    {
+     "id": "hosting-06",
+     "x": 576,
+     "y": 146,
+     "width": 560,
+     "height": 320,
+     "tag": "chart",
+     "data": {
+      "type": "odoo_pie",
+      "title": {
+       "text": "Active services per environment"
+      },
+      "background": "#FFFFFF",
+      "legendPosition": "right",
+      "verticalAxisPosition": "left",
+      "stacked": false,
+      "actionXmlId": null,
+      "metaData": {
+       "groupBy": [
+        "environment"
+       ],
+       "measure": "__count",
+       "order": null,
+       "resModel": "hosting.service",
+       "mode": "pie"
+      },
+      "searchParams": {
+       "comparison": null,
+       "context": {},
+       "domain": "[('state', '=', 'active')]",
+       "groupBy": [
+        "environment"
+       ],
+       "orderBy": []
+      },
+      "fieldMatching": {
+       "bf_bi_client": {
+        "chain": "partner_id",
+        "type": "many2one"
+       }
+      }
+     }
+    }
+   ],
+   "isVisible": true,
+   "cols": {
+    "0": {
+     "size": 230
+    }
+   }
+  },
+  {
+   "id": "calc",
+   "name": "bf_bi calculs",
+   "colNumber": 5,
+   "rowNumber": 20,
+   "cells": {
+    "A1": {
+     "content": "=BF.MEASURE(\"active_services\")"
+    },
+    "A2": {
+     "content": "=BF.MEASURE(\"services_down\")"
+    },
+    "A3": {
+     "content": "=BF.MEASURE(\"backup_success_rate\")"
+    },
+    "B3": {
+     "content": "=IF(OR(BF.MEASURE(\"backup_success_rate\",-1)=\"\",BF.MEASURE(\"backup_success_rate\",-1)=0),\"\",BF.MEASURE(\"backup_success_rate\",-1))"
+    },
+    "A4": {
+     "content": "=BF.MEASURE(\"domains_expiring\")"
+    }
+   },
+   "figures": [],
+   "isVisible": false
+  }
+ ],
+ "pivots": {
+  "hosting-pivot-1": {
+   "type": "ODOO",
+   "name": "Active services per server and environment",
+   "model": "hosting.service",
+   "domain": "[('state', '=', 'active')]",
+   "context": {},
+   "measures": [
+    {
+     "id": "__count:sum",
+     "fieldName": "__count",
+     "aggregator": "sum"
+    }
+   ],
+   "rows": [
+    {
+     "fieldName": "server_id"
+    }
+   ],
+   "columns": [
+    {
+     "fieldName": "environment"
+    }
+   ],
+   "sortedColumn": null,
+   "formulaId": "1",
+   "fieldMatching": {
+    "bf_bi_client": {
+     "chain": "partner_id",
+     "type": "many2one"
+    }
+   }
+  }
+ },
+ "pivotNextId": 2,
+ "lists": {
+  "1": {
+   "columns": [
+    "name",
+    "partner_id",
+    "date_expiration"
+   ],
+   "domain": "[('state', 'in', ('active', 'expiring_soon')), ('date_expiration', '<=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d'))]",
+   "model": "hosting.domain",
+   "context": {},
+   "orderBy": [
+    {
+     "name": "date_expiration",
+     "asc": true
+    }
+   ],
+   "id": "1",
+   "name": "Domains expiring within 90 days",
+   "fieldMatching": {
+    "bf_bi_client": {
+     "chain": "partner_id",
+     "type": "many2one"
+    }
+   }
+  }
+ },
+ "listNextId": 2,
+ "globalFilters": [
+  {
+   "id": "bf_bi_periode",
+   "type": "date",
+   "label": "Period",
+   "rangeType": "fixedPeriod",
+   "defaultValue": "this_year"
+  },
+  {
+   "id": "bf_bi_client",
+   "type": "relation",
+   "label": "Customer",
+   "modelName": "res.partner",
+   "defaultValue": []
+  }
+ ],
+ "uniqueFigureIds": true,
+ "odooVersion": 12
+}

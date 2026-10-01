@@ -1,0 +1,155 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-01 06:14+0000\n"
+"PO-Revision-Date: 2026-10-01 06:14+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_bi_hosting
+#: model:bf.bi.measure,description:bf_bi_hosting.measure_domains_expiring
+msgid "Active domains whose registration ends within 90 days."
+msgstr "Domaines actifs dont l'enregistrement se termine d'ici 90 jours."
+
+#. module: bf_bi_hosting
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_hosting/data/files/hosting_dashboard.json:0
+#: code:addons/bf_bi_hosting/terms.py:0
+#: model:bf.bi.measure,name:bf_bi_hosting.measure_active_services
+msgid "Active services"
+msgstr "Services actifs"
+
+#. module: bf_bi_hosting
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_hosting/data/files/hosting_dashboard.json:0
+#: code:addons/bf_bi_hosting/terms.py:0
+msgid "Active services per environment"
+msgstr "Services actifs par environnement"
+
+#. module: bf_bi_hosting
+#. odoo-python
+#: code:addons/bf_bi_hosting/terms.py:0
+msgid "Active services per server and environment"
+msgstr "Services actifs par serveur et environnement"
+
+#. module: bf_bi_hosting
+#: model:bf.bi.measure,description:bf_bi_hosting.measure_services_down
+msgid "Active services whose last health check failed."
+msgstr "Services actifs dont la dernière vérification a échoué."
+
+#. module: bf_bi_hosting
+#: model:bf.bi.measure,description:bf_bi_hosting.measure_average_storage_used
+msgid "Average share of storage quota used by active services."
+msgstr "Part moyenne du quota de stockage utilisée par les services actifs."
+
+#. module: bf_bi_hosting
+#. odoo-python
+#: code:addons/bf_bi_hosting/terms.py:0
+#: model:bf.bi.measure,name:bf_bi_hosting.measure_average_storage_used
+msgid "Average storage used (%)"
+msgstr "Stockage utilisé en moyenne (%)"
+
+#. module: bf_bi_hosting
+#: model:bf.bi.measure,name:bf_bi_hosting.measure_backup_runs
+msgid "Backup runs"
+msgstr "Sauvegardes"
+
+#. module: bf_bi_hosting
+#: model:bf.bi.measure,description:bf_bi_hosting.measure_failed_backups
+msgid "Backup runs that failed or ended with errors."
+msgstr "Sauvegardes échouées ou terminées avec des erreurs."
+
+#. module: bf_bi_hosting
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_hosting/data/files/hosting_dashboard.json:0
+#: code:addons/bf_bi_hosting/terms.py:0
+#: model:bf.bi.measure,name:bf_bi_hosting.measure_backup_success_rate
+msgid "Backup success rate"
+msgstr "Taux de réussite des sauvegardes"
+
+#. module: bf_bi_hosting
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_hosting/data/files/hosting_dashboard.json:0
+#: code:addons/bf_bi_hosting/terms.py:0
+msgid "Backups per month and result"
+msgstr "Sauvegardes par mois et résultat"
+
+#. module: bf_bi_hosting
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_hosting/data/files/hosting_dashboard.json:0
+#: code:addons/bf_bi_hosting/terms.py:0
+msgid "Customer"
+msgstr "Client"
+
+#. module: bf_bi_hosting
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_hosting/data/files/hosting_dashboard.json:0
+#: code:addons/bf_bi_hosting/terms.py:0
+#: model:bf.bi.measure,name:bf_bi_hosting.measure_domains_expiring
+msgid "Domains expiring within 90 days"
+msgstr "Domaines qui expirent d'ici 90 jours"
+
+#. module: bf_bi_hosting
+#. odoo-python
+#: code:addons/bf_bi_hosting/terms.py:0
+#: model:bf.bi.measure,name:bf_bi_hosting.measure_failed_backups
+msgid "Failed backups"
+msgstr "Sauvegardes échouées"
+
+#. module: bf_bi_hosting
+#: model:spreadsheet.dashboard,name:bf_bi_hosting.dashboard_hosting
+msgid "Hosting"
+msgstr "Hébergement"
+
+#. module: bf_bi_hosting
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_hosting/data/files/hosting_dashboard.json:0
+#: code:addons/bf_bi_hosting/terms.py:0
+msgid "Period"
+msgstr "Période"
+
+#. module: bf_bi_hosting
+#: model:bf.bi.measure,description:bf_bi_hosting.measure_backup_runs
+msgid "SaaS backup runs."
+msgstr "Sauvegardes SaaS."
+
+#. module: bf_bi_hosting
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_hosting/data/files/hosting_dashboard.json:0
+#: code:addons/bf_bi_hosting/terms.py:0
+#: model:bf.bi.measure,name:bf_bi_hosting.measure_services_down
+msgid "Services down"
+msgstr "Services en panne"
+
+#. module: bf_bi_hosting
+#: model:bf.bi.measure,description:bf_bi_hosting.measure_active_services
+msgid "Services in production use."
+msgstr "Services en production."
+
+#. module: bf_bi_hosting
+#: model:bf.bi.measure,description:bf_bi_hosting.measure_backup_success_rate
+msgid "Share of backup runs without failure or error."
+msgstr "Part des sauvegardes sans échec ni erreur."
+
+#. module: bf_bi_hosting
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_hosting/data/files/hosting_dashboard.json:0
+#: code:addons/bf_bi_hosting/terms.py:0
+msgid "vs matching period"
+msgstr "vs période équivalente"

@@ -1,0 +1,743 @@
+{
+ "version": 22,
+ "sheets": [
+  {
+   "id": "sheet1",
+   "name": "Dashboard",
+   "colNumber": 26,
+   "rowNumber": 100,
+   "cells": {
+    "A24": {
+     "content": "=ODOO.LIST.HEADER(1,\"partner_id\")"
+    },
+    "A25": {
+     "content": "=ODOO.LIST(1,1,\"partner_id\")"
+    },
+    "A26": {
+     "content": "=ODOO.LIST(1,2,\"partner_id\")"
+    },
+    "A27": {
+     "content": "=ODOO.LIST(1,3,\"partner_id\")"
+    },
+    "A28": {
+     "content": "=ODOO.LIST(1,4,\"partner_id\")"
+    },
+    "A29": {
+     "content": "=ODOO.LIST(1,5,\"partner_id\")"
+    },
+    "A30": {
+     "content": "=ODOO.LIST(1,6,\"partner_id\")"
+    },
+    "A31": {
+     "content": "=ODOO.LIST(1,7,\"partner_id\")"
+    },
+    "A32": {
+     "content": "=ODOO.LIST(1,8,\"partner_id\")"
+    },
+    "A33": {
+     "content": "=ODOO.LIST(1,9,\"partner_id\")"
+    },
+    "A34": {
+     "content": "=ODOO.LIST(1,10,\"partner_id\")"
+    },
+    "A35": {
+     "content": "=ODOO.LIST(1,11,\"partner_id\")"
+    },
+    "A36": {
+     "content": "=ODOO.LIST(1,12,\"partner_id\")"
+    },
+    "A37": {
+     "content": "=ODOO.LIST(1,13,\"partner_id\")"
+    },
+    "A38": {
+     "content": "=ODOO.LIST(1,14,\"partner_id\")"
+    },
+    "A39": {
+     "content": "=ODOO.LIST(1,15,\"partner_id\")"
+    },
+    "A40": {
+     "content": "=ODOO.LIST(1,16,\"partner_id\")"
+    },
+    "A41": {
+     "content": "=ODOO.LIST(1,17,\"partner_id\")"
+    },
+    "A42": {
+     "content": "=ODOO.LIST(1,18,\"partner_id\")"
+    },
+    "A43": {
+     "content": "=ODOO.LIST(1,19,\"partner_id\")"
+    },
+    "A44": {
+     "content": "=ODOO.LIST(1,20,\"partner_id\")"
+    },
+    "A45": {
+     "content": "=ODOO.LIST(1,21,\"partner_id\")"
+    },
+    "A46": {
+     "content": "=ODOO.LIST(1,22,\"partner_id\")"
+    },
+    "A47": {
+     "content": "=ODOO.LIST(1,23,\"partner_id\")"
+    },
+    "A48": {
+     "content": "=ODOO.LIST(1,24,\"partner_id\")"
+    },
+    "A49": {
+     "content": "=ODOO.LIST(1,25,\"partner_id\")"
+    },
+    "A50": {
+     "content": "=ODOO.LIST(1,26,\"partner_id\")"
+    },
+    "A51": {
+     "content": "=ODOO.LIST(1,27,\"partner_id\")"
+    },
+    "A52": {
+     "content": "=ODOO.LIST(1,28,\"partner_id\")"
+    },
+    "A53": {
+     "content": "=ODOO.LIST(1,29,\"partner_id\")"
+    },
+    "A54": {
+     "content": "=ODOO.LIST(1,30,\"partner_id\")"
+    },
+    "A55": {
+     "content": "=ODOO.LIST(1,31,\"partner_id\")"
+    },
+    "A56": {
+     "content": "=ODOO.LIST(1,32,\"partner_id\")"
+    },
+    "A57": {
+     "content": "=ODOO.LIST(1,33,\"partner_id\")"
+    },
+    "A58": {
+     "content": "=ODOO.LIST(1,34,\"partner_id\")"
+    },
+    "A59": {
+     "content": "=ODOO.LIST(1,35,\"partner_id\")"
+    },
+    "A60": {
+     "content": "=ODOO.LIST(1,36,\"partner_id\")"
+    },
+    "A61": {
+     "content": "=ODOO.LIST(1,37,\"partner_id\")"
+    },
+    "A62": {
+     "content": "=ODOO.LIST(1,38,\"partner_id\")"
+    },
+    "A63": {
+     "content": "=ODOO.LIST(1,39,\"partner_id\")"
+    },
+    "A64": {
+     "content": "=ODOO.LIST(1,40,\"partner_id\")"
+    },
+    "A65": {
+     "content": "=ODOO.LIST(1,41,\"partner_id\")"
+    },
+    "A66": {
+     "content": "=ODOO.LIST(1,42,\"partner_id\")"
+    },
+    "A67": {
+     "content": "=ODOO.LIST(1,43,\"partner_id\")"
+    },
+    "A68": {
+     "content": "=ODOO.LIST(1,44,\"partner_id\")"
+    },
+    "A69": {
+     "content": "=ODOO.LIST(1,45,\"partner_id\")"
+    },
+    "A70": {
+     "content": "=ODOO.LIST(1,46,\"partner_id\")"
+    },
+    "A71": {
+     "content": "=ODOO.LIST(1,47,\"partner_id\")"
+    },
+    "A72": {
+     "content": "=ODOO.LIST(1,48,\"partner_id\")"
+    },
+    "B24": {
+     "content": "=ODOO.LIST.HEADER(1,\"current_balance\")"
+    },
+    "B25": {
+     "content": "=ODOO.LIST(1,1,\"current_balance\")"
+    },
+    "B26": {
+     "content": "=ODOO.LIST(1,2,\"current_balance\")"
+    },
+    "B27": {
+     "content": "=ODOO.LIST(1,3,\"current_balance\")"
+    },
+    "B28": {
+     "content": "=ODOO.LIST(1,4,\"current_balance\")"
+    },
+    "B29": {
+     "content": "=ODOO.LIST(1,5,\"current_balance\")"
+    },
+    "B30": {
+     "content": "=ODOO.LIST(1,6,\"current_balance\")"
+    },
+    "B31": {
+     "content": "=ODOO.LIST(1,7,\"current_balance\")"
+    },
+    "B32": {
+     "content": "=ODOO.LIST(1,8,\"current_balance\")"
+    },
+    "B33": {
+     "content": "=ODOO.LIST(1,9,\"current_balance\")"
+    },
+    "B34": {
+     "content": "=ODOO.LIST(1,10,\"current_balance\")"
+    },
+    "B35": {
+     "content": "=ODOO.LIST(1,11,\"current_balance\")"
+    },
+    "B36": {
+     "content": "=ODOO.LIST(1,12,\"current_balance\")"
+    },
+    "B37": {
+     "content": "=ODOO.LIST(1,13,\"current_balance\")"
+    },
+    "B38": {
+     "content": "=ODOO.LIST(1,14,\"current_balance\")"
+    },
+    "B39": {
+     "content": "=ODOO.LIST(1,15,\"current_balance\")"
+    },
+    "B40": {
+     "content": "=ODOO.LIST(1,16,\"current_balance\")"
+    },
+    "B41": {
+     "content": "=ODOO.LIST(1,17,\"current_balance\")"
+    },
+    "B42": {
+     "content": "=ODOO.LIST(1,18,\"current_balance\")"
+    },
+    "B43": {
+     "content": "=ODOO.LIST(1,19,\"current_balance\")"
+    },
+    "B44": {
+     "content": "=ODOO.LIST(1,20,\"current_balance\")"
+    },
+    "B45": {
+     "content": "=ODOO.LIST(1,21,\"current_balance\")"
+    },
+    "B46": {
+     "content": "=ODOO.LIST(1,22,\"current_balance\")"
+    },
+    "B47": {
+     "content": "=ODOO.LIST(1,23,\"current_balance\")"
+    },
+    "B48": {
+     "content": "=ODOO.LIST(1,24,\"current_balance\")"
+    },
+    "B49": {
+     "content": "=ODOO.LIST(1,25,\"current_balance\")"
+    },
+    "B50": {
+     "content": "=ODOO.LIST(1,26,\"current_balance\")"
+    },
+    "B51": {
+     "content": "=ODOO.LIST(1,27,\"current_balance\")"
+    },
+    "B52": {
+     "content": "=ODOO.LIST(1,28,\"current_balance\")"
+    },
+    "B53": {
+     "content": "=ODOO.LIST(1,29,\"current_balance\")"
+    },
+    "B54": {
+     "content": "=ODOO.LIST(1,30,\"current_balance\")"
+    },
+    "B55": {
+     "content": "=ODOO.LIST(1,31,\"current_balance\")"
+    },
+    "B56": {
+     "content": "=ODOO.LIST(1,32,\"current_balance\")"
+    },
+    "B57": {
+     "content": "=ODOO.LIST(1,33,\"current_balance\")"
+    },
+    "B58": {
+     "content": "=ODOO.LIST(1,34,\"current_balance\")"
+    },
+    "B59": {
+     "content": "=ODOO.LIST(1,35,\"current_balance\")"
+    },
+    "B60": {
+     "content": "=ODOO.LIST(1,36,\"current_balance\")"
+    },
+    "B61": {
+     "content": "=ODOO.LIST(1,37,\"current_balance\")"
+    },
+    "B62": {
+     "content": "=ODOO.LIST(1,38,\"current_balance\")"
+    },
+    "B63": {
+     "content": "=ODOO.LIST(1,39,\"current_balance\")"
+    },
+    "B64": {
+     "content": "=ODOO.LIST(1,40,\"current_balance\")"
+    },
+    "B65": {
+     "content": "=ODOO.LIST(1,41,\"current_balance\")"
+    },
+    "B66": {
+     "content": "=ODOO.LIST(1,42,\"current_balance\")"
+    },
+    "B67": {
+     "content": "=ODOO.LIST(1,43,\"current_balance\")"
+    },
+    "B68": {
+     "content": "=ODOO.LIST(1,44,\"current_balance\")"
+    },
+    "B69": {
+     "content": "=ODOO.LIST(1,45,\"current_balance\")"
+    },
+    "B70": {
+     "content": "=ODOO.LIST(1,46,\"current_balance\")"
+    },
+    "B71": {
+     "content": "=ODOO.LIST(1,47,\"current_balance\")"
+    },
+    "B72": {
+     "content": "=ODOO.LIST(1,48,\"current_balance\")"
+    },
+    "C24": {
+     "content": "=ODOO.LIST.HEADER(1,\"threshold_budget_hours\")"
+    },
+    "C25": {
+     "content": "=ODOO.LIST(1,1,\"threshold_budget_hours\")"
+    },
+    "C26": {
+     "content": "=ODOO.LIST(1,2,\"threshold_budget_hours\")"
+    },
+    "C27": {
+     "content": "=ODOO.LIST(1,3,\"threshold_budget_hours\")"
+    },
+    "C28": {
+     "content": "=ODOO.LIST(1,4,\"threshold_budget_hours\")"
+    },
+    "C29": {
+     "content": "=ODOO.LIST(1,5,\"threshold_budget_hours\")"
+    },
+    "C30": {
+     "content": "=ODOO.LIST(1,6,\"threshold_budget_hours\")"
+    },
+    "C31": {
+     "content": "=ODOO.LIST(1,7,\"threshold_budget_hours\")"
+    },
+    "C32": {
+     "content": "=ODOO.LIST(1,8,\"threshold_budget_hours\")"
+    },
+    "C33": {
+     "content": "=ODOO.LIST(1,9,\"threshold_budget_hours\")"
+    },
+    "C34": {
+     "content": "=ODOO.LIST(1,10,\"threshold_budget_hours\")"
+    },
+    "C35": {
+     "content": "=ODOO.LIST(1,11,\"threshold_budget_hours\")"
+    },
+    "C36": {
+     "content": "=ODOO.LIST(1,12,\"threshold_budget_hours\")"
+    },
+    "C37": {
+     "content": "=ODOO.LIST(1,13,\"threshold_budget_hours\")"
+    },
+    "C38": {
+     "content": "=ODOO.LIST(1,14,\"threshold_budget_hours\")"
+    },
+    "C39": {
+     "content": "=ODOO.LIST(1,15,\"threshold_budget_hours\")"
+    },
+    "C40": {
+     "content": "=ODOO.LIST(1,16,\"threshold_budget_hours\")"
+    },
+    "C41": {
+     "content": "=ODOO.LIST(1,17,\"threshold_budget_hours\")"
+    },
+    "C42": {
+     "content": "=ODOO.LIST(1,18,\"threshold_budget_hours\")"
+    },
+    "C43": {
+     "content": "=ODOO.LIST(1,19,\"threshold_budget_hours\")"
+    },
+    "C44": {
+     "content": "=ODOO.LIST(1,20,\"threshold_budget_hours\")"
+    },
+    "C45": {
+     "content": "=ODOO.LIST(1,21,\"threshold_budget_hours\")"
+    },
+    "C46": {
+     "content": "=ODOO.LIST(1,22,\"threshold_budget_hours\")"
+    },
+    "C47": {
+     "content": "=ODOO.LIST(1,23,\"threshold_budget_hours\")"
+    },
+    "C48": {
+     "content": "=ODOO.LIST(1,24,\"threshold_budget_hours\")"
+    },
+    "C49": {
+     "content": "=ODOO.LIST(1,25,\"threshold_budget_hours\")"
+    },
+    "C50": {
+     "content": "=ODOO.LIST(1,26,\"threshold_budget_hours\")"
+    },
+    "C51": {
+     "content": "=ODOO.LIST(1,27,\"threshold_budget_hours\")"
+    },
+    "C52": {
+     "content": "=ODOO.LIST(1,28,\"threshold_budget_hours\")"
+    },
+    "C53": {
+     "content": "=ODOO.LIST(1,29,\"threshold_budget_hours\")"
+    },
+    "C54": {
+     "content": "=ODOO.LIST(1,30,\"threshold_budget_hours\")"
+    },
+    "C55": {
+     "content": "=ODOO.LIST(1,31,\"threshold_budget_hours\")"
+    },
+    "C56": {
+     "content": "=ODOO.LIST(1,32,\"threshold_budget_hours\")"
+    },
+    "C57": {
+     "content": "=ODOO.LIST(1,33,\"threshold_budget_hours\")"
+    },
+    "C58": {
+     "content": "=ODOO.LIST(1,34,\"threshold_budget_hours\")"
+    },
+    "C59": {
+     "content": "=ODOO.LIST(1,35,\"threshold_budget_hours\")"
+    },
+    "C60": {
+     "content": "=ODOO.LIST(1,36,\"threshold_budget_hours\")"
+    },
+    "C61": {
+     "content": "=ODOO.LIST(1,37,\"threshold_budget_hours\")"
+    },
+    "C62": {
+     "content": "=ODOO.LIST(1,38,\"threshold_budget_hours\")"
+    },
+    "C63": {
+     "content": "=ODOO.LIST(1,39,\"threshold_budget_hours\")"
+    },
+    "C64": {
+     "content": "=ODOO.LIST(1,40,\"threshold_budget_hours\")"
+    },
+    "C65": {
+     "content": "=ODOO.LIST(1,41,\"threshold_budget_hours\")"
+    },
+    "C66": {
+     "content": "=ODOO.LIST(1,42,\"threshold_budget_hours\")"
+    },
+    "C67": {
+     "content": "=ODOO.LIST(1,43,\"threshold_budget_hours\")"
+    },
+    "C68": {
+     "content": "=ODOO.LIST(1,44,\"threshold_budget_hours\")"
+    },
+    "C69": {
+     "content": "=ODOO.LIST(1,45,\"threshold_budget_hours\")"
+    },
+    "C70": {
+     "content": "=ODOO.LIST(1,46,\"threshold_budget_hours\")"
+    },
+    "C71": {
+     "content": "=ODOO.LIST(1,47,\"threshold_budget_hours\")"
+    },
+    "C72": {
+     "content": "=ODOO.LIST(1,48,\"threshold_budget_hours\")"
+    },
+    "D24": {
+     "content": "=ODOO.LIST.HEADER(1,\"last_report_date\")"
+    },
+    "D25": {
+     "content": "=ODOO.LIST(1,1,\"last_report_date\")"
+    },
+    "D26": {
+     "content": "=ODOO.LIST(1,2,\"last_report_date\")"
+    },
+    "D27": {
+     "content": "=ODOO.LIST(1,3,\"last_report_date\")"
+    },
+    "D28": {
+     "content": "=ODOO.LIST(1,4,\"last_report_date\")"
+    },
+    "D29": {
+     "content": "=ODOO.LIST(1,5,\"last_report_date\")"
+    },
+    "D30": {
+     "content": "=ODOO.LIST(1,6,\"last_report_date\")"
+    },
+    "D31": {
+     "content": "=ODOO.LIST(1,7,\"last_report_date\")"
+    },
+    "D32": {
+     "content": "=ODOO.LIST(1,8,\"last_report_date\")"
+    },
+    "D33": {
+     "content": "=ODOO.LIST(1,9,\"last_report_date\")"
+    },
+    "D34": {
+     "content": "=ODOO.LIST(1,10,\"last_report_date\")"
+    },
+    "D35": {
+     "content": "=ODOO.LIST(1,11,\"last_report_date\")"
+    },
+    "D36": {
+     "content": "=ODOO.LIST(1,12,\"last_report_date\")"
+    },
+    "D37": {
+     "content": "=ODOO.LIST(1,13,\"last_report_date\")"
+    },
+    "D38": {
+     "content": "=ODOO.LIST(1,14,\"last_report_date\")"
+    },
+    "D39": {
+     "content": "=ODOO.LIST(1,15,\"last_report_date\")"
+    },
+    "D40": {
+     "content": "=ODOO.LIST(1,16,\"last_report_date\")"
+    },
+    "D41": {
+     "content": "=ODOO.LIST(1,17,\"last_report_date\")"
+    },
+    "D42": {
+     "content": "=ODOO.LIST(1,18,\"last_report_date\")"
+    },
+    "D43": {
+     "content": "=ODOO.LIST(1,19,\"last_report_date\")"
+    },
+    "D44": {
+     "content": "=ODOO.LIST(1,20,\"last_report_date\")"
+    },
+    "D45": {
+     "content": "=ODOO.LIST(1,21,\"last_report_date\")"
+    },
+    "D46": {
+     "content": "=ODOO.LIST(1,22,\"last_report_date\")"
+    },
+    "D47": {
+     "content": "=ODOO.LIST(1,23,\"last_report_date\")"
+    },
+    "D48": {
+     "content": "=ODOO.LIST(1,24,\"last_report_date\")"
+    },
+    "D49": {
+     "content": "=ODOO.LIST(1,25,\"last_report_date\")"
+    },
+    "D50": {
+     "content": "=ODOO.LIST(1,26,\"last_report_date\")"
+    },
+    "D51": {
+     "content": "=ODOO.LIST(1,27,\"last_report_date\")"
+    },
+    "D52": {
+     "content": "=ODOO.LIST(1,28,\"last_report_date\")"
+    },
+    "D53": {
+     "content": "=ODOO.LIST(1,29,\"last_report_date\")"
+    },
+    "D54": {
+     "content": "=ODOO.LIST(1,30,\"last_report_date\")"
+    },
+    "D55": {
+     "content": "=ODOO.LIST(1,31,\"last_report_date\")"
+    },
+    "D56": {
+     "content": "=ODOO.LIST(1,32,\"last_report_date\")"
+    },
+    "D57": {
+     "content": "=ODOO.LIST(1,33,\"last_report_date\")"
+    },
+    "D58": {
+     "content": "=ODOO.LIST(1,34,\"last_report_date\")"
+    },
+    "D59": {
+     "content": "=ODOO.LIST(1,35,\"last_report_date\")"
+    },
+    "D60": {
+     "content": "=ODOO.LIST(1,36,\"last_report_date\")"
+    },
+    "D61": {
+     "content": "=ODOO.LIST(1,37,\"last_report_date\")"
+    },
+    "D62": {
+     "content": "=ODOO.LIST(1,38,\"last_report_date\")"
+    },
+    "D63": {
+     "content": "=ODOO.LIST(1,39,\"last_report_date\")"
+    },
+    "D64": {
+     "content": "=ODOO.LIST(1,40,\"last_report_date\")"
+    },
+    "D65": {
+     "content": "=ODOO.LIST(1,41,\"last_report_date\")"
+    },
+    "D66": {
+     "content": "=ODOO.LIST(1,42,\"last_report_date\")"
+    },
+    "D67": {
+     "content": "=ODOO.LIST(1,43,\"last_report_date\")"
+    },
+    "D68": {
+     "content": "=ODOO.LIST(1,44,\"last_report_date\")"
+    },
+    "D69": {
+     "content": "=ODOO.LIST(1,45,\"last_report_date\")"
+    },
+    "D70": {
+     "content": "=ODOO.LIST(1,46,\"last_report_date\")"
+    },
+    "D71": {
+     "content": "=ODOO.LIST(1,47,\"last_report_date\")"
+    },
+    "D72": {
+     "content": "=ODOO.LIST(1,48,\"last_report_date\")"
+    }
+   },
+   "figures": [
+    {
+     "id": "hourbank-01",
+     "x": 0,
+     "y": 0,
+     "width": 272,
+     "height": 130,
+     "tag": "chart",
+     "data": {
+      "type": "scorecard",
+      "title": {
+       "text": "Hour bank adjustments"
+      },
+      "background": "#FFFFFF",
+      "keyValue": "'bf_bi calculs'!A1",
+      "baseline": "'bf_bi calculs'!B1",
+      "baselineMode": "percentage",
+      "baselineDescr": "vs matching period",
+      "baselineColorUp": "#00A04A",
+      "baselineColorDown": "#DC6965",
+      "humanize": true
+     }
+    },
+    {
+     "id": "hourbank-02",
+     "x": 0,
+     "y": 146,
+     "width": 560,
+     "height": 320,
+     "tag": "chart",
+     "data": {
+      "type": "odoo_bar",
+      "title": {
+       "text": "Adjustments per month"
+      },
+      "background": "#FFFFFF",
+      "legendPosition": "top",
+      "verticalAxisPosition": "left",
+      "stacked": false,
+      "actionXmlId": null,
+      "metaData": {
+       "groupBy": [
+        "date:month"
+       ],
+       "measure": "hours",
+       "order": null,
+       "resModel": "hour.bank.adjustment",
+       "mode": "bar"
+      },
+      "searchParams": {
+       "comparison": null,
+       "context": {},
+       "domain": "[]",
+       "groupBy": [
+        "date:month"
+       ],
+       "orderBy": []
+      },
+      "fieldMatching": {
+       "bf_bi_periode": {
+        "chain": "date",
+        "type": "date",
+        "offset": 0
+       },
+       "bf_bi_client": {
+        "chain": "partner_id",
+        "type": "many2one"
+       }
+      }
+     }
+    }
+   ],
+   "isVisible": true,
+   "cols": {
+    "0": {
+     "size": 230
+    }
+   }
+  },
+  {
+   "id": "calc",
+   "name": "bf_bi calculs",
+   "colNumber": 5,
+   "rowNumber": 20,
+   "cells": {
+    "A1": {
+     "content": "=BF.MEASURE(\"hour_bank_adjustments\")"
+    },
+    "B1": {
+     "content": "=IF(OR(BF.MEASURE(\"hour_bank_adjustments\",-1)=\"\",BF.MEASURE(\"hour_bank_adjustments\",-1)=0),\"\",BF.MEASURE(\"hour_bank_adjustments\",-1))"
+    }
+   },
+   "figures": [],
+   "isVisible": false
+  }
+ ],
+ "pivots": {},
+ "pivotNextId": 1,
+ "lists": {
+  "1": {
+   "columns": [
+    "partner_id",
+    "current_balance",
+    "threshold_budget_hours",
+    "last_report_date"
+   ],
+   "domain": "[]",
+   "model": "hour.bank.client",
+   "context": {},
+   "orderBy": [
+    {
+     "name": "partner_id",
+     "asc": true
+    }
+   ],
+   "id": "1",
+   "name": "Hour bank balances",
+   "fieldMatching": {
+    "bf_bi_client": {
+     "chain": "partner_id",
+     "type": "many2one"
+    }
+   }
+  }
+ },
+ "listNextId": 2,
+ "globalFilters": [
+  {
+   "id": "bf_bi_periode",
+   "type": "date",
+   "label": "Period",
+   "rangeType": "fixedPeriod",
+   "defaultValue": "this_year"
+  },
+  {
+   "id": "bf_bi_client",
+   "type": "relation",
+   "label": "Customer",
+   "modelName": "res.partner",
+   "defaultValue": []
+  }
+ ],
+ "uniqueFigureIds": true,
+ "odooVersion": 12
+}

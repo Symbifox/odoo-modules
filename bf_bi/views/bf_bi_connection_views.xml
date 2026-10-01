@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_bi_connection_view_list" model="ir.ui.view">
+        <field name="name">bf.bi.connection.list</field>
+        <field name="model">bf.bi.connection</field>
+        <field name="arch" type="xml">
+            <list string="Data connections">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="kind"/>
+                <field name="group_ids" widget="many2many_tags"/>
+                <field name="user_ids" widget="many2many_tags" optional="show"/>
+                <field name="is_open" string="Open"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_bi_connection_view_form" model="ir.ui.view">
+        <field name="name">bf.bi.connection.form</field>
+        <field name="model">bf.bi.connection</field>
+        <field name="arch" type="xml">
+            <form string="Data connection">
+                <header>
+                    <button name="action_test_connection" type="object" string="Test the connection"
+                            class="btn-primary" invisible="not id"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="alert alert-warning" role="status" invisible="is_open">
+                        Closed: nobody sees this source's data in dashboards
+                        until a group or a person is authorized.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Budgets per customer (Grist)"/></h1>
+                    </div>
+                    <group>
+                        <group string="Source">
+                            <field name="code" placeholder="e.g. budgets"/>
+                            <field name="kind"/>
+                            <field name="row_limit"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Who sees this data">
+                            <field name="group_ids" widget="many2many_tags"/>
+                            <field name="user_ids" widget="many2many_tags"/>
+                            <field name="is_open" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Grist" invisible="kind != 'grist'">
+                        <field name="grist_url" required="kind == 'grist'"/>
+                        <field name="grist_doc_id" required="kind == 'grist'"/>
+                        <field name="grist_api_key" password="True" required="kind == 'grist'"/>
+                    </group>
+                    <p class="text-muted">
+                        In a dashboard: <code>=BF.SOURCE("code", "Table")</code>, or the editor's
+                        “Insert a source” button. Every read checks the rights of the person
+                        who opens the dashboard; the key never leaves the server.
+                    </p>
+                    <field name="note" placeholder="Notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_bi_action_connections" model="ir.actions.act_window">
+        <field name="name">Data connections</field>
+        <field name="res_model">bf.bi.connection</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Connect an external source</p>
+            <p>A Grist document, for example, readable in dashboards by the groups you choose.</p>
+        </field>
+    </record>
+
+    <menuitem id="bf_bi_menu_connections"
+              name="Data connections"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_configuration"
+              action="bf_bi_action_connections"
+              groups="base.group_system"
+              sequence="30"/>
+</odoo>

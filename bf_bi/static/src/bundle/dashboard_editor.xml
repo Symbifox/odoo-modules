@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_bi.DashboardEditor">
+        <div class="o_action o_bf_bi_editor d-flex flex-column">
+            <div class="o_bf_bi_editor_bar d-flex flex-wrap align-items-center gap-2 px-3 py-2 border-bottom">
+                <button class="btn btn-secondary o_bf_bi_close" t-on-click="close">
+                    <i class="fa fa-arrow-left me-1" aria-hidden="true"/>View the dashboard
+                </button>
+                <input class="form-control o_bf_bi_name" t-model="state.name" t-on-change="onNameChange"
+                       aria-label="Dashboard name"/>
+                <button t-if="state.measures.length" class="btn btn-secondary o_bf_bi_insert_measure"
+                        t-on-click="openMeasureDialog">
+                    <i class="fa fa-calculator me-1" aria-hidden="true"/>Insert a measure
+                </button>
+                <button t-if="state.connections.length" class="btn btn-secondary o_bf_bi_insert_source"
+                        t-on-click="openSourceDialog">
+                    <i class="fa fa-database me-1" aria-hidden="true"/>Insert a source
+                </button>
+                <span class="o_bf_bi_status small"
+                      t-att-class="{'text-muted': state.status === 'saved', 'text-danger': ['conflict', 'error'].includes(state.status)}"
+                      role="status" aria-live="polite" t-att-data-status="state.status" t-esc="statusLabel"/>
+            </div>
+            <div class="o_bf_bi_editor_sheet flex-grow-1 position-relative" t-if="state.loaded">
+                <SpreadsheetComponent model="model"/>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="bf_bi.InsertSourceDialog">
+        <Dialog title.translate="Insert an external source" size="'md'">
+            <div class="o_bf_bi_source_dialog">
+                <label class="form-label" for="bf_bi_source_code">Connection</label>
+                <select id="bf_bi_source_code" class="form-select mb-3" t-model="state.code" t-on-change="loadTables">
+                    <t t-foreach="props.connections" t-as="c" t-key="c.code">
+                        <option t-att-value="c.code"><t t-esc="c.name"/> (<t t-esc="c.code"/>)</option>
+                    </t>
+                </select>
+                <label class="form-label" for="bf_bi_source_table">Table</label>
+                <select id="bf_bi_source_table" class="form-select" t-model="state.table">
+                    <t t-foreach="state.tables" t-as="t" t-key="t">
+                        <option t-att-value="t"><t t-esc="t"/></option>
+                    </t>
+                </select>
+                <p t-if="state.error" class="alert alert-danger mt-3" role="alert" t-esc="state.error"/>
+                <p class="text-muted small mt-3">
+                    Each person who opens the dashboard sees this data only if the
+                    connection is open to them; otherwise the cell shows “access denied”.
+                </p>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click="confirm" t-att-disabled="!state.table or state.busy">Insert</button>
+                <button class="btn btn-secondary" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="bf_bi.InsertMeasureDialog">
+        <Dialog title.translate="Insert named measures" size="'md'">
+            <div class="o_bf_bi_measure_dialog">
+                <p class="text-muted small">Tick one or more measures; they are added in the order you tick them.</p>
+                <div class="o_bf_bi_measure_list mb-3" style="max-height: 18rem; overflow-y: auto;">
+                    <t t-foreach="props.measures" t-as="m" t-key="m.code">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" t-att-id="'bf_bi_m_' + m.code"
+                                   t-att-checked="state.chosen.includes(m.code)" t-on-change="() => this.toggle(m.code)"/>
+                            <label class="form-check-label" t-att-for="'bf_bi_m_' + m.code">
+                                <t t-esc="m.name"/> <span class="text-muted small">(<t t-esc="m.code"/>)</span>
+                            </label>
+                        </div>
+                    </t>
+                </div>
+                <div class="btn-group mb-3" role="group" aria-label="Add as">
+                    <input type="radio" class="btn-check" id="bf_bi_measure_kpi" value="kpi" t-model="state.as"/>
+                    <label class="btn btn-outline-secondary" for="bf_bi_measure_kpi">Indicators</label>
+                    <input type="radio" class="btn-check" id="bf_bi_measure_cell" value="cell" t-model="state.as"/>
+                    <label class="btn btn-outline-secondary" for="bf_bi_measure_cell">Values in cells</label>
+                </div>
+                <p class="text-muted small">
+                    Computed for each person who opens the dashboard, under their own access rights,
+                    and following the dashboard's Period and Customer filters.
+                </p>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click="confirm" t-att-disabled="!state.chosen.length or state.busy">
+                    Insert <t t-if="state.chosen.length" t-esc="state.chosen.length"/>
+                </button>
+                <button class="btn btn-secondary" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="bf_bi.EditDashboardButton">
+        <button t-if="state.canDesign" class="btn btn-link btn-sm p-0 ms-2 o_bf_bi_edit"
+                t-on-click.stop="() => props.onClick(props.dashboardId)"
+                title="Edit" aria-label="Edit this dashboard">
+            <i class="fa fa-pencil" aria-hidden="true"/>
+        </button>
+    </t>
+
+    <t t-inherit="spreadsheet_dashboard.DashboardAction" t-inherit-mode="extension">
+        <xpath expr="//SpreadsheetShareButton" position="attributes">
+            <attribute name="t-if">bfBiShare.allowed</attribute>
+        </xpath>
+    </t>
+</templates>

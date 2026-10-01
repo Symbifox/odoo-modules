@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_bi_measure_view_list" model="ir.ui.view">
+        <field name="name">bf.bi.measure.list</field>
+        <field name="model">bf.bi.measure</field>
+        <field name="arch" type="xml">
+            <list string="Named measures">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="kind"/>
+                <field name="model_id" optional="show"/>
+                <field name="unit" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_bi_measure_view_form" model="ir.ui.view">
+        <field name="name">bf.bi.measure.form</field>
+        <field name="model">bf.bi.measure</field>
+        <field name="arch" type="xml">
+            <form string="Named measure">
+                <header>
+                    <button name="action_test" type="object" string="Test" invisible="not id"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Billable hours"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" placeholder="e.g. billable_hours"/>
+                            <field name="kind" widget="radio" options="{'horizontal': true}"/>
+                            <field name="unit"/>
+                            <field name="comparison"/>
+                            <field name="active" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group invisible="kind != 'aggregate'">
+                            <field name="model_id" required="kind == 'aggregate'" options="{'no_create': True}"/>
+                            <field name="model_name" invisible="1"/>
+                            <field name="aggregator" required="kind == 'aggregate'"/>
+                            <field name="field_id" options="{'no_create': True}" placeholder="Number of records"/>
+                            <field name="date_field_id" options="{'no_create': True}"/>
+                            <field name="partner_field_id" options="{'no_create': True}"/>
+                        </group>
+                        <group invisible="kind != 'formula'">
+                            <field name="expression" required="kind == 'formula'" placeholder="e.g. revenue - cost"/>
+                        </group>
+                    </group>
+                    <group invisible="kind != 'aggregate' or not model_name">
+                        <field name="domain" widget="domain" options="{'model': 'model_name', 'in_dialog': True}"/>
+                    </group>
+                    <p class="text-muted">
+                        In a dashboard: <code>=BF.MEASURE("code")</code>, or <code>=BF.MEASURE("code", -1)</code>
+                        for the previous period; or the editor's “Insert a measure” button. The value is always
+                        computed for the person looking at the dashboard, under their own access rights, and
+                        follows the dashboard's Period and Customer filters.
+                    </p>
+                    <field name="description" placeholder="What this measure means, for the people who read it"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_bi_action_measures" model="ir.actions.act_window">
+        <field name="name">Named measures</field>
+        <field name="res_model">bf.bi.measure</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Define a measure once</p>
+            <p>“Margin”, “Billable hours”, “Budget variance”: reusable in every dashboard, computed for each reader.</p>
+        </field>
+    </record>
+
+    <menuitem id="bf_bi_menu_measures"
+              name="Named measures"
+              parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="bf_bi_action_measures"
+              groups="bf_bi.group_bi_designer"
+              sequence="60"/>
+</odoo>

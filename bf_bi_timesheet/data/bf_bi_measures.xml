@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate : on peut ajuster une mesure livrée sans qu'une mise à jour l'écrase. -->
+    <data noupdate="1">
+        <record id="measure_hours" model="bf.bi.measure">
+            <field name="name">Hours</field>
+            <field name="code">hours</field>
+            <field name="kind">aggregate</field>
+            <field name="unit">hours</field>
+            <field name="comparison">percentage</field>
+            <field name="company_id" eval="False"/>
+            <field name="description">Hours entered on projects.</field>
+            <field name="model_id" search="[('model', '=', 'account.analytic.line')]"/>
+            <field name="aggregator">sum</field>
+            <field name="domain">[('project_id', '!=', False)]</field>
+            <field name="field_id" search="[('model', '=', 'account.analytic.line'), ('name', '=', 'unit_amount')]"/>
+            <field name="date_field_id" search="[('model', '=', 'account.analytic.line'), ('name', '=', 'date')]"/>
+            <field name="partner_field_id" search="[('model', '=', 'account.analytic.line'), ('name', '=', 'partner_id')]"/>
+        </record>
+        <record id="measure_revenue" model="bf.bi.measure">
+            <field name="name">Revenue</field>
+            <field name="code">revenue</field>
+            <field name="kind">aggregate</field>
+            <field name="unit">currency</field>
+            <field name="comparison">percentage</field>
+            <field name="company_id" eval="False"/>
+            <field name="description">Posted customer invoices minus credit notes, before taxes.</field>
+            <field name="model_id" search="[('model', '=', 'account.move')]"/>
+            <field name="aggregator">sum</field>
+            <field name="domain">[('move_type', 'in', ('out_invoice', 'out_refund')), ('state', '=', 'posted')]</field>
+            <field name="field_id" search="[('model', '=', 'account.move'), ('name', '=', 'amount_untaxed_signed')]"/>
+            <field name="date_field_id" search="[('model', '=', 'account.move'), ('name', '=', 'invoice_date')]"/>
+            <field name="partner_field_id" search="[('model', '=', 'account.move'), ('name', '=', 'partner_id')]"/>
+        </record>
+        <record id="measure_timesheet_amount" model="bf.bi.measure">
+            <field name="name">Timesheet amount</field>
+            <field name="code">timesheet_amount</field>
+            <field name="kind">aggregate</field>
+            <field name="unit">currency</field>
+            <field name="comparison">percentage</field>
+            <field name="company_id" eval="False"/>
+            <field name="description">Cost of the hours as recorded on timesheets (negative).</field>
+            <field name="model_id" search="[('model', '=', 'account.analytic.line')]"/>
+            <field name="aggregator">sum</field>
+            <field name="domain">[('project_id', '!=', False)]</field>
+            <field name="field_id" search="[('model', '=', 'account.analytic.line'), ('name', '=', 'amount')]"/>
+            <field name="date_field_id" search="[('model', '=', 'account.analytic.line'), ('name', '=', 'date')]"/>
+            <field name="partner_field_id" search="[('model', '=', 'account.analytic.line'), ('name', '=', 'partner_id')]"/>
+        </record>
+        <record id="measure_labour_cost" model="bf.bi.measure">
+            <field name="name">Labour cost</field>
+            <field name="code">labour_cost</field>
+            <field name="kind">formula</field>
+            <field name="unit">currency</field>
+            <field name="comparison">percentage</field>
+            <field name="company_id" eval="False"/>
+            <field name="description">Cost of the hours worked, from employees' hourly cost.</field>
+            <field name="expression">0 - timesheet_amount</field>
+        </record>
+        <record id="measure_margin" model="bf.bi.measure">
+            <field name="name">Margin</field>
+            <field name="code">margin</field>
+            <field name="kind">formula</field>
+            <field name="unit">currency</field>
+            <field name="comparison">percentage</field>
+            <field name="company_id" eval="False"/>
+            <field name="description">Revenue minus labour cost.</field>
+            <field name="expression">revenue - labour_cost</field>
+        </record>
+        <record id="measure_margin_rate" model="bf.bi.measure">
+            <field name="name">Margin rate</field>
+            <field name="code">margin_rate</field>
+            <field name="kind">formula</field>
+            <field name="unit">percent</field>
+            <field name="comparison">difference</field>
+            <field name="company_id" eval="False"/>
+            <field name="description">Margin as a share of revenue.</field>
+            <field name="expression">margin / revenue</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_bi.AddToDashboardButton">
+        <div class="btn-group" role="toolbar" t-if="bfBi.canDesign">
+            <button class="btn btn-secondary o_bf_bi_add" t-on-click="bfBiAddToDashboard"
+                    t-att-disabled="bfBiDisabled" data-tooltip="Add to a dashboard">
+                <i class="fa fa-th-large me-1" aria-hidden="true"/>Add to a dashboard
+            </button>
+        </div>
+    </t>
+
+    <t t-inherit="web.PivotView.Buttons" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_pivot_buttons')]" position="inside">
+            <t t-call="bf_bi.AddToDashboardButton"/>
+        </xpath>
+    </t>
+
+    <t t-inherit="web.GraphView.Buttons" t-inherit-mode="extension">
+        <xpath expr="." position="inside">
+            <t t-call="bf_bi.AddToDashboardButton"/>
+        </xpath>
+    </t>
+
+    <t t-name="bf_bi.AddToDashboardDialog">
+        <Dialog title.translate="Add to a dashboard" size="'md'">
+            <div class="o_bf_bi_add_dialog">
+                <p class="text-muted mb-2"><strong t-esc="props.spec.name"/> will be added as:</p>
+                <div class="btn-group mb-3 o_bf_bi_as" role="group" aria-label="Add as">
+                    <input type="radio" class="btn-check" id="bf_bi_as_main" t-att-value="props.spec.kind" t-model="state.as"/>
+                    <label class="btn btn-outline-secondary" for="bf_bi_as_main">
+                        <t t-if="props.spec.kind === 'pivot'">Pivot table</t><t t-else="">Chart</t>
+                    </label>
+                    <input type="radio" class="btn-check" id="bf_bi_as_kpi" value="kpi" t-model="state.as"/>
+                    <label class="btn btn-outline-secondary" for="bf_bi_as_kpi">Indicator</label>
+                </div>
+                <p t-if="state.as === 'kpi'" class="text-muted small">
+                    One big number: the total of <strong t-esc="props.spec.measureLabel"/> over the
+                    chosen period, compared with the whole previous period.
+                </p>
+                <p t-if="props.spec.dateField" class="text-muted small">
+                    The dashboard's “Period” filter will also apply to this addition.
+                </p>
+                <p t-if="followsViewer" class="alert alert-info py-2" role="status">
+                    A filter of this view follows the person looking (for example “My
+                    Timesheets”): everyone will see their own lines, not yours.
+                </p>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" id="bf_bi_new" value="new"
+                           t-model="state.choice"/>
+                    <label class="form-check-label" for="bf_bi_new">New dashboard</label>
+                    <input t-if="state.choice === 'new'" class="form-control mt-1" t-model="state.newName"
+                           aria-label="Name of the new dashboard"/>
+                </div>
+                <t t-foreach="state.dashboards" t-as="dashboard" t-key="dashboard.id">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" t-att-id="'bf_bi_d' + dashboard.id"
+                               t-att-value="dashboard.id" t-model="state.choice"/>
+                        <label class="form-check-label" t-att-for="'bf_bi_d' + dashboard.id">
+                            <t t-esc="dashboard.name"/>
+                            <span class="text-muted small ms-1" t-esc="dashboard.section"/>
+                        </label>
+                    </div>
+                </t>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-on-click="confirm" t-att-disabled="state.busy">Add and open</button>
+                <button class="btn btn-secondary" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

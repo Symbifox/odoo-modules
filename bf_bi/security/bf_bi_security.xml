@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_bi_designer" model="res.groups">
+        <field name="name">BI Designer</field>
+        <field name="category_id" ref="base.module_category_productivity_dashboard"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">Creates and edits the dashboards they can see.</field>
+    </record>
+
+    <!-- Un administrateur des tableaux de bord est concepteur. (4, …) ajoute sans rien
+         retirer : une mise à jour de spreadsheet_dashboard ne défait pas ce lien. -->
+    <record id="spreadsheet_dashboard.group_dashboard_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('bf_bi.group_bi_designer'))]"/>
+    </record>
+
+    <record id="group_bi_share" model="res.groups">
+        <field name="name">Share a dashboard by public link</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="comment">The public link shows a snapshot of what the sharing person sees, to anyone who has the link.</field>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- L'accès aux versions suit celui du tableau de bord. La règle ne passe pas par
+         les règles du tableau de bord (un chemin dans un domaine de règle est lu sans
+         elles) : elle en reprend donc les deux conditions, groupes et société. -->
+    <record id="rule_bf_bi_dashboard_version_groups" model="ir.rule">
+        <field name="name">Dashboard versions: dashboard groups</field>
+        <field name="model_id" ref="model_bf_bi_dashboard_version"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('dashboard_id.group_ids', 'in', user.groups_id.ids)]</field>
+    </record>
+    <record id="rule_bf_bi_dashboard_version_company" model="ir.rule">
+        <field name="name">Dashboard versions: company</field>
+        <field name="model_id" ref="model_bf_bi_dashboard_version"/>
+        <field name="domain_force">[('dashboard_id.company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="rule_bf_bi_measure_company" model="ir.rule">
+        <field name="name">Named measures: company</field>
+        <field name="model_id" ref="model_bf_bi_measure"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+</odoo>

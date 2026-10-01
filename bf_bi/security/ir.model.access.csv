@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_spreadsheet_dashboard_bi_designer,spreadsheet.dashboard concepteur BI,spreadsheet_dashboard.model_spreadsheet_dashboard,bf_bi.group_bi_designer,1,1,1,1
+access_bf_bi_dashboard_version_designer,bf.bi.dashboard.version concepteur BI,model_bf_bi_dashboard_version,bf_bi.group_bi_designer,1,0,0,0
+access_bf_bi_connection_system,bf.bi.connection administrateur,model_bf_bi_connection,base.group_system,1,1,1,1
+access_bf_bi_measure_user,bf.bi.measure employee,model_bf_bi_measure,base.group_user,1,0,0,0
+access_bf_bi_measure_designer,bf.bi.measure BI designer,model_bf_bi_measure,bf_bi.group_bi_designer,1,1,1,1
+access_ir_model_bi_designer,ir.model BI designer (read),base.model_ir_model,bf_bi.group_bi_designer,1,0,0,0
+access_ir_model_fields_bi_designer,ir.model.fields BI designer (read),base.model_ir_model_fields,bf_bi.group_bi_designer,1,0,0,0
