@@ -140,7 +140,13 @@ class BfClaudeChatMobileApi(http.Controller):
             # api 6 : `res_label` sur chaque conversation de
             # `/sessions` (« Type · Nom », ou faux), `list_mode` dans la
             # réponse, et `/list-mode` pour mémoriser le choix sur l'usager.
-            "api": 6,
+            # api 7 : `closure_state`, `closure_reason` et
+            # `link_task` sur chaque conversation et dans `/messages`,
+            # `followup` sur un message de relance, `/sessions?follow=1`,
+            # `/closure-answer` et `/link-answer`. La notification du jour a
+            # le type `genfox_follow` (title, body, count, fermer, attend,
+            # relance) et part avec le courriel quotidien.
+            "api": 7,
             "enabled": bool(settings["enabled"]),
             # Parité complète depuis l'api 2 : mêmes outils qu'au bureau.
             "readonly": False,
@@ -170,6 +176,8 @@ class BfClaudeChatMobileApi(http.Controller):
         requete = (kw.get("q") or "").strip()[:200]
         if requete:
             domaine += Session._search_domain(requete)
+        if kw.get("follow") in ("1", "true", "True"):
+            domaine += Session._to_follow_domain()
         try:
             limite = max(1, min(int(kw.get("limit") or 30), 100))
             decalage = max(0, int(kw.get("offset") or 0))
@@ -179,7 +187,7 @@ class BfClaudeChatMobileApi(http.Controller):
             domaine,
             ["name", "write_date", "message_count", "origin", "res_model",
              "res_id", "name_manual"],
-            order="write_date desc", limit=limite, offset=decalage,
+            order="list_date desc, id desc", limit=limite, offset=decalage,
         )
         # Plusieurs conversations peuvent travailler en même temps : la liste
         # dit lesquelles, pour qu'on sache où une réponse va tomber.
@@ -189,7 +197,9 @@ class BfClaudeChatMobileApi(http.Controller):
             row["busy"] = bool(tour)
             row["turn_id"] = tour.id if tour else False
         Session._with_res_labels(rows)
-        return _json({"sessions": rows, "list_mode": Session._list_mode()})
+        Session._with_closure(rows)
+        return _json({"sessions": rows, "list_mode": Session._list_mode(),
+                      "closure_enabled": Session._closure_enabled()})
 
     @http.route(f"{BASE}/messages", type="http", auth="public", methods=["GET"],
                 csrf=False, save_session=False)
@@ -204,7 +214,7 @@ class BfClaudeChatMobileApi(http.Controller):
             return _json({"error": "conversation introuvable"}, 404)
         rows = request.env["claude.chat.message"].search_read(
             [("session_id", "=", session.id), ("internal", "=", False)],
-            ["role", "content", "state", "end_reason", "tool_log", "create_date",
+            ["role", "content", "state", "end_reason", "tool_log", "create_date", "followup",
              "input_tokens", "output_tokens", "cache_read_tokens",
              "cache_write_tokens", "net_tokens", "total_tokens", "cost_usd",
              "duration_ms"],
@@ -215,7 +225,7 @@ class BfClaudeChatMobileApi(http.Controller):
             # `search_read` rend `false` pour un texte vide ; `/turn` rend "".
             row["end_reason"] = row.get("end_reason") or ""
         return _json({"session_id": session.id, "session_name": session.name,
-                      "messages": rows})
+                      "messages": rows, **session._closure_payload()})
 
     # ── Poser une question ────────────────────────────────────────────
     @http.route(f"{BASE}/ask", type="http", auth="public", methods=["POST"],
@@ -254,6 +264,11 @@ class BfClaudeChatMobileApi(http.Controller):
             session = Session.browse(int(body["session_id"]))
             if not session.exists() or session.user_id != user:
                 return _json({"error": "conversation introuvable"}, 404)
+            # Une conversation archivée à laquelle on reparle (lien
+            # du courriel quotidien, écran resté ouvert) revient dans la liste
+            # plutôt que de recevoir des tours invisibles.
+            if not session.active:
+                session.active = True
             # Un tour à la fois par conversation, comme au bureau :
             # deux CLI sur la même conversation Claude enregistrent tous deux
             # « (No response) ». Rien n'est écrit, et l'app reprend le tour en
@@ -434,6 +449,47 @@ class BfClaudeChatMobileApi(http.Controller):
             return _json({"error": "conversation introuvable"}, 404)
         session.write({"active": False})
         return _json({"ok": True})
+
+    # ── Fermeture ─────────────────────────────────────────
+    def _own_session(self):
+        device = _device()
+        if not device:
+            return None, _json({"error": "unauthorized"}, 401)
+        request.update_env(user=device.user_id.id)
+        try:
+            sid = int(_body().get("session_id") or 0)
+        except (TypeError, ValueError):
+            sid = 0
+        # Cherchée parmi les SIENNES, comme au renommage : lire celle d'un
+        # autre lèverait un 403, qui dirait qu'elle existe.
+        session = request.env["claude.chat.session"].search(
+            [("id", "=", sid), ("user_id", "=", request.env.user.id)], limit=1)
+        if not session:
+            return None, _json({"error": "conversation introuvable"}, 404)
+        return session, None
+
+    @http.route(f"{BASE}/closure-answer", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def closure_answer(self, **kw):
+        """« archive » ou « later » sur la proposition de fermeture."""
+        session, refus = self._own_session()
+        if refus:
+            return refus
+        if not session._closure_answer(str(_body().get("answer") or "")):
+            return _json({"error": "réponse inconnue"}, 400)
+        return _json({"ok": True, **session._closure_payload()})
+
+    @http.route(f"{BASE}/link-answer", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def link_answer(self, **kw):
+        """Rattacher la conversation à la tâche proposée par Gen, ou non."""
+        session, refus = self._own_session()
+        if refus:
+            return refus
+        lie = session._link_answer(bool(_body().get("accept")))
+        return _json({"ok": True, "linked": lie,
+                      "res_model": session.res_model or False,
+                      "res_id": session.res_id or False})
 
     @http.route(f"{BASE}/list-mode", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)

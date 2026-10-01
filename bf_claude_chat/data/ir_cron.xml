@@ -26,4 +26,20 @@
         <field name="interval_type">days</field>
         <field name="priority">20</field>
     </record>
+    <!-- Une conversation sans nouvelle depuis deux jours est
+         relancée (message dans la conversation, note interne sur la fiche) ;
+         rien n'est jamais archivé ici. Sans effet tant que le réglage
+         « Conversations aim to close » est éteint. -->
+    <record id="ir_cron_closure_followup" model="ir.cron">
+        <field name="name">Gen: follow up on conversations left without news</field>
+        <field name="model_id" ref="model_claude_chat_session"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_closure_followup()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <!-- 7 h UTC : 3 h à Montréal, loin de toute conversation en cours. -->
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 07:00:00')"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="priority">20</field>
+    </record>
 </odoo>

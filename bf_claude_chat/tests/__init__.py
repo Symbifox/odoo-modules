@@ -6,3 +6,4 @@ from . import test_tours
 from . import test_plafond
 from . import test_nommage
 from . import test_liste
+from . import test_fermeture

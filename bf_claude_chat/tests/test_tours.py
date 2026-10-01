@@ -266,7 +266,11 @@ class TestFilDuTour(TransactionCase):
         self.lancer(pont)
         self.assertEqual([a[0] for a in pont.appels],
                          ["/chat-stream", "/chat-attach", "/chat-stream"])
-        self.assertEqual(pont.appels[2][1]["message"], "Ma question")
+        # La question repart, pas la consigne de reprise. Avec la
+        # fermeture allumée, sa propre consigne voyage avec elle.
+        renvoi = pont.appels[2][1]["message"]
+        self.assertTrue(renvoi.startswith("Ma question"))
+        self.assertNotIn("cut off", renvoi)
         self.assertEqual(self.message.content, "Réponse.")
 
     def test_un_fil_repris_relit_le_tour_depuis_le_pont(self):

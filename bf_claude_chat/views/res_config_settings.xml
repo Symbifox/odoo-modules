@@ -18,6 +18,10 @@
                                  help="Stream answers token by token with tool and thinking activity (console-like). When off, replies are buffered.">
                             <field name="claude_streaming"/>
                         </setting>
+                        <setting string="Conversations aim to close"
+                                 help="At the end of each turn Gen says where the conversation stands, and offers to archive it once everything is done. A nightly pass follows up on conversations left without news for two days. Nothing is ever archived without a click.">
+                            <field name="claude_closure"/>
+                        </setting>
                         <setting string="Proactive brief"
                                  help="When you open the panel on a record you have not discussed yet, Claude opens with a situation report and next actions instead of waiting for a question.">
                             <field name="claude_auto_brief"/>

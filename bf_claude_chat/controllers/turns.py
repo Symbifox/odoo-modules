@@ -45,6 +45,8 @@ from odoo.service.model import PG_CONCURRENCY_ERRORS_TO_RETRY
 
 from odoo.addons.bf_ai_bridge.tools import transport
 
+from ..closure import ClosureFilter, strip_closure
+
 _logger = logging.getLogger(__name__)
 
 # Cadence d'écriture de l'avancement : un jeton par écriture noierait
@@ -252,14 +254,34 @@ class TurnProgress:
         self.tools = list(tools or [])
         self.attempt = attempt
         self._last = 0.0
+        # La balise de fermeture n'atteint ni la base ni l'écran.
+        self.closure = ClosureFilter()
 
     @property
     def content(self):
         return self.prefix + self.text
 
     def on_text(self, delta):
-        self.text += delta or ""
-        self.write()
+        """Ajoute la part affichable du morceau, et la rend pour le relais.
+
+        N'écrit pas : le fil relaie d'abord, puis écrit (`write`), pour que
+        l'écran n'attende pas la base.
+        """
+        visible = self.closure.feed(delta)
+        self.text += visible
+        return visible
+
+    def finish_text(self):
+        """Fin du tour : ce que le filtre retenait encore redevient du texte."""
+        reste = self.closure.finish()
+        self.text += reste
+        return reste
+
+    def reset_closure(self):
+        """Une reprise repart d'un texte neuf : ce qui était retenu est perdu."""
+        verdict = self.closure.verdict
+        self.closure = ClosureFilter()
+        self.closure.verdict = verdict
 
     def on_tool(self, name):
         self.tools.append({"name": name, "at": len(self.content), "attempt": self.attempt})
@@ -309,6 +331,7 @@ class TurnProgress:
     def restart_attempt(self):
         """Le tour en cours sera relu depuis le début : oublier sa part."""
         self.text = ""
+        self.closure = ClosureFilter()
         self.tools = [t for t in self.tools if t.get("attempt", 0) < self.attempt]
 
     def beat(self):
@@ -339,6 +362,35 @@ class TurnProgress:
             # L'avancement est un confort : son échec ne doit pas casser le tour.
             _logger.warning("Gen : écriture d'avancement échouée", exc_info=True)
             return None
+
+
+#: Trames que le fil réécrit avant de les relayer.
+_REWRITTEN = frozenset({"text", "done", "error"})
+
+
+def cleaned_frames(frame, evenements, feed):
+    """Les trames à relayer pour une trame du pont, balise de fermeture ôtée.
+
+    `feed` passe un morceau de texte au filtre et rend sa part affichable : le
+    fil du tour donne celui de sa progression, un suiveur le sien. Une trame
+    sans texte ni fin part telle quelle ; `done` et `error`, qui rendent la
+    réponse entière, sont nettoyés.
+    """
+    if not {nom for nom, _d in evenements} & _REWRITTEN:
+        yield frame
+        return
+    for nom, data in evenements:
+        if nom == "text":
+            visible = feed(data.get("delta"))
+            if visible:
+                yield sse("text", dict(data, delta=visible))
+        elif nom in _REWRITTEN:
+            propre = dict(data)
+            if isinstance(data.get("response"), str):
+                propre["response"] = strip_closure(data["response"])[0].strip()
+            yield sse(nom, propre)
+        else:
+            yield sse(nom, data)
 
 
 def _usage_add(total, final):
@@ -443,6 +495,9 @@ def _load(db_name, message_id):
             "session_name": session.name,
             "origin": session.origin,
             "user_id": session.user_id.id,
+            # Relue à chaque départ de fil, jamais stockée dans la
+            # charge : le réglage peut changer entre deux reprises.
+            "closure_note": session._closure_note(),
         }
 
 
@@ -465,7 +520,12 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
     usage = {}
     debut = time.monotonic()
     mode = "attach" if attach else "start"
+    note = etat.get("closure_note") or ""
     start_payload = dict(base, turn_key=turn_key, wall_seconds=wall_seconds)
+    if note and question:
+        # La question enregistrée reste celle de la personne : la consigne ne
+        # voyage que vers le pont (titre, recherche et écran ne la voient pas).
+        start_payload["message"] = question + note
     if etat["api_key"]:
         start_payload["api_key"] = etat["api_key"]
     rattache_tente = False
@@ -486,7 +546,11 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
                 chunks = transport.stream(socket_path, "/chat-attach", {
                     "turn_key": turn_key, "tenant": tenant, "offset": 0}, timeout)
             for morceau, evenements in relay_frames(chunks):
-                listener.put(morceau)
+                # Relayé d'abord (texte filtré au passage), écrit ensuite.
+                for sortie in cleaned_frames(morceau, evenements, progress.on_text):
+                    listener.put(sortie)
+                if any(nom == "text" for nom, _d in evenements):
+                    progress.write()
                 progress.beat()
                 for nom, data in evenements:
                     if nom == "meta":
@@ -494,7 +558,7 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
                         if data.get("session_id"):
                             claude_sid = data["session_id"]
                     elif nom == "text":
-                        progress.on_text(data.get("delta"))
+                        pass  # déjà passé au filtre par cleaned_frames
                     elif nom == "tool":
                         progress.on_tool(data.get("name") or "tool")
                     elif nom == "tool_detail":
@@ -541,12 +605,15 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
                 and time.monotonic() - debut < RUNNER_MAX_SECONDS):
             if pourquoi in ("bridge_lost", "unknown_turn"):
                 _wait_for_bridge(socket_path, 90, beat=progress.beat)
+            # Ce que le filtre retenait fait partie de ce qui est écrit.
+            progress.finish_text()
             deja_ecrit = progress.content.strip()
             if deja_ecrit or a_parle:
                 progress.prefix = (deja_ecrit + "\n\n") if deja_ecrit else ""
                 progress.text = ""
+                progress.reset_closure()
                 start_payload = dict(
-                    base, message=CONTINUE_PROMPT.format(reason=pourquoi),
+                    base, message=CONTINUE_PROMPT.format(reason=pourquoi) + note,
                     session_id=claude_sid or None, wall_seconds=wall_seconds)
                 if etat["api_key"]:
                     start_payload["api_key"] = etat["api_key"]
@@ -570,6 +637,10 @@ def run_turn(db_name, message_id, socket_path, timeout, *, attach=False,
             continue
         break
 
+    # Ce que le filtre retenait encore rejoint le texte enregistré. Il ne part
+    # pas à l'écran : `done` vient de lui rendre la réponse entière, et
+    # l'événement `final` qui suit porte le contenu enregistré.
+    progress.finish_text()
     message_final = _finalize(db_name, message_id, progress, final, usage, claude_sid,
                               stopped, question, etat, session_was_new, socket_path)
     if message_final:
@@ -583,7 +654,10 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
               question, etat, session_was_new, socket_path):
     from .main import _generate_smart_title
     en_erreur = final.get("_event") == "error"
-    reponse = (final.get("response") or "").strip()
+    reponse, verdict = strip_closure(final.get("response") or "")
+    reponse = reponse.strip()
+    # La réponse entière fait foi ; le flux, à défaut (tour coupé).
+    verdict = verdict or progress.closure.verdict
     if not en_erreur:
         corps = reponse or progress.text.strip()
     else:
@@ -637,12 +711,13 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
                     and not en_erreur and question:
                 titre = (question[:60] + "...") if len(question) > 60 else question
                 svals["name"] = titre
-            if svals:
-                session.write(svals)
+            svals.update(session._closure_vals(verdict, failed=en_erreur))
+            session.write(svals)
             return {
                 "session_id": session.id,
                 "mobile": session.origin == "mobile",
                 "titre": titre,
+                "closure": session._closure_payload(),
             }
 
     try:
@@ -668,6 +743,7 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
         "content": contenu,
         "state": vals["state"],
         "end_reason": raison,
+        "closure": enregistre["closure"],
         "usage": {k: vals.get(k, 0) for k in (
             "input_tokens", "output_tokens", "cache_read_tokens",
             "cache_write_tokens", "duration_ms", "cost_usd")},

@@ -1,5 +1,68 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.32.0 - 2026-09-30
+
+### Le chemin sans flux
+
+- Avec « Stream responses » éteint (`/claude-chat/send`), un tour met à jour la
+  dernière activité comme les autres : une conversation tenue ainsi ne passe
+  plus à « dort » au bout de deux jours, et la liste la remonte.
+- Une réponse réduite à la balise de fermeture ne s'affiche plus jamais.
+
+## 18.0.1.31.0 - 2026-09-30
+
+### Correctifs de la relecture adverse
+
+- La notification du jour part au plus une fois par jour et par personne (jour
+  local), même inscrite à plusieurs courriels quotidiens
+  (`res.users.gen_closure_push_date`).
+- Une conversation archivée à laquelle on reparle revient dans la liste, au
+  bureau comme au téléphone, plutôt que de recevoir des tours invisibles.
+- La page Gen ne reste plus pointée sur une conversation introuvable (lien vers
+  la conversation d'un autre).
+
+## 18.0.1.30.0 - 2026-09-30
+
+### La notification du jour et le lien du courriel
+
+- `_closure_counts(user)` compte ce qui attend la personne (à fermer, t'attend,
+  relancées) et `_push_closure_summary(user)` l'envoie au téléphone par
+  UnifiedPush, type `genfox_follow`, seulement s'il y a quelque chose. Une appli
+  qui ne connaît pas ce type l'ignore.
+- `?gen_session=<id>` dans l'adresse de la page Gen ouvre cette conversation
+  (liens du courriel quotidien). Le serveur refuse la conversation d'un autre.
+
+## 18.0.1.29.0 - 2026-09-30
+
+### Chaque conversation vise sa fermeture, comme un billet
+
+- **En fin de tour, Gen juge où en est la conversation** : travail restant,
+  t'attend, idéation, terminée. La consigne part au message du tour, et Gen
+  répond par une balise cachée, retirée du flux avant l'écran et avant la base
+  (`closure.py`). Un chantier n'est « terminé » qu'en production et vérifié ;
+  jamais pendant l'idéation.
+- **« Tout semble fait. Archiver la conversation ? »** sous la conversation,
+  avec « Pas encore ». Archiver garde cinq secondes pour annuler.
+- **Rattacher à une tâche** : une conversation sans fiche peut recevoir, une
+  seule fois, la proposition de la tâche que Gen a nommée, si la personne peut
+  la lire.
+- **La passe de nuit** relance, une fois par période d'inactivité, ce qui dort
+  depuis deux jours : un message dans la conversation et une note interne
+  silencieuse, signée OdooBot, sur la fiche rattachée (seulement si la personne
+  pourrait y poster). Une conversation jamais jugée passe à « dort ». **Rien
+  n'est jamais archivé sans un clic.**
+- **Filtre « À suivre »** et icône d'état dans la liste, au plein écran comme au
+  panneau latéral.
+- Les champs de fermeture sont réservés au serveur, et une conversation ne
+  change plus de propriétaire : la règle d'accès d'Odoo ne vérifie l'écriture
+  qu'avant d'écrire.
+- Les listes se trient sur le dernier mouvement (`list_date`), pas sur
+  `write_date`.
+- **api mobile 7** : `closure_state`, `closure_reason` et `link_task` sur
+  chaque conversation et dans `/messages`, `followup` sur un message de
+  relance, `/sessions?follow=1`, `/closure-answer` et `/link-answer`.
+- Réglage « Les conversations visent leur fermeture », éteint d'office.
+
 ## 18.0.1.28.0 - 2026-09-26
 
 ### L'élément associé en pastille, avec un lien

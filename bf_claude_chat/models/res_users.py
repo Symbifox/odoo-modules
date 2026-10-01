@@ -12,3 +12,7 @@ class ResUsers(models.Model):
         string="Liste Gen",
         default="title",
     )
+    # Le jour (local à la personne) de la dernière notification
+    # « conversations à suivre ». Une seule par jour, même inscrite à plusieurs
+    # courriels quotidiens.
+    gen_closure_push_date = fields.Date(string="Gen follow-up push", copy=False)

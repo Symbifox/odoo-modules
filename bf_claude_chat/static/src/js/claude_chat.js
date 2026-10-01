@@ -5,8 +5,10 @@ import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
+import { router } from "@web/core/browser/router";
 import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
 import { listModeMixin } from "@bf_claude_chat/js/gen_list_mode";
+import { closureMixin } from "@bf_claude_chat/js/gen_closure";
 import {
     followTurn, newClientToken, pendingToStreaming, stopTurn, streamingFields,
 } from "@bf_claude_chat/js/gen_turn";
@@ -198,6 +200,7 @@ class ClaudeChatAction extends Component {
             streamingActive: false,
             editingSessionId: null,
             ...listModeMixin.listModeState(),
+            ...closureMixin.closureState(),
             editingName: "",
             shareOpen: false,
             shareQuery: "",
@@ -207,8 +210,16 @@ class ClaudeChatAction extends Component {
 
         this._shareDebounce = null;
 
-        onMounted(() => {
-            this.loadSessions();
+        // Un lien du courriel quotidien ouvre SA conversation
+        // (`?gen_session=<id>`). Lu ICI, avant tout `await` : le service
+        // d'actions réécrit l'adresse au montage et le paramètre disparaît.
+        // Le serveur refuse la conversation d'un autre.
+        const demandee = parseInt(
+            (router.current || {}).gen_session
+            || new URLSearchParams(window.location.search).get("gen_session"), 10);
+        onMounted(async () => {
+            await this.loadSessions();
+            if (demandee > 0) await this.onSelectSession(demandee);
         });
     }
 
@@ -216,9 +227,12 @@ class ClaudeChatAction extends Component {
 
     async loadSessions() {
         try {
-            const result = await rpc("/claude-chat/sessions", {});
+            const result = await rpc("/claude-chat/sessions", {
+                to_follow: this.state.toFollow,
+            });
             this.state.sessions = result.sessions || [];
             this.applyListMode(result);
+            this.applyClosureEnabled(result);
             if (result.streaming !== undefined) this.state.streaming = result.streaming;
         } catch (e) {
             this.notification.add(_t("Failed to load sessions"), { type: "danger" });
@@ -226,14 +240,30 @@ class ClaudeChatAction extends Component {
     }
 
     async loadMessages(sessionId) {
+        // L'ancien bandeau ne doit pas rester au-dessus de la nouvelle
+        // conversation pendant l'appel (son « Archiver » viserait celle-ci).
+        this.state.closure = null;
         try {
             const result = await rpc("/claude-chat/messages", {
                 session_id: sessionId,
             });
+            if (result.error) {
+                // Un lien vers une conversation qui n'est pas à
+                // soi (ou disparue) ne laisse pas l'écran pointé dessus.
+                this.state.activeSessionId = null;
+                this.state.messages = [];
+                this.notification.add(_t("Failed to load messages"), { type: "danger" });
+                return;
+            }
             this.state.messages = (result.messages || []).map((m) => (
                 m.state === "error" ? { ...m, interrupted: true } : m));
+            this.applyClosure(result);
             this.scrollToBottom();
         } catch (e) {
+            // Refusée par la règle d'accès (conversation d'autrui) : l'écran
+            // ne reste pas pointé sur elle.
+            this.state.activeSessionId = null;
+            this.state.messages = [];
             this.notification.add(_t("Failed to load messages"), { type: "danger" });
             return;
         }
@@ -245,6 +275,7 @@ class ClaudeChatAction extends Component {
     async onNewChat() {
         this.state.activeSessionId = null;
         this.state.messages = [];
+        this.state.closure = null;
         // Create session on first message instead of eagerly
         this.state.activeSessionId = -1; // sentinel: new unsaved session
         this.focusInput();
@@ -290,19 +321,9 @@ class ClaudeChatAction extends Component {
         }
     }
 
-    async onDeleteSession(sessionId) {
-        try {
-            await rpc("/claude-chat/delete-session", {
-                session_id: sessionId,
-            });
-            this.state.sessions = this.state.sessions.filter((s) => s.id !== sessionId);
-            if (this.state.activeSessionId === sessionId) {
-                this.state.activeSessionId = null;
-                this.state.messages = [];
-            }
-        } catch (e) {
-            this.notification.add(_t("Failed to delete session"), { type: "danger" });
-        }
+    onDeleteSession(sessionId) {
+        // 5 s pour annuler, comme dans l'appli.
+        this.archiveWithUndo(sessionId);
     }
 
     async onSend() {
@@ -456,6 +477,9 @@ class ClaudeChatAction extends Component {
             this.state.streamingActive = false;
             this._streamAbort = null;
             this._streamAssistant = null;
+        }
+        if (assistant.closure && this.state.messages.includes(assistant)) {
+            this.applyClosure(assistant.closure);
         }
         return outcome;
     }
@@ -614,6 +638,6 @@ class ClaudeChatAction extends Component {
     }
 }
 
-Object.assign(ClaudeChatAction.prototype, listModeMixin);
+Object.assign(ClaudeChatAction.prototype, listModeMixin, closureMixin);
 
 registry.category("actions").add("claude_chat", ClaudeChatAction);

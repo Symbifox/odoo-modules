@@ -10,6 +10,8 @@ from datetime import timedelta
 from odoo import fields
 from odoo.tests import TransactionCase, new_test_user, tagged
 
+from odoo.addons.bf_claude_chat_digest.models.daily_digest_config import _delai
+
 
 @tagged("post_install", "-at_install")
 class TestSectionConsommation(TransactionCase):
@@ -26,15 +28,17 @@ class TestSectionConsommation(TransactionCase):
         # doivent pas brouiller les lectures.
         cls.env["claude.account"].search([]).write({"active": False})
 
-    def _compte(self, nom="Compte d'essai", charge=None):
+    def _compte(self, nom="Compte d'essai", charge=None, courriel=None):
         Compte = self.env["claude.account"]
-        compte_id = Compte.enregistrer_releve(
-            f"/tmp/claude-{nom}", nom=nom, charge=charge or {
+        charge = dict(charge or {
                 "five_hour": {"utilization": 3.0, "resets_at":
                               (fields.Datetime.now() + timedelta(hours=2)).isoformat() + "Z"},
                 "seven_day": {"utilization": 55.0, "resets_at":
                               (fields.Datetime.now() + timedelta(days=2)).isoformat() + "Z"},
-            })
+        })
+        if courriel:
+            charge["account_email"] = courriel
+        compte_id = Compte.enregistrer_releve(f"/tmp/claude-{nom}", nom=nom, charge=charge)
         return Compte.browse(compte_id)
 
     def _section(self, user=None):
@@ -48,7 +52,8 @@ class TestSectionConsommation(TransactionCase):
         self.assertIn("Compte principal", section)
         self.assertIn("55\u00a0%", section)
         self.assertIn("Sous les seuils", section)
-        self.assertIn("bascule", section)
+        self.assertIn("dans 2\u00a0j", section)
+        self.assertIn("dans 2\u00a0h", section)
 
     def test_sans_compte_pas_de_section(self):
         """Un locataire où la sonde ne verse pas n'a rien à dire."""
@@ -105,3 +110,37 @@ class TestSectionConsommation(TransactionCase):
                       "<!-- Divider -->", sortie)
         self.assertEqual(
             self.config._splice_claude_usage_section("<p>x</p>", "<h3>y</h3>"), "<p>x</p>")
+
+    def test_le_delai_se_dit_en_jours_heures_et_minutes(self):
+        maintenant = fields.Datetime.now()
+        cas = {
+            timedelta(days=1, hours=3): "dans 1\u00a0j 3\u00a0h",
+            timedelta(days=2): "dans 2\u00a0j",
+            timedelta(hours=5, minutes=12): "dans 5\u00a0h 12\u00a0min",
+            timedelta(hours=5): "dans 5\u00a0h",
+            timedelta(minutes=42): "dans 42\u00a0min",
+            # Arrondi à la minute avant de découper : pas « 1 j 23 h ».
+            timedelta(days=2) - timedelta(milliseconds=300): "dans 2\u00a0j",
+        }
+        for ecart, attendu in cas.items():
+            self.assertEqual(_delai(maintenant + ecart, maintenant), attendu)
+        self.assertEqual(_delai(maintenant - timedelta(minutes=5), maintenant), "")
+
+    def test_le_courriel_du_compte_parait(self):
+        """Deux abonnements peuvent porter le même nom de maison : le courriel
+        est ce qui les distingue au premier coup d'œil."""
+        compte = self._compte("Compte principal", courriel="personne@exemple.test")
+        self.assertEqual(compte.courriel, "personne@exemple.test")
+        self.assertIn("personne@exemple.test", self._section())
+
+    def test_un_releve_sans_courriel_ne_l_efface_pas(self):
+        """Une sonde plus ancienne ne porte pas le courriel : elle ne doit pas
+        effacer celui qu'une autre a versé."""
+        compte = self._compte("Compte principal", courriel="personne@exemple.test")
+        self._compte("Compte principal")
+        self.assertEqual(compte.courriel, "personne@exemple.test")
+
+    def test_la_jauge_est_bornee(self):
+        barre = self.config._claude_usage_barre(130.0, "#000")
+        self.assertIn('width="100%"', barre)
+        self.assertNotIn('width="0%"', barre)

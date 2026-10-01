@@ -10,9 +10,32 @@
                 <group>
                     <group string="Gen">
                         <field name="include_claude_usage"/>
+                        <field name="include_gen_followups"/>
                     </group>
                 </group>
             </xpath>
+        </field>
+    </record>
+
+    <record id="view_claude_account_list_courriel" model="ir.ui.view">
+        <field name="name">claude.account.list.courriel</field>
+        <field name="model">claude.account</field>
+        <field name="inherit_id" ref="bf_claude_chat.view_claude_account_list"/>
+        <field name="arch" type="xml">
+            <field name="subscription_type" position="before">
+                <field name="courriel"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_claude_account_form_courriel" model="ir.ui.view">
+        <field name="name">claude.account.form.courriel</field>
+        <field name="model">claude.account</field>
+        <field name="inherit_id" ref="bf_claude_chat.view_claude_account_form"/>
+        <field name="arch" type="xml">
+            <field name="subscription_type" position="before">
+                <field name="courriel"/>
+            </field>
         </field>
     </record>
 

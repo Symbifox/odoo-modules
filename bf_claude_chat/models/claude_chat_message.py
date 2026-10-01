@@ -27,6 +27,12 @@ class ClaudeChatMessage(models.Model):
         string="Role",
         required=True,
     )
+    # Écrit par la passe de nuit, pas par un tour de Gen.
+    followup = fields.Boolean(
+        string="Follow-up", default=False, copy=False,
+        help="Follow-up posted by the nightly pass on a conversation left "
+             "without news.",
+    )
     content = fields.Text(
         string="Content",
         required=True,

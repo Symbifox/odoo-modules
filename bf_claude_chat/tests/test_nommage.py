@@ -95,7 +95,9 @@ class TestNommage(TransactionCase):
     def test_la_passe_laisse_les_conversations_endormies(self):
         echanges = [("Q%d" % i, "R%d" % i) for i in range(3)]
         vieille = self._conversation("Endormie", *echanges)
-        self.env.cr.execute("UPDATE claude_chat_session SET write_date = %s WHERE id = %s",
+        # La fenêtre se lit sur la dernière activité, plus sur
+        # `write_date`, que la passe de nuit fait bouger sans conversation.
+        self.env.cr.execute("UPDATE claude_chat_session SET last_activity = %s WHERE id = %s",
                             (fields.Datetime.now() - timedelta(
                                 days=module_session.RETITLE_WINDOW_DAYS + 1), vieille.id))
         vieille.invalidate_recordset()

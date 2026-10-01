@@ -8,6 +8,7 @@ import { _t } from "@web/core/l10n/translation";
 import { router } from "@web/core/browser/router";
 import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
 import { listModeMixin } from "@bf_claude_chat/js/gen_list_mode";
+import { closureMixin } from "@bf_claude_chat/js/gen_closure";
 import {
     followTurn, newClientToken, pendingToStreaming, stopTurn, streamingFields,
 } from "@bf_claude_chat/js/gen_turn";
@@ -295,6 +296,7 @@ export class ClaudeSystrayItem extends Component {
             loaded: false,
             editingSessionId: null,
             ...listModeMixin.listModeState(),
+            ...closureMixin.closureState(),
             editingName: "",
             pageContext: null,       // {model, res_id, display_name, view_type, url}
             contextDismissed: false, // user dismissed the context badge
@@ -455,10 +457,11 @@ export class ClaudeSystrayItem extends Component {
 
     _sessionFilterParams() {
         const ctx = this.state.pageContext;
+        const params = this.state.toFollow ? { to_follow: true } : {};
         if (ctx && ctx.model && ctx.res_id) {
-            return { res_model: ctx.model, res_id: ctx.res_id };
+            return { ...params, res_model: ctx.model, res_id: ctx.res_id };
         }
-        return {};
+        return params;
     }
 
     async loadSessions() {
@@ -467,6 +470,7 @@ export class ClaudeSystrayItem extends Component {
             const result = await rpc("/claude-chat/sessions", params);
             this.state.sessions = result.sessions || [];
             this.applyListMode(result);
+            this.applyClosureEnabled(result);
             if (result.streaming !== undefined) this.state.streaming = result.streaming;
             if (result.auto_brief !== undefined) this.state.autoBrief = result.auto_brief;
             if (result.auto_brief_prompt) this.state.autoBriefPrompt = result.auto_brief_prompt;
@@ -481,12 +485,15 @@ export class ClaudeSystrayItem extends Component {
 
     async selectSession(sessionId) {
         this.state.activeSessionId = sessionId;
+        // L'ancien bandeau ne doit pas viser la nouvelle conversation.
+        this.state.closure = null;
         try {
             const result = await rpc("/claude-chat/messages", {
                 session_id: sessionId,
             });
             this.state.messages = (result.messages || []).map((m) => (
                 m.state === "error" ? { ...m, interrupted: true } : m));
+            this.applyClosure(result);
             this.scrollToBottom();
         } catch {
             this.notification.add(_t("Failed to load messages"), { type: "danger" });
@@ -502,6 +509,7 @@ export class ClaudeSystrayItem extends Component {
         this._capturePageContext();
         this.state.activeSessionId = -1; // sentinel for new
         this.state.messages = [];
+        this.state.closure = null;
         this.focusInput();
     }
 
@@ -631,6 +639,9 @@ export class ClaudeSystrayItem extends Component {
             this._streamAbort = null;
             this._streamAssistant = null;
         }
+        if (assistant.closure && this.state.messages.includes(assistant)) {
+            this.applyClosure(assistant.closure);
+        }
         return outcome;
     }
 
@@ -671,6 +682,7 @@ export class ClaudeSystrayItem extends Component {
             const sessResult = await rpc("/claude-chat/sessions", filterParams);
             this.state.sessions = sessResult.sessions || [];
             this.applyListMode(sessResult);
+            this.applyClosureEnabled(sessResult);
             if (sessResult.streaming !== undefined) this.state.streaming = sessResult.streaming;
             if (wasNewSession) {
                 setTimeout(async () => {
@@ -832,7 +844,7 @@ export class ClaudeSystrayItem extends Component {
     }
 }
 
-Object.assign(ClaudeSystrayItem.prototype, listModeMixin);
+Object.assign(ClaudeSystrayItem.prototype, listModeMixin, closureMixin);
 
 export const systrayClaudeChat = {
     Component: ClaudeSystrayItem,

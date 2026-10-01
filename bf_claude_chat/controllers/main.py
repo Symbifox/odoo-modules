@@ -20,6 +20,7 @@ from odoo.http import request, Response
 from odoo.modules.registry import Registry
 
 from . import turns
+from ..closure import ClosureFilter, strip_closure
 from . import viewer_slots
 
 _logger = logging.getLogger(__name__)
@@ -448,6 +449,11 @@ class ClaudeChatController(http.Controller):
             session = Session.browse(int(session_id))
             if not session.exists() or session.user_id != user:
                 return {"error": "Session not found"}
+            # Une conversation archivée à laquelle on reparle (lien
+            # du courriel quotidien, écran resté ouvert) revient dans la liste
+            # plutôt que de recevoir des tours invisibles.
+            if not session.active:
+                session.active = True
         else:
             vals = {"name": "New Chat", "user_id": user.id}
             if ctx_model and ctx_res_id:
@@ -517,6 +523,14 @@ class ClaudeChatController(http.Controller):
             _logger.exception("Bridge service error")
             return {"error": "An unexpected error occurred."}
 
+        # Une conversation qui a reçu la consigne de fermeture peut
+        # encore écrire la balise ici ; elle ne s'enregistre jamais, même quand
+        # la réponse ne contenait qu'elle.
+        verdict = None
+        if isinstance(data.get("response"), str):
+            propre, verdict = strip_closure(data["response"])
+            data["response"] = propre.strip() or "(No response)"
+
         # Update session with Claude's session ID
         if data.get("session_id") and data["session_id"] != session.claude_session_id:
             session.write({"claude_session_id": data["session_id"]})
@@ -548,6 +562,10 @@ class ClaudeChatController(http.Controller):
             "content": data.get("response", "(No response)"),
             **usage_vals(data),
         })
+        # Le chemin sans flux est un tour comme un autre. Sans cette
+        # écriture, une conversation tenue ainsi passait à « dort » au bout de
+        # deux jours et la liste ne la remontait plus.
+        session.sudo().write(session._closure_vals(verdict))
 
         return {
             "session_id": session.id,
@@ -624,6 +642,11 @@ class ClaudeChatController(http.Controller):
             session = Session.browse(int(session_id))
             if not session.exists() or session.user_id != user:
                 return _err("Session introuvable.")
+            # Une conversation archivée à laquelle on reparle (lien
+            # du courriel quotidien, écran resté ouvert) revient dans la liste
+            # plutôt que de recevoir des tours invisibles.
+            if not session.active:
+                session.active = True
             # One turn at a time per conversation. On 2026-09-14 two
             # « Continue » typed while the first turn was still running each
             # started a second CLI on the same Claude session, and both saved
@@ -782,6 +805,8 @@ class ClaudeChatController(http.Controller):
                 "content": msg.content if msg.content != "…" else "",
                 "state": msg.state,
                 "end_reason": msg.end_reason or "",
+                # L'écran qui suivait le tour lit le verdict ici.
+                "closure": msg.session_id._closure_payload(),
                 "usage": usage_vals({"usage": {
                     "input_tokens": msg.input_tokens,
                     "output_tokens": msg.output_tokens,
@@ -845,8 +870,11 @@ class ClaudeChatController(http.Controller):
                 try:
                     chunks = transport.stream(socket_path, "/chat-attach", {
                         "turn_key": key, "tenant": tenant, "offset": 0}, timeout)
-                    for frame, _events in turns.relay_frames(chunks):
-                        yield frame
+                    # Le suiveur filtre comme le fil, sinon la
+                    # balise de fermeture arrive à l'écran qui revient.
+                    filtre = ClosureFilter()
+                    for frame, events in turns.relay_frames(chunks):
+                        yield from turns.cleaned_frames(frame, events, filtre.feed)
                 except Exception:
                     _logger.info("Gen : rattachement au pont interrompu", exc_info=True)
                 # The bridge turn is over (or gone): wait for the owner to save
@@ -996,8 +1024,11 @@ class ClaudeChatController(http.Controller):
         return {"status": "queued", "turn_id": en_cours.id}
 
     @http.route("/claude-chat/sessions", type="json", auth="user", methods=["POST"])
-    def list_sessions(self, res_model=None, res_id=None, query=None):
+    def list_sessions(self, res_model=None, res_id=None, query=None, to_follow=False):
         """List the current user's chat sessions, optionally filtered by record context.
+
+        ``to_follow`` garde ce qui attend quelque chose (à fermer,
+        t'attend, dort, relancé), et chaque ligne porte son état de fermeture.
 
         Mobile threads are included: since the app moved to /chat they share the
         same session id, the same tools and the same rights, so a conversation
@@ -1011,12 +1042,15 @@ class ClaudeChatController(http.Controller):
         if query:
             domain += request.env["claude.chat.session"]._search_domain(query)
         Session = request.env["claude.chat.session"]
+        if to_follow:
+            domain += Session._to_follow_domain()
         sessions = Session._with_res_labels(Session.search_read(
             domain,
             ["name", "write_date", "message_count", "res_model", "res_id"],
-            order="write_date desc",
+            order="list_date desc, id desc",
             limit=50,
         ))
+        Session._with_closure(sessions)
         ICP = request.env["ir.config_parameter"].sudo()
         streaming = (
             ICP.get_param("bf_claude_chat.streaming", "True") == "True"
@@ -1028,7 +1062,38 @@ class ClaudeChatController(http.Controller):
             "auto_brief": settings_auto_brief(ICP),
             "auto_brief_prompt": AUTO_BRIEF_PROMPT,
             "list_mode": Session._list_mode(),
+            "closure_enabled": Session._closure_enabled(),
         }
+
+    @http.route("/claude-chat/closure-answer", type="json", auth="user", methods=["POST"])
+    def closure_answer(self, session_id, answer):
+        """« Archiver » ou « Pas encore » sur la proposition de Gen."""
+        session = request.env["claude.chat.session"]._own(session_id)
+        if not session:
+            return {"error": "Session not found"}
+        if not session._closure_answer(str(answer or "")):
+            return {"error": "invalid_answer"}
+        return {"status": "ok", **session._closure_payload()}
+
+    @http.route("/claude-chat/restore-session", type="json", auth="user", methods=["POST"])
+    def restore_session(self, session_id):
+        """« Annuler » dans les 5 s qui suivent un archivage."""
+        session = request.env["claude.chat.session"].with_context(
+            active_test=False)._own(session_id)
+        if not session:
+            return {"error": "Session not found"}
+        session.write({"active": True})
+        return {"status": "ok"}
+
+    @http.route("/claude-chat/link-answer", type="json", auth="user", methods=["POST"])
+    def link_answer(self, session_id, accept=False):
+        """Rattacher la conversation à la tâche proposée, ou non."""
+        session = request.env["claude.chat.session"]._own(session_id)
+        if not session:
+            return {"error": "Session not found"}
+        lie = session._link_answer(bool(accept))
+        return {"status": "ok", "linked": lie, "res_model": session.res_model or False,
+                "res_id": session.res_id or False}
 
     @http.route("/claude-chat/list-mode", type="json", auth="user", methods=["POST"])
     def set_list_mode(self, mode):
@@ -1047,10 +1112,11 @@ class ClaudeChatController(http.Controller):
 
         messages = request.env["claude.chat.message"].search_read(
             [("session_id", "=", session.id), ("internal", "=", False)],
-            ["role", "content", "create_date", "state", "end_reason"],
+            ["role", "content", "create_date", "state", "end_reason", "followup"],
             order="create_date asc, id asc",
         )
-        return {"messages": messages, "session_name": session.name}
+        return {"messages": messages, "session_name": session.name,
+                **session._closure_payload()}
 
     @http.route("/claude-chat/rename-session", type="json", auth="user", methods=["POST"])
     def rename_session(self, session_id, name=""):

@@ -851,3 +851,14 @@ body.bf_dark_mode {
         opacity: 1;
     }
 }
+
+// La proposition de fermeture et la relance de nuit.
+.bf-gen-closure-bar {
+    background-color: var(--bs-tertiary-bg, #f8f9fa);
+}
+.bf-gen-followup {
+    border-left: 3px solid var(--bs-warning, #ffc107);
+}
+.bf-gen-closure-icon {
+    flex-shrink: 0;
+}

@@ -37,6 +37,16 @@ class ResConfigSettings(models.TransientModel):
              "(console-like). When off, the chat falls back to a single "
              "buffered reply.",
     )
+    # Éteint d'office, locataire par locataire.
+    claude_closure = fields.Boolean(
+        string="Conversations aim to close",
+        config_parameter="bf_claude_chat.closure_enabled",
+        default=False,
+        help="At the end of each turn Gen says where the conversation stands, "
+             "and offers to archive it once everything is done. A nightly "
+             "pass follows up on conversations left without news for two "
+             "days. Nothing is ever archived without a click.",
+    )
     claude_auto_brief = fields.Boolean(
         string="Brief me when I open a record",
         config_parameter="bf_claude_chat.auto_brief",

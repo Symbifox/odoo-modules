@@ -151,6 +151,8 @@ function applyEvent(host, assistant, event, data, labels) {
             assistant.interrupted = data.state === "error";
             assistant.endReason = data.end_reason || "";
             if (data.message_id) assistant.id = data.message_id;
+            // Où en est la conversation, selon Gen.
+            if (data.closure) assistant.closure = data.closure;
             if (labels && data.usage && data.usage.duration_ms) {
                 assistant.usageLabel = labels.usageLabel(data.usage);
                 assistant.usageTitle = labels.usageTitle(data.usage);
