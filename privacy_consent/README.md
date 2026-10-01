@@ -593,6 +593,15 @@ privacy_consent/
 - **Expiry warning**: available for manual or automated sending
 - **Automated sequences**: configurable email sequences (reminders, renewals)
 
+Since 18.0.5.3.0 these six emails carry only their content, in both languages:
+the shared mail layout (`bf_onboarding_base.bf_mail_layout`, which
+`bluefox_branding` replaces with its own) dresses them at sending time, through
+the template's `email_layout_xmlid`. The title of the former header becomes an
+eyebrow, and the "Preferences" link to the person's portal stays under the
+content. The templates are `noupdate`: the migration strips every stored
+language with the same tool as the source, and leaves a body rebuilt by hand as
+it is (without the shared layout, so it is not dressed twice).
+
 ---
 
 ## Dependencies
@@ -656,6 +665,9 @@ open a ticket in the repository.
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 18.0.5.3.0 | 2026-10-01 | Emails: the six consent templates drop their own shell, one per language, and use the shared mail layout (`email_layout_xmlid`); the header title becomes an eyebrow and the link to the person's preferences stays under the content. The `noupdate` templates are migrated language by language, all or nothing per template; a body rebuilt by hand is left as it is, without the shared layout |
+| 18.0.5.2.0 | 2026-09-28 | **Security.** A public token link is valid for 90 days (`access_token_expires_at`); once expired it no longer opens the consent and offers to email a new one to the address on file, which voids the old token. Migration: tokens already issued get 90 days counted from the upgrade |
+| 18.0.5.1.3 | 2026-09-28 | **Security.** The Fernet key is read from `privacy_consent_fernet_key` in odoo.conf (then `BF_PRIVACY_CONSENT_FERNET_KEY`), the same key as the former system parameter, taken over as is; without it, the module falls back to the database parameter with a warning in the log |
 | 18.0.5.1.2 | 2026-09-27 | **Security.** A replayed DocuSeal notification is answered "Already processed" without side effects (a completed consent could be pushed back to expired, documents were downloaded again) |
 | 18.0.5.1.1 | 2026-09-27 | **Security.** DocuSeal and LibreSign secrets are restricted to privacy managers, encrypted columns to administrators; the manager configuration form and sending now work for non-admin managers. The request wizard escapes names and e-mails in its recipient preview (stored XSS). A **withdrawn** consent can no longer be re-granted from the old public link. Public tokens are compared in constant time. A replayed LibreSign `file_signed` is idempotent |
 | 18.0.5.0.1 | 2026-09-11 | Multi-company fix: the logo in branded emails and public pages now goes through `/brand/logo/<company>[/<variant>]` (bf_onboarding_base) instead of `/web/image/res.company/...`. The latter only serves the real image for the company of the website and returns Odoo's grey placeholder **with an HTTP 200** for every other one, so a secondary company's logo vanished from emails with no error code to show for it |

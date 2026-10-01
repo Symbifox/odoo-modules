@@ -10,6 +10,8 @@ are the ones a lenient implementation quietly turns into "confirmed".
 from odoo import Command
 from odoo.tests import TransactionCase, tagged
 
+from .test_calendar_invite import _speak_french
+
 
 @tagged("post_install", "-at_install")
 class TestCalendarStatus(TransactionCase):
@@ -248,7 +250,7 @@ class TestCalendarPoke(TransactionCase):
 
     def test_poke_is_written_in_the_guests_language(self):
         """Same rule as the invitation: the reader's language, not the sender's."""
-        self.env["res.lang"]._activate_lang("fr_CA")
+        _speak_french(self.env)
         self.guest.lang = "fr_CA"
         event = self._make_event()
         self.assertEqual(event.bf_mail_lang, "fr_CA")

@@ -21,6 +21,10 @@ from odoo.exceptions import UserError
 # déjà accordé, et son retour en arrière passe par l'écran de reconsentement.
 PORTAL_RENEWABLE_STATES = ("granted", "expired", "withdrawn")
 
+#: Durée de vie d'un lien public par jeton. Au-delà,
+#: le lien mène à une page qui offre d'en recevoir un neuf par courriel.
+ACCESS_TOKEN_VALIDITY_DAYS = 90
+
 
 class PrivacyConsent(models.Model):
     _name = "privacy.consent"
@@ -161,6 +165,13 @@ class PrivacyConsent(models.Model):
         index=True,
         help="Jeton unique pour l'accès public à cette demande de consentement",
     )
+    access_token_expires_at = fields.Datetime(
+        string="Échéance du lien public",
+        copy=False,
+        readonly=True,
+        help="Au-delà, le lien reçu par courriel n'ouvre plus le consentement : il offre "
+             "d'en recevoir un neuf.",
+    )
 
     # Evidence
     evidence_ids = fields.One2many(
@@ -282,6 +293,7 @@ class PrivacyConsent(models.Model):
         for vals in vals_list:
             if not vals.get('access_token'):
                 vals['access_token'] = self._generate_access_token()
+            vals.setdefault('access_token_expires_at', self._access_token_deadline())
             # Auto-fill minor / guardian from partner
             if vals.get('subject_partner_id'):
                 partner = self.env['res.partner'].browse(vals['subject_partner_id'])
@@ -304,6 +316,28 @@ class PrivacyConsent(models.Model):
                 if not vals.get('purpose_id') and version.notice_id.purpose_id:
                     vals['purpose_id'] = version.notice_id.purpose_id.id
         return super().create(vals_list)
+
+    @api.model
+    def _access_token_deadline(self):
+        return fields.Datetime.now() + timedelta(days=ACCESS_TOKEN_VALIDITY_DAYS)
+
+    def _access_token_expired(self):
+        self.ensure_one()
+        return bool(self.access_token_expires_at
+                    and self.access_token_expires_at < fields.Datetime.now())
+
+    def _renew_access_token_and_send(self):
+        """Nouveau jeton, nouvelle échéance, et le lien part aux destinataires au dossier.
+
+        L'ancien jeton cesse aussitôt de valoir : un même lien échu ne peut donc
+        demander qu'un seul envoi.
+        """
+        self.ensure_one()
+        self.sudo().write({
+            "access_token": self._generate_access_token(),
+            "access_token_expires_at": self._access_token_deadline(),
+        })
+        self._send_consent_request_email()
 
     def _generate_access_token(self):
         """Generate a unique access token for public URL access."""

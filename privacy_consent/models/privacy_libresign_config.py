@@ -1,11 +1,13 @@
 import logging
+import os
 
 from odoo import api, fields, models
+from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
 try:
-    from cryptography.fernet import Fernet, InvalidToken
+    from cryptography.fernet import Fernet, InvalidToken, MultiFernet
 except ImportError:
     Fernet = None
     InvalidToken = Exception
@@ -95,12 +97,38 @@ class PrivacyLibresignConfig(models.Model):
 
     # === Encryption Methods (shared key with DocuSeal) ===
 
+    # La clé se range hors de la base (odoo.conf, puis variable
+    # d'environnement), comme celle du coffre bf_credentials. C'est la MÊME clé que
+    # l'ancien paramètre système, reprise telle quelle : rien n'est re-chiffré. Sans
+    # clé hors base, on retombe sur le paramètre en base, avec un avertissement.
+    _CLE_ENV = "BF_PRIVACY_CONSENT_FERNET_KEY"
+    _CLE_CONF = "privacy_consent_fernet_key"
+    _CLE_PARAM = "privacy_consent.encryption_key"
+
+    def _cle_hors_base(self):
+        cle = config.get(self._CLE_CONF) or os.environ.get(self._CLE_ENV)
+        return cle.encode() if cle else None
+
+    def _fernet_lecture(self):
+        """Déchiffre avec la clé hors base, puis avec l'ancienne clé en base."""
+        cles = [self._get_encryption_key()]
+        ancienne = self.env["ir.config_parameter"].sudo().get_param(self._CLE_PARAM)
+        if ancienne and ancienne.encode() not in cles:
+            cles.append(ancienne.encode())
+        return MultiFernet([Fernet(c) for c in cles])
+
     def _get_encryption_key(self):
-        """Get or generate encryption key from system parameters."""
+        """Clé de chiffrement : hors base d'abord, sinon le paramètre système."""
         if not Fernet:
             return None
+        hors_base = self._cle_hors_base()
+        if hors_base:
+            return hors_base
         ICP = self.env["ir.config_parameter"].sudo()
         key = ICP.get_param("privacy_consent.encryption_key")
+        _logger.warning(
+            "Clé de chiffrement lue dans le paramètre système %s : rangez-la dans "
+            "%s de odoo.conf.", self._CLE_PARAM, self._CLE_CONF)
         if not key:
             key = Fernet.generate_key().decode()
             ICP.set_param("privacy_consent.encryption_key", key)
@@ -129,7 +157,7 @@ class PrivacyLibresignConfig(models.Model):
         if not key:
             return encrypted_value
         try:
-            f = Fernet(key)
+            f = self._fernet_lecture()
             return f.decrypt(encrypted_value.encode()).decode()
         except InvalidToken:
             _logger.debug("Value appears to be unencrypted, returning as-is")

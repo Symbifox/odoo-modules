@@ -8,6 +8,7 @@
         <field name="partner_to">{{ object.subject_partner_id.id }}</field>
         <field name="subject">{{ 'Reminder: consent request' if object._privacy_mail_is_en() else 'Rappel : demande de consentement' }} - {{ object.purpose_id.name }}</field>
         <field name="lang">{{ object._privacy_mail_lang() }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
     <field name="body_html" type="html">
 <t t-set="company" t-value="('company_id' in object._fields and object.company_id) or user.company_id"/>
 <t t-set="_wlf" t-value="company._fields"/>
@@ -16,36 +17,8 @@
 
 <t t-set="is_en" t-value="object._privacy_mail_is_en()"/>
 <t t-if="is_en">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
-    <tr>
-        <td align="center" style="padding:24px;">
-            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
-                <tbody>
-                    <!-- Header -->
-                    <tr>
-                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="left">
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
-                                        </a>
-                                    </td>
-                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
-                                        Consent reminder
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- Accent Line -->
-                    <tr>
-                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};"> </td>
-                    </tr>
-                    <!-- Main Content -->
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#000000; margin:0 0 8px 0;">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Consent reminder</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#000000; margin:0 0 8px 0;">
                                 📬 Reminder - Consent request
                             </h1>
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
@@ -56,7 +29,7 @@
                             </p>
 
                             <!-- Purpose Box -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="border-left:4px solid {{ brand_primary }}; background-color:#f5f5f5; border-radius:0 10px 10px 0; margin:16px 0;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }}; background-color:#f5f5f5; border-radius:0 10px 10px 0; margin:16px 0;">
                                 <tr>
                                     <td style="padding:16px 20px;">
                                         <strong t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:{{ brand_primary }};"><t t-out="object.purpose_id.name"/></strong>
@@ -81,74 +54,12 @@
                                     </td>
                                 </tr>
                             </table>
-                        </td>
-                    </tr>
-                    <!-- Separator -->
-                    <tr>
-                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;"> </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
-                                    </td>
-                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Preferences</a>
-                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Privacy</a></t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- Bottom Accent -->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
-                <tr>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;"> </td>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;"> </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Preferences</a></p>
         
 </t>
 <t t-else="">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
-    <tr>
-        <td align="center" style="padding:24px;">
-            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
-                <tbody>
-                    <!-- Header -->
-                    <tr>
-                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="left">
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
-                                        </a>
-                                    </td>
-                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
-                                        Rappel de consentement
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- Accent Line -->
-                    <tr>
-                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand_primary }};"> </td>
-                    </tr>
-                    <!-- Main Content -->
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#000000; margin:0 0 8px 0;">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Rappel de consentement</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#000000; margin:0 0 8px 0;">
                                 📬 Rappel - Demande de consentement
                             </h1>
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
@@ -160,7 +71,7 @@
                             </p>
 
                             <!-- Purpose Box -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="border-left:4px solid {{ brand_primary }}; background-color:#f5f5f5; border-radius:0 10px 10px 0; margin:16px 0;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" t-attf-style="border-left-width:4px; border-left-style:solid; border-left-color:{{ brand_primary }}; background-color:#f5f5f5; border-radius:0 10px 10px 0; margin:16px 0;">
                                 <tr>
                                     <td style="padding:16px 20px;">
                                         <strong t-attf-style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:{{ brand_primary }};"><t t-out="object.purpose_id.name"/></strong>
@@ -185,41 +96,7 @@
                                     </td>
                                 </tr>
                             </table>
-                        </td>
-                    </tr>
-                    <!-- Separator -->
-                    <tr>
-                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;"> </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
-                                    </td>
-                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a>
-                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a></t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- Bottom Accent -->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
-                <tr>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;"> </td>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;"> </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a></p>
         
 </t>
 </field>
@@ -234,6 +111,7 @@
         <field name="partner_to">{{ object.subject_partner_id.id }}</field>
         <field name="subject">{{ 'Final reminder: consent request' if object._privacy_mail_is_en() else 'Dernier rappel : demande de consentement' }} - {{ object.purpose_id.name }}</field>
         <field name="lang">{{ object._privacy_mail_lang() }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
     <field name="body_html" type="html">
 <t t-set="company" t-value="('company_id' in object._fields and object.company_id) or user.company_id"/>
 <t t-set="_wlf" t-value="company._fields"/>
@@ -242,36 +120,8 @@
 
 <t t-set="is_en" t-value="object._privacy_mail_is_en()"/>
 <t t-if="is_en">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
-    <tr>
-        <td align="center" style="padding:24px;">
-            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
-                <tbody>
-                    <!-- Header -->
-                    <tr>
-                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="left">
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
-                                        </a>
-                                    </td>
-                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
-                                        Final reminder
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- Accent Line - Red for urgency -->
-                    <tr>
-                        <td style="height:4px; line-height:4px; background-color:#dc3545;"> </td>
-                    </tr>
-                    <!-- Main Content -->
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#dc3545; margin:0 0 8px 0;">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Final reminder</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#dc3545; margin:0 0 8px 0;">
                                 ⚠️ Final reminder - Action required
                             </h1>
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
@@ -282,7 +132,7 @@
                             </p>
 
                             <!-- Purpose Box - Warning style -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #ffc107; background-color:#fff3cd; border-radius:0 10px 10px 0; margin:16px 0;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left-width:4px; border-left-style:solid; border-left-color:#ffc107; background-color:#fff3cd; border-radius:0 10px 10px 0; margin:16px 0;">
                                 <tr>
                                     <td style="padding:16px 20px;">
                                         <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#856404;"><t t-out="object.purpose_id.name"/></strong>
@@ -307,74 +157,12 @@
                                     </td>
                                 </tr>
                             </table>
-                        </td>
-                    </tr>
-                    <!-- Separator -->
-                    <tr>
-                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;"> </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
-                                    </td>
-                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Preferences</a>
-                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Privacy</a></t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- Bottom Accent -->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
-                <tr>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;"> </td>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;"> </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Preferences</a></p>
         
 </t>
 <t t-else="">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
-    <tr>
-        <td align="center" style="padding:24px;">
-            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
-                <tbody>
-                    <!-- Header -->
-                    <tr>
-                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="left">
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
-                                        </a>
-                                    </td>
-                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
-                                        Dernier rappel
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- Accent Line - Red for urgency -->
-                    <tr>
-                        <td style="height:4px; line-height:4px; background-color:#dc3545;"> </td>
-                    </tr>
-                    <!-- Main Content -->
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#dc3545; margin:0 0 8px 0;">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Dernier rappel</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#dc3545; margin:0 0 8px 0;">
                                 ⚠️ Dernier rappel - Action requise
                             </h1>
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
@@ -386,7 +174,7 @@
                             </p>
 
                             <!-- Purpose Box - Warning style -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #ffc107; background-color:#fff3cd; border-radius:0 10px 10px 0; margin:16px 0;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left-width:4px; border-left-style:solid; border-left-color:#ffc107; background-color:#fff3cd; border-radius:0 10px 10px 0; margin:16px 0;">
                                 <tr>
                                     <td style="padding:16px 20px;">
                                         <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#856404;"><t t-out="object.purpose_id.name"/></strong>
@@ -411,41 +199,7 @@
                                     </td>
                                 </tr>
                             </table>
-                        </td>
-                    </tr>
-                    <!-- Separator -->
-                    <tr>
-                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;"> </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
-                                    </td>
-                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a>
-                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a></t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- Bottom Accent -->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
-                <tr>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;"> </td>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;"> </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a></p>
         
 </t>
 </field>
@@ -460,6 +214,7 @@
         <field name="partner_to">{{ object.subject_partner_id.id }}</field>
         <field name="subject">{{ 'Consent renewed' if object._privacy_mail_is_en() else 'Consentement renouvelé' }} - {{ object.purpose_id.name }}</field>
         <field name="lang">{{ object._privacy_mail_lang() }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
     <field name="body_html" type="html">
 <t t-set="company" t-value="('company_id' in object._fields and object.company_id) or user.company_id"/>
 <t t-set="_wlf" t-value="company._fields"/>
@@ -468,36 +223,8 @@
 
 <t t-set="is_en" t-value="object._privacy_mail_is_en()"/>
 <t t-if="is_en">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
-    <tr>
-        <td align="center" style="padding:24px;">
-            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
-                <tbody>
-                    <!-- Header -->
-                    <tr>
-                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="left">
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
-                                        </a>
-                                    </td>
-                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
-                                        Confirmation
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- Accent Line - Green for success -->
-                    <tr>
-                        <td style="height:4px; line-height:4px; background-color:#198754;"> </td>
-                    </tr>
-                    <!-- Main Content -->
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Confirmation</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
                                 ✓ Consent renewed
                             </h1>
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
@@ -508,7 +235,7 @@
                             </p>
 
                             <!-- Success Box -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left-width:4px; border-left-style:solid; border-left-color:#198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
                                 <tr>
                                     <td style="padding:16px 20px;">
                                         <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#198754;"><t t-out="object.purpose_id.name"/></strong>
@@ -533,74 +260,11 @@
                                     </td>
                                 </tr>
                             </table>
-                        </td>
-                    </tr>
-                    <!-- Separator -->
-                    <tr>
-                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;"> </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
-                                    </td>
-                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Preferences</a>
-                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Privacy</a></t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- Bottom Accent -->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
-                <tr>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;"> </td>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;"> </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
         
 </t>
 <t t-else="">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
-    <tr>
-        <td align="center" style="padding:24px;">
-            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
-                <tbody>
-                    <!-- Header -->
-                    <tr>
-                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="left">
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
-                                        </a>
-                                    </td>
-                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
-                                        Confirmation
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- Accent Line - Green for success -->
-                    <tr>
-                        <td style="height:4px; line-height:4px; background-color:#198754;"> </td>
-                    </tr>
-                    <!-- Main Content -->
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Confirmation</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
                                 ✓ Consentement renouvelé avec succès
                             </h1>
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
@@ -611,7 +275,7 @@
                             </p>
 
                             <!-- Success Box -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left-width:4px; border-left-style:solid; border-left-color:#198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
                                 <tr>
                                     <td style="padding:16px 20px;">
                                         <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#198754;"><t t-out="object.purpose_id.name"/></strong>
@@ -636,41 +300,6 @@
                                     </td>
                                 </tr>
                             </table>
-                        </td>
-                    </tr>
-                    <!-- Separator -->
-                    <tr>
-                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;"> </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
-                                    </td>
-                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a>
-                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a></t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- Bottom Accent -->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
-                <tr>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;"> </td>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;"> </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
         
 </t>
 </field>
@@ -685,6 +314,7 @@
         <field name="partner_to">{{ object.subject_partner_id.id }}</field>
         <field name="subject">{{ 'Consent confirmation' if object._privacy_mail_is_en() else 'Confirmation de consentement' }} - {{ object.purpose_id.name }}</field>
         <field name="lang">{{ object._privacy_mail_lang() }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
     <field name="body_html" type="html">
 <t t-set="company" t-value="('company_id' in object._fields and object.company_id) or user.company_id"/>
 <t t-set="_wlf" t-value="company._fields"/>
@@ -693,36 +323,8 @@
 
 <t t-set="is_en" t-value="object._privacy_mail_is_en()"/>
 <t t-if="is_en">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
-    <tr>
-        <td align="center" style="padding:24px;">
-            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
-                <tbody>
-                    <!-- Header -->
-                    <tr>
-                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="left">
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
-                                        </a>
-                                    </td>
-                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
-                                        Confirmation
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- Accent Line - Green for success -->
-                    <tr>
-                        <td style="height:4px; line-height:4px; background-color:#198754;"> </td>
-                    </tr>
-                    <!-- Main Content -->
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Confirmation</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
                                 ✓ Thank you for your consent
                             </h1>
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
@@ -733,7 +335,7 @@
                             </p>
 
                             <!-- Success Box -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left-width:4px; border-left-style:solid; border-left-color:#198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
                                 <tr>
                                     <td style="padding:16px 20px;">
                                         <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#198754;"><t t-out="object.purpose_id.name"/></strong>
@@ -769,74 +371,11 @@
                                     </td>
                                 </tr>
                             </table>
-                        </td>
-                    </tr>
-                    <!-- Separator -->
-                    <tr>
-                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;"> </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
-                                    </td>
-                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Preferences</a>
-                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Privacy</a></t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- Bottom Accent -->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
-                <tr>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;"> </td>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;"> </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
         
 </t>
 <t t-else="">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC; padding:0; margin:0;">
-    <tr>
-        <td align="center" style="padding:24px;">
-            <table cellspacing="0" cellpadding="0" border="0" width="600" style="max-width:600px; background-color:#ffffff; border-radius:12px; border:1px solid #e5e7eb;">
-                <tbody>
-                    <!-- Header -->
-                    <tr>
-                        <td t-attf-style="background-color:{{ brand_dark }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td align="left">
-                                        <a t-attf-href="{{ company.website or object.get_base_url() }}" style="text-decoration:none;">
-                                            <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:48px; width:auto; display:block;" height="48"/>
-                                        </a>
-                                    </td>
-                                    <td align="right" style="color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:18px; font-weight:700;">
-                                        Confirmation
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <!-- Accent Line - Green for success -->
-                    <tr>
-                        <td style="height:4px; line-height:4px; background-color:#198754;"> </td>
-                    </tr>
-                    <!-- Main Content -->
-                    <tr>
-                        <td style="padding:24px;">
-                            <h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Confirmation</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#198754; margin:0 0 8px 0;">
                                 ✓ Merci pour votre consentement
                             </h1>
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
@@ -847,7 +386,7 @@
                             </p>
 
                             <!-- Success Box -->
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left:4px solid #198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-left-width:4px; border-left-style:solid; border-left-color:#198754; background-color:#d1e7dd; border-radius:0 10px 10px 0; margin:16px 0;">
                                 <tr>
                                     <td style="padding:16px 20px;">
                                         <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#198754;"><t t-out="object.purpose_id.name"/></strong>
@@ -884,41 +423,6 @@
                                     </td>
                                 </tr>
                             </table>
-                        </td>
-                    </tr>
-                    <!-- Separator -->
-                    <tr>
-                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;"> </td>
-                    </tr>
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding:16px 24px 24px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                <tr>
-                                    <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280;">
-                                        <strong style="color:#000000;"><t t-out="object.company_id.name"/></strong><br/>
-                                        <t t-out="('brand_email_tagline' in _wlf and company.brand_email_tagline) or ''"/>
-                                    </td>
-                                    <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#9CA3AF;">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a>
-                                        <t t-if="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website"><span style="color:#9CA3AF;"> | </span><a t-att-href="('brand_privacy_url' in _wlf and company.brand_privacy_url) or company.website" style="color:#9CA3AF; text-decoration:underline;">Confidentialité</a></t>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- Bottom Accent -->
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px; margin-top:12px;">
-                <tr>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_primary }}; width:50%;"> </td>
-                    <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand_dark }}; width:50%;"> </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
         
 </t>
 </field>

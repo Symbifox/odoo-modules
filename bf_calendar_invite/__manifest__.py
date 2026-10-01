@@ -52,7 +52,12 @@
     #   becomes a small eyebrow, and the composer no longer nests Odoo's layout.
     #   The change notice also gets the French greeting and closing the other
     #   three bodies already had.
-    "version": "18.0.6.1.0",
+    # 18.0.6.1.1: tests only. They depended on the database: the language tests
+    #   activated fr_CA without loading its translations, the timezone tests read
+    #   `resource_calendar_id` (from `resource`, which this module does not depend
+    #   on), and the forced English template tests assumed en_US was active. They
+    #   failed on any fresh database, so in the public CI.
+    "version": "18.0.6.1.1",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

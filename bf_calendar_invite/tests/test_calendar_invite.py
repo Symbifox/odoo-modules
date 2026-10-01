@@ -18,6 +18,33 @@ GSM7 = set(
 ) | set("^{}\\[~]|€")
 
 
+def _speak_french(env):
+    """Activate fr_CA and en_US, and load this module's French terms.
+
+    Activating a language loads no module's translations: on a fresh database
+    (the public CI creates one without `--load-language`) the bodies stayed in
+    English and the language tests measured the database, not the code. Both
+    languages are activated because a database created in French has en_US
+    inactive, and the forced English template then has no English to name.
+    """
+    env["res.lang"]._activate_lang("fr_CA")
+    env["res.lang"]._activate_lang("en_US")
+    env["ir.module.module"]._load_module_terms(["bf_calendar_invite"], ["fr_CA"])
+
+
+def _company_tz(env, tz):
+    """Give the company a timezone where `_bf_mail_tz()` reads it.
+
+    Its working hours (`resource_calendar_id`) exist only when `resource` is
+    installed, which this module does not depend on: on a fresh database the
+    tests failed on the missing field while the code itself guards it.
+    """
+    company = env.company
+    company.partner_id.tz = tz
+    if "resource_calendar_id" in company._fields and company.resource_calendar_id:
+        company.resource_calendar_id.tz = tz
+
+
 @tagged("post_install", "-at_install")
 class TestCalendarInvite(TransactionCase):
 
@@ -111,8 +138,7 @@ class TestCalendarInvite(TransactionCase):
         language of the reader changed nothing — only the dates came out in
         French, which is what made it look like a formatting problem.
         """
-        self.env["res.lang"]._activate_lang("fr_CA")
-        self.env["res.lang"]._activate_lang("en_US")
+        _speak_french(self.env)
         # The organiser is pinned to the *other* language on purpose: on a
         # French database both would be French, and the assertion would pass
         # just as well against code that reads the organiser.
@@ -173,7 +199,7 @@ class TestCalendarInvite(TransactionCase):
         the first one. The message then reads "Here are the details" above
         "jeudi 10 septembre". 2026-09-10 is a Thursday.
         """
-        self.env["res.lang"]._activate_lang("fr_CA")
+        _speak_french(self.env)
         self.guest.lang = "fr_CA"
         event = self._make_event([self.guest])
         english = self.env.ref("bf_calendar_invite.mail_template_calendar_invite_en")
@@ -183,7 +209,7 @@ class TestCalendarInvite(TransactionCase):
 
     def test_a_forced_template_only_ever_names_an_active_language(self):
         """Asking `res.lang` beats naming a code the database may not have."""
-        self.env["res.lang"]._activate_lang("fr_CA")
+        _speak_french(self.env)
         event = self._make_event([self.guest])
         installed = [code for code, _name in self.env["res.lang"].get_installed()]
         self.assertIn(event.bf_mail_lang_en, installed)
@@ -198,7 +224,7 @@ class TestCalendarInvite(TransactionCase):
         Montreal client that a 3 p.m. meeting was at 7 a.m. because the
         organiser pressed the button from New Zealand.
         """
-        self.env.company.resource_calendar_id.tz = "America/Toronto"
+        _company_tz(self.env, "America/Toronto")
         self.organiser.tz = "Pacific/Auckland"
         event = self._make_event([self.guest])
         self.assertEqual(event.with_user(self.organiser)._bf_mail_tz(),
@@ -216,7 +242,7 @@ class TestCalendarInvite(TransactionCase):
         this test passed `event_tz` to a one-off event and asserted on a value
         Odoo had already wiped.
         """
-        self.env.company.resource_calendar_id.tz = "America/Toronto"
+        _company_tz(self.env, "America/Toronto")
         # 2026-09-10 is a Thursday.
         event = self._make_event(
             [self.guest], recurrency=True, rrule_type="weekly", thu=True,

@@ -848,4 +848,36 @@
             </div>
         </t>
     </template>
+    <!-- Lien public échu (90 jours) : offre d'en recevoir un neuf. -->
+    <template id="portal_consent_token_expired" name="Expired Consent Link">
+        <t t-set="is_en" t-value="(request.env.lang or '').startswith('en')"/>
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="False"/>
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 text-center">
+                        <div class="card">
+                            <div class="card-body py-5">
+                                <i class="fa fa-clock-o fa-3x text-warning mb-3"/>
+                                <t t-if="sent">
+                                    <h3><t t-if="is_en">A new link is on its way</t><t t-else="">Un nouveau lien est en route</t></h3>
+                                    <p class="mt-4 o_privacy_new_link_sent"><t t-if="is_en">We sent a new link to the email address we have on file.</t><t t-else="">Nous avons envoyé un nouveau lien à l'adresse courriel à votre dossier.</t></p>
+                                </t>
+                                <t t-else="">
+                                    <h3><t t-if="is_en">This link has expired</t><t t-else="">Ce lien est échu</t></h3>
+                                    <p class="mt-4 o_privacy_link_expired"><t t-if="is_en">For your protection, consent links are valid for 90 days. You can receive a new one by email.</t><t t-else="">Pour votre protection, un lien de consentement vaut 90 jours. Vous pouvez en recevoir un neuf par courriel.</t></p>
+                                    <form t-attf-action="/privacy/consent/#{consent_id}/#{access_token}/new-link" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button type="submit" class="btn btn-primary mt-3">
+                                            <t t-if="is_en">Send me a new link</t><t t-else="">M'envoyer un nouveau lien</t>
+                                        </button>
+                                    </form>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
 </odoo>

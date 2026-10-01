@@ -17,6 +17,8 @@ import re
 from odoo.modules.module import get_module_path
 from odoo.tools.translate import PoFileReader
 
+from .test_calendar_invite import _speak_french
+
 from odoo import Command
 from odoo.tests import TransactionCase, tagged
 
@@ -98,8 +100,7 @@ class TestMiseEnPage(TransactionCase):
     def test_the_change_notice_greets_in_french(self):
         """The change notice (6.0.0) was never listed on the shared terms of the
         other three bodies: French guests were greeted with "Hello" and "Thanks"."""
-        if not self.env["res.lang"]._lang_get("fr_CA"):
-            self.skipTest("fr_CA is not installed")
+        _speak_french(self.env)
         field = self.env["ir.ui.view"]._fields["arch_db"]
         view = self.env.ref("bf_calendar_invite.mail_body_calendar_change")
         terms = field.get_trans_terms(view.with_context(lang="fr_CA").arch_db)

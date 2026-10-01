@@ -776,6 +776,8 @@ class PrivacyPortal(CustomerPortal):
             return request.render("privacy_consent.portal_consent_invalid_token", {
                 "page_name": "privacy_consent_error",
             })
+        if consent._access_token_expired():
+            return self._render_lien_echu(consent, access_token)
 
         values = {
             "page_name": "privacy_consent_public",
@@ -785,6 +787,36 @@ class PrivacyPortal(CustomerPortal):
             "is_public": True,
         }
         return request.render("privacy_consent.portal_consent_detail", values)
+
+    def _render_lien_echu(self, consent, access_token, sent=False):
+        # Un lien de plus de 90 jours n'ouvre plus le consentement ; il offre
+        # d'en recevoir un neuf, à l'adresse au dossier (jamais affichée ici).
+        return request.render("privacy_consent.portal_consent_token_expired", {
+            "page_name": "privacy_consent_error",
+            "consent_id": consent.id,
+            "access_token": access_token,
+            "sent": sent,
+        })
+
+    @http.route(
+        "/privacy/consent/<int:consent_id>/<string:access_token>/new-link",
+        type="http",
+        auth="public",
+        website=True,
+        methods=["POST"],
+    )
+    def public_consent_new_link(self, consent_id, access_token, **kw):
+        """Envoyer un lien neuf à la place d'un lien échu."""
+        consent = request.env["privacy.consent"].sudo().browse(consent_id)
+        if not _jeton_valide(consent, access_token):
+            return request.render("privacy_consent.portal_consent_invalid_token", {
+                "page_name": "privacy_consent_error",
+            })
+        if not consent._access_token_expired():
+            return request.redirect(f"/privacy/consent/{consent_id}/{access_token}")
+        consent._renew_access_token_and_send()
+        _logger.info("privacy_consent: lien public renouvelé pour le consentement %s", consent.id)
+        return self._render_lien_echu(consent, access_token, sent=True)
 
     @http.route(
         "/privacy/consent/<int:consent_id>/<string:access_token>/respond",
@@ -802,6 +834,8 @@ class PrivacyPortal(CustomerPortal):
             return request.render("privacy_consent.portal_consent_invalid_token", {
                 "page_name": "privacy_consent_error",
             })
+        if consent._access_token_expired():
+            return self._render_lien_echu(consent, access_token)
 
         if consent.status != "pending":
             return request.redirect(f"/privacy/consent/{consent_id}/{access_token}?already_responded=1")
@@ -841,6 +875,8 @@ class PrivacyPortal(CustomerPortal):
             return request.render("privacy_consent.portal_consent_invalid_token", {
                 "page_name": "privacy_consent_error",
             })
+        if consent._access_token_expired():
+            return self._render_lien_echu(consent, access_token)
 
         # Seuls les consentements accordés peuvent être retirés
         if consent.status != "granted":
@@ -909,6 +945,8 @@ class PrivacyPortal(CustomerPortal):
             return request.render("privacy_consent.portal_consent_invalid_token", {
                 "page_name": "privacy_consent_error",
             })
+        if consent._access_token_expired():
+            return self._render_lien_echu(consent, access_token)
 
         if consent.status == "refused":
             return request.redirect(

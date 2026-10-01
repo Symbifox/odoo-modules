@@ -19,3 +19,6 @@ from . import test_refusal_closes_link
 from . import test_destruction_really_destroys
 from . import test_mail_one_language
 from . import test_securite_correctifs
+from . import test_cle_hors_base
+from . import test_lien_echu
+from . import test_mise_en_page
