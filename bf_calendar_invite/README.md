@@ -22,10 +22,11 @@ The SMS button opens the composer with an empty body.
   Only when the event has exactly one attendee besides the organiser — the
   token in that URL *is* the attendee's identity, so one link cannot be handed
   to a group.
-- **A branded message**, in the company's colours and logo (`res.company`,
-  fields from `bf_onboarding_base`), rather than a bare block of text. The dark
-  header uses `report_brand_logo` where it is set, since the standard company
-  logo is the one drawn for light backgrounds.
+- **A branded message**: the shared mail layout
+  (`bf_onboarding_base.bf_mail_layout`, replaced by `bluefox_branding`'s when
+  installed) dresses it with the company's colours, logo and footer, rather than
+  a bare block of text. The content keeps the company's brand colours
+  (`res.company`, fields from `bf_onboarding_base`).
 - **Written in the guests' language.** "Send Invitations" renders one message
   per attendee and can follow each of them; the EMAIL button renders one
   message for the whole list and has to choose. It takes the outside guests'
@@ -201,6 +202,26 @@ text, in plain>` — a `data:` URI that lost its scheme on the way in. The plain
 half is taken as it stands; it comes from the producer, not from us. ⚠️ Only the
 **outgoing copy** is repaired: the field itself keeps its value, and the next
 event ingested arrives the same way.
+
+## The shared mail layout (6.1)
+
+The four emails (invitation, poke, change notice and cancellation notice) used to
+carry their own shell in their QWeb bodies: background, card, a header with the
+document title, a "sent from the calendar of…" footer and bottom bars, and the
+composer wrapped that again in Odoo's own layout. The bodies now keep only their
+content, the title becomes a small eyebrow above it, and the twelve templates
+point to `bf_onboarding_base.bf_mail_layout`, which `bluefox_branding` replaces
+with its own layout when installed. Shorthand styles that the composer's
+sanitizer drops (`background`, `border-left`, `border-right`) are written in their
+long forms.
+
+The content keeps its original indentation on purpose. The bodies are translated
+term by term, and Odoo loads a translation by exact term: a paragraph whose inner
+whitespace changed would no longer match its msgid and would reach
+French-speaking guests in English on a fresh install. A test checks that every
+translated term of the bodies still exists in them. The change notice, added in
+6.0, now also gets the French greeting, closing and button label the other three
+bodies had.
 
 ## Changing the language of one message
 

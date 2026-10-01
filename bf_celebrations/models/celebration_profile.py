@@ -289,7 +289,9 @@ class CelebrationProfile(models.Model):
             ("employee_id.work_email", "!=", False),
         ], limit=limite)
         for profil in a_inviter:
-            gabarit.send_mail(profil.id, email_layout_xmlid="mail.mail_notification_light")
+            gabarit.send_mail(
+                profil.id,
+                email_layout_xmlid=self.env["bf.celebration.board"]._mise_en_page())
         a_inviter.write({"invitation_date": fields.Datetime.now()})
         return len(a_inviter)
 

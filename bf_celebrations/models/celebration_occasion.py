@@ -406,7 +406,7 @@ class CelebrationOccasion(models.Model):
                         # la personne fêtée ne doit pas recevoir ce message.
                         "recipient_ids": [],
                     },
-                    email_layout_xmlid="mail.mail_notification_light",
+                    email_layout_xmlid=self.env["bf.celebration.board"]._mise_en_page(),
                 )
             occ.reminder_sent = True
         return len(a_rappeler)

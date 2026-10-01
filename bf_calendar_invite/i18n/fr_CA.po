@@ -101,11 +101,6 @@ msgid "Blocker"
 msgstr ""
 
 #. module: bf_calendar_invite
-#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
-msgid "Blue Fox."
-msgstr ""
-
-#. module: bf_calendar_invite
 #: model:ir.model,name:bf_calendar_invite.model_calendar_event
 msgid "Calendar Event"
 msgstr "Événement calendrier"
@@ -287,6 +282,7 @@ msgstr "Invités à prévenir"
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_cancellation
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
 msgid "Hello"
 msgstr "Bonjour"
 
@@ -294,6 +290,7 @@ msgstr "Bonjour"
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_cancellation
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
 msgid "Hello,"
 msgstr "Bonjour,"
 
@@ -348,12 +345,8 @@ msgid "Invitation page"
 msgstr "Page d'invitation"
 
 #. module: bf_calendar_invite
-#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
-msgid "Invitation sent from the calendar of"
-msgstr "Invitation envoyée depuis le calendrier de"
-
-#. module: bf_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
 msgid "Join the meeting"
 msgstr "Rejoindre la rencontre"
 
@@ -406,6 +399,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_cancellation
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
 msgid "Meeting"
 msgstr "Rencontre"
 
@@ -549,6 +543,7 @@ msgstr ""
 #. module: bf_calendar_invite
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_cancellation
 #: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_poke
+#: model_terms:ir.ui.view,arch_db:bf_calendar_invite.mail_body_calendar_change
 msgid "Thanks,<br/>"
 msgstr "Merci,<br/>"
 

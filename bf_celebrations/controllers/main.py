@@ -46,6 +46,29 @@ DOCTYPE = Markup("<!DOCTYPE html>")
 _bucket_lock = threading.Lock()
 _bucket_data = defaultdict(list)
 _MAX_TRACKED = 5000
+_bucket_window = {}  # seau -> fenêtre la plus longue vue, pour l'élagage
+
+
+def _borner(maintenant):
+    """Tenir `_bucket_data` sous `_MAX_TRACKED` clés sans relâcher un bloqué.
+
+    ⚠️ Il y avait ici un `clear()` : passé le plafond, tout le monde repartait
+    à zéro, y compris la source qu'on était en train de plafonner.
+    On retire d'abord les clés échues (fenêtre de leur seau) ; si le flot est
+    frais, celles qui pèsent le moins. Une clé bloquée sort en dernier.
+    Appelée sous `_bucket_lock`.
+    """
+    if len(_bucket_data) <= _MAX_TRACKED:
+        return
+    for ident in [i for i, v in _bucket_data.items()
+                  if not v or v[-1] <= maintenant - _bucket_window.get(i[0], 0)]:
+        del _bucket_data[ident]
+    if len(_bucket_data) > _MAX_TRACKED:
+        cible = _MAX_TRACKED * 9 // 10
+        ordre = sorted(_bucket_data,
+                       key=lambda i: (len(_bucket_data[i]), _bucket_data[i][-1]))
+        for ident in ordre[:len(_bucket_data) - cible]:
+            del _bucket_data[ident]
 
 # Un jeton qui échoue, c'est du tâtonnement : plafonné par IP, et seuls les
 # ÉCHECS comptent. Consommer à chaque affichage enfermerait dehors la personne
@@ -76,8 +99,8 @@ def _plafond(seau, maxi, fenetre, cle=None, consomme=True):
     ident = (seau, cle or _ip())
     maintenant = time.monotonic()
     with _bucket_lock:
-        if len(_bucket_data) > _MAX_TRACKED:
-            _bucket_data.clear()
+        _bucket_window[seau] = max(fenetre, _bucket_window.get(seau, 0))
+        _borner(maintenant)
         limite = maintenant - fenetre
         coups = [t for t in _bucket_data[ident] if t > limite]
         if len(coups) >= maxi:
@@ -94,8 +117,34 @@ def _plafond(seau, maxi, fenetre, cle=None, consomme=True):
 
 def _compter_echec(seau, fenetre, cle=None):
     ident = (seau, cle or _ip())
+    maintenant = time.monotonic()
     with _bucket_lock:
-        _bucket_data[ident].append(time.monotonic())
+        _bucket_window[seau] = max(fenetre, _bucket_window.get(seau, 0))
+        _borner(maintenant)
+        _bucket_data[ident].append(maintenant)
+
+
+def _meme_origine():
+    """Vrai si le formulaire a été posté depuis ce site-ci.
+
+    La route de signature est `csrf=False` (on y signe sans compte) mais elle
+    rattache le mot à l'usager CONNECTÉ quand il y en a un. Odoo 18 ne pose
+    pas d'attribut SameSite sur `session_id` : Firefox et Safari joignent le
+    cookie à un POST venu d'un autre site, et Chrome aussi dans les deux
+    minutes qui suivent la connexion. Une page tierce qui connaît le jeton
+    pouvait donc faire signer un mot au nom de la personne connectée.
+    Les navigateurs envoient `Origin` sur tout POST ; à défaut, `Referer`.
+    """
+    from urllib.parse import urlparse
+    try:
+        httprequest = request.httprequest
+        source = (httprequest.headers.get("Origin")
+                  or httprequest.headers.get("Referer") or "")
+        hote = (httprequest.host or "").lower()
+        netloc = urlparse(source).netloc.lower() if source else ""
+    except Exception:  # noqa: BLE001
+        return False
+    return bool(netloc) and netloc == hote
 
 
 def _entetes(reponse):
@@ -233,7 +282,9 @@ class CelebrationController(Controller):
             valeurs["image"] = image_b64
         if encre:
             valeurs["ink_strokes"] = encre
-        if not request.env.user._is_public():
+        # Rattacher le mot au compte seulement si le formulaire vient d'ici :
+        # posté depuis ailleurs, il reste un mot anonyme signé du nom tapé.
+        if not request.env.user._is_public() and _meme_origine():
             valeurs["author_user_id"] = request.env.user.id
             valeurs["author_partner_id"] = request.env.user.partner_id.id
         Post.create(valeurs)

@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--
+      Since 18.0.6.1.0 these bodies carry only their content: the shared mail
+      layout (`bf_onboarding_base.bf_mail_layout`, replaced by bluefox_branding's
+      when installed) dresses them, and the title of each message is a small
+      eyebrow at the top. The content keeps its original indentation on purpose:
+      the bodies are translated term by term, and a multi-line term whose inner
+      whitespace changes no longer matches its msgid in `i18n/`.
+
       The body of the EMAIL button's message, kept in a QWeb template rather
       than inline in `mail.template.body_html` for two reasons.
 
@@ -24,33 +31,7 @@
         <t t-set="mail_tz" t-value="object._bf_mail_tz()"/>
         <t t-set="guest_name" t-value="object._bf_guest_name()"/>
         <div>
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
-                <tbody>
-                    <tr>
-                        <td align="center" style="padding:24px;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; border-collapse:collapse;">
-                                <tbody>
-                                    <tr>
-                                        <td t-attf-style="background-color:{{ brand['dark'] }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td align="left">
-                                                            <img t-att-src="brand['logo_src']" t-att-alt="brand['company'].name" style="height:40px; width:auto; display:block; border:0;"/>
-                                                        </td>
-                                                        <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
-                                                            Invitation
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand['primary'] }};">&#160;</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                            <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Invitation</p>
                                             <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
                                                 <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
                                                 <t t-else="">Hello,</t>
@@ -63,9 +44,9 @@
                                                 <tr>
                                                     <td width="120" style="min-width:120px;vertical-align:top;">
                                                         <div t-attf-style="border-top-left-radius:6px;border-top-right-radius:6px;font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand['primary'] }};padding:6px 0;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format='EEEE', lang_code=object.env.lang) or ''">Tuesday</t></div>
-                                                        <div t-attf-style="font-size:44px;font-weight:700;text-align:center;color:{{ brand['dark'] }};background-color:#F5F7FA;border-left:1px solid {{ brand['primary'] }};border-right:1px solid {{ brand['primary'] }};padding:6px 0;line-height:1;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format='d', lang_code=object.env.lang) or ''">4</t></div>
+                                                        <div t-attf-style="font-size:44px;font-weight:700;text-align:center;color:{{ brand['dark'] }};background-color:#F5F7FA;border-left-width:1px; border-left-style:solid; border-left-color:{{ brand['primary'] }};border-right-width:1px; border-right-style:solid; border-right-color:{{ brand['primary'] }};padding:6px 0;line-height:1;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format='d', lang_code=object.env.lang) or ''">4</t></div>
                                                         <div t-attf-style="font-size:12px;text-align:center;font-weight:600;color:#FFFFFF;background-color:{{ brand['primary'] }};padding:6px 0;"><t t-out="format_datetime(dt=object.start, tz=mail_tz if not object.allday else None, dt_format='MMMM y', lang_code=object.env.lang) or ''">May 2021</t></div>
-                                                        <div t-attf-style="border-bottom-left-radius:6px;border-bottom-right-radius:6px;color:{{ brand['dark'] }};text-align:center;font-size:13px;font-weight:600;background-color:#F5F7FA;border-left:1px solid {{ brand['primary'] }};border-right:1px solid {{ brand['primary'] }};border-bottom:1px solid {{ brand['primary'] }};padding:8px 0;">
+                                                        <div t-attf-style="border-bottom-left-radius:6px;border-bottom-right-radius:6px;color:{{ brand['dark'] }};text-align:center;font-size:13px;font-weight:600;background-color:#F5F7FA;border-left-width:1px; border-left-style:solid; border-left-color:{{ brand['primary'] }};border-right-width:1px; border-right-style:solid; border-right-color:{{ brand['primary'] }};border-bottom:1px solid {{ brand['primary'] }};padding:8px 0;">
                                                             <t t-if="not object.allday">
                                                                 <div><t t-out="format_time(time=object.start, tz=mail_tz, time_format='short', lang_code=object.env.lang) or ''">11:00 AM</t></div>
                                                                 <div style="font-size:10px;font-weight:400;color:#6B7280;">(<t t-out="mail_tz"/>)</div>
@@ -122,37 +103,11 @@
                                                 <t t-if="object.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.user_id.signature or ''" data-o-mail-quote="1"/></t>
                                                 <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="object.user_id.partner_id.name or user.name"/></strong></t>
                                             </p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="height:1px; line-height:1px; background-color:#E5E7EB;">&#160;</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:16px 24px 20px 24px; background-color:#FFFFFF; border-radius:0 0 12px 12px;">
-                                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:12px; color:#6B7280; margin:0;">
-                                                <strong t-attf-style="color:{{ brand['dark'] }};">Invitation sent from the calendar of <t t-out="brand['company'].name + '.'">Blue Fox.</t></strong>
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
-                                <tbody>
-                                    <tr>
-                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['primary'] }}; width:50%;">&#160;</td>
-                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['dark'] }}; width:50%;">&#160;</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </template>
 
     <!--
-      The poke's body. Same brand shell as the invitation, deliberately much
+      The poke's body. Dressed by the shared mail layout like the invitation, deliberately much
       shorter: this is read on a phone, by someone who is either already late
       or about to tell us the meeting is off. Anything below the joining link
       will not be read.
@@ -167,17 +122,6 @@
         <t t-set="guest_name" t-value="object._bf_guest_name()"/>
         <t t-set="join_url" t-value="object._bf_poke_join_url()"/>
         <div>
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
-                <tbody>
-                    <tr>
-                        <td align="center" style="padding:24px;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; border-collapse:collapse;">
-                                <tbody>
-                                    <tr>
-                                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand['primary'] }}; border-radius:12px 12px 0 0;">&#160;</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
                                             <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
                                                 <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
                                                 <t t-else="">Hello,</t>
@@ -201,27 +145,11 @@
                                                 <t t-if="object.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.user_id.signature or ''" data-o-mail-quote="1"/></t>
                                                 <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="object.user_id.partner_id.name or user.name"/></strong></t>
                                             </p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
-                                <tbody>
-                                    <tr>
-                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['primary'] }}; width:50%;">&#160;</td>
-                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['dark'] }}; width:50%;">&#160;</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </template>
 
     <!--
-      The cancellation notice. Same brand shell, and deliberately the shortest
+      The cancellation notice. Shared mail layout, and deliberately the shortest
       body of the three: there is nothing to prepare for and nothing to click.
 
       What it does carry, and why each line earns its place:
@@ -244,33 +172,7 @@
         <t t-set="mail_tz" t-value="object._bf_mail_tz()"/>
         <t t-set="guest_name" t-value="object._bf_guest_name()"/>
         <div>
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
-                <tbody>
-                    <tr>
-                        <td align="center" style="padding:24px;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; border-collapse:collapse;">
-                                <tbody>
-                                    <tr>
-                                        <td t-attf-style="background-color:{{ brand['dark'] }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td align="left">
-                                                            <img t-att-src="brand['logo_src']" t-att-alt="brand['company'].name" style="height:40px; width:auto; display:block; border:0;"/>
-                                                        </td>
-                                                        <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
-                                                            Cancelled
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand['primary'] }};">&#160;</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                            <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Cancelled</p>
                                             <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
                                                 <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
                                                 <t t-else="">Hello,</t>
@@ -290,7 +192,7 @@
                                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px 0;">
                                                 <tbody>
                                                     <tr>
-                                                        <td t-attf-style="background-color:#F5F7FA;border-left:3px solid {{ brand['primary'] }};padding:12px 16px;font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                                        <td t-attf-style="background-color:#F5F7FA;border-left-width:3px; border-left-style:solid; border-left-color:{{ brand['primary'] }};padding:12px 16px;font-family:'Lexend','Segoe UI',Arial,sans-serif;">
                                                             <div t-attf-style="font-size:16px;font-weight:600;color:{{ brand['dark'] }};text-decoration:line-through;" t-out="object.name or ''">Meeting</div>
                                                             <div style="font-size:14px;color:#6B7280;margin-top:4px;">
                                                                 <t t-if="not object.allday">
@@ -310,7 +212,7 @@
                                             <table t-if="object.bf_cancellation_reason" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px 0;">
                                                 <tbody>
                                                     <tr>
-                                                        <td t-attf-style="background-color:#F5F7FA;border-left:3px solid {{ brand['primary'] }};padding:12px 16px;font-size:14px;line-height:22px;color:#374151;">
+                                                        <td t-attf-style="background-color:#F5F7FA;border-left-width:3px; border-left-style:solid; border-left-color:{{ brand['primary'] }};padding:12px 16px;font-size:14px;line-height:22px;color:#374151;">
                                                             <t t-out="object.bf_cancellation_reason or ''">The room is unavailable.</t>
                                                         </td>
                                                     </tr>
@@ -327,26 +229,10 @@
                                                 <t t-if="object.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.user_id.signature or ''" data-o-mail-quote="1"/></t>
                                                 <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="object.user_id.partner_id.name or user.name"/></strong></t>
                                             </p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
-                                <tbody>
-                                    <tr>
-                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['primary'] }}; width:50%;">&#160;</td>
-                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['dark'] }}; width:50%;">&#160;</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </template>
     <!--
-      The change notice. Same brand shell as the other three.
+      The change notice. Shared mail layout, like the other three.
 
       What it carries that no other message in this family does is a
       BEFORE and an AFTER, side by side. That is the whole design: a guest
@@ -369,33 +255,7 @@
         <t t-set="change_lines" t-value="object.bf_change_lines()"/>
         <t t-set="join_url" t-value="object._bf_poke_join_url()"/>
         <div>
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#F8FAFC;">
-                <tbody>
-                    <tr>
-                        <td align="center" style="padding:24px;">
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:0 auto; background-color:#FFFFFF; border-radius:12px; border:1px solid #E5E7EB; border-collapse:collapse;">
-                                <tbody>
-                                    <tr>
-                                        <td t-attf-style="background-color:{{ brand['dark'] }}; padding:16px 24px; border-radius:12px 12px 0 0;">
-                                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td align="left">
-                                                            <img t-att-src="brand['logo_src']" t-att-alt="brand['company'].name" style="height:40px; width:auto; display:block; border:0;"/>
-                                                        </td>
-                                                        <td align="right" style="color:#E6EDF3; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:22px; font-weight:800; letter-spacing:0.2px;">
-                                                            Updated
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td t-attf-style="height:4px; line-height:4px; background-color:{{ brand['primary'] }};">&#160;</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding:24px; font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                            <p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Updated</p>
                                             <p style="margin:0 0 12px 0;font-size:16px;line-height:26px;color:#374151;font-weight:300;">
                                                 <t t-if="guest_name">Hello <t t-out="guest_name"/>,</t>
                                                 <t t-else="">Hello,</t>
@@ -414,7 +274,7 @@
                                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px 0;">
                                                 <tbody>
                                                     <tr>
-                                                        <td t-attf-style="background-color:#F5F7FA;border-left:3px solid {{ brand['primary'] }};padding:12px 16px;font-family:'Lexend','Segoe UI',Arial,sans-serif;">
+                                                        <td t-attf-style="background-color:#F5F7FA;border-left-width:3px; border-left-style:solid; border-left-color:{{ brand['primary'] }};padding:12px 16px;font-family:'Lexend','Segoe UI',Arial,sans-serif;">
                                                             <div t-attf-style="font-size:16px;font-weight:600;color:{{ brand['dark'] }};" t-out="object.name or ''">Meeting</div>
                                                             <div style="font-size:14px;color:#6B7280;margin-top:4px;">
                                                                 <t t-if="not object.allday">
@@ -459,22 +319,6 @@
                                                 <t t-if="object.user_id.signature" data-o-mail-quote-container="1"><t t-out="object.user_id.signature or ''" data-o-mail-quote="1"/></t>
                                                 <t t-else=""><strong t-attf-style="color:{{ brand['dark'] }};"><t t-out="object.user_id.partner_id.name or user.name"/></strong></t>
                                             </p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px; max-width:600px; margin:12px auto 0;">
-                                <tbody>
-                                    <tr>
-                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['primary'] }}; width:50%;">&#160;</td>
-                                        <td t-attf-style="height:3px; line-height:3px; background-color:{{ brand['dark'] }}; width:50%;">&#160;</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </template>
 </odoo>

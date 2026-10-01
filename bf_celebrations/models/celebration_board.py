@@ -95,6 +95,15 @@ class CelebrationBoard(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "delivery_date desc, id desc"
 
+    # Mises en page des courriels, par ordre de préférence : la première présente
+    # sur la base sert. La mise en page commune de la maison (`bf_onboarding_base`,
+    # que `bluefox_branding` remplace par la sienne quand il est installé) range nos
+    # courriels avec ceux de la société ; sans elle, la mise en page légère d'Odoo.
+    _MISES_EN_PAGE = (
+        "bf_onboarding_base.bf_mail_layout",
+        "mail.mail_notification_light",
+    )
+
     name = fields.Char(string="Titre", required=True, tracking=True)
     occasion_id = fields.Many2one(
         "bf.celebration.occasion", string="Occasion", ondelete="set null",
@@ -393,7 +402,7 @@ class CelebrationBoard(models.Model):
                         "recipient_ids": [],
                         "attachment_ids": [(6, 0, pieces.ids)],
                     },
-                    email_layout_xmlid="mail.mail_notification_light",
+                    email_layout_xmlid=self._mise_en_page(),
                     force_send=True,
                 )
             board.write({
@@ -620,7 +629,7 @@ class CelebrationBoard(models.Model):
                         # abonnés : la personne fêtée ne doit rien recevoir.
                         "recipient_ids": [],
                     },
-                    email_layout_xmlid="mail.mail_notification_light",
+                    email_layout_xmlid=self._mise_en_page(),
                 )
         if nouveaux:
             toutes = deja | set(nouveaux)
@@ -715,10 +724,17 @@ class CelebrationBoard(models.Model):
                     board.id,
                     email_values={"email_to": adresse,
                                   "recipient_ids": []},
-                    email_layout_xmlid="mail.mail_notification_light",
+                    email_layout_xmlid=self._mise_en_page(),
                 )
         board._diffuser_le_merci()
         return True
+
+    def _mise_en_page(self):
+        """La première mise en page de `_MISES_EN_PAGE` qui existe sur la base."""
+        for xmlid in self._MISES_EN_PAGE:
+            if self.env.ref(xmlid, raise_if_not_found=False):
+                return xmlid
+        return False
 
     def _diffuser_le_merci(self):
         """Le merci va aussi là où le lien avait été annoncé."""
@@ -870,7 +886,7 @@ class CelebrationBoard(models.Model):
                         "email_to": board.organizer_id.email_formatted,
                         "recipient_ids": [],
                     },
-                    email_layout_xmlid="mail.mail_notification_light",
+                    email_layout_xmlid=self._mise_en_page(),
                 )
             board.thin_notified = True
         return len(minces)

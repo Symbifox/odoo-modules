@@ -8,3 +8,5 @@ from . import test_encre
 from . import test_souvenir
 from . import test_signataires
 from . import test_merci
+from . import test_securite_routes
+from . import test_mise_en_page

@@ -32,6 +32,7 @@
         <field name="subject">{{ object.name }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">Event details, the invitation link and the .ics — written in the guests' language</field>
         <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
         <field name="body_html" type="html">
@@ -45,6 +46,7 @@
         <field name="subject">{{ object.name }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_fr }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">The same message, forced to French</field>
         <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
         <field name="body_html" type="html">
@@ -58,6 +60,7 @@
         <field name="subject">{{ object.name }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_en }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">The same message, forced to English</field>
         <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
         <field name="body_html" type="html">
@@ -79,6 +82,7 @@
         <field name="subject">{{ object.name }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">A short "are we still meeting?" note with the joining details — written in the guests' language</field>
         <field name="body_html" type="html">
             <t t-call="bf_calendar_invite.mail_body_calendar_poke"/>
@@ -91,6 +95,7 @@
         <field name="subject">{{ object.name }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_fr }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">The same note, forced to French</field>
         <field name="body_html" type="html">
             <t t-call="bf_calendar_invite.mail_body_calendar_poke"/>
@@ -103,6 +108,7 @@
         <field name="subject">{{ object.name }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_en }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">The same note, forced to English</field>
         <field name="body_html" type="html">
             <t t-call="bf_calendar_invite.mail_body_calendar_poke"/>
@@ -127,6 +133,7 @@
         <field name="subject">Cancelled: {{ object.name }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">Tells the guests the meeting is off and carries the .ics that removes it — written in the guests' language</field>
         <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
         <field name="body_html" type="html">
@@ -140,6 +147,7 @@
         <field name="subject">Annulée : {{ object.name }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_fr }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">The same notice, forced to French</field>
         <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
         <field name="body_html" type="html">
@@ -153,6 +161,7 @@
         <field name="subject">Cancelled: {{ object.name }}</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_en }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">The same notice, forced to English</field>
         <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
         <field name="body_html" type="html">
@@ -180,6 +189,7 @@
         <field name="subject">{{ object.name }} has changed</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">Tells the guests what changed, before and after, and carries the .ics that moves it. Written in the guests' language.</field>
         <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
         <field name="body_html" type="html">
@@ -193,6 +203,7 @@
         <field name="subject">{{ object.name }} a changé</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_fr }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">The same notice, forced to French</field>
         <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
         <field name="body_html" type="html">
@@ -206,6 +217,7 @@
         <field name="subject">{{ object.name }} has changed</field>
         <field name="email_from">{{ (object.user_id.email_formatted or user.email_formatted or '') }}</field>
         <field name="lang">{{ object.bf_mail_lang_en }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
         <field name="description">The same notice, forced to English</field>
         <field name="report_template_ids" eval="[Command.set([ref('bf_calendar_invite.report_calendar_event_ics')])]"/>
         <field name="body_html" type="html">

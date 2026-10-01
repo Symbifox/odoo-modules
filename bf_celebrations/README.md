@@ -219,6 +219,8 @@ after its release — see `LICENSE` for the exact parameters.
 
 | Version | Notes |
 |---|---|
+| 18.0.2.2.0 | The module's six emails (delivery, signer invitations, thank-you, thin-board nudge, consent invitation, occasion reminder to the organiser) use the shared mail layout of `bf_onboarding_base` (replaced by `bluefox_branding`'s when installed) instead of Odoo's light layout, which stays the fallback; no new dependency. A test rejects any `email_layout_xmlid=` that bypasses `_mise_en_page()` |
+| 18.0.2.1.6 | A signature posted from another site (its `Origin` or `Referer` is missing or names another site) is still accepted but no longer attached to the signed-in account; the public rate limiter no longer empties itself past its size cap: expired keys go first, then the lightest |
 | 18.0.2.1.5 | The board, occasion and message status fields carry a French label (« État ») instead of the default derived from the technical field name; consent email wording fix |
 | 18.0.2.1.3 | Public stylesheet reads `--brand-dark`/`--brand-primary` instead of fixed hex values. |
 | 18.0.2.1.0 | Recipient thank-you (keyed link, once, emailed to signers); signer-source hook for the `bf_celebrations_email` bridge |

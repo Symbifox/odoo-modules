@@ -44,7 +44,15 @@
     #   change coming from another calendar leaves on its own when the ICP
     #   `bf_calendar_invite.auto_change_notice` is armed, a change made in Odoo
     #   waits for the dialog.
-    "version": "18.0.6.0.0",
+    # 18.0.6.1.0: the four emails (invitation, poke, change and cancellation
+    #   notices) keep only their content and use the shared mail layout,
+    #   `bf_onboarding_base.bf_mail_layout`, which `bluefox_branding` replaces with
+    #   its own when installed. Their own shell (background, card, titled header,
+    #   "sent from the calendar of" footer, bottom bars) is gone, the title
+    #   becomes a small eyebrow, and the composer no longer nests Odoo's layout.
+    #   The change notice also gets the French greeting and closing the other
+    #   three bodies already had.
+    "version": "18.0.6.1.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -52,7 +60,8 @@
     "depends": [
         "calendar",
         "calendar_sms",
-        # Brand colours and the dark-background logo the message shell uses.
+        # Brand colours of the message content, and the shared mail layout
+        # (`bf_mail_layout`, 18.0.2.1.0 or later) that dresses every message.
         "bf_onboarding_base",
     ],
     "data": [
