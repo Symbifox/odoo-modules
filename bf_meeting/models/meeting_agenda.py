@@ -16,6 +16,7 @@ from .meeting_record import (
     _MAX_REFINE_MESSAGE,
     _REFINE_STALE_MINUTES,
     _format_meeting_date_display,
+    _langue_de_repli,
 )
 
 _logger = logging.getLogger(__name__)
@@ -173,11 +174,15 @@ class MeetingAgenda(models.Model):
 
     @api.depends('partner_id')
     def _compute_lang(self):
-        default_lang = self.env.lang or 'fr_CA'
         for rec in self:
             if rec.lang:
                 continue
-            rec.lang = (rec.partner_id and rec.partner_id.lang) or default_lang
+            rec.lang = _langue_de_repli(rec)
+
+    def _bf_langue_envoi(self):
+        """La langue que lisent les gabarits de courriel et les rapports."""
+        self.ensure_one()
+        return _langue_de_repli(self)
     series_name = fields.Char(
         string='Série',
         index=True,
@@ -1312,7 +1317,7 @@ class MeetingAgenda(models.Model):
             'default_model': 'meeting.agenda',
             'default_res_ids': self.ids,
             'default_composition_mode': 'comment',
-            'default_email_layout_xmlid': 'mail.mail_notification_light',
+            'default_email_layout_xmlid': 'bf_onboarding_base.bf_mail_layout',
         }
         if template:
             ctx['default_template_id'] = template.id

@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Branding",
-    "version": "18.0.3.23.0",
+    "version": "18.0.3.25.0",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """
@@ -39,6 +39,7 @@
     ],
     "data": [
         "data/mail_layout_override.xml",
+        "data/mail_layout_relais.xml",
         "data/bf_onboarding.xml",
         "views/res_config_settings_views.xml",
         "views/webclient_brand_icon.xml",

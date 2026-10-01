@@ -30,6 +30,28 @@ _POST_WINDOW = 60  # seconds
 # the per-process limiter dicts without bound.
 _MAX_TRACKED_IPS = 10000
 
+
+def _borner(store, fenetre, maintenant):
+    """Tenir un limiteur sous `_MAX_TRACKED_IPS` clés sans relâcher un bloqué.
+
+    ⚠️ Il y avait ici un `clear()` : passé 10 000 adresses, tout le monde
+    repartait à zéro, y compris la source qu'on était en train de plafonner.
+    Faire défiler assez d'adresses (ou d'en-têtes) suffisait à effacer son
+    propre blocage. On retire d'abord les clés échues ; si le flot
+    est frais, celles qui pèsent le moins. Une clé bloquée a atteint son
+    plafond : elle sort en dernier.
+    """
+    if len(store) <= _MAX_TRACKED_IPS:
+        return
+    limite = maintenant - fenetre
+    for cle in [c for c, v in store.items() if not v or v[-1] <= limite]:
+        del store[cle]
+    if len(store) > _MAX_TRACKED_IPS:
+        cible = _MAX_TRACKED_IPS * 9 // 10
+        ordre = sorted(store, key=lambda c: (len(store[c]), store[c][-1]))
+        for cle in ordre[:len(store) - cible]:
+            del store[cle]
+
 # Hard length caps on every free-text input from the public.
 _MAX_NAME = 200
 _MAX_DESC = 4000
@@ -70,8 +92,7 @@ def _record_token_failure():
     ip = _client_ip()
     now = time.monotonic()
     with _token_fail_lock:
-        if len(_token_fail_data) > _MAX_TRACKED_IPS:
-            _token_fail_data.clear()  # bound memory under a distinct-IP flood
+        _borner(_token_fail_data, _TOKEN_FAIL_WINDOW, now)
         _token_fail_data[ip].append(now)
 
 
@@ -79,8 +100,7 @@ def _check_post_rate_limit():
     ip = _client_ip()
     now = time.monotonic()
     with _post_lock:
-        if len(_post_data) > _MAX_TRACKED_IPS:
-            _post_data.clear()  # bound memory under a distinct-IP flood
+        _borner(_post_data, _POST_WINDOW, now)
         cutoff = now - _POST_WINDOW
         kept = [t for t in _post_data[ip] if t > cutoff]
         if len(kept) >= _POST_MAX:

@@ -139,6 +139,16 @@ with `account.move.send` (Odoo 18's Send button, which no longer goes through th
 composer) take `bf_mail_layout_with_signature`.
 Chatter / internal notifications stay on Odoo's default.
 
+The base module `bf_onboarding_base` ships a fallback copy of this layout,
+`bf_onboarding_base.bf_mail_layout`, which every in-house module points its
+emails to. When this module is installed, the view
+`bluefox_branding.bf_mail_layout_relais` replaces that copy's content with
+`bluefox_branding.bf_mail_layout`: this module's layout is the one that applies.
+
+The email tagline and the custom footer are translatable, and the layout reads
+the company in the language the email is rendered in, on both of Odoo's paths
+(a template's `send_mail` and the chatter notifications).
+
 ### Tenant-neutral standard templates
 
 Templates from `om_account_followup`, `contract`, `helpdesk_mgmt`, `survey` and
@@ -205,6 +215,15 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.3.25.0
+
+- The email tagline (`brand_email_tagline`) and the custom email footer (`brand_email_footer_html`) are translatable. The existing value becomes the source; a company writing in French can give its English emails an English tagline and footer instead of the French ones.
+- Fixed: a template sent with `mail.template.send_mail` rendered the layout in the recipient's language but received the company as the caller had read it, so an English email sent by a French-speaking user carried the French tagline even once translated. The chatter notifications pass the language as a render option rather than in the context. An `ir.qweb._render` override now reads the layout's `company` in the render language on both paths; it applies to any mail layout that receives `message` and `company`.
+
+### 18.0.3.24.0
+
+- `bluefox_branding.bf_mail_layout_relais`: when installed, this module replaces the content of `bf_onboarding_base.bf_mail_layout` (the fallback copy shipped by the base module, 18.0.2.1.0 or later) with its own layout, so every in-house module that points its emails to the base layout is dressed by this one.
 
 ### 18.0.3.22.0
 

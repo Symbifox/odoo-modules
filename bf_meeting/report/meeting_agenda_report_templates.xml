@@ -4,7 +4,7 @@
     <template id="report_meeting_agenda">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <t t-set="lang" t-value="doc.lang or (doc.partner_id and doc.partner_id.lang) or 'fr_CA'"/>
+                <t t-set="lang" t-value="doc._bf_langue_envoi()"/>
                 <t t-set="data" t-value="doc.with_context(lang=lang)._get_report_data()"/>
                 <t t-set="brand_company" t-value="doc.company_id or env.company"/>
                 <t t-set="brand_primary" t-value="(brand_company and brand_company.report_brand_primary) or '#714B67'"/>

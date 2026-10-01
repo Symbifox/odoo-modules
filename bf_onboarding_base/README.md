@@ -10,7 +10,20 @@ Every Symbifox Odoo module that needs an admin onboarding panel ships
 its own `onboarding.onboarding` + `onboarding.onboarding.step` records,
 but reuses generic step actions defined here to avoid boilerplate.
 
-## Public company logo route (v18.0.2.1.0)
+## Common email layout (v18.0.2.1.1)
+
+`bf_onboarding_base.bf_mail_layout` is the mail layout every in-house module
+points its emails to (`email_layout_xmlid` on the template, or the argument of
+`send_mail`), instead of copying a shell into each template body. It is a
+generated copy of the layout of the white-label module `bluefox_branding`,
+limited to the fields this module knows: the fields that only `bluefox_branding`
+defines are read only when they exist. When `bluefox_branding` is installed, it
+replaces this copy's content with its own layout, which is the one that applies;
+a module published on its own keeps the last known version of it.
+
+The module now depends on `mail` (the layout calls `mail.notification_preview`).
+
+## Public company logo route (v18.0.2.0.1)
 
 `/brand/logo/<company_id>` and `/brand/logo/<company_id>/<variant>` serve a
 company's logo to a reader who has no account. Branded emails and public pages

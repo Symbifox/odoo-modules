@@ -10,6 +10,8 @@
                 <field name="meeting_logo" widget="image" class="oe_avatar"/>
                 <field name="meeting_exchange_default"/>
                 <field name="meeting_resend_changes_default"/>
+                <field name="meeting_gen_installed" invisible="1"/>
+                <field name="meeting_task_assign_quiet" invisible="not meeting_gen_installed"/>
             </xpath>
         </field>
     </record>

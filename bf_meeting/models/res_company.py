@@ -15,8 +15,28 @@ class ResCompany(models.Model):
     meeting_logo = fields.Image(
         string="Logo Rencontres",
         help=(
-            "Logo affiché sur la bannière sombre des rapports PDF et courriels "
-            "du module Rencontres. Utiliser une version monochrome blanche pour "
-            "rester lisible. Si vide, le logo standard de la société est utilisé."
+            "Logo affiché sur la bannière sombre des rapports PDF du module "
+            "Rencontres. Utiliser une version monochrome blanche pour rester "
+            "lisible. Si vide, le logo standard de la société est utilisé. Les "
+            "courriels portent la mise en page commune et son logo."
         ),
     )
+    meeting_task_assign_quiet = fields.Boolean(
+        string="Taire l'avis d'assignation des tâches issues d'un compte rendu",
+        default=False,
+        help="Coché, une tâche créée avec un compte rendu (par le Meeting "
+             "Processor, par la revue Gen ou à la main) n'envoie pas à "
+             "l'assigné le courriel « Vous avez été assigné à ». L'assigné "
+             "reste abonné à la tâche et reçoit la suite du fil. Une "
+             "réassignation faite plus tard avise toujours. À réserver aux "
+             "sociétés où Gen assure le suivi des comptes rendus.",
+    )
+    meeting_gen_installed = fields.Boolean(
+        string="Gen installé",
+        compute='_compute_meeting_gen_installed',
+    )
+
+    def _compute_meeting_gen_installed(self):
+        installe = 'claude.chat.session' in self.env
+        for company in self:
+            company.meeting_gen_installed = installe

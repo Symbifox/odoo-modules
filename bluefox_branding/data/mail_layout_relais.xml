@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Relais : tous les modules maison pointent leurs courriels vers
+         bf_onboarding_base.bf_mail_layout, copie de secours de la mise en page
+         ci-dessus. Installé, ce module en remplace le contenu par la sienne :
+         bluefox_branding.bf_mail_layout fait foi, et la copie ne sert qu'aux
+         locataires qui ne l'ont pas. -->
+    <template id="bf_mail_layout_relais"
+              inherit_id="bf_onboarding_base.bf_mail_layout"
+              name="Mise en page des courriels : bluefox_branding fait foi">
+        <xpath expr="." position="replace" mode="inner">
+            <t t-call="bluefox_branding.bf_mail_layout"/>
+        </xpath>
+    </template>
+
+</odoo>

@@ -8,3 +8,4 @@ from . import survey_survey
 from . import onboarding_onboarding
 from . import ir_http
 from . import account_move_send
+from . import ir_qweb

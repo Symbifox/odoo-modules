@@ -73,6 +73,52 @@ class ProjectTask(models.Model):
                 continue
             task.bf_next_agenda_id = False
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Taire l'avis d'assignation des tâches nées d'un compte rendu.
+
+        Le Meeting Processor et la revue Gen créent les tâches d'un compte
+        rendu sous leur propre compte : Odoo envoie à l'assigné un courriel
+        « Vous avez été assigné à » par tâche. Quand la société du projet a
+        coché `meeting_task_assign_quiet`, ces créations passent
+        `mail_auto_subscribe_no_notify` : l'assigné reste abonné, seul le
+        courriel tombe. Les autres valeurs du lot sont créées comme avant, et
+        le lot revient dans l'ordre demandé, sans le contexte qui fait taire.
+        """
+        muettes = [i for i, vals in enumerate(vals_list)
+                   if self._bf_meeting_assign_quiet(vals)]
+        if not muettes:
+            return super().create(vals_list)
+        crees = {}
+        taches = super(ProjectTask, self.with_context(
+            mail_auto_subscribe_no_notify=True,
+        )).create([vals_list[i] for i in muettes])
+        crees.update(zip(muettes, taches.ids))
+        autres = [i for i in range(len(vals_list)) if i not in crees]
+        if autres:
+            taches = super().create([vals_list[i] for i in autres])
+            crees.update(zip(autres, taches.ids))
+        return self.browse([crees[i] for i in range(len(vals_list))])
+
+    @api.model
+    def _bf_meeting_assign_quiet(self, vals):
+        """Vrai si cette création doit se faire sans avis d'assignation.
+
+        Le réglage est lu sur la société de la tâche, pas sur celle de
+        l'appelant : le processeur a une seule société courante, et il crée
+        dans les projets de toutes. Lecture en sudo d'un booléen : l'appelant
+        crée une tâche, il n'a pas à savoir lire une fiche société pour ça.
+        """
+        if not vals.get('meeting_id') or not vals.get('user_ids'):
+            return False
+        company = self.env['res.company'].sudo()
+        if vals.get('company_id'):
+            company = company.browse(vals['company_id'])
+        elif vals.get('project_id'):
+            company = self.env['project.project'].sudo().browse(
+                vals['project_id']).company_id
+        return bool((company or self.env.company).sudo().meeting_task_assign_quiet)
+
     def _bf_is_open(self):
         self.ensure_one()
         return self.state not in CLOSED_TASK_STATES

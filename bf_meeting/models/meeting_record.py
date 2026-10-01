@@ -19,6 +19,29 @@ _logger = logging.getLogger(__name__)
 _SEUIL_SUR_FOND_SOMBRE = 3.0
 
 
+def _langue_de_repli(record):
+    """La langue d'envoi d'un compte rendu ou d'un ordre du jour.
+
+    Dans l'ordre : celle de la fiche, celle du client, celle de la personne qui
+    travaille, celle de la société, puis la première langue active. Chaque
+    candidate n'est retenue que si elle est active dans la base.
+
+    ⚠️ Jamais une langue écrite en dur : le repli `fr_CA` d'avant levait
+    « Invalid language code » à l'envoi sur toute base sans fr_CA.
+    """
+    actives = [code for code, _nom in record.env['res.lang'].get_installed()]
+    societe = record.sudo().company_id or record.env.company
+    for code in (
+        record.lang,
+        record.partner_id.lang if record.partner_id else False,
+        record.env.lang or record.env.user.lang,
+        societe.partner_id.lang,
+    ):
+        if code and code in actives:
+            return code
+    return actives[0] if actives else 'en_US'
+
+
 def _rgb(hexa: str) -> tuple:
     h = (hexa or '').lstrip('#')
     if len(h) == 3:
@@ -197,11 +220,15 @@ class MeetingRecord(models.Model):
 
     @api.depends('partner_id')
     def _compute_lang(self):
-        default_lang = self.env.lang or 'fr_CA'
         for rec in self:
             if rec.lang:
                 continue
-            rec.lang = (rec.partner_id and rec.partner_id.lang) or default_lang
+            rec.lang = _langue_de_repli(rec)
+
+    def _bf_langue_envoi(self):
+        """La langue que lisent les gabarits de courriel et les rapports."""
+        self.ensure_one()
+        return _langue_de_repli(self)
     series_name = fields.Char(
         string='Série',
         help='Nom de la série récurrente (ex. Comité de direction mensuel)',
@@ -859,7 +886,7 @@ class MeetingRecord(models.Model):
             'default_model': 'meeting.record',
             'default_res_ids': self.ids,
             'default_composition_mode': 'comment',
-            'default_email_layout_xmlid': 'mail.mail_notification_light',
+            'default_email_layout_xmlid': 'bf_onboarding_base.bf_mail_layout',
         }
         if template:
             ctx['default_template_id'] = template.id

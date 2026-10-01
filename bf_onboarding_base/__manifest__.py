@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Symbifox Onboarding Foundation',
-    'version': '18.0.2.0.1',
+    'version': '18.0.2.1.1',
     'summary': 'Shared helpers for Symbifox per-module onboarding panels.',
     'description': """
 Foundation module for Symbifox onboarding wizards.
@@ -20,6 +20,11 @@ What this module exposes:
   that auto-complete steps from a target model's create hook.
 
 This module does not declare any onboarding records of its own.
+
+It also ships `bf_onboarding_base.bf_mail_layout`, the mail layout every Blue Fox
+module points its outgoing emails to. When `bluefox_branding` is installed it
+replaces that layout with its own, which is the source of truth; without it, this
+module's copy of its last known version applies.
 """,
     'category': 'Tools',
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -27,8 +32,14 @@ This module does not declare any onboarding records of its own.
     'license': 'LGPL-3',
     'depends': [
         'onboarding',
+        # mail : la mise en page des courriels appelle mail.notification_preview.
+        'mail',
     ],
-    'data': [],
+    'data': [
+        # Mise en page de secours des courriels maison, GÉNÉRÉE depuis
+        # bluefox_branding (scripts/symbifox_mail_layout_secours.py) : ne pas éditer.
+        'data/mail_layout.xml',
+    ],
     'installable': True,
     'application': False,
     'auto_install': False,

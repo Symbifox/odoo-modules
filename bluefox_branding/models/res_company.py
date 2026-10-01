@@ -21,8 +21,12 @@ class ResCompany(models.Model):
     # without the white-label panel. This module styles/surfaces them but no
     # longer owns the field definitions.
 
+    # Traduisibles : la mise en page commune les affiche dans la langue
+    # du courriel, et un courriel anglais portait le slogan et le pied français.
+    # La valeur d'avant devient la source (`en_US`), comme ailleurs dans la suite.
     brand_email_tagline = fields.Char(
         string="Tagline de marque (courriels)",
+        translate=True,
         help=(
             "Courte phrase d'accroche affichée sous le nom de la société dans le pied "
             "des courriels brandés. Laissez vide pour utiliser l'en-tête du rapport."
@@ -31,6 +35,7 @@ class ResCompany(models.Model):
     brand_email_footer_html = fields.Html(
         string="Pied de page personnalisé (courriels)",
         sanitize=False,
+        translate=True,
         help=(
             "HTML qui remplace la ligne automatique courriel · téléphone · site web "
             "dans le pied des courriels brandés. Laissez vide pour utiliser les "

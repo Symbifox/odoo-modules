@@ -215,7 +215,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.3.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.0 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
-| `bf_meeting` | Rencontres | 18.0.3.62.1 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
+| `bf_meeting` | Rencontres | 18.0.3.63.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.1.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_meeting_timer` | Chronomètre de rencontre | 18.0.1.5.0 | BUSL-1.1 | The real time each agenda topic actually took, and the projected end of the meeting while it is still running. |
@@ -234,7 +234,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_nfc_timer` | Pastilles NFC : le chronomètre | 18.0.1.0.1 | BUSL-1.1 | NFC tag gestures for the timesheet timer: start, stop, and stop that logs the timesheet in the same request |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
 | `bf_oe2oc` | Reprise après migration Enterprise | 18.0.1.0.1 | LGPL-3 | Recover the data an Enterprise-to-Community migration left behind, and check what still needs settling |
-| `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.0.1 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
+| `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.1.1 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
 | `bf_org_chart` | Organigrammes : le moteur de dessin | 18.0.1.2.0 | BUSL-1.1 | Une géométrie, deux rendus : l'organigramme à l'écran et le même en PDF |
 | `bf_org_chart_ownership` | Organigramme de détention | 18.0.1.1.0 | BUSL-1.1 | Qui détient quoi, pour quelle part, et le dessin qui va avec |
 | `bf_org_chart_people` | Organigramme des personnes | 18.0.1.1.1 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |
@@ -331,7 +331,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.1 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
 | `bf_zerotouch_install` | Symbifox — Blue Fox OS Zero-Touch Install | 18.0.4.0.2 | BUSL-1.1 | The kickstart a Blue Fox OS installer fetches from its boot menu, rendered from the company's policy, with an OIDC device flow approved on a second device |
-| `bluefox_branding` | Symbifox Branding | 18.0.3.23.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
+| `bluefox_branding` | Symbifox Branding | 18.0.3.25.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.19.2 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.3.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |

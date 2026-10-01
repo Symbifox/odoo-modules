@@ -4,6 +4,7 @@ from datetime import timedelta
 from markupsafe import Markup, escape
 
 from odoo import _, api, fields, models, tools
+from odoo.tools import SQL
 from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
@@ -69,26 +70,25 @@ class MeetingDashboard(models.AbstractModel):
         lookback = max(1, min(user.bf_meeting_dashboard_lookback_days or 180, 180))
 
         # ---- Scoping (voir docstring) ----
-        params = {'companies': list(self.env.companies.ids)}
         # Société : une ligne sans société reste visible (convention Odoo pour
         # les enregistrements non rattachés).
-        where = ["(dl.company_id IS NULL OR dl.company_id = ANY(%(companies)s))"]
+        where = [SQL("(dl.company_id IS NULL OR dl.company_id = ANY(%s))",
+                     list(self.env.companies.ids))]
         # Projet : miroir de `rule_meeting_record_user`. Le gestionnaire voit
         # tout (miroir de `rule_meeting_record_manager`).
         if not user.has_group('bf_meeting.group_meeting_manager'):
-            params['partner'] = user.partner_id.id
-            where.append("""(
+            where.append(SQL("""(
                 dl.project_id IS NULL
                 OR EXISTS (
                     SELECT 1 FROM mail_followers mf
                     WHERE mf.res_model = 'project.project'
                       AND mf.res_id = dl.project_id
-                      AND mf.partner_id = %(partner)s
+                      AND mf.partner_id = %s
                 )
-            )""")
-        scope_sql = " AND ".join(where)
+            )""", user.partner_id.id))
+        scope_sql = SQL(" AND ").join(where)
         # ---- Single query : view + joins, all the data we need ----
-        self.env.cr.execute("""
+        self.env.cr.execute(SQL("""
             SELECT
                 dl.id,
                 dl.event_id,
@@ -130,9 +130,9 @@ class MeetingDashboard(models.AbstractModel):
             LEFT JOIN res_partner up_a   ON up_a.id = ua.partner_id
             LEFT JOIN res_users um       ON um.id = dl.minutes_resp_id
             LEFT JOIN res_partner up_m   ON up_m.id = um.partner_id
-            WHERE """ + scope_sql + """
+            WHERE %s
             ORDER BY priority_bucket, dl.date DESC NULLS LAST
-        """, params)
+        """, scope_sql))
         all_rows = self.env.cr.dictfetchall()
 
         # ---- Apply per-user horizons (narrow the view's hard window) ----
@@ -651,25 +651,25 @@ class MeetingDashboardLine(models.Model):
         # vers un organisateur qui est lui-même un interne actif, sinon on ne
         # ferait que remplacer un mauvais responsable par un autre.
         for _fname in ('bf_agenda_responsible_id', 'bf_minutes_responsible_id'):
-            self.env.cr.execute(f"""
+            self.env.cr.execute(SQL("""
                 UPDATE calendar_event ce
-                SET {_fname} = ce.user_id
+                SET %(col)s = ce.user_id
                 WHERE EXISTS (
                           SELECT 1 FROM res_users o
                           WHERE o.id = ce.user_id
                             AND o.active = true
                             AND o.share = false
                       )
-                  AND ce.{_fname} IS DISTINCT FROM ce.user_id
+                  AND %(ce_col)s IS DISTINCT FROM ce.user_id
                   AND (
-                      ce.{_fname} IS NULL
+                      %(ce_col)s IS NULL
                       OR EXISTS (
                           SELECT 1 FROM res_users u
-                          WHERE u.id = ce.{_fname}
+                          WHERE u.id = %(ce_col)s
                             AND (u.share = true OR u.active = false)
                       )
                   )
-            """)
+            """, col=SQL.identifier(_fname), ce_col=SQL.identifier("ce", _fname)))
         # L'horizon « à venir » de la vue passe de +30 à +90 jours. 30 était à la
         # fois le défaut ET le plafond : personne n'a pu le choisir délibérément,
         # donc on remonte au nouveau plafond ceux qui y sont encore. Une valeur
@@ -687,8 +687,8 @@ class MeetingDashboardLine(models.Model):
             WHERE active = true AND allday = false AND bf_skip_agenda = false
         """)
         tools.drop_view_if_exists(self.env.cr, self._table)
-        self.env.cr.execute(f"""
-            CREATE OR REPLACE VIEW {self._table} AS
+        self.env.cr.execute(SQL("""
+            CREATE OR REPLACE VIEW %s AS
             -- ============================================================
             -- Source 1 : rencontres ancrées sur calendar.event
             -- ============================================================
@@ -867,7 +867,7 @@ class MeetingDashboardLine(models.Model):
             LEFT JOIN res_partner rp     ON rp.id = s.partner_id
             WHERE COALESCE(pj.bf_skip_dashboard, FALSE) = FALSE
               AND COALESCE(rp.bf_skip_dashboard, FALSE) = FALSE
-        """)
+        """, SQL.identifier(self._table)))
 
     def action_open_event(self):
         self.ensure_one()

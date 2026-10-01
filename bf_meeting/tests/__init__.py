@@ -6,3 +6,7 @@ from . import test_report_company_brand
 from . import test_public_company_logo
 from . import test_discussed_tasks
 from . import test_dashboard_access
+from . import test_limiteur_borne
+from . import test_langue_de_repli
+from . import test_avis_assignation
+from . import test_mise_en_page_commune
