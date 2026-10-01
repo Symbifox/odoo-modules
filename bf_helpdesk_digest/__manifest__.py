@@ -1,7 +1,7 @@
 {
     "name": "Helpdesk — Section du digest quotidien",
     "summary": "Adds an « Assistance » section to the daily digest: the reader's open tickets and their daily helpdesk notifications",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

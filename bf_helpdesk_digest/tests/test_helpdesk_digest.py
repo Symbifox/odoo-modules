@@ -76,8 +76,11 @@ class TestHelpdeskDigest(TransactionCase):
             "user_id": self.agent.id, "ticket_id": ticket.id, "event": "client_reply",
             "channel": "email", "mode": "daily", "summary": "Réponse oubliée",
         })
-        later = item.create_date + timedelta(hours=27)
-        with freeze_time(later.replace(hour=14)):
+        # Deux jours plus tard, à 14 h : toujours au-delà des 26 heures, quelle que
+        # soit l'heure à laquelle l'essai tourne (le « + 27 h, à 14 h » d'avant
+        # tombait sous le seuil passé midi UTC).
+        later = (item.create_date + timedelta(days=2)).replace(hour=14)
+        with freeze_time(later):
             self.Item._cron_send_agent_digests()
         self.assertTrue(item.sent)
 

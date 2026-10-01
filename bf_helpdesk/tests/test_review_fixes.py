@@ -742,3 +742,15 @@ class TestReviewFixes(TransactionCase):
     def test_attachments_not_open_to_website_forms(self):
         field = self.env["ir.model.fields"]._get("helpdesk.ticket", "attachment_ids")
         self.assertTrue(field.website_form_blacklisted)
+
+    # Vue 360 : le dernier sondage vient aussi du sondage natif
+    def test_client360_last_native_survey(self):
+        mine = self._ticket()
+        other = self._ticket(name="Autre demande du client")
+        self.env["helpdesk.ticket.csat"].sudo().create({
+            "ticket_id": other.id, "state": "answered", "rating": "4",
+            "answered_date": fields.Datetime.now()})
+        self.env.invalidate_all()
+        last = mine.with_user(self.agent).bf_client_last_csat
+        self.assertTrue(last and "4/5" in last and other.number in last, last)
+

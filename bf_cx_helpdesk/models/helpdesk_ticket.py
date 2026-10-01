@@ -19,8 +19,16 @@ class HelpdeskTicket(models.Model):
     _inherit = "helpdesk.ticket"
 
     def _send_csat_invite(self):
+        # bf_helpdesk peut se charger avant ou après ce pont (aucune
+        # dépendance entre les deux). Au-dessus de nous, il nous appelle ; au-
+        # dessous, il est notre parent. Dans les deux cas, l'envoi réel est
+        # _bf_csat_deliver. Sans bf_helpdesk, il n'y a rien à garder.
         parent = super()
-        if not hasattr(parent, "_send_csat_invite"):
+        if hasattr(parent, "_send_csat_invite"):
+            deliver = parent._send_csat_invite
+        elif hasattr(self, "_bf_csat_deliver"):
+            deliver = self._bf_csat_deliver
+        else:
             return None
         if param_is_true(self.env, "bf_cx.guard_rating_requests", default=True):
             partner = self.partner_id
@@ -37,4 +45,4 @@ class HelpdeskTicket(models.Model):
                     )
                     return None
                 partner._bf_cx_mark_solicited()
-        return parent._send_csat_invite()
+        return deliver()

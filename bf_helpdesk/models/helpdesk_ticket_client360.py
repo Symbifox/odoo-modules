@@ -99,26 +99,35 @@ class HelpdeskTicket(models.Model):
             else:
                 ticket.bf_client_overdue_count = 0
                 ticket.bf_client_overdue_amount = 0.0
+            # Dernière réponse, des deux modes de sondage : le sondage natif
+            # (registre helpdesk.ticket.csat) et l'ancien mode par survey.
+            # Toujours limitée aux billets que l'agent voit.
+            visibles = Visible._search(domain + company_dom)
+            candidats = []
             answered = Ticket.search(
-                [("id", "in", Visible._search(domain + company_dom)),
-                 ("csat_user_input_id.state", "=", "done")],
+                [("id", "in", visibles), ("csat_user_input_id.state", "=", "done")],
                 order="closed_date desc, id desc", limit=1,
             )
             user_input = answered.csat_user_input_id
             if user_input:
-                when = fields.Date.to_string(
-                    (user_input.end_datetime or user_input.write_date).date()
-                )
+                moment = user_input.end_datetime or user_input.write_date
                 # Un sondage sans notation a un score de 0 : ne pas l'afficher.
                 score = (
                     f"{round(user_input.scoring_percentage)} % "
                     if user_input.survey_id.scoring_type != "no_scoring" else ""
                 )
-                ticket.bf_client_last_csat = (
-                    f"{score}répondu le {when} ({answered.number})"
-                )
-            else:
-                ticket.bf_client_last_csat = False
+                candidats.append((moment, f"{score}répondu le "
+                                  f"{fields.Date.to_string(moment.date())} ({answered.number})"))
+            natif = self.env["helpdesk.ticket.csat"].sudo().search(
+                [("ticket_id", "in", visibles), ("state", "=", "answered")],
+                order="answered_date desc, id desc", limit=1,
+            )
+            if natif:
+                moment = natif.answered_date or natif.write_date
+                note = f"{natif.rating}/5 " if natif.rating else ""
+                candidats.append((moment, f"{note}répondu le "
+                                  f"{fields.Date.to_string(moment.date())} ({natif.ticket_id.number})"))
+            ticket.bf_client_last_csat = max(candidats)[1] if candidats else False
 
     def _bf_can_see_invoices(self):
         """Les factures en souffrance : seulement pour qui a un rôle comptable.
