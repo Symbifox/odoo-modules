@@ -1,4 +1,4 @@
-import { Component } from "@odoo/owl";
+import { Component, useRef } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
 import { usePopover } from "@web/core/popover/popover_hook";
 import { registry } from "@web/core/registry";
@@ -97,6 +97,7 @@ export class BfColorResolvedField extends Component {
 
     setup() {
         this.popover = usePopover(BfColorOverridePopover, { position: "bottom-start" });
+        this.button = useRef("button");
     }
 
     get value() {
@@ -116,7 +117,13 @@ export class BfColorResolvedField extends Component {
                 return;
             }
         }
-        this.popover.open(ev.currentTarget, {
+        // Once an await has run, the event's currentTarget is null, and saving may
+        // have re-rendered the button: open on the button as it is now.
+        const target = this.button.el;
+        if (!target) {
+            return;
+        }
+        this.popover.open(target, {
             resModel: record.resModel,
             resId: record.resId,
             value: this.value,

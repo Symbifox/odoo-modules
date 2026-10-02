@@ -1,5 +1,11 @@
 # Changelog — Symbifox Color (`bf_color`)
 
+## 18.0.1.1.2 — 2026-10-02
+
+- "Displayed color" on a form or a list line with unsaved changes saved the
+  record, then failed instead of opening "My color": after the save, the click's
+  target was gone. It now opens on the button as it is after the save.
+
 ## 18.0.1.1.1 — 2026-10-02
 
 - Security: "Assign missing colors" wrote in sudo for anyone who could read a

@@ -131,7 +131,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.3.0 | BUSL-1.1 | Daily digest sections: Claude usage per account (windows, reset, probe state) and the recipient's Gen conversations to follow |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
-| `bf_color` | BF Color | 18.0.1.1.1 | LGPL-3 | Free colors resolved per user, per company and by automatic rules, with saved swatches |
+| `bf_color` | BF Color | 18.0.1.1.2 | LGPL-3 | Free colors resolved per user, per company and by automatic rules, with saved swatches |
 | `bf_color_calendar` | BF Color for Calendar | 18.0.1.0.0 | LGPL-3 | A free color on meeting types, shown on the events' tags |
 | `bf_color_crm` | BF Color for CRM | 18.0.1.0.0 | LGPL-3 | Free colors on CRM tags and opportunities |
 | `bf_color_helpdesk` | BF Color for Helpdesk | 18.0.1.0.0 | AGPL-3 | Free colors on helpdesk tags, teams and tickets |

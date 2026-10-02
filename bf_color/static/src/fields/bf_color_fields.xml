@@ -12,7 +12,7 @@
 
     <t t-name="bf_color.ResolvedField">
         <button type="button" class="o_bf_color_resolved btn btn-link p-0 d-inline-flex align-items-center gap-2"
-                t-on-click="open">
+                t-ref="button" t-on-click="open">
             <span class="o_bf_color_dot" t-att-class="{ 'o_bf_color_none': !value }"
                   t-att-style="value ? 'background-color:' + value : ''"/>
             <span t-if="value" class="text-body" t-out="value"/>
