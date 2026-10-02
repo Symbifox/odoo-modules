@@ -542,7 +542,7 @@ bf_gamification/
 ### v2.7.0
 
 - Badge categories and levels take a free color from `bf_color`: any hex
-  instead of Odoo's twelve, and each user can keep their own. Odoo's color
+  instead of Odoo's twelve. Odoo's color
   index follows the closest shade, so every screen that reads it still shows
   a near color.
 

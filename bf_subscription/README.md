@@ -50,7 +50,8 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 ### 18.0.1.6.0
 
 - Subscription tags take a free color from `bf_color`: any hex instead of
-  Odoo's twelve, and each user can keep their own.
+  Odoo's twelve, and each user can keep their own for a tag by selecting its
+  badge on a subscription.
 
 ### 18.0.1.5.2
 

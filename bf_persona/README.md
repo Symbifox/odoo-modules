@@ -106,7 +106,7 @@ a few lines.
 
 ### 18.0.3.2.0
 - Persona categories take a free color from `bf_color`: any hex instead of
-  Odoo's twelve, and each user can keep their own.
+  Odoo's twelve.
 
 ### 18.0.3.1.0
 - The assistant is told how long our mail to this contact usually runs, as a

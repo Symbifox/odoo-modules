@@ -207,7 +207,8 @@ them for client mail too.
 ### Colors
 
 Themes and feedback carry a free color from `bf_color` (any hex instead of
-Odoo's twelve, and each user can keep their own). The theme tags of a feedback
+Odoo's twelve; each user can keep their own color for a theme by selecting its
+badge on a feedback or a complaint). The theme tags of a feedback
 or a complaint show the theme's color, and a feedback card's edge shows the
 feedback's color, which an automatic rule can set (by theme or by channel,
 for instance). `bf_color` is a dependency.
