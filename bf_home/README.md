@@ -41,7 +41,7 @@ Three names were kept **verbatim** through that move, and none of them is free t
 
 Five modules extend them, four of those through an xpath anchored on a literal expression inside the template. An extension xpath that no longer resolves **does not raise**: the inheriting module's tile simply stops rendering, with nothing in the log. `tests/test_dashboard.py` pins both anchors so that a template edit fails a test instead of failing a screen.
 
-The accounting collectors moved under the same `@needs` guard as everything else, so `account` and `project` are no longer hard dependencies. The guard asks whether the model and its fields exist, not how the collector reads them, which is why it covers the three blocks of raw SQL as well as the ORM calls.
+The accounting collectors moved under the same `@needs` guard as everything else, so `account` and `project` are no longer hard dependencies. The existence guard asks whether the model and its fields exist, not how the collector reads them, which is why it covers the three blocks of raw SQL as well as the ORM calls. The rights guard has to know how it reads: see "Who sees what" below.
 
 `En attente d'eux` is the reason the module exists. No ERP surfaces the work that is technically not yours right now, and that is exactly where billable time evaporates.
 
@@ -67,6 +67,16 @@ The third guard reads executable source only, via `ast`, with the docstring and 
 
 `PYTHON_FILTERED` records the collectors that knowingly declare a field they cannot put in a domain and filter in Python instead. The exemption sits in the module rather than hidden inside the test, so it stays a decision on the record.
 
+## Who sees what
+
+**Not yours is not broken.** `@needs` asks a second question after "is the model here?": may this reader read it? A collector the reader has no right to is skipped before anything raises, and its band or tile is simply absent. The guard used to ask only the first question: an ordinary employee then hit an `AccessError` in nine collectors on every home load, each logged as a traceback, and the dashboard tiles said "data not available" about figures that were never theirs to see. An `AccessError` that still gets through (a related model no guard can predict) is treated the same way and logged at debug level, not as a failure. `failed` names real failures only.
+
+`gate=` names the model whose read right decides when the collector calls a service model (`hosting.dashboard`, `knowledge.dashboard`), which carries no access right of its own. Credential expiry figures on the knowledge tile additionally need read access to the credential vault, and read `None` (not zero) without it.
+
+**Raw SQL and `sudo` do not see rights.** That was the silent half of the same defect: the three raw-SQL tiles (twelve months of revenue, unpaid vendor bills, accounts to reconcile) showed to every internal user, and so did the security-advisory tile from an optional companion module not published here (read in `sudo`). Record rules that limit a salesperson to their own invoices do not reach a raw query, so these collectors also require a group through `groups=`: invoicing or read-only accounting for the ledger tiles, the companion module's own group for the advisory tile. A test refuses a raw-SQL collector that declares none.
+
+`_diagnose()` now also gives a rights verdict (`hors des droits de <login>`) for the calling user; `with_user()` answers for somebody else.
+
 ## Thresholds belong to the source module
 
 `_c_hour_banks` reads each bank's own `threshold_mode` and its `balance_floor` lines rather than applying a floor of its own. A bank with alerting `disabled` is left alone: somebody chose that, and a home screen is not the place to overrule it.
@@ -88,7 +98,7 @@ Installing the module without this only added a menu; the premise went unshipped
 ## Failure behaviour
 
 - One broken collector costs its band, never the page. Each is wrapped in `_safe()`, which logs and yields nothing rather than raising into the client action.
-- `bf.home` is an `AbstractModel`, so it has no table and carries no `ir.model.access` row. Every collector reads through the calling user, so record rules apply and a user without rights on a model simply gets that band omitted.
+- `bf.home` is an `AbstractModel`, so it has no table and carries no `ir.model.access` row. Every collector reads through the calling user, and its guard checks the read right before reading, so a user without rights on a model simply gets that band omitted, with nothing in the log.
 - When the RPC call itself fails, the screen says so and offers a retry instead of rendering a blank page that looks like a quiet morning. The message is read from `e.data.message`, which is where `makeErrorFromResponse()` puts the server's sentence — `e.message` is the envelope string `"Odoo Server Error"`.
 
 ## Performance
@@ -101,4 +111,13 @@ Installing the module without this only added a menu; the premise went unshipped
 odoo -d <db> -u bf_home --test-enable --test-tags /bf_home --stop-after-init
 ```
 
-The suite asserts the contract the client action relies on, not the figures, which depend on the tenant and on what happened yesterday: the call succeeds, the shape is stable, empty bands are absent rather than zeroed, every row can be opened, and one broken collector cannot take the screen down.
+The suite asserts the contract the client action relies on, not the figures, which depend on the tenant and on what happened yesterday: the call succeeds, the shape is stable, empty bands are absent rather than zeroed, every row can be opened, and one broken collector cannot take the screen down. `tests/test_access.py` plays the home screen and the figure tiles as an ordinary employee, an employee with Documents access and a manager: outside their rights, no section, no `failed`, nothing in the log; inside them, the section is there and a real failure is still reported.
+
+## Changelog
+
+### 18.0.2.0.1
+
+- A section the reader has no right to read is absent, not "unavailable", and no longer writes an `AccessError` traceback to the log on every home load.
+- The raw-SQL accounting tiles and the optional security-advisory tile (read in `sudo`) require a group, since record rules do not apply to them.
+- The knowledge tile reads credential expiry only with access to the credential vault, and keeps its review figures otherwise.
+- The figure-tiles test that targeted the absorbed `bf_dashboard` action now targets `bf_home`'s own.

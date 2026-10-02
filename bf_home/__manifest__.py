@@ -38,7 +38,7 @@ donc le module s'installe sur un locataire qui a trois modules comme sur un qui
 les a tous. ``account`` et ``project`` ne font pas exception depuis l'absorption :
 les collecteurs comptables passent par la même garde que les autres.
 """,
-    "version": "18.0.2.0.0",
+    "version": "18.0.2.0.1",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -51,9 +51,12 @@ les collecteurs comptables passent par la même garde que les autres.
     "data": [
         # No ir.model.access row: bf.home and bf.dashboard are AbstractModels,
         # which have no table and cannot carry one. Access is enforced where it
-        # belongs instead : every collector reads through the calling user, so
-        # record rules apply and a user without rights on a model simply gets
-        # that band omitted.
+        # belongs instead : every collector reads through the calling user, and
+        # its @needs guard asks for the read right before reading, so a user
+        # without rights on a model simply gets that band omitted. Raw-SQL and
+        # sudo tiles also require a group, since record rules do not reach them
+        # (before 18.0.2.0.1 those showed to every internal user, and
+        # the others were omitted only after an AccessError in the log).
         "views/home_views.xml",
         "data/bf_home_data.xml",
     ],

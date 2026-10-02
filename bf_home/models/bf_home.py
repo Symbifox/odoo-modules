@@ -17,6 +17,13 @@ Design constraints that shaped this file:
   ``REQUIREMENTS`` so the test suite can assert that a model which *is*
   installed carries every field we claim, and ``_diagnose()`` answers the same
   question from a shell. Four collectors shipped dormant before this existed.
+* **Not yours is not broken.** ``@needs`` also asks whether the reader
+  may read the model, and skips the collector when not, before anything raises.
+  It used to ask only whether the model existed: a plain employee then hit an
+  ``AccessError`` in nine collectors on every home load, each one written to the
+  log as a traceback for a band that was never theirs to see. An
+  ``AccessError`` that still gets through (a related model the guard cannot
+  predict) means the same thing and is logged at debug, not as a failure.
 * **Every figure carries the action that resolves it.** A row without a domain
   to open is a dead statistic, and the screen has no room for those.
 """
@@ -28,6 +35,7 @@ from datetime import datetime, time, timedelta
 import pytz
 
 from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -43,19 +51,47 @@ REQUIREMENTS = {}
 PYTHON_FILTERED = {"_c_hour_banks"}
 
 
+def may_read(env, model):
+    """True when the reader holds the read right on ``model`` (ACL, not rules).
+
+    Shared by ``bf.home`` and ``bf.dashboard``. Record rules are deliberately
+    not the question: an ORM read applies them by itself and returns fewer
+    rows, it does not raise. The ACL is what raises, so it is what a guard has
+    to ask *before* the read — asking afterwards means an ``AccessError``, a
+    traceback, and on the dashboard a tile that says « Données non
+    disponibles » to somebody who was simply never meant to see it.
+
+    An ``AbstractModel`` carries no ACL of its own, so ``has_access`` would
+    answer False for everyone but the superuser. Such a service model is let
+    through here; whoever declares one names the concrete model it reads.
+    """
+    if env.su:
+        return True
+    Model = env.get(model)
+    if Model is None:
+        return False
+    if Model._abstract:
+        return True
+    return Model.has_access("read")
+
+
 def needs(model, *fields_needed):
     """Declare the model and fields a collector reads, and guard on them.
 
     The declaration is the point: a guard written inline inside each collector
     works just as well at runtime but tells nobody, afterwards, what the
     collector was supposed to find.
+
+    The guard asks two questions, in this order: does the model exist here with
+    these fields, and may this reader read it. A no to either is silence, never
+    a failure — the band is simply not theirs.
     """
     def deco(fn):
         REQUIREMENTS[fn.__name__] = (model, fields_needed)
 
         @functools.wraps(fn)
         def wrapper(self):
-            if not self._has(model, *fields_needed):
+            if not self._readable(model, *fields_needed):
                 return []
             return fn(self)
 
@@ -85,11 +121,27 @@ class BfHome(models.AbstractModel):
             return False
 
     @api.model
+    def _may_read(self, model):
+        """True when the reader may read ``model``; see :func:`may_read`.
+
+        Kept apart from ``_has`` on purpose. ``_has`` answers a question about
+        the tenant (is the module there, in a version with this field), and
+        ``_diagnose`` and the feature probes depend on it meaning exactly that.
+        """
+        return may_read(self.env, model)
+
+    @api.model
+    def _readable(self, model, *fields_needed):
+        """The guard for anything this screen reads: present, and the reader's to read."""
+        return self._has(model, *fields_needed) and self._may_read(model)
+
+    @api.model
     def _diagnose(self):
-        """Why a band is quiet: absent module, missing field, or nothing to say.
+        """Why a band is quiet: absent module, missing field, no right, or nothing to say.
 
         Underscore-prefixed on purpose - this is a shell affordance, not RPC
-        surface.
+        surface. The rights verdict is the calling user's: run it with
+        ``with_user()`` to answer for somebody else.
         """
         out = []
         for name, (model, flds) in sorted(REQUIREMENTS.items()):
@@ -98,8 +150,13 @@ class BfHome(models.AbstractModel):
                 out.append((name, model, "module absent"))
                 continue
             missing = [f for f in flds if f not in Model._fields]
-            out.append((name, model,
-                        "champ absent : %s" % ", ".join(missing) if missing else "actif"))
+            if missing:
+                verdict = "champ absent : %s" % ", ".join(missing)
+            elif not self._may_read(model):
+                verdict = "hors des droits de %s" % self.env.user.login
+            else:
+                verdict = "actif"
+            out.append((name, model, verdict))
         return out
 
     @api.model
@@ -143,10 +200,29 @@ class BfHome(models.AbstractModel):
         return int(round(100.0 * part / whole)) if whole else 0
 
     def _safe(self, fn):
+        """Run a collector; whatever it raises costs its rows, never the screen.
+
+        Two outcomes that must not be confused. An ``AccessError`` means the
+        rows were not the reader's: the guard covers the model a collector
+        declares, but not every related model it touches, and what slips
+        through is the same answer — silence, at debug, because it repeats on
+        every load for every such reader. Anything else is a real failure and
+        keeps its traceback.
+
+        The savepoint is the one ``bf.dashboard`` already had to learn: an
+        exception raised *inside* a query leaves the transaction aborted, and
+        without it every collector after the broken one fails as well.
+        """
+        name = getattr(fn, "__name__", fn)
         try:
-            return fn() or []
+            with self.env.cr.savepoint():
+                return fn() or []
+        except AccessError:
+            _logger.debug("bf_home: collector %s is outside the rights of uid %s",
+                          name, self.env.uid)
+            return []
         except Exception:  # noqa: BLE001
-            _logger.exception("bf_home: collector %s failed", getattr(fn, "__name__", fn))
+            _logger.exception("bf_home: collector %s failed", name)
             return []
 
     # -------------------------------------------------------------- collectors
@@ -571,7 +647,7 @@ class BfHome(models.AbstractModel):
     # band above, where it can be clicked and resolved.
 
     def _p_meetings(self):
-        if not self._has("meeting.record", "date", "report_state"):
+        if not self._readable("meeting.record", "date", "report_state"):
             return []
         Rec = self.env["meeting.record"]
         total = Rec.search_count([])
@@ -593,18 +669,20 @@ class BfHome(models.AbstractModel):
 
     def _p_knowledge(self):
         stats = []
-        if self._has("project.document", "active", "is_review_due"):
+        # Each figure follows the right on its own model: Documents opens the
+        # first two, not the credentials or the matrices beside them.
+        if self._readable("project.document", "active", "is_review_due"):
             Doc = self.env["project.document"]
             stats.append({"k": _("Documents actifs"),
                           "v": Doc.search_count([("active", "=", True)])})
             stats.append({"k": _("Révisions en retard"),
                           "v": Doc.search_count([("active", "=", True),
                                                  ("is_review_due", "=", True)])})
-        if self._has("project.credential", "state"):
+        if self._readable("project.credential", "state"):
             stats.append({"k": _("Identifiants à renouveler"),
                           "v": self.env["project.credential"].search_count(
                               [("state", "in", ["expiring", "expired"])])})
-        if self._has("project.knowledge.matrix", "completed_count", "item_count"):
+        if self._readable("project.knowledge.matrix", "completed_count", "item_count"):
             Mat = self.env["project.knowledge.matrix"]
             dom = [("is_template", "=", False)] if "is_template" in Mat._fields else []
             mats = Mat.search(dom)
@@ -615,13 +693,16 @@ class BfHome(models.AbstractModel):
                               "meter": pct})
         if not stats:
             return []
-        model = "project.document" if self._has("project.document", "active") \
-            else "project.knowledge.matrix"
+        # The panel opens the first list the reader can actually open: a click
+        # into a model they have no right on is an error dialog, not a list.
+        model = next((m for m in ("project.document", "project.knowledge.matrix",
+                                  "project.credential") if self._readable(m)),
+                     "project.knowledge.matrix")
         return [{"icon": "project_knowledge_matrix", "title": _("Connaissances"),
                  "model": model, "stats": stats}]
 
     def _p_hosting(self):
-        if not self._has("hosting.service", "last_health_status", "state"):
+        if not self._readable("hosting.service", "last_health_status", "state"):
             return []
         Svc = self.env["hosting.service"]
         base = [("state", "=", "active"), ("last_health_status", "!=", False)]
@@ -640,7 +721,7 @@ class BfHome(models.AbstractModel):
             stats.append({"k": _("Mises à jour disponibles"),
                           "v": Svc.search_count([("state", "=", "active"),
                                                  ("update_available", "=", True)])})
-        if self._has("hosting.maintenance.schedule", "next_due"):
+        if self._readable("hosting.maintenance.schedule", "next_due"):
             # Compared against next_due rather than the is_overdue flag: that
             # flag is a stored computed field that is not refreshed daily, so it
             # still reads False on schedules whose date passed days ago. The
@@ -651,7 +732,7 @@ class BfHome(models.AbstractModel):
             if "active" in Sched._fields:
                 dom.append(("active", "=", True))
             stats.append({"k": _("Maintenances en retard"), "v": Sched.search_count(dom)})
-        if self._has("hosting.backup.run", "run_date", "state"):
+        if self._readable("hosting.backup.run", "run_date", "state"):
             last = self.env["hosting.backup.run"].search([], order="run_date desc", limit=1)
             if last and last.run_date:
                 label = dict(last._fields["state"].selection or []).get(last.state, last.state)

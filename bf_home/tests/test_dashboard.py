@@ -165,14 +165,12 @@ class TestBfDashboard(TransactionCase):
         calculaient des cartes dans un écran que personne n'ouvrait. Rien à
         l'exécution ne le signalait : la charge utile était juste, le gabarit
         rendait, il manquait seulement la porte.
+
+        Depuis l'absorption, les tuiles n'ont plus d'action à elles :
+        ``BfHome`` les monte sous les bandes. La porte est donc celle de
+        l'accueil. Ce test visait encore ``bf_dashboard.bf_dashboard_action``,
+        qui n'existe sur aucune base neuve, et levait au lieu de vérifier.
         """
-        # ⚠️ Le test visait `bf_dashboard.bf_dashboard_action`, l'action du
-        # module absorbé ici le 2026-08-30. Sur la production, l'identifiant
-        # résout encore parce que l'ancien module y a été installé et que ses
-        # lignes `ir.model.data` ont survécu à l'absorption. Sur une
-        # installation NEUVE de `bf_home` seul, il n'existe pas : KeyError, un
-        # reste de fusion qui ne se voyait nulle part. C'est l'action de
-        # `bf_home` qui ouvre l'écran depuis.
         action = self.env.ref("bf_home.bf_home_action")
         menus = self.env["ir.ui.menu"].search([
             ("action", "=", "%s,%s" % (action.type, action.id)),
@@ -194,6 +192,52 @@ class TestBfDashboard(TransactionCase):
         manifest = ast.literal_eval(open(path, encoding="utf-8").read())
         self.assertNotIn("post_init_hook", manifest)
         self.assertNotIn("pre_init_hook", manifest)
+
+    def test_raw_reads_declare_a_group(self):
+        """Un collecteur en SQL brut ou en sudo doit exiger un groupe.
+
+        Le droit de lecture sur le modèle ne suffit pas pour eux : un vendeur
+        lit ``account.move``, mais une règle le borne à ses propres pièces, et
+        une requête brute ne la voit pas. Les trois blocs de SQL brut ont ainsi
+        montré le chiffre d'affaires de l'entreprise à tout usager interne, sans
+        rien au journal. Ce test lit le code exécutable, docstring retirée,
+        comme ``test_declared_fields_are_used`` de bf_home.
+        """
+        import ast
+        import inspect
+        import textwrap
+
+        from odoo.addons.bf_home.models.bf_dashboard import ACCESS, BfDashboard
+
+        naked = []
+        for name in sorted(REQUIREMENTS):
+            fn = ast.parse(textwrap.dedent(
+                inspect.getsource(getattr(BfDashboard, name)))).body[0]
+            stmts = fn.body
+            if (stmts and isinstance(stmts[0], ast.Expr)
+                    and isinstance(getattr(stmts[0], "value", None), ast.Constant)):
+                stmts = stmts[1:]
+            code = "\n".join(ast.unparse(n) for n in stmts)
+            if ("cr.execute" in code or ".sudo()" in code) and not ACCESS[name][1]:
+                naked.append(name)
+        self.assertFalse(naked, "lecture brute sans groupe exigé : %s" % ", ".join(naked))
+
+    def test_access_gates_are_concrete_models(self):
+        """Une porte sur un AbstractModel ne décide rien : il n'a pas de droit d'accès.
+
+        ``may_read`` laisse passer un modèle de service, faute de mieux. Un
+        collecteur qui délègue à l'un d'eux doit donc nommer, par ``gate``, le
+        modèle concret qu'il lit.
+        """
+        from odoo.addons.bf_home.models.bf_dashboard import ACCESS
+
+        abstract = sorted(
+            "%s -> %s" % (name, gate)
+            for name, (gates, _groups) in ACCESS.items()
+            for gate in gates
+            if self.env.get(gate) is not None and self.env[gate]._abstract)
+        self.assertFalse(abstract, "porte sur un modèle sans droit d'accès : %s"
+                         % ", ".join(abstract))
 
     def test_diagnose_answers_for_every_requirement(self):
         """_diagnose() doit nommer chaque collecteur gardé, muet ou non."""
