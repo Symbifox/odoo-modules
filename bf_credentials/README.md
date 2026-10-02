@@ -172,6 +172,7 @@ SHA-256 fingerprints on both sides, with zero decryption failures.
 | code | Char | Unique code |
 | show_* | Boolean | Which fields the form shows for this type |
 | color_hex | Char | Free color (`bf_color`): any hex instead of Odoo's twelve |
+| color_resolved | Char | The color the current user sees; on the form it opens "My color", a shade only they see (18.0.3.1.1) |
 
 ### project.project (extended)
 

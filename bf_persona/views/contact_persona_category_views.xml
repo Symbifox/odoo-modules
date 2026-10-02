@@ -10,6 +10,7 @@
                 <field name="name"/>
                 <field name="code"/>
                 <field name="color_hex" widget="bf_color" string="Couleur"/>
+                <field name="color_resolved" widget="bf_color_resolved" string="Couleur affichée" optional="show"/>
                 <field name="active" widget="boolean_toggle"/>
             </list>
         </field>

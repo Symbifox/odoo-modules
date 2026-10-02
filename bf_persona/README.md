@@ -104,6 +104,10 @@ a few lines.
 
 ## Changelog
 
+### 18.0.3.2.1
+- The category list shows the *Couleur affichée* (displayed color), which opens
+  "My color", a shade only you see.
+
 ### 18.0.3.2.0
 - Persona categories take a free color from `bf_color`: any hex instead of
   Odoo's twelve.

@@ -11,6 +11,7 @@
                 <field name="code"/>
                 <field name="icon" placeholder="fa-coffee"/>
                 <field name="color_hex" widget="bf_color" string="Color"/>
+                <field name="color_resolved" widget="bf_color_resolved" string="Displayed color" optional="show"/>
                 <field name="default_time" widget="float_time"/>
                 <field name="active" widget="boolean_toggle"/>
             </list>
@@ -35,6 +36,7 @@
                         <group>
                             <field name="icon" placeholder="fa-coffee"/>
                             <field name="color_hex" widget="bf_color" string="Color"/>
+                            <field name="color_resolved" widget="bf_color_resolved" string="Displayed color" invisible="not id"/>
                             <field name="default_time" widget="float_time"/>
                         </group>
                     </group>

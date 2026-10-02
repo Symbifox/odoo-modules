@@ -8,8 +8,33 @@
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="color_hex" widget="bf_color" string="Couleur"/>
+                <field name="color_resolved" widget="bf_color_resolved" string="Couleur affichée" optional="show"/>
                 <field name="description"/>
             </list>
+        </field>
+    </record>
+
+    <!-- Une fiche à soi : sans elle, qui n'a pas le droit d'écrire ouvrait la fiche générée
+         par Odoo, sans la couleur affichée ni « Ma couleur ». -->
+    <record id="view_badge_category_form" model="ir.ui.view">
+        <field name="name">bf.gamification.badge.category.form</field>
+        <field name="model">bf.gamification.badge.category</field>
+        <field name="arch" type="xml">
+            <form string="Cat&#233;gorie de badge">
+                <sheet>
+                    <field name="icon" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <field name="sequence"/>
+                        <field name="color_hex" widget="bf_color" string="Couleur"/>
+                        <field name="color_resolved" widget="bf_color_resolved" string="Couleur affichée" invisible="not id"/>
+                        <field name="description"/>
+                        <field name="badge_ids" widget="many2many_tags" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
         </field>
     </record>
 

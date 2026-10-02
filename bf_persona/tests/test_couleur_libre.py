@@ -21,3 +21,8 @@ class TestCouleurLibre(TransactionCase):
     def test_categorie_de_persona(self):
         self._porte_une_couleur_libre("contact.persona.category", {"name": "Essai couleur", "code": "essai_couleur"})
         self.assertIn('widget="bf_color"', self._arch("bf_persona.view_contact_persona_category_list", "list"))
+
+    def test_ma_couleur_a_une_porte(self):
+        """« Ma couleur » s'ouvre par la couleur affichée."""
+        for xmlid, kind in (('bf_persona.view_contact_persona_category_list', 'list'),):
+            self.assertIn('widget="bf_color_resolved"', self._arch(xmlid, kind), xmlid)

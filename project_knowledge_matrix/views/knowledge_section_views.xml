@@ -16,6 +16,7 @@
                         </group>
                         <group string="Display">
                             <field name="color_hex" widget="bf_color" string="Color"/>
+                            <field name="color_resolved" widget="bf_color_resolved" string="Displayed color" invisible="not id"/>
                             <field name="active"/>
                         </group>
                     </group>
@@ -38,6 +39,7 @@
                 <field name="name"/>
                 <field name="description"/>
                 <field name="color_hex" widget="bf_color" string="Color"/>
+                <field name="color_resolved" widget="bf_color_resolved" string="Displayed color" optional="show"/>
             </list>
         </field>
     </record>

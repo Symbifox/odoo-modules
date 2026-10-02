@@ -23,3 +23,8 @@ class TestCouleurLibre(TransactionCase):
         self.assertIn("bf.gamification.level", self.env["bf.color.mixin"]._bf_color_model_names())
         self.assertIn('widget="bf_color"', self._arch("bf_gamification.view_gamification_level_form", "form"))
         self.assertIn('widget="bf_color"', self._arch("bf_gamification.view_badge_category_list", "list"))
+
+    def test_ma_couleur_a_une_porte(self):
+        """« Ma couleur » s'ouvre par la couleur affichée."""
+        for xmlid, kind in (('bf_gamification.view_gamification_level_list', 'list'), ('bf_gamification.view_gamification_level_form', 'form'), ('bf_gamification.view_badge_category_list', 'list'), ('bf_gamification.view_badge_category_form', 'form'),):
+            self.assertIn('widget="bf_color_resolved"', self._arch(xmlid, kind), xmlid)

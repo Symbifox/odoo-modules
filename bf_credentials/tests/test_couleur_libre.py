@@ -22,3 +22,8 @@ class TestCouleurLibre(TransactionCase):
         self._porte_une_couleur_libre("project.credential.type", {"name": "Essai couleur", "code": "essai_couleur"})
         arch = self._arch("bf_credentials.credential_type_view_form", "form")
         self.assertIn('widget="bf_color"', arch)
+
+    def test_ma_couleur_a_une_porte(self):
+        """« Ma couleur » s'ouvre par la couleur affichée."""
+        for xmlid, kind in (('bf_credentials.credential_type_view_form', 'form'),):
+            self.assertIn('widget="bf_color_resolved"', self._arch(xmlid, kind), xmlid)

@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox Credentials',
-    'version': '18.0.3.1.0',
+    'version': '18.0.3.1.1',
     'category': 'Services/Project',
     'summary': 'Coffre d\'identifiants chiffrés par projet, avec rotation et expiration',
     'description': """

@@ -539,6 +539,13 @@ bf_gamification/
 
 ## Changelog
 
+### v2.7.1
+
+- Levels and badge categories show their *Couleur affichée* (displayed color),
+  which opens "My color", a shade only you see. Badge categories get a form of
+  their own: without the right to edit, a click opened Odoo's generated form,
+  which had neither.
+
 ### v2.7.0
 
 - Badge categories and levels take a free color from `bf_color`: any hex

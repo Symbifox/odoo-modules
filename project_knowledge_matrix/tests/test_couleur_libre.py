@@ -30,3 +30,8 @@ class TestCouleurLibre(TransactionCase):
         self.assertIn('name="color_resolved"', arch)
         self.assertNotIn("kanban_getcolor", arch)
         self.assertTrue(section)
+
+    def test_ma_couleur_a_une_porte(self):
+        """« Ma couleur » s'ouvre par la couleur affichée."""
+        for xmlid, kind in (('project_knowledge_matrix.view_document_type_tree', 'list'), ('project_knowledge_matrix.view_document_type_form', 'form'), ('project_knowledge_matrix.knowledge_section_view_list', 'list'), ('project_knowledge_matrix.knowledge_section_view_form', 'form'),):
+            self.assertIn('widget="bf_color_resolved"', self._arch(xmlid, kind), xmlid)

@@ -13,6 +13,7 @@
                 <field name="icon"/>
                 <field name="is_internal" widget="boolean_toggle"/>
                 <field name="color_hex" widget="bf_color" string="Color"/>
+                <field name="color_resolved" widget="bf_color_resolved" string="Displayed color" optional="show"/>
                 <field name="active"/>
             </list>
         </field>
@@ -44,6 +45,7 @@
                         <group>
                             <field name="icon" placeholder="fa-file"/>
                             <field name="color_hex" widget="bf_color" string="Color"/>
+                            <field name="color_resolved" widget="bf_color_resolved" string="Displayed color" invisible="not id"/>
                         </group>
                     </group>
                     <group>

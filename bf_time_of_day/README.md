@@ -15,7 +15,7 @@ LGPL-3 — see `LICENSE`.
 ### Admin-configurable time slots
 - A `bf.time.of.day` model (`name`, `code`, `sequence`, `color`, `icon`, `default_time`, `active`).
 - 4 seeded presets (`noupdate=1`): **Morning** (09:00, ☕), **Midday** (12:00, 🌞), **End of day** (16:00, 🕓), **After hours** (19:00, 🌙). Renameable, recolourable, extendable — an admin can add as many as they want.
-- Admin menu under *Settings → Technical → Time slots*. Inline-editable list with a free color (`bf_color`: any hex instead of Odoo's twelve) and `widget="float_time"` down to the minute.
+- Admin menu under *Settings → Technical → Time slots*. Inline-editable list with a free color (`bf_color`: any hex instead of Odoo's twelve; the *Displayed color* column, also on the form, opens "My color", a shade only you see) and `widget="float_time"` down to the minute.
 
 ### Applied to `project.task`
 - A `time_of_day_id` field (Many2one, indexed, with `group_expand` so empty columns show in kanban).
@@ -127,6 +127,9 @@ bf_time_of_day/
 ```
 
 ## Changelog
+
+### 18.0.1.5.1
+- **"My color" for time slots**: the slot list and form show the *Displayed color*, which opens "My color" (a shade only you see) and also shows Odoo's index color, where the free-color field alone read "No color".
 
 ### 18.0.1.5.0
 - **Time slots take a free color** (`bf_color`): any hex instead of Odoo's twelve. The badge on task cards takes the slot's color, with black or white text worked out for contrast; a slot with no color of its own keeps Odoo's index colors.

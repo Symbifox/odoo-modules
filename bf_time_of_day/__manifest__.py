@@ -9,7 +9,8 @@
     #   date limite.
     # 18.0.1.5.0: la plage horaire prend une couleur libre (bf_color) ;
     #   la pastille de la carte de tâche la reprend telle quelle.
-    "version": "18.0.1.5.0",
+    # 18.0.1.5.1: la couleur affichée, dans la liste et la fiche, ouvre « Ma couleur ».
+    "version": "18.0.1.5.1",
     "category": "Project",
     "summary": "Plages horaires (Matinée / Midi / Fin de jour / Hors heures) pour tâches et activités",
     'author': 'Les services de consultation Blue Fox, Inc.',

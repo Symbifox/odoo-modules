@@ -8,7 +8,9 @@
     # 18.0.2.6.2: resetting everyone's progress (raw SQL) requires an
     #   administrator, also when the method is reached through RPC.
     # 18.0.2.7.0: badge categories and levels take a free color (bf_color).
-    "version": "18.0.2.7.0",
+    # 18.0.2.7.1: the displayed color opens "My color"; badge categories get
+    #   a form of their own.
+    "version": "18.0.2.7.1",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -30,3 +30,8 @@ class TestCouleurLibre(TransactionCase):
         arch = self._arch("project.view_task_kanban", "kanban")
         self.assertIn("time_of_day_color_resolved", arch)
         self.assertIn("--background-color:", arch)
+
+    def test_ma_couleur_a_une_porte(self):
+        """« Ma couleur » s'ouvre par la couleur affichée."""
+        for xmlid, kind in (('bf_time_of_day.bf_time_of_day_view_list', 'list'), ('bf_time_of_day.bf_time_of_day_view_form', 'form'),):
+            self.assertIn('widget="bf_color_resolved"', self._arch(xmlid, kind), xmlid)
