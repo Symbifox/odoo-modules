@@ -1,12 +1,27 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_color
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-02 08:04+0000\n"
+"PO-Revision-Date: 2026-10-02 08:04+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: \n"
+
+#. module: bf_color
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_rule.py:0
+msgid "%s has no free color: a rule on it would color nothing."
+msgstr ""
+"%s n'a pas de couleur libre : une règle sur ce modèle ne colorerait rien."
 
 #. module: bf_color
 #. odoo-javascript
@@ -20,6 +35,12 @@ msgid "%s is not a hex color."
 msgstr "%s n'est pas une couleur hexadécimale."
 
 #. module: bf_color
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_rule.py:0
+msgid "%s values received a color."
+msgstr "%s valeurs ont reçu une couleur."
+
+#. module: bf_color
 #. odoo-javascript
 #: code:addons/bf_color/static/src/picker/bf_color_picker.xml:0
 msgid "(shared)"
@@ -30,6 +51,18 @@ msgstr "(partagé)"
 msgid "A color override belongs to a user or to a company, not both."
 msgstr ""
 "Une couleur propre appartient à un usager ou à une société, pas aux deux."
+
+#. module: bf_color
+#: model_terms:ir.ui.view,arch_db:bf_color.bf_color_rule_view_form
+msgid ""
+"A record takes, in this order: the color its user chose, the company's color,\n"
+"                        the first line below that matches, the criterion's own color (a doctor's color\n"
+"                        set on the doctor), then a color from the fallback swatch."
+msgstr ""
+"Un enregistrement prend, dans l'ordre : la couleur que la personne a "
+"choisie, la couleur du locataire, la première ligne ci-dessous qui "
+"correspond, la couleur propre du critère (celle du médecin, posée sur sa "
+"fiche), puis une couleur du nuancier de repli."
 
 #. module: bf_color
 #. odoo-python
@@ -50,6 +83,11 @@ msgid "Apply"
 msgstr "Appliquer"
 
 #. module: bf_color
+#: model_terms:ir.ui.view,arch_db:bf_color.bf_color_rule_view_form
+msgid "Assign missing colors"
+msgstr "Attribuer les couleurs manquantes"
+
+#. module: bf_color
 #: model:ir.model,name:bf_color.model_bf_color_rule
 msgid "Automatic color rule"
 msgstr "Règle de couleur automatique"
@@ -68,8 +106,25 @@ msgstr "Règles de couleur automatiques"
 #. odoo-javascript
 #: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_color_mixin__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_editorial_entry__color_source__rule
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_note__color_source__rule
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_note_tag__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_outreach_target__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_shift_assignment__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_visit__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_visit_listing__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__blog_tag_category__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__calendar_event__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__crm_lead__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__crm_tag__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__hosting_maintenance_schedule__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__hr_employee__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__meeting_agenda__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__meeting_record__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__nextcloud_calendar_sync_config__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__project_project__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__project_tags__color_source__rule
+#: model:ir.model.fields.selection,name:bf_color.selection__project_task__color_source__rule
 #: model:ir.model.fields.selection,name:bf_color.selection__res_partner_category__color_source__rule
 msgid "Automatic rule"
 msgstr "Règle automatique"
@@ -78,6 +133,11 @@ msgstr "Règle automatique"
 #: model:ir.ui.menu,name:bf_color.bf_color_menu_rule
 msgid "Automatic rules"
 msgstr "Règles automatiques"
+
+#. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_ir_model__bf_color_colorable
+msgid "Carries a free color"
+msgstr "Porte une couleur libre"
 
 #. module: bf_color
 #: model:ir.model.fields,help:bf_color.field_bf_color_mixin__color_resolved_index
@@ -105,6 +165,15 @@ msgstr "Source de la couleur"
 #: model:ir.model.fields,help:bf_color.field_res_partner_category__color_hex
 msgid "Color of the record for everyone (hex)."
 msgstr "Couleur de l'enregistrement pour tout le monde (hex)."
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_rule__only_listed
+msgid ""
+"Color only the records whose value is in the list below. Other records keep "
+"the color they would have without this rule."
+msgstr ""
+"Colorer seulement les enregistrements dont la valeur figure dans la liste "
+"ci-dessous. Les autres gardent la couleur qu'ils auraient sans cette règle."
 
 #. module: bf_color
 #: model:ir.model,name:bf_color.model_bf_color_override
@@ -150,8 +219,25 @@ msgstr "Couleurs"
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__company_id
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_swatch__company_id
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_color_mixin__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_editorial_entry__color_source__company
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_note__color_source__company
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_note_tag__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_outreach_target__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_shift_assignment__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_visit__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_visit_listing__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__blog_tag_category__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__calendar_event__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__crm_lead__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__crm_tag__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__hosting_maintenance_schedule__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__hr_employee__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__meeting_agenda__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__meeting_record__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__nextcloud_calendar_sync_config__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__project_project__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__project_tags__color_source__company
+#: model:ir.model.fields.selection,name:bf_color.selection__project_task__color_source__company
 #: model:ir.model.fields.selection,name:bf_color.selection__res_partner_category__color_source__company
 msgid "Company"
 msgstr "Société"
@@ -209,11 +295,18 @@ msgid "Displayed color (Odoo palette)"
 msgstr "Couleur affichée (palette d'Odoo)"
 
 #. module: bf_color
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_rule.py:0
+msgid "Every value already has a color."
+msgstr "Chaque valeur a déjà une couleur."
+
+#. module: bf_color
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__fallback_swatch_id
 msgid "Fallback swatch"
 msgstr "Nuancier de repli"
 
 #. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__field_type
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__field_type
 msgid "Field Type"
 msgstr "Type de champ"
@@ -230,6 +323,7 @@ msgid "For a text, selection, number or yes/no criterion: the raw value."
 msgstr "Pour un critère texte, liste, nombre ou oui/non : la valeur brute."
 
 #. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_rule__value_model
 #: model:ir.model.fields,help:bf_color.field_bf_color_rule_line__value_model
 msgid "For relationship fields, the technical name of the target model"
 msgstr "Pour les champs relationnels, le nom technique du modèle cible"
@@ -240,6 +334,15 @@ msgstr "Pour les champs relationnels, le nom technique du modèle cible"
 #: code:addons/bf_color/static/src/picker/bf_color_picker.xml:0
 msgid "Free color"
 msgstr "Couleur libre"
+
+#. module: bf_color
+#: model_terms:ir.ui.view,arch_db:bf_color.bf_color_rule_view_form
+msgid ""
+"Give every value in use that has no color of its own the least used color of"
+" the fallback swatch (or of the default palette)."
+msgstr ""
+"Donner à chaque valeur employée qui n'a pas de couleur propre la couleur la "
+"moins employée du nuancier de repli (ou de la palette par défaut)."
 
 #. module: bf_color
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_override__id
@@ -280,11 +383,33 @@ msgid "Leave empty to apply the rule to every company."
 msgstr "Laisser vide pour appliquer la règle à toutes les sociétés."
 
 #. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__only_listed
+msgid "Listed values only"
+msgstr "Valeurs listées seulement"
+
+#. module: bf_color
 #. odoo-javascript
 #: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_color_mixin__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_editorial_entry__color_source__user
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_note__color_source__user
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_note_tag__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_outreach_target__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_shift_assignment__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_visit__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_visit_listing__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__blog_tag_category__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__calendar_event__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__crm_lead__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__crm_tag__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__hosting_maintenance_schedule__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__hr_employee__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__meeting_agenda__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__meeting_record__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__nextcloud_calendar_sync_config__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__project_project__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__project_tags__color_source__user
+#: model:ir.model.fields.selection,name:bf_color.selection__project_task__color_source__user
 #: model:ir.model.fields.selection,name:bf_color.selection__res_partner_category__color_source__user
 msgid "Mine"
 msgstr "Les miens"
@@ -298,6 +423,11 @@ msgstr "Modèle"
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__model_name
 msgid "Model name"
 msgstr "Nom du modèle"
+
+#. module: bf_color
+#: model:ir.model,name:bf_color.model_ir_model
+msgid "Models"
+msgstr "Modèles"
 
 #. module: bf_color
 #. odoo-javascript
@@ -338,6 +468,13 @@ msgid "Only an administrator can set the company color."
 msgstr "Seul un administrateur peut choisir la couleur du locataire."
 
 #. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_rule__model_id
+msgid "Only models that carry a free color can be colored by a rule."
+msgstr ""
+"Seuls les modèles qui portent une couleur libre peuvent être colorés par une"
+" règle."
+
+#. module: bf_color
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_mixin__color_hex
 #: model:ir.model.fields,field_description:bf_color.field_res_partner_category__color_hex
 msgid "Own color"
@@ -358,13 +495,31 @@ msgstr "Étiquettes de contact"
 #: code:addons/bf_color/static/src/fields/bf_color_fields.js:0
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__value_res_id
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_color_mixin__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_editorial_entry__color_source__record
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_note__color_source__record
 #: model:ir.model.fields.selection,name:bf_color.selection__bf_note_tag__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_outreach_target__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_shift_assignment__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_visit__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__bf_visit_listing__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__blog_tag_category__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__calendar_event__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__crm_lead__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__crm_tag__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__hosting_maintenance_schedule__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__hr_employee__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__meeting_agenda__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__meeting_record__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__nextcloud_calendar_sync_config__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__project_project__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__project_tags__color_source__record
+#: model:ir.model.fields.selection,name:bf_color.selection__project_task__color_source__record
 #: model:ir.model.fields.selection,name:bf_color.selection__res_partner_category__color_source__record
 msgid "Record"
 msgstr "Enregistrement"
 
 #. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__value_model
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__value_model
 msgid "Related Model"
 msgstr "Modèle lié"
@@ -444,6 +599,24 @@ msgid "The criterion must be a field of %s."
 msgstr "Le critère doit être un champ de %s."
 
 #. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_bf_color_rule__value_colorable
+msgid "The criterion points at records that carry their own color."
+msgstr ""
+"Le critère pointe vers des enregistrements qui portent leur propre couleur."
+
+#. module: bf_color
+#: model:ir.model.fields,help:bf_color.field_ir_model__bf_color_colorable
+msgid "The model is wired to bf_color: an automatic rule can color it."
+msgstr ""
+"Le modèle est branché sur bf_color : une règle automatique peut le colorer."
+
+#. module: bf_color
+#. odoo-python
+#: code:addons/bf_color/models/bf_color_rule.py:0
+msgid "The values of this criterion cannot carry a color of their own."
+msgstr "Les valeurs de ce critère ne peuvent pas porter leur propre couleur."
+
+#. module: bf_color
 #. odoo-python
 #: code:addons/bf_color/models/bf_color_rule.py:0
 msgid "This field type cannot be used as a criterion."
@@ -460,12 +633,29 @@ msgid "Value"
 msgstr "Valeur"
 
 #. module: bf_color
+#: model:ir.model.fields,field_description:bf_color.field_bf_color_rule__value_colorable
+msgid "Value Colorable"
+msgstr "Valeur colorable"
+
+#. module: bf_color
 #: model:ir.model.fields,field_description:bf_color.field_bf_color_rule_line__value_key
 msgid "Value Key"
 msgstr "Clé de valeur"
 
 #. module: bf_color
 #: model:ir.model.fields,help:bf_color.field_bf_color_rule__fallback_swatch_id
-msgid "Values without a line get a stable color from this swatch."
+msgid ""
+"Values with no color of their own get one from this swatch: the least used "
+"color, written on the value when it is created."
 msgstr ""
-"Les valeurs sans ligne reçoivent une couleur stable tirée de ce nuancier."
+"Les valeurs sans couleur propre en reçoivent une de ce nuancier : la moins "
+"employée, inscrite sur la valeur à sa création."
+
+#. module: bf_color
+#: model_terms:ir.ui.view,arch_db:bf_color.bf_color_rule_view_form
+msgid ""
+"With several values on one record, the highest line wins: drag the lines to "
+"set the order."
+msgstr ""
+"Quand un enregistrement porte plusieurs valeurs, la ligne la plus haute "
+"l'emporte : glissez les lignes pour fixer l'ordre."

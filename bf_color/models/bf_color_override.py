@@ -52,4 +52,8 @@ class BfColorOverride(models.Model):
     def write(self, vals):
         if vals.get("color_hex"):
             vals["color_hex"] = normalize_hex(vals["color_hex"]) or vals["color_hex"]
-        return super().write(vals)
+        result = super().write(vals)
+        # Odoo checks record rules BEFORE a write only: without this, a user could
+        # turn their own override into a company one, or give it to someone else.
+        self.check_access("write")
+        return result

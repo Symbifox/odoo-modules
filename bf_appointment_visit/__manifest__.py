@@ -14,7 +14,7 @@
     #   l'étaient : la première publication passait, la seconde rendait une
     #   erreur de droits sur « Temps de travail de la ressource ». Trouvé en
     #   jouant le parcours comme un courtier, pas comme administrateur.
-    "version": "18.0.1.0.3",
+    "version": "18.0.1.1.0",
     "category": "Appointments",
     "summary": "Faire visiter une propriété : plages du vendeur, registre des "
                "visites, approbation, logement occupé",
@@ -50,7 +50,7 @@ Ce que le module ajoute au moteur de rendez-vous :
     # bf_appointment 18.0.2.59.0 : `_bf_candidate_slots(combination=...)` et
     # `slot_capacity`. Les copies de bf_appointment dérivent d'un locataire à
     # l'autre, alors vérifier la version avant d'installer.
-    "depends": ["bf_appointment"],
+    "depends": ["bf_color", "bf_appointment"],
     "data": [
         "security/bf_visit_security.xml",
         "security/ir.model.access.csv",
@@ -61,6 +61,7 @@ Ce que le module ajoute au moteur de rendez-vous :
         "views/bf_visit_views.xml",
         "views/bf_visit_menus.xml",
         "templates/visit_public.xml",
+        "data/bf_color_rules.xml",
     ],
     "assets": {
         "web.assets_frontend": [

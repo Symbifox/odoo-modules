@@ -54,6 +54,7 @@
                 <field name="name"/>
                 <field name="model_id"/>
                 <field name="field_id"/>
+                <field name="only_listed" optional="hide"/>
                 <field name="fallback_swatch_id"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="active" widget="boolean_toggle"/>
@@ -65,15 +66,29 @@
         <field name="model">bf.color.rule</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_assign_missing" type="object" string="Assign missing colors"
+                            groups="base.group_system"
+                            invisible="not value_colorable or only_listed or not id"
+                            help="Give every value in use that has no color of its own the least used color of the fallback swatch (or of the default palette)."/>
+                </header>
                 <sheet>
+                    <div class="alert alert-info" role="status">
+                        A record takes, in this order: the color its user chose, the company's color,
+                        the first line below that matches, the criterion's own color (a doctor's color
+                        set on the doctor), then a color from the fallback swatch.
+                    </div>
                     <group>
                         <group>
                             <field name="name"/>
-                            <field name="model_id" options="{'no_create': True}"/>
-                            <field name="field_id" options="{'no_create': True}" readonly="not model_id"/>
+                            <field name="model_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="field_id" options="{'no_create': True, 'no_open': True}" readonly="not model_id"/>
+                            <field name="field_type" invisible="1"/>
+                            <field name="value_colorable" invisible="1"/>
                         </group>
                         <group>
-                            <field name="fallback_swatch_id"/>
+                            <field name="only_listed"/>
+                            <field name="fallback_swatch_id" invisible="only_listed"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active" invisible="1"/>
                         </group>
@@ -84,11 +99,14 @@
                             <field name="field_type" column_invisible="1"/>
                             <field name="value_model" column_invisible="1"/>
                             <field name="value_res_id" widget="many2one_reference"
-                                   invisible="field_type != 'many2one'"/>
-                            <field name="value_char" invisible="field_type == 'many2one'"/>
-                            <field name="color_hex" widget="color"/>
+                                   invisible="field_type not in ('many2one', 'many2many')"/>
+                            <field name="value_char" invisible="field_type in ('many2one', 'many2many')"/>
+                            <field name="color_hex" widget="bf_color"/>
                         </list>
                     </field>
+                    <p class="text-muted" invisible="field_type != 'many2many'">
+                        With several values on one record, the highest line wins: drag the lines to set the order.
+                    </p>
                 </sheet>
             </form>
         </field>

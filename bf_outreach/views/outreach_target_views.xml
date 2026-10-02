@@ -218,6 +218,7 @@
         <field name="arch" type="xml">
             <calendar string="Relances" date_start="next_action_date" color="user_id"
                       mode="month" hide_time="true" quick_create="0">
+                <field name="color_resolved" invisible="1"/>
                 <field name="user_id" filters="1"/>
                 <field name="campaign_id"/>
                 <field name="next_action_kind"/>

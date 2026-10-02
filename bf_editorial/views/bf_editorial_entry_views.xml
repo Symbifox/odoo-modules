@@ -316,6 +316,7 @@
         <field name="arch" type="xml">
             <calendar date_start="timeline_date" color="pillar_id" mode="month"
                       quick_create="false">
+                <field name="color_resolved" invisible="1"/>
                 <field name="name"/>
                 <field name="pillar_id"/>
                 <field name="stage_id"/>

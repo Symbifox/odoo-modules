@@ -59,6 +59,10 @@ pre-flight gate.
   an empty heading left by the editor, a table header without a scope — are
   fixed by one button, across every language.
 
+- **Calendar colors** (v18.0.1.10.0): the editorial calendar takes the color
+  set on each pillar, through `bf_color` (default rule « Entrées éditoriales
+  selon le pilier »). A pillar with no color keeps the calendar's usual color.
+
 ## What it does not do
 
 It holds state and runs mechanical checks. It does not judge an angle, does not
@@ -104,7 +108,7 @@ figure.
 
 ## Installation
 
-Depends on `mail`, `website_blog`, `utm`, `link_tracker`, `project`.
+Depends on `bf_color`, `mail`, `website_blog`, `utm`, `link_tracker`, `project`.
 
 After installing, define at least one calendar, flag the tag categories that
 act as pillars, and give each one a target share.

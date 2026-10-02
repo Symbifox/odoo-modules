@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Quarts de travail",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.1",
     "category": "Human Resources/Employees",
     "summary": "Shift scheduling for regular and unionised employees: labour standards checks, "
                "premiums, call lists, swaps, taxable benefits, payroll export",
@@ -32,7 +32,7 @@ Work schedules for regular and unionised employees in Québec.
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "Other proprietary",  # Business Source License 1.1, see LICENSE
-    "depends": ["hr", "mail", "resource"],
+    "depends": ["bf_color", "hr", "mail", "resource"],
     "data": [
         "security/bf_shift_security.xml",
         "security/ir.model.access.csv",
@@ -43,6 +43,7 @@ Work schedules for regular and unionised employees in Québec.
         "views/offer_views.xml",
         "views/pay_views.xml",
         "views/menus.xml",
+        "data/bf_color_rules.xml",
     ],
     "installable": True,
     "application": True,

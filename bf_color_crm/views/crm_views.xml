@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sales_team_crm_tag_view_form_bf_color" model="ir.ui.view">
+        <field name="name">crm.tag.form.bf_color</field>
+        <field name="model">crm.tag</field>
+        <field name="inherit_id" ref="sales_team.sales_team_crm_tag_view_form"/>
+        <field name="arch" type="xml">
+            <field name="color" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="color" position="after">
+                <field name="color_hex" widget="bf_color"/>
+                <field name="color_resolved" widget="bf_color_resolved" invisible="not id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="sales_team_crm_tag_view_tree_bf_color" model="ir.ui.view">
+        <field name="name">crm.tag.list.bf_color</field>
+        <field name="model">crm.tag</field>
+        <field name="inherit_id" ref="sales_team.sales_team_crm_tag_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="color" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="color" position="after">
+                <field name="color_hex" widget="bf_color"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_form_bf_color" model="ir.ui.view">
+        <field name="name">crm.lead.form.bf_color</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="(//field[@name='tag_ids'])[1]" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'no_create_edit': True, 'bf_color': True}</attribute>
+            </xpath>
+            <xpath expr="(//field[@name='tag_ids'])[2]" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'no_create_edit': True, 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_kanban_view_leads_bf_color" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.bf_color</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="inside">
+                <field name="color_resolved"/>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_leads_bf_color" model="ir.ui.view">
+        <field name="name">crm.lead.list.leads.bf_color</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_oppor_bf_color" model="ir.ui.view">
+        <field name="name">crm.lead.list.opportunities.bf_color</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

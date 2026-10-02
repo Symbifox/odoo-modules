@@ -21,11 +21,13 @@ who is overdue, who has never been reached and who replied.
 - **CRM hand-off**: create an opportunity carrying the full interaction history, with the originating campaign recorded on the lead
 - **Search filters**: due today, overdue, never contacted, replied, no reply, open files, converted, excluded
 - **Views**: kanban, list, form, calendar, activity, pivot and graph
+- **Calendar colors** (v18.0.1.3.0): a default `bf_color` rule (« Cibles selon le responsable ») colors the follow-up calendar by owner; add a line per owner to the rule to give each one a color
 
 ## Dependencies
 
 - `mail`, `contacts`, `crm`, `phone_validation`
 - `bf_onboarding_base` (guided welcome panel)
+- `bf_color` (free colors and automatic rules, for the calendar)
 
 ## How the cadence is computed
 

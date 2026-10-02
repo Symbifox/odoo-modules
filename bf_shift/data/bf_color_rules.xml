@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default color rule: the agenda keeps today's criterion, and a color set
+     on the value (a doctor, a project) now shows. Editable, never overwritten. -->
+<odoo noupdate="1">
+    <record id="bf_color_rule_shift_employee" model="bf.color.rule">
+        <field name="name">Shifts by employee</field>
+        <field name="sequence">100</field>
+        <field name="company_id" eval="False"/>
+        <field name="model_id" ref="bf_shift.model_bf_shift_assignment"/>
+        <field name="field_id" ref="bf_shift.field_bf_shift_assignment__employee_id"/>
+    </record>
+</odoo>

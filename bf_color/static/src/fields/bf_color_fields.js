@@ -6,6 +6,7 @@ import { user } from "@web/core/user";
 import { useService } from "@web/core/utils/hooks";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
 import { BfColorPicker } from "../picker/bf_color_picker";
+import { isHex } from "../core_utils";
 
 /** Free hex color on a Char field (the record's own color, for everyone). */
 export class BfColorField extends Component {
@@ -17,7 +18,9 @@ export class BfColorField extends Component {
     }
 
     get value() {
-        return this.props.record.data[this.props.name] || false;
+        // Only a clean #RRGGBB reaches the style attribute.
+        const value = this.props.record.data[this.props.name];
+        return isHex(value) ? value : false;
     }
 
     open(ev) {
@@ -97,7 +100,9 @@ export class BfColorResolvedField extends Component {
     }
 
     get value() {
-        return this.props.record.data[this.props.name] || false;
+        // Only a clean #RRGGBB reaches the style attribute.
+        const value = this.props.record.data[this.props.name];
+        return isHex(value) ? value : false;
     }
 
     get sourceLabel() {

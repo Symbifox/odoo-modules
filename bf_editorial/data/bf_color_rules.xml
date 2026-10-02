@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Règle de couleur par défaut : l'agenda garde son critère d'aujourd'hui, et une
+     couleur posée sur la valeur (un projet, un pilier) s'affiche. Modifiable, jamais réécrite. -->
+<odoo noupdate="1">
+    <record id="bf_color_rule_entry_pillar" model="bf.color.rule">
+        <field name="name">Entrées éditoriales selon le pilier</field>
+        <field name="sequence">100</field>
+        <field name="company_id" eval="False"/>
+        <field name="model_id" ref="bf_editorial.model_bf_editorial_entry"/>
+        <field name="field_id" ref="bf_editorial.field_bf_editorial_entry__pillar_id"/>
+    </record>
+</odoo>

@@ -12,9 +12,10 @@ class TestResolution(TransactionCase):
         cls.admin = new_test_user(cls.env, "bfc_admin", groups="base.group_user,base.group_system")
         Category = cls.env["res.partner.category"]
         cls.tag = Category.create({"name": "BFC tag", "color": 1})
-        cls.dr_a = Category.create({"name": "Dr A"})
-        cls.dr_b = Category.create({"name": "Dr B"})
-        cls.dr_c = Category.create({"name": "Dr C"})
+        # Odoo gives a new tag a random color: the doctors start without one.
+        cls.dr_a = Category.create({"name": "Dr A", "color": 0})
+        cls.dr_b = Category.create({"name": "Dr B", "color": 0})
+        cls.dr_c = Category.create({"name": "Dr C", "color": 0})
         cls.visit_a = Category.create({"name": "Visit A", "parent_id": cls.dr_a.id})
         cls.visit_b = Category.create({"name": "Visit B", "parent_id": cls.dr_b.id})
         cls.visit_c = Category.create({"name": "Visit C", "parent_id": cls.dr_c.id})
@@ -123,3 +124,16 @@ class TestResolution(TransactionCase):
         self.tag.color = 4
         self.assertFalse(self.tag.color_hex)
         self.assertEqual(self._as(self.alice, self.tag).color_resolved, "#5794DD")
+
+    def test_override_owner_cannot_be_changed_after_the_fact(self):
+        """Rules run before a write only: a user's own override must not become a
+        company color, nor someone else's."""
+        self._as(self.alice, self.tag).bf_color_set_mine("#00FF00")
+        override = self.env["bf.color.override"].search([("user_id", "=", self.alice.id)])
+        mine = override.with_user(self.alice)
+        with self.assertRaises(AccessError):
+            mine.write({"user_id": False, "company_id": self.alice.company_id.id})
+        with self.assertRaises(AccessError):
+            mine.write({"user_id": self.bob.id})
+        mine.write({"color_hex": "#123456"})
+        self.assertEqual(override.color_hex, "#123456")

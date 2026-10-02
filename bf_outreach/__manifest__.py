@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Campagnes de démarchage",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.3.0",
     "category": "Sales/CRM",
     "summary": "Suivi des campagnes de démarchage par appels et courriels, avec cadence de relance",
     "description": """
@@ -32,7 +32,7 @@ Fonctionnalités
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "Other proprietary",
-    "depends": ["mail", "contacts", "crm", "phone_validation", "bf_onboarding_base"],
+    "depends": ["bf_color", "mail", "contacts", "crm", "phone_validation", "bf_onboarding_base"],
     "data": [
         # Sécurité d'abord
         "security/outreach_security.xml",
@@ -56,6 +56,7 @@ Fonctionnalités
         # Actions contextuelles + panneau d'accueil
         "data/outreach_server_action.xml",
         "data/bf_onboarding.xml",
+        "data/bf_color_rules.xml",
     ],
     "post_init_hook": "post_init_hook",
     "application": True,

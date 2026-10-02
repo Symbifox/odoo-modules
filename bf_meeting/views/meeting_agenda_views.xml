@@ -103,6 +103,7 @@
         <field name="arch" type="xml">
             <calendar date_start="date" color="project_id" mode="week"
                       event_open_popup="true" quick_create="false">
+                <field name="color_resolved" invisible="1"/>
                 <field name="name"/>
                 <field name="project_id"/>
                 <field name="state"/>

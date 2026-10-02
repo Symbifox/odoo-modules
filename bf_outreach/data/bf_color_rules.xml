@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Règle de couleur par défaut : l'agenda garde son critère d'aujourd'hui, et une
+     couleur posée sur la valeur (un projet, un pilier) s'affiche. Modifiable, jamais réécrite. -->
+<odoo noupdate="1">
+    <record id="bf_color_rule_target_user" model="bf.color.rule">
+        <field name="name">Cibles selon le responsable</field>
+        <field name="sequence">100</field>
+        <field name="company_id" eval="False"/>
+        <field name="model_id" ref="bf_outreach.model_bf_outreach_target"/>
+        <field name="field_id" ref="bf_outreach.field_bf_outreach_target__user_id"/>
+    </record>
+</odoo>

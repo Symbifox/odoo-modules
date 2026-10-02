@@ -19,3 +19,4 @@ from . import res_company
 from . import res_company_exchange
 from . import meeting_exchange
 from . import mail_compose_message
+from . import bf_color

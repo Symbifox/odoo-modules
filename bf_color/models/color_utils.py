@@ -10,6 +10,16 @@ ODOO_PALETTE = [
     "#DB8865", "#41A9A2", "#304BE0", "#EE2F8A", "#61C36E", "#9872E6",
 ]
 
+# Fallback palette for categories, in order. Okabe-Ito (colour-blind safe, black
+# left out) then IBM Carbon's categorical colors, each taken in their published
+# order so that neighbours contrast. Okabe-Ito's vermillion and bluish green sit
+# last because they read as the status red and green.
+DEFAULT_PALETTE = [
+    "#E69F00", "#56B4E9", "#0072B2", "#F0E442", "#CC79A7", "#D55E00", "#009E73",
+    "#6929C4", "#1192E8", "#005D5D", "#9F1853", "#FA4D56", "#570408", "#198038",
+    "#002D9C", "#EE538B", "#B28600", "#009D9A", "#012749", "#8A3800", "#A56EFF",
+]
+
 HEX_RE = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 
 
@@ -91,3 +101,28 @@ def stable_pick(key, colors):
         return False
     digest = hashlib.sha1(str(key).encode()).digest()
     return colors[int.from_bytes(digest[:4], "big") % len(colors)]
+
+
+def mix_white(value, white_share):
+    """Blend ``value`` with white; Odoo's agenda paints events at 55 % white."""
+    rgb = hex_to_rgb(value)
+    if rgb is None:
+        return False
+    mixed = [round(255 * white_share + c * (1 - white_share)) for c in rgb]
+    return "#%02X%02X%02X" % tuple(mixed)
+
+
+def least_used(palette, used):
+    """First palette color used the fewest times in ``used`` (a list of hex).
+
+    The next doctor gets a color nobody has yet; once every color is taken, the
+    rarest one, in palette order. Unlike a hash, nothing already given moves.
+    """
+    if not palette:
+        return False
+    counts = {}
+    for value in used:
+        value = normalize_hex(value)
+        if value:
+            counts[value] = counts.get(value, 0) + 1
+    return min(palette, key=lambda color: (counts.get(normalize_hex(color), 0), palette.index(color)))

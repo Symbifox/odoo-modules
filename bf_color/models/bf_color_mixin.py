@@ -45,11 +45,18 @@ class BfColorMixin(models.AbstractModel):
     )
 
     @api.depends("color_hex")
-    @api.depends_context("uid", "company")
+    # The "own color only" flag is part of the cache key: otherwise a color
+    # computed WITH the value's rules is served again where only its own color
+    # may be followed (and the second-level leak is back).
+    @api.depends_context("uid", "company", "bf_color_own_only")
     def _compute_color_resolved(self):
         real = self.filtered("id")
         overrides = self._bf_color_overrides(real)
-        rules = self.env["bf.color.rule"]._bf_colors_for(real) if real else {}
+        # A value followed by a rule (a doctor behind a shift) shows only its own
+        # color and the overrides on it: its own rules ran in sudo there, and a
+        # criterion the user cannot read must not leak through a color.
+        own_only = self.env.context.get("bf_color_own_only")
+        rules = self.env["bf.color.rule"]._bf_colors_for(real) if real and not own_only else {}
         for record in self:
             color, source = False, False
             rid = record.id if record in real else False
@@ -74,7 +81,13 @@ class BfColorMixin(models.AbstractModel):
         that only read the index. A new index alone (Odoo's own color picker)
         clears ``color_hex``, which would otherwise hide it.
         """
-        if "color" not in self._fields or self._fields["color"].type != "integer":
+        if vals.get("color_hex"):
+            # Always a clean #RRGGBB: the value ends up in a style attribute.
+            own = normalize_hex(vals["color_hex"])
+            if not own:
+                raise ValidationError(_("%s is not a hex color.", vals["color_hex"]))
+            vals = dict(vals, color_hex=own)
+        if not self._bf_color_has_index(stored=True):
             return vals
         if "color" in vals and "color_hex" not in vals:
             return dict(vals, color_hex=False)
@@ -83,9 +96,23 @@ class BfColorMixin(models.AbstractModel):
         own = normalize_hex(vals["color_hex"])
         return dict(vals, color_hex=own or False, color=nearest_index(own, self._bf_color_palette()) if own else 0)
 
+    @api.model
+    def _bf_color_has_index(self, stored=False):
+        """True when the model carries Odoo's integer ``color`` index.
+
+        With ``stored``, only an index the model owns: a related index (a shift
+        showing its template's color) must never be written through.
+        """
+        field = self._fields.get("color")
+        if not field or field.type != "integer":
+            return False
+        return not stored or (field.store and not field.related)
+
     @api.model_create_multi
     def create(self, vals_list):
-        return super().create([self._bf_color_sync_index(vals) for vals in vals_list])
+        records = super().create([self._bf_color_sync_index(vals) for vals in vals_list])
+        self.env["bf.color.rule"].sudo()._bf_autoassign(records)
+        return records
 
     def write(self, vals):
         return super().write(self._bf_color_sync_index(vals))
@@ -94,9 +121,19 @@ class BfColorMixin(models.AbstractModel):
         own = normalize_hex(self.color_hex)
         if own:
             return own
-        if "color" in self._fields and self._fields["color"].type == "integer":
+        if self._bf_color_has_index():
             return index_to_hex(self.color, self._bf_color_palette())
         return False
+
+    @api.model
+    def _bf_color_model_names(self):
+        """Every concrete model wired to the mixin, the only ones a rule can color."""
+        mixin = self.env.registry["bf.color.mixin"]
+        return sorted(
+            name for name, cls in self.env.registry.items()
+            if name != mixin._name and not cls._abstract and not cls._transient
+            and issubclass(cls, mixin)
+        )
 
     @api.model
     def _bf_color_palette(self):

@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**60 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**63 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -88,7 +88,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment` | Symbifox Appointment | 18.0.2.62.1 | BUSL-1.1 | Self-service public booking pages (extends `resource_booking`) |
 | `bf_appointment_meeting` | Symbifox Appointment Agenda | 18.0.1.0.0 | BUSL-1.1 | Creates the meeting agenda when an appointment is booked, and hands the booker its link |
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.15.4 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
-| `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.0.3 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
+| `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.1.0 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_appointment_visit_property` | Visites de propriétés — pont Immeubles | 18.0.1.0.0 | LGPL-3 | Show a dwelling from your portfolio without retyping its address: address, occupant and the 24-hour notice for a rented unit come from the Immeubles socle |
 | `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
@@ -131,7 +131,10 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.3.0 | BUSL-1.1 | Daily digest sections: Claude usage per account (windows, reset, probe state) and the recipient's Gen conversations to follow |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
-| `bf_color` | BF Color | 18.0.1.0.1 | LGPL-3 | Free colors resolved per user, per company and by automatic rules, with saved swatches |
+| `bf_color` | BF Color | 18.0.1.1.1 | LGPL-3 | Free colors resolved per user, per company and by automatic rules, with saved swatches |
+| `bf_color_crm` | BF Color for CRM | 18.0.1.0.0 | LGPL-3 | Free colors on CRM tags and opportunities |
+| `bf_color_hr` | BF Color for Employees | 18.0.1.0.0 | LGPL-3 | A free color on each employee, followed by every agenda that sorts by employee |
+| `bf_color_project` | BF Color for Projects | 18.0.1.0.0 | LGPL-3 | Free colors on project tags, tasks and projects, and tasks colored by their tags |
 | `bf_contact_absence` | Symbifox Absences des contacts | 18.0.1.1.0 | BUSL-1.1 | Savoir qu'un contact est absent avant de lui écrire, de lui texter ou de l'appeler |
 | `bf_contact_absence_autoreply` | Symbifox Répondeur d'absence sur statut | 18.0.1.1.0 | BUSL-1.1 | Declare yourself away once, and the responder, the calendar and the return all follow |
 | `bf_contact_absence_calendar` | Symbifox Absences des contacts : calendrier Nextcloud | 18.0.1.1.0 | BUSL-1.1 | Proposer les absences notées à la main dans un calendrier Nextcloud |
@@ -163,7 +166,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.0.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.5.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
-| `bf_editorial` | Atelier éditorial | 18.0.1.9.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
+| `bf_editorial` | Atelier éditorial | 18.0.1.10.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_editorial_audience` | Atelier éditorial — audience | 18.0.1.2.0 | BUSL-1.1 | An article's readership once the crawlers Odoo does not recognise are taken out, recorded daily before the visitor purge takes the trace away |
 | `bf_editorial_bluesky` | Atelier éditorial — Bluesky | 18.0.1.0.0 | BUSL-1.1 | Post to Bluesky from the editorial workshop, over the AT protocol with an app password |
 | `bf_editorial_genfox` | Atelier éditorial — Gen | 18.0.1.4.1 | BUSL-1.1 | Article suggestion, review and expansion by Gen, as proposals a human reads before applying |
@@ -224,7 +227,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.3.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.0 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
-| `bf_meeting` | Rencontres | 18.0.3.63.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
+| `bf_meeting` | Rencontres | 18.0.3.64.0 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.1.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_meeting_timer` | Chronomètre de rencontre | 18.0.1.5.0 | BUSL-1.1 | The real time each agenda topic actually took, and the projected end of the meeting while it is still running. |
@@ -253,7 +256,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_org_chart_ownership` | Organigramme de détention | 18.0.1.1.0 | BUSL-1.1 | Qui détient quoi, pour quelle part, et le dessin qui va avec |
 | `bf_org_chart_people` | Organigramme des personnes | 18.0.1.1.1 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |
 | `bf_otp` | Symbifox OTP | 18.0.12.2.0 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
-| `bf_outreach` | Campagnes de démarchage | 18.0.1.2.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
+| `bf_outreach` | Campagnes de démarchage | 18.0.1.3.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.0.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.0.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.0.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
@@ -311,7 +314,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.2.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
 | `bf_security_awareness` | Security Awareness | 18.0.2.0.1 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
 | `bf_session_cookie_domain` | BF Session Cookie Domain | 18.0.2.0.0 | LGPL-3 | Share the session cookie across the subdomains of one configured apex domain |
-| `bf_shift` | Symbifox Quarts de travail | 18.0.1.0.1 | BUSL-1.1 | Shift scheduling for regular and unionised employees: labour standards checks, premiums, call lists, swaps, taxable benefits, payroll export |
+| `bf_shift` | Symbifox Quarts de travail | 18.0.1.1.1 | BUSL-1.1 | Shift scheduling for regular and unionised employees: labour standards checks, premiums, call lists, swaps, taxable benefits, payroll export |
 | `bf_sign` | Symbifox — Signature électronique | 18.0.3.26.4 | BUSL-1.1 | Native electronic signature (SES): parallel or sequential multi-signer requests, drag-and-drop pad placement on the PDF with reusable layout templates, draw/type/upload signature and initials with embedded handwriting fonts, signer-fillable text and date fields plus boxed cells for pre-printed forms and server-validated choice lists, optional email OTP identity verification of signers, refusal flow with reason, branded public signing pages and transactional emails, completion certificate, optional PAdES cryptographic seal (pyHanko) with in-app certificate generation, optional RFC 3161 trusted timestamping, hash-chained tamper-evident audit trail with one-click integrity verification, a public verification page (optional QR stamped on the document) where any holder can drop their own copy and have it hashed in-browser to confirm it matches, link expiry cron, manager-gated link reveal, and a mixin to send any Odoo record for signature with post-back of the signed document |
 | `bf_sign_account` | Symbifox — Signature pour la comptabilité | 18.0.1.1.0 | BUSL-1.1 | Send a customer invoice / vendor bill for electronic signature (bf_sign). |
 | `bf_sign_corporate` | Symbifox — Signature des résolutions corporatives | 18.0.1.3.0 | BUSL-1.1 | Send a corporate resolution for electronic signature (bf_sign). |
@@ -389,7 +392,7 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **60 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **63 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **6 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

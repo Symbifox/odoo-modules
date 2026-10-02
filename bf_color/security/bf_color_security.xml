@@ -86,6 +86,12 @@
         <field name="groups" eval="[(4, ref('base.group_system'))]"/>
     </record>
 
+    <record id="rule_bf_color_rule_line_company" model="ir.rule">
+        <field name="name">Color rule line: multi-company</field>
+        <field name="model_id" ref="model_bf_color_rule_line"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('rule_id.company_id', 'in', company_ids + [False])]</field>
+    </record>
     <record id="rule_bf_color_rule_company" model="ir.rule">
         <field name="name">Color rule: multi-company</field>
         <field name="model_id" ref="model_bf_color_rule"/>

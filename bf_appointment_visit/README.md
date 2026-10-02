@@ -6,7 +6,8 @@ approval loop the seller can use from an e-mail, without an account.
 
 Satellite of *Symbifox Appointment*. It needs `bf_appointment` **18.0.2.59.0** or
 later: it uses `_bf_candidate_slots(combination=...)` and `slot_capacity`, both
-opened in that version.
+opened in that version. Since v18.0.1.1.0 it also depends on `bf_color`, for the
+calendar's colors.
 
 ## Why this module exists
 
@@ -58,6 +59,9 @@ the market carries is what a Québec broker must do around the appointment:
   since the French "vous êtes inscrit" assumed a masculine visitor.
 - **Feedback after the visit**, and an explicit switch before anything reaches
   the seller.
+- **Calendar colors** (v18.0.1.1.0): the showing calendar takes the color set on
+  each listing, through `bf_color` (default rule « Visites selon
+  l'inscription »). A listing with no color keeps the calendar's usual color.
 
 ## Public pages
 

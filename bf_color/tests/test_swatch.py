@@ -60,3 +60,17 @@ class TestSwatch(TransactionCase):
         admin = new_test_user(self.env, "bfs_admin", groups="base.group_user,base.group_system")
         self.shared.line_ids.with_user(admin).write({"color_hex": "#040506"})
         self.assertEqual(self.shared.colors(), ["#040506"])
+
+    def test_personal_swatch_cannot_become_shared(self):
+        """Rules run before a write only: the owner fields are checked after it."""
+        with self.assertRaises(AccessError):
+            self.mine.with_user(self.alice).write({"user_id": False})
+        with self.assertRaises(AccessError):
+            self.mine.with_user(self.alice).write({"user_id": self.bob.id})
+
+    def test_own_line_cannot_be_moved_into_a_shared_swatch(self):
+        line = self.mine.line_ids[:1].with_user(self.alice)
+        with self.assertRaises(AccessError):
+            line.write({"swatch_id": self.shared.id})
+        line.write({"color_hex": "#0A0B0C"})
+        self.assertEqual(line.color_hex, "#0A0B0C")

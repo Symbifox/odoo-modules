@@ -82,6 +82,7 @@
             <calendar date_start="date" date_delay="date_delay"
                       color="project_id" mode="month"
                       event_open_popup="true" quick_create="false">
+                <field name="color_resolved" invisible="1"/>
                 <field name="room_name"/>
                 <field name="project_id"/>
                 <field name="report_state"/>

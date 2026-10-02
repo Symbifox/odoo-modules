@@ -12,3 +12,4 @@ from . import reparation
 from . import proposition
 from . import blog_post
 from . import res_config_settings
+from . import bf_color

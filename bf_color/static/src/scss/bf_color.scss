@@ -26,3 +26,9 @@
 .o_tag[data-bf-color] .o_delete {
     color: inherit;
 }
+.o_kanban_renderer .o_kanban_record.o_bf_color_card::after {
+    @include o-position-absolute(0, auto, 0, -$border-width);
+    border-left: $border-width solid color-mix(in srgb, var(--bf-card-color) 50%, transparent);
+    border-right: ($border-width * 2) solid var(--bf-card-color);
+    content: "";
+}

@@ -36,6 +36,13 @@ class BfColorSwatch(models.Model):
             if not swatch.user_id and not swatch.company_id:
                 raise ValidationError(_("A shared swatch needs a company."))
 
+    def write(self, vals):
+        result = super().write(vals)
+        # Rules are checked before a write only: a personal swatch must not become
+        # a shared one (or someone else's) through its own owner fields.
+        self.check_access("write")
+        return result
+
     def colors(self):
         self.ensure_one()
         return self.line_ids.sorted("sequence").mapped("color_hex")
@@ -99,4 +106,7 @@ class BfColorSwatchLine(models.Model):
     def write(self, vals):
         if vals.get("color_hex"):
             vals["color_hex"] = normalize_hex(vals["color_hex"]) or vals["color_hex"]
-        return super().write(vals)
+        result = super().write(vals)
+        # A line moved into a shared swatch must still pass the rules afterwards.
+        self.check_access("write")
+        return result

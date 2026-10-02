@@ -1,6 +1,6 @@
 {
     "name": "BF Color",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.1.1",
     "category": "Hidden/Tools",
     "summary": "Free colors resolved per user, per company and by automatic rules, with saved swatches",
     "author": "Les services de consultation Blue Fox, Inc.",

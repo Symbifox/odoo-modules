@@ -2,7 +2,11 @@
 <templates xml:space="preserve">
     <t t-inherit="web.TagsList" t-inherit-mode="extension">
         <xpath expr="//span[hasclass('o_tag')]" position="attributes">
-            <attribute name="t-att-style">tag.bfColor ? 'background-color:' + tag.bfColor + ';color:' + (tag.bfText or '#000000') : undefined</attribute>
+            <!-- Odoo 18 paints a tag from the background and text CSS variables that
+                 its o_tag_color_N class sets: a plain background-color lost to them, and
+                 the tag showed the closest index, softened. Set the variables too.
+                 (No double hyphen in an XML comment: it breaks the whole bundle.) -->
+            <attribute name="t-att-style">tag.bfColor ? '--background-color:' + tag.bfColor + ';--color:' + (tag.bfText or '#000000') + ';background-color:' + tag.bfColor + ';color:' + (tag.bfText or '#000000') : undefined</attribute>
             <attribute name="t-att-data-bf-color">tag.bfColor or undefined</attribute>
         </xpath>
     </t>

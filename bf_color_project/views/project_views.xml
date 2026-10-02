@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tags: free color instead of the twelve, "My color" for each user. -->
+    <record id="project_tags_form_view_bf_color" model="ir.ui.view">
+        <field name="name">project.tags.form.bf_color</field>
+        <field name="model">project.tags</field>
+        <field name="inherit_id" ref="project.project_tags_form_view"/>
+        <field name="arch" type="xml">
+            <field name="color" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="color" position="after">
+                <field name="color_hex" widget="bf_color"/>
+                <field name="color_resolved" widget="bf_color_resolved" invisible="not id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="project_tags_tree_view_bf_color" model="ir.ui.view">
+        <field name="name">project.tags.list.bf_color</field>
+        <field name="model">project.tags</field>
+        <field name="inherit_id" ref="project.project_tags_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="color" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="color" position="after">
+                <field name="color_hex" widget="bf_color" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Tasks: tags in free color, card edge in the task's resolved color. -->
+    <record id="view_task_form2_bf_color" model="ir.ui.view">
+        <field name="name">project.task.form.bf_color</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'no_create_edit': True, 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_kanban_bf_color" model="ir.ui.view">
+        <field name="name">project.task.kanban.bf_color</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="inside">
+                <field name="color_resolved"/>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- The internal list only: the project sharing list (portal) is left alone. -->
+    <record id="project_task_view_tree_base_bf_color" model="ir.ui.view">
+        <field name="name">project.task.list.base.bf_color</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.project_task_view_tree_base"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Projects: a free color set on the project, shown on its card and
+         followed by every agenda that sorts by project. -->
+    <record id="edit_project_bf_color" model="ir.ui.view">
+        <field name="name">project.project.form.bf_color</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="color_hex" widget="bf_color" string="Color"/>
+                <field name="color_resolved" widget="bf_color_resolved" invisible="not id" string="Displayed color"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_project_kanban_bf_color" model="ir.ui.view">
+        <field name="name">project.project.kanban.bf_color</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="inside">
+                <field name="color_resolved"/>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

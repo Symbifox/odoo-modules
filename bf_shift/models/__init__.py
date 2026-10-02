@@ -13,3 +13,4 @@ from . import swap
 from . import availability
 from . import benefit
 from . import pay
+from . import bf_color

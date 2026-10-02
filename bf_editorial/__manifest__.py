@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Atelier éditorial",
-    "version": "18.0.1.9.0",
+    "version": "18.0.1.10.0",
     "category": "Marketing",
     "summary": "Calendrier éditorial, cadence mesurée et contrôles de publication"
                " pour le blogue — l'état se calcule, seules les décisions se stockent",
@@ -64,7 +64,7 @@ Limites assumées
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "Other proprietary",
-    "depends": [
+    "depends": ["bf_color", 
         "mail",
         "website_blog",
         "utm",
@@ -82,6 +82,7 @@ Limites assumées
         "views/res_config_settings_views.xml",
         "wizard/derogation_views.xml",
         "views/menu_views.xml",
+        "data/bf_color_rules.xml",
     ],
     "application": True,
     "installable": True,

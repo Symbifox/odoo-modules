@@ -63,6 +63,12 @@ paper trail that becomes evidence in a grievance. This module carries both.
   Amounts use the employee's usual hourly rate when it is set. A CSV export is
   attached to the period; an exported period is locked until reopened.
   Deductions, contributions and RL-1 / T4 slips stay with your payroll service.
+- **Colors per employee** (v18.0.1.1.0): each employee's color, set once on the
+  employee form (through `bf_color` and its bridge `bf_color_hr`), paints their
+  shifts in the schedule calendar, its filter legend and its popover; each user
+  can keep their own color for a colleague. Employees with no color keep the
+  calendar's usual per-employee colors. The default rule is « Shifts by
+  employee »; a fallback swatch gives every new employee a distinct color.
 - **Daylight saving time**: durations are measured in real elapsed time and
   premium windows on the wall clock. The night the clocks go back (22:00 to
   06:00) pays 9 hours; the night they go forward pays 7.
@@ -142,7 +148,8 @@ on them:
 
 ## Requirements
 
-Odoo 18.0 Community. Depends only on core modules: `hr`, `mail`, `resource`.
+Odoo 18.0 Community. Depends on core modules `hr`, `mail`, `resource`, and on
+`bf_color` (Symbifox, LGPL-3) for the colors.
 
 ## Tests
 
