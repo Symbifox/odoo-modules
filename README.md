@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**209 modules are BUSL-1.1.** The source is published and auditable, and **you
+**210 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -106,6 +106,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_bi_cx` | BF BI - Customer experience | 18.0.1.0.3 | BUSL-1.1 | Customer experience dashboard: NPS, responses, complaints and resolution time |
 | `bf_bi_hosting` | BF BI - Hosting | 18.0.1.0.3 | BUSL-1.1 | Hosting dashboard: services, uptime, backups, storage, expiring domains |
 | `bf_bi_hour_bank` | BF BI - Hour banks | 18.0.1.0.3 | BUSL-1.1 | Hour banks dashboard: balances computed by the hour bank module, adjustments |
+| `bf_bi_report` | BF BI Reports | 18.0.1.0.0 | BUSL-1.1 | Power BI style reports on named measures: slicers, cross-filtering, drill-through, rich visuals |
 | `bf_bi_timesheet` | BF BI - Professional services | 18.0.1.0.3 | BUSL-1.1 | Professional services dashboard: hours, revenue, labour cost and margin |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.4.0.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_budget` | Budgets opérationnels | 18.0.1.0.4 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
@@ -372,7 +373,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **209 modules: BUSL-1.1.** Production use for your own internal business
+- **210 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

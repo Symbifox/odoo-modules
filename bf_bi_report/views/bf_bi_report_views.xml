@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_bi_report_template_wizard_form" model="ir.ui.view">
+        <field name="name">bf.bi.report.template.wizard.form</field>
+        <field name="model">bf.bi.report.template.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create a report from a template">
+                <group>
+                    <field name="template" widget="radio"/>
+                    <field name="description" readonly="1" invisible="not template"/>
+                    <field name="available" invisible="1"/>
+                    <field name="missing" readonly="1" invisible="available or not template"
+                           decoration-warning="1"/>
+                </group>
+                <footer>
+                    <button name="action_create" type="object" string="Create the report" class="btn-primary"
+                            invisible="not available"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_bi_report_template_wizard_action" model="ir.actions.act_window">
+        <field name="name">Create a report from a template</field>
+        <field name="res_model">bf.bi.report.template.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="groups_id" eval="[(4, ref('bf_bi.group_bi_designer'))]"/>
+    </record>
+
+    <record id="bf_bi_report_view_list" model="ir.ui.view">
+        <field name="name">bf.bi.report.list</field>
+        <field name="model">bf.bi.report</field>
+        <field name="arch" type="xml">
+            <list string="Reports" create="0">
+                <header>
+                    <button name="action_create_and_open" type="object" string="New report" class="btn-primary"
+                            display="always" groups="bf_bi.group_bi_designer"/>
+                    <button name="%(bf_bi_report_template_wizard_action)d" type="action" string="From a template"
+                            display="always" groups="bf_bi.group_bi_designer"/>
+                </header>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="page_count"/>
+                <field name="group_ids" widget="many2many_tags" groups="bf_bi.group_bi_designer"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_open" type="object" string="Open" icon="fa-bar-chart" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_bi_report_view_form" model="ir.ui.view">
+        <field name="name">bf.bi.report.form</field>
+        <field name="model">bf.bi.report</field>
+        <field name="arch" type="xml">
+            <form string="Report">
+                <header>
+                    <button name="action_open" type="object" string="Open the report" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" placeholder="e.g. Management report"/></h1></div>
+                    <group>
+                        <field name="description"/>
+                        <field name="group_ids" widget="many2many_tags"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                        <!-- Le thème se choisit à l'écran, comme les pages : révision et historique. -->
+                        <field name="theme" readonly="1"/>
+                    </group>
+                    <!-- Les pages se conçoivent à l'écran (révision, conflit, historique) : ici, lecture seule. -->
+                    <field name="page_ids" readonly="1">
+                        <list>
+                            <field name="sequence" widget="handle"/>
+                            <field name="name"/>
+                            <field name="drill_dimension" optional="show"/>
+                            <field name="filter_preset" optional="show"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_bi_report_action" model="ir.actions.act_window">
+        <field name="name">Reports</field>
+        <field name="res_model">bf.bi.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No report yet</p>
+            <p>A report lays named measures out on a canvas: slicers, cross-filtering, pages.</p>
+        </field>
+    </record>
+
+    <menuitem id="bf_bi_report_menu" name="Reports" parent="spreadsheet_dashboard.spreadsheet_dashboard_menu_root"
+              action="bf_bi_report_action" sequence="5"/>
+</odoo>

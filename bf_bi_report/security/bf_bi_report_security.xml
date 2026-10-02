@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Société : un rapport d'une autre société n'existe pas pour la personne. -->
+    <record id="rule_bf_bi_report_company" model="ir.rule">
+        <field name="name">BI report: companies</field>
+        <field name="model_id" ref="model_bf_bi_report"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_bf_bi_report_page_company" model="ir.rule">
+        <field name="name">BI report page: companies</field>
+        <field name="model_id" ref="model_bf_bi_report_page"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    <!-- Lecteurs : les rapports ouverts à l'un de leurs groupes ; sans groupe, concepteurs seulement. -->
+    <record id="rule_bf_bi_report_reader" model="ir.rule">
+        <field name="name">BI report: readers see the reports opened to their groups</field>
+        <field name="model_id" ref="model_bf_bi_report"/>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+        <field name="domain_force">[('group_ids', 'in', user.groups_id.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_bf_bi_report_page_reader" model="ir.rule">
+        <field name="name">BI report page: follows its report</field>
+        <field name="model_id" ref="model_bf_bi_report_page"/>
+        <field name="groups" eval="[Command.link(ref('base.group_user'))]"/>
+        <field name="domain_force">[('report_id.group_ids', 'in', user.groups_id.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <!-- Concepteurs : tous les rapports de leurs sociétés, en lecture et en écriture. -->
+    <record id="rule_bf_bi_report_designer" model="ir.rule">
+        <field name="name">BI report: designers</field>
+        <field name="model_id" ref="model_bf_bi_report"/>
+        <field name="groups" eval="[Command.link(ref('bf_bi.group_bi_designer'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <record id="rule_bf_bi_report_page_designer" model="ir.rule">
+        <field name="name">BI report page: designers</field>
+        <field name="model_id" ref="model_bf_bi_report_page"/>
+        <field name="groups" eval="[Command.link(ref('bf_bi.group_bi_designer'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+    <!-- Versions : concepteurs seulement (accès), dans leurs sociétés. -->
+    <record id="rule_bf_bi_report_version_company" model="ir.rule">
+        <field name="name">BI report version: companies</field>
+        <field name="model_id" ref="model_bf_bi_report_version"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

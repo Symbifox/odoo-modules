@@ -1,0 +1,1454 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_bi_report
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "%s: what changed"
+msgstr "%s : ce qui a changé"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "+ Page"
+msgstr "+ Page"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "+ Visual"
+msgstr "+ Visuel"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,help:bf_bi_report.field_bf_bi_report_page__drill_dimension
+msgid ""
+"A drill-through page opens filtered on one customer, from a right-click on a"
+" customer anywhere in the report, or from the Detail button of a customer "
+"table."
+msgstr ""
+"Une page d'extraction s'ouvre filtrée sur un client, par un clic droit sur "
+"un client n'importe où dans le rapport, ou par le bouton Détail d'un tableau"
+" de clients."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "A heat map shows customers by month or by quarter."
+msgstr "Une carte thermique montre les clients par mois ou par trimestre."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "A line follows time: choose Month, Quarter or Year as Axis."
+msgstr ""
+"Une courbe suit le temps : choisissez Mois, Trimestre ou Année comme axe."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "A measure here has no customer field: it is not split by customer."
+msgstr ""
+"Une mesure ici n'a pas de champ client : elle n'est pas découpée par client."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "A measure here has no date field: it does not follow the period."
+msgstr ""
+"Une mesure ici n'a pas de champ de date : elle ne suit pas la période."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "A page follows the company of its report."
+msgstr "Une page suit la société de son rapport."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "A page holds at most 24 visuals."
+msgstr "Une page contient au plus 24 visuels."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "A page needs a name of 1 to 80 characters."
+msgstr "Une page demande un nom de 1 à 80 caractères."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "A page of another report cannot be moved here."
+msgstr "Une page d'un autre rapport ne peut pas être déplacée ici."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "A report has one to %s pages."
+msgstr "Un rapport a d'une à %s pages."
+
+#. module: bf_bi_report
+#: model_terms:ir.actions.act_window,help:bf_bi_report.bf_bi_report_action
+msgid ""
+"A report lays named measures out on a canvas: slicers, cross-filtering, "
+"pages."
+msgstr ""
+"Un rapport dispose des mesures nommées sur un canevas : segments, filtrage "
+"croisé, pages."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "A visual needs one to %s named measures."
+msgstr "Un visuel demande d'une à %s mesures nommées."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid ""
+"A waterfall adds values up: choose a measure that is a sum or a count, not a"
+" rate or an average."
+msgstr ""
+"Une cascade additionne les valeurs : choisissez une mesure qui est une somme"
+" ou un compte, pas un taux ni une moyenne."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid ""
+"A waterfall adds values up: this measure is a rate or an average, choose a "
+"sum or a count."
+msgstr ""
+"Une cascade additionne les valeurs : cette mesure est un taux ou une "
+"moyenne, choisissez une somme ou un compte."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "A waterfall needs an axis."
+msgstr "Une cascade a besoin d'un axe."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Above the maximum"
+msgstr "Au-delà du maximum"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__active
+msgid "Active"
+msgstr "Actif"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__available
+msgid "Available"
+msgstr "Disponible"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Axis"
+msgstr "Axe"
+
+#. module: bf_bi_report
+#: model:ir.model,name:bf_bi_report.model_bf_bi_report
+msgid "BI report"
+msgstr "Rapport BI"
+
+#. module: bf_bi_report
+#: model:ir.model,name:bf_bi_report.model_bf_bi_report_page
+msgid "BI report page"
+msgstr "Page de rapport BI"
+
+#. module: bf_bi_report
+#: model:ir.model,name:bf_bi_report.model_bf_bi_report_version
+msgid "BI report version"
+msgstr "Version de rapport BI"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Bar chart"
+msgstr "Barres"
+
+#. module: bf_bi_report
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_template_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Clear the cross-filter"
+msgstr "Retirer le filtre croisé"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Click a bar, a slice or a row to filter the page; Esc clears it."
+msgstr ""
+"Cliquez une barre, une part ou une ligne pour filtrer la page ; Échap le "
+"retire."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Click to filter the page; right-click a customer for its detail page."
+msgstr ""
+"Cliquez pour filtrer la page ; clic droit sur un client pour sa page de "
+"détail."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Close"
+msgstr "Fermer"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Column chart"
+msgstr "Histogramme"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Columns"
+msgstr "Colonnes"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Columns (values)"
+msgstr "Colonnes (valeurs)"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__company_id
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__company_id
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+#: model:ir.model.fields.selection,name:bf_bi_report.selection__bf_bi_report__theme__company
+msgid "Company colors"
+msgstr "Couleurs de la société"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,help:bf_bi_report.field_bf_bi_report__theme
+msgid ""
+"Company colors start the palette with the colors of the company (Settings › "
+"Companies › Document layout), adjusted so marks stay visible; the rest of "
+"the palette follows."
+msgstr ""
+"Les couleurs de la société ouvrent la palette (Paramètres › Sociétés › Mise "
+"en page des documents), ajustées pour que les marques restent visibles ; le "
+"reste de la palette suit."
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__content
+msgid "Content"
+msgstr "Contenu"
+
+#. module: bf_bi_report
+#: model:ir.model,name:bf_bi_report.model_bf_bi_report_template_wizard
+msgid "Create a BI report from a template"
+msgstr "Créer un rapport BI à partir d'un modèle"
+
+#. module: bf_bi_report
+#: model:ir.actions.act_window,name:bf_bi_report.bf_bi_report_template_wizard_action
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_template_wizard_form
+msgid "Create a report from a template"
+msgstr "Créer un rapport à partir d'un modèle"
+
+#. module: bf_bi_report
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_template_wizard_form
+msgid "Create the report"
+msgstr "Créer le rapport"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__create_uid
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__create_uid
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__create_date
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__create_date
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__create_date
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Current"
+msgstr "Actuelle"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+#: model:ir.model.fields.selection,name:bf_bi_report.selection__bf_bi_report_page__drill_dimension__customer
+msgid "Customer"
+msgstr "Client"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Customer #%s"
+msgstr "Client n° %s"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid "Customer detail"
+msgstr "Détail client"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid "Customer experience"
+msgstr "Expérience client"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Customer of the detail page"
+msgstr "Client de la page de détail"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Customers"
+msgstr "Clients"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Customers of the page"
+msgstr "Clients de la page"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Customers shown"
+msgstr "Clients affichés"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Decrease"
+msgstr "Baisse"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__description
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__description
+msgid "Description"
+msgstr "Description"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Design"
+msgstr "Conception"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Designer"
+msgstr "Concepteur"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Detail of"
+msgstr "Détail de"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Detail of %s"
+msgstr "Détail de %s"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Detail page"
+msgstr "Page de détail"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Detail page for one customer (drill-through)"
+msgstr "Page de détail d'un client (extraction)"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Detail ›"
+msgstr "Détail ›"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Dimensions"
+msgstr "Dimensions"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__display_name
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__display_name
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__display_name
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Donut"
+msgstr "Anneau"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Drag Customer into Rows."
+msgstr "Glissez Client dans Lignes."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Drag a dimension here"
+msgstr "Glissez une dimension ici"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Drag a dimension into Axis."
+msgstr "Glissez une dimension dans Axe."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Drag a named measure here"
+msgstr "Glissez une mesure nommée ici"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Drag a named measure into Values."
+msgstr "Glissez une mesure nommée dans Valeurs."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid ""
+"Drag a visual by its body; the corner handle resizes it. Changes save by "
+"themselves."
+msgstr ""
+"Déplacez un visuel en le glissant ; la poignée du coin le redimensionne. Les"
+" changements s'enregistrent d'eux-mêmes."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Drill through ›"
+msgstr "Extraire ›"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__drill_dimension
+msgid "Drill-through page"
+msgstr "Page d'extraction"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Fields"
+msgstr "Champs"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Filter this page on this customer"
+msgstr "Filtrer cette page sur ce client"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Filtered by:"
+msgstr "Filtré par :"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__filter_customers
+msgid "Fixed customers"
+msgstr "Clients fixés"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__filter_preset
+msgid "Fixed period"
+msgstr "Période fixée"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Follows the period slicer"
+msgstr "Suit le segment de période"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Formulas"
+msgstr "Formules"
+
+#. module: bf_bi_report
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_view_list
+msgid "From a template"
+msgstr "À partir d'un modèle"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Gauge"
+msgstr "Jauge"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Heat map"
+msgstr "Carte thermique"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "History"
+msgstr "Historique"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid "Hosting"
+msgstr "Hébergement"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid "Hour banks"
+msgstr "Banques d'heures"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid ""
+"Hours bought and adjusted in hour banks, by month and by customer, and what "
+"changed since the previous period."
+msgstr ""
+"Les heures achetées et ajustées dans les banques d'heures, par mois et par "
+"client, et ce qui a changé depuis la période d'avant."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid ""
+"Hours, revenue and margin by month and by customer, what changed in revenue "
+"since the previous period, and a detail page for each customer."
+msgstr ""
+"Les heures, les revenus et la marge par mois et par client, ce qui a changé "
+"dans les revenus depuis la période d'avant, et une page de détail pour "
+"chaque client."
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__id
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__id
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__id
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Increase"
+msgstr "Hausse"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Invalid customer filter."
+msgstr "Filtre de clients invalide."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Invalid drill-through."
+msgstr "Extraction invalide."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Invalid page."
+msgstr "Page invalide."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Invalid report name."
+msgstr "Nom de rapport invalide."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Invalid revision."
+msgstr "Révision invalide."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Invalid selection."
+msgstr "Sélection invalide."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Invalid visual."
+msgstr "Visuel invalide."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Keep mine"
+msgstr "Garder la mienne"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__write_uid
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__write_uid
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__write_uid
+msgid "Last Updated by"
+msgstr "Dernière modification par"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__write_date
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__write_date
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__write_date
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__write_date
+msgid "Last Updated on"
+msgstr "Dernière modification le"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+#: model:ir.model.fields.selection,name:bf_bi_report.selection__bf_bi_report_page__filter_preset__last_year
+msgid "Last year"
+msgstr "L'an dernier"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Line chart"
+msgstr "Courbe"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid "Management report"
+msgstr "Rapport de direction"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Maximum"
+msgstr "Maximum"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Mode"
+msgstr "Mode"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+#: model:ir.model.fields.selection,name:bf_bi_report.selection__bf_bi_report_page__filter_preset__month
+msgid "Month"
+msgstr "Mois"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid ""
+"NPS and complaints by month and by customer, with a detail page for each "
+"customer."
+msgstr ""
+"Le NPS et les plaintes par mois et par client, avec une page de détail pour "
+"chaque client."
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__name
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__missing
+msgid "Needs"
+msgstr "Il faut"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_view_list
+msgid "New report"
+msgstr "Nouveau rapport"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "New visual"
+msgstr "Nouveau visuel"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "No customer has figures for this period."
+msgstr "Aucun client n'a de chiffres pour cette période."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "No data for this period."
+msgstr "Aucune donnée pour cette période."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "No named measure yet: create one in Dashboards › Named measures."
+msgstr ""
+"Aucune mesure nommée : créez-en une dans Tableaux de bord › Mesures nommées."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "No period to compare"
+msgstr "Aucune période à comparer"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "No report to open."
+msgstr "Aucun rapport à ouvrir."
+
+#. module: bf_bi_report
+#: model_terms:ir.actions.act_window,help:bf_bi_report.bf_bi_report_action
+msgid "No report yet"
+msgstr "Aucun rapport pour l'instant"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "No saved version yet."
+msgstr "Aucune version enregistrée."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "None chosen: the page follows the customer slicer."
+msgstr "Aucun choisi : la page suit le segment des clients."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Not saved"
+msgstr "Non enregistré"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Not saved:"
+msgstr "Non enregistré :"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Only BI designers can change a report."
+msgstr "Seuls les concepteurs BI peuvent modifier un rapport."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Only BI designers can create reports."
+msgstr "Seuls les concepteurs BI peuvent créer des rapports."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Only BI designers can design reports."
+msgstr "Seuls les concepteurs BI peuvent concevoir des rapports."
+
+#. module: bf_bi_report
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_view_list
+msgid "Open"
+msgstr "Ouvrir"
+
+#. module: bf_bi_report
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_view_form
+msgid "Open the report"
+msgstr "Ouvrir le rapport"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Others"
+msgstr "Autres"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid "Overview"
+msgstr "Vue d'ensemble"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Page"
+msgstr "Page"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Page %s"
+msgstr "Page %s"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Page 1"
+msgstr "Page 1"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Page name"
+msgstr "Nom de la page"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Page “%(page)s”: %(error)s."
+msgstr "Page « %(page)s » : %(error)s."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Page “%s”: the fixed customers are not valid JSON."
+msgstr "Page « %s » : les clients fixés ne sont pas du JSON valide."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Page “%s”: the visuals are not valid JSON."
+msgstr "Page « %s » : les visuels ne sont pas un JSON valide."
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__page_ids
+msgid "Pages"
+msgstr "Pages"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__page_count
+msgid "Pages count"
+msgstr "Nombre de pages"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid ""
+"Part of this measure has no customer field: it cannot be split by customer "
+"here."
+msgstr ""
+"Une partie de cette mesure n'a pas de champ client : elle ne peut pas être "
+"découpée par client ici."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid ""
+"Part of this measure has no date field: it cannot be split by period here."
+msgstr ""
+"Une partie de cette mesure n'a pas de champ date : elle ne peut pas être "
+"découpée par période ici."
+
+#. module: bf_bi_report
+#: model:ir.model.fields,help:bf_bi_report.field_bf_bi_report__group_ids
+msgid ""
+"People in these groups find the report in the list. A report with no group "
+"is visible to BI designers only, until it is opened to others. This does not"
+" hide any figure: every value follows the access rights of the person "
+"looking, wherever it is shown."
+msgstr ""
+"Les personnes de ces groupes trouvent le rapport dans la liste. Un rapport "
+"sans groupe n'est visible que des concepteurs BI, tant qu'on ne l'ouvre pas "
+"à d'autres. Cela ne cache aucun chiffre : chaque valeur suit les droits de "
+"la personne qui regarde, où qu'elle s'affiche."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Period"
+msgstr "Période"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Period of the page"
+msgstr "Période de la page"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Previous period"
+msgstr "Période d'avant"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Q%(q)s %(y)s"
+msgstr "T%(q)s %(y)s"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+#: model:ir.model.fields.selection,name:bf_bi_report.selection__bf_bi_report_page__filter_preset__quarter
+msgid "Quarter"
+msgstr "Trimestre"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Read"
+msgstr "Lecture"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Reload their version"
+msgstr "Recharger leur version"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Remove"
+msgstr "Retirer"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Remove %s"
+msgstr "Retirer %s"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Remove page %s"
+msgstr "Retirer la page %s"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Remove the visual"
+msgstr "Retirer le visuel"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__report_id
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__report_id
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_view_form
+msgid "Report"
+msgstr "Rapport"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Report history"
+msgstr "Historique du rapport"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Report pages"
+msgstr "Pages du rapport"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Report theme"
+msgstr "Thème du rapport"
+
+#. module: bf_bi_report
+#: model:ir.actions.act_window,name:bf_bi_report.bf_bi_report_action
+#: model:ir.ui.menu,name:bf_bi_report.bf_bi_report_menu
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_view_list
+msgid "Reports"
+msgstr "Rapports"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Restore"
+msgstr "Remettre en service"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__bf_revision
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_version__revision
+msgid "Revision"
+msgstr "Révision"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Right-click a customer on another page, or choose one:"
+msgstr ""
+"Faites un clic droit sur un client dans une autre page, ou choisissez-en un "
+":"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Rows (customers)"
+msgstr "Lignes (clients)"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Saved"
+msgstr "Enregistré"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Saving…"
+msgstr "Enregistrement…"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Select a visual on the canvas, or add one."
+msgstr "Sélectionnez un visuel sur le canevas, ou ajoutez-en un."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Selected:"
+msgstr "Sélectionné :"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__sequence
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__sequence
+msgid "Sequence"
+msgstr "Séquence"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid ""
+"Services, backups and domains: backup success against a 95 % target, backups"
+" by month, and failed backups by customer and by month."
+msgstr ""
+"Services, sauvegardes et domaines : la réussite des sauvegardes contre une "
+"cible de 95 %, les sauvegardes par mois, et les sauvegardes échouées par "
+"client et par mois."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Slicers"
+msgstr "Segments"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Someone else saved this report"
+msgstr "Quelqu'un d'autre a enregistré ce rapport"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Someone saved this report meanwhile. Reload it and try again."
+msgstr ""
+"Quelqu'un a enregistré ce rapport entre-temps. Rechargez-le et réessayez."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+#: model:ir.model.fields.selection,name:bf_bi_report.selection__bf_bi_report__theme__default
+msgid "Symbifox"
+msgstr "Symbifox"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Table"
+msgstr "Tableau"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Target"
+msgstr "Cible"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_template_wizard__template
+msgid "Template"
+msgstr "Modèle"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid ""
+"The figures of time, customer experience, hosting and hour banks on one "
+"page, what changed in revenue, hours by customer and by month, and a detail "
+"page for each customer."
+msgstr ""
+"Les chiffres du temps, de l'expérience client, de l'hébergement et des "
+"banques d'heures sur une page, ce qui a changé dans les revenus, les heures "
+"par client et par mois, et une page de détail pour chaque client."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "The number of rows must be between 1 and %s."
+msgstr "Le nombre de lignes doit être entre 1 et %s."
+
+#. module: bf_bi_report
+#: model:ir.model.fields,help:bf_bi_report.field_bf_bi_report_page__layout
+msgid ""
+"The page's visuals, as the designer saves them: type, named measures, "
+"dimension, and position on a 12-column grid."
+msgstr ""
+"Les visuels de la page, tels que le concepteur les enregistre : type, "
+"mesures nommées, dimension et position sur une grille de 12 colonnes."
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__theme
+msgid "Theme"
+msgstr "Thème"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "This is a detail page: it shows one customer at a time."
+msgstr "Ceci est une page de détail : elle montre un client à la fois."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "This measure cannot be computed."
+msgstr "Cette mesure ne peut pas être calculée."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "This page always shows:"
+msgstr "Cette page montre toujours :"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "This page has no visual yet."
+msgstr "Cette page n'a pas encore de visuel."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "This page is empty. Add a visual from the panel on the right."
+msgstr "Cette page est vide. Ajoutez un visuel depuis le volet de droite."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "This period"
+msgstr "Cette période"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "This report cannot be opened."
+msgstr "Ce rapport ne peut pas être ouvert."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "This report no longer exists."
+msgstr "Ce rapport n'existe plus."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "This template needs modules or measures that are not installed: %s."
+msgstr ""
+"Ce modèle demande des modules ou des mesures qui ne sont pas installés : %s."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "This version cannot be restored."
+msgstr "Cette version ne peut pas être remise en service."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid ""
+"This visual asks for too many computations; show fewer measures or rows."
+msgstr ""
+"Ce visuel demande trop de calculs : affichez moins de mesures ou de lignes."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "This visual cannot be computed."
+msgstr "Ce visuel ne peut pas être calculé."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "This visual is not finished yet."
+msgstr "Ce visuel n'est pas encore terminé."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "This visual shows one measure."
+msgstr "Ce visuel montre une seule mesure."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+#: model:ir.model.fields.selection,name:bf_bi_report.selection__bf_bi_report_page__filter_preset__year
+msgid "This year"
+msgstr "Cette année"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Tile"
+msgstr "Tuile"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/templates.py:0
+msgid "Time and margin"
+msgstr "Temps et marge"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Title"
+msgstr "Titre"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Total"
+msgstr "Total"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Unknown dimension."
+msgstr "Dimension inconnue."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Unknown period."
+msgstr "Période inconnue."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Unknown template."
+msgstr "Modèle inconnu."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Unknown theme."
+msgstr "Thème inconnu."
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "Unknown visual."
+msgstr "Visuel inconnu."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Unsaved changes"
+msgstr "Modifications non enregistrées"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Updating…"
+msgstr "Mise à jour…"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Values"
+msgstr "Valeurs"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "Version restored."
+msgstr "Version remise en service."
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__version_ids
+msgid "Versions"
+msgstr "Versions"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report__group_ids
+msgid "Visible to"
+msgstr "Visible par"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Visual fields"
+msgstr "Champs du visuel"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Visualizations"
+msgstr "Visualisations"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,field_description:bf_bi_report.field_bf_bi_report_page__layout
+msgid "Visuals"
+msgstr "Visuels"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Waterfall"
+msgstr "Cascade"
+
+#. module: bf_bi_report
+#: model:ir.model.fields,help:bf_bi_report.field_bf_bi_report_page__filter_customers
+msgid ""
+"When set, the page always shows these customers, whatever the customer "
+"slicer says."
+msgstr ""
+"Si renseigné, la page montre toujours ces clients, quoi que dise le segment "
+"des clients."
+
+#. module: bf_bi_report
+#: model:ir.model.fields,help:bf_bi_report.field_bf_bi_report_page__filter_preset
+msgid ""
+"When set, the page always shows this period, whatever the period slicer "
+"says."
+msgstr ""
+"Si renseignée, la page montre toujours cette période, quoi que dise le "
+"segment de période."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Year"
+msgstr "Année"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "You can only file a report in one of your companies."
+msgstr "Un rapport ne se range que dans l'une de vos sociétés."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid ""
+"Your company has no brand color yet (Settings › Companies › Document "
+"layout): the default palette is used."
+msgstr ""
+"Votre société n'a pas encore de couleur de marque (Paramètres › Sociétés › "
+"Mise en page des documents) : la palette par défaut s'applique."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "auto"
+msgstr "auto"
+
+#. module: bf_bi_report
+#: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_view_form
+msgid "e.g. Management report"
+msgstr "ex. Rapport de direction"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "pts"
+msgstr "pts"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid ""
+"saved this report while you were working on it. Nothing was overwritten."
+msgstr ""
+"a enregistré ce rapport pendant que vous y travailliez. Rien n'a été écrasé."
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "target %s"
+msgstr "cible %s"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.js:0
+msgid "vs"
+msgstr "vs"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "vs matching period"
+msgstr "vs période équivalente"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "Σ"
+msgstr "Σ"
+
+#. module: bf_bi_report
+#. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
+msgid "← Back"
+msgstr "← Retour"

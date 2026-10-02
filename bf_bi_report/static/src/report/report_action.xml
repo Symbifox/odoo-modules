@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bf_bi_report.ReportAction">
+        <div class="o_bf_bi_report o_action" t-att-class="state.mode === 'design' ? 'o_bfr_design' : ''" t-att-style="themeStyle"
+             tabindex="-1" t-on-keydown="onKeydown">
+            <div t-if="state.error" class="o_bf_bi_report_error alert alert-warning m-3" role="alert" t-esc="state.error"/>
+            <t t-elif="state.report">
+                <header class="o_bfr_head">
+                    <h1 class="o_bfr_title" t-esc="state.report.name"/>
+                    <span t-if="state.loading" class="o_bfr_loading" aria-live="polite">Updating…</span>
+                    <span class="o_bfr_spacer"/>
+                    <t t-if="state.mode === 'design'">
+                        <span class="o_bfr_save" t-att-class="'o_bfr_save_' + state.save.status" aria-live="polite" t-esc="saveLabel"/>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" t-on-click="openHistory">History</button>
+                    </t>
+                    <div t-if="state.report.can_edit" class="btn-group o_bfr_modes" role="group" aria-label="Mode">
+                        <button type="button" class="btn btn-sm" t-att-class="state.mode === 'read' ? 'btn-dark' : 'btn-outline-secondary'"
+                                t-att-aria-pressed="state.mode === 'read' ? 'true' : 'false'" t-on-click="leaveDesign">Read</button>
+                        <button type="button" class="btn btn-sm" t-att-class="state.mode === 'design' ? 'btn-dark' : 'btn-outline-secondary'"
+                                t-att-aria-pressed="state.mode === 'design' ? 'true' : 'false'"
+                                t-on-click="() => state.mode === 'design' or this.enterDesign()">Design</button>
+                    </div>
+                </header>
+                <div t-if="state.save.status === 'conflict'" class="alert alert-warning o_bfr_conflict" role="alert">
+                    <span><t t-esc="state.save.author"/> saved this report while you were working on it. Nothing was overwritten.</span>
+                    <button type="button" class="btn btn-sm btn-secondary" t-on-click="reloadTheirs">Reload their version</button>
+                    <button type="button" class="btn btn-sm btn-primary" t-on-click="keepMine">Keep mine</button>
+                </div>
+                <div t-if="state.save.status === 'error'" class="alert alert-danger o_bfr_conflict" role="alert">
+                    <span>Not saved: <t t-esc="state.save.message"/></span>
+                </div>
+                <section class="o_bfr_slicers" aria-label="Slicers">
+                    <div class="o_bfr_slicer">
+                        <span class="o_bfr_slicer_label">Period</span>
+                        <div class="btn-group o_bfr_seg" role="group" aria-label="Period">
+                            <t t-foreach="presets" t-as="p" t-key="p[0]">
+                                <button type="button" class="btn btn-sm" t-att-disabled="pagePreset ? 'disabled' : false"
+                                        t-att-class="(pagePreset or state.preset) === p[0] ? 'btn-dark' : 'btn-outline-secondary'"
+                                        t-att-aria-pressed="(pagePreset or state.preset) === p[0] ? 'true' : 'false'"
+                                        t-on-click="() => this.setPreset(p[0])" t-esc="p[1]"/>
+                            </t>
+                        </div>
+                        <span t-if="pagePreset" class="o_bfr_pin">This page always shows: <t t-esc="presetLabel(pagePreset)"/></span>
+                        <span class="o_bfr_note" t-esc="periodNote()"/>
+                    </div>
+                    <div class="o_bfr_slicer o_bfr_drillbar" t-if="isDrillPage and state.drill and state.mode === 'read'">
+                        <button t-if="backPage !== null" type="button" class="btn btn-sm btn-outline-secondary" t-on-click="drillBack">← Back</button>
+                        <span class="o_bfr_slicer_label">Detail of</span>
+                        <select class="form-select form-select-sm o_bfr_drillsel" aria-label="Customer of the detail page" t-on-change="onDrillSwitch">
+                            <t t-foreach="drillChoices" t-as="c" t-key="c.id">
+                                <option t-att-value="c.id" t-att-selected="c.id === state.drill.id" t-esc="c.name"/>
+                            </t>
+                        </select>
+                    </div>
+                    <div class="o_bfr_slicer" t-elif="pageCustomers">
+                        <span class="o_bfr_slicer_label">Customers</span>
+                        <span class="o_bfr_pin">This page always shows: <t t-esc="pageCustomerNames.join(', ')"/></span>
+                    </div>
+                    <div class="o_bfr_slicer" t-elif="state.choices.length and !isDrillPage">
+                        <span class="o_bfr_slicer_label">Customers</span>
+                        <t t-foreach="state.choices" t-as="c" t-key="c.id">
+                            <button type="button" class="o_bfr_chip" t-att-aria-pressed="isCustomerOn(c.id) ? 'true' : 'false'"
+                                    t-on-click="() => this.toggleCustomer(c.id)">
+                                <i t-att-style="'background:' + colorOf(c.id)" aria-hidden="true"/>
+                                <t t-esc="c.name"/>
+                            </button>
+                        </t>
+                    </div>
+                    <div class="o_bfr_slicer" t-if="state.selection">
+                        <span class="o_bfr_xsel">
+                            <span>Filtered by: <t t-esc="state.selection.label"/></span>
+                            <button type="button" aria-label="Clear the cross-filter" t-on-click="clearSelection">×</button>
+                        </span>
+                    </div>
+                </section>
+                <div class="o_bfr_workspace">
+                    <div class="o_bfr_canvas_wrap">
+                        <div class="o_bfr_canvas" t-ref="canvas">
+                            <div t-if="waitingDrill" class="o_bfr_empty o_bfr_drillwait">
+                                <p>This is a detail page: it shows one customer at a time.</p>
+                                <t t-if="drillChoices.length">
+                                <p>Right-click a customer on another page, or choose one:</p>
+                                <select class="form-select form-select-sm o_bfr_drillsel" aria-label="Customer of the detail page" t-on-change="onDrillSwitch">
+                                    <option value="">—</option>
+                                    <t t-foreach="drillChoices" t-as="c" t-key="c.id"><option t-att-value="c.id" t-esc="c.name"/></t>
+                                </select>
+                                </t>
+                                <p t-else="" class="text-muted">No customer has figures for this period.</p>
+                            </div>
+                            <div t-elif="!page.visuals.length" class="o_bfr_empty">
+                                <t t-if="state.mode === 'design'">This page is empty. Add a visual from the panel on the right.</t>
+                                <t t-else="">This page has no visual yet.</t>
+                            </div>
+                            <t t-foreach="waitingDrill ? [] : page.visuals" t-as="v" t-key="v.id">
+                                <section class="o_bfr_visual" t-att-class="'o_bfr_' + v.type + (state.selected === v.id ? ' o_bfr_selected' : '')"
+                                         t-att-style="gridStyle(v)" t-att-data-visual="v.id"
+                                         t-on-pointerdown="(ev) => this.onPointerDown(ev, v)">
+                                    <h2 t-if="v.type !== 'kpi'" class="o_bfr_vtitle" t-esc="titleOf(v)"/>
+                                    <div class="o_bfr_body">
+                                        <t t-set="r" t-value="state.results[v.id]"/>
+                                        <div t-if="!complete(v)" class="o_bfr_incomplete">
+                                            <t t-if="state.mode === 'design'" t-esc="hint(v)"/>
+                                            <t t-else="">This visual is not finished yet.</t>
+                                        </div>
+                                        <div t-elif="errorOf(v)" class="o_bfr_verror" t-esc="errorOf(v)"/>
+                                        <t t-elif="!r"><div class="o_bfr_wait">…</div></t>
+                                        <KpiVisual t-elif="v.type === 'kpi'" visual="v" result="r" currency="state.report.currency"/>
+                                        <GaugeVisual t-elif="v.type === 'gauge'" visual="v" result="r" currency="state.report.currency" theme="theme"/>
+                                        <WaterfallVisual t-elif="v.type === 'waterfall'" visual="v" result="r" currency="state.report.currency"
+                                                         theme="theme" highlight="highlightFor(v)" onSelect="selectHandler(v)" onContext="contextHandler"/>
+                                        <HeatmapVisual t-elif="v.type === 'heatmap'" visual="v" result="r" currency="state.report.currency"
+                                                       theme="theme" highlight="highlightFor(v)" onSelect="selectHandler(v)" onContext="contextHandler"/>
+                                        <TableVisual t-elif="v.type === 'table'" visual="v" result="r" currency="state.report.currency"
+                                                     colorOf="colorOfBound" highlight="highlightFor(v)" onSelect="selectHandler(v)"
+                                                     onContext="contextHandler" canDrill="state.mode === 'read' and drillPages.length > 0 and !isDrillPage"
+                                                     onDrill="drillHandler"/>
+                                        <ChartVisual t-else="" visual="v" result="r" currency="state.report.currency"
+                                                     colorOf="colorOfBound" highlight="highlightFor(v)" onSelect="selectHandler(v)"
+                                                     onContext="contextHandler" theme="theme"/>
+                                    </div>
+                                    <div t-if="state.mode === 'design'" class="o_bfr_grip" aria-hidden="true"/>
+                                </section>
+                            </t>
+                        </div>
+                    </div>
+                    <DesignPanes t-if="state.mode === 'design'" visual="selectedVisual" fields="state.fields" page="page" canAdd="canAddVisual"
+                                 choices="designerChoices" onChange.bind="changeVisual" onAdd.bind="addVisual" onDelete.bind="deleteVisual"
+                                 onRenamePage.bind="renamePage" onPageSettings.bind="changePageSettings"
+                                 theme="state.theme" themeChoices="themeChoices" onTheme.bind="changeTheme"/>
+                </div>
+                <nav class="o_bfr_pages" aria-label="Report pages" t-if="pages.length > 1 or state.mode === 'design'">
+                    <t t-foreach="pages" t-as="p" t-key="p_index">
+                        <span class="o_bfr_tab" t-att-class="p_index === state.page ? 'o_bfr_tab_current' : ''">
+                            <button type="button" t-att-aria-current="p_index === state.page ? 'page' : 'false'"
+                                    t-on-click="() => this.setPage(p_index)">
+                                <span t-if="p.drill" class="o_bfr_drillmark" title="Detail page" aria-label="Detail page">↳</span>
+                                <t t-esc="p.name"/>
+                            </button>
+                            <button t-if="state.mode === 'design' and pages.length > 1" type="button" class="o_bfr_tab_x"
+                                    t-att-aria-label="removePageLabel(p.name)" t-on-click="() => this.deletePage(p_index)">×</button>
+                        </span>
+                    </t>
+                    <button t-if="state.mode === 'design'" type="button" class="o_bfr_addpage" t-att-disabled="!canAddPage" t-on-click="addPage">+ Page</button>
+                    <span class="o_bfr_hint" t-if="state.mode === 'read' and drillPages.length">Click to filter the page; right-click a customer for its detail page.</span>
+                    <span class="o_bfr_hint" t-elif="state.mode === 'read'">Click a bar, a slice or a row to filter the page; Esc clears it.</span>
+                    <span class="o_bfr_hint" t-else="">Drag a visual by its body; the corner handle resizes it. Changes save by themselves.</span>
+                </nav>
+                <t t-if="state.menu">
+                    <div class="o_bfr_menu_backdrop" t-on-click="closeMenu" t-on-contextmenu.prevent="closeMenu"/>
+                    <div class="o_bfr_menu" role="menu" t-ref="menu" t-on-keydown="onMenuKeydown"
+                         t-att-style="'left:' + state.menu.x + 'px;top:' + state.menu.y + 'px'">
+                        <div class="o_bfr_menu_head" t-esc="state.menu.row.label"/>
+                        <t t-foreach="drillPages" t-as="d" t-key="d.index">
+                            <button type="button" role="menuitem" t-on-click="() => this.menuDrill(d.index)">Drill through › <t t-esc="d.page.name"/></button>
+                        </t>
+                        <button type="button" role="menuitem" t-on-click="menuFilter">Filter this page on this customer</button>
+                    </div>
+                </t>
+                <div t-if="state.versions" class="o_bfr_versions" role="dialog" aria-label="Report history">
+                    <div class="o_bfr_versions_box">
+                        <div class="o_bfr_versions_head">
+                            <h2>History</h2>
+                            <button type="button" class="btn-close" aria-label="Close" t-on-click="closeHistory"/>
+                        </div>
+                        <p t-if="!state.versions.length" class="text-muted">No saved version yet.</p>
+                        <ul>
+                            <t t-foreach="state.versions" t-as="ver" t-key="ver.id">
+                                <li>
+                                    <span><b>Revision <t t-esc="ver.revision"/></b> · <t t-esc="versionDate(ver)"/> · <t t-esc="ver.author"/></span>
+                                    <button t-if="ver.revision !== state.revision" type="button" class="btn btn-sm btn-outline-secondary"
+                                            t-on-click="() => this.restore(ver.id)">Restore</button>
+                                    <span t-else="" class="text-muted">Current</span>
+                                </li>
+                            </t>
+                        </ul>
+                    </div>
+                </div>
+            </t>
+            <div t-else="" class="o_bfr_wait p-4">…</div>
+        </div>
+    </t>
+
+    <t t-name="bf_bi_report.TypeIcon">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="o_bfr_icon">
+            <t t-if="kind === 'kpi'"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 13h4M7 10h8"/></t>
+            <t t-elif="kind === 'column'"><path d="M5 20V11M10 20V5M15 20V9M20 20V14M3 20h18"/></t>
+            <t t-elif="kind === 'bar'"><path d="M4 5h12M4 10h16M4 15h9M4 20h6M4 3v18"/></t>
+            <t t-elif="kind === 'line'"><path d="M3 18l5-6 4 3 4-7 5 4M3 20h18"/></t>
+            <t t-elif="kind === 'donut'"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></t>
+            <t t-elif="kind === 'gauge'"><path d="M4 17a8 8 0 0 1 16 0"/><path d="M12 17l4-5"/></t>
+            <t t-elif="kind === 'waterfall'"><path d="M4 20V12M9 12V7M14 7V10M19 10V20M3 20h18"/></t>
+            <t t-elif="kind === 'heatmap'"><rect x="3" y="4" width="5" height="5"/><rect x="10" y="4" width="5" height="5"/><rect x="17" y="4" width="4" height="5"/><rect x="3" y="11" width="5" height="5"/><rect x="10" y="11" width="5" height="5"/><rect x="3" y="18" width="5" height="3"/></t>
+            <t t-else=""><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14h18M9 4v16"/></t>
+        </svg>
+    </t>
+
+    <t t-name="bf_bi_report.DesignPanes">
+        <aside class="o_bfr_panes" aria-label="Designer">
+            <div class="o_bfr_pane">
+                <h3>Report theme</h3>
+                <div class="o_bfr_themes" role="radiogroup" aria-label="Report theme">
+                    <t t-foreach="props.themeChoices" t-as="th" t-key="th.key">
+                        <button type="button" class="o_bfr_theme" role="radio" t-att-aria-checked="props.theme === th.key ? 'true' : 'false'"
+                                t-on-click="() => props.onTheme(th.key)">
+                            <span class="o_bfr_swatches" aria-hidden="true">
+                                <t t-foreach="th.preview" t-as="c" t-key="c_index"><i t-att-style="'background:' + c"/></t>
+                            </span>
+                            <span t-esc="th.label"/>
+                        </button>
+                    </t>
+                </div>
+                <div t-if="props.theme === 'company' and props.themeChoices[1].empty" class="o_bfr_warn">
+                    Your company has no brand color yet (Settings › Companies › Document layout): the default palette is used.
+                </div>
+            </div>
+            <div class="o_bfr_pane">
+                <h3>Page</h3>
+                <input type="text" class="form-control form-control-sm" t-att-value="props.page.name" maxlength="80"
+                       aria-label="Page name" t-on-change="onPageName"/>
+                <label class="o_bfr_check">
+                    <input type="checkbox" t-att-checked="props.page.drill === 'customer'" t-on-change="onDrillToggle"/>
+                    Detail page for one customer (drill-through)
+                </label>
+                <label class="o_bfr_lbl" for="bfr_preset">Period of the page</label>
+                <select id="bfr_preset" class="form-select form-select-sm" t-on-change="onPreset">
+                    <t t-foreach="presets" t-as="p" t-key="p[0]">
+                        <option t-att-value="p[0]" t-att-selected="(props.page.preset or '') === p[0]" t-esc="p[1]"/>
+                    </t>
+                </select>
+                <t t-if="props.page.drill !== 'customer' and props.choices.length">
+                    <div class="o_bfr_lbl">Customers of the page</div>
+                    <div class="o_bfr_pagechips">
+                        <t t-foreach="props.choices" t-as="c" t-key="c.id">
+                            <button type="button" class="o_bfr_chip" t-att-aria-pressed="isPageCustomer(c.id) ? 'true' : 'false'"
+                                    t-on-click="() => this.togglePageCustomer(c.id)" t-esc="c.name"/>
+                        </t>
+                    </div>
+                    <div class="o_bfr_note">None chosen: the page follows the customer slicer.</div>
+                </t>
+            </div>
+            <div class="o_bfr_pane">
+                <h3>Visualizations <button type="button" class="btn btn-sm btn-outline-primary" t-att-disabled="!props.canAdd"
+                        t-att-title="props.canAdd ? '' : fullPageTitle" t-on-click="() => props.onAdd()">+ Visual</button></h3>
+                <div class="o_bfr_vtypes">
+                    <t t-foreach="types" t-as="t" t-key="t[0]">
+                        <button type="button" t-att-title="t[1]" t-att-aria-label="t[1]" t-att-disabled="!props.visual"
+                                t-att-aria-pressed="props.visual and props.visual.type === t[0] ? 'true' : 'false'"
+                                t-on-click="() => this.setType(t[0])">
+                            <t t-call="bf_bi_report.TypeIcon"><t t-set="kind" t-value="t[0]"/></t>
+                        </button>
+                    </t>
+                </div>
+                <div class="o_bfr_vname">
+                    <t t-if="props.visual">Selected: <t t-esc="typeLabel(props.visual.type)"/></t>
+                    <t t-else="">Select a visual on the canvas, or add one.</t>
+                </div>
+            </div>
+            <div class="o_bfr_pane o_bfr_pane_wells" t-if="props.visual">
+                <h3>Visual fields</h3>
+                <label class="o_bfr_lbl" for="bfr_title">Title</label>
+                <input id="bfr_title" type="text" class="form-control form-control-sm" maxlength="120"
+                       t-att-value="props.visual.title or ''" t-att-placeholder="'(' + (props.visual.measures.length ? fieldOf(props.visual.measures[0]).name : '…') + ')'"
+                       t-on-change="onTitle"/>
+                <div t-if="showAxis" class="o_bfr_well" t-att-class="over.well === 'axis' ? 'o_bfr_over' : ''"
+                     t-on-dragover="(ev) => this.onDragOver(ev, 'axis')" t-on-dragleave="onDragLeave" t-on-drop="(ev) => this.onDrop(ev, 'axis')">
+                    <div class="o_bfr_well_label"><t t-if="isHeatmap">Rows (customers)</t><t t-else="">Axis</t></div>
+                    <div class="o_bfr_well_chips">
+                        <span t-if="props.visual.dimension" class="o_bfr_tag">
+                            <t t-esc="dimensionLabel(props.visual.dimension)"/>
+                            <button type="button" aria-label="Remove" t-on-click="() => this.patch({ dimension: null })">×</button>
+                        </span>
+                        <span t-else="" class="o_bfr_ph">Drag a dimension here</span>
+                    </div>
+                    <div t-if="partnerWarning" class="o_bfr_warn">A measure here has no customer field: it is not split by customer.</div>
+                    <div t-if="dateWarning" class="o_bfr_warn">A measure here has no date field: it does not follow the period.</div>
+                </div>
+                <div class="o_bfr_well" t-att-class="over.well === 'values' ? 'o_bfr_over' : ''"
+                     t-on-dragover="(ev) => this.onDragOver(ev, 'values')" t-on-dragleave="onDragLeave" t-on-drop="(ev) => this.onDrop(ev, 'values')">
+                    <div class="o_bfr_well_label"><t t-if="multi">Columns (values)</t><t t-else="">Values</t></div>
+                    <div class="o_bfr_well_chips">
+                        <t t-foreach="props.visual.measures" t-as="code" t-key="code">
+                            <span class="o_bfr_tag"><t t-esc="fieldOf(code).name"/>
+                                <button type="button" t-att-aria-label="removeLabel(fieldOf(code).name)" t-on-click="() => this.removeMeasure(code)">×</button>
+                            </span>
+                        </t>
+                        <span t-if="!props.visual.measures.length" class="o_bfr_ph">Drag a named measure here</span>
+                    </div>
+                </div>
+                <div t-if="isHeatmap" class="o_bfr_inline">
+                    <label class="o_bfr_lbl" for="bfr_columns">Columns</label>
+                    <select id="bfr_columns" class="form-select form-select-sm" t-on-change="onColumns">
+                        <t t-foreach="heatColumns" t-as="c" t-key="c[0]">
+                            <option t-att-value="c[0]" t-att-selected="(props.visual.columns or 'month') === c[0]" t-esc="c[1]"/>
+                        </t>
+                    </select>
+                </div>
+                <div t-if="additiveWarning" class="o_bfr_warn">A waterfall adds values up: this measure is a rate or an average, choose a sum or a count.</div>
+                <div t-if="showTarget" class="o_bfr_inline">
+                    <label class="o_bfr_lbl" for="bfr_target">Target<t t-if="targetIsPercent"> (%)</t></label>
+                    <input id="bfr_target" type="text" inputmode="decimal" class="form-control form-control-sm" t-att-value="targetValue" t-on-change="onTarget"/>
+                </div>
+                <div t-if="showMax" class="o_bfr_inline">
+                    <label class="o_bfr_lbl" for="bfr_max">Maximum<t t-if="targetIsPercent"> (%)</t></label>
+                    <input id="bfr_max" type="text" inputmode="decimal" class="form-control form-control-sm" placeholder="auto"
+                           t-att-value="maxValue" t-on-change="onMax"/>
+                </div>
+                <div t-if="showLimit" class="o_bfr_inline">
+                    <label class="o_bfr_lbl" for="bfr_limit">Customers shown</label>
+                    <input id="bfr_limit" type="number" min="1" t-att-max="limitMax" class="form-control form-control-sm" t-att-value="props.visual.limit or 10" t-on-change="onLimit"/>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger mt-2" t-on-click="() => props.onDelete()">Remove the visual</button>
+            </div>
+            <div class="o_bfr_pane o_bfr_fields">
+                <h3>Fields</h3>
+                <details open="open">
+                    <summary>Dimensions</summary>
+                    <t t-foreach="dimensions" t-as="d" t-key="d[0]">
+                        <button type="button" class="o_bfr_field" draggable="true" t-on-dragstart="(ev) => this.onDragStart(ev, 'dim', d[0])"
+                                t-on-click="() => this.addField('dim', d[0])"><span class="o_bfr_k" aria-hidden="true">▦</span><t t-esc="d[1]"/></button>
+                    </t>
+                </details>
+                <t t-foreach="groups" t-as="g" t-key="g.name">
+                    <details open="open">
+                        <summary t-esc="g.name"/>
+                        <t t-foreach="g.items" t-as="f" t-key="f.code">
+                            <button type="button" class="o_bfr_field" draggable="true" t-att-title="f.code"
+                                    t-on-dragstart="(ev) => this.onDragStart(ev, 'measure', f.code)"
+                                    t-on-click="() => this.addField('measure', f.code)"><span class="o_bfr_k" aria-hidden="true">Σ</span><t t-esc="f.name"/></button>
+                        </t>
+                    </details>
+                </t>
+                <p t-if="!props.fields.length" class="text-muted small">No named measure yet: create one in Dashboards › Named measures.</p>
+            </div>
+        </aside>
+    </t>
+
+    <t t-name="bf_bi_report.KpiVisual">
+        <div class="o_bfr_kpi_box">
+            <div class="o_bfr_kpi_main">
+                <div class="o_bfr_kpi_label" t-esc="meta.name"/>
+                <div class="o_bfr_kpi_value" t-esc="display"/>
+            </div>
+            <svg t-if="spark" class="o_bfr_spark" t-att-width="spark.w" t-att-height="spark.h"
+                 t-att-viewBox="'0 0 ' + spark.w + ' ' + spark.h" aria-hidden="true">
+                <polyline t-att-points="spark.points" fill="none" stroke-width="1.6" stroke-linejoin="round" class="o_bfr_spark_line"/>
+                <circle t-att-cx="spark.cx" t-att-cy="spark.cy" r="2.6" class="o_bfr_spark_dot"/>
+            </svg>
+            <div class="o_bfr_kpi_delta">
+                <t t-if="change">
+                    <span class="o_bfr_pill" t-att-class="'o_bfr_pill_' + change.cls" t-esc="change.text"/>
+                    <span>vs matching period</span>
+                </t>
+                <span t-else="">No period to compare</span>
+            </div>
+            <div t-if="target" class="o_bfr_target">
+                <div class="o_bfr_track"><div class="o_bfr_fill" t-att-class="target.reached ? 'o_bfr_fill_ok' : ''"
+                                               t-att-style="'width:' + target.width"/></div>
+                <span>Target <t t-esc="target.label"/></span>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="bf_bi_report.GaugeVisual">
+        <div class="o_bfr_gauge">
+            <t t-set="g" t-value="geometry"/>
+            <svg viewBox="0 0 200 118" role="img" t-att-aria-label="ariaLabel">
+                <path t-att-d="g.track" class="o_bfr_gauge_track" fill="none" stroke-width="18"/>
+                <path t-if="g.fill" t-att-d="g.fill" fill="none" stroke-width="18" t-att-stroke="props.theme.colors[0]"/>
+                <line t-if="g.tick" t-att-x1="g.tick.x0" t-att-y1="g.tick.y0" t-att-x2="g.tick.x1" t-att-y2="g.tick.y1" class="o_bfr_gauge_tick" stroke-width="3"/>
+                <text x="100" y="92" text-anchor="middle" class="o_bfr_gauge_value" t-esc="display"/>
+                <text x="22" y="114" text-anchor="middle" class="o_bfr_gauge_bound" t-esc="zeroLabel"/>
+                <text x="178" y="114" text-anchor="middle" class="o_bfr_gauge_bound" t-esc="maxLabel"/>
+            </svg>
+            <div class="o_bfr_gauge_foot">
+                <span t-if="change" class="o_bfr_pill" t-att-class="'o_bfr_pill_' + change.cls" t-esc="change.text"/>
+                <span t-if="targetLabel" class="o_bfr_gauge_target" t-att-class="g.tick and g.tick.reached ? 'o_bfr_gauge_target_ok' : ''">
+                    Target <t t-esc="targetLabel"/><t t-if="g.tick and g.tick.reached"> ✓</t>
+                </span>
+                <span t-if="g.over" class="o_bfr_gauge_over">Above the maximum</span>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="bf_bi_report.WaterfallVisual">
+        <div class="o_bfr_wf">
+            <ul class="o_bfr_wlegend" t-if="bars.length">
+                <t t-foreach="legend" t-as="l" t-key="l_index">
+                    <li><i t-att-style="'background:' + l.color" aria-hidden="true"/><t t-esc="l.sign"/> <t t-esc="l.label"/></li>
+                </t>
+            </ul>
+            <div class="o_bfr_wf_plot">
+                <canvas t-ref="canvas" role="img" t-att-aria-label="props.visual.title or ''"/>
+                <div t-if="!bars.length" class="o_bfr_wait">No data for this period.</div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="bf_bi_report.HeatmapVisual">
+        <div class="o_bfr_heat_wrap">
+            <div t-if="!rows.length" class="o_bfr_wait">No data for this period.</div>
+            <table t-else="" class="o_bfr_heat">
+                <thead>
+                    <tr>
+                        <th/>
+                        <t t-foreach="columns" t-as="c" t-key="c.key">
+                            <th><button type="button" class="o_bfr_heat_col" t-att-class="props.highlight === c.key ? 'o_bfr_on' : ''"
+                                        t-on-click="() => this.selectColumn(c)" t-esc="c.text"/></th>
+                        </t>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="rows" t-as="item" t-key="item.row.key">
+                        <tr t-att-class="item.dim ? 'o_bfr_dim' : ''" t-on-contextmenu="(ev) => this.context(ev, item)">
+                            <th scope="row"><button type="button" class="o_bfr_heat_row" t-on-click="() => this.selectRow(item)" t-esc="item.row.label"/></th>
+                            <t t-foreach="item.cells" t-as="cell" t-key="cell.key">
+                                <td t-att-style="cell.style" t-att-class="cell.dim ? 'o_bfr_dim' : ''" t-att-title="cell.title"
+                                    t-on-click="() => this.selectRow(item)" t-esc="cell.text"/>
+                            </t>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+            <div t-if="rows.length" class="o_bfr_heat_legend">
+                <span t-esc="legend.lo"/><i t-att-style="legend.style" aria-hidden="true"/><span t-esc="legend.hi"/>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="bf_bi_report.ChartVisual">
+        <div class="o_bfr_chart">
+            <canvas t-ref="canvas" role="img" t-att-aria-label="props.visual.title or ''"/>
+            <div t-if="!rows.length" class="o_bfr_wait">No data for this period.</div>
+        </div>
+    </t>
+
+    <t t-name="bf_bi_report.TableVisual">
+        <div class="o_bfr_table_wrap">
+            <table class="o_bfr_table">
+                <thead>
+                    <tr>
+                        <th/>
+                        <t t-foreach="props.result.measures" t-as="m" t-key="m.code"><th t-esc="m.name"/></t>
+                        <th t-if="showDrill"/>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="rows" t-as="item" t-key="item.row.key">
+                        <tr t-att-class="item.dim ? 'o_bfr_dim' : ''" tabindex="0" t-on-click="() => this.select(item)"
+                            t-on-contextmenu="(ev) => this.context(ev, item)"
+                            t-on-keydown="(ev) => ev.key === 'Enter' and this.select(item)">
+                            <td class="o_bfr_rowlabel">
+                                <i t-if="item.color" t-att-style="'background:' + item.color" aria-hidden="true"/>
+                                <t t-esc="item.label"/>
+                            </td>
+                            <t t-foreach="item.cells" t-as="cell" t-key="cell_index">
+                                <td t-if="cell_index === 0" class="o_bfr_databar">
+                                    <span t-att-style="'width: calc((100% - 16px) * ' + item.bar / 100 + ')'" aria-hidden="true"/>
+                                    <b t-esc="cell.text"/>
+                                </td>
+                                <td t-elif="cell.level"><span class="o_bfr_cf" t-att-class="'o_bfr_cf_' + cell.level"><t t-esc="cell.icon"/> <t t-esc="cell.text"/></span></td>
+                                <td t-else="" t-esc="cell.text"/>
+                            </t>
+                            <td t-if="showDrill" class="o_bfr_drillcell">
+                                <button t-if="item.row.key !== 'others'" type="button" class="btn btn-link btn-sm"
+                                        t-att-aria-label="drillLabel(item)" t-on-click="(ev) => this.drill(ev, item)">Detail ›</button>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </div>
+    </t>
+
+</templates>

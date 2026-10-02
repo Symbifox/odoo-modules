@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_bi_report_user,bf.bi.report user,model_bf_bi_report,base.group_user,1,0,0,0
+access_bf_bi_report_designer,bf.bi.report designer,model_bf_bi_report,bf_bi.group_bi_designer,1,1,1,1
+access_bf_bi_report_page_user,bf.bi.report.page user,model_bf_bi_report_page,base.group_user,1,0,0,0
+access_bf_bi_report_page_designer,bf.bi.report.page designer,model_bf_bi_report_page,bf_bi.group_bi_designer,1,1,1,1
+access_bf_bi_report_version_designer,bf.bi.report.version designer,model_bf_bi_report_version,bf_bi.group_bi_designer,1,0,0,0
+access_bf_bi_report_template_wizard_designer,bf.bi.report.template.wizard designer,model_bf_bi_report_template_wizard,bf_bi.group_bi_designer,1,1,1,0
