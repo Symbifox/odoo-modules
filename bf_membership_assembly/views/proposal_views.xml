@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_assembly_proposal_list" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.proposal.list</field>
+        <field name="model">bf.membership.assembly.proposal</field>
+        <field name="arch" type="xml">
+            <list decoration-success="result == 'adopted'" decoration-danger="result == 'rejected'">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="vote_mode"/>
+                <field name="majority"/>
+                <field name="votes_for"/>
+                <field name="votes_against"/>
+                <field name="votes_abstain"/>
+                <field name="ballot_count" optional="hide"/>
+                <field name="result" widget="badge"
+                       decoration-success="result == 'adopted'" decoration-danger="result == 'rejected'"/>
+                <field name="assembly_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_assembly_proposal_form" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.proposal.form</field>
+        <field name="model">bf.membership.assembly.proposal</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_issue_ballots" type="object" string="Remettre les bulletins"
+                            class="btn-primary"
+                            invisible="vote_mode != 'secret' or assembly_state != 'open'"/>
+                    <field name="result" widget="statusbar" statusbar_visible="pending,adopted,rejected"/>
+                </header>
+                <sheet>
+                    <field name="assembly_state" invisible="1"/>
+                    <field name="tally_started" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Adoption des états financiers 2025-2026"
+                                   readonly="assembly_state in ('closed', 'cancelled')"/></h1>
+                    </div>
+                    <group>
+                        <group string="Proposition">
+                            <field name="assembly_id" readonly="id" options="{'no_create': True}"/>
+                            <field name="mover_id" options="{'no_create': True}"
+                                   readonly="assembly_state in ('closed', 'cancelled')"/>
+                            <field name="seconder_id" options="{'no_create': True}"
+                                   readonly="assembly_state in ('closed', 'cancelled')"/>
+                        </group>
+                        <group string="Vote">
+                            <field name="vote_mode" readonly="assembly_state in ('closed', 'cancelled') or tally_started"/>
+                            <field name="majority" readonly="assembly_state in ('closed', 'cancelled') or tally_started"/>
+                            <field name="majority_percent" invisible="majority != 'percent'"
+                                   readonly="assembly_state in ('closed', 'cancelled') or tally_started"/>
+                        </group>
+                    </group>
+                    <group string="Résultat">
+                        <group>
+                            <field name="votes_for" readonly="assembly_state != 'open'"/>
+                            <field name="votes_against" readonly="assembly_state != 'open'"/>
+                            <field name="votes_abstain" readonly="assembly_state != 'open'"/>
+                            <field name="votes_spoiled" invisible="vote_mode != 'secret'"
+                                   readonly="assembly_state != 'open'"/>
+                        </group>
+                        <group>
+                            <field name="votes_cast"/>
+                            <field name="ballot_count" invisible="vote_mode != 'secret'"/>
+                            <field name="result_detail"/>
+                        </group>
+                    </group>
+                    <p class="text-muted" invisible="vote_mode != 'secret'">
+                        Scrutin secret : le registre dit qui a reçu un bulletin, le dépouillement
+                        ne porte que des totaux. Rien ne relie une personne à son choix.
+                    </p>
+                    <notebook>
+                        <page string="Texte" name="text">
+                            <field name="text" readonly="assembly_state in ('closed', 'cancelled')"
+                                   placeholder="Il est proposé que..."/>
+                        </page>
+                        <page string="Bulletins remis" name="ballots" invisible="vote_mode != 'secret'">
+                            <group>
+                                <field name="scrutineer_ids" widget="many2many_tags"
+                                       readonly="assembly_state in ('closed', 'cancelled')"/>
+                            </group>
+                            <field name="ballot_ids" readonly="1">
+                                <list>
+                                    <field name="voter_id"/>
+                                    <field name="received_by_id"/>
+                                    <field name="via_proxy"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_assembly_proposal_search" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.proposal.search</field>
+        <field name="model">bf.membership.assembly.proposal</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="assembly_id"/>
+                <filter name="adopted" string="Adoptées" domain="[('result', '=', 'adopted')]"/>
+                <filter name="rejected" string="Rejetées" domain="[('result', '=', 'rejected')]"/>
+                <filter name="secret" string="Scrutin secret" domain="[('vote_mode', '=', 'secret')]"/>
+            </search>
+        </field>
+    </record>
+</odoo>

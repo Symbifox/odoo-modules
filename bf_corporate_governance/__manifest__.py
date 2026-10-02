@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox Corporate Governance',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.1.0',
     'category': 'Services/Project',
     'summary': 'Résolutions, registres corporatifs et calendrier de conformité',
     'description': """
@@ -16,7 +16,8 @@ résolutions les retrouve à l'identique, numérotation comprise.
 
 Fonctionnalités:
 ----------------
-* Résolutions du conseil et des actionnaires, avec suivi de statut
+* Résolutions du conseil, des actionnaires et des membres (OBNL,
+  associations), avec suivi de statut
 * Bloc de signature explicite : qui signe, et en quelle qualité
 * PDF brandé prêt à signer, avec les administrateurs en poste À LA DATE
   de la séance plutôt qu'aujourd'hui

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!--
+          Les rôles sont ceux du socle :
+            * Agent : tient l'assemblée. Il la crée, bâtit la liste, convoque,
+              inscrit les présences et les procurations, remet les bulletins,
+              saisit les résultats, ouvre et clôt.
+            * Responsable : tout, y compris supprimer une assemblée en
+              brouillon ou annulée.
+          Un employé qui n'a ni l'un ni l'autre ne voit aucune assemblée : la
+          liste des votants et les présences sont des renseignements personnels.
+
+          🔴 La portée par société passe par des RÈGLES, jamais par les seuls
+          droits de modèle : un droit de lecture ouvre le modèle entier. Les
+          quatre modèles en portent une, et pas seulement l'assemblée : une
+          ligne de votant ou un bulletin se lit aussi sans passer par elle.
+        -->
+        <record id="rule_assembly_company" model="ir.rule">
+            <field name="name">Assemblée des membres : société</field>
+            <field name="model_id" ref="model_bf_membership_assembly"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_assembly_voter_company" model="ir.rule">
+            <field name="name">Votant : société</field>
+            <field name="model_id" ref="model_bf_membership_assembly_voter"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_assembly_proposal_company" model="ir.rule">
+            <field name="name">Proposition : société</field>
+            <field name="model_id" ref="model_bf_membership_assembly_proposal"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_assembly_ballot_company" model="ir.rule">
+            <field name="name">Bulletin remis : société</field>
+            <field name="model_id" ref="model_bf_membership_assembly_ballot"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+    </data>
+</odoo>

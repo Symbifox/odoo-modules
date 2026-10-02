@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_membership_root" name="Membres" sequence="45"
+              web_icon="bf_membership,static/description/icon.png"
+              groups="bf_membership.group_membership_user"/>
+
+    <menuitem id="menu_members" name="Membres" parent="menu_membership_root" sequence="10" action="action_members"/>
+    <menuitem id="menu_memberships" name="Adhésions" parent="menu_membership_root" sequence="20" action="action_membership"/>
+    <menuitem id="menu_membership_requests" name="Demandes" parent="menu_membership_root" sequence="25" action="action_membership_requests"/>
+    <menuitem id="menu_member_register" name="Registre" parent="menu_membership_root" sequence="30" action="action_member_register"/>
+
+    <menuitem id="menu_membership_config" name="Configuration" parent="menu_membership_root" sequence="90"
+              groups="bf_membership.group_membership_manager"/>
+    <menuitem id="menu_membership_settings" name="Réglages" parent="menu_membership_config" sequence="1" action="action_membership_settings"
+              groups="base.group_system"/>
+    <menuitem id="menu_membership_types" name="Catégories" parent="menu_membership_config" sequence="10" action="action_membership_type"/>
+    <menuitem id="menu_membership_import" name="Importer une liste" parent="menu_membership_config" sequence="20" action="action_membership_import"/>
+</odoo>

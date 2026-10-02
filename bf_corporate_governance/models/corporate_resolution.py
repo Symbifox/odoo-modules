@@ -1,4 +1,5 @@
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class CorporateResolution(models.Model):
@@ -24,6 +25,10 @@ class CorporateResolution(models.Model):
             ('shareholder', 'Résolution des actionnaires'),
             ('written_board', 'Résolution écrite du conseil'),
             ('written_shareholder', 'Résolution écrite des actionnaires'),
+            # Une association, un OBNL, une coopérative : la résolution est
+            # adoptée en assemblée des membres. Sans ce type, elle s'inscrivait
+            # comme une résolution d'actionnaires, et son PDF le disait.
+            ('members', 'Résolution des membres'),
         ],
         string='Type de résolution',
         required=True,
@@ -205,7 +210,11 @@ class CorporateResolution(models.Model):
         1. des signataires sont saisis — ils font foi, avec leur qualité;
         2. sinon, résolution du CONSEIL — les administrateurs en poste à la
            date de la séance, en qualité d'administrateur;
-        3. sinon — résolution des actionnaires — le proposeur et le secondeur,
+        3. sinon, résolution des MEMBRES : deux lignes à remplir, sous
+           « Présidence d'assemblée » et « Secrétariat d'assemblée ». Une
+           résolution des membres se signe par les personnes qui ont tenu
+           l'assemblée, pas par celles qui ont proposé ou appuyé;
+        4. sinon, résolution des actionnaires : le proposeur et le secondeur,
            NOMMÉS SANS QUALITÉ. Le module ne tient pas de registre des
            actionnaires : il sait qui a porté la résolution, pas en quelle
            qualité cette personne l'a signée. Le gabarit le nomme donc sans
@@ -229,14 +238,39 @@ class CorporateResolution(models.Model):
                 'capacity': _('Administrateur'),
                 'purpose': False,
             } for administrateur in self._get_directors_at_date()]
+        if self.resolution_type == 'members':
+            qualites = dict(self.env['corporate.resolution.signatory']._fields['capacity']
+                            ._description_selection(self.env))
+            return [{
+                'name': '',
+                'capacity': qualites[qualite],
+                'purpose': False,
+            } for qualite in ('assembly_chair', 'assembly_secretary')]
         return [{
             'name': partenaire.name,
             'capacity': False,
             'purpose': False,
         } for partenaire in (self.mover_id | self.seconder_id)]
 
+    @api.constrains('resolution_type')
+    def _check_members_type_signatories(self):
+        self._check_members_signatories()
+
+    def _check_members_signatories(self):
+        """Aucun signataire d'une résolution des membres en qualité d'actionnaire."""
+        for rec in self.filtered(lambda r: r.resolution_type == 'members'):
+            actionnaires = rec.signatory_ids.filtered(
+                lambda l: l.capacity in ('shareholder', 'sole_shareholder'))
+            if actionnaires:
+                raise ValidationError(_(
+                    "Une résolution des membres ne se signe pas en qualité "
+                    "d'actionnaire : choisissez une autre qualité pour %s.",
+                    ', '.join(actionnaires.partner_id.mapped('name'))))
+
     def _get_resolution_type_label(self):
         """Retourner le titre d'en-tête français selon le type de résolution."""
         if self.resolution_type in ('board', 'written_board'):
             return "Résolution écrite des administrateurs"
+        if self.resolution_type == 'members':
+            return "Résolution de l'assemblée des membres"
         return "Résolution écrite des actionnaires"

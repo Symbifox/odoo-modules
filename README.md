@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**210 modules are BUSL-1.1.** The source is published and auditable, and **you
+**215 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -138,7 +138,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_contact_absence_mail` | Symbifox Absences des contacts : lecture des répondeurs | 18.0.1.1.0 | BUSL-1.1 | Reconnaître les répondeurs d'absence reçus et proposer la période au lieu de l'écrire |
 | `bf_contact_absence_sms` | Symbifox Absences des contacts : Messagerie SMS | 18.0.1.1.0 | BUSL-1.1 | Voir qu'un contact est absent avant de lui texter |
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.2.1.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
-| `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.0.0 | LGPL-3 | The minute book of a share corporation kept in Odoo: resolutions, registers and a compliance calendar |
+| `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.1.0 | LGPL-3 | The minute book of a corporation or an association kept in Odoo: board, shareholder and members' resolutions, registers and a compliance calendar |
 | `bf_credentials` | Symbifox Credentials | 18.0.3.0.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
 | `bf_cx` | Expérience client | 18.0.1.12.1 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
 | `bf_cx_ai` | Expérience client : analyse IA des verbatims | 18.0.1.2.3 | LGPL-3 | Sentiment, themes and a one-line summary of customer comments, through the AI bridge |
@@ -228,6 +228,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |
 | `bf_meeting_portal` | Rencontres - Portail client | 18.0.2.1.0 | BUSL-1.1 | Portal read access to meeting reports that were already emailed to the client |
 | `bf_meeting_timer` | Chronomètre de rencontre | 18.0.1.5.0 | BUSL-1.1 | The real time each agenda topic actually took, and the projected end of the meeting while it is still running. |
+| `bf_membership` | Membres | 18.0.1.0.4 | BUSL-1.1 | The member register of an association, a non-profit or a federation: categories, memberships, renewals and delegates, without depending on an invoice |
+| `bf_membership_account` | Membres : facturation et reçus fiscaux | 18.0.1.0.2 | BUSL-1.1 | Invoices the membership fee in Odoo, follows its payment on the membership, and issues a registered charity's partial tax receipt for money actually received |
+| `bf_membership_assembly` | Membres : AGA et votes | 18.0.1.0.3 | BUSL-1.1 | General meetings of members: notice within the legal delays, voters fixed at a record date, attendance, quorum, proxies, show-of-hands or secret-ballot votes |
+| `bf_membership_assembly_governance` | Membres : AGA et registre corporatif | 18.0.1.0.2 | BUSL-1.1 | A proposal adopted at a members' meeting is entered in the corporate governance resolution register, frozen as voted |
+| `bf_membership_portal` | Membres : portail, adhésion en ligne et répertoire | 18.0.1.2.1 | BUSL-1.1 | The member's portal: membership, renewal and online payment, membership card; a public application form and an opt-in member directory |
 | `bf_music_licensing` | Licences musicales : conformité en établissement | 18.0.1.2.0 | BUSL-1.1 | Tracks the SOCAN and Re:Sound royalties an establishment owes, holding the proposed rate beside the certified one so a retroactive Copyright Board ruling is priced, not discovered |
 | `bf_nextcloud_browser` | Nextcloud File Browser | 18.0.4.1.1 | LGPL-3 | Embedded + standalone Nextcloud WebDAV file browser on projects/tasks, each person on their own Nextcloud account (Login Flow v2, SSO-friendly): folder tree, modal preview, drag-and-drop upload/move, configurable share presets, open-in-Nextcloud for office files, Knowledge Matrix linking, systray launcher |
 | `bf_nfc` | Gestes par pastille NFC | 18.0.2.6.4 | BUSL-1.1 | NFC tags that play a gesture in Odoo: three doors (app token, browser session, NTAG 424 signed tag), menus and questions, bounded offline taps, QR label twin, tag templates and a setup wizard. Signed chips are written from the app with the server driving, so the AES keys never leave Odoo |
@@ -373,7 +378,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **210 modules: BUSL-1.1.** Production use for your own internal business
+- **215 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

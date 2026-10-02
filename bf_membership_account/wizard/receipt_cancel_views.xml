@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_receipt_cancel_form" model="ir.ui.view">
+        <field name="name">bf.membership.receipt.cancel.form</field>
+        <field name="model">bf.membership.receipt.cancel</field>
+        <field name="arch" type="xml">
+            <form>
+                <p class="text-muted">
+                    Le reçu reste au registre, marqué « annulé ». Le reçu de remplacement porte son
+                    propre numéro et nomme celui qu'il remplace.
+                </p>
+                <group>
+                    <field name="receipt_id"/>
+                    <field name="reason" placeholder="Reçu perdu, adresse erronée, cotisation remboursée"/>
+                    <field name="replace"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirmer" class="btn-primary"/>
+                    <button special="cancel" string="Fermer"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

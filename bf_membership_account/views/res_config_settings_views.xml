@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_membership_account" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.bf.membership.account</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bf_membership.res_config_settings_view_form_membership"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='bf_membership']" position="inside">
+                <block title="Reçus fiscaux de cotisation" name="membership_receipts">
+                    <setting string="Organisme de bienfaisance enregistré"
+                             help="Le numéro de l'ARC, imprimé sur chaque reçu. Seul un organisme enregistré délivre des reçus.">
+                        <field name="membership_charity_number" placeholder="123456789 RR 0001"/>
+                    </setting>
+                    <setting string="Personne autorisée" help="Son nom et sa signature paraissent sur le reçu.">
+                        <div class="mt-2">
+                            <field name="membership_receipt_signer" placeholder="Nom"/>
+                            <field name="membership_receipt_signer_title" placeholder="Titre"/>
+                            <field name="membership_receipt_signature" widget="image" class="oe_avatar"/>
+                        </div>
+                    </setting>
+                    <setting string="Lieu de délivrance" help="À défaut, la ville de la société.">
+                        <field name="membership_receipt_place"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

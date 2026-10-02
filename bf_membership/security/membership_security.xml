@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="module_category_membership" model="ir.module.category">
+            <field name="name">Membres</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <!--
+          Deux rôles :
+            * Agent : tient le registre (adhésions, paiements, délégués,
+              retraits). C'est la permanence ou la coordination.
+            * Responsable : configure les catégories et les réglages, importe
+              des listes, supprime une demande.
+          Le module `membership` d'Odoo réserve tout au groupe de facturation :
+          la personne qui accueille les membres n'est pas forcément celle qui
+          tient les livres.
+        -->
+        <record id="group_membership_user" model="res.groups">
+            <field name="name">Agent</field>
+            <field name="category_id" ref="module_category_membership"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_membership_manager" model="res.groups">
+            <field name="name">Responsable</field>
+            <field name="category_id" ref="module_category_membership"/>
+            <field name="implied_ids" eval="[(4, ref('group_membership_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!--
+          🔴 La portée par société passe par des RÈGLES, jamais par les seuls
+          droits de modèle : un droit de lecture ouvre le modèle entier.
+        -->
+        <record id="rule_membership_type_company" model="ir.rule">
+            <field name="name">Catégorie d'adhésion : société</field>
+            <field name="model_id" ref="model_bf_membership_type"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_membership_company" model="ir.rule">
+            <field name="name">Adhésion : société</field>
+            <field name="model_id" ref="model_bf_membership"/>
+            <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+    </data>
+
+    <!-- 🔴 Le courrier d'Odoo nomme les personnes : tout employé lit les abonnés
+         (mail.followers) et les notifications (mail.notification) de n'importe
+         quel enregistrement. Pour les modèles de l'association (bf.membership*),
+         seul le rôle Membres les lit ; une personne lit toujours les siens. -->
+    <record id="rule_mail_followers_membership_hidden" model="ir.rule">
+        <field name="name">Abonnés : ceux de l'association réservés au rôle Membres</field>
+        <field name="model_id" ref="mail.model_mail_followers"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', ('res_model', 'not like', 'bf.membership'), ('partner_id', '=', user.partner_id.id)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_mail_followers_membership_role" model="ir.rule">
+        <field name="name">Abonnés : le rôle Membres les lit tous</field>
+        <field name="model_id" ref="mail.model_mail_followers"/>
+        <field name="groups" eval="[(4, ref('bf_membership.group_membership_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_mail_notification_membership_hidden" model="ir.rule">
+        <field name="name">Notifications : celles de l'association réservées au rôle Membres</field>
+        <field name="model_id" ref="mail.model_mail_notification"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', ('mail_message_id.model', 'not like', 'bf.membership'), ('res_partner_id', '=', user.partner_id.id)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_mail_notification_membership_role" model="ir.rule">
+        <field name="name">Notifications : le rôle Membres les lit toutes</field>
+        <field name="model_id" ref="mail.model_mail_notification"/>
+        <field name="groups" eval="[(4, ref('bf_membership.group_membership_user'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>

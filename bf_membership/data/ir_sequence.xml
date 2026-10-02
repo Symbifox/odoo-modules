@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+          « Sans trou » exprès : l'aperçu de l'import joue la vraie passe puis
+          l'annule par un point de sauvegarde. Une séquence PostgreSQL
+          ordinaire ne recule pas à l'annulation, et chaque aperçu brûlerait
+          des numéros de membre.
+        -->
+        <record id="seq_member_number" model="ir.sequence">
+            <field name="name">Numéro de membre</field>
+            <field name="code">bf.membership.member</field>
+            <field name="implementation">no_gap</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

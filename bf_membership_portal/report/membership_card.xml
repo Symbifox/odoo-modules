@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Le format d'une carte de crédit (ISO/CEI 7810 ID-1), lisible au téléphone et à imprimer. -->
+    <record id="paperformat_membership_card" model="report.paperformat">
+        <field name="name">Carte de membre</field>
+        <field name="format">custom</field>
+        <field name="page_width">86</field>
+        <field name="page_height">54</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">4</field>
+        <field name="margin_right">4</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_membership_card" model="ir.actions.report">
+        <field name="name">Carte de membre</field>
+        <field name="model">res.partner</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_membership_portal.report_membership_card</field>
+        <field name="report_file">bf_membership_portal.report_membership_card</field>
+        <field name="print_report_name">'Carte de membre %s' % (object.member_number or object.name)</field>
+        <field name="paperformat_id" ref="paperformat_membership_card"/>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('bf_membership.group_membership_user'))]"/>
+    </record>
+
+    <template id="report_membership_card">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="partner">
+                <!-- Depuis le portail, la société du site : l'adhésion qui couvre aujourd'hui
+                     dans CETTE société. Imprimée au bureau, l'adhésion courante. -->
+                <t t-set="current" t-value="partner.membership_ids.filtered_domain([('company_id', '=', card_company_id), ('is_current', '=', True)])[:1] if card_company_id else partner.current_membership_id"/>
+                <div class="article" t-att-data-oe-model="partner._name" t-att-data-oe-id="partner.id">
+                    <div class="page" style="font-size: 9pt; line-height: 1.25;">
+                        <div style="font-weight: bold; font-size: 10pt;"
+                             t-out="(current.company_id or partner.env.company).name"/>
+                        <div class="text-muted" style="font-size: 7pt;">Carte de membre</div>
+                        <div style="font-size: 12pt; font-weight: bold; margin-top: 3mm;" t-out="partner.name"/>
+                        <div>N° <t t-out="partner.member_number or ''"/></div>
+                        <div t-if="current" t-out="current.type_id.name"/>
+                        <div style="margin-top: 2mm;">
+                            <t t-if="current and current.date_end">
+                                En règle jusqu'au <span t-field="current.date_end"/>
+                            </t>
+                            <t t-elif="current">Membre à vie</t>
+                            <t t-else="">Adhésion non en règle</t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

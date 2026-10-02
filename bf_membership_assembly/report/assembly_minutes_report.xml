@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Le procès-verbal (Loi sur les compagnies, art. 107 : le procès-verbal
+      certifié fait preuve). Il reprend ce qu'Odoo sait de l'assemblée : l'avis,
+      la date de référence, les présences, le quorum, chaque proposition et son
+      résultat, puis le texte rédigé par le secrétariat. Au scrutin secret, il
+      ne montre que le nombre de bulletins remis et les totaux : c'est tout ce
+      qu'il y a en base.
+    -->
+    <record id="action_report_assembly_minutes" model="ir.actions.report">
+        <field name="name">Procès-verbal</field>
+        <field name="model">bf.membership.assembly</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_membership_assembly.report_assembly_minutes</field>
+        <field name="report_file">bf_membership_assembly.report_assembly_minutes</field>
+        <field name="print_report_name">'Procès-verbal - %s' % object.name</field>
+        <field name="binding_model_id" ref="model_bf_membership_assembly"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('bf_membership.group_membership_user'))]"/>
+    </record>
+
+    <template id="report_assembly_minutes">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="o" t-value="doc"/>
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Procès-verbal</h2>
+                        <h3 t-out="doc.name"/>
+                        <p>
+                            Assemblée <t t-if="doc.kind == 'annual'">générale annuelle</t><t t-else="">extraordinaire</t>
+                            de <span t-out="doc.company_id.name"/>, tenue le <span t-out="doc.date_label"/>.
+                        </p>
+                        <p t-if="doc.location">Lieu : <span t-out="doc.location"/></p>
+                        <p t-if="doc.remote_url">Participation à distance : <span t-out="doc.remote_url"/></p>
+                        <p t-if="doc.chair_id or doc.secretary_id">
+                            <t t-if="doc.chair_id">Présidence : <span t-out="doc.chair_id.name"/>. </t>
+                            <t t-if="doc.secretary_id">Secrétariat : <span t-out="doc.secretary_id.name"/>.</t>
+                        </p>
+
+                        <h4>Avis et votants</h4>
+                        <ul>
+                            <li t-if="doc.notice_date">
+                                Avis daté du <span t-field="doc.notice_date"/>, soit
+                                <span t-out="doc.notice_days"/> jours avant l'assemblée
+                                (délai permis : <span t-out="doc.notice_min_days"/> à
+                                <span t-out="doc.notice_max_days"/> jours).
+                            </li>
+                            <li t-if="doc.record_date">
+                                Date de référence des votants : <span t-field="doc.record_date"/>.
+                            </li>
+                            <li>
+                                Votants inscrits : <span t-out="doc.voter_count"/>.
+                            </li>
+                        </ul>
+
+                        <h4>Quorum</h4>
+                        <p>
+                            Présences : <span t-out="doc.present_count"/>
+                            (dont <span t-out="doc.remote_count"/> à distance) ;
+                            procurations : <span t-out="doc.represented_count"/> ;
+                            voix présentes ou représentées : <span t-out="doc.voice_count"/>
+                            sur <span t-out="doc.voter_count"/>.
+                            Quorum requis : <span t-out="doc.quorum_required"/>.
+                            <strong t-if="doc.quorum_met">Le quorum est atteint.</strong>
+                            <strong t-else="">Le quorum n'est pas atteint.</strong>
+                        </p>
+
+                        <h4>Présences</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Membre</th>
+                                    <th>Personne qui vote</th>
+                                    <th>Présence</th>
+                                    <th>Mandataire</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.voter_ids.filtered(lambda v: v.attendance != 'absent')" t-as="v">
+                                    <td><span t-out="v.member_id.name"/></td>
+                                    <td><span t-out="v.representative_id.name or ''"/></td>
+                                    <td><span t-field="v.attendance"/></td>
+                                    <td><span t-out="v.proxy_holder_id.display_name or ''"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 t-if="doc.proposal_ids">Propositions</h4>
+                        <div t-foreach="doc.proposal_ids" t-as="p" class="mb-3">
+                            <p><strong t-out="p.name"/></p>
+                            <div t-if="p.text" t-out="p.text"/>
+                            <p t-if="p.mover_id or p.seconder_id">
+                                <t t-if="p.mover_id">Proposée par <span t-out="p.mover_id.representative_id.name"/></t><t t-if="p.mover_id and p.seconder_id">, </t><t t-if="p.seconder_id"><t t-if="p.mover_id">appuyée</t><t t-else="">Appuyée</t> par <span t-out="p.seconder_id.representative_id.name"/></t>.
+                            </p>
+                            <p>
+                                Mode de vote : <span t-field="p.vote_mode"/>.
+                                Majorité requise : <span t-field="p.majority"/><t t-if="p.majority == 'percent'"> (au moins <span t-out="p.majority_percent"/> % des voix exprimées)</t>.
+                            </p>
+                            <p>
+                                Pour : <span t-out="p.votes_for"/> ; contre : <span t-out="p.votes_against"/> ;
+                                abstentions : <span t-out="p.votes_abstain"/>
+                                <t t-if="p.vote_mode == 'secret'"> ; bulletins nuls : <span t-out="p.votes_spoiled"/> ;
+                                    bulletins remis : <span t-out="p.ballot_count"/></t>.
+                                <strong>Résultat : <span t-field="p.result"/>.</strong>
+                            </p>
+                        </div>
+
+                        <t t-if="doc.minutes">
+                            <h4>Déroulement</h4>
+                            <div t-field="doc.minutes"/>
+                        </t>
+
+                        <h4 class="mt-4">Certifié conforme</h4>
+                        <table class="table table-borderless mt-4">
+                            <tr>
+                                <td style="width: 50%;">
+                                    <p>______________________________</p>
+                                    <p>Présidence d'assemblée<t t-if="doc.chair_id"> : <span t-out="doc.chair_id.name"/></t></p>
+                                </td>
+                                <td style="width: 50%;">
+                                    <p>______________________________</p>
+                                    <p>Secrétariat d'assemblée<t t-if="doc.secretary_id"> : <span t-out="doc.secretary_id.name"/></t></p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

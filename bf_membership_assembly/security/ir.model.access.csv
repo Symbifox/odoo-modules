@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_assembly_user,bf.membership.assembly agent,model_bf_membership_assembly,bf_membership.group_membership_user,1,1,1,0
+access_assembly_manager,bf.membership.assembly responsable,model_bf_membership_assembly,bf_membership.group_membership_manager,1,1,1,1
+access_assembly_voter_user,bf.membership.assembly.voter agent,model_bf_membership_assembly_voter,bf_membership.group_membership_user,1,1,1,1
+access_assembly_proposal_user,bf.membership.assembly.proposal agent,model_bf_membership_assembly_proposal,bf_membership.group_membership_user,1,1,1,1
+access_assembly_ballot_user,bf.membership.assembly.ballot agent,model_bf_membership_assembly_ballot,bf_membership.group_membership_user,1,0,1,1
+access_assembly_ballot_manager,bf.membership.assembly.ballot responsable,model_bf_membership_assembly_ballot,bf_membership.group_membership_manager,1,1,1,1

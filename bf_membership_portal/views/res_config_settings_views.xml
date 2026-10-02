@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_membership_portal" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.bf.membership.portal</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="bf_membership.res_config_settings_view_form_membership"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='bf_membership']" position="inside">
+                <block title="Portail et répertoire" name="membership_portal">
+                    <setting string="Répertoire des membres"
+                             help="Fermé d'office. Ouvert, il ne montre que les membres en règle qui y ont consenti, et seulement leur nom et leur ville (/membres/repertoire).">
+                        <field name="membership_directory" widget="radio"/>
+                    </setting>
+                    <setting string="Adhésion en ligne"
+                             help="Le formulaire public (/membres/adhesion) offre les catégories cochées « Adhésion en ligne ». Le paiement en ligne passe par les fournisseurs de paiement et le réglage « Paiement en ligne des factures » de la comptabilité."/>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

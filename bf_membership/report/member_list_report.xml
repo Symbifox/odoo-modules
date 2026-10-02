@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      La liste annuelle des membres (Loi sur les compagnies, art. 223) : en
+      ordre alphabétique, avec l'adresse et la catégorie. Se lance depuis le
+      registre, sur les contacts choisis.
+    -->
+    <record id="action_report_member_list" model="ir.actions.report">
+        <field name="name">Liste des membres</field>
+        <field name="model">res.partner</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_membership.report_member_list</field>
+        <field name="report_file">bf_membership.report_member_list</field>
+        <field name="print_report_name">'Liste des membres'</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('bf_membership.group_membership_user'))]"/>
+    </record>
+
+    <template id="report_member_list">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Liste des membres</h2>
+                    <p class="text-muted">
+                        Au <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>,
+                        <span t-esc="len(docs)"/> contact(s).
+                    </p>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Nom</th>
+                                <th>Adresse</th>
+                                <th>Profession</th>
+                                <th>Catégorie</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs.sorted(lambda p: (p.name or '').lower())" t-as="p">
+                                <!-- La catégorie et le statut de CETTE société : l'adhésion
+                                     courante d'une autre société ne se lit pas ici. -->
+                                <t t-set="row" t-value="p._member_list_row(res_company)"/>
+                                <td><span t-field="p.member_number"/></td>
+                                <td><span t-field="p.name"/></td>
+                                <td>
+                                    <span t-esc="', '.join(x for x in (p.street, p.city, p.zip) if x)"/>
+                                </td>
+                                <td><span t-field="p.function"/></td>
+                                <td><span t-esc="row['category']"/></td>
+                                <td><span t-esc="row['status']"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

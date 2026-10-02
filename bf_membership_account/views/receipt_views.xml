@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_receipt_list" model="ir.ui.view">
+        <field name="name">bf.membership.receipt.list</field>
+        <field name="model">bf.membership.receipt</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="date_issued"/>
+                <field name="partner_id"/>
+                <field name="date_received" optional="show"/>
+                <field name="gift_amount" optional="show"/>
+                <field name="advantage_amount" optional="hide"/>
+                <field name="eligible_amount" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="delivery_count" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'issued'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_membership_receipt_form" model="ir.ui.view">
+        <field name="name">bf.membership.receipt.form</field>
+        <field name="model">bf.membership.receipt</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0" edit="0">
+                <header>
+                    <button name="action_print" type="object" string="Imprimer" class="btn-primary"/>
+                    <button name="action_cancel_wizard" type="object" string="Annuler ou remplacer"
+                            invisible="state != 'issued'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Membre">
+                            <field name="membership_id"/>
+                            <field name="partner_id"/>
+                            <field name="donor_name"/>
+                            <field name="donor_address"/>
+                        </group>
+                        <group string="Montants">
+                            <field name="gift_amount"/>
+                            <field name="advantage_amount"/>
+                            <field name="advantage_description"/>
+                            <field name="advantage_disregarded"/>
+                            <field name="eligible_amount"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Délivrance">
+                            <field name="date_received"/>
+                            <field name="date_issued"/>
+                            <field name="place"/>
+                            <field name="delivery_count"/>
+                            <field name="replaces_id" invisible="not replaces_id"/>
+                            <field name="replaced_by_ids" widget="many2many_tags" invisible="not replaced_by_ids"/>
+                        </group>
+                        <group string="Organisme">
+                            <field name="org_name"/>
+                            <field name="org_address"/>
+                            <field name="registration_number"/>
+                            <field name="signer_name"/>
+                            <field name="signer_title"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Annulation" invisible="state != 'cancelled'">
+                            <field name="cancel_date"/>
+                            <field name="cancel_reason"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_membership_receipt_search" model="ir.ui.view">
+        <field name="name">bf.membership.receipt.search</field>
+        <field name="model">bf.membership.receipt</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <filter name="issued" string="Délivrés" domain="[('state', '=', 'issued')]"/>
+                <filter name="cancelled" string="Annulés" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="date_issued" string="Date de délivrance" date="date_issued"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_year" string="Année" context="{'group_by': 'date_issued:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_membership_receipt" model="ir.actions.act_window">
+        <field name="name">Reçus fiscaux</field>
+        <field name="res_model">bf.membership.receipt</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun reçu fiscal</p>
+            <p>Un reçu se délivre depuis une adhésion payée d'une catégorie qui donne un reçu fiscal.</p>
+        </field>
+    </record>
+</odoo>

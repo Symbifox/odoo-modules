@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_type_form_portal" model="ir.ui.view">
+        <field name="name">bf.membership.type.form.portal</field>
+        <field name="model">bf.membership.type</field>
+        <field name="inherit_id" ref="bf_membership.view_membership_type_form"/>
+        <field name="arch" type="xml">
+            <field name="admission" position="after">
+                <field name="public_signup"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_membership_type_list_portal" model="ir.ui.view">
+        <field name="name">bf.membership.type.list.portal</field>
+        <field name="model">bf.membership.type</field>
+        <field name="inherit_id" ref="bf_membership.view_membership_type_list"/>
+        <field name="arch" type="xml">
+            <field name="admission" position="after">
+                <field name="public_signup" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>

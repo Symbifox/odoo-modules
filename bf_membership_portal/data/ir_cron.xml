@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+          Le ménage quotidien des demandes publiques : l'adresse IP, qui ne sert
+          qu'au plafond horaire, s'efface ; une facture de demande publique encore
+          impayée après quatorze jours est annulée, et la demande refusée. N'envoie
+          rien.
+        -->
+        <record id="ir_cron_forget_public_ip" model="ir.cron">
+            <field name="name">Membres : ménage quotidien des demandes publiques</field>
+            <field name="model_id" ref="bf_membership.model_bf_membership"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_public_requests_daily()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

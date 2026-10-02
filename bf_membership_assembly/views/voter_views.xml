@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      La liste des votants, telle qu'on la tient à la porte : la présence et la
+      procuration se saisissent ici. Pas de création ni de suppression à la
+      main : la liste se bâtit depuis le registre, à la date de référence.
+    -->
+    <record id="view_assembly_voter_list" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.voter.list</field>
+        <field name="model">bf.membership.assembly.voter</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="false" delete="false"
+                  decoration-muted="attendance == 'absent'"
+                  decoration-danger="missing_representative">
+                <field name="assembly_state" column_invisible="1"/>
+                <field name="allowed_representative_ids" column_invisible="1"/>
+                <field name="is_organization" column_invisible="1"/>
+                <field name="member_number" optional="show"/>
+                <field name="member_id" readonly="1"/>
+                <field name="representative_id" options="{'no_create': True}"
+                       domain="[('id', 'in', allowed_representative_ids)]"
+                       readonly="not is_organization or assembly_state not in ('draft', 'convened')"/>
+                <field name="missing_representative" optional="show"/>
+                <field name="in_grace" optional="hide"/>
+                <field name="notice_channel" optional="show"/>
+                <field name="notice_sent_at" optional="show"/>
+                <field name="attendance" readonly="assembly_state in ('closed', 'cancelled')"/>
+                <field name="proxy_holder_id" options="{'no_create': True, 'no_open': True}"
+                       domain="[('assembly_id', '=', assembly_id), ('attendance', 'in', ('onsite', 'remote')), ('id', '!=', id)]"
+                       readonly="attendance != 'proxy' or assembly_state in ('closed', 'cancelled')"/>
+                <field name="proxy_received_count" optional="show"/>
+                <field name="has_voice"/>
+                <field name="note" optional="hide" readonly="assembly_state in ('closed', 'cancelled')"/>
+                <field name="assembly_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Les avis qui partent par la poste : le nom et l'adresse, à exporter. -->
+    <record id="view_assembly_voter_postal_list" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.voter.postal.list</field>
+        <field name="model">bf.membership.assembly.voter</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <list create="false" delete="false" edit="false">
+                <field name="member_number"/>
+                <field name="member_id"/>
+                <field name="street"/>
+                <field name="street2" optional="hide"/>
+                <field name="zip"/>
+                <field name="city"/>
+                <field name="notice_channel"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_assembly_voter_search" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.voter.search</field>
+        <field name="model">bf.membership.assembly.voter</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="member_id"/>
+                <field name="representative_id"/>
+                <field name="member_number"/>
+                <filter name="present" string="Présences" domain="[('attendance', 'in', ('onsite', 'remote'))]"/>
+                <filter name="represented" string="Procurations" domain="[('attendance', '=', 'proxy')]"/>
+                <filter name="absent" string="Absences" domain="[('attendance', '=', 'absent')]"/>
+                <separator/>
+                <filter name="missing" string="Sans délégué votant" domain="[('missing_representative', '=', True)]"/>
+                <filter name="post" string="Avis par la poste" domain="[('notice_channel', '=', 'post')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_attendance" string="Présence" context="{'group_by': 'attendance'}"/>
+                    <filter name="group_channel" string="Avis par" context="{'group_by': 'notice_channel'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

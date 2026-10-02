@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_membership" name="Membres : entrée du portail"
+              inherit_id="portal.portal_my_home" customize_show="True" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/bf_membership_portal/static/src/img/membership.svg'"/>
+                <t t-set="title">Mon adhésion</t>
+                <t t-set="url" t-value="'/my/membership'"/>
+                <t t-set="text">Statut, carte de membre et renouvellement</t>
+                <t t-set="placeholder_count" t-value="'membership_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <template id="portal_breadcrumbs_membership" name="Membres : fil d'Ariane"
+              inherit_id="portal.portal_breadcrumbs" priority="40">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'membership'" class="breadcrumb-item active">Mon adhésion</li>
+        </xpath>
+    </template>
+
+    <template id="portal_membership_table" name="Membres : historique d'adhésions">
+        <t t-call="portal.portal_table">
+            <thead>
+                <tr>
+                    <th>Période</th>
+                    <th>Catégorie</th>
+                    <th class="text-end">Cotisation</th>
+                    <th>Paiement</th>
+                    <th>Adhésion</th>
+                    <th>Facture</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr t-foreach="rows" t-as="row">
+                    <t t-set="m" t-value="row['membership'].sudo()"/>
+                    <td><span t-field="m.period_label"/></td>
+                    <td><t t-out="row['type_name']"/></td>
+                    <td class="text-end">
+                        <span t-field="m.amount" t-options="{'widget': 'monetary', 'display_currency': m.currency_id}"/>
+                    </td>
+                    <td><span t-field="m.payment_state"/></td>
+                    <td><span t-field="m.state"/></td>
+                    <td>
+                        <a t-if="row['invoice_url']" t-att-href="row['invoice_url']" t-out="row['invoice_name']"/>
+                        <t t-elif="row['invoice_name']" t-out="row['invoice_name']"/>
+                        <a t-if="row['pay_url']" t-att-href="row['pay_url']" class="btn btn-sm btn-primary ms-2">Payer</a>
+                    </td>
+                </tr>
+            </tbody>
+        </t>
+    </template>
+
+    <template id="portal_my_membership" name="Mon adhésion">
+        <t t-call="portal.portal_layout">
+            <div id="bf_membership_portal" class="mt-3">
+                <div t-if="message" class="alert alert-success" role="status" t-out="message"/>
+
+                <h3>Mon adhésion</h3>
+                <t t-if="rows">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-4">Statut</dt>
+                                <dd class="col-sm-8"><span t-field="member.member_status"/></dd>
+                                <dt class="col-sm-4">Numéro de membre</dt>
+                                <dd class="col-sm-8"><span t-field="member.member_number"/></dd>
+                                <t t-if="member.current_membership_id">
+                                    <dt class="col-sm-4">Période</dt>
+                                    <dd class="col-sm-8"><span t-field="member.current_membership_id.period_label"/></dd>
+                                    <dt class="col-sm-4">En règle jusqu'au</dt>
+                                    <dd class="col-sm-8">
+                                        <span t-if="member.member_until" t-field="member.member_until"/>
+                                        <t t-else="">Adhésion à vie</t>
+                                    </dd>
+                                </t>
+                            </dl>
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                <a t-if="card_available" href="/my/membership/card" class="btn btn-secondary">
+                                    Ma carte de membre (PDF)
+                                </a>
+                                <form t-if="can_renew" action="/my/membership/renew" method="post" class="d-inline">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="btn btn-primary">Renouveler</button>
+                                </form>
+                                <a t-if="renewal_pay_url" t-att-href="renewal_pay_url" class="btn btn-primary">
+                                    Payer le renouvellement
+                                </a>
+                            </div>
+                            <p t-if="renewal and renewal.payment_state in ('paid', 'exempt')" class="text-muted mt-2 mb-0">
+                                Votre renouvellement est en règle jusqu'au <span t-field="renewal.date_end"/>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <h4>Historique</h4>
+                    <t t-call="bf_membership_portal.portal_membership_table"/>
+
+                    <h4 class="mt-4">Mes choix</h4>
+                    <form action="/my/membership/consent" method="post" class="mb-4">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="directory_consent"
+                                   name="directory_consent" value="1" t-att-checked="member.directory_consent or None"/>
+                            <label class="form-check-label" for="directory_consent">
+                                Paraître au répertoire des membres (nom et ville seulement)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="notice_email_consent"
+                                   name="notice_email_consent" value="1" t-att-checked="member.notice_email_consent or None"/>
+                            <label class="form-check-label" for="notice_email_consent">
+                                Recevoir par courriel les avis de convocation et les documents d'assemblée
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-sm mt-2">Enregistrer mes choix</button>
+                    </form>
+                </t>
+                <p t-else="" class="text-muted">Aucune adhésion à votre nom.</p>
+
+                <t t-foreach="organizations" t-as="org">
+                    <h3 class="mt-4">Adhésion de <t t-out="org['partner'].name"/></h3>
+                    <p class="text-muted">
+                        Vous représentez cette organisation. Son adhésion se lit ici ; elle se change
+                        auprès de l'organisme.
+                    </p>
+                    <dl class="row">
+                        <dt class="col-sm-4">Statut</dt>
+                        <dd class="col-sm-8"><span t-field="org['partner'].member_status"/></dd>
+                        <dt class="col-sm-4">Numéro de membre</dt>
+                        <dd class="col-sm-8"><span t-field="org['partner'].member_number"/></dd>
+                        <dt class="col-sm-4">En règle jusqu'au</dt>
+                        <dd class="col-sm-8"><span t-field="org['partner'].member_until"/></dd>
+                    </dl>
+                    <t t-call="bf_membership_portal.portal_membership_table">
+                        <t t-set="rows" t-value="org['rows']"/>
+                    </t>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

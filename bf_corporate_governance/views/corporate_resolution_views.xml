@@ -68,7 +68,8 @@
                             </group>
                         </page>
                         <page string="Signataires" name="signatories">
-                            <field name="signatory_ids" nolabel="1">
+                            <field name="signatory_ids" nolabel="1"
+                                   context="{'resolution_type': resolution_type}">
                                 <list editable="bottom">
                                     <field name="sequence" widget="handle"/>
                                     <field name="partner_id"/>
@@ -83,9 +84,11 @@
                             </field>
                             <div class="text-muted mt-2">
                                 Laissé vide, le PDF d'une résolution du conseil reprend les
-                                administrateurs en poste à la date de la séance. Une résolution
-                                des actionnaires, elle, n'a rien à déduire : sans signataire
-                                saisi, elle s'imprime avec une ligne à remplir.
+                                administrateurs en poste à la date de la séance, et celui d'une
+                                résolution des membres, deux lignes à remplir pour la présidence
+                                et le secrétariat d'assemblée. Une résolution des actionnaires,
+                                elle, n'a rien à déduire : sans signataire saisi, elle s'imprime
+                                avec une ligne à remplir.
                             </div>
                         </page>
                         <page string="Documents" name="documents">
@@ -153,6 +156,8 @@
                         domain="[('resolution_type', 'in', ['board', 'written_board'])]"/>
                 <filter string="Actionnaires" name="shareholder"
                         domain="[('resolution_type', 'in', ['shareholder', 'written_shareholder'])]"/>
+                <filter string="Membres" name="members"
+                        domain="[('resolution_type', '=', 'members')]"/>
                 <separator/>
                 <group expand="0" string="Regrouper par">
                     <filter string="Type" name="group_type"

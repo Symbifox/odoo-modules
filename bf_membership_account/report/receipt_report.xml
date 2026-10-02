@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Le reçu officiel d'une cotisation. Chaque mention répond à l'article 3501
+      du Règlement de l'impôt sur le revenu ; tout ce qui s'imprime vient de la
+      copie figée du reçu, jamais du contact ni de la société d'aujourd'hui.
+      ⚠️ Le gabarit doit être validé par le comptable de l'organisme avant le
+      premier reçu (README).
+    -->
+    <record id="action_report_membership_receipt" model="ir.actions.report">
+        <field name="name">Reçu fiscal</field>
+        <field name="model">bf.membership.receipt</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_membership_account.report_membership_receipt</field>
+        <field name="report_file">bf_membership_account.report_membership_receipt</field>
+        <field name="print_report_name">'Reçu fiscal %s' % object.name</field>
+        <field name="binding_model_id" ref="model_bf_membership_receipt"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('bf_membership.group_membership_user'))]"/>
+    </record>
+
+    <template id="report_membership_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
+                    <div class="page" style="font-size: 11pt;">
+                        <div class="row mb-3">
+                            <div class="col-8">
+                                <h3 class="mb-1">Reçu officiel aux fins de l'impôt sur le revenu</h3>
+                                <div>Cotisation de membre</div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)"
+                                     style="max-height: 60px;" alt="Logo"/>
+                            </div>
+                        </div>
+
+                        <div t-if="preview" class="border border-warning p-2 mb-3">
+                            <strong>APERÇU</strong> : ce document n'est pas un reçu délivré. Seul le PDF
+                            produit par l'organisme fait foi.
+                        </div>
+                        <div t-if="o.state == 'cancelled'" class="border border-danger text-danger p-2 mb-3">
+                            <strong>ANNULÉ</strong> le <span t-field="o.cancel_date"/> :
+                            <span t-field="o.cancel_reason"/>.
+                            Ce reçu n'est plus valable ; l'organisme en garde la copie.
+                        </div>
+                        <div t-elif="duplicates.get(o.id)" class="border border-dark p-2 mb-3">
+                            <strong>DUPLICATA</strong> : copie du reçu n° <span t-field="o.name"/>
+                            délivré le <span t-field="o.date_issued"/>. Ce n'est pas un second reçu.
+                        </div>
+                        <div t-if="o.replaces_id" class="border p-2 mb-3">
+                            Ce reçu annule et remplace le reçu n° <span t-field="o.replaces_id.name"/>
+                            délivré le <span t-field="o.replaces_id.date_issued"/>.
+                        </div>
+
+                        <table class="table table-sm table-borderless">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 45%;">Organisme</th>
+                                    <td>
+                                        <div t-field="o.org_name"/>
+                                        <div t-field="o.org_address"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Numéro d'enregistrement de l'organisme de bienfaisance</th>
+                                    <td><span t-field="o.registration_number"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Numéro de série du reçu</th>
+                                    <td><span t-field="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Lieu de délivrance</th>
+                                    <td><span t-field="o.place"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Date de réception de la cotisation</th>
+                                    <td><span t-field="o.date_received"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Date de délivrance du reçu</th>
+                                    <td><span t-field="o.date_issued"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Membre</th>
+                                    <td>
+                                        <div t-field="o.donor_name"/>
+                                        <div t-field="o.donor_address"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Montant de la cotisation</th>
+                                    <td><span t-field="o.gift_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/></td>
+                                </tr>
+                                <tr>
+                                    <th>Valeur de l'avantage reçu</th>
+                                    <td>
+                                        <span t-field="o.advantage_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        <t t-if="o.advantage_description">
+                                            (<span t-field="o.advantage_description"/>)
+                                        </t>
+                                        <div t-if="o.advantage_disregarded" class="small">
+                                            Avantage de valeur négligeable, non déduit selon la politique de l'ARC.
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Montant admissible du don aux fins de l'impôt</th>
+                                    <td>
+                                        <strong t-field="o.eligible_amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <div style="height: 60px;">
+                                    <img t-if="o.signature" t-att-src="image_data_uri(o.signature)"
+                                         style="max-height: 60px;" alt="Signature"/>
+                                </div>
+                                <div class="border-top pt-1">
+                                    <span t-field="o.signer_name"/>
+                                    <t t-if="o.signer_title">, <span t-field="o.signer_title"/></t>
+                                </div>
+                                <div class="small">Personne autorisée</div>
+                            </div>
+                        </div>
+
+                        <p class="mt-4 small">
+                            Agence du revenu du Canada : canada.ca/organismes-bienfaisance-dons
+                        </p>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -7,7 +7,7 @@ les périodes de mandat, et le bloc de signature du PDF.
 import html
 from datetime import timedelta
 
-from odoo import fields
+from odoo import Command, fields
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
 
@@ -426,3 +426,69 @@ class TestCorporateSignatories(TransactionCase):
             'Administrateur Entrant', rendu,
             "Le registre des administrateurs n'a rien à faire ici",
         )
+
+    def test_a_members_resolution_says_so(self):
+        """Une résolution adoptée en assemblée des membres (OBNL, association) ne
+        se présente pas comme une résolution d'actionnaires."""
+        resolution = self._resolution(resolution_type='members')
+        signatory = self.env['res.partner'].create({'name': 'Présidente d\'assemblée (essai)'})
+        resolution.signatory_ids = [Command.create({
+            'partner_id': signatory.id, 'capacity': 'assembly_chair'})]
+
+        self.assertEqual(resolution._get_resolution_type_label(), "Résolution de l'assemblée des membres")
+        rendu = self._rendu(resolution)
+        corps = rendu.split('</style>')[-1]
+        self.assertIn("Résolution de l'assemblée des membres", corps)
+        self.assertNotIn('actionnaires', corps)
+        self.assertIn('<div class="res-sig-role">Présidence d\'assemblée</div>', corps)
+        self.assertNotIn('Signatures des actionnaires', corps)
+        # Le filtre « Membres » de la recherche trouve la résolution, et elle seule
+        # parmi ces deux-là.
+        actionnaires = self._resolution(resolution_type='shareholder', name='Résolution des actionnaires')
+        trouvees = self.env['corporate.resolution'].search(
+            [('resolution_type', '=', 'members'), ('id', 'in', (resolution | actionnaires).ids)])
+        self.assertEqual(trouvees, resolution)
+
+    def test_a_members_resolution_without_signatories_leaves_the_officers_lines(self):
+        """Sans signataire saisi, une résolution des membres s'imprime avec deux
+        lignes à remplir, sous la présidence et le secrétariat d'assemblée : ni
+        la personne qui a proposé ni celle qui a appuyé ne signent pour
+        l'assemblée."""
+        proposeur = self.env['res.partner'].create({'name': 'Proposeuse Membre'})
+        appuyeur = self.env['res.partner'].create({'name': 'Appuyeur Membre'})
+        resolution = self._resolution(
+            resolution_type='members', mover_id=proposeur.id, seconder_id=appuyeur.id)
+        corps = self._rendu(resolution).split('</style>')[-1]
+        self.assertIn("Signatures de l'assemblée", corps)
+        self.assertIn('<div class="res-sig-role">Présidence d\'assemblée</div>', corps)
+        self.assertIn('<div class="res-sig-role">Secrétariat d\'assemblée</div>', corps)
+        self.assertNotIn('Proposeuse Membre', corps.split("Signatures de l'assemblée")[-1])
+        self.assertNotIn('Appuyeur Membre', corps.split("Signatures de l'assemblée")[-1])
+
+    def test_a_members_signatory_capacity_is_chosen(self):
+        """Sur une résolution des membres, la qualité d'un signataire n'est pas
+        « Actionnaire » d'office : elle se choisit. Ailleurs, le défaut reste."""
+        Ligne = self.env['corporate.resolution.signatory']
+        self.assertFalse(Ligne.with_context(resolution_type='members').default_get(['capacity']).get('capacity'))
+        self.assertEqual(Ligne.default_get(['capacity'])['capacity'], 'shareholder')
+        membres = self._resolution(resolution_type='members')
+        signataire = self.env['res.partner'].create({'name': 'Secrétaire (essai)'})
+        with self.assertRaises(ValidationError):
+            Ligne.create({'resolution_id': membres.id, 'partner_id': signataire.id})
+        # La résolution donnée par une valeur par défaut du contexte, que l'ORM
+        # ajoute après les contrôles faits sur les valeurs reçues.
+        with self.assertRaises(ValidationError):
+            Ligne.with_context(default_resolution_id=membres.id).create({'partner_id': signataire.id})
+        ligne = Ligne.create({'resolution_id': membres.id, 'partner_id': signataire.id,
+                              'capacity': 'assembly_secretary'})
+        self.assertEqual(ligne.capacity_label, "Secrétariat d'assemblée")
+        conseil = self._resolution(resolution_type='shareholder', name='Actionnaires (essai)')
+        self.assertEqual(Ligne.create({'resolution_id': conseil.id, 'partner_id': signataire.id}).capacity,
+                         'shareholder')
+        # Ni en déplaçant une ligne « Actionnaire », ni en changeant le type de la
+        # résolution qui la porte.
+        actionnaire = Ligne.create({'resolution_id': conseil.id, 'partner_id': signataire.id})
+        with self.assertRaises(ValidationError):
+            actionnaire.write({'resolution_id': membres.id})
+        with self.assertRaises(ValidationError):
+            conseil.write({'resolution_type': 'members'})

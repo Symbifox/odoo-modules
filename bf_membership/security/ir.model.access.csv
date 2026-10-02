@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_membership_type_user,bf.membership.type agent,model_bf_membership_type,group_membership_user,1,0,0,0
+access_membership_type_manager,bf.membership.type responsable,model_bf_membership_type,group_membership_manager,1,1,1,1
+access_membership_user,bf.membership agent,model_bf_membership,group_membership_user,1,1,1,0
+access_membership_manager,bf.membership responsable,model_bf_membership,group_membership_manager,1,1,1,1
+access_membership_delegate_user,bf.membership.delegate agent,model_bf_membership_delegate,group_membership_user,1,1,1,1
+access_membership_withdraw_user,bf.membership.withdraw agent,model_bf_membership_withdraw,group_membership_user,1,1,1,1
+access_membership_import_manager,bf.membership.import responsable,model_bf_membership_import,group_membership_manager,1,1,1,1

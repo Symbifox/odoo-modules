@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_assembly_proposal_form_governance" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.proposal.form.governance</field>
+        <field name="model">bf.membership.assembly.proposal</field>
+        <field name="inherit_id" ref="bf_membership_assembly.view_assembly_proposal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='result']" position="before">
+                <button name="action_create_corporate_resolution" type="object"
+                        string="Inscrire au registre corporatif" class="btn-primary"
+                        groups="bf_corporate_governance.group_corporate_manager"
+                        invisible="result != 'adopted' or assembly_state != 'closed' or corporate_resolution_id"/>
+            </xpath>
+            <xpath expr="//field[@name='seconder_id']" position="after">
+                <field name="corporate_resolution_id" invisible="not corporate_resolution_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_assembly_proposal_list_governance" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.proposal.list.governance</field>
+        <field name="model">bf.membership.assembly.proposal</field>
+        <field name="inherit_id" ref="bf_membership_assembly.view_assembly_proposal_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='result']" position="after">
+                <field name="corporate_resolution_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

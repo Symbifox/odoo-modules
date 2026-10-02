@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_membership" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.bf.membership</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="70"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Membres" string="Membres" name="bf_membership" groups="bf_membership.group_membership_manager">
+                    <block title="Renouvellement" name="membership_renewal">
+                        <setting string="Préparer les renouvellements"
+                                 help="Crée l'adhésion de la période suivante, à payer, avant l'échéance.">
+                            <field name="membership_auto_renewal"/>
+                        </setting>
+                        <setting string="Envoyer les rappels"
+                                 help="Un courriel au membre avant l'échéance, à l'échéance et à la fin du délai de grâce. Éteint d'office.">
+                            <field name="membership_reminders"/>
+                            <div class="mt-2" invisible="not membership_reminders">
+                                <label for="membership_reminder_first_days" string="Premier rappel, jours avant"/>
+                                <field name="membership_reminder_first_days" class="oe_inline ms-2"/>
+                                <br/>
+                                <label for="membership_reminder_second_days" string="Second rappel, jours avant"/>
+                                <field name="membership_reminder_second_days" class="oe_inline ms-2"/>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_membership_settings" model="ir.actions.act_window">
+        <field name="name">Réglages</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_membership', 'bin_size': False}</field>
+    </record>
+</odoo>

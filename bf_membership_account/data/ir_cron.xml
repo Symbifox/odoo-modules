@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+          Produit le PDF officiel des factures de cotisation qui ne l'ont pas
+          (le portail montrerait « PROFORMA »). N'envoie rien. Déclenchée à
+          chaque facture ; la cadence horaire n'est qu'un filet.
+        -->
+        <record id="ir_cron_membership_invoice_pdf" model="ir.cron">
+            <field name="name">Membres : PDF officiel des factures de cotisation</field>
+            <field name="model_id" ref="bf_membership.model_bf_membership"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_invoice_pdf()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

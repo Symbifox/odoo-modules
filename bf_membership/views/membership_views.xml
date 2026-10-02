@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_list" model="ir.ui.view">
+        <field name="name">bf.membership.list</field>
+        <field name="model">bf.membership</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state in ('expired', 'withdrawn', 'refused')"
+                  decoration-warning="state == 'waiting'" decoration-info="state == 'draft'">
+                <field name="member_number" optional="show"/>
+                <field name="partner_id"/>
+                <field name="type_id"/>
+                <field name="period_label" string="Période"/>
+                <field name="date_start" optional="hide"/>
+                <field name="date_end" optional="show"/>
+                <field name="amount" sum="Total"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="payment_state" widget="badge"
+                       decoration-success="payment_state == 'paid'" decoration-warning="payment_state == 'to_pay'"/>
+                <field name="payment_source" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'" decoration-info="state == 'draft'"
+                       decoration-warning="state == 'waiting'"/>
+                <field name="source" optional="hide" groups="bf_membership.group_membership_user"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_membership_form" model="ir.ui.view">
+        <field name="name">bf.membership.form</field>
+        <field name="model">bf.membership</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_accept" type="object" string="Accepter" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_refuse" type="object" string="Refuser"
+                            invisible="state not in ('draft', 'waiting') or (state == 'waiting' and payment_state != 'to_pay')"/>
+                    <button name="action_mark_paid" type="object" string="Noter le paiement" class="btn-primary"
+                            invisible="payment_state != 'to_pay' or state in ('withdrawn', 'refused', 'draft')"/>
+                    <button name="action_exempt" type="object" string="Exempter"
+                            invisible="payment_state != 'to_pay' or state in ('withdrawn', 'refused')"/>
+                    <button name="action_renew" type="object" string="Renouveler" invisible="state not in ('active', 'expired') or not date_end"/>
+                    <button name="action_withdraw" type="object" string="Retirer" invisible="state not in ('draft', 'waiting', 'active')"/>
+                    <button name="action_reset_draft" type="object" string="Remettre à l'étude" invisible="state != 'refused'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting,active,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="partner_id" placeholder="Membre" options="{'no_quick_create': True}"/></h1>
+                        <div class="text-muted">
+                            <span invisible="not member_number" groups="bf_membership.group_membership_user">N° <field name="member_number" class="oe_inline"/></span>
+                        </div>
+                    </div>
+                    <group>
+                        <group string="Adhésion">
+                            <field name="type_id" options="{'no_create': True}"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="period_label"/>
+                            <field name="voting"/>
+                            <field name="renewal_of_id" invisible="not renewal_of_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Paiement">
+                            <field name="amount"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="payment_state" widget="radio"/>
+                            <field name="payment_source"/>
+                            <field name="payment_date"/>
+                            <field name="payment_reference"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Décision et retrait" name="decision" groups="bf_membership.group_membership_user">
+                            <group>
+                                <group>
+                                    <field name="decided_by_id"/>
+                                    <field name="decision_date"/>
+                                    <field name="decision_note"/>
+                                </group>
+                                <group invisible="state != 'withdrawn'">
+                                    <field name="withdrawal_date"/>
+                                    <field name="withdrawal_reason"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Renouvellements et rappels" name="renewal" groups="bf_membership.group_membership_user">
+                            <group>
+                                <field name="reminder_stage"/>
+                            </group>
+                            <field name="renewal_ids" readonly="1">
+                                <list>
+                                    <field name="period_label"/>
+                                    <field name="payment_state"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Import" name="import" invisible="not source" groups="bf_membership.group_membership_user">
+                            <group>
+                                <field name="source"/>
+                                <field name="external_ref"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes" groups="bf_membership.group_membership_user">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_membership_search" model="ir.ui.view">
+        <field name="name">bf.membership.search</field>
+        <field name="model">bf.membership</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_id"/>
+                <field name="member_number"/>
+                <field name="type_id"/>
+                <field name="source" groups="bf_membership.group_membership_user"/>
+                <filter name="current" string="En règle aujourd'hui" domain="[('is_current', '=', True)]"/>
+                <filter name="draft" string="Demandes" domain="[('state', '=', 'draft')]"/>
+                <filter name="to_pay" string="À payer" domain="[('payment_state', '=', 'to_pay'), ('state', 'in', ('waiting', 'active'))]"/>
+                <separator/>
+                <filter name="live" string="Vivantes" domain="[('state', 'in', ('draft', 'waiting', 'active'))]"/>
+                <filter name="ended" string="Échues ou retirées" domain="[('state', 'in', ('expired', 'withdrawn'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_type" string="Catégorie" context="{'group_by': 'type_id'}"/>
+                    <filter name="group_state" string="Adhésion" context="{'group_by': 'state'}"/>
+                    <filter name="group_payment" string="Paiement" context="{'group_by': 'payment_state'}"/>
+                    <filter name="group_source" string="Payé par" context="{'group_by': 'payment_source'}"/>
+                    <filter name="group_end" string="Fin" context="{'group_by': 'date_end:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_membership_pivot" model="ir.ui.view">
+        <field name="name">bf.membership.pivot</field>
+        <field name="model">bf.membership</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="type_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_membership" model="ir.actions.act_window">
+        <field name="name">Adhésions</field>
+        <field name="res_model">bf.membership</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="context">{'search_default_live': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune adhésion</p>
+            <p>Créez une adhésion, ou importez une liste existante (Configuration, Importer une liste).</p>
+        </field>
+    </record>
+
+    <record id="action_membership_requests" model="ir.actions.act_window">
+        <field name="name">Demandes à étudier</field>
+        <field name="res_model">bf.membership</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'draft')]</field>
+    </record>
+
+    <!-- Le délégué se gère depuis l'organisation (onglet Membre du contact). -->
+    <record id="view_membership_delegate_list" model="ir.ui.view">
+        <field name="name">bf.membership.delegate.list</field>
+        <field name="model">bf.membership.delegate</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="partner_id" options="{'no_quick_create': True}"/>
+                <field name="role"/>
+                <field name="voting"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="note" optional="show"/>
+            </list>
+        </field>
+    </record>
+</odoo>

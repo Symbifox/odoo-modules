@@ -308,6 +308,9 @@
                                     <t t-elif="doc.resolution_type in ('board', 'written_board')">
                                         Signatures des administrateurs
                                     </t>
+                                    <t t-elif="doc.resolution_type == 'members'">
+                                        Signatures de l'assemblée
+                                    </t>
                                     <t t-else="">
                                         Signatures des actionnaires
                                     </t>

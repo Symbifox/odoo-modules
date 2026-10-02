@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_form_account" model="ir.ui.view">
+        <field name="name">bf.membership.form.account</field>
+        <field name="model">bf.membership</field>
+        <field name="inherit_id" ref="bf_membership.view_membership_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_accept']" position="before">
+                <button name="action_create_invoice" type="object" string="Facturer" class="btn-primary"
+                        invisible="payment_state != 'to_pay' or state in ('withdrawn', 'refused') or invoice_drives or not amount"/>
+                <button name="action_issue_receipt" type="object" string="Reçu fiscal"
+                        invisible="payment_state != 'paid' or not receipt_eligible"/>
+                <button name="action_refresh_donor" type="object" string="Mettre à jour le nom et l'adresse au reçu"
+                        groups="bf_membership.group_membership_manager"
+                        invisible="payment_state != 'paid' or not receipt_eligible"
+                        confirm="Le reçu portera le nom et l'adresse du contact tels qu'ils sont aujourd'hui. Continuer ?"/>
+            </xpath>
+            <!-- Tant que la facture porte la cotisation, le paiement s'enregistre sur elle. -->
+            <xpath expr="//header/button[@name='action_mark_paid']" position="attributes">
+                <attribute name="invisible">payment_state != 'to_pay' or state in ('withdrawn', 'refused', 'draft') or invoice_drives</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_exempt']" position="attributes">
+                <attribute name="invisible">payment_state != 'to_pay' or state in ('withdrawn', 'refused') or invoice_drives</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                            groups="account.group_account_invoice" invisible="not invoice_id">
+                        <div class="o_stat_info">
+                            <span class="o_stat_text">Facture</span>
+                        </div>
+                    </button>
+                    <button name="action_view_receipts" type="object" class="oe_stat_button" icon="fa-certificate"
+                            groups="bf_membership.group_membership_user" invisible="not receipt_count">
+                        <field name="receipt_count" widget="statinfo" string="Reçus fiscaux"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='payment_state']" position="attributes">
+                <attribute name="readonly">invoice_drives</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_source']" position="attributes">
+                <attribute name="readonly">invoice_drives</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_date']" position="attributes">
+                <attribute name="readonly">invoice_drives</attribute>
+            </xpath>
+            <xpath expr="//field[@name='payment_reference']" position="after">
+                <field name="invoice_drives" invisible="1"/>
+                <field name="receipt_eligible" invisible="1"/>
+                <field name="invoice_id" invisible="not invoice_id" options="{'no_open': True}"/>
+                <field name="invoice_payment_state" invisible="not invoice_id"/>
+                <field name="receipt_eligible_amount" invisible="not receipt_eligible"/>
+                <field name="donor_name" invisible="not receipt_eligible or payment_state != 'paid'"
+                       groups="bf_membership.group_membership_user"/>
+                <field name="donor_address" invisible="not receipt_eligible or payment_state != 'paid'"
+                       groups="bf_membership.group_membership_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_membership_list_account" model="ir.ui.view">
+        <field name="name">bf.membership.list.account</field>
+        <field name="model">bf.membership</field>
+        <field name="inherit_id" ref="bf_membership.view_membership_list"/>
+        <field name="arch" type="xml">
+            <field name="payment_source" position="after">
+                <field name="invoice_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+</odoo>

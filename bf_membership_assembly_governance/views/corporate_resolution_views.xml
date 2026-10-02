@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="corporate_resolution_view_form_membership" model="ir.ui.view">
+        <field name="name">corporate.resolution.form.bf.membership.assembly</field>
+        <field name="model">corporate.resolution</field>
+        <field name="inherit_id" ref="bf_corporate_governance.corporate_resolution_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='meeting_date']" position="after">
+                <field name="bf_assembly_id" invisible="not bf_assembly_id"/>
+                <field name="bf_assembly_proposal_id" invisible="not bf_assembly_proposal_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

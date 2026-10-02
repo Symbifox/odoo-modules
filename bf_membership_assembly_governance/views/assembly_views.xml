@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_assembly_form_governance" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.form.governance</field>
+        <field name="model">bf.membership.assembly</field>
+        <field name="inherit_id" ref="bf_membership_assembly.view_assembly_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='state']" position="before">
+                <button name="action_create_corporate_resolutions" type="object"
+                        string="Inscrire les résolutions adoptées"
+                        groups="bf_corporate_governance.group_corporate_manager"
+                        invisible="state != 'closed'"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_corporate_resolutions" type="object" class="oe_stat_button"
+                        icon="fa-book" invisible="not corporate_resolution_count"
+                        groups="project_knowledge_matrix.group_document_user">
+                    <field name="corporate_resolution_count" widget="statinfo" string="Résolutions"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

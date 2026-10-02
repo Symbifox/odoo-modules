@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_assembly_list" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.list</field>
+        <field name="model">bf.membership.assembly</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'" decoration-info="state == 'draft'">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="voter_count"/>
+                <field name="voice_count" optional="show"/>
+                <field name="quorum_met" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'" decoration-warning="state == 'convened'"
+                       decoration-success="state in ('open', 'closed')"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_assembly_form" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.form</field>
+        <field name="model">bf.membership.assembly</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_build_voters" type="object" string="Bâtir la liste des votants"
+                            invisible="state not in ('draft', 'convened')"/>
+                    <button name="action_convene" type="object" string="Convoquer" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_notice_email" type="object" string="Avis par courriel"
+                            class="btn-primary" invisible="state != 'convened' or not email_notice_count"/>
+                    <button name="action_open" type="object" string="Ouvrir l'assemblée" class="btn-primary"
+                            invisible="state != 'convened'"/>
+                    <button name="action_close" type="object" string="Clore l'assemblée" class="btn-primary"
+                            invisible="state != 'open'"
+                            confirm="Une fois l'assemblée close, les présences et les propositions ne changent plus. Le procès-verbal reste modifiable."/>
+                    <button name="%(action_report_assembly_minutes)d" type="action" string="Procès-verbal (PDF)"
+                            invisible="state not in ('open', 'closed')"/>
+                    <button name="action_cancel" type="object" string="Annuler l'assemblée"
+                            invisible="state not in ('draft', 'convened')"
+                            confirm="Annuler cette assemblée ? Les membres déjà convoqués ne sont pas avisés par Odoo."/>
+                    <button name="action_reset_draft" type="object" string="Remettre en brouillon"
+                            invisible="state not in ('convened', 'cancelled')"
+                            confirm="La date de l'avis sera effacée : il faudra convoquer de nouveau."/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,convened,open,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_voters" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="voter_count" widget="statinfo" string="Votants"/>
+                        </button>
+                        <button name="action_view_postal_notices" type="object" class="oe_stat_button"
+                                icon="fa-envelope-o" invisible="not postal_notice_count">
+                            <field name="postal_notice_count" widget="statinfo" string="Avis par la poste"/>
+                        </button>
+                        <button name="action_view_proposals" type="object" class="oe_stat_button" icon="fa-gavel">
+                            <field name="proposal_count" widget="statinfo" string="Propositions"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Assemblée générale annuelle 2026"/></h1>
+                    </div>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not missing_representative_count or state in ('closed', 'cancelled')">
+                        <field name="missing_representative_count" class="oe_inline"/>
+                        organisation(s) membre(s) sans délégué votant en fonction : elles ont droit à
+                        l'avis, mais personne ne peut voter pour elles tant qu'un délégué n'est pas nommé.
+                    </div>
+                    <group>
+                        <group string="Assemblée">
+                            <field name="kind"/>
+                            <field name="date"/>
+                            <field name="location"/>
+                            <field name="remote_url" widget="url"/>
+                            <field name="chair_id" readonly="state == 'closed'"/>
+                            <field name="secretary_id" readonly="state == 'closed'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Avis et votants">
+                            <field name="record_date"/>
+                            <field name="include_grace"/>
+                            <field name="notice_min_days"/>
+                            <field name="notice_max_days"/>
+                            <field name="notice_date" readonly="1"/>
+                            <field name="notice_days" invisible="not notice_date"/>
+                            <field name="email_notice_count" invisible="state == 'draft'"/>
+                            <field name="postal_notice_count" invisible="state == 'draft'"/>
+                        </group>
+                        <group string="Quorum">
+                            <field name="quorum_mode"/>
+                            <field name="quorum_count" invisible="quorum_mode != 'count'"/>
+                            <field name="quorum_percent" invisible="quorum_mode != 'percent'"/>
+                            <field name="quorum_required"/>
+                            <field name="voice_count"/>
+                            <field name="present_count"/>
+                            <field name="remote_count"/>
+                            <field name="represented_count"/>
+                            <field name="quorum_met"/>
+                        </group>
+                        <group string="Procurations">
+                            <field name="proxy_allowed"/>
+                            <field name="proxy_max_per_holder" invisible="not proxy_allowed"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Votants" name="voters">
+                            <field name="voter_ids" readonly="state in ('closed', 'cancelled')"
+                                   context="{'list_view_ref': 'bf_membership_assembly.view_assembly_voter_list'}"/>
+                        </page>
+                        <page string="Propositions" name="proposals">
+                            <field name="proposal_ids" readonly="state in ('closed', 'cancelled')"
+                                   context="{'default_assembly_id': id,
+                                             'list_view_ref': 'bf_membership_assembly.view_assembly_proposal_list',
+                                             'form_view_ref': 'bf_membership_assembly.view_assembly_proposal_form'}"/>
+                        </page>
+                        <page string="Procès-verbal" name="minutes">
+                            <field name="minutes" placeholder="Ouverture, constatation du quorum, adoption de l'ordre du jour..."/>
+                        </page>
+                        <page string="Documents" name="documents">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                            <p class="text-muted">
+                                Ordre du jour, états financiers, projets de règlement : ils accompagnent
+                                l'avis par courriel.
+                            </p>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_assembly_search" model="ir.ui.view">
+        <field name="name">bf.membership.assembly.search</field>
+        <field name="model">bf.membership.assembly</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="upcoming" string="À venir" domain="[('state', 'in', ('draft', 'convened', 'open'))]"/>
+                <filter name="closed" string="Closes" domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter name="annual" string="Annuelles" domain="[('kind', '=', 'annual')]"/>
+                <filter name="special" string="Extraordinaires" domain="[('kind', '=', 'special')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_kind" string="Nature" context="{'group_by': 'kind'}"/>
+                    <filter name="group_date" string="Année" context="{'group_by': 'date:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_assembly" model="ir.actions.act_window">
+        <field name="name">Assemblées</field>
+        <field name="res_model">bf.membership.assembly</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune assemblée</p>
+            <p>Créez l'assemblée, fixez la date de référence, bâtissez la liste des votants, puis
+                convoquez : le délai d'avis se contrôle, et le courriel ne part que lorsque vous
+                cliquez sur Envoyer.</p>
+        </field>
+    </record>
+</odoo>

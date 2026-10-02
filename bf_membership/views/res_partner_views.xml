@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_membership" model="ir.ui.view">
+        <field name="name">res.partner.form.bf.membership</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_memberships" type="object" class="oe_stat_button" icon="fa-id-card"
+                        groups="bf_membership.group_membership_user" invisible="not membership_count">
+                    <field name="membership_count" widget="statinfo" string="Adhésions"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Membre" name="membership" groups="bf_membership.group_membership_user">
+                    <group>
+                        <group string="Statut">
+                            <field name="member_number"/>
+                            <field name="member_status"/>
+                            <field name="current_membership_id"/>
+                            <field name="member_since"/>
+                            <field name="member_until"/>
+                        </group>
+                        <group string="Consentements">
+                            <field name="directory_consent"/>
+                            <field name="notice_email_consent"/>
+                        </group>
+                    </group>
+                    <field name="membership_ids" readonly="1" context="{'default_partner_id': id}">
+                        <list>
+                            <field name="type_id"/>
+                            <field name="period_label"/>
+                            <field name="payment_state"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                    <group string="Délégués" invisible="not is_company">
+                        <field name="delegate_ids" nolabel="1" colspan="2"
+                               context="{'list_view_ref': 'bf_membership.view_membership_delegate_list'}"/>
+                    </group>
+                    <group string="Représente" invisible="is_company or not delegation_ids">
+                        <field name="delegation_ids" nolabel="1" colspan="2" readonly="1">
+                            <list>
+                                <field name="organization_id"/>
+                                <field name="role"/>
+                                <field name="voting"/>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_search_membership" model="ir.ui.view">
+        <field name="name">res.partner.search.bf.membership</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='inactive']" position="before">
+                <field name="member_number" groups="bf_membership.group_membership_user"/>
+                <filter groups="bf_membership.group_membership_user" name="members" string="Membres en règle" domain="[('member_status', '=', 'member')]"/>
+                <filter groups="bf_membership.group_membership_user" name="grace" string="En grâce" domain="[('member_status', '=', 'grace')]"/>
+                <filter groups="bf_membership.group_membership_user" name="former" string="Anciens membres" domain="[('member_status', '=', 'former')]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+      Le registre : les membres actuels ET anciens, avec adresse et profession
+      (Loi sur les compagnies, art. 104). Le nom, l'adresse et la profession
+      sont ceux du contact.
+    -->
+    <record id="view_partner_register_list" model="ir.ui.view">
+        <field name="name">res.partner.register.list</field>
+        <field name="model">res.partner</field>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <list default_order="name">
+                <field name="member_number"/>
+                <field name="name"/>
+                <field name="function" string="Profession" optional="show"/>
+                <field name="street" optional="show"/>
+                <field name="city" optional="show"/>
+                <field name="zip" optional="show"/>
+                <field name="email" optional="hide"/>
+                <field name="phone" optional="hide"/>
+                <field name="member_since"/>
+                <field name="member_until"/>
+                <field name="member_status" widget="badge"
+                       decoration-success="member_status == 'member'" decoration-warning="member_status == 'grace'"
+                       decoration-muted="member_status == 'former'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_members" model="ir.actions.act_window">
+        <field name="name">Membres</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('member_status', 'in', ('member', 'grace', 'pending'))]</field>
+        <field name="context">{'search_default_members': 1}</field>
+    </record>
+
+    <record id="action_member_register" model="ir.actions.act_window">
+        <field name="name">Registre des membres</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_partner_register_list"/>
+        <!-- Toute personne qui a été membre DANS LES SOCIÉTÉS DE L'USAGER (les
+             règles par société s'appliquent au sous-domaine), même quand une
+             nouvelle demande est ouverte ou que son paiement a été renversé. -->
+        <field name="domain">[('membership_ids', 'any', [('ever_settled', '=', True)])]</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p>Le registre garde toutes les personnes qui sont ou ont été membres, comme l'exige la loi.</p>
+        </field>
+    </record>
+</odoo>

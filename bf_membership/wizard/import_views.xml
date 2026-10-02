@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_import_form" model="ir.ui.view">
+        <field name="name">bf.membership.import.form</field>
+        <field name="model">bf.membership.import</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="state" invisible="1"/>
+                <p class="text-muted" invisible="state != 'new'">
+                    Un fichier CSV avec une ligne d'en-têtes (français ou anglais). Les contacts sont
+                    rapprochés par numéro de membre, puis par courriel, puis par nom et code postal.
+                    L'aperçu joue l'import sans rien écrire.
+                </p>
+                <group invisible="state == 'done'">
+                    <field name="file" filename="filename"/>
+                    <field name="filename" invisible="1"/>
+                    <field name="source" placeholder="Zeffy 2026"/>
+                    <field name="type_id" options="{'no_create': True}"/>
+                    <field name="rows_are_paid"/>
+                    <field name="payment_source"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+                <field name="report_html" invisible="not report_html"/>
+                <footer>
+                    <button name="action_preview" type="object" string="Aperçu" class="btn-primary" invisible="state == 'done'"/>
+                    <button name="action_import" type="object" string="Importer" invisible="state != 'previewed'"/>
+                    <button special="cancel" string="Fermer"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_membership_import" model="ir.actions.act_window">
+        <field name="name">Importer une liste</field>
+        <field name="res_model">bf.membership.import</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

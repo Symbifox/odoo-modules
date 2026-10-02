@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+          L'avis de convocation. Il ne part jamais seul : il pré-remplit le
+          compositeur que la convocation ouvre, et c'est une personne qui le
+          relit et clique sur Envoyer. Pas de destinataire ici : la liste vient
+          des votants qui ont consenti aux avis par courriel.
+
+          Un seul texte pour tous les membres convoqués par courriel (le
+          compositeur rend le gabarit une fois, sur l'assemblée) : il ne nomme
+          donc personne.
+        -->
+        <record id="mail_template_assembly_notice" model="mail.template">
+            <field name="name">Membres : avis de convocation à une assemblée</field>
+            <field name="model_id" ref="model_bf_membership_assembly"/>
+            <field name="subject">Avis de convocation : {{ object.name }}</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <!-- 🔴 La langue de l'ORGANISME, pas celle de la personne qui envoie : sinon
+                 la date se met dans sa langue à elle (« Saturday 31 October »), au
+                 milieu d'un avis rédigé en français. -->
+            <field name="lang">{{ object.company_id.partner_id.lang }}</field>
+            <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p>Bonjour,</p>
+    <p>
+        <t t-out="object.company_id.name or ''"/> vous convoque à son assemblée
+        <t t-if="object.kind == 'annual'">générale annuelle</t><t t-else="">extraordinaire</t>,
+        « <t t-out="object.name or ''"/> », qui se tiendra le <t t-out="object.date_label or ''"/>.
+    </p>
+    <p t-if="object.location">Lieu : <t t-out="object.location or ''"/></p>
+    <p t-if="object.remote_url">Pour y assister à distance : <t t-out="object.remote_url or ''"/></p>
+    <p t-if="object.record_date">
+        Peuvent voter les personnes et les organisations membres en règle le
+        <t t-out="format_date(object.record_date) or ''"/>.
+    </p>
+    <p t-if="object.proxy_allowed">
+        Si vous ne pouvez pas y assister, vous pouvez donner une procuration écrite
+        à une autre personne membre présente à l'assemblée.
+    </p>
+    <p t-if="object.attachment_ids">
+        Les documents de l'assemblée sont joints à ce courriel<t t-if="object.kind == 'annual'">,
+        dont les états financiers</t>.
+    </p>
+    <p>Au plaisir de vous y retrouver,<br/><t t-out="object.company_id.name or ''"/></p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -17,8 +17,10 @@ Built for Quebec corporations under the LSAQ (*Loi sur les sociétés par
 actions*), but nothing in it is province-specific beyond the wording of the
 default compliance events.
 
-- **Resolutions** — board and shareholder, with a lifecycle (Draft → Proposed →
-  Adopted / Rejected / Superseded) and a branded PDF ready to sign
+- **Resolutions**: board and shareholder, with a lifecycle (Draft → Proposed →
+  Adopted / Rejected / Superseded) and a branded PDF ready to sign. Members'
+  resolutions, adopted at the members' meeting of a non-profit or an
+  association, are kept the same way.
 - **Signature blocks** that say who signs *and in what capacity*, rather than
   guessing it from a register
 - **Director register** with appointment and end dates, end reason, linked
@@ -40,6 +42,7 @@ default compliance events.
 | Shareholder resolution | Standard shareholder resolution |
 | Written board resolution | Written resolution in lieu of a meeting |
 | Written shareholder resolution | Written shareholder resolution |
+| Members' resolution | Adopted at a members' meeting of a non-profit or an association. The PDF header reads *Résolution de l'assemblée des membres*, and two signatory capacities fit it: meeting chair (*Présidence d'assemblée*) and meeting secretary (*Secrétariat d'assemblée*) |
 
 Subject categories: officer appointment, director election, dividend
 declaration, share issuance, bylaw amendment, contract approval, bank
@@ -52,15 +55,27 @@ on creation. Votes for / against / abstaining are recorded, along with an
 
 ### Who signs, and as what
 
-The printed resolution reads its signature block in three steps, in order:
+The printed resolution reads its signature block in four steps, in order:
 
 1. **Signatory lines**, when any are entered — they win, with the capacity
    typed on each line;
 2. otherwise, for a **board** resolution — the directors **in office on the
    date of the meeting**, signing as directors;
-3. otherwise — the mover and the seconder, **named without a capacity**.
+3. otherwise, for a **members'** resolution: two lines to fill in, under
+   « Présidence d'assemblée » and « Secrétariat d'assemblée ». A members'
+   resolution is signed by the people who held the assembly, not by those who
+   moved or seconded;
+4. otherwise, the mover and the seconder, **named without a capacity**.
 
-Step 3 is deliberate. The module keeps no shareholder register: it knows who
+On a members' resolution, a signatory line has **no default capacity**: it must
+be chosen (usually the assembly chair or secretary), in the form as through an
+RPC call or an import. Elsewhere the default stays « Actionnaire ». The
+shareholder capacities (« Actionnaire », « Actionnaire unique ») are refused on
+a members' resolution, whether a line is created there, moved to it, or the
+resolution's type changes to members. « Autre » remains free text: what is
+typed there is not checked.
+
+Step 4 is deliberate. The module keeps no shareholder register: it knows who
 carried the resolution, not the capacity in which that person signed it.
 Printing a guess under a name is worse than printing a name.
 
@@ -134,7 +149,7 @@ and be upgraded in the same run.
 |-------|------|-------------|
 | name | Char | Resolution title |
 | sequence | Char | Auto-generated reference (RES-YYYY-NNN) |
-| resolution_type | Selection | board / shareholder / written_board / written_shareholder |
+| resolution_type | Selection | board / shareholder / written_board / written_shareholder / members |
 | meeting_type | Selection | regular / special / agm / written |
 | subject_category | Selection | 12 categories |
 | status | Selection | draft / proposed / adopted / rejected / superseded |
@@ -157,7 +172,7 @@ and be upgraded in the same run.
 | resolution_id | Many2one | Parent resolution |
 | sequence | Integer | Print order of the signature blocks |
 | partner_id | Many2one | Signatory |
-| capacity | Selection | sole_shareholder / shareholder / sole_director / director / officer / proxy / other |
+| capacity | Selection | sole_shareholder / shareholder / sole_director / director / officer / proxy / assembly_chair / assembly_secretary / other |
 | capacity_custom | Char | Literal capacity; required when capacity is "other" |
 | capacity_label | Char | Computed — what actually gets printed |
 | purpose | Char | Printed under the capacity for a limited-purpose signature |
@@ -238,6 +253,19 @@ module boundaries (`test_module_boundaries.py`), and the extraction invariants
 (`test_extraction.py`) — which check that nothing corporate stayed behind under
 the base module's name, that the migration's list mirrors what this module
 declares, and that the resolution sequence kept counting.
+
+## Changelog
+
+- **18.0.1.1.0**: members' resolutions. A new resolution type for resolutions
+  adopted at a members' meeting of a non-profit or an association, with its
+  PDF header (« Résolution de l'assemblée des membres ») and signature heading
+  (« Signatures de l'assemblée »); two signatory capacities, assembly chair and
+  assembly secretary; without signatory lines, a members' resolution prints
+  two lines to fill in under those capacities; on a members' resolution, a
+  signatory's capacity has no default, must be chosen, and cannot be a
+  shareholder capacity; a « Membres » search filter.
+- **18.0.1.0.0**: first release, extracted from `project_knowledge_matrix`
+  18.0.12.0.0.
 
 ## License
 

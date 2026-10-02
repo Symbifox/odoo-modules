@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_type_list" model="ir.ui.view">
+        <field name="name">bf.membership.type.list</field>
+        <field name="model">bf.membership.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code" optional="show"/>
+                <field name="member_kind"/>
+                <field name="period_mode"/>
+                <field name="fee"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="voting"/>
+                <field name="admission" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_membership_type_form" model="ir.ui.view">
+        <field name="name">bf.membership.type.form</field>
+        <field name="model">bf.membership.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_memberships" type="object" class="oe_stat_button" icon="fa-id-card">
+                            <field name="membership_count" widget="statinfo" string="Adhésions"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Membre régulier"/></h1>
+                    </div>
+                    <group>
+                        <group string="Qui et combien">
+                            <field name="code"/>
+                            <field name="member_kind"/>
+                            <field name="fee"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="admission"/>
+                            <field name="voting"/>
+                            <field name="delegate_count" invisible="member_kind == 'person'"/>
+                        </group>
+                        <group string="Période">
+                            <field name="period_mode"/>
+                            <field name="period_start_month" invisible="period_mode != 'fixed'" required="period_mode == 'fixed'"/>
+                            <field name="period_start_day" invisible="period_mode != 'fixed'"/>
+                            <field name="duration_months" invisible="period_mode != 'rolling'"/>
+                            <field name="grace_days" invisible="period_mode == 'lifetime'"/>
+                            <field name="renewal_days_before" invisible="period_mode == 'lifetime'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Ce que la catégorie donne : droit de vote, tarif aux activités, infolettre…"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_membership_type" model="ir.actions.act_window">
+        <field name="name">Catégories d'adhésion</field>
+        <field name="res_model">bf.membership.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer une première catégorie</p>
+            <p>Régulier, soutien, honoraire, famille, organisation : chacune a son prix, sa période et son droit de vote.</p>
+        </field>
+    </record>
+</odoo>

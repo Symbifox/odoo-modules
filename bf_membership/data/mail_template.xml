@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+          Un seul gabarit, une phrase par étape. Il ne part que si la société a
+          allumé les rappels (éteints d'office) : voir `_send_due_reminders`.
+        -->
+        <record id="mail_template_renewal_reminder" model="mail.template">
+            <field name="name">Membres : rappel de renouvellement</field>
+            <field name="model_id" ref="model_bf_membership"/>
+            <field name="subject">Votre adhésion ({{ object.company_id.name }})</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="partner_to">{{ object.partner_id.id }}</field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p>Bonjour <t t-out="object.partner_id.name or ''"/>,</p>
+    <t t-if="ctx.get('reminder_stage') in ('first', 'second')">
+        <p>Votre adhésion (<t t-out="object.company_id.name or ''"/>) se termine le
+            <t t-out="format_date(object.date_end) or ''"/>. Vous pouvez la renouveler dès maintenant.</p>
+    </t>
+    <t t-elif="ctx.get('reminder_stage') == 'due'">
+        <p>Votre adhésion (<t t-out="object.company_id.name or ''"/>) se termine aujourd'hui.
+            Pour rester membre, il suffit de la renouveler.</p>
+    </t>
+    <t t-else="">
+        <p>Votre adhésion (<t t-out="object.company_id.name or ''"/>) s'est terminée le
+            <t t-out="format_date(object.date_end) or ''"/>. Nous serions heureux de vous
+            compter de nouveau parmi nos membres : il suffit de la renouveler.</p>
+    </t>
+    <p>Votre numéro de membre : <t t-out="object.partner_id.member_number or ''"/>.</p>
+    <p>Merci,<br/><t t-out="object.company_id.name or ''"/></p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

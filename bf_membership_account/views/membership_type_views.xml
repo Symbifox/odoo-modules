@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_type_form_account" model="ir.ui.view">
+        <field name="name">bf.membership.type.form.account</field>
+        <field name="model">bf.membership.type</field>
+        <field name="inherit_id" ref="bf_membership.view_membership_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='description']" position="before">
+                <group>
+                    <group string="Facturation" name="invoicing">
+                        <field name="product_id" options="{'no_create': True}"
+                               placeholder="Créé à la première facture"/>
+                    </group>
+                    <group string="Reçu fiscal" name="receipt">
+                        <field name="receipt_eligible"/>
+                        <field name="advantage_amount" invisible="not receipt_eligible"/>
+                        <field name="advantage_description" invisible="not receipt_eligible"
+                               required="receipt_eligible and advantage_amount"
+                               placeholder="Abonnement à la revue, rabais aux activités"/>
+                        <field name="receipt_eligible_amount" invisible="not receipt_eligible"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

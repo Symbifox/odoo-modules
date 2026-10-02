@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_membership_form_portal" model="ir.ui.view">
+        <field name="name">bf.membership.form.portal</field>
+        <field name="model">bf.membership</field>
+        <field name="inherit_id" ref="bf_membership.view_membership_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_accept']" position="before">
+                <button name="action_attach_existing" type="object" string="Rattacher au contact existant"
+                        class="btn-primary" invisible="not to_reconcile"
+                        groups="bf_membership.group_membership_user"/>
+                <button name="action_mark_reconciled" type="object" string="Rapprochée" invisible="not to_reconcile"
+                        groups="bf_membership.group_membership_user"
+                        confirm="Le contact de cette demande a-t-il été vérifié, et la demande n'est-elle pas celle d'un contact déjà au registre ? Sinon, rattachez-la au contact existant."/>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <widget name="web_ribbon" title="À rapprocher" bg_color="text-bg-warning" invisible="not to_reconcile"
+                        groups="bf_membership.group_membership_user"/>
+            </xpath>
+            <!-- `source` est réservé aux agents depuis que le portail lit les adhésions. -->
+            <xpath expr="//page[@name='import']" position="attributes">
+                <attribute name="groups">bf_membership.group_membership_user</attribute>
+            </xpath>
+            <xpath expr="//page[@name='decision']//field[@name='decision_note']" position="after">
+                <field name="public_request" invisible="not public_request"/>
+                <field name="public_partner_id" invisible="not public_request"/>
+                <field name="to_reconcile" invisible="not public_request"/>
+                <field name="public_ip" invisible="not public_ip"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_membership_list_portal" model="ir.ui.view">
+        <field name="name">bf.membership.list.portal</field>
+        <field name="model">bf.membership</field>
+        <field name="inherit_id" ref="bf_membership.view_membership_list"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="to_reconcile" optional="show" widget="boolean_toggle" readonly="1"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_membership_search_portal" model="ir.ui.view">
+        <field name="name">bf.membership.search.portal</field>
+        <field name="model">bf.membership</field>
+        <field name="inherit_id" ref="bf_membership.view_membership_search"/>
+        <field name="arch" type="xml">
+            <filter name="to_pay" position="after">
+                <filter name="to_reconcile" string="À rapprocher" domain="[('to_reconcile', '=', True)]"/>
+                <filter name="public_request" string="Formulaire public" domain="[('public_request', '=', True)]"/>
+            </filter>
+        </field>
+    </record>
+</odoo>
