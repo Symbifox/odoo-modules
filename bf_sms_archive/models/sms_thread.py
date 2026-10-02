@@ -290,13 +290,13 @@ class SmsArchiveThread(models.Model):
                         )
             except AccessError:
                 _logger.info(
-                    "Report du numéro %s vers le contact %s sauté : droits insuffisants.",
-                    thread.phone_normalized, partner.id,
+                    "Report du numéro du fil %s vers le contact %s sauté : droits insuffisants.",
+                    thread.id, partner.id,
                 )
             except Exception:  # noqa: BLE001 — voir le commentaire ci-dessus
                 _logger.warning(
-                    "Report du numéro %s vers le contact %s échoué.",
-                    thread.phone_normalized, partner.id, exc_info=True,
+                    "Report du numéro du fil %s vers le contact %s échoué.",
+                    thread.id, partner.id, exc_info=True,
                 )
 
     def action_view_messages(self):
@@ -789,7 +789,8 @@ class SmsArchiveThread(models.Model):
                 if partner:
                     thread.partner_id = partner.id
             except Exception:  # noqa: BLE001 — un échec de matching ne doit pas bloquer l'ingestion
-                _logger.debug("auto-match partner échoué pour %s", phone_normalized, exc_info=True)
+                # Pas le numéro dans le journal : c'est un renseignement personnel (Loi 25).
+                _logger.debug("auto-match partner échoué pour le fil %s", thread.id, exc_info=True)
         return thread
 
     # ── Archivage (boutons formulaire) ─────────────────────────────

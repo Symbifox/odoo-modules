@@ -21,6 +21,7 @@ import time
 import urllib.parse
 from collections import defaultdict
 
+import pytz
 from markupsafe import Markup
 from werkzeug.utils import redirect as wz_redirect
 
@@ -437,6 +438,20 @@ def _branding():
     }
 
 
+def _org_tz():
+    """Le fuseau de l'organisation, pour l'horloge de Symbifox Mobile.
+
+    Celui de ``bf_timezone.default_tz`` (lu tel quel : ce module n'en dépend
+    pas), sinon celui de la fiche de la société. Un nom que pytz ne connaît pas
+    rend "" : l'appli n'affiche alors rien plutôt qu'une heure fausse.
+    """
+    env = request.env
+    tz = (env["ir.config_parameter"].sudo().get_param("bf_timezone.default_tz") or "").strip()
+    if not tz:
+        tz = (env.company.partner_id.tz or "").strip()
+    return tz if tz in pytz.all_timezones_set else ""
+
+
 class BfSmsMobileApi(http.Controller):
 
     # ── Découverte ────────────────────────────────────────────────────
@@ -673,6 +688,7 @@ class BfSmsMobileApi(http.Controller):
             "config": Thread.get_messenger_config(),
             "unread": Thread.get_unread_summary(),
             "push": _push_config(),
+            "org_tz": _org_tz(),
         })
 
     # ── Fils ──────────────────────────────────────────────────────────

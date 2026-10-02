@@ -497,6 +497,22 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 
 ## Changelog
 
+### Version 18.0.5.24.1
+
+- **PRIVACY:** three log lines no longer carry a correspondent's phone number:
+  the two lines written when copying a thread's number onto its contact is
+  skipped (insufficient rights) or fails, and the debug line written when the
+  automatic contact match fails. They name the thread ID instead.
+
+### Version 18.0.5.24.0
+
+- **NEW:** `GET /mobile/v1/config` returns `org_tz`, the organisation's time
+  zone, so Symbifox Mobile can show the organisation's time when the phone is
+  in another zone. It is read from `bf_timezone.default_tz` (as a plain
+  parameter, without a dependency on that module), falling back to the
+  company's contact time zone; a name pytz does not know returns `""`, and the
+  app then shows nothing rather than a wrong time.
+
 ### Version 18.0.5.23.2
 
 - **SECURITY:** the Android relay bearer token (`sms.archive.device`) is checked
