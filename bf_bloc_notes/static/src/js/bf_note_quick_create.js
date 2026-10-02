@@ -2,10 +2,12 @@
 import { Component, useState, useRef, onMounted } from "@odoo/owl";
 import { Dialog } from "@web/core/dialog/dialog";
 import { useService } from "@web/core/utils/hooks";
+import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
 import { user } from "@web/core/user";
 import { _t } from "@web/core/l10n/translation";
 
 export class BfNoteQuickCreateDialog extends Component {
+    static nextId = 1;
     static template = "bf_bloc_notes.QuickCreateDialog";
     static components = { Dialog };
     static props = {
@@ -20,12 +22,17 @@ export class BfNoteQuickCreateDialog extends Component {
         this.notification = useService("notification");
         this.action = useService("action");
         this.title = _t("New quick note");
+        // Ids propres au dialogue : Alt+N peut en empiler deux, et un libellé
+        // viserait sinon la case du premier.
+        this.domId = `bf_note_qc_${BfNoteQuickCreateDialog.nextId++}`;
         this.state = useState({
             name: "",
             body: "",
             pinned: false,
             saving: false,
             linkedLabel: "",
+            // Lien vers la fiche active : proposé coché, l'usager peut le refuser.
+            linkEnabled: true,
             reminderKey: "today",
             reminderDate: this._isoToday(),
         });
@@ -33,15 +40,33 @@ export class BfNoteQuickCreateDialog extends Component {
         this.titleRef = useRef("title");
 
         this._fetchDefaultReminder();
-        if (this.props.resModel && this.props.resId) {
+        if (this.hasLink) {
             this._fetchLinkedLabel();
         }
+        // Alt+L bascule le lien sans quitter le champ en cours de saisie.
+        useHotkey("alt+l", () => this.toggleLink(), { bypassEditableProtection: true });
         onMounted(() => {
             const el = this.titleRef.el;
             if (el) {
                 el.focus();
             }
         });
+    }
+
+    /** Le dialogue a été ouvert depuis une fiche : un lien est proposé. */
+    get hasLink() {
+        return Boolean(this.props.resModel && this.props.resId);
+    }
+
+    /** Le lien proposé est gardé : la note, le rappel et la tâche le suivent. */
+    get linkActive() {
+        return this.hasLink && this.state.linkEnabled;
+    }
+
+    toggleLink() {
+        if (this.hasLink) {
+            this.state.linkEnabled = !this.state.linkEnabled;
+        }
     }
 
     _isoToday() {
@@ -74,18 +99,27 @@ export class BfNoteQuickCreateDialog extends Component {
         }
     }
 
+    /**
+     * « Type · Nom », par exemple « Tâche · Rappeler la clinique ». `name_get`
+     * n'existe plus en 18 : le bandeau retombait toujours sur le nom technique.
+     */
     async _fetchLinkedLabel() {
+        const { resModel, resId } = this.props;
+        const fallback = `${resModel} #${resId}`;
         try {
-            const res = await this.orm.call(
-                this.props.resModel,
-                "name_get",
-                [[this.props.resId]],
-            );
-            if (res && res.length) {
-                this.state.linkedLabel = res[0][1];
+            const [models, records] = await Promise.all([
+                this.orm.call("ir.model", "display_name_for", [[resModel]]),
+                this.orm.read(resModel, [resId], ["display_name"]),
+            ]);
+            const type = models?.find((m) => m.model === resModel)?.display_name;
+            const name = records?.[0]?.display_name;
+            if (!name) {
+                this.state.linkedLabel = fallback;
+            } else {
+                this.state.linkedLabel = type && type !== resModel ? `${type} · ${name}` : name;
             }
         } catch (_e) {
-            this.state.linkedLabel = `${this.props.resModel} #${this.props.resId}`;
+            this.state.linkedLabel = fallback;
         }
     }
 
@@ -199,7 +233,7 @@ export class BfNoteQuickCreateDialog extends Component {
             if (this.state.reminderKey === "custom") {
                 vals.reminder_date = this.state.reminderDate;
             }
-            if (this.props.resModel && this.props.resId) {
+            if (this.linkActive) {
                 vals.res_model = this.props.resModel;
                 vals.res_id = this.props.resId;
             }
@@ -241,8 +275,8 @@ export class BfNoteQuickCreateDialog extends Component {
                 default_description: html,
                 default_user_ids: [user.userId],
             };
-            const linkModel = this.props.resModel;
-            const linkId = this.props.resId;
+            const linkModel = this.linkActive ? this.props.resModel : false;
+            const linkId = this.linkActive ? this.props.resId : false;
             if (linkModel && linkId) {
                 if (linkModel === "project.task") {
                     const [task] = await this.orm.read(

@@ -11,7 +11,7 @@ LGPL-3 — see `LICENSE`.
 ### Quick capture
 - **Systray icon 📝**: left-click = new note, right-click = list filtered to your notes.
 - **Keyboard shortcuts**: `Alt+N` opens the capture dialog, `Alt+Shift+N` opens the list.
-- **Auto-link**: if you are on a partner / task / project / lead form, the dialog pre-fills the link.
+- **Auto-link**: when you are on a record (any record open in a form view), the dialog offers a "Link to: Type · Name" checkbox, ticked. Untick it (or press `Alt+L`) to create the note without a link.
 - **Image drop-zone**: paste (`Ctrl+V`) or drag an image into the editor — the attachment is created automatically and the image inserted into the note body.
 - **Ctrl+Enter** in the dialog saves the note.
 
@@ -118,6 +118,19 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 35 tests cover: auto-title, multi-link, batch count, RPC whitelist, private/shared visibility (read + write), per-link activity creation, unlinked-note guard, compatible-model selection (+ allowlist), rerouting (replace / add / bulk / idempotence / archived note), quick-link resolution (technical reference, shorthand, bare id, Odoo 18 URL, legacy `/web#` URL, incompatible target), and the `target_ref` picker on the link row.
 
 ## Changelog
+
+### 18.0.4.1.0
+- **Quick capture:** the "Linked to" banner becomes a "Link to" checkbox, ticked by default. Unticked
+  (click, or `Alt+L` from any field of the dialog), the note is created without a link: the reminder
+  lands on the note itself and "Create a task" no longer pre-fills the parent, project or customer.
+- **Fix:** the banner always showed the technical name ("project.task #1") because `name_get` no longer
+  exists in Odoo 18. It now shows "Type · Name" (`ir.model.display_name_for` and `display_name`, under
+  the user's own access rights).
+- **Fix:** the record offered is the one DISPLAYED (`currentState.resId`). After "Next", "New" or
+  Duplicate, Alt+N still offered the record first opened (`props.resId`, frozen when the form opened).
+  On a record not yet created, no link is offered.
+- **Fix:** the dialog's checkboxes get ids of their own; with two dialogs stacked, a label ticked the
+  other dialog's checkbox.
 
 ### 18.0.4.0.0
 - **Colors:** free colors through `bf_color`, swatches, colored tags, readable text color.

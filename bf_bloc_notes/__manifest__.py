@@ -22,7 +22,11 @@
     #   dans la palette pastel du mobile (aucune donnée réécrite) ; contrat
     #   mobile : `color_hex`, `text_color`, `tags`, route `/prefs` (mise en
     #   page, nuanciers) et `features` au ping ; numéro d'API inchangé.
-    "version": "18.0.4.0.0",
+    # 18.0.4.1.0: création rapide : la case « Lier à » remplace le bandeau,
+    #   on peut refuser le lien (clic ou Alt+L). La fiche proposée est celle
+    #   qui est affichée, et non plus celle de l'ouverture du formulaire ; le
+    #   libellé nomme « Type · Nom ».
+    "version": "18.0.4.1.0",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',

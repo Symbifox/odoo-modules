@@ -15,8 +15,16 @@
     <t t-name="bf_bloc_notes.QuickCreateDialog">
         <Dialog title="title" size="'lg'" contentClass="'o_bf_note_quick_create'">
             <div class="o_bf_note_quick_create_body">
-                <div t-if="state.linkedLabel" class="alert alert-info py-2 mb-2 small">
-                    <i class="fa fa-link"/> Linked to: <strong t-esc="state.linkedLabel"/>
+                <div t-if="hasLink" class="o_bf_note_link_toggle form-check mb-2 small">
+                    <input type="checkbox"
+                           t-att-id="domId + '_link'"
+                           class="form-check-input"
+                           t-model="state.linkEnabled"/>
+                    <label t-att-for="domId + '_link'" class="form-check-label"
+                           t-att-class="state.linkEnabled ? '' : 'text-muted text-decoration-line-through'">
+                        <i class="fa fa-link"/> Link to: <strong t-esc="state.linkedLabel || '…'"/>
+                    </label>
+                    <kbd class="ms-2">Alt+L</kbd>
                 </div>
                 <input type="text"
                        class="form-control mb-2"
@@ -37,10 +45,10 @@
                 </div>
                 <div class="form-check mt-2">
                     <input type="checkbox"
-                           id="bf_note_pinned"
+                           t-att-id="domId + '_pinned'"
                            class="form-check-input"
                            t-model="state.pinned"/>
-                    <label for="bf_note_pinned" class="form-check-label">
+                    <label t-att-for="domId + '_pinned'" class="form-check-label">
                         <i class="fa fa-thumb-tack"/> Pin
                     </label>
                 </div>

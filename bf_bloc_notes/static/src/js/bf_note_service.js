@@ -23,7 +23,10 @@ export const bfNoteService = {
                 if (view && view !== "form") return {};
                 const props = controller.props || {};
                 const resModel = props.resModel;
-                const resId = props.resId;
+                // La fiche AFFICHÉE : `props.resId` reste celle de l'ouverture du
+                // formulaire, même après « Suivant », « Nouveau » ou Dupliquer.
+                const state = controller.currentState || {};
+                const resId = "resId" in state ? state.resId : props.resId;
                 if (resModel && typeof resId === "number" && resId) {
                     return { resModel, resId };
                 }
