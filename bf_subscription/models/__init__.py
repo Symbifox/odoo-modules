@@ -4,3 +4,4 @@ from . import subscription_digest
 from . import account_move
 from . import res_partner
 from . import onboarding_onboarding
+from . import bf_color

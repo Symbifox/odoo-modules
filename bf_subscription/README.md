@@ -14,6 +14,8 @@ infrastructure, certificates, domain names, recurring professional services.
   decision** puts to rest until the next cycle.
 - Dashboard view: monthly-equivalent cost, upcoming renewals, consolidated MRR.
 - Smart buttons on the partner record (managed / billed subscriptions).
+- Subscription tags take a free color (`bf_color`), shown on the
+  subscription's tags in the form and the kanban.
 
 ## Report and dashboard
 
@@ -29,7 +31,7 @@ infrastructure, certificates, domain names, recurring professional services.
 
 ## Dependencies
 
-`base`, `mail`, `account`, `analytic`, `bf_onboarding_base`.
+`base`, `mail`, `account`, `analytic`, `bf_onboarding_base`, `bf_color`.
 
 ## Licence
 
@@ -40,10 +42,15 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-10-02, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Changelog
+
+### 18.0.1.6.0
+
+- Subscription tags take a free color from `bf_color`: any hex instead of
+  Odoo's twelve, and each user can keep their own.
 
 ### 18.0.1.5.2
 

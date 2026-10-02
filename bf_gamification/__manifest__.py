@@ -5,7 +5,10 @@
     #   threshold badges follow the XP earned; a reward draws on the balance.
     #   A user no longer sets the state or approval of their own claim, and no
     #   longer writes profiles (XP credits run as sudo).
-    "version": "18.0.2.6.1",
+    # 18.0.2.6.2: resetting everyone's progress (raw SQL) requires an
+    #   administrator, also when the method is reached through RPC.
+    # 18.0.2.7.0: badge categories and levels take a free color (bf_color).
+    "version": "18.0.2.7.0",
     "category": "Human Resources",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -14,6 +17,7 @@
     "installable": True,
     "post_init_hook": "_post_init_backfill",
     "depends": [
+        "bf_color",
         "base",
         "mail",
         "bus",

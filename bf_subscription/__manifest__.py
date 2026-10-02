@@ -1,6 +1,6 @@
 {
     'name': "Abonnements",
-    'version': '18.0.1.5.2',
+    'version': '18.0.1.6.0',
     'category': 'Accounting/Accounting',
     'summary': "Gestion des abonnements payants et corrélation avec la facturation fournisseur",
     'description': """
@@ -23,6 +23,7 @@ Fonctionnalités:
     'website': 'https://symbifox.com',
     'license': 'Other proprietary',
     'depends': [
+        'bf_color',
         'base',
         'mail',
         'account',

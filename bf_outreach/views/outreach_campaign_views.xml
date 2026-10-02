@@ -29,6 +29,7 @@
         <field name="model">bf.outreach.campaign</field>
         <field name="arch" type="xml">
             <kanban highlight_color="color" sample="1">
+                <field name="color_resolved"/>
                 <field name="overdue_count"/>
                 <field name="letter_count"/>
                 <templates>

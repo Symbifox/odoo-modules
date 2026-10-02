@@ -4,3 +4,4 @@ from . import project_credential
 from . import project_project
 from . import knowledge_dashboard
 from . import project_document
+from . import bf_color

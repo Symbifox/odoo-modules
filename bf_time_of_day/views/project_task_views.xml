@@ -29,12 +29,15 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='state']" position="after">
                 <field name="time_of_day_color"/>
+                <field name="time_of_day_color_resolved"/>
+                <field name="time_of_day_color_text"/>
                 <field name="time_of_day_icon"/>
             </xpath>
             <xpath expr="//field[@name='tag_ids']" position="after">
                 <div t-if="record.time_of_day_id.raw_value"
                      class="d-inline-flex align-items-center px-2 py-0 rounded-pill bf_tod_badge"
-                     t-attf-class="o_tag_color_#{record.time_of_day_color.raw_value or 0}">
+                     t-attf-class="#{record.time_of_day_color_resolved.raw_value ? '' : 'o_tag_color_' + (record.time_of_day_color.raw_value or 0)}"
+                     t-att-style="record.time_of_day_color_resolved.raw_value ? '--background-color:' + record.time_of_day_color_resolved.raw_value + ';--color:' + record.time_of_day_color_text.raw_value + ';background-color:' + record.time_of_day_color_resolved.raw_value + ';color:' + record.time_of_day_color_text.raw_value : undefined">
                     <i t-if="record.time_of_day_icon.raw_value"
                        t-attf-class="fa #{record.time_of_day_icon.raw_value} me-1"/>
                     <field name="time_of_day_id"/>

@@ -22,12 +22,13 @@ who is overdue, who has never been reached and who replied.
 - **Search filters**: due today, overdue, never contacted, replied, no reply, open files, converted, excluded
 - **Views**: kanban, list, form, calendar, activity, pivot and graph
 - **Calendar colors** (v18.0.1.3.0): a default `bf_color` rule (« Cibles selon le responsable ») colors the follow-up calendar by owner; add a line per owner to the rule to give each one a color
+- **Free colors on campaigns and tags** (v18.0.1.4.0): target tags take any hex color (`bf_color`), and campaigns carry a free color that an automatic rule can set; the campaign kanban edge and the target tags show it
 
 ## Dependencies
 
 - `mail`, `contacts`, `crm`, `phone_validation`
 - `bf_onboarding_base` (guided welcome panel)
-- `bf_color` (free colors and automatic rules, for the calendar)
+- `bf_color` (free colors and automatic rules: calendar, campaigns, tags)
 
 ## How the cadence is computed
 

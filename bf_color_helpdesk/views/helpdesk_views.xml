@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tags: free color instead of the twelve, "My color" for each user. -->
+    <record id="helpdesk_ticket_tag_form_bf_color" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.tag.form.bf_color</field>
+        <field name="model">helpdesk.ticket.tag</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_ticket_tag_form"/>
+        <field name="arch" type="xml">
+            <field name="color" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="color" position="after">
+                <field name="color_hex" widget="bf_color"/>
+                <field name="color_resolved" widget="bf_color_resolved" invisible="not id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_tag_list_bf_color" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.tag.list.bf_color</field>
+        <field name="model">helpdesk.ticket.tag</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_ticket_tag_tree"/>
+        <field name="arch" type="xml">
+            <field name="color" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </field>
+            <field name="color" position="after">
+                <field name="color_hex" widget="bf_color" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Tickets: tags in free color, card edge in the ticket's resolved color
+         (helpdesk_mgmt lets you pick a color on the card but never paints it). -->
+    <record id="helpdesk_ticket_form_bf_color" model="ir.ui.view">
+        <field name="name">helpdesk_ticket_form_bf_color.bf_color</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'no_create_edit': True, 'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_list_bf_color" model="ir.ui.view">
+        <field name="name">helpdesk_ticket_list_bf_color.bf_color</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.ticket_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_kanban_bf_color" model="ir.ui.view">
+        <field name="name">helpdesk_ticket_kanban_bf_color.bf_color</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_ticket_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="highlight_color">color</attribute>
+            </xpath>
+            <xpath expr="//kanban" position="inside">
+                <field name="color_resolved"/>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Teams: the free color on the form; the dashboard keeps reading the index,
+         which follows the closest shade. -->
+    <record id="helpdesk_team_form_bf_color" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.team.form.bf_color</field>
+        <field name="model">helpdesk.ticket.team</field>
+        <field name="inherit_id" ref="helpdesk_mgmt.view_helpdesk_team_form"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="color_hex" widget="bf_color"/>
+            </field>
+        </field>
+    </record>
+</odoo>

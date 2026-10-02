@@ -60,7 +60,7 @@ estate under a project filter — which reads as a count *of* that project.
 2. Update the apps list
 3. Install **Blue Fox Credentials**
 
-Dependencies: `project_knowledge_matrix`, and the `cryptography` Python package.
+Dependencies: `project_knowledge_matrix`, `bf_color` (free colors), and the `cryptography` Python package.
 Without `cryptography`, `_encrypt_value` **raises** and nothing is written; it never
 falls back to plaintext. The manifest declares the dependency and a test asserts the
 declaration stays.
@@ -171,6 +171,7 @@ SHA-256 fingerprints on both sides, with zero decryption failures.
 | name | Char | Type name |
 | code | Char | Unique code |
 | show_* | Boolean | Which fields the form shows for this type |
+| color_hex | Char | Free color (`bf_color`): any hex instead of Odoo's twelve, each user can keep their own |
 
 ### project.project (extended)
 

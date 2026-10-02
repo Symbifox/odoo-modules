@@ -204,6 +204,14 @@ dedicated invitation template that names the person being reviewed and carries
 no unsubscribe link, since pointing an employee at `mail.blacklist` would block
 them for client mail too.
 
+### Colors
+
+Themes and feedback carry a free color from `bf_color` (any hex instead of
+Odoo's twelve, and each user can keep their own). The theme tags of a feedback
+or a complaint show the theme's color, and a feedback card's edge shows the
+feedback's color, which an automatic rule can set (by theme or by channel,
+for instance). `bf_color` is a dependency.
+
 ## Architecture
 
 - No hard dependency on the helpdesk or on the privacy module: the links live

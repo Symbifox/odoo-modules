@@ -98,10 +98,15 @@ a few lines.
 | `mail_composer_cc_bcc` (OCA) | The composer's Cc and Bcc fields the copy rules write into |
 | `project_knowledge_matrix` | KPIs link to knowledge items |
 | `bf_onboarding_base` | Onboarding panel scaffolding |
+| `bf_color` | Free colors on persona categories |
 
 `bf_persona_cx` plugs the customer-experience module in when both are installed.
 
 ## Changelog
+
+### 18.0.3.2.0
+- Persona categories take a free color from `bf_color`: any hex instead of
+  Odoo's twelve, and each user can keep their own.
 
 ### 18.0.3.1.0
 - The assistant is told how long our mail to this contact usually runs, as a
@@ -146,5 +151,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-10-02, this version converts automatically to
   **LGPL-3.0-or-later**.

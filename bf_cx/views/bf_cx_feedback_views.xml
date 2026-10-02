@@ -31,6 +31,7 @@
         <field name="model">bf.cx.feedback</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" highlight_color="color">
+                <field name="color_resolved"/>
                 <field name="nps_bucket"/>
                 <field name="kind"/>
                 <templates>
@@ -111,7 +112,7 @@
                         <field name="comment" nolabel="1" colspan="2"
                                placeholder="Verbatim du répondant…"/>
                         <field name="theme_ids" widget="many2many_tags"
-                               options="{'color_field': 'color'}" colspan="2"/>
+                               options="{'color_field': 'color', 'bf_color': True}" colspan="2"/>
                     </group>
                     <group>
                         <group name="origin" string="Origine">

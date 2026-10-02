@@ -52,6 +52,7 @@ Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 - **Full audit trail** — every XP gain and loss is recorded with source references
 - **Manager tools** — grant badges manually, configure rules, manage rewards and claims
 - **Retroactive backfill** — on install/upgrade, automatically awards XP for recent work (last 96 hours)
+- **Free colors** — badge categories and levels take any hex color (`bf_color`) instead of Odoo's twelve
 
 ---
 
@@ -60,6 +61,7 @@ Built for [Les services de consultation Blue Fox, Inc.](https://symbifox.com)
 | Dependency | Purpose |
 |---|---|
 | `base` | Core framework |
+| `bf_color` | Free colors on badge categories and levels |
 | `mail` | Messaging, activity tracking, chatter XP integration |
 | `bus` | Real-time browser notifications for popups |
 | `hr_timesheet` | Timesheet XP integration |
@@ -537,6 +539,19 @@ bf_gamification/
 
 ## Changelog
 
+### v2.7.0
+
+- Badge categories and levels take a free color from `bf_color`: any hex
+  instead of Odoo's twelve, and each user can keep their own. Odoo's color
+  index follows the closest shade, so every screen that reads it still shows
+  a near color.
+
+### v2.6.2
+
+- Resetting everyone's progress runs raw SQL that no access rule sees: it
+  now requires an administrator, also when the method is reached through
+  RPC rather than the settings page.
+
 ### v2.6.1
 
 - XP earned and XP balance are separated. `total_xp` now sums every
@@ -623,7 +638,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-10-02, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ---

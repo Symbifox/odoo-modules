@@ -49,6 +49,8 @@ msgstr ""
 
 #. module: bf_time_of_day
 #: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__color
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.bf_time_of_day_view_form
+#: model_terms:ir.ui.view,arch_db:bf_time_of_day.bf_time_of_day_view_list
 msgid "Color"
 msgstr ""
 
@@ -284,4 +286,49 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_time_of_day.bf_time_of_day_view_form
 #: model_terms:ir.ui.view,arch_db:bf_time_of_day.bf_time_of_day_view_list
 msgid "fa-coffee"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,help:bf_time_of_day.field_bf_time_of_day__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__color_source
+msgid "Color Source"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,help:bf_time_of_day.field_bf_time_of_day__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,help:bf_time_of_day.field_bf_time_of_day__color_resolved
+#: model:ir.model.fields,help:bf_time_of_day.field_project_task__time_of_day_color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__color_resolved
+#: model:ir.model.fields,field_description:bf_time_of_day.field_project_task__time_of_day_color_resolved
+msgid "Displayed color"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__color_hex
+msgid "Own color"
+msgstr ""
+
+#. module: bf_time_of_day
+#: model:ir.model.fields,field_description:bf_time_of_day.field_bf_time_of_day__color_text
+#: model:ir.model.fields,field_description:bf_time_of_day.field_project_task__time_of_day_color_text
+msgid "Text color"
 msgstr ""

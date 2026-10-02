@@ -45,6 +45,9 @@ class ProjectTask(models.Model):
         store=True,
         string="Slot colour",
     )
+    # The slot's free color as the current user sees it (bf_color), for the badge.
+    time_of_day_color_resolved = fields.Char(related="time_of_day_id.color_resolved")
+    time_of_day_color_text = fields.Char(related="time_of_day_id.color_text")
     time_of_day_icon = fields.Char(
         related="time_of_day_id.icon",
         store=False,

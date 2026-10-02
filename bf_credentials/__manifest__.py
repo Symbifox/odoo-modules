@@ -1,6 +1,6 @@
 {
     'name': 'Symbifox Credentials',
-    'version': '18.0.3.0.0',
+    'version': '18.0.3.1.0',
     'category': 'Services/Project',
     'summary': 'Coffre d\'identifiants chiffrés par projet, avec rotation et expiration',
     'description': """
@@ -80,7 +80,7 @@ un seul facteur, pas deux. Les champs du registre refusent une adresse
     # project_knowledge_matrix porte project.project (le coffre est rattaché au
     # projet), le tableau de bord que ce module complète, et le rapport
     # bimensuel auquel il ajoute trois chiffres.
-    'depends': ['project_knowledge_matrix'],
+    'depends': ['bf_color', 'project_knowledge_matrix'],
     'external_dependencies': {
         'python': ['cryptography'],
     },

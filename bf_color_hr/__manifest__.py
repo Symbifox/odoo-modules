@@ -1,8 +1,8 @@
 {
     "name": "BF Color for Employees",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Hidden/Tools",
-    "summary": "A free color on each employee, followed by every agenda that sorts by employee",
+    "summary": "A free color on each employee and employee tag, followed by every agenda that sorts by employee",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "LGPL-3",

@@ -7,13 +7,15 @@
     # 18.0.1.4.1: la plage horaire quitte la rangée en ligne de l'échéance
     #   pour une rangée à elle : partagée à parts égales, elle rognait la
     #   date limite.
-    "version": "18.0.1.4.1",
+    # 18.0.1.5.0: la plage horaire prend une couleur libre (bf_color) ;
+    #   la pastille de la carte de tâche la reprend telle quelle.
+    "version": "18.0.1.5.0",
     "category": "Project",
     "summary": "Plages horaires (Matinée / Midi / Fin de jour / Hors heures) pour tâches et activités",
     'author': 'Les services de consultation Blue Fox, Inc.',
     "website": "https://symbifox.com",
     'license': 'LGPL-3',
-    "depends": ["project", "mail", "bf_onboarding_base"],
+    "depends": ["bf_color", "project", "mail", "bf_onboarding_base"],
     "data": [
         "security/ir.model.access.csv",
         "security/bf_time_of_day_security.xml",

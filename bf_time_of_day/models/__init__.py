@@ -4,3 +4,4 @@ from . import res_users
 from . import project_task
 from . import mail_activity
 from . import onboarding_onboarding
+from . import bf_color

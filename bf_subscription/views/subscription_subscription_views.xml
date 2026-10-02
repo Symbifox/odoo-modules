@@ -77,7 +77,7 @@
                         <group string="Classification">
                             <field name="category"/>
                             <field name="tag_ids" widget="many2many_tags"
-                                   options="{'color_field': 'color'}"/>
+                                   options="{'color_field': 'color', 'bf_color': True}"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="active" invisible="1"/>
                         </group>
@@ -241,7 +241,7 @@
                             </div>
                             <div class="o_kanban_record_body">
                                 <field name="tag_ids" widget="many2many_tags"
-                                       options="{'color_field': 'color'}"/>
+                                       options="{'color_field': 'color', 'bf_color': True}"/>
                                 <div class="text-muted mt-2">
                                     <field name="cycle_amount" widget="monetary"/>
                                     / <field name="cycle"/>

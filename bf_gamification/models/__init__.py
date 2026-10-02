@@ -22,3 +22,4 @@ from . import knowledge_item
 from . import corporate_resolution
 from . import bf_email
 from . import onboarding_onboarding
+from . import bf_color

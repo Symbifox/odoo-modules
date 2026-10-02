@@ -10,7 +10,7 @@
                 <field name="min_xp"/>
                 <field name="title"/>
                 <field name="css_class"/>
-                <field name="color" widget="color_picker"/>
+                <field name="color_hex" widget="bf_color" string="Couleur"/>
             </list>
         </field>
     </record>
@@ -33,7 +33,7 @@
                         </group>
                         <group>
                             <field name="css_class"/>
-                            <field name="color" widget="color_picker"/>
+                            <field name="color_hex" widget="bf_color" string="Couleur"/>
                             <field name="badge_image" widget="image"/>
                         </group>
                     </group>

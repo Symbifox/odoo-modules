@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-02 08:04+0000\n"
-"PO-Revision-Date: 2026-10-02 08:04+0000\n"
+"POT-Creation-Date: 2026-10-02 13:34+0000\n"
+"PO-Revision-Date: 2026-10-02 13:34+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_CA\n"
@@ -18,6 +18,7 @@ msgstr ""
 
 #. module: bf_color_hr
 #: model:ir.model.fields,help:bf_color_hr.field_hr_employee__color_resolved_index
+#: model:ir.model.fields,help:bf_color_hr.field_hr_employee_category__color_resolved_index
 msgid "Closest Odoo palette index, for views that only understand 0-11."
 msgstr ""
 "Indice le plus proche dans la palette d'Odoo, pour les vues qui ne "
@@ -30,16 +31,19 @@ msgstr "Couleur"
 
 #. module: bf_color_hr
 #: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee__color_source
+#: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee_category__color_source
 msgid "Color Source"
 msgstr "Source de la couleur"
 
 #. module: bf_color_hr
 #: model:ir.model.fields,help:bf_color_hr.field_hr_employee__color_hex
+#: model:ir.model.fields,help:bf_color_hr.field_hr_employee_category__color_hex
 msgid "Color of the record for everyone (hex)."
 msgstr "Couleur de l'enregistrement pour tout le monde (hex)."
 
 #. module: bf_color_hr
 #: model:ir.model.fields,help:bf_color_hr.field_hr_employee__color_resolved
+#: model:ir.model.fields,help:bf_color_hr.field_hr_employee_category__color_resolved
 msgid ""
 "Color shown to the current user, after personal, company and automatic "
 "rules."
@@ -49,12 +53,14 @@ msgstr ""
 
 #. module: bf_color_hr
 #: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee__color_resolved
+#: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee_category__color_resolved
 #: model_terms:ir.ui.view,arch_db:bf_color_hr.view_employee_form_bf_color
 msgid "Displayed color"
 msgstr "Couleur affichée"
 
 #. module: bf_color_hr
 #: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee__color_resolved_index
+#: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee_category__color_resolved_index
 msgid "Displayed color (Odoo palette)"
 msgstr "Couleur affichée (palette d'Odoo)"
 
@@ -64,7 +70,13 @@ msgid "Employee"
 msgstr "Employé"
 
 #. module: bf_color_hr
+#: model:ir.model,name:bf_color_hr.model_hr_employee_category
+msgid "Employee Category"
+msgstr "Étiquette d'employé"
+
+#. module: bf_color_hr
 #: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee__color_hex
+#: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee_category__color_hex
 #: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee_public__color_hex
 msgid "Own color"
 msgstr "Couleur propre"
@@ -76,5 +88,6 @@ msgstr "Employé public"
 
 #. module: bf_color_hr
 #: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee__color_text
+#: model:ir.model.fields,field_description:bf_color_hr.field_hr_employee_category__color_text
 msgid "Text color"
 msgstr "Couleur du texte"

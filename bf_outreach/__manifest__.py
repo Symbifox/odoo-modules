@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Campagnes de démarchage",
-    "version": "18.0.1.3.0",
+    "version": "18.0.1.4.0",
     "category": "Sales/CRM",
     "summary": "Suivi des campagnes de démarchage par appels et courriels, avec cadence de relance",
     "description": """

@@ -7,7 +7,7 @@
             <list string="Cat&#233;gories de badges" editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
-                <field name="color" widget="color_picker"/>
+                <field name="color_hex" widget="bf_color" string="Couleur"/>
                 <field name="description"/>
             </list>
         </field>

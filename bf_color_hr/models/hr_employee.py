@@ -17,3 +17,8 @@ class HrEmployeePublic(models.Model):
     _inherit = "hr.employee.public"
 
     color_hex = fields.Char(string="Own color", readonly=True)
+
+
+class HrEmployeeCategory(models.Model):
+    _name = "hr.employee.category"
+    _inherit = ["hr.employee.category", "bf.color.mixin"]

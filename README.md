@@ -7,7 +7,7 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**63 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**65 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
@@ -25,8 +25,8 @@ already BUSL keep their earlier date, and anything flipped since converts four
 years from its own release. The `LICENSE` file inside each module states its
 exact parameters, and it governs.
 
-**6 modules are AGPL-3**, and not by choice: the fundraising and donation-receipt
-modules extend Odoo Community Association code that is itself AGPL-3, so they
+**7 modules are AGPL-3**, and not by choice: the fundraising, donation-receipt
+and helpdesk modules extend Odoo Community Association code that is itself AGPL-3, so they
 inherit it.
 
 Odoo manifests show BUSL modules as `Other proprietary` because the manifest
@@ -132,8 +132,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.3.0 | BUSL-1.1 | Daily digest sections: Claude usage per account (windows, reset, probe state) and the recipient's Gen conversations to follow |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
 | `bf_color` | BF Color | 18.0.1.1.1 | LGPL-3 | Free colors resolved per user, per company and by automatic rules, with saved swatches |
+| `bf_color_calendar` | BF Color for Calendar | 18.0.1.0.0 | LGPL-3 | A free color on meeting types, shown on the events' tags |
 | `bf_color_crm` | BF Color for CRM | 18.0.1.0.0 | LGPL-3 | Free colors on CRM tags and opportunities |
-| `bf_color_hr` | BF Color for Employees | 18.0.1.0.0 | LGPL-3 | A free color on each employee, followed by every agenda that sorts by employee |
+| `bf_color_helpdesk` | BF Color for Helpdesk | 18.0.1.0.0 | AGPL-3 | Free colors on helpdesk tags, teams and tickets |
+| `bf_color_hr` | BF Color for Employees | 18.0.1.1.0 | LGPL-3 | A free color on each employee and employee tag, followed by every agenda that sorts by employee |
+| `bf_color_hr_skills` | BF Color for Skills | 18.0.1.0.0 | LGPL-3 | A free color on skill types |
 | `bf_color_project` | BF Color for Projects | 18.0.1.0.0 | LGPL-3 | Free colors on project tags, tasks and projects, and tasks colored by their tags |
 | `bf_contact_absence` | Symbifox Absences des contacts | 18.0.1.1.0 | BUSL-1.1 | Savoir qu'un contact est absent avant de lui écrire, de lui texter ou de l'appeler |
 | `bf_contact_absence_autoreply` | Symbifox Répondeur d'absence sur statut | 18.0.1.1.0 | BUSL-1.1 | Declare yourself away once, and the responder, the calendar and the return all follow |
@@ -142,8 +145,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_contact_absence_sms` | Symbifox Absences des contacts : Messagerie SMS | 18.0.1.1.0 | BUSL-1.1 | Voir qu'un contact est absent avant de lui texter |
 | `bf_contact_enrichment` | Enrichissement de contacts | 18.0.2.1.1 | BUSL-1.1 | Business cards (OCR) from the desktop or an installable mobile page, email signatures, vCard import, duplicate detection and completeness scoring, powered by Gen |
 | `bf_corporate_governance` | Symbifox Corporate Governance | 18.0.1.1.0 | LGPL-3 | The minute book of a corporation or an association kept in Odoo: board, shareholder and members' resolutions, registers and a compliance calendar |
-| `bf_credentials` | Symbifox Credentials | 18.0.3.0.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
-| `bf_cx` | Expérience client | 18.0.1.12.1 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
+| `bf_credentials` | Symbifox Credentials | 18.0.3.1.0 | LGPL-3 | Encrypted per-project credential vault, with rotation, expiry and a second-factor register |
+| `bf_cx` | Expérience client | 18.0.1.13.0 | BUSL-1.1 | Customer experience measurement: NPS programs, continuous feedback, complaints and consent-tracked testimonials |
 | `bf_cx_ai` | Expérience client : analyse IA des verbatims | 18.0.1.2.3 | LGPL-3 | Sentiment, themes and a one-line summary of customer comments, through the AI bridge |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.1.2 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
 | `bf_cx_crm` | Expérience client - sondage post-perte CRM | 18.0.1.1.0 | BUSL-1.1 | Automatic win/loss survey when a CRM opportunity is marked lost |
@@ -205,7 +208,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_follower_cleanup` | BF — Hygiène des notifications (abonnés et activités internes) | 18.0.2.1.0 | LGPL-3 | Crons that remove non-employee followers and unsubscribe users from the leads they do not sell, plus a guard that never emails an activity notification to a portal account |
 | `bf_fundraising_core` | Levée de fonds — Cœur | 18.0.1.0.0 | AGPL-3 | Donor management and fundraising structure (Funds / Campaigns / Appeals / Packages) on top of the Donation module — comparable to Raiser's Edge |
 | `bf_fundraising_web` | Levée de fonds — Web & Portail donateur | 18.0.1.0.3 | AGPL-3 | Public website donation form + donor portal (giving history and official receipt download) |
-| `bf_gamification` | Fox Quest | 18.0.2.6.1 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
+| `bf_gamification` | Fox Quest | 18.0.2.7.0 | BUSL-1.1 | Gamification system with XP, levels, badges, and rewards |
 | `bf_gantt` | Échéancier | 18.0.1.5.7 | BUSL-1.1 | Gantt schedules for Odoo Community, on a project or standalone, shareable on the portal without a seat, exportable to branded PDF, PNG, SVG, XLSX and MS Project |
 | `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.15.5 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
 | `bf_helpdesk_digest` | Helpdesk — Section du digest quotidien | 18.0.1.0.2 | LGPL-3 | Adds an « Assistance » section to the daily digest: the reader's open tickets and their daily helpdesk notifications |
@@ -256,11 +259,11 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_org_chart_ownership` | Organigramme de détention | 18.0.1.1.0 | BUSL-1.1 | Qui détient quoi, pour quelle part, et le dessin qui va avec |
 | `bf_org_chart_people` | Organigramme des personnes | 18.0.1.1.1 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |
 | `bf_otp` | Symbifox OTP | 18.0.12.2.0 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
-| `bf_outreach` | Campagnes de démarchage | 18.0.1.3.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
+| `bf_outreach` | Campagnes de démarchage | 18.0.1.4.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
 | `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.0.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
 | `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.0.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
 | `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.0.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
-| `bf_persona` | Persona des contacts | 18.0.3.1.0 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
+| `bf_persona` | Persona des contacts | 18.0.3.2.0 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
 | `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.0.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
 | `bf_policy` | Symbifox — Blue Fox OS Policy | 18.0.2.11.1 | BUSL-1.1 | Manage Blue Fox OS workstations from Odoo: install, sign-in, disk encryption, apps and browser policy served to each machine, with machine enrolment and disk-passphrase escrow |
 | `bf_process` | Cartographie de processus | 18.0.5.0.6 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
@@ -325,7 +328,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_softphone` | Symbifox — Téléphone SIP | 18.0.2.10.0 | LGPL-3 | WebRTC softphone (JsSIP) in the web client, backed by an Asterisk PBX, with PBX-dialled calls for clients without a SIP stack and a push wake for a phone whose app is closed |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.2.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
-| `bf_subscription` | Abonnements | 18.0.1.5.2 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
+| `bf_subscription` | Abonnements | 18.0.1.6.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
 | `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.0.3 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
 | `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.3 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
@@ -333,7 +336,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.0.1 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
 | `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.1.8.0 | LGPL-3 | Notifies assignees when their task becomes unblocked |
 | `bf_task_waiting_states` | Task Waiting States | 18.0.1.0.0 | LGPL-3 | Add Attente - Client / Attente - Externe task states |
-| `bf_time_of_day` | BF Time of Day | 18.0.1.4.1 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
+| `bf_time_of_day` | BF Time of Day | 18.0.1.5.0 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.13.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timesheet_timer_mobile` | Chronomètre : application Android | 18.0.1.3.1 | BUSL-1.1 | API for the Symbifox Chronomètre Android app: PKCE device pairing and timer gestures, stop and log in one request |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |
@@ -392,9 +395,9 @@ file inside each module governs and carries its exact parameters.
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **63 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **65 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
-- **6 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
+- **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising
   and donation-receipt modules; `bf_helpdesk` is a fork-style extension of
   OCA `helpdesk_mgmt`.

@@ -5,3 +5,4 @@ from . import test_cx_notify_response
 from . import test_cx_wave_resend
 from . import test_cx_exclusion
 from . import test_cx_testimonial_optin
+from . import test_couleur_libre

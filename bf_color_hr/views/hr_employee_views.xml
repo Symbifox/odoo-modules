@@ -12,4 +12,61 @@
             </field>
         </field>
     </record>
+
+    <!-- Employee tags: a free color, shown on the employee's tags. -->
+    <record id="hr_employee_category_form_bf_color" model="ir.ui.view">
+        <field name="name">hr.employee.category.form.bf_color</field>
+        <field name="model">hr.employee.category</field>
+        <field name="inherit_id" ref="hr.view_employee_category_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="color_hex" widget="bf_color"/>
+                <field name="color_resolved" widget="bf_color_resolved" invisible="not id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_employee_category_list_bf_color" model="ir.ui.view">
+        <field name="name">hr.employee.category.list.bf_color</field>
+        <field name="model">hr.employee.category</field>
+        <field name="inherit_id" ref="hr.view_employee_category_list"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="color_hex" widget="bf_color" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="hr_employee_tree_bf_color" model="ir.ui.view">
+        <field name="name">hr_employee_tree_bf_color.bf_color</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_employee_kanban_bf_color" model="ir.ui.view">
+        <field name="name">hr_employee_kanban_bf_color.bf_color</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="hr_employee_form_tags_bf_color" model="ir.ui.view">
+        <field name="name">hr_employee_form_tags_bf_color.bf_color</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='category_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'no_create_edit': True, 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
 </odoo>

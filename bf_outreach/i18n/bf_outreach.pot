@@ -2333,3 +2333,61 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_outreach.view_bf_outreach_target_form
 msgid "Étiquettes"
 msgstr ""
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__color_resolved_index
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_tag__color_resolved_index
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color_source
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color_source
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color_source
+msgid "Color Source"
+msgstr ""
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__color_hex
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_tag__color_hex
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr ""
+
+#. module: bf_outreach
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_campaign__color_resolved
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_tag__color_resolved
+#: model:ir.model.fields,help:bf_outreach.field_bf_outreach_target__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color_resolved
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color_resolved
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color_resolved
+msgid "Displayed color"
+msgstr ""
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color_resolved_index
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color_resolved_index
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr ""
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color_hex
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color_hex
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color_hex
+msgid "Own color"
+msgstr ""
+
+#. module: bf_outreach
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_campaign__color_text
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_tag__color_text
+#: model:ir.model.fields,field_description:bf_outreach.field_bf_outreach_target__color_text
+msgid "Text color"
+msgstr ""

@@ -87,7 +87,7 @@
                                        placeholder="Ce qu'on met en place pour éviter la récidive."/>
                                 <field name="complainant_satisfied"/>
                                 <field name="theme_ids" widget="many2many_tags"
-                                       options="{'color_field': 'color'}" colspan="2"/>
+                                       options="{'color_field': 'color', 'bf_color': True}" colspan="2"/>
                             </group>
                             <field name="resolution" placeholder="Réponse donnée au plaignant…"/>
                         </page>

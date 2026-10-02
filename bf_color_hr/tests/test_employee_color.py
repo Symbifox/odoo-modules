@@ -19,3 +19,20 @@ class TestEmployeeColor(TransactionCase):
         self.assertEqual(seen.color_hex, "#FF0000")
         public = self.env["hr.employee.public"].with_user(clerk).browse(doctor.id)
         self.assertEqual(public.color_hex, "#FF0000")
+
+    def test_employee_tag_carries_a_free_color(self):
+        self.assertIn("hr.employee.category", self.env["bf.color.mixin"]._bf_color_model_names())
+        tag = self.env["hr.employee.category"].create({"name": "On call", "color_hex": "#cc79a7"})
+        self.assertEqual(tag.color_hex, "#CC79A7")
+        self.assertEqual(tag.color_resolved, "#CC79A7")
+        self.assertTrue(tag.color)
+
+    def _arch(self, xmlid, view_type):
+        view = self.env.ref(xmlid)
+        return self.env[view.model].get_view(view.id, view_type)["arch"]
+
+    def test_employee_tags_paint_the_free_color(self):
+        for xmlid, kind in (("hr.view_employee_form", "form"), ("hr.view_employee_tree", "list"),
+                            ("hr.hr_kanban_view_employees", "kanban")):
+            self.assertIn("'bf_color': True", self._arch(xmlid, kind), xmlid)
+        self.assertIn('widget="bf_color"', self._arch("hr.view_employee_category_list", "list"))

@@ -15,13 +15,14 @@ LGPL-3 — see `LICENSE`.
 ### Admin-configurable time slots
 - A `bf.time.of.day` model (`name`, `code`, `sequence`, `color`, `icon`, `default_time`, `active`).
 - 4 seeded presets (`noupdate=1`): **Morning** (09:00, ☕), **Midday** (12:00, 🌞), **End of day** (16:00, 🕓), **After hours** (19:00, 🌙). Renameable, recolourable, extendable — an admin can add as many as they want.
-- Admin menu under *Settings → Technical → Time slots*. Inline-editable list with `widget="color_picker"` and `widget="float_time"` down to the minute.
+- Admin menu under *Settings → Technical → Time slots*. Inline-editable list with a free color (`bf_color`: any hex, and each user can keep their own) and `widget="float_time"` down to the minute.
 
 ### Applied to `project.task`
 - A `time_of_day_id` field (Many2one, indexed, with `group_expand` so empty columns show in kanban).
 - On create/write: if `date_deadline` is set AND a slot is chosen, the deadline's **time** is rewritten to the effective time (the **date** is preserved). Explicit UTC ↔ user time zone conversion.
 - `default_get` suggests the slot closest to the current local time (wrap-around handled for *After hours*), saving a click in the common case.
 - `time_of_day_color` (related, store=True) and `time_of_day_icon` (related) fields for kanban decoration.
+- `time_of_day_color_resolved` and `time_of_day_color_text` (related): the slot's free color as the current user sees it, and the readable text color on it.
 - A `time_of_day_code` field (Selection, computed, store=True, indexed): a stable mirror of `time_of_day_id.code` and the key for the kanban progress bar. Limited to the 4 shipped slots — an admin-added slot outside `morning/midday/eod/after_hours` leaves the field empty (and does not appear in the bar).
 
 ### Applied to `mail.activity`
@@ -35,7 +36,7 @@ LGPL-3 — see `LICENSE`.
 - Admin presets are **suggestions**; the personal override wins.
 
 ### Kanban visibility ("like the task state")
-- Inherits `project.view_task_kanban`: a coloured `o_tag_color_<n>` badge after the tags, prefixed by the slot's Font Awesome icon.
+- Inherits `project.view_task_kanban`: a badge after the tags in the slot's free color (`bf_color`, with black or white text worked out for contrast), falling back to Odoo's `o_tag_color_<n>` when the slot has no color, prefixed by the slot's Font Awesome icon.
 - Inherits `project.view_task_search_form`: 5 filters (`Morning`, `Midday`, `End of day`, `After hours`, `No slot`) plus a *Time slot* group-by.
 - A `My day by slot` saved search (quick win C): the user's tasks whose deadline falls today, grouped by slot — one click to see your day.
 - The model's display name is prefixed with an emoji (☕ Morning, 🌞 Midday…), so the m2o dropdown reads well without a custom widget.
@@ -126,6 +127,9 @@ bf_time_of_day/
 ```
 
 ## Changelog
+
+### 18.0.1.5.0
+- **Time slots take a free color** (`bf_color`): any hex instead of Odoo's twelve, and each user can keep their own. The badge on task cards takes the slot's color, with black or white text worked out for contrast; a slot with no color of its own keeps Odoo's index colors.
 
 ### 18.0.1.4.1
 - **The slot has its own row on the task form, right under the deadline.** It used to sit inside the deadline's inline row, where Odoo 18 gives every widget an equal share: with the recurrence button and the chatter beside the form, the deadline was cut to "2026-10-02 07:00:" and lost its seconds. Anchored after that row, the slot gets its own *Time slot* label and neither value is cropped at any width.

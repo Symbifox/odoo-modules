@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Meeting types: a free color, shown on the event's tags. -->
+    <record id="calendar_event_type_list_bf_color" model="ir.ui.view">
+        <field name="name">calendar.event.type.list.bf_color</field>
+        <field name="model">calendar.event.type</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_type_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="color_hex" widget="bf_color" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="calendar_event_list_bf_color" model="ir.ui.view">
+        <field name="name">calendar_event_list_bf_color.bf_color</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="calendar_event_form_bf_color" model="ir.ui.view">
+        <field name="name">calendar_event_form_bf_color.bf_color</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_ids']" position="attributes">
+                <attribute name="options">{'color_field': 'color', 'no_create_edit': True, 'bf_color': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

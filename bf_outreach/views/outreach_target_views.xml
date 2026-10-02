@@ -29,7 +29,7 @@
                 <field name="has_reply" optional="hide"/>
                 <field name="is_excluded" optional="hide"/>
                 <field name="source" optional="hide"/>
-                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'bf_color': True}" optional="hide"/>
                 <field name="activity_ids" widget="list_activity" optional="hide"/>
                 <field name="company_id" groups="base.group_multi_company" optional="hide"/>
                 <button name="action_log_call" type="object" icon="fa-phone" title="Journaliser un appel"/>
@@ -61,7 +61,7 @@
                             <field name="priority" widget="priority" class="ms-auto"/>
                         </div>
                         <field name="contact_name" invisible="not contact_name" class="text-muted"/>
-                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'bf_color': True}"/>
                         <div class="mt-1">
                             <span class="me-3"><i class="fa fa-phone me-1" title="Appels"/><field name="call_count"/></span>
                             <span class="me-3"><i class="fa fa-envelope me-1" title="Courriels"/><field name="email_count"/></span>
@@ -131,7 +131,7 @@
                         <label for="name" string="Cible"/>
                         <h1><field name="name" placeholder="Nom de l'organisation"/></h1>
                         <field name="tag_ids" widget="many2many_tags"
-                               options="{'color_field': 'color'}" placeholder="Étiquettes"/>
+                               options="{'color_field': 'color', 'bf_color': True}" placeholder="Étiquettes"/>
                     </div>
                     <group>
                         <group string="Coordonnées">

@@ -1,6 +1,7 @@
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -42,6 +43,11 @@ class ResConfigSettings(models.TransientModel):
     def action_reset_all_progress(self):
         """Wipe all XP, badges, streaks, and reward claims for every user."""
         self.ensure_one()
+        # SQL brut, qui ne passe par aucune règle d'accès : la page des réglages
+        # n'est ouverte qu'aux administrateurs, mais une méthode publique se joint
+        # aussi par RPC ou depuis du code en sudo. On le redit ici.
+        if not self.env.user.has_group("base.group_system"):
+            raise AccessError(_("Seul un administrateur peut remettre à zéro la progression."))
         cr = self.env.cr
         cr.execute("DELETE FROM bf_gamification_xp_transaction")
         xp_count = cr.rowcount
