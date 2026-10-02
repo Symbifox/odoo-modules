@@ -92,6 +92,11 @@ msgid "%(s).1f semaines de capacité déclarée"
 msgstr "%(s).1f weeks of declared capacity"
 
 #. module: bf_charge
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_task_form_charge
+msgid "<span class=\"mx-1\">·</span>"
+msgstr "<span class=\"mx-1\">·</span>"
+
+#. module: bf_charge
 #: model:ir.model.fields,field_description:bf_charge.field_bf_charge_contract__message_needaction
 msgid "Action Needed"
 msgstr ""
@@ -816,6 +821,7 @@ msgstr "Not declared"
 
 #. module: bf_charge
 #: model:ir.model.fields.selection,name:bf_charge.selection__bf_charge_plan_line__bucket__non_placable
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_task_form_charge
 msgid "Non plaçable, aucune date"
 msgstr "Not placeable, no date"
 
@@ -894,6 +900,7 @@ msgstr "Plan"
 #: model:ir.model,name:bf_charge.model_bf_charge_plan
 #: model:ir.ui.menu,name:bf_charge.menu_bf_charge_root
 #: model_terms:ir.ui.view,arch_db:bf_charge.view_bf_charge_plan_form
+#: model_terms:ir.ui.view,arch_db:bf_charge.view_task_form_charge
 msgid "Plan de charge"
 msgstr "Workload plan"
 

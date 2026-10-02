@@ -115,7 +115,13 @@ class ProjectTask(models.Model):
     # ------------------------------------------------------------------
     # Placement
     # ------------------------------------------------------------------
-    @api.depends("date_deadline")
+    # `planned_date_begin` vient de `bf_gantt`, qui n'est pas une dépendance :
+    # le nommer en dur ferait tomber le registre sans lui. Le lambda n'est lu
+    # qu'une fois tous les champs posés, et ne le déclare que s'il existe. Sans
+    # lui, le formulaire gardait « Non plaçable » affiché après la saisie d'un
+    # début, jusqu'à l'enregistrement.
+    @api.depends(lambda self: ["date_deadline"] + (
+        ["planned_date_begin"] if "planned_date_begin" in self._fields else []))
     def _compute_bf_charge_dates(self):
         a_un_debut = "planned_date_begin" in self._fields
         for task in self:

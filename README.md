@@ -122,7 +122,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_capture` | Captation audio | 18.0.1.2.4 | BUSL-1.1 | Record a meeting or a memo from a phone; the server names the file and drops it where the rest is already automatic |
 | `bf_celebrations` | Célébrations | 18.0.2.2.0 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_celebrations_email` | Célébrations : groupes de destinataires | 18.0.1.0.0 | LGPL-3 | Tend une carte de fête aux groupes de destinataires du composeur de courriels |
-| `bf_charge` | Plan de charge | 18.0.1.1.2 | BUSL-1.1 | What is actually left to do, placed on weeks, against a declared capacity rather than a guessed one |
+| `bf_charge` | Plan de charge | 18.0.1.1.3 | BUSL-1.1 | What is actually left to do, placed on weeks, against a declared capacity rather than a guessed one |
 | `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.1.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.0.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
@@ -330,7 +330,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.0.1 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
 | `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.1.8.0 | LGPL-3 | Notifies assignees when their task becomes unblocked |
 | `bf_task_waiting_states` | Task Waiting States | 18.0.1.0.0 | LGPL-3 | Add Attente - Client / Attente - Externe task states |
-| `bf_time_of_day` | BF Time of Day | 18.0.1.4.0 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
+| `bf_time_of_day` | BF Time of Day | 18.0.1.4.1 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |
 | `bf_timesheet_timer` | BF Timer - Feuilles de temps | 18.0.1.13.0 | LGPL-3 | Global timesheet timer with multi-timer support and an OWL UI |
 | `bf_timesheet_timer_mobile` | Chronomètre : application Android | 18.0.1.3.1 | BUSL-1.1 | API for the Symbifox Chronomètre Android app: PKCE device pairing and timer gestures, stop and log in one request |
 | `bf_timezone` | Symbifox Timezone Utilities | 18.0.1.1.0 | LGPL-3 | Shared timezone helpers and a configurable default timezone for Symbifox modules |

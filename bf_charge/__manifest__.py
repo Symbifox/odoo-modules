@@ -1,6 +1,6 @@
 {
     "name": "Plan de charge",
-    "version": "18.0.1.1.2",
+    "version": "18.0.1.1.3",
     "category": "Services/Project",
     "summary": "Ce qui est vraiment à faire, posé sur des semaines, contre une capacité déclarée plutôt que devinée",
     "author": "Les services de consultation Blue Fox, Inc.",

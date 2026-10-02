@@ -180,6 +180,40 @@ class TestCharge(TransactionCase):
         self.assertEqual(t.charge_date_end, aujourdhui)
         self.assertTrue(t.charge_placeable)
 
+    # -- le formulaire de la tâche ---------------------------------------
+    def test_la_rangee_de_l_echeance_reste_a_l_echeance(self):
+        """Ancrés `after` sur `date_deadline`, les champs de la charge tombaient
+        dans le `div` en ligne de l'échéance, sans étiquette, et la date
+        s'affichait rognée à « 9:00:00 ». Chacun doit vivre hors de ce `div`,
+        enfant direct d'un groupe, là où le groupe lui pose son libellé.
+        """
+        from lxml import etree
+        vue = self.env.ref("project.view_task_form2")
+        arch = etree.fromstring(self.Task.get_view(vue.id, "form")["arch"])
+        rangee = arch.xpath("//div[@id='date_deadline_and_recurring_task']")
+        self.assertEqual(len(rangee), 1, "la rangée de l'échéance a changé de forme")
+        intrus = [n.get("name") for n in rangee[0].iter("field")
+                  if n.get("name", "").startswith("charge_")]
+        self.assertFalse(intrus, "champs de la charge dans la rangée de l'échéance")
+        saisie = arch.xpath("//field[@name='charge_hours_manual']")
+        self.assertEqual(len(saisie), 1)
+        self.assertEqual(saisie[0].getparent().tag, "group",
+                         "la charge corrigée doit recevoir son libellé du groupe")
+        self.assertTrue(arch.xpath("//label[@for='charge_hours']"),
+                        "la charge retenue a perdu son libellé")
+
+    def test_le_non_placable_suit_la_saisie_d_un_debut(self):
+        """Le formulaire dit « Non plaçable » : il doit cesser de le dire dès
+        qu'un début est saisi, sans attendre l'enregistrement."""
+        if "planned_date_begin" not in self.Task._fields:
+            self.skipTest("bf_gantt absent : pas de date de début")
+        from odoo.tests import Form
+        with Form(self.Task.with_context(default_project_id=self.projet.id)) as f:
+            f.name = "début seul"
+            self.assertFalse(f.charge_placeable)
+            f.planned_date_begin = fields.Datetime.now()
+            self.assertTrue(f.charge_placeable)
+
     # ------------------------------------------------------------------
     def test_classification_gabarit(self):
         self.assertEqual(self.gabarit.charge_kind, "gabarit")

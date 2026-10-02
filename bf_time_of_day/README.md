@@ -115,6 +115,8 @@ bf_time_of_day/
 │   └── bf_time_of_day_security.xml     # ir.rule on user_pref
 ├── static/src/scss/
 │   └── kanban_badge.scss               # kanban chip styling
+├── tests/
+│   └── test_task_form.py               # the slot keeps its own row on the task form
 └── views/
     ├── bf_time_of_day_views.xml        # list + form + action
     ├── res_users_views.xml             # "Time slots" tab on the user record
@@ -124,6 +126,10 @@ bf_time_of_day/
 ```
 
 ## Changelog
+
+### 18.0.1.4.1
+- **The slot has its own row on the task form, right under the deadline.** It used to sit inside the deadline's inline row, where Odoo 18 gives every widget an equal share: with the recurrence button and the chatter beside the form, the deadline was cut to "2026-10-02 07:00:" and lost its seconds. Anchored after that row, the slot gets its own *Time slot* label and neither value is cropped at any width.
+- A test reads the combined form and fails if the slot falls back into the deadline row.
 
 ### 18.0.1.4.0
 - **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read this module in French.

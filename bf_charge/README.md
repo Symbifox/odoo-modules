@@ -75,6 +75,14 @@ any server side test noticing; a standard view cannot lie about data the tests c
 its retained dates and whether it is placeable. `project.project` gains its kind and the
 date of its last logged hour.
 
+On the task form these sit under *Allocated Time*, each on its own labelled row, never
+beside the deadline: in Odoo 18 the deadline lives in an inline row that gives every
+widget an equal share and no label, so fields placed there crop the date. An ordinary
+task shows one row, the corrected workload, which is the only input. The retained
+workload and its source appear only when they differ from the allocated time (corrected
+by hand, or a sale set aside, with its reason), and *Not placeable, no date* only when
+the task carries no date at all.
+
 ## Requirements
 
 - Odoo 18 Community
