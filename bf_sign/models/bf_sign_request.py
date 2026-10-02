@@ -773,10 +773,37 @@ class BfSignRequest(models.Model):
         return True
 
     def action_reset_to_draft(self):
+        """Repartir d'une page blanche, consignée à la piste.
+
+        Une demande refusée, expirée ou annulée peut porter déjà des signatures,
+        des valeurs saisies et des codes vérifiés. Les garder ferait apposer une
+        signature donnée sur un document que la personne n'a peut-être jamais vu
+        (le PDF se remplace en brouillon), et laisserait signer sans nouveau code
+        avec un lien déjà transmis. Chaque signataire repart donc à zéro, avec un
+        NOUVEAU lien : l'ancien cesse de fonctionner. L'historique des signatures
+        écartées reste dans la piste, qui ne s'efface jamais.
+        """
         for rec in self:
             if rec.state == "signed":
                 raise UserError(_("Un document signé ne peut être remis en brouillon."))
-            rec.state = "draft"
+            ecartes = rec.signer_ids.filtered(lambda s: s.state == "signed")
+            # Brouillon d'abord : signataires et pavés ne s'écrivent qu'en brouillon.
+            # Écrit avec les droits de la personne (contrôle d'accès de l'original) ;
+            # le sudo ne sert qu'aux signataires, dont otp_hash est réservé aux
+            # gestionnaires.
+            vals = {"state": "draft", "hash_original": False}
+            # Une échéance déjà passée (demande expirée) serait gardée par l'envoi
+            # suivant : la demande ré-expirerait dans l'heure et les nouveaux
+            # liens répondraient « expiré ». L'envoi en pose alors une neuve.
+            if rec.expiry_date and rec.expiry_date <= fields.Datetime.now():
+                vals["expiry_date"] = False
+            rec.write(vals)
+            rec.signer_ids.sudo()._reset_for_new_round()
+            rec.field_ids.sudo().write({"filled_value": False})
+            note = _("Remise en brouillon : signataires remis en attente, nouveaux liens personnels.")
+            if ecartes:
+                note += " " + _("Signature(s) écartée(s) : %s.") % ", ".join(ecartes.mapped("email"))
+            self.env["bf.sign.log"]._append(rec, "reset_draft", actor=self.env.user.name, note=note)
         return True
 
     def action_download_signed(self):

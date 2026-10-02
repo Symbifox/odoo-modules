@@ -6,11 +6,11 @@ provable, tamper-evident simple electronic signature (SES), with an optional
 **PAdES digital seal** (a "signed / not altered" document in a PDF reader, the
 way DocuSeal does it).
 
-- **Version**: `18.0.3.13.2` — see [`CHANGELOG.md`](CHANGELOG.md).
+- **Version**: `18.0.3.26.6` — see [`CHANGELOG.md`](CHANGELOG.md).
 - **Licence**: **BUSL-1.1**. Production use is allowed for your **own internal
   business operations**; providing the module as a product or service to third
   parties (hosted, managed or resold) requires a written agreement. Converts to
-  **LGPL-3.0-or-later** on **2029-07-20**. See [`LICENSE`](LICENSE). It does not
+  **LGPL-3.0-or-later** on **2030-10-02**. See [`LICENSE`](LICENSE). It does not
   cover embedded third-party works (typefaces): see
   [`THIRD-PARTY.md`](THIRD-PARTY.md).
 - **Threat model & non-guarantees**: see [`SECURITY.md`](SECURITY.md).
@@ -80,6 +80,7 @@ signed document is then **posted back into the source record's thread**.
 - **A drop zone on that page that checks the holder's own copy**: they pick or drag their PDF and get a plain verdict, instead of being told to run `shasum` themselves. The file is hashed **in the browser** (WebCrypto `crypto.subtle`) against `hash_signed` and is never uploaded — the page takes in no file, so the public route gains no intake to abuse. A mismatch names the legitimate causes (a PDF re-saved by a viewer, a scan of a printout, the certificate delivered separately) before pointing at tampering. Browsers without WebCrypto get the `shasum` / `Get-FileHash` commands instead of a zone that silently does nothing.
 - **An optional verification QR stamped on the document itself** (choice of corner and pages), drawn as vector geometry so it survives printing, and **clickable** — the whole card is a link annotation, because on screen nobody wants to scan a code they could click.
 - **Structural locking**: recipients and fields frozen once the request is sent (editable only in "draft").
+- **Reset to draft starts from a blank page**: a request that is not signed can go back to draft (the form offers it once the request is cancelled, expired or refused), and every signer starts over (signature, consent, code and open tracking cleared, typed values emptied) with a **new personal link**, the old one stops working. A signature already given is never stamped on a document its signer has not seen; the audit trail keeps a "reset to draft" entry naming the signatures set aside. An expiry date already past is cleared, so the next send sets a fresh one.
 - **RFC 3161 trusted timestamping** *(optional)*: a TSA token over the signed content, **shown in the certificate**, giving independent proof of date.
 - **The verification link and a QR on the completion certificate**, so the pointer to the proof travels inside the signed bundle even when the QR on the document pages is off (it is, by default). Embedded as a `data:` URI, so rendering never depends on an HTTP callback into the server.
 - **"Share the verification link"** from the Proof tab, which opens a prefilled composer. It refuses to mint a token for a request finalised before the verification page existed, rather than quietly altering a signed record to make a button work.
@@ -218,6 +219,8 @@ overriding `_sign_report_ref()` (return the PDF report's xmlid), and adding the
    before accessing the document.
 4. **Signing**: the signer views the document, consents, signs — or **refuses**.
    Images are validated (PNG, size, integrity) before acceptance.
+   A cancelled, expired or refused request can be **reset to draft**: signers
+   start over with new links, and the old links stop working (see Features).
 5. **Finalisation** (last signer): stamping, optional RFC 3161 timestamping,
    certificate rendering, merging, the optional **PAdES seal**, hashes, logging,
    a confirmation email (signed document plus certificate), and **posting back**
@@ -271,7 +274,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2029-07-20, this version converts automatically to
+- **Change Date**: on 2030-10-02, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 Embedded third-party works (typefaces) remain under their own licences: see

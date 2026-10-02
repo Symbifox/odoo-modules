@@ -109,6 +109,13 @@
                 </div>
 
                 <t t-set="sel" t-value="selectedField"/>
+                <!-- La barre garde sa place sans sélection : la faire naître au
+                     moment de l'appui décalait les pages sous le pointeur. -->
+                <div class="bf-props bf-props-empty" t-if="!sel">
+                    <span class="bf-props-title">Aucun pavé sélectionné</span>
+                    <span class="text-muted small" t-if="!isLocked">Touchez un pavé pour régler son signataire, son mode de remplissage et ses options.</span>
+                    <span class="text-muted small" t-else="">La demande n'est plus en brouillon : les pavés ne se modifient plus.</span>
+                </div>
                 <div class="bf-props" t-if="sel">
                     <span class="bf-props-title">Pavé sélectionné</span>
                     <select class="form-select form-select-sm"

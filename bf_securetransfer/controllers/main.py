@@ -793,6 +793,19 @@ class SecureTransferController(Controller):
         if not _otp_fail_limiter.check(key, _OTP_FAIL_MAX):
             return request.redirect("/s/%s?otp_error=2" % token, code=303)
         chal = request.session.get("st_otp_chal_%d" % transfer.id) or {}
+        # Compteur propre au code, en base et sous verrou : le
+        # limiteur ci-dessus est par IP et par worker, il ne borne rien face à
+        # un même cookie rejoué depuis des IP qui tournent.
+        chal_member = transfer._audience_for(
+            chal.get("kind") or "email",
+            chal.get("value") or chal.get("email") or "",
+        ) if chal.get("hash") else None
+        if chal_member:
+            chal_member._lock_otp_attempts()
+            if chal_member._otp_attempts_exhausted():
+                request.session.pop("st_otp_chal_%d" % transfer.id, None)
+                request.session.pop("st_otp_sent_%d" % transfer.id, None)
+                return request.redirect("/s/%s?otp_error=2" % token, code=303)
         code = (post.get("code") or "").strip()
         expiry = chal.get("expiry")
         expired = (not expiry) or fields.Datetime.from_string(expiry) < fields.Datetime.now()
@@ -833,6 +846,12 @@ class SecureTransferController(Controller):
                 else _("Destinataire confirmé par code"))
             return request.redirect("/s/%s" % token, code=303)
         _otp_fail_limiter.hit(key)
+        if chal_member:
+            chal_member._record_otp_verify_fail()
+            if chal_member._otp_attempts_exhausted():
+                # Le code en cours est brûlé : il faut en demander un autre.
+                request.session.pop("st_otp_chal_%d" % transfer.id, None)
+                request.session.pop("st_otp_sent_%d" % transfer.id, None)
         transfer._log("otp_fail", actor=chal.get("label") or chal.get("email"),
                       ip=ip, ua=ua)
         return request.redirect("/s/%s?otp_error=1" % token, code=303)

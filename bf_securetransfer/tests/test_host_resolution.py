@@ -172,3 +172,45 @@ class TestBrandHostResolution(BaseNeuve, TransactionCase):
             v["powered_by_name"],
             getattr(company, "appointment_brand_name", False) or company.name,
         )
+
+
+@tagged("post_install", "-at_install")
+class TestBrandFromRequestBehindProxy(TransactionCase):
+    """La marque suit l'hôte qu'Odoo retient, pas le 1er élément brut.
+
+    Avec `proxy_mode`, ProxyFix garde le DERNIER X-Forwarded-Host (celui de
+    notre mandataire) dans `host`. Lire l'en-tête brut et garder son premier
+    élément laissait le client choisir la marque en se plaçant devant.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        Brand = cls.env["secure.transfer.brand"]
+        cls.marque = Brand.create({"name": "Marque Secret",
+                                   "domain": "secret.example.test"})
+        cls.other = Brand.create({"name": "Autre client",
+                                  "domain": "envoi.client.test"})
+
+    def _from(self, host, forwarded, proxy_mode):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+
+        from odoo.tools import config
+        fake = SimpleNamespace(httprequest=SimpleNamespace(
+            host=host, headers={"X-Forwarded-Host": forwarded}))
+        mod = "odoo.addons.bf_securetransfer.models.secure_transfer_brand"
+        with patch(mod + ".request", fake), \
+                patch.dict(config.options, {"proxy_mode": proxy_mode}):
+            return self.env["secure.transfer.brand"]._from_request()
+
+    def test_client_devant_le_mandataire_avec_proxy_mode(self):
+        # ProxyFix a déjà mis le dernier saut dans `host`.
+        self.assertEqual(self._from(
+            "secret.example.test",
+            "envoi.client.test, secret.example.test", True), self.marque)
+
+    def test_sans_proxy_mode_dernier_saut(self):
+        self.assertEqual(self._from(
+            "127.0.0.1:8069",
+            "envoi.client.test, secret.example.test", False), self.marque)

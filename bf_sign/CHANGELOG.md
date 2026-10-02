@@ -2,6 +2,28 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.26.6
+
+- Remettre en brouillon repart d'une page blanche. Avant, seule la demande
+  changeait d'état : une signature déjà donnée restait sur la fiche du
+  signataire et se retrouvait apposée sur le PDF remplacé, jamais vu par la
+  personne ; un code déjà vérifié laissait signer sans nouveau code. Chaque
+  signataire repart en attente, sans signature, consentement, code ni suivi
+  d'ouverture, avec un NOUVEAU lien personnel (l'ancien cesse de fonctionner) ;
+  les valeurs des pavés sont vidées. Nouvel événement de piste « Remise en
+  brouillon », qui nomme les signatures écartées.
+- Éditeur de pavés : un clic sur un pavé le sélectionne enfin. La barre
+  « Pavé sélectionné » naissait à l'appui et décalait les pages sous le
+  pointeur ; le relâchement tombait sur la page, qui annulait la sélection (ou
+  posait un pavé parasite si un type était armé). La barre garde maintenant sa
+  place sans sélection, et le clic qui suit l'appui sur un pavé est ignoré par
+  la page, au toucher aussi (sur tablette, le clic arrive après le relâchement :
+  le pavé n'était pas sélectionné, et un type armé posait un pavé parasite).
+- Une demande expirée, remise en brouillon puis renvoyée, reçoit une échéance
+  neuve. Avant, l'envoi gardait l'échéance passée : la demande ré-expirait à
+  la passe suivante du cron et les nouveaux liens répondaient « expiré ». Une
+  échéance encore à venir est gardée.
+
 ## 18.0.3.26.4
 
 - Sécurité : le refus de signer passe les mêmes portes que la signature —

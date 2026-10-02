@@ -2469,16 +2469,23 @@ class SecureTransfer(models.Model):
                 raise
 
     @api.model
+    def _gc_drafts_domain(self, cutoff):
+        """Brouillons que le ménage horaire peut récolter.
+
+        Un module qui garde volontairement un brouillon ouvert plus longtemps que
+        le délai (une demande de documents qui attend ses pièces jusqu'à son temps
+        limite) en retire les siens en étendant cette méthode.
+        """
+        return [("state", "=", "draft"), ("create_date", "<=", cutoff)]
+
+    @api.model
     def _cron_gc_drafts(self):
         """Hourly — harvest abandoned drafts (abort MPUs, delete uploaded
         objects, state cancelled) and sweep the bucket for orphaned MPUs
         that no live draft claims (48 h grace)."""
         ttl = s3._int_param(self.env, "draft_ttl_hours", 24)
         cutoff = fields.Datetime.now() - timedelta(hours=ttl)
-        for rec in self.search([
-            ("state", "=", "draft"),
-            ("create_date", "<=", cutoff),
-        ]):
+        for rec in self.search(self._gc_drafts_domain(cutoff)):
             try:
                 rec._purge_s3()
             except UserError as e:

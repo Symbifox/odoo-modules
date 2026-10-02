@@ -89,6 +89,11 @@ class SecureTransferAudience(models.Model):
     confirmed_at = fields.Datetime(string="Confirmé le", readonly=True)
     last_otp_at = fields.Datetime(string="Dernier code envoyé", readonly=True)
     otp_send_count = fields.Integer(string="Codes envoyés", default=0, readonly=True)
+    # Essais ratés sur le code EN COURS, en base. Le défi vit dans la
+    # session et le seul compteur était par (IP, transfert) en mémoire : un
+    # même cookie promené sur vingt IP s'offrait vingt fois huit essais.
+    otp_verify_fails = fields.Integer(
+        string="Essais ratés sur le code en cours", default=0, readonly=True)
     sms_send_count = fields.Integer(string="SMS envoyés", default=0, readonly=True)
     download_count = fields.Integer(
         string="Téléchargements", default=0, readonly=True,
@@ -120,6 +125,9 @@ class SecureTransferAudience(models.Model):
     OTP_COOLDOWN_SECONDS = 60
     # Destinataires nommés : codes par heure et par destinataire.
     MAX_OTP_PER_HOUR_NAMED = 5
+    # Essais par code envoyé. Le compteur repart à chaque nouveau code, et les
+    # envois sont eux-mêmes plafonnés par identité : le total reste borné.
+    MAX_OTP_VERIFY_FAILS = 5
     OTP_WINDOW_SECONDS = 3600
 
     @api.depends("identity_kind", "email", "phone")
@@ -213,7 +221,26 @@ class SecureTransferAudience(models.Model):
             "sms_send_count": self.sms_send_count
             + (1 if self.identity_kind == "sms" else 0),
             "last_otp_at": now,
+            "otp_verify_fails": 0,
         })
+
+    def _lock_otp_attempts(self):
+        """Verrou de ligne : deux essais simultanés avec le même cookie ne
+        doivent pas lire le même compteur."""
+        self.ensure_one()
+        self.env.flush_all()
+        self.env.cr.execute(
+            "SELECT id FROM secure_transfer_audience WHERE id = %s FOR UPDATE",
+            (self.id,))
+        self.invalidate_recordset(["otp_verify_fails"])
+
+    def _otp_attempts_exhausted(self):
+        self.ensure_one()
+        return self.otp_verify_fails >= self.MAX_OTP_VERIFY_FAILS
+
+    def _record_otp_verify_fail(self):
+        self.ensure_one()
+        self.sudo().write({"otp_verify_fails": self.otp_verify_fails + 1})
 
     def _confirm(self):
         """Le code a été validé : le visiteur entre dans l'audience."""

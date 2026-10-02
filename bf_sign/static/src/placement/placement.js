@@ -637,6 +637,10 @@ export class BfSignPlacement extends Component {
     // The pad is drawn immediately and the server id patched in when it lands.
     // Placing several pads in a row no longer waits on a round trip each time.
     async onPageClick(ev, pg) {
+        if (this._boxPress) {
+            this._boxPress = false;
+            return;
+        }
         if (this.isLocked || !this.state.armedType || !this.state.activeSignerId) {
             this.clearSelection();
             return;
@@ -801,7 +805,27 @@ export class BfSignPlacement extends Component {
     }
 
     // ── Drag & resize ──────────────────────────────────────────────────────────
+    // Appuyer sur un pavé le sélectionne, et la sélection peut déplacer la page
+    // sous le pointeur. Le navigateur adresse alors le clic du relâchement à la
+    // PAGE, qui annulait la sélection ou posait un pavé parasite. Le clic qui suit
+    // un appui sur un pavé est donc ignoré par la page.
+    // À la souris, ce clic suit le relâchement dans la même tâche ; au toucher, il
+    // vient du geste reconnu APRÈS le relâchement : un délai nul le laissait passer.
+    // Le drapeau tient donc un court moment, et tombe aussi sur pointercancel (un
+    // défilement commencé sur un pavé).
+    _markBoxPress() {
+        this._boxPress = true;
+        clearTimeout(this._boxPressTimer);
+        const relacher = () => {
+            window.removeEventListener("pointerup", relacher);
+            window.removeEventListener("pointercancel", relacher);
+            this._boxPressTimer = setTimeout(() => { this._boxPress = false; }, 400);
+        };
+        window.addEventListener("pointerup", relacher);
+        window.addEventListener("pointercancel", relacher);
+    }
     startDrag(ev, f, pg) {
+        this._markBoxPress();
         this.selectField(f);
         if (this.isLocked) {
             return;
@@ -815,6 +839,7 @@ export class BfSignPlacement extends Component {
         this._bindDragEvents();
     }
     startResize(ev, f, pg) {
+        this._markBoxPress();
         this.selectField(f);
         if (this.isLocked) {
             return;

@@ -171,6 +171,37 @@ class BfSignSigner(models.Model):
         base = self.request_id._get_base_url()
         return "%s/sign/%s/%s" % (base, self.request_id.id, self.access_token)
 
+    def _reset_for_new_round(self):
+        """Remet le signataire à son état d'avant l'envoi (remise en brouillon).
+
+        Le jeton change : un lien déjà transmis ne permet plus ni de consulter ni de
+        signer, et le code de vérification (haché avec le jeton) tombe avec lui.
+        """
+        for rec in self:
+            rec.write({
+                "state": "pending",
+                "access_token": str(uuid.uuid4()),
+                "signed_on": False,
+                "first_viewed_on": False,
+                "last_viewed_on": False,
+                "view_count": 0,
+                "invited_on": False,
+                "reminder_count": 0,
+                "last_reminder_on": False,
+                "unopened_alerted": False,
+                "signer_ip": False,
+                "signer_user_agent": False,
+                "consent_given": False,
+                "consent_timestamp": False,
+                "signature_image": False,
+                "initials_image": False,
+                "otp_hash": False,
+                "otp_sent_at": False,
+                "otp_verified": False,
+                "otp_attempts": 0,
+                "otp_send_count": 0,
+            })
+
     def action_resend_invitation(self):
         """Re-send the signing invitation to THIS signer only.
 

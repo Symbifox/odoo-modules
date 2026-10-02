@@ -877,6 +877,60 @@ class TestBfSign(BaseNeuve, TransactionCase):
         self._field(req, req.signer_ids[0], "text", y=0.4)
         self.assertEqual(req.signer_ids[0].email, "ok@example.com")
 
+    def test_reset_to_draft_discards_earlier_signatures(self):
+        """Remettre en brouillon repart d'une page blanche.
+
+        Avant : seule la demande changeait d'état. La signature déjà donnée par
+        un signataire restait sur sa fiche et se retrouvait apposée sur le PDF
+        remplacé, que la personne n'avait jamais vu ; un code déjà vérifié
+        laissait signer sans nouveau code, avec l'ancien lien.
+        """
+        req = self._new_request(signers=2)
+        a, b = req.signer_ids
+        req.action_send()
+        self._sign(req, a)
+        b.sudo().otp_verified = True
+        old_token_a = a.access_token
+        req.action_cancel()
+        req.action_reset_to_draft()
+        self.assertEqual(req.state, "draft")
+        self.assertFalse(req.hash_original)
+        for s in (a, b):
+            self.assertEqual(s.state, "pending")
+            self.assertFalse(s.signature_image)
+            self.assertFalse(s.consent_given)
+            self.assertFalse(s.signed_on)
+            self.assertFalse(s.otp_verified)
+        self.assertNotEqual(a.access_token, old_token_a,
+                            "l'ancien lien doit cesser de fonctionner")
+        log = req.log_ids.filtered(lambda l: l.event == "reset_draft")
+        self.assertEqual(len(log), 1)
+        self.assertIn(a.email, log.note)
+
+    def test_reset_of_an_expired_request_gets_a_fresh_expiry(self):
+        """Une demande expirée, remise en brouillon puis renvoyée, ne doit pas
+        ré-expirer à la première passe du cron : l'échéance passée
+        gardée par l'envoi rendait les nouveaux liens « expirés » dans l'heure."""
+        req = self._sent_request()
+        req.expiry_date = fields.Datetime.now() - timedelta(days=1)
+        self.env["bf.sign.request"]._cron_expire_requests()
+        self.assertEqual(req.state, "expired")
+        req.action_reset_to_draft()
+        self.assertFalse(req.expiry_date)
+        req.action_send()
+        self.assertGreater(req.expiry_date, fields.Datetime.now())
+        self.env["bf.sign.request"]._cron_expire_requests()
+        self.assertEqual(req.state, "sent")
+
+    def test_reset_keeps_an_expiry_still_ahead(self):
+        """Une échéance choisie et encore à venir survit à la remise en brouillon."""
+        req = self._sent_request()
+        future = fields.Datetime.now() + timedelta(days=12)
+        req.expiry_date = future
+        req.action_cancel()
+        req.action_reset_to_draft()
+        self.assertEqual(req.expiry_date, future)
+
     # ── méthode de signature : SES seulement ─────────────────────────────────
     def test_signature_method_offers_only_ses(self):
         """Le module ne livre que la SES : la sélection ne doit rien promettre de

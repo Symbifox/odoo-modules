@@ -46,6 +46,7 @@ class BfSignLog(models.Model):
             ("refused", "Refusé"),
             ("expired", "Expiré"),
             ("cancelled", "Annulé"),
+            ("reset_draft", "Remise en brouillon"),
         ],
         string="Événement",
         required=True,

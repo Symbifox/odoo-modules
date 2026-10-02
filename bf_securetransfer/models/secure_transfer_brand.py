@@ -20,7 +20,7 @@ import unicodedata
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.http import request
-from odoo.tools import email_normalize
+from odoo.tools import config, email_normalize
 
 from . import s3
 
@@ -404,11 +404,18 @@ class SecureTransferBrand(models.Model):
         falls back to the default brand, then to any active brand."""
         host = ""
         if request:
-            host = (
-                request.httprequest.headers.get("X-Forwarded-Host")
-                or request.httprequest.host
-                or ""
-            )
+            # ⚠️ Avec `proxy_mode`, ProxyFix a déjà versé X-Forwarded-Host
+            # dans `host` en gardant le DERNIER saut, celui de notre
+            # mandataire. L'en-tête brut, dont `_resolve_for_host` garde le
+            # PREMIER élément, laissait le client choisir la marque (et ses
+            # plafonds) en se plaçant devant. Sans `proxy_mode`
+            # (dev), le dernier saut de l'en-tête tient lieu de ProxyFix.
+            httprequest = request.httprequest
+            if config.get("proxy_mode"):
+                host = httprequest.host or ""
+            else:
+                forwarded = httprequest.headers.get("X-Forwarded-Host") or ""
+                host = forwarded.split(",")[-1].strip() or httprequest.host or ""
         brand = self._resolve_for_host(host)
         if not brand:
             brand = self.sudo().search([("is_default", "=", True)], limit=1)
