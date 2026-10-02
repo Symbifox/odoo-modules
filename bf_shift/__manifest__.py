@@ -1,6 +1,6 @@
 {
     "name": "Symbifox Quarts de travail",
-    "version": "18.0.1.1.1",
+    "version": "18.0.1.2.0",
     "category": "Human Resources/Employees",
     "summary": "Shift scheduling for regular and unionised employees: labour standards checks, "
                "premiums, call lists, swaps, taxable benefits, payroll export",
@@ -15,19 +15,23 @@ Work schedules for regular and unionised employees in Québec.
   employee always applies;
 - shift templates, schedules built from them, published then frozen, with a
   change log that nobody can edit (the evidence in a grievance);
-- checks before publishing: 5-day notice, 2 hours beyond the usual day,
-  14 hours in 24, 50 hours in the week, 32 hours of weekly rest, meal break
-  after 5 hours, rest between shifts. They warn, they never block;
+- checks before publishing: 5-day notice, 2 hours beyond the usual day of
+  that weekday, 14 hours in 24 (12 for variable or split hours), 50 hours in
+  the week (on the average under averaging), 32 hours of weekly rest, meal
+  break after 5 hours, rest between shifts. They warn, they never block;
 - open shifts offered down a call list by seniority, rotation or inverse
   seniority, with every offer, skip and refusal timestamped;
 - swaps and give-aways between colleagues, approved by a manager;
 - availability declared by the employees;
 - pay: regular hours, overtime, double time, seventh day, time bank,
-  call-back minimum, holiday indemnity (1/20), evening, night, weekend and
-  holiday premiums with floors, enhanced rates and the majority rule;
-- taxable benefits (overtime meals, taxi, parking) sorted for Québec and
-  the CRA, with receipts;
-- CSV export of coded hours for any payroll service. Deductions stay there.
+  averaging of hours (LNT art. 53), call-back and 3-hour minimums, on-call
+  pay, holiday indemnity (1/20), evening, night, weekend and holiday
+  premiums with floors, enhanced rates and the majority rule;
+- taxable benefits (overtime meals, taxi, parking, subsidised meals) sorted
+  for Québec and the CRA, provided or reimbursed on receipts;
+- CSV export of coded hours for any payroll service. Deductions stay there;
+- destruction by hand of the records whose 6-year retention is over, never
+  those kept for a dispute.
 """,
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -42,6 +46,7 @@ Work schedules for regular and unionised employees in Québec.
         "views/schedule_views.xml",
         "views/offer_views.xml",
         "views/pay_views.xml",
+        "views/retention_views.xml",
         "views/menus.xml",
         "data/bf_color_rules.xml",
     ],

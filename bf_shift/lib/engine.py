@@ -42,16 +42,41 @@ class Params:
     dt_weekdays: frozenset = frozenset()  # overtime on these weekdays is double
     bank_multiplier: float = 1.5        # art. 55: bank at time and a half
     callback_min_hours: float = 3.0     # art. 58
+    # Art. 58 also covers any presence at the workplace of fewer than 3 hours,
+    # a short regular shift included, save its exceptions: work that needs
+    # several presences a day, or that is usually done within 3 hours.
+    # ``presence_exception``: "" (none), "multiple_presences", "usually_short".
+    presence_min_hours: float = 3.0     # art. 58, regular shifts
+    presence_exception: str = ""
+    # A call-back handled remotely (telephone, remote access): nobody comes to
+    # the workplace, so art. 58 does not apply; an agreement may still grant
+    # its call-back minimum.
+    remote_callback_minimum: bool = False
+    # On call at home is not worked time (art. 57); what it pays, if anything,
+    # is the agreement's: "none", "per_hour" (amount per hour on call) or
+    # "per_period" (flat amount per on-call period). Taxable wages.
+    on_call_pay: str = "none"
+    on_call_amount: float = 0.0
     notice_days: float = 5.0            # art. 59.0.1, 3rd paragraph
     max_extra_daily: float = 2.0        # art. 59.0.1, 1st paragraph
     max_24h: float = 14.0               # art. 59.0.1
-    max_24h_flexible: float = 12.0      # art. 59.0.1, flexible or no fixed hours
+    max_24h_flexible: float = 12.0      # art. 59.0.1, variable or non-continuous hours
+    split_gap_hours: float = 1.0        # a gap this long between two shifts of a day: split
     max_weekly: float = 50.0            # art. 59.0.1, 2nd paragraph
     weekly_rest_hours: float = 32.0     # art. 78
     meal_after_hours: float = 5.0       # art. 79
     meal_minutes: float = 30.0          # art. 79
     min_rest_between: float = 0.0       # 0 = none (agreements only)
     holiday_indemnity: bool = True      # art. 62: 1/20 of the 4 previous weeks
+    # Averaging of hours, art. 53: overtime on the average of a period of
+    # ``averaging_weeks`` weeks. The periods follow one another from the pay
+    # week that contains ``averaging_anchor``. ``averaging_week_cap``: an
+    # individual agreement may not exceed the norm by more than 10 hours in a
+    # week (art. 53, 3rd paragraph, 2°); the hours above it are overtime of
+    # that week, outside the average. 0 = no cap (collective agreement).
+    averaging_weeks: int = 1            # 1 = none: overtime by the week
+    averaging_anchor: date = None
+    averaging_week_cap: float = 0.0
 
 
 LNT = Params()
@@ -63,6 +88,7 @@ _FAVOURS = {
     "ot_multiplier": "max",
     "bank_multiplier": "max",
     "callback_min_hours": "max",
+    "presence_min_hours": "max",
     "notice_days": "max",
     "max_extra_daily": "min",
     "max_24h": "min",
@@ -87,6 +113,10 @@ def most_favourable(params):
     for name, direction in _FAVOURS.items():
         mine = getattr(params, name)
         floor = getattr(LNT, name)
+        # Under an exception of art. 58, its 3 hours are no floor: what the
+        # agreement sets is what applies.
+        if params.presence_exception and name in ("callback_min_hours", "presence_min_hours"):
+            continue
         if direction == "min" and mine > floor:
             changes[name] = floor
             below.append(name)
@@ -120,6 +150,8 @@ class Segment:
     break_paid: bool = False
     kind: str = "work"
     to_bank: bool = False
+    remote: bool = False            # call-back handled without coming to the workplace
+    force_majeure: bool = False     # art. 58: no minimum in a case of force majeure
     informed_at: datetime = None
     tz: object = None   # pytz time zone: durations in real time across DST changes
 
@@ -140,6 +172,19 @@ class Segment:
 def week_start_of(day, week_start):
     """First day of the pay week that contains ``day``."""
     return day - timedelta(days=(day.weekday() - week_start) % 7)
+
+
+def averaging_period(day, params):
+    """``(first, last)`` day of the averaging period (art. 53) that contains
+    ``day``; without averaging, the pay week."""
+    ws = week_start_of(day, params.week_start)
+    weeks = params.averaging_weeks or 1
+    if weeks <= 1:
+        return ws, ws + timedelta(days=6)
+    anchor = week_start_of(params.averaging_anchor or date(2000, 1, 2), params.week_start)
+    index = ((ws - anchor).days // 7) // weeks
+    first = anchor + timedelta(days=7 * weeks * index)
+    return first, first + timedelta(days=7 * weeks - 1)
 
 
 def _absolute(dt, tz):
@@ -309,8 +354,8 @@ class _Lines:
             line.hours = round(line.hours, 4)
             line.amount = round(line.amount, 2)
             out.append(line)
-        order = {"REG": 0, "OT": 1, "DT": 2, "BANKIN": 3, "BANKOUT": 4,
-                 "LEAVE": 5, "CBTOP": 6, "ONCALL": 7, "HOLIND": 8}
+        order = {"REG": 0, "OT": 1, "DT": 2, "OTAVG": 3, "BANKIN": 4, "BANKOUT": 5,
+                 "LEAVE": 6, "CBTOP": 7, "MINTOP": 8, "ONCALL": 9, "HOLIND": 10}
         out.sort(key=lambda l: (order.get(l.code, 50), l.code, l.multiplier))
         return out
 
@@ -361,8 +406,18 @@ def compute_pay(segments, params, rules=(), holidays=frozenset(), hourly_rate=0.
     """Coded pay lines for one employee.
 
     ``segments`` must cover every week that touches the emitted range, so the
-    weekly overtime threshold is counted on the whole week; only the segments
+    weekly overtime threshold is counted on the whole week, and, under
+    averaging, every averaging period that ends in it; only the segments
     that start inside ``[emit_from, emit_to]`` produce lines.
+
+    Averaging (art. 53): within a week only the daily thresholds, the seventh
+    day and the cap of an individual agreement make overtime; the weekly
+    threshold is counted on the period (total minus threshold x weeks). That
+    overtime is paid with the pay period that contains the last day of the
+    averaging period: until then the hours are paid at the usual rate. It is
+    taken from the latest regular hours of the averaging period; hours already
+    paid at the usual rate in an earlier pay period get their premium only
+    (``OTAVG``, overtime rate minus 1).
     """
     params, _below = most_favourable(params)
     rate = hourly_rate or 0.0
@@ -376,48 +431,69 @@ def compute_pay(segments, params, rules=(), holidays=frozenset(), hourly_rate=0.
             return False
         return True
 
+    averaging = (params.averaging_weeks or 1) > 1
+    week_params = params
+    if averaging:
+        week_params = replace(params,
+                              ot_weekly_threshold=params.averaging_week_cap or float("inf"),
+                              dt_weekly_threshold=0.0)
+
+    top_ups = minimum_top_ups(segs, params)
     weeks = defaultdict(list)
     for seg in segs:
         weeks[week_start_of(seg.day, params.week_start)].append(seg)
 
+    # First pass: regular / overtime / double time of each worked segment.
+    splits = {}
     for _ws, week in sorted(weeks.items()):
         state = {"weekly_regular": 0.0, "total": 0.0,
                  "daily": defaultdict(float), "days": set()}
         for seg in week:
-            out = emitted(seg)
             if seg.kind == "leave":
                 # LNT art. 52: paid leave and holidays count toward the week.
                 state["weekly_regular"] += seg.paid_hours
-                if out:
-                    lines.add("LEAVE", seg.paid_hours, 1.0, seg.paid_hours * rate, seg.key)
-                continue
-            if seg.kind == "bank_leave":
-                if out:
-                    lines.add("BANKOUT", seg.paid_hours, 1.0, seg.paid_hours * rate, seg.key)
-                continue
-            if seg.kind == "on_call":
-                if out:
-                    lines.add("ONCALL", seg.paid_hours, 0.0, 0.0, seg.key)
-                continue
-            if seg.kind not in WORKED_KINDS:
-                continue
-            regular, overtime, double = _split_hours(seg, params, state)
-            if not out:
-                continue
-            lines.add("REG", regular, 1.0, regular * rate, seg.key)
-            if seg.to_bank:
-                lines.add("BANKIN", overtime * params.bank_multiplier,
-                          params.bank_multiplier, 0.0, seg.key)
-                lines.add("BANKIN", double * params.dt_multiplier,
-                          params.dt_multiplier, 0.0, seg.key)
-            else:
-                lines.add("OT", overtime, params.ot_multiplier,
-                          overtime * rate * params.ot_multiplier, seg.key)
-                lines.add("DT", double, params.dt_multiplier,
-                          double * rate * params.dt_multiplier, seg.key)
-            if seg.kind == "callback":
-                top_up = max(0.0, params.callback_min_hours - seg.paid_hours)
-                lines.add("CBTOP", top_up, 1.0, top_up * rate, seg.key)
+            elif seg.kind in WORKED_KINDS:
+                splits[id(seg)] = list(_split_hours(seg, week_params, state))
+
+    carried = []
+    if averaging:
+        carried = _averaging_overtime(segs, params, splits, emitted, emit_from, emit_to)
+
+    for seg in segs:
+        if not emitted(seg):
+            continue
+        if seg.kind == "leave":
+            lines.add("LEAVE", seg.paid_hours, 1.0, seg.paid_hours * rate, seg.key)
+            continue
+        if seg.kind == "bank_leave":
+            lines.add("BANKOUT", seg.paid_hours, 1.0, seg.paid_hours * rate, seg.key)
+            continue
+        if seg.kind == "on_call":
+            lines.add("ONCALL", seg.paid_hours, 0.0, on_call_amount(seg, params), seg.key)
+            continue
+        if seg.kind not in WORKED_KINDS:
+            continue
+        regular, overtime, double = splits[id(seg)]
+        lines.add("REG", regular, 1.0, regular * rate, seg.key)
+        if seg.to_bank:
+            lines.add("BANKIN", overtime * params.bank_multiplier,
+                      params.bank_multiplier, 0.0, seg.key)
+            lines.add("BANKIN", double * params.dt_multiplier,
+                      params.dt_multiplier, 0.0, seg.key)
+        else:
+            lines.add("OT", overtime, params.ot_multiplier,
+                      overtime * rate * params.ot_multiplier, seg.key)
+            lines.add("DT", double, params.dt_multiplier,
+                      double * rate * params.dt_multiplier, seg.key)
+        code, top_up = top_ups.get(id(seg), ("", 0.0))
+        if code:
+            lines.add(code, top_up, 1.0, top_up * rate, seg.key)
+
+    for seg, overtime, double in carried:
+        premium = params.ot_multiplier - 1.0
+        lines.add("OTAVG", overtime, premium, overtime * rate * premium, seg.key)
+        premium = params.dt_multiplier - 1.0
+        lines.add("OTAVG", double, premium, double * rate * premium, seg.key)
 
     # Premiums: computed on every worked hour, apart from overtime (LNT art.
     # 55: overtime is paid on the usual wage, premiums excluded).
@@ -442,6 +518,102 @@ def compute_pay(segments, params, rules=(), holidays=frozenset(), hourly_rate=0.
             hours = holiday_indemnity_hours(segs, params, holiday)
             lines.add("HOLIND", hours, 1.0, hours * rate, holiday)
     return lines.result()
+
+
+def _averaging_overtime(segs, params, splits, emitted, emit_from, emit_to):
+    """Overtime of the averaging periods that end in the emitted range, moved
+    from regular hours in ``splits`` (in place). Returns ``(segment, overtime,
+    double)`` for the hours moved from segments paid in an earlier pay period.
+    """
+    weeks = params.averaging_weeks
+    periods = defaultdict(list)
+    for seg in segs:
+        periods[averaging_period(seg.day, params)].append(seg)
+    carried = []
+    for (_first, last), members in sorted(periods.items()):
+        if emit_from and last < emit_from:
+            continue    # settled with an earlier pay period
+        if emit_to and last > emit_to:
+            continue    # not over yet: usual rate until its last pay period
+        worked = [s for s in members if s.kind in WORKED_KINDS]
+        regular = sum(splits[id(s)][0] for s in worked)
+        regular += sum(s.paid_hours for s in members if s.kind == "leave")
+        owed = max(0.0, regular - params.ot_weekly_threshold * weeks)
+        double_owed = 0.0
+        if params.dt_weekly_threshold > 0:
+            total = sum(s.paid_hours for s in worked)
+            double_owed = min(owed, max(0.0, total - params.dt_weekly_threshold * weeks))
+        for seg in reversed(worked):
+            if owed <= 1e-9:
+                break
+            split = splits[id(seg)]
+            moved = min(split[0], owed)
+            if moved <= 1e-9:
+                continue
+            owed -= moved
+            if seg.day.weekday() in params.dt_weekdays:
+                double = moved
+            else:
+                double = min(moved, double_owed)
+            double_owed = max(0.0, double_owed - double)
+            split[0] -= moved
+            if emitted(seg):
+                split[1] += moved - double
+                split[2] += double
+            else:
+                carried.append((seg, moved - double, double))
+    return carried
+
+
+def on_call_amount(segment, params):
+    """What an on-call period at home pays under the agreement. Not worked
+    time (art. 57): it never counts toward overtime."""
+    if params.on_call_pay == "per_hour":
+        return segment.paid_hours * (params.on_call_amount or 0.0)
+    if params.on_call_pay == "per_period":
+        return params.on_call_amount or 0.0
+    return 0.0
+
+
+def minimum_top_ups(segments, params):
+    """``{id(segment): (code, hours)}``: what is owed to reach the minimum of
+    art. 58 (by object, not by key: two segments may share a key).
+
+    A call-back tops up to the agreement's call-back minimum (``CBTOP``). A
+    presence at the workplace made of regular shifts, of fewer than 3 hours,
+    tops up to the art. 58 minimum (``MINTOP``), on its last shift: shifts
+    separated by less than ``split_gap_hours`` are one presence (the person
+    stays), a longer gap makes two.
+    Art. 58 needs the person to come to the workplace: a remote call-back
+    gets nothing unless the agreement grants it. No minimum in a case of force
+    majeure, nor for regular shifts under an exception of art. 58 (work that
+    needs several presences a day, or usually done within 3 hours).
+    The hours worked are paid as they fall (overtime included) and the top-up
+    at the usual rate on top: more than the floor of art. 58, which only owes
+    the greater of 3 hours at the usual rate and what art. 55 gives.
+    """
+    out = {}
+    presences = []
+    for seg in sorted(segments, key=lambda s: (s.start, s.end)):
+        if seg.kind == "callback":
+            if seg.force_majeure or (seg.remote and not params.remote_callback_minimum):
+                continue
+            out[id(seg)] = ("CBTOP", max(0.0, params.callback_min_hours - seg.paid_hours))
+        elif seg.kind == "work":
+            last = presences[-1] if presences else None
+            if last and hours_between(max(s.end for s in last), seg.start, seg.tz) \
+                    < params.split_gap_hours - 1e-9:
+                last.append(seg)
+            else:
+                presences.append([seg])
+    if params.presence_exception:
+        return out
+    for group in presences:
+        worked = sum(s.paid_hours for s in group)
+        if worked <= 1e-9 or any(s.force_majeure for s in group):
+            continue
+        out[id(group[-1])] = ("MINTOP", max(0.0, params.presence_min_hours - worked))
+    return out
 
 
 def _block_of(day, rule, origin):
@@ -493,6 +665,32 @@ def _merged(intervals):
     return out
 
 
+def _usual(usual_day_hours, day):
+    """Usual hours of ``day``: a number, or a function of the day (the hours
+    of that weekday in the person's working calendar)."""
+    return usual_day_hours(day) if callable(usual_day_hours) else usual_day_hours
+
+
+def split_days(segments, params):
+    """Days on which the person works a split shift: two worked shifts that
+    start the same day, separated by a gap of at least ``split_gap_hours``.
+    For those days the hours are "effectuées de manière non continue"
+    (art. 59.0.1, 1st paragraph): 12 hours in 24, and no "+2 hours" rule."""
+    by_day = defaultdict(list)
+    for seg in segments:
+        if seg.kind in WORKED_KINDS:
+            by_day[seg.day].append(seg)
+    out = set()
+    for day, segs in by_day.items():
+        segs.sort(key=lambda s: s.start)
+        end = segs[0].end
+        for seg in segs[1:]:
+            if hours_between(end, seg.start, seg.tz) >= params.split_gap_hours - 1e-9:
+                out.add(day)
+            end = max(end, seg.end)
+    return out
+
+
 def check_segments(segments, params, usual_day_hours=8.0, flexible=False,
                    availability_required=False, unavailable=(), only_keys=None):
     """Warnings for one employee.
@@ -501,11 +699,16 @@ def check_segments(segments, params, usual_day_hours=8.0, flexible=False,
     from other schedules, so the weekly limits see the whole week;
     ``only_keys`` restricts which segments may carry a warning.
     ``unavailable`` is a list of ``(start, end)`` local intervals.
+    ``usual_day_hours`` is a number or a function of the day.
+    ``flexible``: variable or non-continuous hours (art. 59.0.1, 1st
+    paragraph): the only daily limit is 12 hours in 24, instead of "2 hours
+    beyond the usual day" and 14 hours in 24. A split day counts as such.
     """
     params, _below = most_favourable(params)
     warns = []
     worked = sorted((s for s in segments if s.kind in WORKED_KINDS),
                     key=lambda s: s.start)
+    split = split_days(worked, params)
 
     def mine(seg):
         return only_keys is None or seg.key in only_keys
@@ -539,7 +742,8 @@ def check_segments(segments, params, usual_day_hours=8.0, flexible=False,
                                      {"days": round(max(lead, 0.0), 1),
                                       "limit": params.notice_days}))
         # 24 hours from the start of this shift.
-        limit24 = params.max_24h_flexible if flexible else params.max_24h
+        variable = flexible or seg.day in split
+        limit24 = params.max_24h_flexible if variable else params.max_24h
         horizon = plus_hours(seg.start, 24, seg.tz)
         in24 = 0.0
         for other in worked:
@@ -550,27 +754,38 @@ def check_segments(segments, params, usual_day_hours=8.0, flexible=False,
             in24 += inside * other.paid_hours / span
         if in24 > limit24 + 1e-6:
             warns.append(Warning("max_24h", seg.key,
-                                 {"hours": round(in24, 2), "limit": limit24}))
+                                 {"hours": round(in24, 2), "limit": limit24,
+                                  "variable": variable}))
         # Declared unavailability.
         for u0, u1 in unavailable:
             if _overlap_hours(seg.start, seg.end, u0, u1, seg.tz) > 0:
                 warns.append(Warning("unavailable", seg.key, {}))
                 break
 
-    # Per day: more than 2 hours beyond the usual day, art. 59.0.1.
+    # Per day: more than 2 hours beyond the usual hours of that weekday,
+    # art. 59.0.1. Not for variable or non-continuous hours: the 12 hours in
+    # 24 replace this rule for them.
     per_day = defaultdict(list)
     for seg in worked:
         per_day[seg.day].append(seg)
     for day, segs in per_day.items():
+        if flexible or day in split:
+            continue
         total = sum(s.paid_hours for s in segs)
-        if total > usual_day_hours + params.max_extra_daily + 1e-6:
+        usual = _usual(usual_day_hours, day)
+        limit = usual + params.max_extra_daily
+        if total > limit + 1e-6:
             target = next((s for s in reversed(segs) if mine(s)), None)
             if target is not None:
                 warns.append(Warning("daily_extra", target.key,
-                                     {"hours": round(total, 2),
-                                      "limit": usual_day_hours + params.max_extra_daily}))
+                                     {"hours": round(total, 2), "limit": limit,
+                                      "usual": usual, "extra": params.max_extra_daily}))
 
-    # Per week: 50 hours, and 32 consecutive hours of rest.
+    # Per week: 50 hours, and 32 consecutive hours of rest. Under averaging
+    # (art. 53), the 50 hours of art. 59.0.1 ("sous réserve de l'article 53")
+    # are read on the average of the period; the rest of art. 78 stays by
+    # the week; an individual agreement caps each week (art. 53, 2°).
+    averaging = (params.averaging_weeks or 1) > 1
     per_week = defaultdict(list)
     for seg in worked:
         per_week[week_start_of(seg.day, params.week_start)].append(seg)
@@ -579,9 +794,14 @@ def check_segments(segments, params, usual_day_hours=8.0, flexible=False,
         if target is None:
             continue
         total = sum(s.paid_hours for s in segs)
-        if total > params.max_weekly + 1e-6:
+        if not averaging and total > params.max_weekly + 1e-6:
             warns.append(Warning("weekly_max", target.key,
                                  {"hours": round(total, 2), "limit": params.max_weekly}))
+        if averaging and params.averaging_week_cap and \
+                total > params.averaging_week_cap + 1e-6:
+            warns.append(Warning("averaging_week_cap", target.key,
+                                 {"hours": round(total, 2),
+                                  "limit": params.averaging_week_cap}))
         w0 = datetime.combine(ws, time(0, 0))
         w1 = w0 + timedelta(days=7)
         busy = _merged((max(s.start, w0), min(s.end, w1)) for s in segs)
@@ -596,7 +816,42 @@ def check_segments(segments, params, usual_day_hours=8.0, flexible=False,
             warns.append(Warning("weekly_rest", target.key,
                                  {"hours": round(longest, 2),
                                   "limit": params.weekly_rest_hours}))
+    if averaging:
+        per_period = defaultdict(list)
+        for seg in worked:
+            per_period[averaging_period(seg.day, params)].append(seg)
+        for (first, last), segs in per_period.items():
+            target = next((s for s in reversed(segs) if mine(s)), None)
+            if target is None:
+                continue
+            average = sum(s.paid_hours for s in segs) / params.averaging_weeks
+            if average > params.max_weekly + 1e-6:
+                warns.append(Warning("weekly_max", target.key,
+                                     {"hours": round(average, 2),
+                                      "limit": params.max_weekly,
+                                      "weeks": params.averaging_weeks,
+                                      "first": first.isoformat(),
+                                      "last": last.isoformat()}))
     return warns
+
+
+def within_first_paragraph(segments, key, params, usual_day_hours=8.0, flexible=False):
+    """True when segment ``key`` stays inside the limits of art. 59.0.1, 1st
+    paragraph: no more than 2 hours beyond the usual day (or no limit but the
+    12 hours for variable hours), nor more than 14 (or 12) hours in 24.
+
+    Services required within those limits give no right to refuse for want
+    of 5 days' notice (3rd paragraph, last exception). Checked on the shifts
+    within 24 hours of this one; any overrun nearby answers "no", which asks
+    the employee rather than deciding for them.
+    """
+    target = next(s for s in segments if s.key == key)
+    lo = plus_hours(target.start, -24, target.tz)
+    hi = plus_hours(target.end, 24, target.tz)
+    near = [s for s in segments if s.end > lo and s.start < hi]
+    codes = {w.code for w in check_segments(near, params, usual_day_hours, flexible,
+                                            availability_required=True)}
+    return not codes & {"daily_extra", "max_24h"}
 
 
 # ---------------------------------------------------------------------------

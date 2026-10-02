@@ -1,5 +1,7 @@
 from datetime import timedelta
 
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 
@@ -18,13 +20,14 @@ KINDS = [
 # Fields whose change, once the schedule is published, is logged and told.
 LOGGED = ("employee_id", "start", "end", "kind", "state", "break_minutes")
 # Fields that can still be written on a closed schedule (actual hours).
-AFTER_CLOSE = {"actual_start", "actual_end", "actual_break_minutes", "state", "note"}
+AFTER_CLOSE = {"actual_start", "actual_end", "actual_break_minutes", "state", "note",
+               "remote", "force_majeure"}
 
 
 class BfShiftAssignment(models.Model):
     _name = "bf.shift.assignment"
     _description = "Shift"
-    _inherit = ["mail.thread"]
+    _inherit = ["mail.thread", "bf.shift.derived"]
     _order = "start, id"
 
     name = fields.Char(compute="_compute_name", store=True)
@@ -57,13 +60,23 @@ class BfShiftAssignment(models.Model):
     worked_hours = fields.Float(compute="_compute_hours", store=True,
                                 help="Actual hours when entered, planned hours otherwise.")
     to_bank = fields.Boolean("Overtime to the bank")
+    remote = fields.Boolean(
+        "Handled remotely", tracking=True,
+        help="Call-back handled without coming to the workplace (telephone, remote access). "
+        "The hours are worked and paid, but the 3-hour minimum of LNT art. 58 does not apply, "
+        "unless the working conditions grant it.")
+    force_majeure = fields.Boolean(
+        "Force majeure", tracking=True,
+        help="Shortened by a case of force majeure: no 3-hour minimum (LNT art. 58).")
     bank_requested_by_employee = fields.Boolean(
         "Requested by the employee",
         help="The labour standards let the employee choose the bank; the employer cannot impose it.")
     informed_at = fields.Datetime(
         "Employee informed on", copy=False,
-        help="When the employee was told of this shift as it stands: at publication, "
-        "then at each change.")
+        help="When the employee was told of this shift: at publication, then at each change "
+        "that the employee may refuse for want of notice. Extending a shift within the "
+        "limits of LNT art. 59.0.1 (1st paragraph) keeps the original date: that extension "
+        "cannot be refused for want of notice.")
     late_notice = fields.Boolean(
         "Short notice", compute="_compute_late_notice", store=True,
         help="Told fewer days ahead than the notice rule: the employee may refuse it.")
@@ -116,10 +129,12 @@ class BfShiftAssignment(models.Model):
         unpaid = 0.0 if self.break_paid else (break_minutes or 0) / 60.0
         return max(0.0, span - unpaid)
 
-    @api.depends("informed_at", "start", "employee_id")
+    @api.depends("informed_at", "start", "employee_id", "kind")
     def _compute_late_notice(self):
         for rec in self:
-            if not (rec.informed_at and rec.start and rec.employee_id):
+            # On call at home, leave: not work the employee is required to do.
+            if not (rec.informed_at and rec.start and rec.employee_id) or \
+                    rec.kind not in engine.WORKED_KINDS:
                 rec.late_notice = False
                 continue
             emp = rec.employee_id.sudo()
@@ -192,6 +207,8 @@ class BfShiftAssignment(models.Model):
             break_paid=self.break_paid,
             kind=self.kind,
             to_bank=self.to_bank,
+            remote=self.remote and self.kind == "callback",
+            force_majeure=self.force_majeure,
             informed_at=informed_at if informed_at is not None else (
                 to_local(self.informed_at, tz) if self.informed_at else None),
             tz=tz,
@@ -207,8 +224,10 @@ class BfShiftAssignment(models.Model):
 
     def _warning_message(self, w):
         self.ensure_one()
+        values = dict(w.values)
+        variable = values.pop("variable", False)
         v = {k: fmt_num(self.env, val) if isinstance(val, (int, float)) else val
-             for k, val in w.values.items()}
+             for k, val in values.items()}
         when = self._when_label()
         if w.code == "overlap":
             return _("%(when)s overlaps another shift of the same person.", when=when)
@@ -221,12 +240,25 @@ class BfShiftAssignment(models.Model):
         if w.code == "notice":
             return _("%(when)s: told %(days)s day(s) ahead, fewer than %(limit)s. "
                      "The employee may refuse it (LNT art. 59.0.1).", when=when, **v)
+        if w.code == "max_24h" and variable:
+            return _("%(when)s: %(hours)s h within 24 hours, more than %(limit)s h for "
+                     "variable or non-continuous hours. The employee may refuse (LNT art. 59.0.1).",
+                     when=when, **v)
         if w.code == "max_24h":
             return _("%(when)s: %(hours)s h within 24 hours, more than %(limit)s. "
                      "The employee may refuse (LNT art. 59.0.1).", when=when, **v)
         if w.code == "daily_extra":
-            return _("%(when)s: %(hours)s h that day, beyond the usual day plus 2 hours "
-                     "(%(limit)s h). The employee may refuse (LNT art. 59.0.1).", when=when, **v)
+            return _("%(when)s: %(hours)s h that day, more than %(limit)s h (usual day of "
+                     "%(usual)s h on that weekday, plus %(extra)s h). The employee may refuse "
+                     "(LNT art. 59.0.1).", when=when, **v)
+        if w.code == "weekly_max" and "weeks" in v:
+            return _("Averaging period of %(weeks)s weeks from %(first)s to %(last)s: "
+                     "%(hours)s h a week on average, more than %(limit)s. The employee may "
+                     "refuse (LNT art. 59.0.1, subject to art. 53).", **v)
+        if w.code == "averaging_week_cap":
+            return _("Week of %(when)s: %(hours)s h, more than %(limit)s h. An individual "
+                     "averaging agreement allows at most 10 hours beyond the 40-hour norm "
+                     "in a week (LNT art. 53).", when=when, **v)
         if w.code == "weekly_max":
             return _("Week of %(when)s: %(hours)s h, more than %(limit)s. "
                      "The employee may refuse (LNT art. 59.0.1).", when=when, **v)
@@ -284,6 +316,16 @@ class BfShiftAssignment(models.Model):
     def write(self, vals):
         if flag(self.env, "no_log"):
             return super().write(vals)
+        if "schedule_id" in vals:
+            # A shift moves only between drafts: out of a published schedule
+            # it would leave its log behind (then be deleted with it), and
+            # into one it would arrive with no log and no notice.
+            target = self.env["bf.shift.schedule"].browse(vals["schedule_id"])
+            moved = self.filtered(lambda r: r.schedule_id != target)
+            if moved and (target.state != "draft"
+                          or any(r.schedule_id.state != "draft" for r in moved)):
+                raise UserError(_("A shift moves only from a draft schedule to another draft. "
+                                  "In a published schedule, cancel it and add a new one."))
         closed = self.filtered(lambda r: r.schedule_id.state == "closed")
         if closed and set(vals) - AFTER_CLOSE:
             raise UserError(_("The schedule is closed: only the actual hours can still change. "
@@ -310,18 +352,47 @@ class BfShiftAssignment(models.Model):
                     kind = "reassign"
                 else:
                     kind = "modify"
-                if new["state"] != "cancelled" and new["employee_id"] and any(
+                # Extending a shift within the limits of art. 59.0.1, 1st
+                # paragraph, opens no right to refuse for want of notice
+                # (3rd paragraph): the original notice stands.
+                extension = (kind == "modify" and new["state"] != "cancelled"
+                             and old["kind"] == new["kind"]
+                             and new["start"] <= old["start"] and new["end"] >= old["end"]
+                             and (new["start"], new["end"]) != (old["start"], old["end"])
+                             and rec._within_first_paragraph())
+                if new["state"] != "cancelled" and new["employee_id"] and not extension and any(
                         old[k] != new[k] for k in ("employee_id", "start", "end", "kind")):
                     super(BfShiftAssignment, rec).write({"informed_at": now})
-                rec._log_change(kind, old, new)
+                rec._log_change(kind, old, new, within_limits=extension)
         return res
 
     def unlink(self):
-        if any(rec.schedule_id.state != "draft" for rec in self):
+        if not flag(self.env, "retention") and any(rec.schedule_id.state != "draft" for rec in self):
             raise UserError(_("A published shift is not deleted: cancel it, so the change is kept."))
         return super().unlink()
 
-    def _log_change(self, kind, old, new):
+    def _within_first_paragraph(self):
+        """This shift, as it stands, keeps the day within LNT art. 59.0.1, 1st
+        paragraph (see ``engine.within_first_paragraph``)."""
+        self.ensure_one()
+        emp = self.employee_id.sudo()
+        if not emp or self.kind not in engine.WORKED_KINDS:
+            return False
+        tz = tz_of(emp, self.env)
+        params = emp.shift_agreement_id._effective_params()
+        others = self.sudo().search([
+            ("employee_id", "=", emp.id), ("state", "!=", "cancelled"), ("id", "!=", self.id),
+            ("start", "<", self.end + timedelta(days=2)), ("end", ">", self.start - timedelta(days=2)),
+            "|", ("schedule_id.state", "in", ("published", "closed")),
+            ("schedule_id", "=", self.schedule_id.id),
+        ])
+        segments = [a._to_segment(tz) for a in others | self]
+        return engine.within_first_paragraph(segments, self.id, params, emp._shift_usual_hours(),
+                                             emp._shift_variable_hours())
+
+    def _log_change(self, kind, old, new, within_limits=False):
+        """``within_limits``: an extension that stays inside art. 59.0.1, 1st
+        paragraph, so the 5-day notice gives no right to refuse it."""
         self.ensure_one()
         ctx = self.env.context
         consent = flag(self.env, "consent")
@@ -331,6 +402,10 @@ class BfShiftAssignment(models.Model):
         late = (start - fields.Datetime.now()) < timedelta(days=params.notice_days)
         affected = new["employee_id"] or (old and old["employee_id"])
         if affected and affected.sudo().shift_availability_required:
+            late = False
+        # On call at home, paid leave: not work the employee is required to do
+        # (art. 59.0.1, 3rd paragraph), so no answer is asked for.
+        if new["kind"] not in engine.WORKED_KINDS or within_limits:
             late = False
         if not consent:
             consent = "pending" if (late and kind != "cancel" and new["employee_id"]) else "na"
@@ -355,11 +430,32 @@ class BfShiftAssignment(models.Model):
             if emp and emp.sudo().user_id:
                 partners |= emp.sudo().user_id.partner_id
         if partners and not flag(self.env, "silent"):
-            notify_each_in_their_language(self, partners, lambda env: (
-                env._("Shift changed: %(after)s", after=self._describe(new, env)),
-                self.schedule_id.name,
-                env._("Shift"),
-            ))
+            # The person whose answer is expected is told so, with the link to
+            # answer; the others (a previous employee) only learn of the change.
+            asked = self.env["res.partner"]
+            if change.consent == "pending" and affected and affected.sudo().user_id:
+                asked = affected.sudo().user_id.partner_id & partners
+            link = "%s/mail/view?model=bf.shift.change&res_id=%s" % (self.get_base_url(), change.id)
+            if partners - asked:
+                notify_each_in_their_language(self, partners - asked, lambda env: (
+                    Markup("<p>%s</p>") % env._("Shift changed: %(after)s",
+                                                after=self._describe(new, env)),
+                    self.schedule_id.name,
+                    env._("Shift"),
+                ))
+            if asked:
+                notify_each_in_their_language(self, asked, lambda env: (
+                    Markup("<p>%s</p><p><b>%s</b></p><p><a href=\"%s\">%s</a></p>") % (
+                        env._("Shift changed: %(after)s", after=self._describe(new, env)),
+                        env._("Your answer is expected: this change was made fewer than "
+                              "%(days)s days ahead, so you may accept or refuse it "
+                              "(LNT s. 59.0.1).", days=fmt_num(env, params.notice_days)),
+                        link,
+                        env._("Accept or refuse the change"),
+                    ),
+                    env._("Answer expected: %(schedule)s", schedule=self.schedule_id.name),
+                    env._("Shift"),
+                ))
         return change
 
     # ------------------------------------------------------------------

@@ -10,6 +10,7 @@ CODES = [
     ("daily_extra", "Long day"),
     ("weekly_max", "Hours in the week"),
     ("weekly_rest", "Weekly rest"),
+    ("averaging_week_cap", "Week beyond the averaging agreement"),
     ("unavailable", "Unavailable"),
 ]
 

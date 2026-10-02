@@ -1,6 +1,7 @@
 """The clinic example. Each doctor's color is set once, on the
 employee, and the shift agenda shows it."""
 
+import unittest
 from datetime import timedelta
 
 import pytz
@@ -19,6 +20,10 @@ class TestShiftColors(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # The employee's own color comes with the bridge bf_color_hr, which
+        # bf_shift does not require: without it, there is nothing to show.
+        if "color_hex" not in cls.env["hr.employee"]._fields:
+            raise unittest.SkipTest("bf_color_hr is not installed")
         cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
         Emp = cls.env["hr.employee"]
         cls.dr_a = Emp.create({"name": "Dr A", "color_hex": "#FF0000", "tz": "America/Toronto"})

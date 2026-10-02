@@ -265,7 +265,9 @@ class TestChecks(BaseCase):
                          ["daily_extra"])
         segs = [day_shift(1, start=8, hours=8, brk=0.5), day_shift(1, start=18, hours=6.5, brk=0.5)]
         self.assertIn("max_24h", self.codes(segs, usual_day_hours=16))
-        segs = [day_shift(1, start=8, hours=6, brk=0.5), day_shift(1, start=16, hours=6.5, brk=0.5)]
+        # Back to back (no gap, so not a split shift): 12.5 h is under 14.
+        segs = [day_shift(1, start=8, hours=6, brk=0.5),
+                Segment("b", D(2026, 9, 7, 14, 30), D(2026, 9, 7, 21, 30), break_hours=0.5)]
         self.assertNotIn("max_24h", self.codes(segs, usual_day_hours=16))
         self.assertIn("max_24h", self.codes(segs, usual_day_hours=16, flexible=True))
 
@@ -340,13 +342,15 @@ class TestBenefits(BaseCase):
     def test_other_kinds(self):
         v = benefits.classify("taxi", overtime_hours=3, employer_requested=True,
                               has_receipt=True, no_transit_or_safety=True)
-        self.assertEqual((v.quebec, v.federal), ("not_taxable", "check"))
+        # Taxable by default at the CRA (see test_engine_rules).
+        self.assertEqual((v.quebec, v.federal), ("not_taxable", "taxable"))
         self.assertEqual(benefits.classify("parking").quebec, "taxable")
         self.assertEqual(benefits.classify("parking", parking_exception=True).federal,
                          "not_taxable")
         self.assertEqual(benefits.classify("uniform").quebec, "not_taxable")
+        # Without the cost, neither side can tell (see test_engine_rules).
         v = benefits.classify("subsidized_meal")
-        self.assertEqual((v.quebec, v.federal), ("check", "not_taxable"))
+        self.assertEqual((v.quebec, v.federal), ("check", "check"))
 
 
 @tagged("post_install", "-at_install")

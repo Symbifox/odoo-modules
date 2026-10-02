@@ -15,7 +15,7 @@ class BfShiftPool(models.Model):
 
     _name = "bf.shift.pool"
     _description = "Call list"
-    _inherit = ["mail.thread"]
+    _inherit = ["mail.thread", "bf.shift.derived"]
     _order = "name"
 
     name = fields.Char(required=True, tracking=True)
@@ -46,6 +46,7 @@ class BfShiftPool(models.Model):
 class BfShiftPoolMember(models.Model):
     _name = "bf.shift.pool.member"
     _description = "Call list member"
+    _inherit = ["bf.shift.derived"]
     _order = "pool_id, sequence, seniority_date, id"
 
     pool_id = fields.Many2one("bf.shift.pool", required=True, ondelete="cascade", index=True)
@@ -69,6 +70,12 @@ class BfShiftPoolMember(models.Model):
     _sql_constraints = [
         ("employee_unique", "unique(pool_id, employee_id)", "A person is on a list once."),
     ]
+
+    @api.depends("employee_id", "pool_id")
+    def _compute_display_name(self):
+        for rec in self:
+            rec.display_name = " — ".join(
+                part for part in (rec.pool_id.sudo().name, rec.employee_id.sudo().name) if part)
 
     @api.depends("employee_id.user_id")
     def _compute_user(self):

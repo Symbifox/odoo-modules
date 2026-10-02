@@ -49,7 +49,10 @@
                             <field name="kind"/>
                             <field name="date"/>
                             <field name="assignment_id"/>
-                            <field name="amount"/>
+                            <field name="provision" invisible="kind not in ('overtime_meal', 'taxi')"/>
+                            <field name="meal_cost" invisible="kind != 'subsidized_meal'"/>
+                            <field name="meal_price_paid" invisible="kind != 'subsidized_meal'"/>
+                            <field name="amount" readonly="kind == 'subsidized_meal'"/>
                             <field name="currency_id" invisible="1"/>
                         </group>
                         <group>
@@ -58,6 +61,8 @@
                             <field name="employer_requested"
                                    invisible="kind not in ('overtime_meal', 'taxi')"/>
                             <field name="no_transit_or_safety" invisible="kind != 'taxi'"/>
+                            <field name="federal_exemption_reason" invisible="kind != 'taxi'"
+                                   groups="bf_shift.group_shift_manager"/>
                             <field name="parking_exception" invisible="kind != 'parking'"/>
                             <field name="times_this_week"
                                    invisible="kind not in ('overtime_meal', 'taxi')"/>

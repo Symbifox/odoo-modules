@@ -4,8 +4,8 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 from ..lib import engine
-from .tools import (check_own, guard_employee_vals, internal, is_shift_manager,
-                    notify_each_in_their_language, post, to_local, tz_of)
+from .tools import (check_own, employee_defaults, flag, guard_employee_vals, internal,
+                    is_shift_manager, notify_each_in_their_language, post, to_local, tz_of)
 
 EMPLOYEE_FIELDS = {"requester_id", "assignment_id", "target_id", "target_assignment_id", "reason"}
 
@@ -20,7 +20,7 @@ class BfShiftSwap(models.Model):
 
     _name = "bf.shift.swap"
     _description = "Shift swap"
-    _inherit = ["mail.thread"]
+    _inherit = ["mail.thread", "bf.shift.derived"]
     _order = "create_date desc, id desc"
 
     name = fields.Char(compute="_compute_name", store=True)
@@ -73,11 +73,19 @@ class BfShiftSwap(models.Model):
             if rec.target_assignment_id and rec.target_assignment_id.employee_id != rec.target_id:
                 raise ValidationError(_("The shift taken in return must be the colleague's."))
 
+    @api.model
+    def default_get(self, fields_list):
+        return employee_defaults(self, super().default_get(fields_list), EMPLOYEE_FIELDS)
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             guard_employee_vals(self.env, vals, EMPLOYEE_FIELDS)
         records = super().create(vals_list)
+        # Read on the records: the context and saved defaults give values too.
+        if not self.env.su and not flag(self.env, "state_change") and any(
+                rec.state != "draft" or rec.approved_by or rec.check_summary for rec in records):
+            raise UserError(_("A swap is created as a draft, then sent with its button."))
         manager = is_shift_manager(self.env)
         for rec in records:
             if not manager and rec.requester_id.sudo().user_id != self.env.user:
@@ -85,6 +93,11 @@ class BfShiftSwap(models.Model):
         return records
 
     def write(self, vals):
+        # The state, the approver and the checks the manager read move only
+        # through the buttons: a request is part of the trace.
+        if not self.env.su and not flag(self.env, "state_change") and \
+                {"state", "approved_by", "check_summary"} & set(vals):
+            raise UserError(_("A swap moves on with its buttons."))
         if not is_shift_manager(self.env):
             if set(vals) - {"reason", "target_id", "target_assignment_id", "assignment_id"} or \
                     any(rec.state != "draft" for rec in self):
@@ -95,6 +108,11 @@ class BfShiftSwap(models.Model):
 
     # ------------------------------------------------------------------
 
+
+    def unlink(self):
+        if not flag(self.env, "retention") and any(rec.state != "draft" for rec in self):
+            raise UserError(_("A sent request is kept: cancel it instead."))
+        return super().unlink()
     def _who(self):
         """'requester', 'target' or 'manager' for the current user."""
         user = self.env.user
@@ -153,7 +171,7 @@ class BfShiftSwap(models.Model):
                 raise UserError(_("Only a shift manager approves a swap."))
             if rec.state != "approval":
                 raise UserError(_("This request is not waiting for approval."))
-            rec.check_summary = rec._simulate()
+            internal(rec, state_change=True).write({"check_summary": rec._simulate()})
             rec._apply()
         return True
 
@@ -163,7 +181,7 @@ class BfShiftSwap(models.Model):
                 raise UserError(_("Only a shift manager refuses a swap."))
             if rec.state not in ("colleague", "approval"):
                 raise UserError(_("This request is closed."))
-            rec.state = "refused"
+            internal(rec, state_change=True).write({"state": "refused"})
         return True
 
     def action_cancel(self):
@@ -186,7 +204,7 @@ class BfShiftSwap(models.Model):
         internal(given, consent="given", reason=reason).write({"employee_id": self.target_id.id})
         if taken:
             internal(taken, consent="given", reason=reason).write({"employee_id": self.requester_id.id})
-        self.write({"state": "done", "approved_by": self.env.user.id})
+        internal(self, state_change=True).write({"state": "done", "approved_by": self.env.user.id})
         post(self, body=_("Swap applied."))
 
     def _simulate(self):
@@ -204,6 +222,8 @@ class BfShiftSwap(models.Model):
             params = emp.shift_agreement_id._effective_params()
             first = engine.week_start_of(gained.date, params.week_start) - timedelta(days=1)
             last = first + timedelta(days=9)
+            period = engine.averaging_period(gained.date, params)
+            first, last = min(first, period[0]), max(last, period[1])
             others = Assignment.search([
                 ("employee_id", "=", emp.id), ("state", "!=", "cancelled"),
                 ("date", ">=", first), ("date", "<=", last),
@@ -213,8 +233,8 @@ class BfShiftSwap(models.Model):
             segments.append(gained.sudo()._to_segment(tz, informed_at=to_local(
                 fields.Datetime.now(), tz)))
             warns = engine.check_segments(
-                segments, params, usual_day_hours=emp._shift_usual_day_hours(),
-                flexible=emp.shift_flexible_hours,
+                segments, params, usual_day_hours=emp._shift_usual_hours(),
+                flexible=emp._shift_variable_hours(),
                 availability_required=True,  # a swap is asked for, not imposed
                 unavailable=self.env["bf.shift.availability"].sudo()._unavailable_intervals(
                     emp, first, last),

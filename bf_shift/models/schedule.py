@@ -4,7 +4,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 from ..lib import engine
-from .tools import internal, notify_each_in_their_language, post, to_local, tz_of
+from .tools import flag, internal, notify_each_in_their_language, post, to_local, tz_of
 
 
 class BfShiftSchedule(models.Model):
@@ -34,6 +34,12 @@ class BfShiftSchedule(models.Model):
     change_ids = fields.One2many("bf.shift.change", "schedule_id", string="Changes")
     change_count = fields.Integer(compute="_compute_counts")
     note = fields.Html()
+    retention_hold = fields.Boolean(
+        "Keep for a dispute", tracking=True, copy=False,
+        help="A grievance, a complaint or a tax objection is under way: this schedule, its "
+        "shifts and its changes are not destroyed at the end of the retention period, "
+        "until the box is unticked.")
+    retention_hold_note = fields.Char("Dispute", tracking=True, copy=False)
 
     @api.depends("assignment_ids.state", "assignment_ids.employee_id", "warning_ids",
                  "change_ids")
@@ -51,8 +57,32 @@ class BfShiftSchedule(models.Model):
             if rec.date_to < rec.date_from:
                 raise ValidationError(_("The schedule ends before it starts."))
 
+    # The state moves only through the buttons (publish, close, reopen).
+    # Written directly, a published schedule would go back to draft, change
+    # without a log or a notice, and be deleted with its changes.
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        # Read on the record, not in vals: the context and a person's own
+        # defaults (ir.default) also give a state.
+        if not flag(self.env, "state_change") and any(r.state != "draft" for r in records):
+            raise UserError(_("A schedule is created as a draft, then published with its "
+                              "button."))
+        return records
+
+    def write(self, vals):
+        if "state" in vals and not flag(self.env, "state_change"):
+            raise UserError(_("The state of a schedule changes only through its buttons."))
+        return super().write(vals)
+
     def unlink(self):
-        if any(rec.state != "draft" for rec in self):
+        # Only the retention action destroys a published schedule, once its
+        # retention period is over (wizard/retention_wizard.py), and never one
+        # kept for a dispute.
+        if any(rec.retention_hold for rec in self):
+            raise UserError(_("A schedule kept for a dispute is not deleted: untick "
+                              "\"Keep for a dispute\" first."))
+        if not flag(self.env, "retention") and any(rec.state != "draft" for rec in self):
             raise UserError(_("A published schedule is kept: close it instead. "
                               "Its changes are the evidence in a grievance."))
         return super().unlink()
@@ -93,6 +123,9 @@ class BfShiftSchedule(models.Model):
         # so the weekly limits see shifts from neighbouring schedules too.
         first = engine.week_start_of(self.date_from, params.week_start) - timedelta(days=1)
         last = engine.week_start_of(self.date_to, params.week_start) + timedelta(days=8)
+        # Under averaging, the 50 hours are read on the average of whole periods.
+        first = min(first, engine.averaging_period(self.date_from, params)[0])
+        last = max(last, engine.averaging_period(self.date_to, params)[1])
         others = self.env["bf.shift.assignment"].sudo().search([
             ("employee_id", "=", emp.id),
             ("state", "!=", "cancelled"),
@@ -110,8 +143,8 @@ class BfShiftSchedule(models.Model):
             emp, first, last)
         warns = engine.check_segments(
             segments, params,
-            usual_day_hours=emp._shift_usual_day_hours(),
-            flexible=emp.shift_flexible_hours,
+            usual_day_hours=emp._shift_usual_hours(),
+            flexible=emp._shift_variable_hours(),
             availability_required=emp.shift_availability_required,
             unavailable=unavailable,
             only_keys=set(mine.ids),
@@ -165,7 +198,7 @@ class BfShiftSchedule(models.Model):
             live = sched.assignment_ids.filtered(lambda a: a.state != "cancelled")
             internal(live.filtered(lambda a: not a.informed_at and a.employee_id),
                      no_log=True).write({"informed_at": now})
-            sched.write({"state": "published", "published_at": now})
+            internal(sched, state_change=True).write({"state": "published", "published_at": now})
             warnings = sched.warning_ids
             body = _("Schedule published with %(count)s shift(s).", count=len(live))
             if warnings:
@@ -189,14 +222,14 @@ class BfShiftSchedule(models.Model):
         for sched in self:
             if sched.state != "published":
                 raise UserError(_("Only a published schedule can be closed."))
-        self.write({"state": "closed"})
+        internal(self, state_change=True).write({"state": "closed"})
         return True
 
     def action_reopen(self):
         for sched in self:
             if sched.state != "closed":
                 raise UserError(_("Only a closed schedule can be reopened."))
-        self.write({"state": "published"})
+        internal(self, state_change=True).write({"state": "published"})
         for sched in self:
             post(sched, body=_("Schedule reopened."))
         return True

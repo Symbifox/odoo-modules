@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 21:16+0000\n"
-"PO-Revision-Date: 2026-09-25 21:16+0000\n"
+"POT-Creation-Date: 2026-10-02 19:20+0000\n"
+"PO-Revision-Date: 2026-10-02 19:20+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -105,8 +105,17 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_shift/models/assignment.py:0
 msgid ""
-"%(when)s: %(hours)s h that day, beyond the usual day plus 2 hours (%(limit)s"
-" h). The employee may refuse (LNT art. 59.0.1)."
+"%(when)s: %(hours)s h that day, more than %(limit)s h (usual day of "
+"%(usual)s h on that weekday, plus %(extra)s h). The employee may refuse (LNT"
+" art. 59.0.1)."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"%(when)s: %(hours)s h within 24 hours, more than %(limit)s h for variable or"
+" non-continuous hours. The employee may refuse (LNT art. 59.0.1)."
 msgstr ""
 
 #. module: bf_shift
@@ -159,9 +168,23 @@ msgid "0 means none: the labour standards set none."
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__averaging_max_weeks
+msgid ""
+"0 or empty means no limit. The Act sets no limit for a collective agreement "
+"(the Commission authorises at most 8 weeks when it is asked): enter the "
+"limit your legal advice retains."
+msgstr ""
+
+#. module: bf_shift
 #. odoo-python
 #: code:addons/bf_shift/models/benefit.py:0
 msgid "3 times or more this week"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "3-hour minimum (LNT art. 58), top-up"
 msgstr ""
 
 #. module: bf_shift
@@ -171,8 +194,42 @@ msgid "A break cannot be negative."
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__remote_callback_minimum
+msgid ""
+"A call-back handled remotely (telephone, remote access) does not bring the "
+"person to the workplace: LNT art. 58 does not apply to it. Tick if the "
+"agreement still grants its call-back minimum."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_hr_employee__shift_retention_hold
+msgid ""
+"A grievance, a complaint or a tax objection concerns this person: none of "
+"their schedules, pay periods, benefits or availability is destroyed at the "
+"end of the retention period, nor any schedule or pay period they appear in, "
+"until the box is unticked."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__retention_hold
+msgid ""
+"A grievance, a complaint or a tax objection is under way: this schedule, its"
+" shifts and its changes are not destroyed at the end of the retention "
+"period, until the box is unticked."
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.constraint,message:bf_shift.constraint_bf_shift_pool_member_employee_unique
 msgid "A person is on a list once."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__presence_min_hours
+msgid ""
+"A person who comes to the workplace for regular shifts and works fewer than "
+"3 consecutive hours is paid at least 3 hours (LNT art. 58), save in a case "
+"of force majeure or under an exception. Shifts less than an hour apart make "
+"one presence. Call-backs have their own minimum."
 msgstr ""
 
 #. module: bf_shift
@@ -208,8 +265,49 @@ msgstr ""
 
 #. module: bf_shift
 #. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "A schedule is created as a draft, then published with its button."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid ""
+"A schedule kept for a dispute is not deleted: untick \"Keep for a dispute\" "
+"first."
+msgstr ""
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.view_bf_shift_retention_wizard_form
+msgid ""
+"A schedule or a person under dispute stays, with every record it is linked\n"
+"                        to: tick \"Keep for a dispute\" on the schedule or on the employee first."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "A sent request is kept: cancel it instead."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
 #: code:addons/bf_shift/models/assignment.py:0
 msgid "A shift ends after it starts."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"A shift moves only from a draft schedule to another draft. In a published "
+"schedule, cancel it and add a new one."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "A started offer is kept: cancel it instead."
 msgstr ""
 
 #. module: bf_shift
@@ -222,6 +320,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_shift/models/swap.py:0
 msgid "A swap is between two different people."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/swap.py:0
+msgid "A swap is created as a draft, then sent with its button."
 msgstr ""
 
 #. module: bf_shift
@@ -249,6 +353,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_offer_view_form
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_swap_view_form
 msgid "Accept"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "Accept or refuse the change"
 msgstr ""
 
 #. module: bf_shift
@@ -305,6 +415,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__activity_type_icon
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__activity_type_icon
 msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/tools.py:0
+msgid "Activity: %s"
 msgstr ""
 
 #. module: bf_shift
@@ -407,6 +523,17 @@ msgid "Amount per hour"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__on_call_pay__per_hour
+msgid "Amount per hour on call"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+msgid "An averaging period covers at least 2 weeks."
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,help:bf_shift.field_bf_shift_template__hour_to
 msgid "An end before the start is on the next day (night shift)."
 msgstr ""
@@ -442,6 +569,31 @@ msgid ""
 msgstr ""
 
 #. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+msgid ""
+"An individual averaging agreement covers at most 4 weeks (LNT art. 53)."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "An offer is created as a draft, then started with its button."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "An offer moves on with its buttons; its trace is kept."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "An open shift is offered to you: %(when)s."
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__response_deadline
 msgid "Answer by"
 msgstr ""
@@ -453,6 +605,18 @@ msgid "Answer by %(time)s"
 msgstr ""
 
 #. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Answer by %(time)s with the Accept or Refuse button of the offer."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid "Answer expected: %(schedule)s"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__consent_note
 msgid "Answer note"
 msgstr ""
@@ -460,12 +624,6 @@ msgstr ""
 #. module: bf_shift
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_search
 msgid "Answer to record"
-msgstr ""
-
-#. module: bf_shift
-#. odoo-python
-#: code:addons/bf_shift/models/offer.py:0
-msgid "Answered"
 msgstr ""
 
 #. module: bf_shift
@@ -534,8 +692,21 @@ msgid "Assignment Count"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_retention_wizard__years
+msgid ""
+"At least 6: the tax laws keep the supporting documents of the pay 6 years "
+"after the end of the year they relate to."
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pool_member__withdraw_reason__own
 msgid "At the employee's request"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "Attach only receipts you uploaded yourself."
 msgstr ""
 
 #. module: bf_shift
@@ -560,6 +731,7 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.actions.act_window,name:bf_shift.bf_shift_availability_action
 #: model:ir.model,name:bf_shift.model_bf_shift_availability
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__availability_count
 #: model:ir.ui.menu,name:bf_shift.menu_bf_shift_availability
 msgid "Availability"
 msgstr ""
@@ -567,6 +739,49 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_availability__kind__available
 msgid "Available"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__averaging_anchor
+msgid "Averaging cycle starts on"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__averaging_source
+msgid "Averaging of hours"
+msgstr ""
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "Averaging of hours (LNT art. 53)"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/pay.py:0
+msgid "Averaging overtime, premium on hours already paid"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__averaging_weeks
+msgid "Averaging period (weeks)"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"Averaging period of %(weeks)s weeks from %(first)s to %(last)s: %(hours)s h "
+"a week on average, more than %(limit)s. The employee may refuse (LNT art. "
+"59.0.1, subject to art. 53)."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+msgid ""
+"Averaging under a collective agreement needs working conditions of the kind "
+"\"Collective agreement\"."
 msgstr ""
 
 #. module: bf_shift
@@ -607,6 +822,11 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model,name:bf_shift.model_bf_shift_benefit_event
 msgid "Benefit event"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__event_count
+msgid "Benefit events"
 msgstr ""
 
 #. module: bf_shift
@@ -667,6 +887,14 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__kind__callback
 msgid "Call-back"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__remote
+msgid ""
+"Call-back handled without coming to the workplace (telephone, remote "
+"access). The hours are worked and paid, but the 3-hour minimum of LNT art. "
+"58 does not apply, unless the working conditions grant it."
 msgstr ""
 
 #. module: bf_shift
@@ -768,6 +996,7 @@ msgstr ""
 
 #. module: bf_shift
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_form
+#: model_terms:ir.ui.view,arch_db:bf_shift.view_bf_shift_retention_wizard_form
 msgid "Close"
 msgstr ""
 
@@ -775,6 +1004,11 @@ msgstr ""
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_schedule__state__closed
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_search
 msgid "Closed"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
 msgstr ""
 
 #. module: bf_shift
@@ -790,6 +1024,7 @@ msgid "Colleague"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__averaging_source__collective
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__kind__collective
 msgid "Collective agreement"
 msgstr ""
@@ -798,6 +1033,23 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__color
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__color
 msgid "Color"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__color_source
+msgid "Color Source"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
 msgstr ""
 
 #. module: bf_shift
@@ -812,6 +1064,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__company_id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool__company_id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__company_id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__company_id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__company_id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__company_id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__company_id
@@ -865,6 +1118,11 @@ msgid "Copy to the next period"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__meal_cost
+msgid "Cost of food and preparation"
+msgstr ""
+
+#. module: bf_shift
 #. odoo-python
 #: code:addons/bf_shift/models/pool.py:0
 msgid "Counters reset."
@@ -896,6 +1154,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__create_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__create_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__create_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__create_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__create_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__create_uid
@@ -920,6 +1179,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__create_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__create_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__create_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__create_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__create_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__create_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__create_date
@@ -940,6 +1200,16 @@ msgstr ""
 #. module: bf_shift
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_schedule_view_search
 msgid "Current and upcoming"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_hr_employee__shift_flexible_hours
+msgid ""
+"Daily hours that vary, or that are worked in several pieces (split shifts): "
+"the only daily refusal limit is 12 hours per 24 hours, instead of 2 hours "
+"beyond the usual day and 14 hours per 24 hours (LNT art. 59.0.1). A day with"
+" a split shift is treated this way even when the box is not ticked. A "
+"working calendar with flexible hours counts as ticked."
 msgstr ""
 
 #. module: bf_shift
@@ -994,6 +1264,12 @@ msgid "Deadline passed"
 msgstr ""
 
 #. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/tools.py:0
+msgid "Deadline: %s"
+msgstr ""
+
+#. module: bf_shift
 #: model_terms:ir.actions.act_window,help:bf_shift.bf_shift_benefit_event_action
 msgid "Declare a meal, a taxi or parking"
 msgstr ""
@@ -1021,6 +1297,38 @@ msgid "Department"
 msgstr ""
 
 #. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.view_bf_shift_retention_wizard_form
+msgid "Destroy"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.actions.act_window,name:bf_shift.bf_shift_retention_wizard_action
+#: model:ir.ui.menu,name:bf_shift.menu_bf_shift_retention
+msgid "Destroy old records"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_retention_wizard
+#: model_terms:ir.ui.view,arch_db:bf_shift.view_bf_shift_retention_wizard_form
+msgid "Destroy old shift records"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__cutoff
+msgid "Destroy what ends before"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/wizard/retention_wizard.py:0
+msgid ""
+"Destroyed: %(schedules)s schedule(s) with %(shifts)s shift(s), %(periods)s "
+"pay period(s), %(events)s benefit event(s), %(availability)s availability "
+"record(s). Kept for a dispute or linked to a kept record: %(kept)s. Cut-off:"
+" before %(cutoff)s."
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__display_name
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__display_name
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__display_name
@@ -1036,6 +1344,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__display_name
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__display_name
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__display_name
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__display_name
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__display_name
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__display_name
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__display_name
@@ -1045,7 +1354,24 @@ msgid "Display Name"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__color_resolved
+msgid "Displayed color"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__retention_hold_note
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_retention_hold_note
+msgid "Dispute"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__state__done
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_retention_wizard__state__done
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_swap__state__done
 msgid "Done"
 msgstr ""
@@ -1202,6 +1528,14 @@ msgid "Enhanced percentage"
 msgstr ""
 
 #. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+msgid ""
+"Enter the date the averaging cycle starts on: it tells which weeks make up a"
+" period."
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__refusal_counts_as_offered
 msgid ""
 "Equity rule: the hours refused are added to the person's counter, as if "
@@ -1223,6 +1557,11 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_availability__recurrence__weekly
 msgid "Every week"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__presence_exception
+msgid "Exception to the 3-hour minimum"
 msgstr ""
 
 #. module: bf_shift
@@ -1252,6 +1591,11 @@ msgid "Federal"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__federal_exemption_reason
+msgid "Federal exemption, justification"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_offer__state__filled
 msgid "Filled"
 msgstr ""
@@ -1262,15 +1606,15 @@ msgid "Filled By"
 msgstr ""
 
 #. module: bf_shift
-#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_flexible_hours
-msgid "Flexible hours"
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__averaging_anchor
+msgid ""
+"First day of an averaging period: the periods follow one another from the "
+"pay week that contains this date."
 msgstr ""
 
 #. module: bf_shift
-#: model:ir.model.fields,help:bf_shift.field_hr_employee__shift_flexible_hours
-msgid ""
-"Flexible or no fixed hours: the refusal limit is 12 hours per 24 hours "
-"instead of 14."
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__on_call_pay__per_period
+msgid "Flat amount per on-call period"
 msgstr ""
 
 #. module: bf_shift
@@ -1306,6 +1650,18 @@ msgstr ""
 #: model:ir.model.fields,help:bf_shift.field_bf_shift_offer__activity_type_icon
 #: model:ir.model.fields,help:bf_shift.field_bf_shift_schedule__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__amount
+msgid ""
+"For a subsidised meal: the benefit, cost of the food and its preparation "
+"less the price paid, computed."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__force_majeure
+msgid "Force majeure"
 msgstr ""
 
 #. module: bf_shift
@@ -1356,6 +1712,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_search
 msgid "Group by"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__remote
+msgid "Handled remotely"
 msgstr ""
 
 #. module: bf_shift
@@ -1446,6 +1807,21 @@ msgid ""
 msgstr ""
 
 #. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.view_bf_shift_retention_wizard_form
+msgid ""
+"Hours, premiums, indemnities and benefits are supporting documents of the\n"
+"                        pay: the tax laws keep them 6 years after the end of the year they relate\n"
+"                        to (Tax Administration Act, s. 35.1; Income Tax Act, 230(4)). After that,\n"
+"                        the private sector privacy act asks to destroy them (s. 23). Nothing is\n"
+"                        destroyed automatically."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__confirm
+msgid "I understand that the destruction cannot be undone"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__id
@@ -1461,6 +1837,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__id
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__id
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__id
@@ -1526,6 +1903,11 @@ msgid "In force until"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__averaging_source__individual
+msgid "Individual written agreement"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__offer_method__inverse_seniority
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_pool__method__inverse_seniority
 msgid "Inverse seniority (least senior first)"
@@ -1544,12 +1926,29 @@ msgid "Is Follower"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__retention_hold
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_retention_hold
+msgid "Keep for a dispute"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__kind
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__kind
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_availability__kind
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__kind
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__kind
 msgid "Kind"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__averaging_source
+msgid ""
+"LNT art. 53: overtime counted on the average of a period of several weeks "
+"instead of week by week. A collective agreement may provide it without "
+"authorisation. An individual agreement must be in writing, signed by each "
+"employee concerned, cover at most 4 weeks, and no week may exceed the "
+"40-hour norm by more than 10 hours; the employee may end it with two weeks' "
+"notice."
 msgstr ""
 
 #. module: bf_shift
@@ -1585,6 +1984,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__write_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__write_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__write_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__write_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__write_uid
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__write_uid
@@ -1609,6 +2009,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__write_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_publish_wizard__write_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_refuse_wizard__write_date
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__write_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__write_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__write_date
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__write_date
@@ -1630,6 +2031,11 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__daily_extra
 msgid "Long day"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__averaging_max_weeks
+msgid "Longest averaging period allowed (weeks)"
 msgstr ""
 
 #. module: bf_shift
@@ -1672,6 +2078,11 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__meal_after_hours
 msgid "Meal break after (h)"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__provision
+msgid "Meal or taxi"
 msgstr ""
 
 #. module: bf_shift
@@ -1719,6 +2130,11 @@ msgid "Method"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__remote_callback_minimum
+msgid "Minimum also for a remote call-back"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__callback_min_hours
 msgid "Minimum call-back (h)"
 msgstr ""
@@ -1726,6 +2142,11 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_premium_rule__floor
 msgid "Minimum per hour"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__presence_min_hours
+msgid "Minimum presence (h)"
 msgstr ""
 
 #. module: bf_shift
@@ -1759,6 +2180,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_template__name
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_weekday__name
 msgid "Name"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_hr_employee__shift_bank_carried
+msgid ""
+"Net of the time bank lines of the pay periods destroyed at the end of their "
+"retention period: the balance does not move when they go."
 msgstr ""
 
 #. module: bf_shift
@@ -1831,7 +2259,19 @@ msgstr ""
 #. module: bf_shift
 #. odoo-python
 #: code:addons/bf_shift/models/offer.py:0
+msgid "Nobody took the open shift %(when)s: the call list is exhausted."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
 msgid "Nobody took the shift: the list is exhausted."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__averaging_source__none
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__on_call_pay__none
+msgid "None"
 msgstr ""
 
 #. module: bf_shift
@@ -1977,6 +2417,18 @@ msgid "Offers and swaps"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_retention_wizard__kept_count
+msgid ""
+"Old enough, but kept: a dispute is under way for the schedule or for a "
+"person it concerns, or a record that stays points to them."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__kept_count
+msgid "Old records kept"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_template__kind__on_call
 msgid "On call"
 msgstr ""
@@ -1986,6 +2438,29 @@ msgstr ""
 #: code:addons/bf_shift/models/pay.py:0
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_assignment__kind__on_call
 msgid "On call at home"
+msgstr ""
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
+msgid "On call at home (LNT art. 57)"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__on_call_pay
+msgid ""
+"On call at home is not worked time (LNT art. 57): the labour standards do "
+"not require paying it. When the agreement or the contract does, the amount "
+"is taxable wages (RL-1 box A, T4 box 14) and insurable at the CNESST."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__on_call_amount
+msgid "On-call amount"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__on_call_pay
+msgid "On-call pay"
 msgstr ""
 
 #. module: bf_shift
@@ -2020,6 +2495,12 @@ msgstr ""
 
 #. module: bf_shift
 #. odoo-python
+#: code:addons/bf_shift/wizard/retention_wizard.py:0
+msgid "Only a shift manager can destroy old records."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
 #: code:addons/bf_shift/models/benefit.py:0
 msgid "Only a shift manager can do this."
 msgstr ""
@@ -2028,6 +2509,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_shift/models/offer.py:0
 msgid "Only a shift manager cancels an offer."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/wizard/retention_wizard.py:0
+msgid "Only a shift manager of the company destroys its old records."
 msgstr ""
 
 #. module: bf_shift
@@ -2082,6 +2569,8 @@ msgid "Open shift"
 msgstr ""
 
 #. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/tools.py:0
 #: model:ir.model,name:bf_shift.model_bf_shift_offer
 msgid "Open shift offer"
 msgstr ""
@@ -2089,6 +2578,12 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model,name:bf_shift.model_bf_shift_offer_line
 msgid "Open shift offer, one candidate"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Open shift offered: %(when)s, answer by %(time)s"
 msgstr ""
 
 #. module: bf_shift
@@ -2101,6 +2596,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_shift/models/offer.py:0
 msgid "Open shift still unfilled"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "Open shift still unfilled: %(when)s"
 msgstr ""
 
 #. module: bf_shift
@@ -2156,11 +2657,6 @@ msgid "Overtime"
 msgstr ""
 
 #. module: bf_shift
-#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__overtime_hours
-msgid "Overtime (h)"
-msgstr ""
-
-#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__dt_weekday_ids
 msgid "Overtime at double time on"
 msgstr ""
@@ -2171,6 +2667,17 @@ msgstr ""
 msgid ""
 "Overtime goes to the bank only at the employee's request: the employer "
 "cannot impose it."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__averaging_weeks
+msgid ""
+"Overtime is the total of the period minus the weekly threshold times the "
+"number of weeks. It is paid with the pay period that contains the last day "
+"of the averaging period; until then, the hours are paid at the usual rate. "
+"Hours already paid at the usual rate in an earlier pay period then get their"
+" overtime premium only. The daily thresholds and the seventh day still count"
+" day by day."
 msgstr ""
 
 #. module: bf_shift
@@ -2204,6 +2711,11 @@ msgstr ""
 #: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__dt_weekday_ids
 msgid ""
 "Overtime worked on these days is paid at the double time rate (e.g. Sunday)."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__color_hex
+msgid "Own color"
 msgstr ""
 
 #. module: bf_shift
@@ -2252,6 +2764,7 @@ msgstr ""
 
 #. module: bf_shift
 #: model:ir.actions.act_window,name:bf_shift.bf_shift_pay_period_action
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__period_count
 #: model:ir.ui.menu,name:bf_shift.menu_bf_shift_pay_periods
 msgid "Pay periods"
 msgstr ""
@@ -2307,6 +2820,11 @@ msgid "Planned Hours"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__overtime_hours
+msgid "Planned consecutive overtime (h)"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pool_member__pool_id
 msgid "Pool"
 msgstr ""
@@ -2332,6 +2850,24 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_change__previous_employee_id
 msgid "Previous employee"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__meal_price_paid
+msgid "Price paid by the employee"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__provision__provided
+msgid "Provided by the employer"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__provision
+msgid ""
+"Provided by the employer (a meal served or ordered, a taxi paid by the "
+"employer): no receipt is needed. Reimbursed: the employee paid, the "
+"reimbursement is made on receipts (LI art. 37.0.3)."
 msgstr ""
 
 #. module: bf_shift
@@ -2467,7 +3003,7 @@ msgstr ""
 
 #. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__max_24h_flexible
-msgid "Refusal beyond, flexible hours (h per 24 h)"
+msgid "Refusal beyond, variable or non-continuous hours (h per 24 h)"
 msgstr ""
 
 #. module: bf_shift
@@ -2525,6 +3061,11 @@ msgstr ""
 msgid ""
 "Regular hours, overtime, premiums and benefits, coded and exported for the\n"
 "                payroll service. Deductions stay with the payroll service."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__provision__reimbursed
+msgid "Reimbursed on receipts"
 msgstr ""
 
 #. module: bf_shift
@@ -2604,6 +3145,16 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__min_rest_between
 msgid "Rest between shifts (h)"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__result
+msgid "Result"
+msgstr ""
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.view_employee_form_bf_shift
+msgid "Retention"
 msgstr ""
 
 #. module: bf_shift
@@ -2688,6 +3239,7 @@ msgstr ""
 
 #. module: bf_shift
 #: model:ir.actions.act_window,name:bf_shift.bf_shift_schedule_action
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__schedule_count
 #: model:ir.ui.menu,name:bf_shift.menu_bf_shift_schedules
 msgid "Schedules"
 msgstr ""
@@ -2814,6 +3366,7 @@ msgstr ""
 #: code:addons/bf_shift/models/schedule.py:0
 #: model:ir.actions.act_window,name:bf_shift.bf_shift_assignment_action
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_line__assignment_ids
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__assignment_count
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__assignment_ids
 #: model:ir.module.category,name:bf_shift.module_category_bf_shift
 #: model:ir.ui.menu,name:bf_shift.menu_bf_shift_all_shifts
@@ -2825,9 +3378,19 @@ msgid "Shifts"
 msgstr ""
 
 #. module: bf_shift
+#: model:bf.color.rule,name:bf_shift.bf_color_rule_shift_employee
+msgid "Shifts by employee"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.actions.act_window,name:bf_shift.bf_shift_offer_line_action_mine
 #: model:ir.ui.menu,name:bf_shift.menu_bf_shift_my_offers
 msgid "Shifts offered to me"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model,name:bf_shift.model_bf_shift_derived
+msgid "Shifts: derived fields are never written"
 msgstr ""
 
 #. module: bf_shift
@@ -2842,6 +3405,11 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_search
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_search
 msgid "Short notice"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__force_majeure
+msgid "Shortened by a case of force majeure: no 3-hour minimum (LNT art. 58)."
 msgstr ""
 
 #. module: bf_shift
@@ -2887,6 +3455,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer__state
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_offer_line__state
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_pay_period__state
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__state
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_schedule__state
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_swap__state
 msgid "State"
@@ -2996,6 +3565,11 @@ msgid "Template"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__color_text
+msgid "Text color"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,help:bf_shift.field_hr_employee__shift_availability_required
 msgid "The 5-day notice rule does not apply to this person (LNT art. 59.0.1)."
 msgstr ""
@@ -3010,6 +3584,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_shift/models/change.py:0
 msgid "The answer to this change is already recorded."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/agreement.py:0
+msgid ""
+"The averaging period (%(weeks)s weeks) is longer than the limit entered "
+"(%(limit)s weeks)."
 msgstr ""
 
 #. module: bf_shift
@@ -3071,8 +3653,27 @@ msgstr ""
 
 #. module: bf_shift
 #. odoo-python
+#: code:addons/bf_shift/models/offer.py:0
+msgid "The lines of an offer come from its call list."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__overtime_hours
+msgid ""
+"The overtime as planned when the employer asked for it, in one stretch: the "
+"2-hour condition reads the planned length, not the hours finally worked (LI "
+"art. 37.0.3)."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
 #: code:addons/bf_shift/models/pay.py:0
 msgid "The period ends before it starts."
+msgstr ""
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.view_bf_shift_retention_wizard_form
+msgid "The records listed will be destroyed for good. Continue?"
 msgstr ""
 
 #. module: bf_shift
@@ -3132,8 +3733,46 @@ msgstr ""
 
 #. module: bf_shift
 #. odoo-python
+#: code:addons/bf_shift/models/schedule.py:0
+msgid "The state of a schedule changes only through its buttons."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/wizard/retention_wizard.py:0
+msgid ""
+"The tax laws keep the supporting documents of the pay at least %(years)s "
+"years after the end of the year."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__federal_exemption_reason
+msgid ""
+"The taxi home is taxable by default at the CRA. Enter why it is not, for "
+"this event, to record it as not taxable. Shift managers only."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/hr_employee.py:0
+msgid ""
+"The time bank carried over is set by the destruction of old pay periods "
+"only."
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
 #: code:addons/bf_shift/models/offer.py:0
 msgid "The time to answer this offer has passed."
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_agreement__presence_exception
+msgid ""
+"The two exceptions of LNT art. 58 (a school crossing guard, a bus driver; an"
+" usher, a supervisor). Under an exception, short regular shifts get no "
+"minimum and the call-back minimum is the agreement's only, without the "
+"3-hour floor."
 msgstr ""
 
 #. module: bf_shift
@@ -3162,6 +3801,12 @@ msgstr ""
 msgid ""
 "These values are less favourable than the labour standards. The labour "
 "standards apply instead:"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/wizard/retention_wizard.py:0
+msgid "This destruction is already done."
 msgstr ""
 
 #. module: bf_shift
@@ -3207,6 +3852,12 @@ msgid "Thursday"
 msgstr ""
 
 #. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/wizard/retention_wizard.py:0
+msgid "Tick the box to confirm: the destruction cannot be undone."
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_agreement__bank_allowed
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
 msgid "Time bank"
@@ -3215,6 +3866,11 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_bank_balance
 msgid "Time bank (h)"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_bank_carried
+msgid "Time bank carried over (h)"
 msgstr ""
 
 #. module: bf_shift
@@ -3264,6 +3920,16 @@ msgstr ""
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__federal_status__check
 #: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_benefit_event__quebec_status__check
 msgid "To check with a tax specialist"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_retention_wizard__state__plan
+msgid "To confirm"
+msgstr ""
+
+#. module: bf_shift
+#: model_terms:ir.ui.view,arch_db:bf_shift.view_bf_shift_retention_wizard_form
+msgid "To destroy"
 msgstr ""
 
 #. module: bf_shift
@@ -3365,6 +4031,11 @@ msgid "Usual hourly rate"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_hr_employee__shift_flexible_hours
+msgid "Variable or non-continuous hours"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_benefit_event__verdict_codes
 msgid "Verdict Codes"
 msgstr ""
@@ -3428,6 +4099,20 @@ msgid "Wednesday"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_warning__code__averaging_week_cap
+msgid "Week beyond the averaging agreement"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"Week of %(when)s: %(hours)s h, more than %(limit)s h. An individual "
+"averaging agreement allows at most 10 hours beyond the 40-hour norm in a "
+"week (LNT art. 53)."
+msgstr ""
+
+#. module: bf_shift
 #. odoo-python
 #: code:addons/bf_shift/models/assignment.py:0
 msgid ""
@@ -3474,6 +4159,14 @@ msgid "Weekly: first week it applies. Dates: first day."
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,help:bf_shift.field_bf_shift_benefit_event__meal_cost
+msgid ""
+"What the meal costs the employer: the food and its preparation, without "
+"fixed costs of the premises. When a third party runs the service, the full "
+"price of the meal."
+msgstr ""
+
+#. module: bf_shift
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_assignment_view_form
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_form
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_change_view_list
@@ -3488,8 +4181,10 @@ msgstr ""
 #. module: bf_shift
 #: model:ir.model.fields,help:bf_shift.field_bf_shift_assignment__informed_at
 msgid ""
-"When the employee was told of this shift as it stands: at publication, then "
-"at each change."
+"When the employee was told of this shift: at publication, then at each "
+"change that the employee may refuse for want of notice. Extending a shift "
+"within the limits of LNT art. 59.0.1 (1st paragraph) keeps the original "
+"date: that extension cannot be refused for want of notice."
 msgstr ""
 
 #. module: bf_shift
@@ -3535,6 +4230,16 @@ msgid "Work schedule"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__presence_exception__multiple_presences
+msgid "Work that needs several presences a day"
+msgstr ""
+
+#. module: bf_shift
+#: model:ir.model.fields.selection,name:bf_shift.selection__bf_shift_agreement__presence_exception__usually_short
+msgid "Work usually done in full within 3 hours"
+msgstr ""
+
+#. module: bf_shift
 #: model:ir.model.fields,field_description:bf_shift.field_bf_shift_assignment__worked_hours
 msgid "Worked Hours"
 msgstr ""
@@ -3553,6 +4258,11 @@ msgid "Working conditions (labour standards or collective agreement)"
 msgstr ""
 
 #. module: bf_shift
+#: model:ir.model.fields,field_description:bf_shift.field_bf_shift_retention_wizard__years
+msgid "Years kept after the end of the year"
+msgstr ""
+
+#. module: bf_shift
 #. odoo-python
 #: code:addons/bf_shift/models/swap.py:0
 msgid "You can only ask to swap your own shifts."
@@ -3562,6 +4272,14 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_shift/models/tools.py:0
 msgid "You cannot set these fields yourself: %(fields)s"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/assignment.py:0
+msgid ""
+"Your answer is expected: this change was made fewer than %(days)s days "
+"ahead, so you may accept or refuse it (LNT s. 59.0.1)."
 msgstr ""
 
 #. module: bf_shift
@@ -3600,6 +4318,12 @@ msgid "cancelled"
 msgstr ""
 
 #. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "cost of the food and its preparation not entered"
+msgstr ""
+
+#. module: bf_shift
 #: model_terms:ir.ui.view,arch_db:bf_shift.bf_shift_agreement_view_form
 msgid "e.g. Collective agreement 2024-2028"
 msgstr ""
@@ -3629,7 +4353,21 @@ msgstr ""
 #. module: bf_shift
 #. odoo-python
 #: code:addons/bf_shift/models/benefit.py:0
-msgid "fewer than 2 hours of overtime"
+msgid "federal: not taxable, as justified by the employer"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid ""
+"federal: the trip between home and work is personal travel for the CRA; no "
+"published exception covers a taxi after overtime"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "fewer than 2 consecutive hours of overtime planned"
 msgstr ""
 
 #. module: bf_shift
@@ -3660,6 +4398,20 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_shift/models/benefit.py:0
 msgid "the overtime was not requested by the employer"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid "the price paid covers the cost of the food and its preparation"
+msgstr ""
+
+#. module: bf_shift
+#. odoo-python
+#: code:addons/bf_shift/models/benefit.py:0
+msgid ""
+"the price paid is below the cost of the food and its preparation: the "
+"benefit is the difference"
 msgstr ""
 
 #. module: bf_shift

@@ -44,4 +44,6 @@
               action="bf_shift_template_action"/>
     <menuitem id="menu_bf_shift_weekdays" parent="menu_bf_shift_config" sequence="30"
               action="bf_shift_weekday_action"/>
+    <menuitem id="menu_bf_shift_retention" parent="menu_bf_shift_config" sequence="90"
+              action="bf_shift_retention_wizard_action"/>
 </odoo>

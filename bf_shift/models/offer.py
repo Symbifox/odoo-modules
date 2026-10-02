@@ -1,11 +1,12 @@
 from datetime import timedelta
 
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 
 from ..lib import engine
-from .tools import (flag, internal, is_shift_manager, lang_of, post, schedule_activity,
-                    to_local, tz_of)
+from .tools import assign_activity, flag, internal, is_shift_manager, post, to_local, tz_of
 
 LINE_STATES = [
     ("waiting", "Waiting"),
@@ -32,7 +33,7 @@ class BfShiftOffer(models.Model):
 
     _name = "bf.shift.offer"
     _description = "Open shift offer"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "bf.shift.derived"]
     _order = "create_date desc, id desc"
 
     name = fields.Char(compute="_compute_name", store=True)
@@ -79,6 +80,33 @@ class BfShiftOffer(models.Model):
 
     # ------------------------------------------------------------------
 
+    # Every step of an offer is the trace a grievance asks for: its state
+    # moves only through the buttons and the answers, and a started offer
+    # is never deleted, except by the destruction of old records.
+    TRACE = {"state", "filled_by"}
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        # Read on the records: the context and saved defaults give values too.
+        if not self.env.su and not flag(self.env, "state_change") and \
+                any(rec.state != "draft" or rec.filled_by for rec in records):
+            raise UserError(_("An offer is created as a draft, then started with its button."))
+        return records
+
+    def write(self, vals):
+        if not self.env.su and not flag(self.env, "state_change"):
+            if self.TRACE & set(vals) or (
+                    {"assignment_id", "pool_id"} & set(vals)
+                    and any(rec.state != "draft" for rec in self)):
+                raise UserError(_("An offer moves on with its buttons; its trace is kept."))
+        return super().write(vals)
+
+    def unlink(self):
+        if not flag(self.env, "retention") and any(rec.state != "draft" for rec in self):
+            raise UserError(_("A started offer is kept: cancel it instead."))
+        return super().unlink()
+
     def action_start(self):
         for offer in self:
             if offer.state != "draft":
@@ -86,7 +114,7 @@ class BfShiftOffer(models.Model):
             if not offer.assignment_id.is_open:
                 raise UserError(_("The shift is no longer open."))
             offer._build_candidates()
-            offer.state = "running"
+            internal(offer, state_change=True).write({"state": "running"})
             post(offer, body=_("Offer started with %(count)s candidate(s), order: %(method)s.",
                                       count=len(offer.line_ids.filtered(
                                           lambda l: l.state == "waiting")),
@@ -123,7 +151,7 @@ class BfShiftOffer(models.Model):
                 "seniority_date": member.seniority_date,
                 "hours_offered_before": member.hours_offered,
             })
-        self.env["bf.shift.offer.line"].create(vals)
+        internal(self.env["bf.shift.offer.line"], offer_internal=True).create(vals)
 
     def _blocked_reason(self, employee, assignment):
         clash = self.env["bf.shift.assignment"].sudo().search_count([
@@ -145,33 +173,43 @@ class BfShiftOffer(models.Model):
         if self.state != "running":
             return
         nxt = self.line_ids.filtered(lambda l: l.state == "waiting").sorted("rank")[:1]
+        # The schedule's responsible person hands out the activities, never
+        # whoever answered last: after a refusal, that is the colleague who
+        # refused, and the notice would name her.
+        responsible = self.sudo().schedule_id.user_id
+        when = self.assignment_id._when_label()
         if not nxt:
-            self.state = "unfilled"
+            internal(self, state_change=True).write({"state": "unfilled"})
             post(self, body=_("Nobody took the shift: the list is exhausted."))
-            responsible = self.schedule_id.user_id
             if responsible:
-                env = self.with_context(lang=lang_of(self.env, user=responsible)).env
-                schedule_activity(
-                    self, "mail.mail_activity_data_todo", user_id=responsible.id,
-                    summary=env._("Open shift still unfilled"))
+                assign_activity(self, responsible, responsible, lambda env: (
+                    env._("Open shift still unfilled"),
+                    env._("Open shift still unfilled: %(when)s", when=when),
+                    Markup("<p>%s</p>") % env._(
+                        "Nobody took the open shift %(when)s: the call list is exhausted.",
+                        when=when)))
             return
         now = fields.Datetime.now()
         internal(nxt, offer_internal=True).write({"state": "offered", "offered_at": now,
                    "response_deadline": now + timedelta(minutes=self.response_minutes or 60)})
         user = nxt.employee_id.sudo().user_id
         if user:
-            env = self.with_context(lang=lang_of(self.env, user=user)).env
             deadline = to_local(nxt.response_deadline, tz_of(nxt.employee_id, self.env))
-            schedule_activity(
-                self.sudo(), "mail.mail_activity_data_todo", user_id=user.id,
-                date_deadline=fields.Date.context_today(self),
-                summary=env._("Answer by %(time)s", time=deadline.strftime("%Y-%m-%d %H:%M")))
+            time = deadline.strftime("%Y-%m-%d %H:%M")
+            assign_activity(self, user, responsible, lambda env: (
+                env._("Answer by %(time)s", time=time),
+                env._("Open shift offered: %(when)s, answer by %(time)s", when=when, time=time),
+                Markup("<p>%s</p><p>%s</p>") % (
+                    env._("An open shift is offered to you: %(when)s.", when=when),
+                    env._("Answer by %(time)s with the Accept or Refuse button of the offer.",
+                          time=time))))
 
     def _close_activities(self, employee):
+        # Removed, not marked done: "done" would post a message signed by
+        # whoever answered, on a record the next person follows.
         user = employee.sudo().user_id
         if user:
-            self.sudo().activity_ids.filtered(lambda a: a.user_id == user).action_feedback(
-                feedback=_("Answered"))
+            self.sudo().activity_ids.filtered(lambda a: a.user_id == user).unlink()
 
     def action_cancel(self):
         if not is_shift_manager(self.env):
@@ -180,7 +218,7 @@ class BfShiftOffer(models.Model):
             internal(offer.line_ids.filtered(lambda l: l.state in ("waiting", "offered")),
                      offer_internal=True).write({"state": "withdrawn"})
             offer.sudo().activity_ids.unlink()
-            offer.state = "cancelled"
+            internal(offer, state_change=True).write({"state": "cancelled"})
         return True
 
     @api.model
@@ -198,6 +236,7 @@ class BfShiftOffer(models.Model):
 class BfShiftOfferLine(models.Model):
     _name = "bf.shift.offer.line"
     _description = "Open shift offer, one candidate"
+    _inherit = ["bf.shift.derived"]
     _order = "offer_id, rank"
 
     offer_id = fields.Many2one("bf.shift.offer", required=True, ondelete="cascade", index=True)
@@ -221,10 +260,30 @@ class BfShiftOfferLine(models.Model):
     recorded_by = fields.Many2one("res.users", readonly=True)
     refusal_reason = fields.Char(readonly=True)
 
+    @api.depends("offer_id", "employee_id")
+    def _compute_display_name(self):
+        for rec in self:
+            rec.display_name = " — ".join(
+                part for part in (rec.offer_id.sudo().name, rec.employee_id.sudo().name) if part)
+
     @api.depends("employee_id.user_id")
     def _compute_user(self):
         for rec in self:
             rec.employee_user_id = rec.employee_id.user_id
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Lines are written by the offer (its candidates, in order): a line
+        # created by hand would put an answer in someone's mouth.
+        if not self.env.su and not flag(self.env, "offer_internal"):
+            raise UserError(_("The lines of an offer come from its call list."))
+        return super().create(vals_list)
+
+    def unlink(self):
+        if not flag(self.env, "retention") and \
+                any(rec.offer_id.state != "draft" for rec in self):
+            raise UserError(_("A started offer is kept: cancel it instead."))
+        return super().unlink()
 
     def write(self, vals):
         # Answers go through _record(), which keeps the trace; a plain write
@@ -287,7 +346,8 @@ class BfShiftOfferLine(models.Model):
                 member.write({"hours_offered": member.hours_offered + hours,
                               "hours_accepted": member.hours_accepted + hours})
             offer.line_ids.filtered(lambda l: l.state == "waiting").write({"state": "withdrawn"})
-            offer.write({"state": "filled", "filled_by": line.employee_id.id})
+            internal(offer, state_change=True).write(
+                {"state": "filled", "filled_by": line.employee_id.id})
             post(offer, body=_("%(name)s accepted the shift.", name=line.employee_id.name))
             return
         if member:

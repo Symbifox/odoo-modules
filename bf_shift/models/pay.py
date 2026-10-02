@@ -7,7 +7,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 from ..lib import engine
-from .tools import post, to_local, tz_of
+from .tools import flag, post, to_local, tz_of
 
 
 def code_labels(env):
@@ -15,10 +15,12 @@ def code_labels(env):
         "REG": env._("Regular hours"),
         "OT": env._("Overtime"),
         "DT": env._("Double time"),
+        "OTAVG": env._("Averaging overtime, premium on hours already paid"),
         "BANKIN": env._("Overtime to the bank"),
         "BANKOUT": env._("Time taken from the bank"),
         "LEAVE": env._("Paid leave or holiday"),
         "CBTOP": env._("Call-back minimum, top-up"),
+        "MINTOP": env._("3-hour minimum (LNT art. 58), top-up"),
         "ONCALL": env._("On call at home"),
         "HOLIND": env._("Holiday indemnity"),
     }
@@ -80,7 +82,7 @@ class BfShiftPayPeriod(models.Model):
         return super().write(vals)
 
     def unlink(self):
-        if any(rec.state == "exported" for rec in self):
+        if not flag(self.env, "retention") and any(rec.state == "exported" for rec in self):
             raise UserError(_("An exported period is kept."))
         return super().unlink()
 
@@ -153,6 +155,8 @@ class BfShiftPayPeriod(models.Model):
         # holiday indemnity.
         first = engine.week_start_of(self.date_from, params.week_start) - timedelta(days=28)
         last = engine.week_start_of(self.date_to, params.week_start) + timedelta(days=6)
+        # Under averaging, the whole averaging periods that end in the period.
+        first = min(first, engine.averaging_period(self.date_from, params)[0])
         assignments = self.env["bf.shift.assignment"].sudo().search([
             ("employee_id", "=", emp.id),
             ("state", "!=", "cancelled"),
@@ -173,7 +177,11 @@ class BfShiftPayPeriod(models.Model):
             if line.enhanced:
                 label = _("%(label)s (enhanced)", label=label)
             ids = [k for k in line.keys if isinstance(k, int)]
-            out.append({
+            extra = {}
+            if line.code == "ONCALL" and line.amount:
+                # An on-call indemnity is wages: taxable on both sides.
+                extra = {"taxable_quebec": "taxable", "taxable_federal": "taxable"}
+            out.append(dict(extra, **{
                 "period_id": self.id,
                 "employee_id": emp.id,
                 "code": line.code,
@@ -182,7 +190,7 @@ class BfShiftPayPeriod(models.Model):
                 "multiplier": line.multiplier,
                 "amount": line.amount,
                 "assignment_ids": [(6, 0, ids)],
-            })
+            }))
         events = self.env["bf.shift.benefit.event"].sudo().search([
             ("employee_id", "=", emp.id),
             ("state", "=", "approved"),
@@ -250,6 +258,7 @@ class BfShiftPayPeriod(models.Model):
 class BfShiftPayLine(models.Model):
     _name = "bf.shift.pay.line"
     _description = "Shift pay line"
+    _inherit = ["bf.shift.derived"]
     _order = "period_id, employee_id, id"
 
     period_id = fields.Many2one("bf.shift.pay.period", required=True, ondelete="cascade",
@@ -272,6 +281,8 @@ class BfShiftPayLine(models.Model):
         string="Taxable, federal")
 
     def _check_open(self, periods):
+        if flag(self.env, "retention"):
+            return
         if any(p.state == "exported" for p in periods):
             raise UserError(_("An exported period is locked: reopen it first."))
 

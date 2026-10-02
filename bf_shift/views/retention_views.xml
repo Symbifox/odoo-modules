@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_shift_retention_wizard_form" model="ir.ui.view">
+        <field name="name">bf.shift.retention.wizard.form</field>
+        <field name="model">bf.shift.retention.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Destroy old shift records">
+                <field name="state" invisible="1"/>
+                <div invisible="state != 'plan'">
+                    <p>
+                        Hours, premiums, indemnities and benefits are supporting documents of the
+                        pay: the tax laws keep them 6 years after the end of the year they relate
+                        to (Tax Administration Act, s. 35.1; Income Tax Act, 230(4)). After that,
+                        the private sector privacy act asks to destroy them (s. 23). Nothing is
+                        destroyed automatically.
+                    </p>
+                    <p class="text-muted">
+                        A schedule or a person under dispute stays, with every record it is linked
+                        to: tick "Keep for a dispute" on the schedule or on the employee first.
+                    </p>
+                    <group>
+                        <group>
+                            <field name="years"/>
+                            <field name="cutoff"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="To destroy">
+                            <field name="schedule_count"/>
+                            <field name="assignment_count"/>
+                            <field name="period_count"/>
+                            <field name="event_count"/>
+                            <field name="availability_count"/>
+                            <field name="kept_count"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="confirm"/>
+                    </group>
+                </div>
+                <div invisible="state != 'done'">
+                    <field name="result" nolabel="1"/>
+                </div>
+                <footer>
+                    <button name="action_destroy" type="object" string="Destroy"
+                            class="btn-danger" invisible="state != 'plan'"
+                            confirm="The records listed will be destroyed for good. Continue?"/>
+                    <button string="Close" class="btn-secondary" special="cancel"
+                            data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_shift_retention_wizard_action" model="ir.actions.act_window">
+        <field name="name">Destroy old records</field>
+        <field name="res_model">bf.shift.retention.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

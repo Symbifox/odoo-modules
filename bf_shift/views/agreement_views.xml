@@ -59,6 +59,17 @@
                                     <field name="ot_daily_threshold"/>
                                     <field name="ot_multiplier"/>
                                 </group>
+                                <group string="Averaging of hours (LNT art. 53)" name="averaging">
+                                    <field name="averaging_source"/>
+                                    <field name="averaging_weeks"
+                                           invisible="averaging_source == 'none'"
+                                           required="averaging_source != 'none'"/>
+                                    <field name="averaging_anchor"
+                                           invisible="averaging_source == 'none'"
+                                           required="averaging_source != 'none'"/>
+                                    <field name="averaging_max_weeks"
+                                           invisible="averaging_source != 'collective'"/>
+                                </group>
                                 <group string="Double time">
                                     <field name="dt_weekly_threshold"/>
                                     <field name="dt_multiplier"/>
@@ -80,7 +91,17 @@
                                 <group string="Notice and call-back">
                                     <field name="notice_days"/>
                                     <field name="callback_min_hours"/>
+                                    <field name="remote_callback_minimum"/>
+                                    <field name="presence_min_hours"
+                                           invisible="presence_exception"/>
+                                    <field name="presence_exception"/>
                                     <field name="min_rest_between"/>
+                                </group>
+                                <group string="On call at home (LNT art. 57)">
+                                    <field name="on_call_pay"/>
+                                    <field name="on_call_amount"
+                                           invisible="on_call_pay == 'none'"
+                                           required="on_call_pay != 'none'"/>
                                 </group>
                                 <group string="Right to refuse (LNT art. 59.0.1)">
                                     <field name="max_extra_daily"/>
@@ -240,6 +261,14 @@
                             <field name="shift_flexible_hours"/>
                             <field name="shift_availability_required"/>
                             <field name="shift_bank_balance"/>
+                            <field name="shift_bank_carried" invisible="not shift_bank_carried"/>
+                        </group>
+                    </group>
+                    <group string="Retention">
+                        <group>
+                            <field name="shift_retention_hold"/>
+                            <field name="shift_retention_hold_note"
+                                   invisible="not shift_retention_hold"/>
                         </group>
                     </group>
                 </page>

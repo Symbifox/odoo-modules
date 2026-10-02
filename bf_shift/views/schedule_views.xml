@@ -67,6 +67,9 @@
                             <field name="published_at" invisible="not published_at"/>
                             <field name="open_count"/>
                             <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="retention_hold" groups="bf_shift.group_shift_manager"/>
+                            <field name="retention_hold_note" groups="bf_shift.group_shift_manager"
+                                   invisible="not retention_hold"/>
                         </group>
                     </group>
                     <notebook>
@@ -222,6 +225,9 @@
                                     <field name="to_bank"/>
                                     <field name="bank_requested_by_employee"
                                            invisible="not to_bank"/>
+                                    <field name="remote" invisible="kind != 'callback'"/>
+                                    <field name="force_majeure"
+                                           invisible="kind not in ('work', 'callback')"/>
                                 </group>
                             </group>
                         </page>

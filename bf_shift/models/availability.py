@@ -3,7 +3,7 @@ from datetime import datetime, time, timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-from .tools import check_own, guard_employee_vals, local_bounds, to_local, tz_of
+from .tools import check_own, employee_defaults, guard_employee_vals, local_bounds, to_local, tz_of
 
 EMPLOYEE_FIELDS = {"employee_id", "kind", "recurrence", "weekday_id", "date_from", "date_to",
                    "whole_day", "hour_from", "hour_to", "note"}
@@ -12,6 +12,7 @@ EMPLOYEE_FIELDS = {"employee_id", "kind", "recurrence", "weekday_id", "date_from
 class BfShiftAvailability(models.Model):
     _name = "bf.shift.availability"
     _description = "Availability"
+    _inherit = ["bf.shift.derived"]
     _order = "employee_id, date_from, weekday_id"
 
     employee_id = fields.Many2one("hr.employee", required=True, index=True,
@@ -30,6 +31,19 @@ class BfShiftAvailability(models.Model):
     hour_from = fields.Float("From (hour)")
     hour_to = fields.Float("To (hour)")
     note = fields.Char()
+
+    @api.depends("kind", "employee_id", "recurrence", "weekday_id", "date_from", "date_to")
+    def _compute_display_name(self):
+        kinds = dict(self._fields["kind"]._description_selection(self.env))
+        for rec in self:
+            when = rec.weekday_id.name if rec.recurrence == "weekly" else " – ".join(
+                d.isoformat() for d in (rec.date_from, rec.date_to) if d)
+            rec.display_name = " — ".join(
+                part for part in (rec.employee_id.sudo().name, kinds.get(rec.kind), when) if part)
+
+    @api.model
+    def default_get(self, fields_list):
+        return employee_defaults(self, super().default_get(fields_list), EMPLOYEE_FIELDS)
 
     @api.model_create_multi
     def create(self, vals_list):

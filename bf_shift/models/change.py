@@ -1,7 +1,7 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
-from .tools import post
+from .tools import flag, post
 
 CONSENT_FIELDS = {"consent", "consent_at", "consent_recorded_by", "consent_note"}
 
@@ -11,17 +11,22 @@ class BfShiftChange(models.Model):
 
     Written by the module only, never edited, never deleted: in a grievance
     it is the evidence of who was told what, and when. Only the consent can
-    be recorded afterwards, once.
+    be recorded afterwards, once. The retention action alone destroys it,
+    with its schedule, once the retention period is over.
     """
 
     _name = "bf.shift.change"
     _description = "Schedule change"
+    _inherit = ["bf.shift.derived"]
     _order = "create_date desc, id desc"
     _rec_name = "after"
 
-    assignment_id = fields.Many2one("bf.shift.assignment", required=True, ondelete="cascade",
+    # Restrict, not cascade: whatever path deletes a shift or a schedule, the
+    # database refuses to take the log along. The destruction of old records
+    # deletes the changes first, on purpose.
+    assignment_id = fields.Many2one("bf.shift.assignment", required=True, ondelete="restrict",
                                     index=True)
-    schedule_id = fields.Many2one("bf.shift.schedule", required=True, ondelete="cascade",
+    schedule_id = fields.Many2one("bf.shift.schedule", required=True, ondelete="restrict",
                                   index=True)
     employee_id = fields.Many2one("hr.employee", string="Employee concerned")
     previous_employee_id = fields.Many2one("hr.employee", string="Previous employee")
@@ -70,7 +75,9 @@ class BfShiftChange(models.Model):
         return super().write(vals)
 
     def unlink(self):
-        raise UserError(_("The change log cannot be deleted."))
+        if not flag(self.env, "retention"):
+            raise UserError(_("The change log cannot be deleted."))
+        return super().unlink()
 
     def _answer(self, answer, note=False):
         for rec in self:

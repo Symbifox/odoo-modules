@@ -196,4 +196,27 @@
         <field name="model_id" ref="model_bf_shift_template"/>
         <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
     </record>
+    <record id="rule_warning_company" model="ir.rule">
+        <field name="name">Shifts: warnings of my companies</field>
+        <field name="model_id" ref="model_bf_shift_warning"/>
+        <field name="domain_force">[('schedule_id.company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_premium_rule_company" model="ir.rule">
+        <field name="name">Shifts: premiums of my companies</field>
+        <field name="model_id" ref="model_bf_shift_premium_rule"/>
+        <field name="domain_force">['|', ('agreement_id.company_id', '=', False), ('agreement_id.company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Wizards: Odoo 18 gives a transient model no rule of its own, and a
+         refusal names who refused, and why. Each person sees only theirs. -->
+    <record id="rule_refuse_wizard_own" model="ir.rule">
+        <field name="name">Shifts: my refusals</field>
+        <field name="model_id" ref="model_bf_shift_refuse_wizard"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
+    <record id="rule_retention_wizard_own" model="ir.rule">
+        <field name="name">Shifts: my destructions of old records</field>
+        <field name="model_id" ref="model_bf_shift_retention_wizard"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+    </record>
 </odoo>
