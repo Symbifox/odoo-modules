@@ -583,6 +583,16 @@ class TestRentalPortalSelections(RentalPortalCommon):
         self.assertEqual(deposited.state, "deposited")
         self.assertEqual(deposited._portal_outstanding(deposited), 0.0)
 
+    def test_a_term_after_the_end_of_the_lease_is_not_owed(self):
+        """Le bail a réellement pris fin : le portail ne réclame rien après."""
+        today = fields.Date.context_today(self.env.user)
+        before = self._term(today - relativedelta(months=2), 1200.0)
+        after = self._term(today - relativedelta(months=1), 1200.0)
+        self.lease.rent_due_until = today - relativedelta(months=1, days=10)
+        terms = before | after
+        self.assertEqual(after.state, "after_end")
+        self.assertEqual(terms._portal_outstanding(terms), 1200.0)
+
     def test_a_partial_payment_leaves_only_the_balance(self):
         today = fields.Date.context_today(self.env.user)
         term = self._term(today - relativedelta(months=1), 1200.0)
@@ -927,6 +937,23 @@ class TestRentalPortalBranches(HttpCase, RentalPortalCommon):
         self.assertNotIn("En retard", text)
         # Et il ne gonfle pas le solde : la loi le permet, l'écran ne doit pas
         # le compter comme une dette.
+        self.assertNotIn("dû sur les termes déjà exigibles", text)
+
+    def test_a_term_after_the_end_of_the_lease_shows_as_such(self):
+        today = fields.Date.context_today(self.env.user)
+        self.env["bf.rental.term"].create({
+            "lease_id": self.lease.id,
+            "date_due": today - relativedelta(days=5),
+            "amount_due": 987.65,
+        })
+        self.lease.rent_due_until = today - relativedelta(days=10)
+        self._login()
+        text = self._page("/my/rental/rent")
+        self.assertIn("Après la fin du bail", text)
+        # Le montant paraît une fois, dû au bail ; la colonne « Reste » ne le
+        # réclame pas.
+        self.assertEqual(text.count("987,65"), 1)
+        self.assertNotIn("En retard", text)
         self.assertNotIn("dû sur les termes déjà exigibles", text)
 
     # ── Art. 1895 : le formulaire remis dans les dix jours ──

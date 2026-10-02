@@ -7,7 +7,8 @@
         <field name="arch" type="xml">
             <list string="Termes de loyer"
                   decoration-warning="state == 'partial'"
-                  decoration-danger="state == 'late'">
+                  decoration-danger="state == 'late'"
+                  decoration-muted="state == 'after_end'">
                 <field name="lease_id"/>
                 <field name="date_due"/>
                 <field name="amount_due"/>
@@ -64,13 +65,19 @@
         <field name="arch" type="xml">
             <xpath expr="//group[@name='note']" position="before">
                 <group string="Loyer dû">
+                    <!-- 🔴 Saisie, jamais déduite de la date de fin du bail :
+                         un bail à durée fixe se reconduit de plein droit
+                         (art. 1941). -->
+                    <field name="rent_due_until"/>
                     <field name="arrears_total"/>
                     <field name="arrears_days"/>
                     <!-- 🔴 Le libellé dit ce que le seuil change RÉELLEMENT.
                          Écrire « vous pouvez résilier » serait faux deux fois :
                          seul le tribunal résilie, et le locataire peut encore
                          tout arrêter en payant avant jugement (art. 1883). -->
-                    <field name="tribunal_may_grant_time"/>
+                    <!-- Le recours de l'art. 1973 vise un bail en cours : sur
+                         un bail terminé, le drapeau n'a plus d'objet. -->
+                    <field name="tribunal_may_grant_time" invisible="rent_due_until"/>
                     <field name="term_ids" nolabel="1" colspan="2" readonly="1">
                         <list>
                             <field name="date_due"/>

@@ -1,7 +1,7 @@
 {
     "name": "Copropriété : carnet, étude et attestations",
     "summary": "Carnet d'entretien, étude du fonds de prévoyance, attestation du syndicat et calendrier des échéances",
-    "version": "18.0.4.7.1",
+    "version": "18.0.4.7.2",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

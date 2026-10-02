@@ -1,7 +1,7 @@
 {
     "name": "Copropriété : assemblées",
     "summary": "Assemblées de copropriétaires : convocation, quorum, vote pondéré et majorités",
-    "version": "18.0.2.4.0",
+    "version": "18.0.2.4.1",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

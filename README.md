@@ -262,17 +262,17 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_policy` | Symbifox — Blue Fox OS Policy | 18.0.2.11.1 | BUSL-1.1 | Manage Blue Fox OS workstations from Odoo: install, sign-in, disk encryption, apps and browser policy served to each machine, with machine enrolment and disk-passphrase escrow |
 | `bf_process` | Cartographie de processus | 18.0.5.0.6 | BUSL-1.1 | Living process maps stored as records, not files: BPMN 2.0 and diagrams.net export, an in-app SVG viewer and editor, per-activity validation sign-off, versioning with freeze and diff, BPMN re-import, an assembled deliverable (cover, contents, appendices), and a target process whose gap to the current state is seeded, owned and tracked |
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
-| `bf_property_core` | Immeubles : socle | 18.0.2.10.0 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
+| `bf_property_core` | Immeubles : socle | 18.0.2.10.1 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
 | `bf_property_cx` | Copropriété : satisfaction des occupants | 18.0.1.4.0 | BUSL-1.1 | Ask the occupant how their maintenance request went, once it is closed |
-| `bf_property_finance` | Copropriété : charges et appels de fonds | 18.0.4.7.1 | BUSL-1.1 | Annual budget, allocation of common expenses and calls for contributions |
-| `bf_property_governance` | Copropriété : assemblées | 18.0.2.4.0 | BUSL-1.1 | Co-owners' meetings: notice, quorum, weighted voting and majorities under the Civil Code of Québec |
-| `bf_property_operations` | Immeubles : exploitation | 18.0.7.5.0 | BUSL-1.1 | Buildings and teams: where each piece of equipment is, and who answers for the building |
+| `bf_property_finance` | Copropriété : charges et appels de fonds | 18.0.4.7.2 | BUSL-1.1 | Annual budget, allocation of common expenses and calls for contributions |
+| `bf_property_governance` | Copropriété : assemblées | 18.0.2.4.1 | BUSL-1.1 | Co-owners' meetings: notice, quorum, weighted voting and majorities under the Civil Code of Québec |
+| `bf_property_operations` | Immeubles : exploitation | 18.0.7.5.1 | BUSL-1.1 | Buildings and teams: where each piece of equipment is, and who answers for the building |
 | `bf_property_operations_portal` | Immeubles : de la demande au travail | 18.0.2.1.1 | BUSL-1.1 | Route an occupant's request to their building's team, and turn it into the work to be done |
 | `bf_property_operations_privacy` | Exploitation : pont vie privée (Loi 25) | 18.0.1.3.0 | BUSL-1.1 | Record in the Law 25 register what a work shift says about employees |
 | `bf_property_operations_records` | Copropriété : le carnet et l'exploitation | 18.0.3.3.0 | BUSL-1.1 | The maintenance logbook cites the equipment operations keeps, and flags when the two disagree |
-| `bf_property_portal` | Copropriété : portail de l'occupant | 18.0.6.10.1 | BUSL-1.1 | Occupant portal: notices, documents, contact details, maintenance requests, common-area bookings, parcels and visitors |
+| `bf_property_portal` | Copropriété : portail de l'occupant | 18.0.6.10.2 | BUSL-1.1 | Occupant portal: notices, documents, contact details, maintenance requests, common-area bookings, parcels and visitors |
 | `bf_property_privacy` | Copropriété : pont vie privée (Loi 25) | 18.0.2.1.1 | BUSL-1.1 | Record in the Law 25 register what the co-ownership suite collects, and link the art. 1070 consent to the Law 25 file |
-| `bf_property_records` | Copropriété : carnet, étude et attestations | 18.0.4.7.1 | BUSL-1.1 | Maintenance logbook, contingency fund study, syndicate certificate and the calendar of due dates |
+| `bf_property_records` | Copropriété : carnet, étude et attestations | 18.0.4.7.2 | BUSL-1.1 | Maintenance logbook, contingency fund study, syndicate certificate and the calendar of due dates |
 | `bf_property_securetransfer` | Copropriété : remise sécurisée des documents | 18.0.2.4.0 | BUSL-1.1 | Hand the certificate, the statement of charges and documents to a buyer by secure transfer, and know whether they were read |
 | `bf_property_sign` | Copropriété : signature électronique | 18.0.1.2.0 | BUSL-1.1 | E-signature for the logbook declaration, the art. 1068.1 certificate and meeting minutes |
 | `bf_property_sms` | Copropriété : avis par texto | 18.0.2.2.0 | BUSL-1.1 | Text an occupant about a parcel or an urgent notice, with their express consent |
@@ -290,9 +290,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.0.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
 | `bf_rental` | Locatif : le bail de logement | 18.0.2.4.0 | BUSL-1.1 | What a residential lease agrees to, the mandatory form it cites, and what the module refuses to make up |
 | `bf_rental_notice` | Locatif : les avis | 18.0.1.6.0 | BUSL-1.1 | Lease notices: their deadlines, and the four regimes of silence the Civil Code treats differently |
-| `bf_rental_portal` | Locatif : portail du locataire | 18.0.1.8.0 | BUSL-1.1 | Tenant portal: their lease, their notices and due dates, what they have paid |
+| `bf_rental_portal` | Locatif : portail du locataire | 18.0.1.8.1 | BUSL-1.1 | Tenant portal: their lease, their notices and due dates, what they have paid |
 | `bf_rental_privacy` | Locatif : pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Record in the Law 25 register what a termination notice says about the tenant |
-| `bf_rental_rent` | Locatif : loyer et arrérages | 18.0.1.3.1 | BUSL-1.1 | Rent instalments, what remains due, and what the module refuses to conclude from it |
+| `bf_rental_rent` | Locatif : loyer et arrérages | 18.0.1.4.0 | BUSL-1.1 | Rent instalments, what remains due, and what the module refuses to conclude from it |
 | `bf_scan` | Numériser depuis le téléphone | 18.0.1.2.0 | BUSL-1.1 | An installable phone page with three tiles: a business card becomes a contact, an invoice becomes a draft vendor bill with its photo, and a document goes to the note pad with a reminder or straight into any record's thread |
 | `bf_school_admission` | Symbifox École : admission et réinscription | 18.0.1.0.5 | BUSL-1.1 | Admission of new students (public form, fee, exam, waiting list, decision by a person) and re-enrolment from the family portal |
 | `bf_school_attendance` | Symbifox École : présences | 18.0.1.0.1 | BUSL-1.1 | Roll call by half-day or period, absences declared and justified by the families on the portal, same-day notice of an unjustified absence |

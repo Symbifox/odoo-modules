@@ -42,7 +42,8 @@ que le texte ne chiffre pas. Un module qui proposerait quoi que ce soit au
 n-ième retard inventerait un seuil que le droit n'a pas écrit — même faute que
 le « pourcentage d'augmentation légal » qui n'existe pas.
 """
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 # ⚠️ Art. 1973, et ce n'est pas le seuil qu'on croit. Trois semaines = 21 jours,
 # comptés en jours parce que le texte le dit en semaines et non en mois.
@@ -53,6 +54,24 @@ class BfRentalLease(models.Model):
     _inherit = "bf.rental.lease"
 
     term_ids = fields.One2many("bf.rental.term", "lease_id", string="Termes")
+    # 🔴 La date de fin du bail ne dit PAS que le bail a pris fin : un bail à
+    # durée fixe se reconduit de plein droit (art. 1941 C.c.Q.), et un terme
+    # échu après cette date, sur un bail reconduit, est bel et bien dû. Le
+    # module ne devine donc rien : la fin réelle du loyer se saisit.
+    rent_due_until = fields.Date(
+        string="Loyer dû jusqu'au",
+        tracking=True,
+        copy=False,
+        help="À saisir quand le bail a réellement pris fin (résiliation, "
+             "non-reconduction, départ convenu) : le dernier jour couvert par "
+             "le bail, par exemple le 30 juin, et non le jour du départ. Les "
+             "termes exigibles après cette date ne sont ni en retard ni comptés "
+             "aux arrérages. Le terme en cours reste entier : le module ne "
+             "calcule aucun prorata. Ce que doit un occupant resté dans les "
+             "lieux après la fin n'est pas du loyer, et le module ne le suit "
+             "pas. ⚠️ La date de fin du bail ne suffit pas : un bail à durée "
+             "fixe est en principe reconduit de plein droit (art. 1941 C.c.Q.).",
+    )
     arrears_total = fields.Monetary(
         string="Arrérages",
         compute="_compute_arrears", store=True,
@@ -74,6 +93,18 @@ class BfRentalLease(models.Model):
              "résilie, et le locataire peut encore tout arrêter en payant avant "
              "jugement (art. 1883).",
     )
+
+    @api.constrains("rent_due_until", "date_start")
+    def _check_rent_due_until(self):
+        for lease in self:
+            if lease.rent_due_until and lease.date_start and (
+                lease.rent_due_until < lease.date_start
+            ):
+                raise ValidationError(_(
+                    "Le loyer ne peut pas cesser d'être dû avant le début du "
+                    "bail (%(start)s).",
+                    start=lease.date_start,
+                ))
 
     @api.depends("term_ids.amount_outstanding", "term_ids.state",
                  "term_ids.days_late")

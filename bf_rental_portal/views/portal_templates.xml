@@ -357,7 +357,10 @@
                                       t-options='{"widget": "monetary", "display_currency": term.currency_id}'/>
                             </td>
                             <td class="text-end">
-                                <span t-field="term.amount_outstanding"
+                                <!-- Après la fin du bail, la ligne ne réclame
+                                     rien : le total l'exclut déjà. -->
+                                <span t-if="term.state == 'after_end'">—</span>
+                                <span t-else="" t-field="term.amount_outstanding"
                                       t-options='{"widget": "monetary", "display_currency": term.currency_id}'/>
                             </td>
                             <td>
@@ -378,6 +381,12 @@
                                 </span>
                                 <span t-elif="term.state == 'late'" class="badge text-bg-danger">
                                     En retard
+                                </span>
+                                <!-- Le bail a pris fin avant ce terme : ce
+                                     n'est plus un terme du bail, et le portail
+                                     ne le compte pas. -->
+                                <span t-elif="term.state == 'after_end'" class="badge text-bg-secondary">
+                                    Après la fin du bail
                                 </span>
                                 <span t-else="" class="badge text-bg-light">À venir</span>
                             </td>

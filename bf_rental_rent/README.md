@@ -7,9 +7,9 @@ Nothing more, and that is deliberate.
 
 | Model | Purpose |
 |---|---|
-| `bf.rental.term` | One rent term of a lease: due date, amount due, amount paid, balance, state (upcoming, paid, partial, late, deposited at the court office) and days late |
+| `bf.rental.term` | One rent term of a lease: due date, amount due, amount paid, balance, state (upcoming, paid, partial, late, deposited at the court office, after the end of the lease) and days late |
 | `bf.rental.payment` | A payment received on a term: date, amount, method, and whether a receipt was given |
-| `bf.rental.lease` (extended) | The lease's terms, its arrears total, its oldest delay in days, and whether the court may still grant time |
+| `bf.rental.lease` (extended) | The lease's terms, the date rent is due until, its arrears total, its oldest delay in days, and whether the court may still grant time |
 
 Terms are entered by the lessor; the module does not generate a schedule. By
 default rent is payable on the first day of each term (art. 1903 para. 2 CCQ),
@@ -21,13 +21,24 @@ and the lease may agree otherwise.
 - The lease's **arrears** are the sum of the balances of late and partial terms.
   An upcoming term is not arrears, and neither is a term deposited at the court
   office.
+- **Rent due until** is entered on the lease once it has actually ended
+  (resiliation, non-renewal, agreed departure): the last day the lease covers,
+  say 30 June, not the day of departure. A term falling due after that date is
+  shown as *after the end of the lease*: neither late nor arrears, even when it
+  was paid, so that money held for a period no longer let shows. The term
+  current at that date stays whole: the module computes no proration. What an
+  occupant who stays on after the end owes is not rent, and the module does not
+  track it. The lease's end date is not used for this: a fixed-term lease is in
+  principle renewed by operation of law (art. 1941 CCQ). On an ended lease, the
+  three-week flag is hidden: the recourse it describes concerns a lease in
+  force.
 - **"The court may still grant time"** is true while the oldest delay is three
   weeks (21 days) or less. See below for what that means, and what it does not.
 - The **receipt given** box records the right of a lessee paying in cash to a
   receipt (art. 1564 CCQ).
 
 The state and the days late are stored. They are computed when the term, its
-payments or its deposit status change, and a daily scheduled action carries them
+payments, its deposit status or the lease's rent due until date change, and a daily scheduled action carries them
 forward: an unpaid term becomes late the day after its due date, its days late
 keep counting, and the three-week flag turns on its own.
 
@@ -105,8 +116,10 @@ Menu: *Rent*, under the people menu of the property suite.
 
 ## Tests
 
-22 tests, covering the term states and balances, the arrears and the three-week
-flag, the daily refresh, the refusals (no resiliation field, no total balance, no interest, no term
+30 tests, covering the term states and balances, the arrears and the three-week
+flag, the daily refresh, the end of the rent (its last day, clearing it, a paid
+term after it, a copied lease, and the renewed lease whose end date alone does
+not stop it), the refusals (no resiliation field, no total balance, no interest, no term
 above the agreed rent, no negative payment) and the multi-company wall.
 
 ## Licence

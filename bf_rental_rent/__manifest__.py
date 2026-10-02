@@ -1,7 +1,7 @@
 {
     "name": "Locatif : loyer et arrérages",
     "summary": "Les termes de loyer, ce qui reste dû, et ce que le module refuse d'en conclure",
-    "version": "18.0.1.3.1",
+    "version": "18.0.1.4.0",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

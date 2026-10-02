@@ -100,6 +100,16 @@ date rather than on a write. A daily cron re-flags the records whose window has
 lapsed. Without it, an ownership ending 31 December would keep showing its
 former holder as a current co-owner until someone happened to edit the record.
 
+**Every scheduled action of the suite runs at 05:30 UTC.** A scheduled action
+has no time zone: its "today" is UTC's, and it used to run at the hour it was
+installed. Installed in a Québec evening, it already saw the next day. At 05:30
+UTC the date is the same in Québec, summer and winter. The cron files carry
+that hour for a new installation; `bf_property_core.tools.anchor_crons_at_dawn`
+re-anchors existing crons from each module's migration, since the files are
+`noupdate`. ⚠️ This holds for a run on time: a run caught up after an outage
+between midnight and 05:00 UTC happens on a Québec evening, and sees the next
+day.
+
 **Archiving is honest.** Archiving a fraction removes it from the quote-part
 total, which will usually flip the syndicate to *incomplete*. That is intended:
 if the live fractions no longer cover the declared base, the data no longer
@@ -150,10 +160,11 @@ repository.
 
 ## Tested
 
-27 tests: structure and quote-part arithmetic, indivision, ownership history
+29 tests: structure and quote-part arithmetic, indivision, ownership history
 windows, the guard rails, the refresh cron, archiving behaviour, the
-organisation kinds and the syndicate regime guard, and the suite-wide guard
-against stored sentences.
+organisation kinds and the syndicate regime guard, the suite-wide guard
+against stored sentences, and the suite-wide guard on the hour of the
+scheduled actions.
 
 ## Licence
 

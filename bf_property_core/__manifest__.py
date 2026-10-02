@@ -1,7 +1,7 @@
 {
     "name": "Immeubles : socle",
     "summary": "Le socle neutre : organisations, immeubles, logements et occupants, pour la copropriété comme pour le locatif",
-    "version": "18.0.2.10.0",
+    "version": "18.0.2.10.1",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

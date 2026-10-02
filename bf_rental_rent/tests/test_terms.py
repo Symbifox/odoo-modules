@@ -106,3 +106,85 @@ class TestTerms(RentCase):
         self.assertEqual(term.days_late, 25)
         self.assertEqual(lease.arrears_days, 25)
         self.assertFalse(lease.tribunal_may_grant_time)
+
+    # ── La fin réelle du bail : saisie, jamais devinée ──
+
+    def test_a_term_after_the_rent_end_is_neither_late_nor_arrears(self):
+        """Le bail a pris fin : ce qui tombe après n'est pas une dette."""
+        lease = self._lease()
+        before = self._term(lease=lease, days_ago=40)
+        after = self._term(lease=lease, days_ago=10)
+        self.assertEqual(lease.arrears_total, 2000.0)
+        lease.rent_due_until = self.today - relativedelta(days=20)
+        self.assertEqual(before.state, "late", "dû avant la fin : toujours dû")
+        self.assertEqual(after.state, "after_end")
+        self.assertEqual(after.days_late, 0)
+        self.assertEqual(lease.arrears_total, 1000.0)
+        self.assertEqual(lease.arrears_days, 40)
+
+    def test_the_last_day_of_rent_is_still_due(self):
+        """« Dû jusqu'au » inclut le jour même : un terme exigible ce jour-là
+        est encore une dette."""
+        lease = self._lease()
+        term = self._term(lease=lease, days_ago=10)
+        lease.rent_due_until = term.date_due
+        self.assertEqual(term.state, "late")
+        self.assertEqual(lease.arrears_total, 1000.0)
+
+    def test_the_lease_end_date_alone_does_not_end_the_rent(self):
+        """🔴 Art. 1941 : un bail à durée fixe se reconduit de plein droit.
+
+        Sa date de fin passée, le locataire est toujours là et le loyer
+        toujours dû. Lire la fin du bail dans cette date effacerait les
+        arrérages de tout bail reconduit, c'est-à-dire du cas courant.
+        """
+        lease = self._lease(date_start=self.today - relativedelta(years=1, days=30),
+                            date_end=self.today - relativedelta(days=30))
+        term = self._term(lease=lease, days_ago=10)
+        self.assertFalse(lease.rent_due_until)
+        self.assertEqual(term.state, "late")
+        self.assertEqual(lease.arrears_total, 1000.0)
+
+    def test_clearing_the_rent_end_brings_the_debt_back(self):
+        """Une date saisie par erreur s'efface, et la dette revient entière."""
+        lease = self._lease()
+        term = self._term(lease=lease, days_ago=10)
+        lease.rent_due_until = self.today - relativedelta(days=20)
+        self.assertEqual(term.state, "after_end")
+        lease.rent_due_until = False
+        self.assertEqual(term.state, "late")
+        self.assertEqual(term.days_late, 10)
+        self.assertEqual(lease.arrears_total, 1000.0)
+
+    def test_a_term_paid_or_partly_paid_after_the_end_says_so(self):
+        """Payé après la fin : le locateur détient de l'argent pour une période
+        qui n'est plus louée, et l'écran le montre au lieu de « Acquitté »."""
+        lease = self._lease()
+        paid = self._term(lease=lease, days_ago=10)
+        partial = self._term(lease=lease, days_ago=5)
+        self._pay(paid, 1000.0)
+        self._pay(partial, 400.0)
+        lease.rent_due_until = self.today - relativedelta(days=20)
+        self.assertEqual(paid.state, "after_end")
+        self.assertEqual(partial.state, "after_end")
+        self.assertEqual(lease.arrears_total, 0.0)
+
+    def test_copying_a_lease_does_not_carry_its_end(self):
+        lease = self._lease()
+        lease.rent_due_until = self.today - relativedelta(days=20)
+        self.assertFalse(lease.copy().rent_due_until)
+
+    def test_the_cron_leaves_an_after_end_term_alone(self):
+        lease = self._lease()
+        term = self._term(lease=lease, days_ago=10)
+        lease.rent_due_until = self.today - relativedelta(days=20)
+        self.assertEqual(term.state, "after_end")
+        self.env.ref("bf_rental_rent.cron_term_refresh_state").method_direct_trigger()
+        self.assertEqual(term.state, "after_end")
+        self.assertEqual(lease.arrears_total, 0.0)
+
+    def test_the_rent_cannot_stop_before_the_lease_starts(self):
+        from odoo.exceptions import ValidationError
+        lease = self._lease()
+        with self.assertRaises(ValidationError):
+            lease.rent_due_until = lease.date_start - relativedelta(days=1)

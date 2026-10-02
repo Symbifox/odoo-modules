@@ -111,7 +111,9 @@ clause making the whole rent exigible on default; displaying it would claim by
 screen what cannot be claimed in law. What is shown is the balance term by
 term, and the total covers only terms already due and late or partly paid. A
 term **deposited with the court** (art. 1907 CCQ) is shown as deposited, never
-as owed: the lessee paid, elsewhere.
+as owed: the lessee paid, elsewhere. A term falling due after the lease has
+actually ended (the *rent due until* date the lessor enters) is shown as such,
+with no balance claimed on its line, and is not counted either.
 
 ## What they do say, and what it costs to ignore
 
@@ -188,7 +190,8 @@ recorded on the fraction who sees nothing, an ended lease still readable), the
 portal unable to write or create, the art. 1974.1 ground and the management note
 out of reach, the register and attachments closed, the pending-notice window
 including its last day and a notice without a date of receipt, the outstanding
-total and a term deposited with the court, the three pages rendering, the form
+total, a term deposited with the court and a term after the end of the lease,
+the three pages rendering, the form
 route refusing another lease and another lease's attachment, the pages for a
 room lease and for someone with no lease at all, and the invitation (by a
 manager, the lessor's, with a subject naming the lessor and a portal button).

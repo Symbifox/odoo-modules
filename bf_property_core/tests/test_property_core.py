@@ -13,6 +13,8 @@ from odoo.tests.common import TransactionCase, tagged
 from psycopg2 import IntegrityError
 from odoo.tools import mute_logger
 
+from odoo.addons.bf_property_core.tools import CRON_TIME_UTC, anchor_crons_at_dawn
+
 
 @tagged("post_install", "-at_install")
 class TestPropertyCore(TransactionCase):
@@ -419,3 +421,35 @@ class TestOrganisationRegime(TransactionCase):
                 ancestry,
                 "%s ne porte pas la garde de régime" % name,
             )
+
+
+@tagged("post_install", "-at_install")
+class TestCronHour(TransactionCase):
+    """Les crons de la suite tournent à 05 h 30 UTC.
+
+    Un cron n'a pas de fuseau : posé un soir au Québec, il voyait déjà le
+    lendemain, et un loyer dû le jour même passait en retard avant minuit.
+    """
+
+    SUITE = ("bf_property", "bf_rental")
+
+    def test_every_installed_cron_of_the_suite_runs_at_dawn_utc(self):
+        data = self.env["ir.model.data"].search([("model", "=", "ir.cron")])
+        # Un cron horaire, s'il en vient un, n'a pas d'heure fixe à tenir.
+        crons = self.env["ir.cron"].browse(
+            data.filtered(lambda d: d.module.startswith(self.SUITE)).mapped("res_id")
+        ).exists().filtered(lambda c: c.interval_type in ("days", "weeks", "months"))
+        self.assertTrue(crons, "au moins le cron du socle")
+        late = crons.filtered(lambda c: c.nextcall.time() != CRON_TIME_UTC)
+        self.assertFalse(
+            late, "crons hors de 05 h 30 UTC : %s" % ", ".join(late.mapped("cron_name"))
+        )
+
+    def test_anchoring_moves_a_cron_to_the_next_dawn(self):
+        cron = self.env.ref("bf_property_core.cron_property_refresh_current")
+        cron.nextcall = fields.Datetime.now() + timedelta(hours=3, minutes=7)
+        anchor_crons_at_dawn(self.env, ["bf_property_core.cron_property_refresh_current",
+                                        "bf_property_core.absent_de_cette_base"])
+        self.assertEqual(cron.nextcall.time(), CRON_TIME_UTC)
+        self.assertGreater(cron.nextcall, fields.Datetime.now())
+        self.assertLessEqual(cron.nextcall - fields.Datetime.now(), timedelta(days=1))

@@ -60,7 +60,8 @@ class BfRentalTerm(models.Model):
     state = fields.Selection(
         [("pending", "À venir"), ("paid", "Acquitté"),
          ("partial", "Partiel"), ("late", "En retard"),
-         ("deposited", "Déposé au greffe")],
+         ("deposited", "Déposé au greffe"),
+         ("after_end", "Après la fin du bail")],
         string="État", compute="_compute_state", store=True,
     )
     days_late = fields.Integer(
@@ -77,12 +78,24 @@ class BfRentalTerm(models.Model):
             term.amount_paid = paid
             term.amount_outstanding = max(term.amount_due - paid, 0.0)
 
-    @api.depends("amount_outstanding", "date_due", "deposited_at_court")
+    @api.depends("amount_outstanding", "date_due", "deposited_at_court",
+                 "lease_id.rent_due_until")
     def _compute_state(self):
         today = fields.Date.context_today(self)
         for term in self:
             if term.deposited_at_court:
                 term.state = "deposited"
+                term.days_late = 0
+                continue
+            # Le bail a réellement pris fin : un terme exigible après n'est plus
+            # un terme de ce bail, ni en retard ni aux arrérages. Il passe AVANT
+            # « acquitté » : un terme payé après la fin dit que le locateur
+            # détient de l'argent pour une période qui n'est plus louée. La date
+            # de fin du bail n'y suffit pas (art. 1941, reconduction) : seule la
+            # date saisie au bail compte.
+            end = term.lease_id.rent_due_until
+            if end and term.date_due and term.date_due > end:
+                term.state = "after_end"
                 term.days_late = 0
                 continue
             if term.amount_outstanding <= 0:

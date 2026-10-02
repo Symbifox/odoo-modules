@@ -1,7 +1,7 @@
 {
     "name": "Immeubles : exploitation",
     "summary": "Le bâti et les équipes : où se trouve un équipement, et qui répond de l'immeuble",
-    "version": "18.0.7.5.0",
+    "version": "18.0.7.5.1",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

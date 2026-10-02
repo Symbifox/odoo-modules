@@ -10,10 +10,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 00:09+0000\n"
-"PO-Revision-Date: 2026-09-14 00:09+0000\n"
+"POT-Creation-Date: 2026-10-02 06:50+0000\n"
+"PO-Revision-Date: 2026-10-02 06:50+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_CA\n"
@@ -26,6 +26,11 @@ msgstr ""
 #: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__paid
 msgid "Acquitté"
 msgstr "Paid"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__after_end
+msgid "Après la fin du bail"
+msgstr "After the end of the lease"
 
 #. module: bf_rental_rent
 #: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_payment__mode__cash
@@ -93,9 +98,21 @@ msgid "Jours de retard"
 msgstr "Days late"
 
 #. module: bf_rental_rent
+#. odoo-python
+#: code:addons/bf_rental_rent/models/bf_rental_lease.py:0
+msgid ""
+"Le loyer ne peut pas cesser d'être dû avant le début du bail (%(start)s)."
+msgstr "Rent cannot stop being due before the lease begins (%(start)s)."
+
+#. module: bf_rental_rent
 #: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__tribunal_may_grant_time
 msgid "Le tribunal peut encore accorder un délai"
 msgstr "The court may still grant a period"
+
+#. module: bf_rental_rent
+#: model:ir.actions.server,name:bf_rental_rent.cron_term_refresh_state_ir_actions_server
+msgid "Locatif : rafraîchir l'état des termes de loyer"
+msgstr "Rental: refresh the state of rent instalments"
 
 #. module: bf_rental_rent
 #: model:ir.ui.menu,name:bf_rental_rent.menu_bf_rental_term
@@ -106,6 +123,11 @@ msgstr "Rent"
 #: model_terms:ir.ui.view,arch_db:bf_rental_rent.view_bf_rental_lease_form_rent
 msgid "Loyer dû"
 msgstr "Rent owed"
+
+#. module: bf_rental_rent
+#: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_lease__rent_due_until
+msgid "Loyer dû jusqu'au"
+msgstr "Rent due until"
 
 #. module: bf_rental_rent
 #: model:ir.model.fields,field_description:bf_rental_rent.field_bf_rental_payment__mode
@@ -223,6 +245,27 @@ msgid "Virement"
 msgstr "Transfer"
 
 #. module: bf_rental_rent
+#: model:ir.model.fields,help:bf_rental_rent.field_bf_rental_lease__rent_due_until
+msgid ""
+"À saisir quand le bail a réellement pris fin (résiliation, non-reconduction,"
+" départ convenu) : le dernier jour couvert par le bail, par exemple le 30 "
+"juin, et non le jour du départ. Les termes exigibles après cette date ne "
+"sont ni en retard ni comptés aux arrérages. Le terme en cours reste entier :"
+" le module ne calcule aucun prorata. Ce que doit un occupant resté dans les "
+"lieux après la fin n'est pas du loyer, et le module ne le suit pas. ⚠️ La "
+"date de fin du bail ne suffit pas : un bail à durée fixe est en principe "
+"reconduit de plein droit (art. 1941 C.c.Q.)."
+msgstr ""
+"To be entered when the lease has actually ended (resiliation, non-renewal, "
+"agreed departure): the last day the lease covers, say 30 June, not the day "
+"of departure. Instalments falling due after that date are neither late nor "
+"counted in the arrears. The instalment current at that date stays whole: the"
+" module computes no proration. What an occupant who stays on after the end "
+"owes is not rent, and the module does not track it. ⚠️ The lease's end date "
+"is not enough: a fixed-term lease is in principle renewed by operation of "
+"law (art. 1941 CCQ)."
+
+#. module: bf_rental_rent
 #: model:ir.model.fields.selection,name:bf_rental_rent.selection__bf_rental_term__state__pending
 msgid "À venir"
 msgstr "Upcoming"
@@ -268,8 +311,3 @@ msgstr ""
 "that is what the threshold changes, not the lessor's right. Nothing here "
 "says the lease may be resiliated: only the court resiliates, and the lessee "
 "may still avoid it by paying before judgment (art. 1883)."
-
-#. module: bf_rental_rent
-#: model:ir.actions.server,name:bf_rental_rent.cron_term_refresh_state_ir_actions_server
-msgid "Locatif : rafraîchir l'état des termes de loyer"
-msgstr "Rental: refresh the state of rent instalments"

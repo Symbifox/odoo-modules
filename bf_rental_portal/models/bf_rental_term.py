@@ -14,7 +14,8 @@ quelqu'un d'avoir fait exactement ce que la loi lui permet.
 from odoo import api, models
 
 # Les deux seuls états qui portent une dette échue. `pending` est à venir,
-# `paid` est éteint, `deposited` est payé ailleurs.
+# `paid` est éteint, `deposited` est payé ailleurs, `after_end` tombe après la
+# fin réelle du bail.
 OWED_STATES = ("late", "partial")
 
 

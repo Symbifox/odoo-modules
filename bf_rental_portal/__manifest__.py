@@ -1,7 +1,7 @@
 {
     "name": "Locatif : portail du locataire",
     "summary": "Son bail, ses avis et leurs échéances, ce qu'il a payé",
-    "version": "18.0.1.8.0",
+    "version": "18.0.1.8.1",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
