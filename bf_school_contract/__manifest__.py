@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : contrat de services éducatifs",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Education/School",
     "summary": "Québec private school contract for educational services: the Act's caps "
                "enforced, mandatory mentions printed, signed with Symbifox Sign",

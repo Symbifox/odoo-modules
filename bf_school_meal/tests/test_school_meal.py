@@ -318,3 +318,24 @@ class TestSchoolMeal(HttpCase):
         self.assertEqual(account.balance, 0, "the credit follows the payment")
         payment.action_post()
         self.assertEqual(account.balance, 0, "posting again does not reconcile by itself")
+
+    def test_kitchen_list_is_tomorrows_ordered_meals(self):
+        """"Ordered" and "Tomorrow" side by side were OR'd by the search view: the kitchen
+        list opened on every order of every date (demo, 2026-10-02). Filters of one group
+        are OR'd, a separator ANDs the groups."""
+        from lxml import etree
+        arch = etree.fromstring(self.env.ref("bf_school_meal.bf_school_meal_order_view_search").arch)
+        groups, current = [], []
+        for node in arch:
+            if node.tag in ("separator", "group"):
+                if current:
+                    groups.append(current)
+                    current = []
+            elif node.tag == "filter":
+                current.append(node.get("name"))
+        if current:
+            groups.append(current)
+        group_of = {name: index for index, names in enumerate(groups) for name in names}
+        self.assertNotEqual(group_of["ordered"], group_of["tomorrow"])
+        self.assertNotEqual(group_of["tomorrow"], group_of["allergies"])
+        self.assertEqual(group_of["today"], group_of["tomorrow"], "today or tomorrow, not both")

@@ -26,9 +26,19 @@ class AdmissionCase(HttpCase):
             "level_ids": [(6, 0, (cls.level | cls.level2).ids)], "fee_amount": 50.0,
             "date_open": today - timedelta(days=5), "date_close": today + timedelta(days=5),
             "state": "open"})
-        cls.office = new_test_user(env, login="school_adm_office",
-                                   groups="bf_school_core.group_school_manager,account.group_account_invoice")
+        # 🔴 The Administration alone, as a school sets it up: the tests used to add Invoicing
+        # themselves, and hid that the office could not open its own applications.
+        cls.office = new_test_user(env, login="school_adm_office", groups="bf_school_core.group_school_manager")
         cls.teacher = new_test_user(env, login="school_adm_teacher", groups="bf_school_core.group_school_user")
+
+    def setUp(self):
+        super().setUp()
+        # The limiter of the public form lives in memory, per process: every test posts
+        # from 127.0.0.1, so each one starts from an empty count.
+        from ..controllers import portal
+        data = getattr(portal, "_submit_data", None)
+        if data is not None:
+            data.clear()
 
     def _csrf(self, url):
         page = self.url_open(url).text
@@ -166,6 +176,78 @@ class TestPublicForm(AdmissionCase):
         self.assertEqual(app.state, "submitted")
         mails = self.env["mail.mail"].sudo().search([("recipient_ids", "in", app.guardian_ids.ids)]) - before
         self.assertEqual(len(mails), 2, "one email per guardian")
+
+    def test_office_alone_opens_applications_and_campaigns(self):
+        """The Administration alone, without Invoicing, lists the applications with their
+        invoice and opens the campaign form (demo, 2026-10-02: "Access error (account.move)").
+        Recording the payment at the counter is for someone the school gave Invoicing."""
+        self.assertFalse(self.office.has_group("account.group_account_invoice"))
+        self._apply()
+        app = self._last()
+        app.with_user(self.office).action_request_fee()
+        mine = self.env["bf.school.admission"].with_user(self.office)
+        # 🔴 The invoice was just read in sudo, and a related field read in sudo would load it
+        # again: from the transaction cache, it is read without any access check. fee_paid is
+        # read alone, from an empty cache, or the test passes without the fix.
+        self.env.invalidate_all()
+        self.assertFalse(mine.browse(app.id).fee_paid)
+        self.env.invalidate_all()
+        mine.search([("campaign_id", "=", self.campaign.id)]).web_read({
+            "name": {}, "state": {}, "fee_paid": {}, "invoice_state": {}, "rank": {},
+            "invoice_id": {"fields": {"display_name": {}}}})
+        self.env.invalidate_all()
+        self.campaign.with_user(self.office).web_read({"application_ids": {"fields": {
+            "display_name": {}, "state": {}, "fee_paid": {}, "rank": {}}}})
+        cashier = new_test_user(self.env, login="school_adm_cashier",
+                                groups="bf_school_core.group_school_manager,account.group_account_invoice")
+        self.env["account.payment.register"].with_user(cashier).with_context(
+            active_model="account.move", active_ids=app.invoice_id.ids).create({})._create_payments()
+        self.assertEqual(app.state, "submitted")
+        self.env.invalidate_all()
+        self.assertTrue(mine.browse(app.id).fee_paid)
+
+    def test_fee_confirmed_is_the_campaign_fee(self):
+        """A draft raised above the campaign's fee (itself capped), in another currency or
+        turned into a credit note is not confirmed, from the application or from the invoice."""
+        cashier = new_test_user(self.env, login="school_adm_cashier2",
+                                groups="bf_school_core.group_school_manager,account.group_account_invoice")
+        self._apply()
+        app = self._last()
+        invoice = app.invoice_id.with_user(cashier)
+        invoice.invoice_line_ids.price_unit = 75.0
+        with self.assertRaisesRegex(UserError, re.escape(app.name)):
+            app.with_user(self.office).action_request_fee()
+        with self.assertRaisesRegex(UserError, re.escape(app.name)):
+            invoice.action_post()
+        invoice.invoice_line_ids.price_unit = 50.0
+        other = self.env.ref("base.EUR") if self.campaign.currency_id != self.env.ref("base.EUR") \
+            else self.env.ref("base.USD")
+        other.sudo().active = True
+        invoice.currency_id = other
+        with self.assertRaisesRegex(UserError, re.escape(app.name)):
+            invoice.action_post()
+        invoice.currency_id = self.campaign.currency_id
+        invoice.action_switch_move_type()
+        with self.assertRaisesRegex(UserError, re.escape(app.name)):
+            invoice.action_post()
+        invoice.action_switch_move_type()
+        invoice.invoice_line_ids.price_unit = 50.0
+        self.assertEqual(app.invoice_id.state, "draft")
+        app.with_user(self.office).action_request_fee()
+        self.assertEqual(app.invoice_id.state, "posted")
+
+    def test_fee_invoice_is_not_deleted_while_under_way(self):
+        """Deleted, the invoice left its application waiting for a fee nobody could ask for.
+        Withdrawn, the application lets its cancelled draft go (spam from the public form)."""
+        self._apply()
+        app = self._last()
+        invoice = app.invoice_id
+        with self.assertRaisesRegex(UserError, re.escape(app.name)):
+            invoice.unlink()
+        self.assertTrue(invoice.exists())
+        app.action_withdraw()
+        invoice.unlink()
+        self.assertFalse(invoice.exists())
 
     def test_campaign_without_fee_submits_at_once(self):
         self.campaign.fee_amount = 0.0

@@ -1,5 +1,8 @@
 import base64
 import logging
+import threading
+import time
+from collections import defaultdict
 
 from odoo import _, fields, http
 from odoo.http import request
@@ -13,6 +16,51 @@ _logger = logging.getLogger(__name__)
 MAX_FILES = 5
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_TYPES = ("application/pdf", "image/jpeg", "image/png", "image/heic", "image/heif")
+
+#: Every POST to the public form counts, valid or not, before the documents are read: the
+#: limit per hour on applications (models) only sees the ones that were created. The IP is
+#: the peer's, as corrected by ProxyFix: behind a reverse proxy, Odoo must run with
+#: `proxy_mode` and the proxy must send X-Forwarded-Host and X-Forwarded-For, or every
+#: family shares the proxy's address and its limit.
+_submit_lock = threading.Lock()
+_submit_data = defaultdict(list)  # IP -> [times of the attempts]
+_SUBMIT_MAX = 5  # attempts
+_SUBMIT_WINDOW = 600  # per 10 minutes and per IP
+_MAX_TRACKED_IPS = 10000
+
+
+def _bound(now):
+    """Keep `_submit_data` under `_MAX_TRACKED_IPS` without releasing a blocked IP.
+
+    ⚠️ A `clear()` here would reset everyone, the IP being capped included. Expired
+    keys go first, then the lightest ones; a blocked IP goes last. Called under
+    `_submit_lock`.
+    """
+    if len(_submit_data) <= _MAX_TRACKED_IPS:
+        return
+    limit = now - _SUBMIT_WINDOW
+    for ip in [i for i, v in _submit_data.items() if not v or v[-1] <= limit]:
+        del _submit_data[ip]
+    if len(_submit_data) > _MAX_TRACKED_IPS:
+        target = _MAX_TRACKED_IPS * 9 // 10
+        order = sorted(_submit_data,
+                       key=lambda i: (len(_submit_data[i]), _submit_data[i][-1]))
+        for ip in order[:len(_submit_data) - target]:
+            del _submit_data[ip]
+
+
+def _check_submit_rate_limit(ip):
+    """True (and the attempt is counted) if this IP may still post the form."""
+    ip = ip or "unknown"
+    now = time.monotonic()
+    with _submit_lock:
+        _bound(now)
+        cutoff = now - _SUBMIT_WINDOW
+        _submit_data[ip] = [t for t in _submit_data[ip] if t > cutoff]
+        if len(_submit_data[ip]) >= _SUBMIT_MAX:
+            return False
+        _submit_data[ip].append(now)
+        return True
 
 
 class SchoolAdmissionPortal(CustomerPortal):
@@ -41,6 +89,13 @@ class SchoolAdmissionPortal(CustomerPortal):
         campaign = self._campaign_or_404(campaign_id)
         if not campaign or not campaign._is_accepting():
             raise request.not_found()
+        ip = request.httprequest.remote_addr
+        if not _check_submit_rate_limit(ip):
+            _logger.info("bf_school_admission: too many attempts from %s", ip)
+            return request.render("bf_school_admission.admission_form", {
+                "campaign": campaign, "accepting": True, "values": {},
+                "error": _("Too many attempts were sent from here in the last minutes. Try again "
+                           "later, or contact the school office.")})
         # A field hidden from people: a robot fills it, a family never does.
         if post.get("website_url"):
             return request.redirect("/school/admission/%s" % campaign.id)
@@ -57,7 +112,6 @@ class SchoolAdmissionPortal(CustomerPortal):
             elif (upload.mimetype or "") not in ALLOWED_TYPES:
                 error = _("Documents are accepted as PDF, JPEG, PNG or HEIC only.")
             documents.append((upload.filename, content))
-        ip = request.httprequest.remote_addr
         if not error and campaign._school_submissions_exceeded(ip, email_normalize(post.get("guardian1_email") or "")):
             error = _("Too many applications were sent from here in the last hour. Try again later, "
                       "or contact the school office.")

@@ -154,9 +154,13 @@
                 <field name="student_id"/>
                 <field name="item_id"/>
                 <filter name="ordered" string="Ordered" domain="[('state', '=', 'ordered')]"/>
+                <!-- 🔴 Without these separators, "Ordered" and "Tomorrow" were OR'd: the
+                     kitchen list added up every order of every date (demo, 2026-10-02). -->
+                <separator/>
                 <filter name="today" string="Today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter name="tomorrow" string="Tomorrow"
                         domain="[('date', '=', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
                 <filter name="allergies" string="With allergies" domain="[('student_allergen_ids', '!=', False)]"/>
                 <group>
                     <filter name="by_date" string="Day" context="{'group_by': 'date:day'}"/>

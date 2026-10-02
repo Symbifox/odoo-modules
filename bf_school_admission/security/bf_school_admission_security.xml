@@ -13,4 +13,8 @@
         <field name="model_id" ref="model_bf_school_admission"/>
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
+
+    <!-- The Administration role does NOT imply Invoicing: Invoicing opens every journal
+         entry, payment and the employees' bank accounts. The school gives it to the people
+         who record payments at the counter. -->
 </odoo>

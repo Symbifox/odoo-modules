@@ -245,9 +245,13 @@ class Admission(models.Model):
 
     @api.depends("invoice_id.payment_state", "campaign_id.fee_amount")
     def _compute_fee_paid(self):
+        # 🔴 Read in sudo: the Administration alone (no Invoicing) could open neither the list
+        # of applications nor a campaign as soon as one had its invoice, "Access error
+        # (account.move)" (demo, 2026-10-02). The office reads whether the fee is paid, not
+        # the invoice; the invoice's name and state are already read in sudo by the client.
         for app in self:
             app.fee_paid = (not app.campaign_id.fee_amount
-                            or app.invoice_id.payment_state in ("paid", "in_payment"))
+                            or app.sudo().invoice_id.payment_state in ("paid", "in_payment"))
 
     def _compute_rank(self):
         for app in self:
@@ -323,10 +327,27 @@ class Admission(models.Model):
         for app in self.sudo():
             if app.state != "awaiting_fee" or not app.invoice_id or app.invoice_id.state != "draft":
                 raise UserError(_("Only an application whose fee is not requested yet is asked for it."))
+        # The amount is checked when the invoice is confirmed (account.move._post below).
+        for app in self.sudo():
             app.invoice_id.action_post()
         self.env.ref("bf_school_admission.ir_cron_school_fee_invoice_pdf").sudo()._trigger()
         self._school_notify("fee")
         return True
+
+    def _school_check_fee_invoice(self):
+        """🔴 The draft can be edited by whoever has Invoicing: a fee raised above the campaign's
+        (itself capped, Regulation E-9.1, r. 3, s. 11 and 12), in another currency or turned into
+        a credit note was confirmed as is, from the button or straight from the invoice."""
+        for app in self:
+            invoice, campaign = app.invoice_id, app.campaign_id
+            if (invoice.move_type != "out_invoice" or invoice.currency_id != campaign.currency_id
+                    or invoice.currency_id.compare_amounts(invoice.amount_total, campaign.fee_amount)):
+                raise UserError(_(
+                    "The fee invoice of %(application)s must be a customer invoice of %(fee)s, the "
+                    "campaign's fee; it is %(amount)s. Someone with Invoicing corrects it before "
+                    "it is confirmed.",
+                    application=app.name, fee=campaign.currency_id.format(campaign.fee_amount),
+                    amount=invoice.currency_id.format(invoice.amount_total)))
 
     def _school_fee_paid(self):
         """The fee is paid (online or recorded by the office): the application moves on."""
@@ -460,6 +481,21 @@ class Admission(models.Model):
 
 class AccountMove(models.Model):
     _inherit = "account.move"
+
+    def _post(self, soft=True):
+        self.env["bf.school.admission"].sudo().search(
+            [("invoice_id", "in", self.ids), ("state", "=", "awaiting_fee")])._school_check_fee_invoice()
+        return super()._post(soft)
+
+    @api.ondelete(at_uninstall=False)
+    def _unlink_except_school_fee(self):
+        """A deleted fee invoice left its application waiting for a fee nobody could ask for.
+        Withdrawn, the application lets its cancelled draft go (spam from the public form)."""
+        apps = self.env["bf.school.admission"].sudo().search(
+            [("invoice_id", "in", self.ids), ("state", "!=", "withdrawn")], limit=1)
+        if apps:
+            raise UserError(_("This invoice is the fee of %s: withdraw the application instead "
+                              "of deleting it.", apps.name))
 
     def _invoice_paid_hook(self):
         """Paid online (Stripe, any provider) or recorded by the office: same path."""

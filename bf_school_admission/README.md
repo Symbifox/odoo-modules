@@ -40,9 +40,20 @@ Admission of new students and re-enrolment of current ones, for Québec private 
 
 ## Security
 
-The school office only. Teachers and families have no access right on applications;
+The school office only. The Administration role does **not** imply Invoicing (it opens
+every journal entry, payment and the employees' bank accounts): it lists the
+applications and asks for the fee without it, and the school gives Invoicing to the
+people who record payments at the counter. A fee invoice is confirmed only as a customer
+invoice of the campaign's fee, in its currency, whether from the application or straight
+from the invoice; and it cannot be deleted while its application is under way (once the
+application is withdrawn, its cancelled draft can go). Teachers and families have no access right on
+applications;
 families follow theirs through the personal link, checked in constant time. Another
 family's re-enrolment page is a 404.
+
+The public form accepts at most 5 posts per address in 10 minutes, counted before the
+documents are read (valid or not), and at most 3 applications per address or per email
+in an hour. The first count lives in each server process's memory.
 
 ## What has not been confirmed
 
