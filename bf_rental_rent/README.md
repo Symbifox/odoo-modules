@@ -26,9 +26,10 @@ and the lease may agree otherwise.
 - The **receipt given** box records the right of a lessee paying in cash to a
   receipt (art. 1564 CCQ).
 
-The state and the days late are stored and computed when the term, its payments
-or its deposit status change; the module has no scheduled action that recomputes
-them day by day.
+The state and the days late are stored. They are computed when the term, its
+payments or its deposit status change, and a daily scheduled action carries them
+forward: an unpaid term becomes late the day after its due date, its days late
+keep counting, and the three-week flag turns on its own.
 
 ## What the module refuses to conclude
 
@@ -93,7 +94,8 @@ someone of doing exactly what the law allows.
 
 Multi-company record rules on terms and payments: who owes what to whom is as
 sensitive as the lease itself. Records with no company stay visible, as
-everywhere else in the suite. No mail template, no scheduled action.
+everywhere else in the suite. No mail template. One scheduled action, which only
+recomputes the state and the days late of terms past their due date.
 
 Menu: *Rent*, under the people menu of the property suite.
 
@@ -103,8 +105,8 @@ Menu: *Rent*, under the people menu of the property suite.
 
 ## Tests
 
-20 tests, covering the term states and balances, the arrears and the three-week
-flag, the refusals (no resiliation field, no total balance, no interest, no term
+22 tests, covering the term states and balances, the arrears and the three-week
+flag, the daily refresh, the refusals (no resiliation field, no total balance, no interest, no term
 above the agreed rent, no negative payment) and the multi-company wall.
 
 ## Licence

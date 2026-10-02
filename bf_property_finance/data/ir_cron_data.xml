@@ -33,5 +33,26 @@
             <field name="user_id" ref="base.user_root"/>
         </record>
 
+        <!-- Le versement de rattrapage (Loi 16, art. 154), l'état de fixation
+             (art. 153 al. 1) et la valeur de reconstruction (art. 1073)
+             changent avec le calendrier. Sans ce passage, ils restaient ceux
+             du jour du dernier calcul, à côté d'une règle qui citait les
+             chiffres du jour.
+             ⚠️ Le cron n'a pas de fuseau : sa « date du jour » est celle de
+             l'UTC. Fixé à 05 h 30 UTC, il tourne quand la date est la même en
+             UTC et au Québec, été comme hiver ; à l'heure de la pose, il
+             pouvait compter un jour de trop le soir. -->
+        <record id="cron_syndicat_refresh_contingency" model="ir.cron">
+            <field name="name">Copropriété : échéances du fonds de prévoyance (Loi 16, art. 153 et 154)</field>
+            <field name="model_id" ref="bf_property_core.model_bf_property_organisation"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_refresh_contingency()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.utcnow() + relativedelta(days=1)).strftime('%Y-%m-%d 05:30:00')"/>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
     </data>
 </odoo>

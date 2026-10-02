@@ -85,7 +85,7 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
-from odoo.tools import float_round
+from odoo.tools import float_compare, float_round
 from odoo.tools.misc import formatLang
 
 # Art. 1071 al. 4 : plancher du PROMOTEUR, en pourcentage de la valeur de
@@ -749,6 +749,63 @@ class BfPropertyOrganisation(models.Model):
             syndicat.reconstruction_value_state = (
                 "stale" if today > limit else "current"
             )
+
+    def _contingency_terms_drifted(self, today):
+        """Le rattrapage ou la fixation stockés diffèrent-ils du calcul du jour ?"""
+        self.ensure_one()
+        deadline, annual, _rule = self._catchup_terms(today)
+        stored = self.contingency_catchup_annual
+        # L'arrondi de la devise, celui du Monetary stocké : comparer à deux
+        # décimales verrait une dérive chaque jour dans une devise qui arrondit
+        # autrement.
+        differs = (
+            self.currency_id.compare_amounts(annual, stored)
+            if self.currency_id
+            else float_compare(annual, stored, precision_digits=2)
+        )
+        return bool(
+            deadline != self.contingency_catchup_deadline
+            or differs
+            or self._fixing_terms(today)[2] != self.contingency_fixing_state
+        )
+
+    @api.model
+    def _cron_refresh_contingency(self):
+        """Trois échéances du fonds naissent du calendrier, pas d'une écriture.
+
+        Même patron que les crons du socle et des autres volets. Le versement
+        de rattrapage (Loi 16, art. 154) grossit à chaque année qui passe,
+        l'état de fixation (art. 153 al. 1) passe en retard au 31e jour, et la
+        valeur de reconstruction (art. 1073) se périme après cinq ans. Sans ce
+        passage quotidien, les trois restaient ceux du jour du dernier calcul,
+        et la règle rendue à la lecture citait d'autres chiffres que les champs
+        affichés à côté.
+
+        Le rattrapage et la fixation sont comparés à ce que les mêmes fonctions
+        rendraient aujourd'hui, pour ne jamais diverger du calcul.
+        """
+        today = fields.Date.context_today(self)
+        terms = self.search([("contingency_first_study_date", "!=", False)]).filtered(
+            lambda s: s._contingency_terms_drifted(today)
+        )
+        # `<=` et non `<` : le calcul compare `today > date + 5 ans`, et un
+        # 29 février n'a pas d'anniversaire. Une évaluation d'exactement cinq ans
+        # est rafraîchie sans changer d'état.
+        valuations = self.search(
+            [
+                ("reconstruction_value_state", "=", "current"),
+                (
+                    "reconstruction_value_date",
+                    "<=",
+                    today - relativedelta(years=RECONSTRUCTION_VALUATION_YEARS),
+                ),
+            ]
+        )
+        if terms:
+            terms.modified(["contingency_first_study_date"])
+        if valuations:
+            valuations.modified(["reconstruction_value_date"])
+        return len(terms | valuations)
 
     @api.depends(
         "contingency_study_date",

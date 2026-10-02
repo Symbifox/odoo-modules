@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Le retard naît du passage d'une échéance et non d'une écriture.
+             Sans ce rafraîchissement quotidien, un terme échu resterait « À
+             venir », ses jours de retard resteraient figés, et le seuil de
+             l'art. 1973 ne serait jamais franchi à l'écran.
+             ⚠️ Le cron n'a pas de fuseau : sa « date du jour » est celle de
+             l'UTC. Fixé à 05 h 30 UTC, il tourne quand la date est la même en
+             UTC et au Québec : posé un soir, un loyer dû le jour même serait
+             passé en retard avant minuit. -->
+        <record id="cron_term_refresh_state" model="ir.cron">
+            <field name="name">Locatif : rafraîchir l'état des termes de loyer</field>
+            <field name="model_id" ref="model_bf_rental_term"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_refresh_state()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="nextcall" eval="(DateTime.utcnow() + relativedelta(days=1)).strftime('%Y-%m-%d 05:30:00')"/>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+
+    </data>
+</odoo>

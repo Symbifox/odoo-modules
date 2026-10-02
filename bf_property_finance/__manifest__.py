@@ -1,7 +1,7 @@
 {
     "name": "Copropriété : charges et appels de fonds",
     "summary": "Budget annuel, répartition des charges communes et appels de fonds",
-    "version": "18.0.4.6.1",
+    "version": "18.0.4.7.1",
     "category": "Services/Property",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

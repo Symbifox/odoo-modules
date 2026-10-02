@@ -26,6 +26,7 @@ from datetime import date, timedelta
 from html import unescape
 
 from dateutil.relativedelta import relativedelta
+from freezegun import freeze_time
 
 from odoo import fields
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -1495,6 +1496,96 @@ class TestFinance(TransactionCase):
         )
         self.assertEqual(self.syndicat.contingency_catchup_annual, 200000.0)
         self.assertIn("écoulée", self.syndicat.contingency_catchup_rule)
+
+    # Le passage du temps : un essai ne le voit pas. On recule une date en
+    # base, sans écriture de l'ORM, comme le ferait une nuit entre deux
+    # ouvertures de la fiche, puis on laisse le cron quotidien faire son œuvre.
+
+    def test_the_cron_raises_the_catch_up_as_the_years_pass(self):
+        """Loi 16, art. 154 : un an de moins devant soi, un versement plus lourd.
+
+        Le champ stocké restait au chiffre du jour du dernier calcul, et la
+        règle affichée à côté citait celui du jour : deux chiffres sur la même
+        fiche. ⚠️ Seul le jour avance : la première étude et donc l'échéance
+        ne bougent pas, et c'est le versement seul qui doit faire réagir le cron.
+        """
+        today = fields.Date.context_today(self.syndicat)
+        self.syndicat.write(
+            {
+                "contingency_first_study_date": today - relativedelta(years=6),
+                "contingency_shortfall": 200000.0,
+            }
+        )
+        deadline = self.syndicat.contingency_catchup_deadline
+        self.assertEqual(self.syndicat.contingency_catchup_annual, 50000.0)
+        self.assertFalse(
+            self.syndicat._contingency_terms_drifted(today), "rien n'a encore vieilli"
+        )
+        self.env.flush_all()
+        with freeze_time(today + relativedelta(years=1)):
+            later = fields.Date.context_today(self.syndicat)
+            self.assertEqual(later, today + relativedelta(years=1))
+            self.assertTrue(self.syndicat._contingency_terms_drifted(later))
+            self.assertEqual(
+                self.syndicat.contingency_catchup_annual, 50000.0,
+                "l'essai doit partir d'un chiffre figé",
+            )
+            self.env.ref(
+                "bf_property_finance.cron_syndicat_refresh_contingency"
+            ).method_direct_trigger()
+            self.assertFalse(self.syndicat._contingency_terms_drifted(later))
+            self.assertEqual(self.syndicat.contingency_catchup_annual, 66666.67)
+            self.assertEqual(self.syndicat.contingency_catchup_deadline, deadline)
+
+    def test_the_cron_turns_an_unfixed_contribution_overdue(self):
+        """Loi 16, art. 153 al. 1 : le 31e jour, le conseil est en retard, qu'on
+        ait rouvert la fiche ou non."""
+        today = fields.Date.context_today(self.syndicat)
+        self.syndicat.contingency_first_study_date = today - relativedelta(days=60)
+        assembly = self._assembly(
+            name="AGA",
+            date=fields.Datetime.now() - relativedelta(days=5),
+            assembly_type="annual",
+        )
+        self.assertEqual(self.syndicat.contingency_fixing_state, "pending")
+        self.env.flush_all()
+        self.env.cr.execute(
+            "UPDATE bf_property_assembly SET date = %s WHERE id = %s",
+            (fields.Datetime.now() - relativedelta(days=40), assembly.id),
+        )
+        self.env.invalidate_all()
+        self.assertEqual(
+            self.syndicat.contingency_fixing_state, "pending",
+            "l'essai doit partir d'un état figé",
+        )
+        self.env["bf.property.organisation"]._cron_refresh_contingency()
+        self.assertEqual(self.syndicat.contingency_fixing_state, "overdue")
+
+    def test_the_cron_lets_the_reconstruction_value_go_stale(self):
+        """Art. 1073 : l'évaluation de plus de cinq ans se périme d'elle-même."""
+        today = fields.Date.context_today(self.syndicat)
+        self.syndicat.write(
+            {
+                "reconstruction_value": 4000000.0,
+                "reconstruction_value_date": today - relativedelta(years=4),
+            }
+        )
+        self.assertEqual(self.syndicat.reconstruction_value_state, "current")
+        self.env.flush_all()
+        self.env.cr.execute(
+            "UPDATE bf_property_organisation "
+            "SET reconstruction_value_date = %s WHERE id = %s",
+            (today - relativedelta(years=5, days=1), self.syndicat.id),
+        )
+        self.env.invalidate_all()
+        self.assertEqual(
+            self.syndicat.reconstruction_value_state, "current",
+            "l'essai doit partir d'un état figé",
+        )
+        self.env.ref(
+            "bf_property_finance.cron_syndicat_refresh_contingency"
+        ).method_direct_trigger()
+        self.assertEqual(self.syndicat.reconstruction_value_state, "stale")
 
     def test_the_fixing_deadline_is_thirty_days_after_the_annual_assembly(self):
         """Loi 16, art. 153 al. 1."""

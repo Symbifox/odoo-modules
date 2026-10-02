@@ -98,6 +98,32 @@ class BfRentalTerm(models.Model):
             else:
                 term.state = "late"
 
+    @api.model
+    def _cron_refresh_state(self):
+        """Le retard naît du passage d'une échéance, pas d'une écriture.
+
+        Même patron que les crons du volet copropriété. Sans ce passage
+        quotidien, un terme échu et impayé restait « À venir » jusqu'au
+        prochain versement inscrit, ses jours de retard ne bougeaient plus, et
+        le bail se lisait sans arrérages, au bureau comme au portail du
+        locataire. 🔴 Le seuil de l'art. 1973 se lit sur ces jours : figés, ils
+        laissaient au tribunal une discrétion qu'il n'a plus.
+
+        Un terme déjà en retard change lui aussi chaque jour, puisque ses jours
+        de retard grossissent.
+        """
+        today = fields.Date.context_today(self)
+        stale = self.search(
+            [
+                ("state", "in", ("pending", "late", "partial")),
+                ("date_due", "<", today),
+            ]
+        )
+        if not stale:
+            return 0
+        stale.modified(["date_due"])
+        return len(stale)
+
     @api.constrains("amount_due")
     def _check_the_amount_is_a_single_term(self):
         """🔴 Aucun terme ne porte plus que le loyer convenu.

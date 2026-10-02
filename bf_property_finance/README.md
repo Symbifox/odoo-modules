@@ -17,9 +17,10 @@ catch-up period, the self-insurance fund and interest on arrears, and to the
 general meeting its attendance-level arrears and the list of documents that
 accompany the notice of the annual meeting.
 
-Two scheduled actions run daily: one refreshes which contributions are in
-default (default arises from the passing of a date, not from an entry), the
-other refreshes the fifteen-day clock of each statement of charges due.
+Three scheduled actions run daily: one refreshes which contributions are in
+default (default arises from the passing of a date, not from an entry), one
+refreshes the fifteen-day clock of each statement of charges due, and the third
+carries the contingency fund's dates forward (see below).
 
 ## Three things the common commentary gets wrong
 
@@ -80,6 +81,10 @@ the contingency fund and that reference.
   deadline and its state (pending, overdue, met).
 - The module never assesses whether the fund is sufficient: the shortfall is
   entered from the study, signed by the professional who wrote it.
+- The catch-up payment, the fixing state and the five-year staleness of the
+  reconstruction value (art. 1073 CCQ) change with the calendar, not with an
+  entry. A daily scheduled action recomputes them, so that the figures on the
+  syndicate always match the rule printed beside them.
 
 ## Self-insurance fund (art. 1071.1 CCQ and CQLR, c. CCQ, r. 4.1, s. 2)
 
@@ -235,7 +240,8 @@ contingency floors and the ten-year catch-up, the self-insurance formula,
 imputation under arts. 1569 to 1572, interest from default, arrears and
 deprivation, the statement of charges due and its prior notice (sent, refused
 without an owner, owners without email named), budget against actual, and the
-reader's language of every rule (151 tests).
+reader's language of every rule, and the daily refresh of the contingency
+fund's dates (154 tests).
 
 ## Licence
 

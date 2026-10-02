@@ -264,7 +264,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_project_merge` | Symbifox — Regroupement de tâches | 18.0.1.0.0 | LGPL-3 | Merge tasks by reassigning their content (messages, activities, hours, dependencies) to the kept task, then archive the rest. |
 | `bf_property_core` | Immeubles : socle | 18.0.2.10.0 | BUSL-1.1 | The neutral foundation: organisations, buildings, dwellings and occupants, for divided co-ownership and residential rental alike |
 | `bf_property_cx` | Copropriété : satisfaction des occupants | 18.0.1.4.0 | BUSL-1.1 | Ask the occupant how their maintenance request went, once it is closed |
-| `bf_property_finance` | Copropriété : charges et appels de fonds | 18.0.4.6.1 | BUSL-1.1 | Annual budget, allocation of common expenses and calls for contributions |
+| `bf_property_finance` | Copropriété : charges et appels de fonds | 18.0.4.7.1 | BUSL-1.1 | Annual budget, allocation of common expenses and calls for contributions |
 | `bf_property_governance` | Copropriété : assemblées | 18.0.2.4.0 | BUSL-1.1 | Co-owners' meetings: notice, quorum, weighted voting and majorities under the Civil Code of Québec |
 | `bf_property_operations` | Immeubles : exploitation | 18.0.7.5.0 | BUSL-1.1 | Buildings and teams: where each piece of equipment is, and who answers for the building |
 | `bf_property_operations_portal` | Immeubles : de la demande au travail | 18.0.2.1.1 | BUSL-1.1 | Route an occupant's request to their building's team, and turn it into the work to be done |
@@ -292,7 +292,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_rental_notice` | Locatif : les avis | 18.0.1.6.0 | BUSL-1.1 | Lease notices: their deadlines, and the four regimes of silence the Civil Code treats differently |
 | `bf_rental_portal` | Locatif : portail du locataire | 18.0.1.8.0 | BUSL-1.1 | Tenant portal: their lease, their notices and due dates, what they have paid |
 | `bf_rental_privacy` | Locatif : pont vie privée (Loi 25) | 18.0.1.2.0 | BUSL-1.1 | Record in the Law 25 register what a termination notice says about the tenant |
-| `bf_rental_rent` | Locatif : loyer et arrérages | 18.0.1.2.0 | BUSL-1.1 | Rent instalments, what remains due, and what the module refuses to conclude from it |
+| `bf_rental_rent` | Locatif : loyer et arrérages | 18.0.1.3.1 | BUSL-1.1 | Rent instalments, what remains due, and what the module refuses to conclude from it |
 | `bf_scan` | Numériser depuis le téléphone | 18.0.1.2.0 | BUSL-1.1 | An installable phone page with three tiles: a business card becomes a contact, an invoice becomes a draft vendor bill with its photo, and a document goes to the note pad with a reminder or straight into any record's thread |
 | `bf_school_admission` | Symbifox École : admission et réinscription | 18.0.1.0.1 | BUSL-1.1 | Admission of new students (public form, fee, exam, waiting list, decision by a person) and re-enrolment from the family portal |
 | `bf_school_attendance` | Symbifox École : présences | 18.0.1.0.1 | BUSL-1.1 | Roll call by half-day or period, absences declared and justified by the families on the portal, same-day notice of an unjustified absence |
