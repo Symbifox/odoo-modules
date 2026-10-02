@@ -205,9 +205,13 @@ class CalendarEvent(models.Model):
         # La couleur de la grille, calculée avec la règle d'Odoo pour que le
         # téléphone peigne exactement ce que la vue Calendrier peint. La clé est
         # le champ `color` de l'événement, un par calendrier.
+        # Avec bf_color, la vue peint la couleur résolue pour la
+        # personne (celle du calendrier Nextcloud, ou la sienne) : le téléphone
+        # suit, adoucie comme au bureau.
         cle = self.color if "color" in self._fields else 0
-        data["color"] = odoo_palette.couleur(cle)
-        data["color_soft"] = odoo_palette.couleur_douce(cle)
+        libre = self.color_resolved if "color_resolved" in self._fields else False
+        data["color"] = odoo_palette.normaliser(libre) or odoo_palette.couleur(cle)
+        data["color_soft"] = odoo_palette.douce(data["color"])
         data["color_index"] = cle or 0
         if "x_nc_calendar_id" in self._fields and self.x_nc_calendar_id:
             data["calendar"] = self.x_nc_calendar_id.display_name or ""
@@ -267,6 +271,10 @@ class CalendarEvent(models.Model):
             data["can_edit_attendees"] = True
         except AccessError:
             data["can_edit_attendees"] = False
+        # L'heure et les rappels se modifient sous les mêmes droits
+        # que les participants, sauf une récurrence (voir `mobile_write`).
+        data["can_edit"] = data["can_edit_attendees"] and not self.recurrency
+        data["alarm_ids"] = self.alarm_ids.ids
         data["agenda"] = self._mobile_agenda()
         data["minutes"] = self._mobile_minutes()
         return data
@@ -336,6 +344,7 @@ class CalendarEvent(models.Model):
         fait pour la vue, pas pour un `create` par RPC, et sans lui l'événement
         n'entre pas dans « mon agenda » — il serait créé puis invisible.
         """
+        raw = vals
         vals = {k: v for k, v in (vals or {}).items() if k in self._MOBILE_CREATE_FIELDS
                 or k == "calendar_config_id"}
         if not vals.get("name"):
@@ -343,6 +352,11 @@ class CalendarEvent(models.Model):
         if not vals.get("start") or not vals.get("stop"):
             raise UserError(_("Une rencontre a besoin d'un début et d'une fin."))
         config_id = vals.pop("calendar_config_id", None)
+        # `alarm_ids` absent laisse le rappel d'office de
+        # `bf_email_management`, comme au bureau ; une liste, même vide, le
+        # remplace.
+        if "alarm_ids" in (raw or {}):
+            vals["alarm_ids"] = self._mobile_alarm_command(raw.get("alarm_ids"))
         partner = self.env.user.partner_id
         vals["partner_ids"] = [(6, 0, partner.ids)]
         vals["user_id"] = self.env.uid
@@ -364,6 +378,96 @@ class CalendarEvent(models.Model):
                         vals["color"] = voisin.color
         event = self.create(vals)
         return {"ok": True, "event": event._mobile_payload()}
+
+    # ------------------------------------------------------------------
+    # Modifier
+    # ------------------------------------------------------------------
+
+    # Ce qu'un téléphone peut changer sur une rencontre existante : la même
+    # liste blanche que la création, plus les rappels.
+    _MOBILE_WRITE_FIELDS = _MOBILE_CREATE_FIELDS + ("alarm_ids",)
+
+    @api.model
+    def mobile_alarm_choices(self):
+        """Les rappels offerts, ceux du menu « Rappels » du bureau.
+
+        Toutes les alarmes actives, courriel compris, parce que le bureau les
+        offre toutes ; triées par délai pour se lire comme une échelle.
+        """
+        alarms = self.env["calendar.alarm"].search([])
+        return {
+            "ok": True,
+            "alarms": [
+                {
+                    "id": a.id,
+                    "name": a.display_name or "",
+                    "minutes": a.duration_minutes or 0,
+                    "type": a.alarm_type or "",
+                }
+                for a in alarms.sorted(lambda a: (a.duration_minutes or 0, a.alarm_type or ""))
+            ],
+            "default_minutes": self._bf_default_alarm_minutes()
+            if hasattr(self, "_bf_default_alarm_minutes") else [],
+        }
+
+    @api.model
+    def _mobile_alarm_command(self, ids):
+        """`alarm_ids` du téléphone en commande Many2many, ou refus.
+
+        Un identifiant inconnu refuse le geste entier plutôt que d'être
+        ignoré : la personne croirait avoir posé un rappel qui ne sonnera pas.
+        """
+        if ids is None:
+            ids = []
+        if not isinstance(ids, (list, tuple)):
+            raise UserError(_("Rappels illisibles."))
+        try:
+            wanted = [int(i) for i in ids]
+        except (TypeError, ValueError):
+            raise UserError(_("Rappels illisibles.")) from None
+        alarms = self.env["calendar.alarm"].browse(wanted).exists()
+        if len(alarms) != len(set(wanted)):
+            raise UserError(_("Ce rappel n'existe plus. Rafraîchissez la liste."))
+        return [(6, 0, alarms.ids)]
+
+    def mobile_write(self, values):
+        """Changer l'heure, le titre, le lieu ou les rappels depuis le téléphone.
+
+        ⚠️ Passe par `write` avec les droits de la personne, jamais en sudo :
+        c'est ce qui fait jouer la porte « agenda » de `bf_appointment`.
+        Un gestionnaire des rendez-vous déplace une réservation hors
+        des disponibilités, les autres reçoivent le refus motivé.
+
+        ⚠️ Une rencontre récurrente est refusée. Déplacer une occurrence la
+        détache de sa série, et la synchro Nextcloud rase et recrée les
+        occurrences quand le .ics revient : le déplacement serait perdu sans
+        bruit. Ça se fait au bureau.
+        """
+        self.ensure_one()
+        values = values if isinstance(values, dict) else {}
+        vals = {k: v for k, v in values.items() if k in self._MOBILE_WRITE_FIELDS}
+        if not vals:
+            raise UserError(_("Rien à modifier."))
+        if self.recurrency:
+            raise UserError(_("Une rencontre récurrente se modifie au bureau."))
+        if "name" in vals and not (vals["name"] or "").strip():
+            raise UserError(_("Une rencontre a besoin d'un titre."))
+        if "alarm_ids" in vals:
+            vals["alarm_ids"] = self._mobile_alarm_command(vals["alarm_ids"])
+        start = fields.Datetime.to_datetime(vals.get("start")) or self.start
+        stop = fields.Datetime.to_datetime(vals.get("stop")) or self.stop
+        if ("start" in vals or "stop" in vals) and start and stop and stop < start:
+            raise UserError(_("La fin précède le début."))
+        self.check_access("write")
+        avant = (self.start, self.stop, self.allday)
+        self.write(vals)
+        if (self.start, self.stop, self.allday) != avant:
+            self.message_post(
+                body=_("%(who)s a déplacé la rencontre depuis l'application mobile.",
+                       who=self.env.user.display_name),
+                subtype_xmlid="mail.mt_note",
+            )
+        return {"ok": True, "event": self.mobile_detail()}
 
     # ------------------------------------------------------------------
     # Participants
@@ -455,11 +559,14 @@ class CalendarEvent(models.Model):
                 [("x_nc_calendar_id", "=", config.id), ("color", "!=", 0)],
                 limit=1, order="id desc")
             cle = voisin.color if voisin else 0
+            # `config` est lu en sudo : même usager, donc sa couleur à lui.
+            libre = config.color_resolved if "color_resolved" in config._fields else False
+            couleur = odoo_palette.normaliser(libre) or odoo_palette.couleur(cle)
             sorties.append({
                 "id": config.id,
                 "name": config.display_name or "",
-                "color": odoo_palette.couleur(cle),
-                "color_soft": odoo_palette.couleur_douce(cle),
+                "color": couleur,
+                "color_soft": odoo_palette.douce(couleur),
             })
         return sorties
 

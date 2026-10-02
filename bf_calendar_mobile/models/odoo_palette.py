@@ -60,6 +60,21 @@ def couleur_douce(cle):
     return _melange_blanc(couleur(cle), 0.55)
 
 
+def douce(hexa):
+    """Le fond adouci d'une couleur quelconque, comme `couleur_douce`."""
+    return _melange_blanc(hexa, 0.55)
+
+
+def normaliser(valeur):
+    """`#RRGGBB` en minuscules si `valeur` est une couleur hexadécimale, sinon False."""
+    if not valeur or not isinstance(valeur, str):
+        return False
+    brut = valeur.strip().lstrip("#")
+    if len(brut) != 6 or any(c not in "0123456789abcdefABCDEF" for c in brut):
+        return False
+    return "#" + brut.lower()
+
+
 def couleur_etiquette(cle):
     """Les étiquettes de tâches, sur les douze couleurs du kanban."""
     if not cle:

@@ -3,7 +3,7 @@
     "name": "Symbifox — Agenda mobile",
     "summary": "Agenda et échéances pour l'app mobile, avec la couche Symbifox "
                "(OdJ, compte rendu, report de rappel)",
-    "version": "18.0.3.2.0",
+    "version": "18.0.3.7.0",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -17,5 +17,5 @@
     # `bf_minutes_state`) sont lues quand le champ existe, et l'app cache la
     # section quand `features.meetings` est faux.
     "depends": ["calendar", "project", "bf_email_management"],
-    "data": [],
+    "data": ["security/ir.model.access.csv"],
 }

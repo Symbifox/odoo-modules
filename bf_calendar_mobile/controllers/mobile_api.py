@@ -43,6 +43,9 @@ _RSVP_STATES = ("accepted", "declined", "tentative")
 # ce que l'app affiche sans qu'on l'ait voulu.
 _SNOOZE_MINUTES = (5, 15, 60, 180)
 
+# Les accusés d'idempotence : voir ``models/mobile_receipt.py``.
+_RECU = "bf.calendar.mobile.receipt"
+
 
 def _json(data, status=200):
     return request.make_response(
@@ -99,6 +102,73 @@ def _guarded(fn):
         return _json({"error": "server_error"}, 500)
 
 
+def _corps():
+    """Le corps JSON s'il est un objet, sinon ``{}`` : une liste ou un nombre
+    ne doit pas faire un 500 au premier ``.get``."""
+    data = _body()
+    return data if isinstance(data, dict) else {}
+
+
+def _entier(valeur):
+    """Un identifiant du corps JSON, ou 0. `int("abc")` ne doit pas faire un 500."""
+    try:
+        return int(valeur or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _activite(data):
+    """L'activité nommée par ``activity_id``, lue avec les droits de l'appelant.
+
+    Une activité ARCHIVÉE (type « garder les activités faites ») est une
+    activité déjà faite : 404, sinon un rejeu sans accusé la referait, avec un
+    second message « fait » et ses notifications (relecture adverse).
+    """
+    return request.env["mail.activity"].browse(
+        _entier((data or {}).get("activity_id"))).exists().filtered("active")
+
+
+def _sauf_echec(run):
+    """Le geste dans un point de reprise.
+
+    🔴 ``_guarded`` change une exception en réponse JSON, et une réponse
+    rendue est COMMITÉE par Odoo : ce qu'un geste a écrit avant d'échouer
+    resterait en base. Le point de reprise défait le geste entier, puis
+    l'exception remonte à ``_guarded`` comme avant.
+    """
+    with request.env.cr.savepoint():
+        return run()
+
+
+def _idempotent(route, brut, run):
+    """Le geste une seule fois par ``client_uuid``.
+
+    Sans ``client_uuid``, rien ne change : une ancienne version de l'app
+    n'en envoie pas. Avec, l'accusé déjà posé rend la réponse d'origine telle
+    quelle, plus ``"replay": true`` ; sinon le geste s'exécute et, s'il
+    réussit, l'accusé est posé dans la même transaction.
+    """
+    if brut is None or brut == "":
+        return run()
+    Recu = request.env[_RECU].sudo()
+    try:
+        cle = Recu._normalize(brut)
+    except ValueError:
+        return _json({"error": "invalid_client_uuid"}, 400)
+    uid = request.env.uid
+    deja = Recu._acquire(uid, cle)
+    if deja is not None:
+        route_origine, charge = deja
+        if route_origine and route_origine != route:
+            return _json({"error": "invalid_client_uuid",
+                          "detail": "client_uuid already used by another request"}, 400)
+        return _json({**charge, "replay": True})
+    reponse = run()
+    if 200 <= reponse.status_code < 300:
+        Recu._record(uid, cle, route, reponse.get_data(as_text=True))
+    return reponse
+
+
 class BfCalendarMobileApi(http.Controller):
 
     # ------------------------------------------------------------------
@@ -118,9 +188,16 @@ class BfCalendarMobileApi(http.Controller):
             # tâche, modification et complétion. api 3 : rappels configurés,
             # participants modifiables, recherche de contacts, tâche par
             # identifiant. api 4 : recherche dans mes tâches ouvertes
-            # (`/tasks/search`). Une app plus ancienne lit le nombre et ignore
-            # ce qu'elle ne connaît pas.
-            "api": 4,
+            # (`/tasks/search`). api 5 : modifier une rencontre et ses
+            # rappels (`/event/write`, `/alarms`). api 6 : tâche privée, sans
+            # projet (`private: true` sur /task/create). api 7 : mes
+            # activités (`/activities`, fait, reporter, planifier),
+            # description et commentaire de tâche. Une app plus ancienne lit
+            # le nombre et ignore ce qu'elle ne connaît pas.
+            "api": 7,
+            # `client_uuid` accepté sur /event/create, /task/create,
+            # /event/write, /task/comment et les quatre routes d'activité.
+            "idempotency": 1,
             "version": module.installed_version or "",
             "enabled": True,
         })
@@ -270,10 +347,13 @@ class BfCalendarMobileApi(http.Controller):
     @http.route(f"{BASE}/event/create", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
     def event_create(self, **kw):
+        """JSON de ``mobile_create``, plus ``client_uuid`` facultatif."""
         if not _authed():
             return _json({"error": "unauthorized"}, 401)
-        return _guarded(lambda: _json(
-            request.env["calendar.event"].mobile_create(_body())))
+        data = _body()
+        return _guarded(lambda: _idempotent(
+            "/event/create", data.get("client_uuid") if isinstance(data, dict) else None,
+            lambda: _json(request.env["calendar.event"].mobile_create(data))))
 
     @http.route(f"{BASE}/event/flags", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
@@ -295,6 +375,38 @@ class BfCalendarMobileApi(http.Controller):
     # ------------------------------------------------------------------
     # Participants
     # ------------------------------------------------------------------
+
+    @http.route(f"{BASE}/alarms", type="http", auth="public", methods=["GET"],
+                csrf=False, save_session=False)
+    def alarms(self, **kw):
+        """Les rappels offerts, pour la création et la modification."""
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        return _guarded(lambda: _json(
+            request.env["calendar.event"].mobile_alarm_choices()))
+
+    @http.route(f"{BASE}/event/write", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def event_write(self, **kw):
+        """Changer l'heure, le titre, le lieu ou les rappels.
+
+        Corps : ``event_id``, ``key``, ``values`` (liste blanche de
+        ``mobile_write``), ``client_uuid`` facultatif.
+        """
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        data = _body()
+        if not isinstance(data, dict):
+            data = {}
+
+        def run():
+            event = request.env["calendar.event"]._mobile_resolve(
+                data.get("event_id"), data.get("key"))
+            if not event:
+                return _json({"error": "not_found"}, 404)
+            return _json(event.mobile_write(data.get("values") or {}))
+        return _guarded(lambda: _idempotent(
+            "/event/write", data.get("client_uuid"), run))
 
     @http.route(f"{BASE}/partners", type="http", auth="public", methods=["GET"],
                 csrf=False, save_session=False)
@@ -421,7 +533,88 @@ class BfCalendarMobileApi(http.Controller):
     @http.route(f"{BASE}/task/create", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)
     def task_create(self, **kw):
+        """JSON de ``mobile_create``, plus ``client_uuid`` facultatif."""
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        data = _body()
+        return _guarded(lambda: _idempotent(
+            "/task/create", data.get("client_uuid") if isinstance(data, dict) else None,
+            lambda: _json(request.env["project.task"].mobile_create(data))))
+
+    @http.route(f"{BASE}/task/comment", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def task_comment(self, **kw):
+        """Une note interne au fil de la tâche."""
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        data = _corps()
+
+        def run():
+            task = request.env["project.task"].browse(
+                _entier(data.get("task_id"))).exists()
+            if not task:
+                return _json({"error": "not_found"}, 404)
+            return _json(task.mobile_comment(data.get("body")))
+        return _guarded(lambda: _idempotent(
+            "/task/comment", data.get("client_uuid"), lambda: _sauf_echec(run)))
+
+    # ------------------------------------------------------------------
+    # Activités
+    # ------------------------------------------------------------------
+
+    @http.route(f"{BASE}/activities", type="http", auth="public",
+                methods=["GET"], csrf=False, save_session=False)
+    def activities(self, **kw):
+        """Mes activités ouvertes jusqu'à ``to`` (AAAA-MM-JJ), retards compris."""
         if not _authed():
             return _json({"error": "unauthorized"}, 401)
         return _guarded(lambda: _json(
-            request.env["project.task"].mobile_create(_body())))
+            request.env["mail.activity"].mobile_mine(kw.get("to"))))
+
+    @http.route(f"{BASE}/activity/types", type="http", auth="public",
+                methods=["GET"], csrf=False, save_session=False)
+    def activity_types(self, **kw):
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        return _guarded(lambda: _json(
+            request.env["mail.activity"].mobile_types(kw.get("res_model") or None)))
+
+    @http.route(f"{BASE}/activity/done", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def activity_done(self, **kw):
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        data = _corps()
+
+        def run():
+            activite = _activite(data)
+            if not activite:
+                return _json({"error": "not_found"}, 404)
+            return _json(activite.mobile_done(data.get("feedback")))
+        return _guarded(lambda: _idempotent(
+            "/activity/done", data.get("client_uuid"), lambda: _sauf_echec(run)))
+
+    @http.route(f"{BASE}/activity/reschedule", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def activity_reschedule(self, **kw):
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        data = _corps()
+
+        def run():
+            activite = _activite(data)
+            if not activite:
+                return _json({"error": "not_found"}, 404)
+            return _json(activite.mobile_reschedule(data.get("date")))
+        return _guarded(lambda: _idempotent(
+            "/activity/reschedule", data.get("client_uuid"), lambda: _sauf_echec(run)))
+
+    @http.route(f"{BASE}/activity/create", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def activity_create(self, **kw):
+        if not _authed():
+            return _json({"error": "unauthorized"}, 401)
+        data = _corps()
+        return _guarded(lambda: _idempotent(
+            "/activity/create", data.get("client_uuid"),
+            lambda: _sauf_echec(lambda: _json(request.env["mail.activity"].mobile_create(data)))))

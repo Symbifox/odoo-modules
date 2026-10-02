@@ -18,7 +18,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.osv import expression
 
-from . import odoo_palette
+from . import odoo_palette, texte_simple
 
 from .calendar_event import iso
 
@@ -32,6 +32,10 @@ MAX_TASKS = 300
 # précise sa recherche. Les mots au-delà du cinquième n'affinent plus rien.
 SEARCH_LIMIT = 50
 SEARCH_WORDS = 5
+
+# Un commentaire dicté au téléphone, pas un rapport : au-delà, c'est un
+# document qu'on joint au bureau.
+MAX_COMMENT = 20000
 
 
 class ProjectTask(models.Model):
@@ -60,6 +64,8 @@ class ProjectTask(models.Model):
             "name": self.name or "",
             "project": self.project_id.display_name or "",
             "project_id": self.project_id.id or 0,
+            # Sans projet, la tâche est privée (Odoo 17+).
+            "private": not self.project_id,
             "deadline": iso(self.date_deadline),
             "priority": self.priority or "0",
             "state": self.state or "",
@@ -89,7 +95,47 @@ class ProjectTask(models.Model):
         droits laissent lire — l'ORM refuse le reste et le contrôleur rend 403.
         """
         self.ensure_one()
-        return {"ok": True, "task": self._mobile_payload()}
+        return {"ok": True, "task": self._mobile_payload_detail()}
+
+    def _mobile_payload_detail(self):
+        """La tâche telle que sa fiche l'affiche : le résumé de la
+        liste, plus la description et les activités.
+
+        Rendue seulement pour UNE tâche (fiche, écriture, fait) : la liste en
+        porte jusqu'à 300, et une description pèse parfois des pages.
+
+        ``description_editable`` est faux quand la description porte une mise
+        en forme qu'un champ texte ne sait pas reproduire (liste, gras, lien,
+        image) : l'app la lit, mais la réécrire l'aplatirait.
+        """
+        self.ensure_one()
+        payload = self._mobile_payload()
+        today = fields.Date.context_today(self)
+        payload.update({
+            "description": texte_simple.html_vers_texte(self.description),
+            "description_editable": texte_simple.html_est_simple(self.description),
+            "activities": [a._mobile_payload(today) for a in self.activity_ids.sorted(
+                lambda a: (a.date_deadline, a.id))],
+            "detail": True,
+        })
+        return payload
+
+    def mobile_comment(self, body):
+        """Une note interne au fil de la tâche.
+
+        Note, pas message : elle ne part par courriel qu'aux personnes
+        mentionnées, et un texte dicté n'en mentionne aucune.
+        """
+        self.ensure_one()
+        texte = (body or "").strip()
+        if not texte:
+            raise UserError(_("Le commentaire est vide."))
+        if len(texte) > MAX_COMMENT:
+            raise UserError(_("Le commentaire est trop long."))
+        message = self.message_post(
+            body=texte_simple.texte_vers_html(texte),
+            message_type="comment", subtype_xmlid="mail.mt_note")
+        return {"ok": True, "message_id": message.id, "task": self._mobile_payload_detail()}
 
     @api.model
     def mobile_todo(self, date_from=None, date_to=None, include_undated=False):
@@ -232,9 +278,12 @@ class ProjectTask(models.Model):
     # Liste blanche assumée. Une tâche porte des dizaines de champs, dont des
     # calculés et des financiers ; ouvrir `write` en confiance donnerait au
     # téléphone plus de pouvoir que l'écran d'à côté.
+    # `description_text` : le texte d'un champ du téléphone,
+    # converti ici en paragraphes. `description` (HTML) reste pour une app
+    # plus ancienne.
     _MOBILE_WRITE_FIELDS = (
         "name", "date_deadline", "priority", "state", "stage_id",
-        "project_id", "tag_ids", "description",
+        "project_id", "tag_ids", "description", "description_text",
     )
 
     _MOBILE_CREATE_FIELDS = (
@@ -261,8 +310,16 @@ class ProjectTask(models.Model):
             vals["tag_ids"] = [(6, 0, [int(t) for t in vals["tag_ids"]])]
         if "date_deadline" in vals and "time_of_day_id" in self._fields:
             vals["time_of_day_id"] = False
+        if "description_text" in vals:
+            texte = vals.pop("description_text")
+            # 🔴 Refusé plutôt qu'aplati : une description mise en forme au
+            # bureau perdrait listes, liens et gras sans que personne le voie.
+            if not texte_simple.html_est_simple(self.description):
+                raise UserError(_(
+                    "La description porte une mise en forme : modifiez-la dans Odoo."))
+            vals["description"] = texte_simple.texte_vers_html(texte or "")
         self.write(vals)
-        return {"ok": True, "task": self._mobile_payload()}
+        return {"ok": True, "task": self._mobile_payload_detail()}
 
     def mobile_done(self, done=True):
         """Le geste le plus fréquent, à un seul appel.
@@ -273,16 +330,25 @@ class ProjectTask(models.Model):
         """
         self.ensure_one()
         self.write({"state": "1_done" if done else "01_in_progress"})
-        return {"ok": True, "task": self._mobile_payload()}
+        return {"ok": True, "task": self._mobile_payload_detail()}
 
     @api.model
     def mobile_create(self, vals):
-        """Créer une tâche. Le projet est obligatoire, faute de quoi elle
-        atterrirait hors de tout suivi."""
+        """Créer une tâche, dans un projet ou privée.
+
+        La tâche privée d'Odoo (sans projet, visible de ses seuls
+        assignés) se crée maintenant depuis le téléphone. ⚠️ Elle doit être
+        DEMANDÉE (`private: true`) : un projet oublié ne la rend pas privée,
+        il reste refusé comme avant, sinon une tâche de mandat atterrirait
+        hors de tout suivi sans que personne l'ait voulu.
+        """
+        prive = bool((vals or {}).get("private"))
         vals = {k: v for k, v in (vals or {}).items() if k in self._MOBILE_CREATE_FIELDS}
         if not vals.get("name"):
             raise UserError(_("Une tâche a besoin d'un titre."))
-        if not vals.get("project_id"):
+        if prive:
+            vals["project_id"] = False
+        elif not vals.get("project_id"):
             raise UserError(_("Choisissez un projet."))
         if "tag_ids" in vals:
             vals["tag_ids"] = [(6, 0, [int(t) for t in vals["tag_ids"]])]

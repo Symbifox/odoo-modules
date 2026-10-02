@@ -300,10 +300,41 @@ class TestAgendaMobileV2(TransactionCase):
         })
         if "color" not in event._fields:
             self.skipTest("calendar_nextcloud_sync absent")
-        event.sudo().write({"color": 4})
+        # Hors de tout calendrier Nextcloud : là où la synchronisation est
+        # installée, un événement neuf reçoit d'office un calendrier, dont le hex fait foi.
+        vals = {"color": 4}
+        if "x_nc_calendar_id" in event._fields:
+            vals["x_nc_calendar_id"] = False
+        event.sudo().with_context(skip_nc_sync=True).write(vals)
         charge = event._mobile_payload()
         self.assertEqual(charge["color"], "#5794dd")
         self.assertEqual(charge["color_soft"], "#b3cff0")
+
+    def test_la_charge_utile_porte_la_couleur_du_calendrier_nextcloud(self):
+        """Le téléphone peint le hex de Nextcloud, pas l'index posé à la main."""
+        if "nextcloud.calendar.sync.config" not in self.env or "color_resolved" not in self.Event._fields:
+            self.skipTest("calendar_nextcloud_sync ou bf_color absent")
+        config = self.env["nextcloud.calendar.sync.config"].sudo().create({
+            "name": "Perso",
+            "nextcloud_user": "essai",
+            "nextcloud_base_url": "https://nc.test.invalid",
+            "caldav_path": "/remote.php/dav/calendars/essai/perso/",
+            "calendar_owner_id": self.user.id,
+            "sync_direction": "both",
+            "calendar_color": "#9500a8",
+            "odoo_color": 1,
+        })
+        event = self.Event.with_user(self.user).with_context(skip_nc_sync=True).create({
+            "name": "Mauve",
+            "start": "2026-11-04 14:00:00",
+            "stop": "2026-11-04 15:00:00",
+            "partner_ids": [(6, 0, self.user.partner_id.ids)],
+        })
+        event.sudo().with_context(skip_nc_sync=True).write({"x_nc_calendar_id": config.id, "color": 1})
+        charge = event._mobile_payload()
+        self.assertEqual(charge["color"], "#9500a8")
+        self.assertEqual(charge["color_soft"], "#cf8cd8")
+        self.assertEqual(charge["color_index"], 1)
 
     # ── Exclusion ────────────────────────────────────────────────────────
 
@@ -422,6 +453,29 @@ class TestAgendaMobileV2(TransactionCase):
     def test_creer_une_tache_sans_projet_est_refuse(self):
         with self.assertRaises(UserError):
             self.Task.with_user(self.user).mobile_create({"name": "Orpheline"})
+
+    def test_une_tache_privee_se_cree_sans_projet(self):
+        """Demandée exprès, elle naît sans projet et m'est assignée."""
+        res = self.Task.with_user(self.user).mobile_create({
+            "name": "Privée", "private": True})
+        tache = self.Task.browse(res["task"]["id"])
+        self.assertFalse(tache.project_id)
+        self.assertEqual(tache.user_ids, self.user)
+        self.assertTrue(res["task"]["private"])
+        seaux = self.Task.with_user(self.user).mobile_todo(include_undated=True)
+        self.assertIn(tache.id, [t["id"] for t in seaux["undated"]])
+
+    def test_privee_l_emporte_sur_un_projet_envoye_avec(self):
+        """Les deux à la fois : la case « Privée » est le geste explicite."""
+        res = self.Task.with_user(self.user).mobile_create({
+            "name": "Privée quand même", "private": True,
+            "project_id": self.projet.id})
+        self.assertFalse(self.Task.browse(res["task"]["id"]).project_id)
+
+    def test_une_tache_de_projet_n_est_pas_privee(self):
+        res = self.Task.with_user(self.user).mobile_create({
+            "name": "De projet", "project_id": self.projet.id})
+        self.assertFalse(res["task"]["private"])
 
     def test_creer_une_tache_me_l_assigne(self):
         res = self.Task.with_user(self.user).mobile_create({

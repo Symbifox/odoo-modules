@@ -33,17 +33,30 @@ All of them are `auth="public"` and guarded by the app's bearer token; only
 | `/rsvp` | POST | `{event_id\|key, state}` |
 | `/calendars` | GET | the calendars this person may write to |
 | `/event/create` | POST | create a meeting |
+| `/event/write` | POST | move or rename a meeting, change its location and reminders; only what changed is sent |
+| `/alarms` | GET | the reminders a meeting may carry |
 | `/event/flags` | POST | set the two meeting-module exclusions |
 | `/partners?q=` | GET | who to invite: readable contacts, name or email, 2 characters minimum |
 | `/event/attendees` | POST | `{event_id\|key, add, remove, notify}` — `notify` off by default |
 | `/tasks?from=&to=&undated=` | GET | three buckets: overdue, in-window, undated |
 | `/tasks/search?q=&limit=` | GET | my open tasks, any deadline: each word against title, project, customer or tag; a bare number finds one by id |
-| `/task?id=` | GET | one task by id |
+| `/task?id=` | GET | one task by id, with its detailed sheet: `description`, `description_editable`, `activities` |
 | `/task_counts?from=&to=&tz=` | GET | a per-day count for the grid badge, days computed in `tz` |
 | `/task/options` | GET | projects, stages, tags, states and priorities for the pickers |
 | `/task/write` | POST | edit a whitelisted set of fields |
 | `/task/done` | POST | close or reopen |
-| `/task/create` | POST | create a task |
+| `/task/create` | POST | create a task, in a project or private (`private: true`, no project) |
+| `/task/comment` | POST | `{task_id, body}`: an internal note in the task's thread |
+| `/activities?to=` | GET | my open activities up to `to` (YYYY-MM-DD) included, overdue ones too; 500 at most, `truncated` says if more exist |
+| `/activity/types?res_model=` | GET | the activity types that can be planned on that model, "Meeting" types excluded |
+| `/activity/done` | POST | `{activity_id, feedback?}` |
+| `/activity/reschedule` | POST | `{activity_id, date}` |
+| `/activity/create` | POST | `{res_model, res_id, activity_type_id, date, summary?, note?}`, assigned to the caller, on a task only |
+
+Creating routes, `/event/write`, `/task/comment` and the four activity routes
+accept an optional `client_uuid`: a request replayed by the app's offline queue
+with the same identifier returns the original answer, with `"replay": true`,
+instead of acting twice. `/ping` announces `"idempotency": 1` and `"api": 7`.
 
 The bearer token is the device token of `bf_sms_archive` or of
 `bf_email_management`, whichever the app already holds. Recognising both is
@@ -74,6 +87,30 @@ would lock the other out.
    the same grid buries the meetings. The grid receives one count per day, and
    the Tasks tab carries the list.
 
+## Activities on the phone
+
+The Tasks tab lists the caller's activities (`mail.activity`) next to their
+tasks, under the same day headings, with **Done** (and an optional word),
+**Postpone**, and a link to the record.
+
+- **"Done" on an activity a record generates closes the record.** A hosting
+  maintenance schedule creates its own activity; closing that activity alone
+  would leave the maintenance due with nothing left to remind anyone. The
+  route calls the schedule's `action_mark_done` (next date, new activity) and
+  posts the optional word to the record's thread. Such cases are listed in
+  `CLOTURES` in `models/mail_activity.py`.
+- **An activity that follows a meeting is not postponed on its own**: the
+  meeting carries the date (readable 400).
+- **A task description is rewritten only when it is plain paragraphs.** A
+  description formatted on the desktop (list, bold, link) is returned with
+  `description_editable: false`, and the route refuses `description_text`
+  rather than flatten it.
+- Every new write route runs inside a savepoint: a gesture refused halfway
+  leaves nothing behind, although Odoo commits a returned error response.
+- The caller's access rights apply everywhere. As on the desktop, an activity
+  assigned to the caller can be read and closed even on a record they cannot
+  read (that is `mail.activity`'s own rule).
+
 ## Times and colours
 
 Instants leave in UTC with an explicit `Z` and are rendered by the phone in its
@@ -86,6 +123,10 @@ Colours are computed with Odoo's own rule (`((key - 1) % 55) + 1` over the
 complete `$o-colors` list) so the grid on the phone paints exactly what the
 Calendar view paints on the desktop, plus the 55 %-white mix the stylesheet
 applies.
+
+With `bf_color` installed, an event carries the colour the desktop resolves
+for the person (the Nextcloud calendar's colour, or their own), and the phone
+paints that colour, softened the same way.
 
 ## Out of scope, on purpose
 
