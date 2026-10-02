@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Qui voit les lignes d'approbation.
+
+        Jusqu'en 1.0.0, tout utilisateur interne lisait et écrivait toutes les
+        lignes, de toutes les sociétés et de tous les projets. Elles suivent
+        désormais la visibilité des versions dans le module hôte : isolation
+        par société, membres du projet, accès complet pour les gestionnaires.
+        La personne nommée voit toujours sa propre ligne.
+
+        Ces règles disent qui VOIT. Qui écrit quoi (seule la personne nommée
+        donne son avis, le tour de table se compose par qui répond du
+        document, un avis donné ne se retire plus) se contrôle dans le code
+        du modèle, champ par champ, ce qu'une règle d'accès ne sait pas faire.
+
+        noupdate="0" à dessein : une règle de sécurité corrigée doit arriver
+        aux bases par la mise à niveau.
+    -->
+    <data noupdate="0">
+
+        <record id="rule_approver_company" model="ir.rule">
+            <field name="name">Approbateurs : isolation par société</field>
+            <field name="model_id" ref="model_project_document_approver"/>
+            <field name="domain_force">['|', ('document_id.company_id', '=', False), ('document_id.company_id', 'in', company_ids)]</field>
+            <field name="global" eval="True"/>
+        </record>
+
+        <record id="rule_approver_user" model="ir.rule">
+            <field name="name">Approbateurs : membres du projet et personne nommée</field>
+            <field name="model_id" ref="model_project_document_approver"/>
+            <field name="domain_force">[
+                '|', '|',
+                ('user_id', '=', user.id),
+                ('document_id.project_id', '=', False),
+                ('document_id.project_id.message_partner_ids', 'in', [user.partner_id.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('project_knowledge_matrix.group_document_user'))]"/>
+        </record>
+
+        <record id="rule_approver_manager" model="ir.rule">
+            <field name="name">Approbateurs : accès complet gestionnaire</field>
+            <field name="model_id" ref="model_project_document_approver"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('project_knowledge_matrix.group_document_manager'))]"/>
+        </record>
+
+    </data>
+</odoo>

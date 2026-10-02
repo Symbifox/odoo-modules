@@ -38,6 +38,29 @@ the guard sits on **both** entry points.
   signature that model already handles. No second recipient list is kept — a
   copied list is a list that goes stale.
 
+## Who may do what
+
+- **A verdict belongs to the named approver.** Only that person approves or
+  rejects, through the buttons, and only that person writes the reason. The
+  verdict and its date are never written directly, not even by a manager: the
+  buttons set them, date them and post them to the document's chatter in the
+  name of whoever clicked.
+- **The round table is composed** (add, remove, make optional) by the
+  document's owner, failing that its author, and by document managers.
+- **A given verdict cannot be erased.** Its line can no longer be removed, nor
+  change approver or required status: nobody removes the person who rejected a
+  version in order to publish it. To start the round table over, create a new
+  version.
+- Whatever weakens the lock on a line still pending (removal, replacement,
+  making it optional) is written to the document's chatter.
+- Approver lines follow the visibility of versions in the host module: company
+  isolation, project members, full access for document managers. The named
+  person always sees their own line.
+
+Before 1.1.0, any internal user could approve in someone else's place (the
+chatter then said the other person had approved), write the verdict through
+RPC, or remove a rejection, and then publish.
+
 ## What it deliberately does not do
 
 No conditional tiers and no delegation: OCA's `base_tier_validation` does that
@@ -56,13 +79,28 @@ conclude before a policy goes out — does not call for a tier engine.
 
 `odoo -d <db> -u bf_document_approval --test-enable --test-tags /bf_document_approval`
 
-Ten tests covering the lock on both entry points, non-required opinions,
-rejection with and without a reason, and the RACI distribution. Each one has
-been shown to fail when the behaviour it covers is broken.
+24 tests covering the lock on both entry points, non-required opinions,
+rejection with and without a reason, the RACI distribution, and who may give,
+write, compose and see a verdict, played as the users concerned.
+
+## Changelog
+
+### 18.0.1.1.0
+
+- Only the named approver gives a verdict and writes its reason; verdicts are
+  never written directly.
+- The round table is composed by the document's owner (or author) and by
+  document managers; a line whose verdict is given is frozen.
+- Removals, replacements and approvals made optional on pending lines are
+  logged to the document's chatter.
+- Record rules on approver lines: company, project members, managers, and the
+  named person.
+- The lock counts every approver line, including those the publisher cannot
+  read.
 
 ## Licence
 
 Business Source License 1.1 — see [LICENSE](LICENSE). You may run it for your
 own internal business operations; providing it to third parties as a hosted,
-managed or resold service requires a written agreement. It converts to
-LGPL-3.0-or-later on 2030-08-18.
+managed or resold service requires a written agreement. This version converts
+to LGPL-3.0-or-later on 2030-10-02.

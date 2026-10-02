@@ -21,23 +21,35 @@
                             Cette version a été refusée.
                         </div>
                         <field name="approbation_complete" invisible="1"/>
-                        <field name="approver_ids">
+                        <field name="approbateurs_modifiables" invisible="1"/>
+                        <!-- Le serveur décide ; la vue ne fait que
+                             ne pas offrir ce qu'il refuserait : ajouter ou
+                             retirer une ligne au responsable du document et
+                             aux gestionnaires, les boutons à la personne
+                             nommée, le motif à elle seule. -->
+                        <field name="approver_ids"
+                               options="{'create': [('approbateurs_modifiables', '=', True)], 'delete': [('approbateurs_modifiables', '=', True)]}">
                             <list editable="bottom">
-                                <field name="sequence" widget="handle"/>
-                                <field name="user_id"/>
-                                <field name="requis"/>
-                                <field name="avis" widget="badge"
+                                <field name="est_mon_avis" column_invisible="1"/>
+                                <field name="sequence" widget="handle"
+                                       readonly="not parent.approbateurs_modifiables"/>
+                                <field name="user_id"
+                                       readonly="avis != 'attente' or not parent.approbateurs_modifiables"/>
+                                <field name="requis"
+                                       readonly="avis != 'attente' or not parent.approbateurs_modifiables"/>
+                                <field name="avis" widget="badge" readonly="1"
                                        decoration-success="avis == 'approuve'"
                                        decoration-danger="avis == 'refuse'"
                                        decoration-warning="avis == 'attente'"/>
-                                <field name="commentaire"/>
+                                <field name="commentaire"
+                                       readonly="not est_mon_avis"/>
                                 <field name="date_avis" readonly="1"/>
                                 <button name="action_approuver" type="object"
                                         icon="fa-check" title="Approuver"
-                                        invisible="avis == 'approuve'"/>
+                                        invisible="avis == 'approuve' or not est_mon_avis"/>
                                 <button name="action_refuser" type="object"
                                         icon="fa-times" title="Refuser"
-                                        invisible="avis == 'refuse'"/>
+                                        invisible="avis == 'refuse' or not est_mon_avis"/>
                             </list>
                         </field>
                         <button name="action_diffuser_aux_informes"
