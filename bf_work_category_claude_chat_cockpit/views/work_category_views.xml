@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="claude_session_cockpit_list_work_category" model="ir.ui.view">
+        <field name="name">claude.chat.session.cockpit.list.work.category</field>
+        <field name="model">claude.chat.session</field>
+        <field name="inherit_id" ref="bf_claude_chat_cockpit.view_claude_session_cockpit_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="work_category_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="claude_session_cockpit_search_work_category" model="ir.ui.view">
+        <field name="name">claude.chat.session.cockpit.search.work.category</field>
+        <field name="model">claude.chat.session</field>
+        <field name="inherit_id" ref="bf_claude_chat_cockpit.view_claude_session_cockpit_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="work_category_id"/>
+                <filter name="groupby_work_category" string="Work category" context="{'group_by': 'work_category_id'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

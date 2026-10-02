@@ -7,13 +7,13 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**57 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**60 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**215 modules are BUSL-1.1.** The source is published and auditable, and **you
+**219 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -344,6 +344,13 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_training_sign` | Registre de formation : accusé signé par module | 18.0.1.0.0 | BUSL-1.1 | Lire une politique et le confirmer par écrit devient une ligne du registre, datée et rattachée à la version lue |
 | `bf_training_slides` | Registre de formation : raccord eLearning | 18.0.1.0.1 | BUSL-1.1 | Une activité du registre adossée à un cours en ligne : la vraie date, les heures, et la dérive du contenu qui se voit |
 | `bf_universal_search` | BF Recherche universelle | 18.0.2.4.0 | LGPL-3 | Cross-module search through the command palette |
+| `bf_work_category` | BF Work Category | 18.0.1.0.3 | LGPL-3 | Work categories on project labels, resolved and stored on projects, tasks and every bridged record, so work can be filtered, grouped and exported by category |
+| `bf_work_category_claude_chat` | BF Work Category - Gen | 18.0.1.0.1 | BUSL-1.1 | Work category on Gen conversations, from the record they are attached to |
+| `bf_work_category_claude_chat_cockpit` | BF Work Category - Gen cockpit | 18.0.1.0.1 | BUSL-1.1 | Work category column, filter and grouping in the Gen conversation cockpit |
+| `bf_work_category_email` | BF Work Category - Emails | 18.0.1.0.1 | BUSL-1.1 | Work category on emails, from the record they are filed on |
+| `bf_work_category_meeting` | BF Work Category - Meetings | 18.0.1.0.1 | BUSL-1.1 | Work category on meeting records, from their project |
+| `bf_work_category_notes` | BF Work Category - Notes | 18.0.1.0.1 | LGPL-3 | Work category on notes, from the record they are attached to |
+| `bf_work_category_timesheet` | BF Work Category - Timesheets | 18.0.1.0.2 | LGPL-3 | Work category on timesheet lines, from their task or their project |
 | `bf_zerotouch_install` | Symbifox — Blue Fox OS Zero-Touch Install | 18.0.4.0.2 | BUSL-1.1 | The kickstart a Blue Fox OS installer fetches from its boot menu, rendered from the company's policy, with an OIDC device flow approved on a second device |
 | `bluefox_branding` | Symbifox Branding | 18.0.3.25.0 | BUSL-1.1 | Per-company brand color + email layout overrides driven by `bf_lexend` company fields (CSS variables injected via QWeb layout — no SCSS recompile) |
 | `calendar_nextcloud_sync` | Calendar Nextcloud Sync | 18.0.2.19.2 | LGPL-3 | Bidirectional calendar synchronization between Odoo and Nextcloud over CalDAV, and Google Calendar (API v3/OAuth2) |
@@ -378,11 +385,11 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **215 modules: BUSL-1.1.** Production use for your own internal business
+- **219 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **57 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **60 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **6 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

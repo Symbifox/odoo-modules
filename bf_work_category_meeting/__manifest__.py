@@ -1,0 +1,15 @@
+{
+    "name": "BF Work Category - Meetings",
+    "version": "18.0.1.0.1",
+    "category": "Hidden",
+    "summary": "Work category on meeting records, from their project",
+    "author": "Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
+    "license": "Other proprietary",
+    "depends": ["bf_work_category", "bf_meeting"],
+    "data": ["views/work_category_views.xml"],
+    "pre_init_hook": "pre_init_hook",
+    "post_init_hook": "post_init_hook",
+    "auto_install": True,
+    "installable": True,
+}

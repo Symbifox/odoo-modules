@@ -1,0 +1,15 @@
+{
+    "name": "BF Work Category - Emails",
+    "version": "18.0.1.0.1",
+    "category": "Hidden",
+    "summary": "Work category on emails, from the record they are filed on",
+    "author": "Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
+    "license": "Other proprietary",
+    "depends": ["bf_work_category", "bf_email_management"],
+    "data": ["views/work_category_views.xml"],
+    "pre_init_hook": "pre_init_hook",
+    "post_init_hook": "post_init_hook",
+    "auto_install": True,
+    "installable": True,
+}

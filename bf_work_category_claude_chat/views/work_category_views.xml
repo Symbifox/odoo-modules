@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="claude_chat_session_form_work_category" model="ir.ui.view">
+        <field name="name">claude.chat.session.form.work.category</field>
+        <field name="model">claude.chat.session</field>
+        <field name="inherit_id" ref="bf_claude_chat.view_claude_session_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <label for="work_category_id"/>
+                <div class="o_row">
+                    <field name="work_category_id" options="{'no_open': True}"/>
+                    <field name="work_category_origin" class="text-muted" invisible="not work_category_id"/>
+                </div>
+                <field name="work_category_manual_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="claude_chat_session_list_work_category" model="ir.ui.view">
+        <field name="name">claude.chat.session.list.work.category</field>
+        <field name="model">claude.chat.session</field>
+        <field name="inherit_id" ref="bf_claude_chat.view_claude_session_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="work_category_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="claude_chat_session_search_work_category" model="ir.ui.view">
+        <field name="name">claude.chat.session.search.work.category</field>
+        <field name="model">claude.chat.session</field>
+        <field name="priority">32</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="work_category_id"/>
+                <filter name="groupby_work_category" string="Work category" context="{'group_by': 'work_category_id'}"/>
+                <filter name="groupby_user" string="User" context="{'group_by': 'user_id'}"/>
+            </search>
+        </field>
+    </record>
+</odoo>

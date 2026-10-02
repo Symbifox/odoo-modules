@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_task_form2_work_category" model="ir.ui.view">
+        <field name="name">project.task.form.work.category</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//field[@name='tag_ids'][not(ancestor::list)]" position="after">
+                <label for="work_category_id"/>
+                <div class="o_row">
+                    <field name="work_category_id" options="{'no_open': True}"/>
+                    <field name="work_category_origin" class="text-muted" invisible="not work_category_id"/>
+                </div>
+                <field name="work_category_manual_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_tree2_work_category" model="ir.ui.view">
+        <field name="name">project.task.list.work.category</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_tree2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="work_category_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_task_search_form_work_category" model="ir.ui.view">
+        <field name="name">project.task.search.work.category</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_search_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="work_category_id"/>
+                <filter name="groupby_work_category" string="Work category" context="{'group_by': 'work_category_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="edit_project_work_category" model="ir.ui.view">
+        <field name="name">project.project.form.work.category</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet//field[@name='tag_ids'][not(ancestor::list)]" position="after">
+                <label for="work_category_id"/>
+                <div class="o_row">
+                    <field name="work_category_id" options="{'no_open': True}"/>
+                    <field name="work_category_origin" class="text-muted" invisible="not work_category_id"/>
+                </div>
+                <field name="work_category_manual_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_project_work_category" model="ir.ui.view">
+        <field name="name">project.project.list.work.category</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="work_category_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_project_project_filter_work_category" model="ir.ui.view">
+        <field name="name">project.project.search.work.category</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_project_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="work_category_id"/>
+                <filter name="groupby_work_category" string="Work category" context="{'group_by': 'work_category_id'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

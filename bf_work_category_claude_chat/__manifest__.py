@@ -1,0 +1,15 @@
+{
+    "name": "BF Work Category - Gen",
+    "version": "18.0.1.0.1",
+    "category": "Hidden",
+    "summary": "Work category on Gen conversations, from the record they are attached to",
+    "author": "Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
+    "license": "Other proprietary",
+    "depends": ["bf_work_category", "bf_claude_chat"],
+    "data": ["views/work_category_views.xml"],
+    "pre_init_hook": "pre_init_hook",
+    "post_init_hook": "post_init_hook",
+    "auto_install": True,
+    "installable": True,
+}

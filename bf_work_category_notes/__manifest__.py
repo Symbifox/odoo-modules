@@ -1,0 +1,15 @@
+{
+    "name": "BF Work Category - Notes",
+    "version": "18.0.1.0.1",
+    "category": "Hidden",
+    "summary": "Work category on notes, from the record they are attached to",
+    "author": "Les services de consultation Blue Fox, Inc.",
+    "website": "https://symbifox.com",
+    "license": "LGPL-3",
+    "depends": ["bf_work_category", "bf_bloc_notes"],
+    "data": ["views/work_category_views.xml"],
+    "pre_init_hook": "pre_init_hook",
+    "post_init_hook": "post_init_hook",
+    "auto_install": True,
+    "installable": True,
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="project_tags_form_view_work_category" model="ir.ui.view">
+        <field name="name">project.tags.form.work.category</field>
+        <field name="model">project.tags</field>
+        <field name="inherit_id" ref="project.project_tags_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header invisible="not is_work_category">
+                    <button name="action_bf_work_category_recompute" type="object" string="Recompute categories"
+                            groups="project.group_project_manager"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='color']" position="after">
+                <field name="is_work_category"/>
+                <field name="work_category_sequence" invisible="not is_work_category"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project_tags_tree_view_work_category" model="ir.ui.view">
+        <field name="name">project.tags.list.work.category</field>
+        <field name="model">project.tags</field>
+        <field name="inherit_id" ref="project.project_tags_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <header>
+                    <button name="action_bf_work_category_recompute" type="object" string="Recompute categories"
+                            display="always" groups="project.group_project_manager"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='color']" position="after">
+                <field name="is_work_category" optional="show"/>
+                <field name="work_category_sequence" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project_tags_search_view_work_category" model="ir.ui.view">
+        <field name="name">project.tags.search.work.category</field>
+        <field name="model">project.tags</field>
+        <field name="inherit_id" ref="project.project_tags_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <filter name="work_categories" string="Work categories" domain="[('is_work_category', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

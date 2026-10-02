@@ -1,0 +1,229 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_work_category
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-02 07:20+0000\n"
+"PO-Revision-Date: 2026-10-02 07:20+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+"Language: fr_CA\n"
+
+#. module: bf_work_category
+#: model:ir.model.fields,field_description:bf_work_category.field_project_tags__work_category_sequence
+msgid "Category order"
+msgstr "Ordre de la catégorie"
+
+#. module: bf_work_category
+#: model:ir.model.fields,field_description:bf_work_category.field_bf_work_category_linked_mixin__work_category_origin
+#: model:ir.model.fields,field_description:bf_work_category.field_bf_work_category_mixin__work_category_origin
+#: model:ir.model.fields,field_description:bf_work_category.field_project_project__work_category_origin
+#: model:ir.model.fields,field_description:bf_work_category.field_project_task__work_category_origin
+msgid "Category origin"
+msgstr "Origine de la catégorie"
+
+#. module: bf_work_category
+#: model:ir.model.fields,field_description:bf_work_category.field_bf_work_category_linked_mixin__work_category_project_id
+msgid "Category project"
+msgstr "Projet de la catégorie"
+
+#. module: bf_work_category
+#: model:ir.model.fields,field_description:bf_work_category.field_bf_work_category_linked_mixin__work_category_task_id
+msgid "Category task"
+msgstr "Tâche de la catégorie"
+
+#. module: bf_work_category
+#: model:ir.model.fields.selection,name:bf_work_category.selection__account_analytic_line__work_category_origin__label
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_email__work_category_origin__label
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_note__work_category_origin__label
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_linked_mixin__work_category_origin__label
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_mixin__work_category_origin__label
+#: model:ir.model.fields.selection,name:bf_work_category.selection__claude_chat_session__work_category_origin__label
+#: model:ir.model.fields.selection,name:bf_work_category.selection__meeting_record__work_category_origin__label
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_project__work_category_origin__label
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_task__work_category_origin__label
+msgid "Label"
+msgstr "Étiquette"
+
+#. module: bf_work_category
+#: model:ir.model.fields.selection,name:bf_work_category.selection__account_analytic_line__work_category_origin__linked
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_email__work_category_origin__linked
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_note__work_category_origin__linked
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_linked_mixin__work_category_origin__linked
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_mixin__work_category_origin__linked
+#: model:ir.model.fields.selection,name:bf_work_category.selection__claude_chat_session__work_category_origin__linked
+#: model:ir.model.fields.selection,name:bf_work_category.selection__meeting_record__work_category_origin__linked
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_project__work_category_origin__linked
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_task__work_category_origin__linked
+msgid "Linked record"
+msgstr "Fiche liée"
+
+#. module: bf_work_category
+#. odoo-python
+#: code:addons/bf_work_category/models/project_tags.py:0
+msgid "Only project administrators can change the order of work categories."
+msgstr "Seuls les administrateurs de projet peuvent changer l'ordre des catégories de travail."
+
+#. module: bf_work_category
+#. odoo-python
+#: code:addons/bf_work_category/models/project_tags.py:0
+msgid "Only project administrators can delete a work category."
+msgstr "Seuls les administrateurs de projet peuvent supprimer une catégorie de travail."
+
+#. module: bf_work_category
+#. odoo-python
+#: code:addons/bf_work_category/models/project_tags.py:0
+msgid ""
+"Only project administrators can make a label a work category, or stop it "
+"being one."
+msgstr "Seuls les administrateurs de projet peuvent faire d'une étiquette une catégorie de travail, ou la retirer des catégories."
+
+#. module: bf_work_category
+#. odoo-python
+#: code:addons/bf_work_category/models/project_tags.py:0
+#: code:addons/bf_work_category/models/work_category_mixin.py:0
+msgid "Only project administrators can recompute work categories."
+msgstr "Seuls les administrateurs de projet peuvent recalculer les catégories de travail."
+
+#. module: bf_work_category
+#: model:ir.model.fields.selection,name:bf_work_category.selection__account_analytic_line__work_category_origin__manual
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_email__work_category_origin__manual
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_note__work_category_origin__manual
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_linked_mixin__work_category_origin__manual
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_mixin__work_category_origin__manual
+#: model:ir.model.fields.selection,name:bf_work_category.selection__claude_chat_session__work_category_origin__manual
+#: model:ir.model.fields.selection,name:bf_work_category.selection__meeting_record__work_category_origin__manual
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_project__work_category_origin__manual
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_task__work_category_origin__manual
+msgid "Overridden"
+msgstr "Forcée"
+
+#. module: bf_work_category
+#: model:ir.model.fields,field_description:bf_work_category.field_bf_work_category_linked_mixin__work_category_manual_id
+#: model:ir.model.fields,field_description:bf_work_category.field_bf_work_category_mixin__work_category_manual_id
+#: model:ir.model.fields,field_description:bf_work_category.field_project_project__work_category_manual_id
+#: model:ir.model.fields,field_description:bf_work_category.field_project_task__work_category_manual_id
+msgid "Override category"
+msgstr "Forcer la catégorie"
+
+#. module: bf_work_category
+#: model:ir.model,name:bf_work_category.model_project_project
+#: model:ir.model.fields.selection,name:bf_work_category.selection__account_analytic_line__work_category_origin__project
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_email__work_category_origin__project
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_note__work_category_origin__project
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_linked_mixin__work_category_origin__project
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_mixin__work_category_origin__project
+#: model:ir.model.fields.selection,name:bf_work_category.selection__claude_chat_session__work_category_origin__project
+#: model:ir.model.fields.selection,name:bf_work_category.selection__meeting_record__work_category_origin__project
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_project__work_category_origin__project
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_task__work_category_origin__project
+msgid "Project"
+msgstr "Projet"
+
+#. module: bf_work_category
+#: model:ir.model,name:bf_work_category.model_project_tags
+msgid "Project Tags"
+msgstr ""
+
+#. module: bf_work_category
+#: model_terms:ir.ui.view,arch_db:bf_work_category.project_tags_form_view_work_category
+#: model_terms:ir.ui.view,arch_db:bf_work_category.project_tags_tree_view_work_category
+msgid "Recompute categories"
+msgstr "Recalculer les catégories"
+
+#. module: bf_work_category
+#: model:ir.model,name:bf_work_category.model_project_task
+#: model:ir.model.fields.selection,name:bf_work_category.selection__account_analytic_line__work_category_origin__task
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_email__work_category_origin__task
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_note__work_category_origin__task
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_linked_mixin__work_category_origin__task
+#: model:ir.model.fields.selection,name:bf_work_category.selection__bf_work_category_mixin__work_category_origin__task
+#: model:ir.model.fields.selection,name:bf_work_category.selection__claude_chat_session__work_category_origin__task
+#: model:ir.model.fields.selection,name:bf_work_category.selection__meeting_record__work_category_origin__task
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_project__work_category_origin__task
+#: model:ir.model.fields.selection,name:bf_work_category.selection__project_task__work_category_origin__task
+msgid "Task"
+msgstr "Tâche"
+
+#. module: bf_work_category
+#. odoo-python
+#: code:addons/bf_work_category/models/work_category_mixin.py:0
+msgid "The override category must be a label marked as a work category."
+msgstr "La catégorie forcée doit être une étiquette cochée comme catégorie de travail."
+
+#. module: bf_work_category
+#: model:ir.model.fields,help:bf_work_category.field_project_tags__is_work_category
+msgid ""
+"Use this label as a work category: projects, tasks and the records of every "
+"bridged module (timesheets, Gen conversations, notes, meetings, emails) can "
+"then be filtered, grouped and exported by it. On a label carried by many "
+"projects, ticking or unticking it updates all their records at once and can "
+"take a while."
+msgstr "Utiliser cette étiquette comme catégorie de travail : les projets, les tâches et les fiches de chaque module branché (feuilles de temps, conversations Gen, notes, comptes rendus, courriels) peuvent alors être filtrés, regroupés et exportés par elle. Sur une étiquette portée par beaucoup de projets, la cocher ou la décocher met à jour toutes leurs fiches d'un coup et peut prendre un moment."
+
+#. module: bf_work_category
+#: model:ir.model.fields,help:bf_work_category.field_project_tags__work_category_sequence
+msgid "When a record carries several category labels, the lowest order wins."
+msgstr "Quand une fiche porte plusieurs étiquettes-catégories, l'ordre le plus bas l'emporte."
+
+#. module: bf_work_category
+#: model:ir.model.fields,help:bf_work_category.field_bf_work_category_linked_mixin__work_category_manual_id
+#: model:ir.model.fields,help:bf_work_category.field_bf_work_category_mixin__work_category_manual_id
+#: model:ir.model.fields,help:bf_work_category.field_project_project__work_category_manual_id
+#: model:ir.model.fields,help:bf_work_category.field_project_task__work_category_manual_id
+msgid ""
+"Wins over the category found on the labels, the task, the project or the "
+"linked record."
+msgstr "L'emporte sur la catégorie trouvée sur les étiquettes, la tâche, le projet ou la fiche liée."
+
+#. module: bf_work_category
+#: model_terms:ir.ui.view,arch_db:bf_work_category.project_tags_search_view_work_category
+msgid "Work categories"
+msgstr "Catégories de travail"
+
+#. module: bf_work_category
+#. odoo-python
+#: code:addons/bf_work_category/models/project_tags.py:0
+msgid ""
+"Work categories are being recomputed in the background. On a large database "
+"this takes a few minutes."
+msgstr "Les catégories de travail se recalculent en arrière-plan. Sur une grosse base, cela prend quelques minutes."
+
+#. module: bf_work_category
+#. odoo-python
+#: code:addons/bf_work_category/models/project_tags.py:0
+msgid "Work categories recomputed: %s records updated."
+msgstr "Catégories de travail recalculées : %s fiches mises à jour."
+
+#. module: bf_work_category
+#: model:ir.actions.server,name:bf_work_category.ir_cron_work_category_recompute_ir_actions_server
+msgid "Work categories: recompute"
+msgstr "Catégories de travail : recalcul"
+
+#. module: bf_work_category
+#: model:ir.model.fields,field_description:bf_work_category.field_bf_work_category_linked_mixin__work_category_id
+#: model:ir.model.fields,field_description:bf_work_category.field_bf_work_category_mixin__work_category_id
+#: model:ir.model.fields,field_description:bf_work_category.field_project_project__work_category_id
+#: model:ir.model.fields,field_description:bf_work_category.field_project_tags__is_work_category
+#: model:ir.model.fields,field_description:bf_work_category.field_project_task__work_category_id
+#: model_terms:ir.ui.view,arch_db:bf_work_category.view_project_project_filter_work_category
+#: model_terms:ir.ui.view,arch_db:bf_work_category.view_task_search_form_work_category
+msgid "Work category"
+msgstr "Catégorie de travail"
+
+#. module: bf_work_category
+#: model:ir.model,name:bf_work_category.model_bf_work_category_mixin
+msgid "Work category mixin"
+msgstr "Mixin de catégorie de travail"
+
+#. module: bf_work_category
+#: model:ir.model,name:bf_work_category.model_bf_work_category_linked_mixin
+msgid "Work category of a linked record"
+msgstr "Catégorie de travail d'une fiche liée"

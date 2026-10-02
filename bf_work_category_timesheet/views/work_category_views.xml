@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_analytic_line_form_work_category" model="ir.ui.view">
+        <field name="name">account.analytic.line.form.work.category</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='task_id']" position="after">
+                <label for="work_category_id"/>
+                <div class="o_row">
+                    <field name="work_category_id" options="{'no_open': True}"/>
+                    <field name="work_category_origin" class="text-muted" invisible="not work_category_id"/>
+                </div>
+                <field name="work_category_manual_id" options="{'no_create': True, 'no_open': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_analytic_line_list_work_category" model="ir.ui.view">
+        <field name="name">account.analytic.line.list.work.category</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="work_category_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_analytic_line_search_work_category" model="ir.ui.view">
+        <field name="name">account.analytic.line.search.work.category</field>
+        <field name="model">account.analytic.line</field>
+        <field name="inherit_id" ref="hr_timesheet.hr_timesheet_line_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="work_category_id"/>
+                <filter name="groupby_work_category" string="Work category" context="{'group_by': 'work_category_id'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

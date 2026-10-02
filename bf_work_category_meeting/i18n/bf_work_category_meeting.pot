@@ -1,0 +1,44 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_work_category_meeting
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-02 06:37+0000\n"
+"PO-Revision-Date: 2026-10-02 06:37+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_work_category_meeting
+#: model:ir.model.fields,field_description:bf_work_category_meeting.field_meeting_record__work_category_origin
+msgid "Category origin"
+msgstr ""
+
+#. module: bf_work_category_meeting
+#: model:ir.model,name:bf_work_category_meeting.model_meeting_record
+msgid "Compte rendu de réunion"
+msgstr ""
+
+#. module: bf_work_category_meeting
+#: model:ir.model.fields,field_description:bf_work_category_meeting.field_meeting_record__work_category_manual_id
+msgid "Override category"
+msgstr ""
+
+#. module: bf_work_category_meeting
+#: model:ir.model.fields,help:bf_work_category_meeting.field_meeting_record__work_category_manual_id
+msgid ""
+"Wins over the category found on the labels, the task, the project or the "
+"linked record."
+msgstr ""
+
+#. module: bf_work_category_meeting
+#: model:ir.model.fields,field_description:bf_work_category_meeting.field_meeting_record__work_category_id
+#: model_terms:ir.ui.view,arch_db:bf_work_category_meeting.meeting_record_search_work_category
+msgid "Work category"
+msgstr ""
