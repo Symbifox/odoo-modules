@@ -158,7 +158,11 @@
                 <button name="action_generate_body_pdf" type="object"
                         string="Générer le PDF" class="btn-primary"
                         invisible="body_source != 'internal'"
-                        help="Produit le document final brandé à partir des sections rédigées."/>
+                        help="Produit le document brandé de la version publiée en vigueur, tel qu'il a été figé à sa publication. Sans version publiée, produit le brouillon, marqué comme tel."/>
+                <button name="action_generate_draft_pdf" type="object"
+                        string="Aperçu du brouillon" class="btn-secondary"
+                        invisible="body_source != 'internal' or not has_unpublished_changes or not latest_version_id"
+                        help="Produit le brouillon de travail, marqué « Brouillon, non approuvé », pour relire les retouches pas encore publiées."/>
                 <button name="action_adopt_internal_body" type="object"
                         string="Rédiger dans Odoo" class="btn-secondary"
                         invisible="body_source == 'internal' or not supports_body"
@@ -328,6 +332,14 @@
                 <field name="sequence_index" readonly="1"/>
                 <field name="is_erratum" readonly="1"/>
             </field>
+
+            <xpath expr="//header/field[@name='state']" position="before">
+                <field name="body_source" invisible="1"/>
+                <button name="action_generate_body_pdf" type="object"
+                        string="Générer le PDF" class="btn-secondary"
+                        invisible="body_source != 'internal'"
+                        help="Produit le PDF de cette version, sous son numéro : son contenu figé si elle a été publiée, sinon le brouillon de travail, marqué comme tel."/>
+            </xpath>
 
             <field name="release_date" position="after">
                 <field name="frozen_date" readonly="1" invisible="not frozen_date"/>

@@ -8,3 +8,5 @@ from . import test_knowledge_matrix
 from . import test_release_wizard
 from . import test_report_escaping
 from . import test_mise_en_page
+from . import test_impression_version
+from . import test_migration_gel

@@ -1,6 +1,6 @@
 {
     'name': 'Project Knowledge Matrix',
-    'version': '18.0.13.3.3',
+    'version': '18.0.13.3.4',
     'category': 'Services/Project',
     'summary': 'Base de connaissances projets, politiques et documentation',
     'description': """
@@ -76,7 +76,7 @@ Fonctionnalités:
         'views/project_views.xml',
         # Actions de forage du rapport courriel: charge APRÈS toutes les vues
         # qu'elle référence en search_view_id (document, distribution,
-        # identifiant, élément de connaissance, et les quatre corporatives).
+        # identifiant et élément de connaissance).
         'views/report_drilldown_actions.xml',
         'views/dashboard_views.xml',
         'views/res_config_settings_views.xml',

@@ -52,6 +52,7 @@ All dashboard metrics are clickable, navigating directly to filtered views.
 - **Document Types**: 22 pre-configured types including client documentation (Manual, Contract, Guide, Specification, Release Notes, Training), internal policies (Policy, Procedure, HR Policy, IT Procedure, Safety, Handbook, Onboarding, Confidential), and Loi 25 compliance (Privacy Policy, Form, Template, Registry, Annex, Assessment, Letter, Other)
 - **Version Control**: Full version history with changelog, change types (Major, Minor, Editorial), and release tracking
 - **Release from the document form**: a "Publish a version" wizard numbers, dates and releases a version without leaving the document. "Activate" on a document that has no released version opens it first, since until a version is released the PDF is stamped as an unpublished draft
+- **The PDF prints the version in force**: the document's PDF prints the frozen snapshot of the released version, under that version's number. The working draft never prints without its "Brouillon, non approuvé" watermark on every page, whether through "Draft preview", the document PDF of a document with no released version, or a pending version's own PDF; a version's own PDF (button on the version form) prints that version's content under its number, marked as superseded, withdrawn or approved-but-unpublished when it is not the one in force. The body and the number always come from the same version
 - **Internal vs Client Documents**: Separate workflows for policies/procedures and client-facing documentation
 - **Expiration Tracking**: Set expiration dates with automatic status updates and reminders at 90, 60, 30, and 7 days
 - **Review Scheduling**: Periodic review dates with overdue tracking
@@ -528,6 +529,15 @@ This module follows Odoo 18 best practices:
 
 ## Changelog
 
+### 18.0.13.3.4
+
+- **The PDF no longer prints a draft under a published number**: the report read the document's live sections (the working draft) and took its number from `current_version` (the last released version), so a policy with 2.0 released and 2.1 in approval printed "VERSION 2.0" over the text of 2.1. The document's PDF now prints the frozen snapshot of the version in force, with that version's number; without a released version it prints the draft, marked as such.
+- **Draft preview**: a new button prints the working draft with its own number (the version in preparation, if any) and a "Brouillon, non approuvé" watermark tiled on every page. Superseded, withdrawn and approved-but-unpublished versions print with a banner and a watermark of their own.
+- **PDF of a given version**: a button on the version form prints that version's content under its number. An old version that was never frozen in Odoo refuses to print rather than printing someone else's text.
+- **Companion modules read the approved text**: `_report_sections()` now returns the released snapshot by default, so the acknowledgement portal, distribution signature and workstation display show the approved text, never the working draft.
+- **Generated sections follow the version**: the governance and approvals blocks are rendered for the version being frozen or printed, not for "the last released one".
+- **Migration 18.0.13.3.4**: a released version that has no frozen copy (released while its body still lived in an external file, then written in Odoo) receives the document's current text as its frozen copy, through the same freeze as a release. Only released versions without any frozen section, of a document whose body lives in Odoo; state, release date and distributions are untouched, nothing is emailed, one log line per document, and a second run finds nothing to do.
+
 ### 18.0.13.3.3
 
 - **Shared mail layout**: the four document emails, the report wizard and the scheduled report use the shared mail layout instead of their own shell, which carried a hard-coded logo, tagline and privacy link from the publisher and a placeholder contact address whatever the tenant. The contact sentence now quotes the company's email address, and the scheduled report is signed with the company name. Migration 18.0.13.3.3 strips every stored language of the `noupdate` templates; the French `.po` no longer carries copies of the old bodies
@@ -731,7 +741,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-10-02, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Credits
