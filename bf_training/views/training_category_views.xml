@@ -8,6 +8,7 @@
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="code"/>
+                <field name="color_hex" widget="bf_color" string="Couleur" optional="show"/>
                 <field name="activity_count" string="Activités"/>
                 <field name="active" widget="boolean_toggle" optional="hide"/>
             </list>

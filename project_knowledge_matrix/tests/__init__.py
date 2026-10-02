@@ -10,3 +10,4 @@ from . import test_report_escaping
 from . import test_mise_en_page
 from . import test_impression_version
 from . import test_migration_gel
+from . import test_couleur_libre

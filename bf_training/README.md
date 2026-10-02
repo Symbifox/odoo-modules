@@ -25,6 +25,9 @@ aucun ne remplace l'autre.
 - **Plan de formation** : la durée établie à l'avance et la preuve de la
   consultation tenue sur le plan.
 - **Assignation** : le geste. Demander, et relancer avant l'échéance.
+- **Catégorie** : une couleur libre depuis 18.0.1.4.0 (`bf_color`, en dépendance) : n'importe quel
+  hex au lieu des douze d'Odoo, chacun pouvant garder la sienne. Les pastilles des catégories d'une
+  exigence la montrent.
 
 ## Trois principes de conception
 

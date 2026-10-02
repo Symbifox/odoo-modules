@@ -329,6 +329,8 @@ class KnowledgeItem(models.Model):
         related='section_id.color',
         string='Couleur',
     )
+    # Couleur libre de la section (bf_color), telle que l'usager la voit
+    color_resolved = fields.Char(related='section_id.color_resolved')
 
     # Contraintes SQL
     _sql_constraints = [

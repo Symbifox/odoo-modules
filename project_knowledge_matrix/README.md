@@ -144,6 +144,7 @@ Edit matrix items directly in the project form:
 
 - **Smart Buttons**: Task count and attachment count on item forms
 - **Color-Coded Lists**: Visual status and overdue indicators
+- **Free Colors** (13.4.0): document types and sections take any hex color (`bf_color`), and an item's kanban card shows its section's color
 - **Inline Editing**: Edit items directly in list view
 - **Kanban View**: Drag-and-drop workflow with priority and deadline display
 - **Rich Filters**: Overdue, Due This Week, High Priority, Blocked, By Phase
@@ -232,6 +233,7 @@ Server actions for efficient multi-select operations:
 - `project` (Odoo Project Management)
 - `mail` (Discuss/Chatter)
 - `bf_onboarding_base` (brand fields on `res.company` for PDF reports and email templates)
+- `bf_color` (free colors on document types and sections)
 
 ## Configuration
 
@@ -528,6 +530,11 @@ This module follows Odoo 18 best practices:
 - Efficient SQL constraints for uniqueness
 
 ## Changelog
+
+### 18.0.13.4.0
+
+- **Free colors**: document types and sections take a free color from `bf_color` (any hex instead of Odoo's twelve). Odoo's color index follows the closest shade, for the screens that only read it.
+- **Item cards take their section's color**: the item kanban now declares `highlight_color` instead of a hand-built color class, so the card's edge shows the section's resolved color (an item reads it through a related `color_resolved`; items themselves carry no color of their own).
 
 ### 18.0.13.3.4
 

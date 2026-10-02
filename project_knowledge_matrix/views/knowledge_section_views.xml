@@ -15,7 +15,7 @@
                             <field name="sequence"/>
                         </group>
                         <group string="Display">
-                            <field name="color" widget="color_picker"/>
+                            <field name="color_hex" widget="bf_color" string="Color"/>
                             <field name="active"/>
                         </group>
                     </group>
@@ -37,7 +37,7 @@
                 <field name="code"/>
                 <field name="name"/>
                 <field name="description"/>
-                <field name="color" widget="color_picker"/>
+                <field name="color_hex" widget="bf_color" string="Color"/>
             </list>
         </field>
     </record>

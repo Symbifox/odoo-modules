@@ -6,3 +6,4 @@ from . import training_obligation
 from . import training_record
 from . import training_assignment
 from . import hr_employee
+from . import bf_color

@@ -1,6 +1,6 @@
 {
     "name": "Registre de formation",
-    "version": "18.0.1.3.0",
+    "version": "18.0.1.4.0",
     "category": "Human Resources",
     "summary": "Qui doit quelle formation, pour quand, prouvé par quelle pièce, "
                "valide jusqu'à quand. Le registre nominatif que le lecteur eLearning "
@@ -42,7 +42,7 @@ Trois principes de conception, tirés de ce que le natif fait mal
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
     "license": "Other proprietary",
-    "depends": ["base", "mail", "hr", "hr_hourly_cost"],
+    "depends": ["bf_color", "base", "mail", "hr", "hr_hourly_cost"],
     "data": [
         "security/training_security.xml",
         "security/ir.model.access.csv",

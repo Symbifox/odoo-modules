@@ -1,6 +1,6 @@
 {
     'name': 'Project Knowledge Matrix',
-    'version': '18.0.13.3.4',
+    'version': '18.0.13.4.0',
     'category': 'Services/Project',
     'summary': 'Base de connaissances projets, politiques et documentation',
     'description': """
@@ -41,7 +41,7 @@ Fonctionnalités:
     # res.company. bluefox_branding n'est PAS requis: c'est le panneau de
     # marque blanche, optionnel. Sans lui, les documents sortent aux couleurs
     # par défaut de l'instance.
-    'depends': ['project', 'mail', 'bf_onboarding_base'],
+    'depends': ['bf_color', 'project', 'mail', 'bf_onboarding_base'],
     'data': [
         # Security first
         'security/knowledge_security.xml',

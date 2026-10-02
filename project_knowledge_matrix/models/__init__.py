@@ -20,3 +20,4 @@ from . import document_section
 from . import document_version_section
 from . import project_document_body
 from . import document_version_body
+from . import bf_color

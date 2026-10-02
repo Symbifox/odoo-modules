@@ -10,7 +10,7 @@ msgstr ""
 "PO-Revision-Date: 2026-02-04 00:42+0000\n"
 "Last-Translator: Blue Fox Inc\n"
 "Language-Team: French (Canada)\n"
-"Language: \n"
+"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -1061,6 +1061,10 @@ msgstr "Code de référence unique pour ce document"
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__color
+#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_section_view_form
+#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_section_view_list
+#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_type_form
+#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_type_tree
 msgid "Color"
 msgstr "Couleur"
 
@@ -4478,3 +4482,59 @@ msgstr "Évaluation"
 #: model:project.document.type,description:project_knowledge_matrix.document_type_assessment
 msgid "Évaluations (EFVP, risques, conformité)"
 msgstr "Évaluations (EFVP, risques, conformité)"
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_type__color_resolved_index
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_section__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+"Indice le plus proche dans la palette d'Odoo, pour les vues qui ne "
+"comprennent que 0 à 11."
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_source
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_source
+msgid "Color Source"
+msgstr "Source de la couleur"
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_type__color_hex
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_section__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr "Couleur de l'enregistrement pour tout le monde (hex)."
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_type__color_resolved
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__color_resolved
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_section__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+"Couleur montrée à l'usager courant, après sa couleur, celle du locataire et "
+"les règles automatiques."
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_resolved
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__color_resolved
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_resolved
+msgid "Displayed color"
+msgstr "Couleur affichée"
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_resolved_index
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr "Couleur affichée (palette d'Odoo)"
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_hex
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_hex
+msgid "Own color"
+msgstr "Couleur propre"
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_text
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_text
+msgid "Text color"
+msgstr "Couleur du texte"

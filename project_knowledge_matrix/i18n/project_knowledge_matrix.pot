@@ -1005,6 +1005,10 @@ msgstr ""
 
 #. module: project_knowledge_matrix
 #: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__color
+#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_section_view_form
+#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.knowledge_section_view_list
+#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_type_form
+#: model_terms:ir.ui.view,arch_db:project_knowledge_matrix.view_document_type_tree
 msgid "Color"
 msgstr ""
 
@@ -4390,4 +4394,56 @@ msgstr ""
 #. module: project_knowledge_matrix
 #: model:project.document.type,description:project_knowledge_matrix.document_type_assessment
 msgid "Évaluations (EFVP, risques, conformité)"
+msgstr ""
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_type__color_resolved_index
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_section__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_source
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_source
+msgid "Color Source"
+msgstr ""
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_type__color_hex
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_section__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr ""
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_document_type__color_resolved
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_item__color_resolved
+#: model:ir.model.fields,help:project_knowledge_matrix.field_project_knowledge_section__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_resolved
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_item__color_resolved
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_resolved
+msgid "Displayed color"
+msgstr ""
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_resolved_index
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr ""
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_hex
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_hex
+msgid "Own color"
+msgstr ""
+
+#. module: project_knowledge_matrix
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_document_type__color_text
+#: model:ir.model.fields,field_description:project_knowledge_matrix.field_project_knowledge_section__color_text
+msgid "Text color"
 msgstr ""

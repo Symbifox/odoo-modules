@@ -46,8 +46,10 @@
                                    required="requirement_type == 'activity'"/>
                             <field name="min_hours" invisible="requirement_type != 'hours'"/>
                             <field name="category_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color', 'bf_color': True}"
                                    invisible="requirement_type != 'hours'"/>
                             <field name="excluded_category_ids" widget="many2many_tags"
+                                   options="{'color_field': 'color', 'bf_color': True}"
                                    invisible="requirement_type != 'hours'"/>
                         </group>
                         <group string="Quand">

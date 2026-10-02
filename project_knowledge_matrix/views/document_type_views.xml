@@ -12,7 +12,7 @@
                 <field name="name"/>
                 <field name="icon"/>
                 <field name="is_internal" widget="boolean_toggle"/>
-                <field name="color" widget="color_picker"/>
+                <field name="color_hex" widget="bf_color" string="Color"/>
                 <field name="active"/>
             </list>
         </field>
@@ -43,7 +43,7 @@
                         </group>
                         <group>
                             <field name="icon" placeholder="fa-file"/>
-                            <field name="color" widget="color_picker"/>
+                            <field name="color_hex" widget="bf_color" string="Color"/>
                         </group>
                     </group>
                     <group>

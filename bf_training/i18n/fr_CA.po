@@ -2215,3 +2215,49 @@ msgstr "Établissement d'enseignement reconnu"
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search_mine
 msgid "État"
 msgstr "État"
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_category__color_resolved_index
+msgid "Closest Odoo palette index, for views that only understand 0-11."
+msgstr ""
+"Indice le plus proche dans la palette d'Odoo, pour les vues qui ne "
+"comprennent que 0 à 11."
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__color_source
+msgid "Color Source"
+msgstr "Source de la couleur"
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_category__color_hex
+msgid "Color of the record for everyone (hex)."
+msgstr "Couleur de l'enregistrement pour tout le monde (hex)."
+
+#. module: bf_training
+#: model:ir.model.fields,help:bf_training.field_bf_training_category__color_resolved
+msgid ""
+"Color shown to the current user, after personal, company and automatic "
+"rules."
+msgstr ""
+"Couleur montrée à l'usager courant, après sa couleur, celle du locataire et "
+"les règles automatiques."
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__color_resolved
+msgid "Displayed color"
+msgstr "Couleur affichée"
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__color_resolved_index
+msgid "Displayed color (Odoo palette)"
+msgstr "Couleur affichée (palette d'Odoo)"
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__color_hex
+msgid "Own color"
+msgstr "Couleur propre"
+
+#. module: bf_training
+#: model:ir.model.fields,field_description:bf_training.field_bf_training_category__color_text
+msgid "Text color"
+msgstr "Couleur du texte"
