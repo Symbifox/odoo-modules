@@ -24,6 +24,11 @@ an activity notification to a portal account.
   portal user has no activity view. The activity itself is untouched and stays
   visible internally; only the notification to a `share` account is dropped,
   and dropping it is logged.
+- **A customer keeps following its own invoices.** Odoo subscribes the
+  invoiced partner when an invoice is posted, and the portal only shows an
+  invoice to the partners following it (`account.account_invoice_rule_portal`).
+  Up to 18.0.2.1.0 the cron removed that subscription within five minutes, so
+  no customer ever saw an invoice in the portal.
 
 ## Who is kept / removed
 
@@ -31,10 +36,25 @@ A follower is **kept** only if it matches an internal user, that is a
 `res.users` with `share = False` (active or archived). Every other follower
 (external contact, portal/shared user) is removed on the cron's next pass.
 
+One exception: on a customer invoice or credit note (`out_invoice`,
+`out_refund`), an external follower is kept when it belongs to the invoiced
+company, meaning the commercial partner stored on the invoice. Odoo moves a
+contact's invoices along when the contact is attached to another company, so
+that value follows the contact; the only case where the contact's current
+company is used instead is a legacy invoice made out to an individual who was
+attached to a company afterwards. Anyone else is still removed, vendor bills
+included, and `always_remove_partner_ids` always wins. Without `account`
+installed, nothing changes.
+
+Intended consequence: a "Discussions" message posted on a customer invoice now
+reaches the customer and the contacts of its company who follow it, as in
+stock Odoo. An internal note stays internal.
+
 ### Exempting a partner
 
-The module deliberately maintains **no allowlist** of external contacts to
-keep. For a partner to stay subscribed, they must have an internal user account
+Apart from the customer-invoice exception above, the module deliberately
+maintains **no allowlist** of external contacts to keep. For a partner to stay
+subscribed anywhere else, they must have an internal user account
 (`share = False`). Purely external contacts therefore cannot be exempted, and
 that is the intended behaviour.
 
@@ -58,6 +78,14 @@ Four system parameters (`ir.config_parameter`) govern the behaviour:
 Distributed under the **LGPL-3** licence. See the `LICENSE` file.
 
 ## Changelog
+
+### 18.0.2.2.0
+
+- **FIX:** the cleanup cron no longer removes a customer from its own invoices
+  and credit notes, so the customer portal lists them again. An end-migrate
+  script re-subscribes the invoiced contact to every posted customer invoice and
+  credit note under the same rule (`message_subscribe` sends nothing; archived
+  contacts are skipped, Odoo would not subscribe them).
 
 ### 18.0.2.1.0
 

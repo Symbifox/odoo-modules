@@ -1,6 +1,7 @@
 import logging
 
 from odoo import api, models
+from odoo.tools import SQL
 
 _logger = logging.getLogger(__name__)
 
@@ -42,24 +43,67 @@ class MailFollowers(models.Model):
         An internal user is `res.users` with `share = false` (active or archived).
         Partner IDs listed in `bf_follower_cleanup.always_remove_partner_ids`
         are purged unconditionally (e.g. service accounts like Meeting Processor API).
+
+        A customer keeps following its own invoices and credit notes: Odoo
+        subscribes the invoiced partner when an invoice is posted, and the
+        portal only shows an invoice to the partners following it
+        (`account.account_invoice_rule_portal`). Removing that row emptied the
+        customer's portal. Only partners of the invoiced company (same
+        commercial partner) are spared; the always-remove list still wins.
+        The company is the one stored on the invoice (`commercial_partner_id`,
+        set when the invoice was made and never recomputed afterwards), so a
+        contact who moved to another company does not open the old company's
+        invoices to the new one. When that stored value is the invoiced contact
+        itself (invoiced as an individual, attached to a company later), the
+        contact's current company is used instead.
         """
         batch_size = self._bf_batch_size()
         always_remove = self._bf_always_remove_partner_ids()
 
-        self.env.cr.execute(
-            """
-            SELECT mf.id
-            FROM mail_followers mf
-            WHERE mf.partner_id = ANY(%s)
-               OR NOT EXISTS (
+        # The module only depends on `mail`: the clause exists only where
+        # invoicing is installed.
+        own_invoice = SQL("")
+        if "account.move" in self.env:
+            own_invoice = SQL(
+                """
+                AND NOT EXISTS (
                     SELECT 1
-                    FROM res_users ru
-                    WHERE ru.partner_id = mf.partner_id
-                      AND ru.share = FALSE
-               )
-            LIMIT %s
-            """,
-            (always_remove or [0], batch_size),
+                    FROM account_move am
+                    JOIN res_partner ip ON ip.id = am.partner_id
+                    JOIN res_partner fp ON fp.id = mf.partner_id
+                    WHERE mf.res_model = 'account.move'
+                      AND am.id = mf.res_id
+                      AND am.move_type IN ('out_invoice', 'out_refund')
+                      AND fp.commercial_partner_id = CASE
+                        WHEN am.commercial_partner_id = am.partner_id
+                        THEN ip.commercial_partner_id
+                        ELSE am.commercial_partner_id
+                      END
+                )
+                """
+            )
+
+        self.env.cr.execute(
+            SQL(
+                """
+                SELECT mf.id
+                FROM mail_followers mf
+                WHERE mf.partner_id = ANY(%s)
+                   OR (
+                        NOT EXISTS (
+                            SELECT 1
+                            FROM res_users ru
+                            WHERE ru.partner_id = mf.partner_id
+                              AND ru.share = FALSE
+                        )
+                        %s
+                   )
+                LIMIT %s
+                """,
+                always_remove or [0],
+                own_invoice,
+                batch_size,
+            )
         )
         ids = [row[0] for row in self.env.cr.fetchall()]
         if not ids:
