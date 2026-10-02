@@ -16,10 +16,10 @@
                     </t>
                     <div t-if="state.report.can_edit" class="btn-group o_bfr_modes" role="group" aria-label="Mode">
                         <button type="button" class="btn btn-sm" t-att-class="state.mode === 'read' ? 'btn-dark' : 'btn-outline-secondary'"
-                                t-att-aria-pressed="state.mode === 'read' ? 'true' : 'false'" t-on-click="leaveDesign">Read</button>
+                                t-att-aria-pressed="state.mode === 'read' ? 'true' : 'false'" t-on-click="leaveDesign">Reading view</button>
                         <button type="button" class="btn btn-sm" t-att-class="state.mode === 'design' ? 'btn-dark' : 'btn-outline-secondary'"
                                 t-att-aria-pressed="state.mode === 'design' ? 'true' : 'false'"
-                                t-on-click="() => state.mode === 'design' or this.enterDesign()">Design</button>
+                                t-on-click="() => state.mode === 'design' or this.enterDesign()">Design view</button>
                     </div>
                 </header>
                 <div t-if="state.save.status === 'conflict'" class="alert alert-warning o_bfr_conflict" role="alert">
@@ -161,7 +161,7 @@
                     <div class="o_bfr_versions_box">
                         <div class="o_bfr_versions_head">
                             <h2>History</h2>
-                            <button type="button" class="btn-close" aria-label="Close" t-on-click="closeHistory"/>
+                            <button type="button" class="btn-close" aria-label="Close the history" t-on-click="closeHistory"/>
                         </div>
                         <p t-if="!state.versions.length" class="text-muted">No saved version yet.</p>
                         <ul>
@@ -169,8 +169,8 @@
                                 <li>
                                     <span><b>Revision <t t-esc="ver.revision"/></b> · <t t-esc="versionDate(ver)"/> · <t t-esc="ver.author"/></span>
                                     <button t-if="ver.revision !== state.revision" type="button" class="btn btn-sm btn-outline-secondary"
-                                            t-on-click="() => this.restore(ver.id)">Restore</button>
-                                    <span t-else="" class="text-muted">Current</span>
+                                            t-on-click="() => this.restore(ver.id)">Restore version</button>
+                                    <span t-else="" class="text-muted">Current version</span>
                                 </li>
                             </t>
                         </ul>
@@ -268,7 +268,7 @@
                     <div class="o_bfr_well_chips">
                         <span t-if="props.visual.dimension" class="o_bfr_tag">
                             <t t-esc="dimensionLabel(props.visual.dimension)"/>
-                            <button type="button" aria-label="Remove" t-on-click="() => this.patch({ dimension: null })">×</button>
+                            <button type="button" t-att-aria-label="removeLabel(dimensionLabel(props.visual.dimension))" t-on-click="() => this.patch({ dimension: null })">×</button>
                         </span>
                         <span t-else="" class="o_bfr_ph">Drag a dimension here</span>
                     </div>
@@ -449,9 +449,9 @@
                         <tr t-att-class="item.dim ? 'o_bfr_dim' : ''" tabindex="0" t-on-click="() => this.select(item)"
                             t-on-contextmenu="(ev) => this.context(ev, item)"
                             t-on-keydown="(ev) => ev.key === 'Enter' and this.select(item)">
-                            <td class="o_bfr_rowlabel">
+                            <td class="o_bfr_rowlabel" t-att-title="item.label">
                                 <i t-if="item.color" t-att-style="'background:' + item.color" aria-hidden="true"/>
-                                <t t-esc="item.label"/>
+                                <span class="o_bfr_rowname" t-esc="item.label"/>
                             </td>
                             <t t-foreach="item.cells" t-as="cell" t-key="cell_index">
                                 <td t-if="cell_index === 0" class="o_bfr_databar">

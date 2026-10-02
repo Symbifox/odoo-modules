@@ -211,8 +211,8 @@ msgstr ""
 #. module: bf_bi_report
 #. odoo-javascript
 #: code:addons/bf_bi_report/static/src/report/report_action.xml:0
-msgid "Close"
-msgstr "Fermer"
+msgid "Close the history"
+msgstr "Fermer l'historique"
 
 #. module: bf_bi_report
 #. odoo-javascript
@@ -297,8 +297,8 @@ msgstr "Créé le"
 #. module: bf_bi_report
 #. odoo-javascript
 #: code:addons/bf_bi_report/static/src/report/report_action.xml:0
-msgid "Current"
-msgstr "Actuelle"
+msgid "Current version"
+msgstr "Version actuelle"
 
 #. module: bf_bi_report
 #. odoo-javascript
@@ -351,6 +351,12 @@ msgstr "Clients affichés"
 
 #. module: bf_bi_report
 #. odoo-javascript
+#: code:addons/bf_bi_report/static/src/report/designer.js:0
+msgid "Data table"
+msgstr "Tableau"
+
+#. module: bf_bi_report
+#. odoo-javascript
 #: code:addons/bf_bi_report/static/src/report/report_action.js:0
 msgid "Decrease"
 msgstr "Baisse"
@@ -364,7 +370,7 @@ msgstr "Description"
 #. module: bf_bi_report
 #. odoo-javascript
 #: code:addons/bf_bi_report/static/src/report/report_action.xml:0
-msgid "Design"
+msgid "Design view"
 msgstr "Conception"
 
 #. module: bf_bi_report
@@ -943,20 +949,14 @@ msgstr "Trimestre"
 #. module: bf_bi_report
 #. odoo-javascript
 #: code:addons/bf_bi_report/static/src/report/report_action.xml:0
-msgid "Read"
+msgid "Reading view"
 msgstr "Lecture"
 
 #. module: bf_bi_report
 #. odoo-javascript
 #: code:addons/bf_bi_report/static/src/report/report_action.xml:0
 msgid "Reload their version"
-msgstr "Recharger leur version"
-
-#. module: bf_bi_report
-#. odoo-javascript
-#: code:addons/bf_bi_report/static/src/report/report_action.xml:0
-msgid "Remove"
-msgstr "Retirer"
+msgstr "Recharger sa version"
 
 #. module: bf_bi_report
 #. odoo-javascript
@@ -1011,7 +1011,7 @@ msgstr "Rapports"
 #. module: bf_bi_report
 #. odoo-javascript
 #: code:addons/bf_bi_report/static/src/report/report_action.xml:0
-msgid "Restore"
+msgid "Restore version"
 msgstr "Remettre en service"
 
 #. module: bf_bi_report
@@ -1102,12 +1102,6 @@ msgstr ""
 #: model:ir.model.fields.selection,name:bf_bi_report.selection__bf_bi_report__theme__default
 msgid "Symbifox"
 msgstr "Symbifox"
-
-#. module: bf_bi_report
-#. odoo-javascript
-#: code:addons/bf_bi_report/static/src/report/designer.js:0
-msgid "Table"
-msgstr "Tableau"
 
 #. module: bf_bi_report
 #. odoo-javascript
@@ -1399,10 +1393,106 @@ msgstr ""
 "Mise en page des documents) : la palette par défaut s'applique."
 
 #. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "a drill-through page follows the customer it is opened on"
+msgstr "une page de détail suit le client sur lequel on l'ouvre"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "a gauge has no axis"
+msgstr "une jauge n'a pas d'axe"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "a heat map shows customers"
+msgstr "une carte thermique montre des clients"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "a line follows time"
+msgstr "une courbe suit le temps"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "a value is not valid JSON"
+msgstr "une valeur n'est pas du JSON valide"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "a visual goes past the grid"
+msgstr "un visuel dépasse de la grille"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "a visual is not an object"
+msgstr "un visuel n'est pas un objet"
+
+#. module: bf_bi_report
 #. odoo-javascript
 #: code:addons/bf_bi_report/static/src/report/report_action.xml:0
 msgid "auto"
 msgstr "auto"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "bad columns"
+msgstr "colonnes invalides"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "bad fixed customers"
+msgstr "clients fixés invalides"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "bad limit"
+msgstr "nombre de lignes invalide"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "bad maximum"
+msgstr "maximum invalide"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "bad or repeated measures"
+msgstr "mesures invalides ou répétées"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "bad or repeated visual id"
+msgstr "identifiant de visuel invalide ou répété"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "bad position"
+msgstr "position invalide"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "bad target"
+msgstr "cible invalide"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "bad title"
+msgstr "titre invalide"
 
 #. module: bf_bi_report
 #: model_terms:ir.ui.view,arch_db:bf_bi_report.bf_bi_report_view_form
@@ -1430,10 +1520,58 @@ msgid "target %s"
 msgstr "cible %s"
 
 #. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "the page is too large"
+msgstr "la page est trop lourde"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "this visual shows one measure"
+msgstr "ce visuel montre une seule mesure"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "too many visuals on the page"
+msgstr "trop de visuels sur la page"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "unknown dimension"
+msgstr "dimension inconnue"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "unknown drill-through"
+msgstr "extraction inconnue"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "unknown fixed period"
+msgstr "période fixée inconnue"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "unknown visual setting"
+msgstr "réglage de visuel inconnu"
+
+#. module: bf_bi_report
+#. odoo-python
+#: code:addons/bf_bi_report/models/bf_bi_report.py:0
+msgid "unknown visual type"
+msgstr "type de visuel inconnu"
+
+#. module: bf_bi_report
 #. odoo-javascript
 #: code:addons/bf_bi_report/static/src/report/report_action.js:0
 msgid "vs"
-msgstr "vs"
+msgstr "contre"
 
 #. module: bf_bi_report
 #. odoo-javascript

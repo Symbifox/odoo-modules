@@ -264,3 +264,8 @@
     &[aria-checked="true"] { border-color: $o-gray-900; box-shadow: 0 0 0 1px $o-gray-900; }
 }
 .o_bfr_swatches { display: inline-flex; gap: 2px; i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; } }
+
+// Les valeurs d'abord : un nom de client long se coupe (nom complet au survol) plutôt que de
+// pousser les dernières colonnes hors du visuel, surtout en conception où les volets prennent
+// de la largeur.
+.o_bfr_table .o_bfr_rowname { display: inline-block; max-width: 14rem; overflow: hidden; text-overflow: ellipsis; vertical-align: bottom; }

@@ -745,6 +745,36 @@ class TestTemplates(TransactionCase):
         fr.bf_save(pages, report.bf_revision)
         self.assertEqual(report.page_ids.sorted("sequence")[0].with_context(lang="en_US").name, "Sommaire")
 
+    def test_restore_keeps_page_names_in_every_language(self):
+        statuses = self.env["bf.bi.report"].with_user(self.designer).bf_list_templates()
+        available = [t["key"] for t in statuses if t["available"]]
+        if not available:
+            self.skipTest("aucun pont bf_bi installé")
+        self.env["res.lang"]._activate_lang("fr_CA")
+        action = self.env["bf.bi.report"].with_user(self.designer).bf_create_from_template(available[0])
+        report = self.env["bf.bi.report"].browse(action["params"]["report_id"]).with_user(self.designer)
+        fr = report.with_context(lang="fr_CA")
+        pages = [{"id": p["id"], "name": p["name"], "visuals": p["visuals"], "drill": p["drill"]}
+                 for p in fr.bf_get_report(report.id)["pages"]]
+        fr.bf_save(pages, report.bf_revision)  # une version qui porte les noms des deux langues
+        version = report.bf_list_versions()[0]["id"]
+        fr.bf_save([{"id": None, "name": "Une seule", "visuals": []}], report.bf_revision)
+        self.env["bf.bi.report.version"].browse(version).with_user(self.designer).with_context(lang="fr_CA").bf_restore()
+        restored = report.page_ids.sorted("sequence")
+        self.assertEqual(restored.with_context(lang="fr_CA").mapped("name"), [p["name"] for p in pages])
+        self.assertNotEqual(restored.with_context(lang="en_US").mapped("name"),
+                            restored.with_context(lang="fr_CA").mapped("name"))
+        self.assertIn("Overview", restored.with_context(lang="en_US").mapped("name"))
+
+    def test_validation_message_in_the_reader_language(self):
+        self.env["res.lang"]._activate_lang("fr_CA")
+        report = self.env["bf.bi.report"].with_user(self.designer).with_context(lang="fr_CA").create({"name": "Messages"})
+        bad = [{"id": None, "name": "P", "visuals": [{"id": "g", "type": "gauge", "measures": [], "x": 0, "y": 0,
+                                                       "w": 4, "h": 3, "max": -1}]}]
+        with self.assertRaises(UserError) as caught:
+            report.bf_save(bad, report.bf_revision)
+        self.assertIn("maximum invalide", str(caught.exception))
+
     def test_template_list_is_for_designers(self):
         with self.assertRaises(AccessError):
             self.env["bf.bi.report"].with_user(self.reader).bf_list_templates()

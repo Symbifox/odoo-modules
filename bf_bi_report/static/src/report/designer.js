@@ -13,7 +13,7 @@ export const VISUAL_TYPES = [
     ["bar", _t("Bar chart")],
     ["line", _t("Line chart")],
     ["donut", _t("Donut")],
-    ["table", _t("Table")],
+    ["table", _t("Data table")],
     ["gauge", _t("Gauge")],
     ["waterfall", _t("Waterfall")],
     ["heatmap", _t("Heat map")],

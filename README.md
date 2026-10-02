@@ -106,7 +106,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_bi_cx` | BF BI - Customer experience | 18.0.1.0.3 | BUSL-1.1 | Customer experience dashboard: NPS, responses, complaints and resolution time |
 | `bf_bi_hosting` | BF BI - Hosting | 18.0.1.0.3 | BUSL-1.1 | Hosting dashboard: services, uptime, backups, storage, expiring domains |
 | `bf_bi_hour_bank` | BF BI - Hour banks | 18.0.1.0.3 | BUSL-1.1 | Hour banks dashboard: balances computed by the hour bank module, adjustments |
-| `bf_bi_report` | BF BI Reports | 18.0.1.0.0 | BUSL-1.1 | Power BI style reports on named measures: slicers, cross-filtering, drill-through, rich visuals |
+| `bf_bi_report` | BF BI Reports | 18.0.1.0.1 | BUSL-1.1 | Power BI style reports on named measures: slicers, cross-filtering, drill-through, rich visuals |
 | `bf_bi_timesheet` | BF BI - Professional services | 18.0.1.0.3 | BUSL-1.1 | Professional services dashboard: hours, revenue, labour cost and margin |
 | `bf_bloc_notes` | BF Bloc-notes | 18.0.4.0.0 | LGPL-3 | Rich quick notes with multi-record links, one-click activity conversion, free colors and three layouts, keyboard shortcuts, and systray icon (Alt+N) |
 | `bf_budget` | Budgets opérationnels | 18.0.1.0.4 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |

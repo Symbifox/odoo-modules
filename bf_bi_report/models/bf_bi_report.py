@@ -17,8 +17,40 @@ from dateutil.relativedelta import relativedelta
 from odoo import Command, _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.osv import expression
+from odoo.tools.translate import LazyTranslate
 
 from .templates import TEMPLATE_KEYS, TEMPLATES, template_codes
+
+_lt = LazyTranslate(__name__)
+
+# Ce que la validation d'une page peut dire, traduit au moment de lever l'erreur
+# (`self.env._`) : une méthode statique ne connaît pas la langue de la personne.
+VALIDATION_TEXTS = {
+    "unknown drill-through": _lt("unknown drill-through"),
+    "unknown fixed period": _lt("unknown fixed period"),
+    "bad fixed customers": _lt("bad fixed customers"),
+    "a drill-through page follows the customer it is opened on": _lt("a drill-through page follows the customer it is opened on"),
+    "too many visuals on the page": _lt("too many visuals on the page"),
+    "the page is too large": _lt("the page is too large"),
+    "a value is not valid JSON": _lt("a value is not valid JSON"),
+    "a visual is not an object": _lt("a visual is not an object"),
+    "unknown visual setting": _lt("unknown visual setting"),
+    "bad or repeated visual id": _lt("bad or repeated visual id"),
+    "unknown visual type": _lt("unknown visual type"),
+    "bad or repeated measures": _lt("bad or repeated measures"),
+    "unknown dimension": _lt("unknown dimension"),
+    "a line follows time": _lt("a line follows time"),
+    "this visual shows one measure": _lt("this visual shows one measure"),
+    "a gauge has no axis": _lt("a gauge has no axis"),
+    "a heat map shows customers": _lt("a heat map shows customers"),
+    "bad columns": _lt("bad columns"),
+    "bad maximum": _lt("bad maximum"),
+    "bad limit": _lt("bad limit"),
+    "bad title": _lt("bad title"),
+    "bad target": _lt("bad target"),
+    "bad position": _lt("bad position"),
+    "a visual goes past the grid": _lt("a visual goes past the grid"),
+}
 
 CODE_RE = re.compile(r"^[a-z][a-z0-9_]{0,39}$")
 ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
@@ -276,10 +308,7 @@ class BfBiReport(models.Model):
         def visuals(page):
             out = []
             for visual in page["visuals"]:
-                visual = dict(visual, measures=list(visual["measures"]))
-                if "title" in visual:
-                    visual["title"] = visual["title"]._translate(lang)  # un titre saisi : une seule langue
-                out.append(visual)
+                out.append(dict(visual, measures=list(visual["measures"])))
             return out
 
         report = self.create({
@@ -390,6 +419,11 @@ class BfBiReport(models.Model):
         out.sort(key=lambda m: (m["group"] == formulas, m["group"], m["name"]))
         return out
 
+    def _bf_error_text(self, key):
+        """Le message d'une erreur de validation, dans la langue de la personne."""
+        term = VALIDATION_TEXTS.get(key)
+        return self.env._(term) if term else key
+
     @api.model
     def _bf_check_pages(self, pages):
         if not isinstance(pages, list) or not 1 <= len(pages) <= MAX_PAGES:
@@ -407,10 +441,10 @@ class BfBiReport(models.Model):
                 raise UserError(_("A page needs a name of 1 to 80 characters."))
             error = self.env["bf.bi.report.page"]._bf_layout_errors(page.get("visuals"))
             if error:
-                raise UserError(_("Page “%(page)s”: %(error)s.", page=name, error=error))
+                raise UserError(_("Page “%(page)s”: %(error)s.", page=name, error=self._bf_error_text(error)))
             error = self.env["bf.bi.report.page"]._bf_settings_errors(page)
             if error:
-                raise UserError(_("Page “%(page)s”: %(error)s.", page=name, error=error))
+                raise UserError(_("Page “%(page)s”: %(error)s.", page=name, error=self._bf_error_text(error)))
 
     def bf_save(self, pages, revision, name=None, theme=None):
         """Enregistre le rapport complet (pages et visuels) si `revision` est la courante.
@@ -442,7 +476,11 @@ class BfBiReport(models.Model):
             # gardée d'un collègue) est simplement recréée.
             raise UserError(_("A page of another report cannot be moved here."))
         langs = [code for code, _label in self.env["res.lang"].get_installed()]
-        kept, page_ids = set(), []
+        # Remise en service d'une version : les noms de ses pages dans chaque langue (sinon la
+        # page recréée porterait le même nom partout). Seules les langues installées, des noms
+        # de 1 à 80 caractères ; le reste est ignoré.
+        restored = self.env.context.get("bf_bi_restore_names") or {}
+        kept, page_ids, page_names = set(), [], []
         for sequence, page in enumerate(pages, start=1):
             name_ = page["name"].strip()
             vals = {"name": name_, "sequence": sequence, "layout": json.dumps(page["visuals"]),
@@ -455,12 +493,18 @@ class BfBiReport(models.Model):
             else:
                 record = Page.create(dict(vals, report_id=self.id))
                 renamed = True
-            if renamed:
+            names = restored.get(str(sequence - 1)) if isinstance(restored, dict) else None
+            names = {code: n.strip() for code, n in (names or {}).items()
+                     if code in langs and isinstance(n, str) and 1 <= len(n.strip()) <= 80}
+            if names:
+                record.update_field_translations("name", dict({code: name_ for code in langs}, **names))
+            elif renamed:
                 # Un nom saisi vaut pour toutes les langues (le champ est traduisible). Un nom
                 # inchangé garde ses traductions (celles d'un modèle livré, par exemple).
                 record.update_field_translations("name", {code: name_ for code in langs})
             kept.add(record.id)
             page_ids.append(record.id)
+            page_names.append({code: record.with_context(lang=code).name for code in langs})
         (self.page_ids.filtered(lambda p: p.id not in kept)).unlink()
         self.write({"bf_revision": current + 1, **({"theme": theme} if theme and theme != self.theme else {})})
         if name and name.strip() != self.name:
@@ -472,7 +516,8 @@ class BfBiReport(models.Model):
             "report_id": self.id, "revision": current + 1,
             "content": json.dumps({"name": self.name, "theme": self.theme, "pages": [
                 {"name": p["name"].strip(), "visuals": p["visuals"], "drill": p.get("drill") or None,
-                 "preset": p.get("preset") or None, "customers": p.get("customers") or []} for p in pages]}),
+                 "preset": p.get("preset") or None, "customers": p.get("customers") or [], "names": names_}
+                for p, names_ in zip(pages, page_names)]}),
         })
         old = self.env["bf.bi.report.version"].sudo().search(
             [("report_id", "=", self.id)], order="revision desc", offset=VERSIONS_KEPT)
@@ -925,7 +970,7 @@ class BfBiReportPage(models.Model):
     def _bf_layout_errors(visuals):
         """None si la mise en page est bonne, sinon ce qui ne va pas."""
         if not isinstance(visuals, list) or len(visuals) > MAX_VISUALS:
-            return "not a list of at most %s visuals" % MAX_VISUALS
+            return "too many visuals on the page"
         try:
             if len(json.dumps(visuals, allow_nan=False)) > MAX_LAYOUT_BYTES:
                 return "the page is too large"
@@ -979,6 +1024,11 @@ class BfBiReportPage(models.Model):
                 return "a visual goes past the grid"
         return None
 
+    def _bf_error_text(self, key):
+        """Le message d'une erreur de validation, dans la langue de la personne."""
+        term = VALIDATION_TEXTS.get(key)
+        return self.env._(term) if term else key
+
     @api.constrains("filter_customers", "drill_dimension", "filter_preset")
     def _check_settings(self):
         for page in self:
@@ -989,7 +1039,7 @@ class BfBiReportPage(models.Model):
             error = self._bf_settings_errors({"drill": page.drill_dimension, "preset": page.filter_preset,
                                               "customers": customers})
             if error:
-                raise ValidationError(_("Page “%(page)s”: %(error)s.", page=page.name, error=error))
+                raise ValidationError(_("Page “%(page)s”: %(error)s.", page=page.name, error=self._bf_error_text(error)))
 
     @api.constrains("layout")
     def _check_layout(self):
@@ -1000,7 +1050,7 @@ class BfBiReportPage(models.Model):
                 raise ValidationError(_("Page “%s”: the visuals are not valid JSON.", page.name)) from None
             error = self._bf_layout_errors(visuals)
             if error:
-                raise ValidationError(_("Page “%(page)s”: %(error)s.", page=page.name, error=error))
+                raise ValidationError(_("Page “%(page)s”: %(error)s.", page=page.name, error=self._bf_error_text(error)))
 
 
 class BfBiReportVersion(models.Model):
@@ -1023,7 +1073,8 @@ class BfBiReportVersion(models.Model):
                   "drill": p.get("drill"), "preset": p.get("preset"), "customers": p.get("customers") or []}
                  for p in content.get("pages") or []]
         theme = content.get("theme") if content.get("theme") in THEMES else None
-        result = report.bf_save(pages, report.bf_revision, theme=theme)
+        names = {str(n): p["names"] for n, p in enumerate(content.get("pages") or []) if isinstance(p.get("names"), dict)}
+        result = report.with_context(bf_bi_restore_names=names).bf_save(pages, report.bf_revision, theme=theme)
         if result["status"] != "saved":
             raise UserError(_("Someone saved this report meanwhile. Reload it and try again."))
         return result

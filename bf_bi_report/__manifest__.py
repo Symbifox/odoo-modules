@@ -1,6 +1,6 @@
 {
     "name": "BF BI Reports",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Productivity/Dashboard",
     "summary": "Power BI style reports on named measures: slicers, cross-filtering, drill-through, rich visuals",
     "description": """
