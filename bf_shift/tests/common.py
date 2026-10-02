@@ -68,6 +68,15 @@ class ShiftCase(TransactionCase):
         base = today + timedelta(days=21)
         cls.sunday = base + timedelta(days=(6 - base.weekday()) % 7)
 
+    @classmethod
+    def load_french(cls):
+        """fr_CA active AND this module's catalogue loaded. A database
+        installed without the language (the CI) gets the language from
+        _activate_lang but no translation of the module: the labels stay
+        in English."""
+        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.env["ir.module.module"]._load_module_terms(["bf_shift"], ["fr_CA"])
+
     # ------------------------------------------------------------------
 
     def schedule(self, start=None, days=7, name="Week"):

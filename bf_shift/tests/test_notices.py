@@ -20,7 +20,7 @@ class TestNotices(ShiftCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env["res.lang"]._activate_lang("fr_CA")
+        cls.load_french()
         cls.env.company.partner_id.email = "company@example.com"
 
     def _offer(self, responsible=None):

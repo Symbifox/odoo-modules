@@ -148,7 +148,7 @@ class TestFlows(ShiftCase):
         self.assertEqual(sched.warning_ids.mapped("code"), ["unavailable"])
 
     def test_numbers_in_the_user_language(self):
-        self.env["res.lang"]._activate_lang("fr_CA")
+        self.load_french()
         sched = self.schedule()
         self.shift(sched, self.e1, self.sunday + timedelta(days=1), 7.0, 19.5, brk=0)
         sched.with_context(lang="fr_CA")._run_checks()
@@ -451,7 +451,7 @@ class TestFlows(ShiftCase):
         self.assertEqual(avail.employee_id, self.e1)
 
     def test_reasons_follow_the_reader_language(self):
-        self.env["res.lang"]._activate_lang("fr_CA")
+        self.load_french()
         event = self.env["bf.shift.benefit.event"].with_user(self.u1).create({
             "kind": "overtime_meal", "amount": 10, "overtime_hours": 1.0})
         self.assertIn("no receipt", event.with_context(lang="en_US").verdict_note)
@@ -473,7 +473,7 @@ class TestFlows(ShiftCase):
     def test_notices_in_the_reader_language(self):
         """Each person is told in their own language, not in the language of
         whoever made the change; the log follows the employee concerned."""
-        self.env["res.lang"]._activate_lang("fr_CA")
+        self.load_french()
         self.u_mgr.lang = "fr_CA"
         self.u1.lang = "fr_CA"
         self.u2.lang = "en_US"

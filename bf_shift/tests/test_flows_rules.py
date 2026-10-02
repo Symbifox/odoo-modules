@@ -193,7 +193,7 @@ class TestBenefitEvents(ShiftCase):
         self.assertEqual(meal.amount, 4.0, "once the cost is known, the value is computed")
 
     def test_taxi_federal_exemption_is_the_managers(self):
-        self.env["res.lang"]._activate_lang("fr_CA")
+        self.load_french()
         taxi = self.env["bf.shift.benefit.event"].with_user(self.u1).create({
             "kind": "taxi", "amount": 32.0, "overtime_hours": 3.0, "employer_requested": True,
             "provision": "provided", "no_transit_or_safety": True})
@@ -209,7 +209,7 @@ class TestBenefitEvents(ShiftCase):
         self.assertIn("(Ruling 2027-01)", taxi.with_context(lang="en_US").verdict_note)
 
     def test_subsidized_reasons_in_french(self):
-        self.env["res.lang"]._activate_lang("fr_CA")
+        self.load_french()
         meal = self.env["bf.shift.benefit.event"].with_user(self.u1).create({
             "kind": "subsidized_meal", "meal_cost": 9.0, "meal_price_paid": 2.0})
         self.assertIn("la différence", meal.with_context(lang="fr_CA").verdict_note)
@@ -220,7 +220,7 @@ class TestBenefitEvents(ShiftCase):
     def test_refusals_in_the_callers_language(self):
         # Outside a method, _() finds no self and, over RPC, no request
         # language: the refusal went out in English to a French employee.
-        self.env["res.lang"]._activate_lang("fr_CA")
+        self.load_french()
         Event = self.env["bf.shift.benefit.event"].with_user(self.u1).with_context(lang="fr_CA")
         with self.assertRaisesRegex(AccessError, "Vous ne pouvez pas remplir ces champs vous-même"):
             Event.create({"kind": "taxi", "amount": 20.0, "federal_exemption_reason": "x"})
@@ -285,7 +285,7 @@ class TestOnCallAndMinimumFlows(ShiftCase):
         self.assertIn("MINTOP", period.line_ids.mapped("code"))
 
     def test_labels_in_french(self):
-        self.env["res.lang"]._activate_lang("fr_CA")
+        self.load_french()
         env = self.env(context=dict(self.env.context, lang="fr_CA"))
         labels = dict(env["bf.shift.agreement"]._fields["on_call_pay"]._description_selection(env))
         self.assertEqual(labels["per_period"], "Forfait par période de garde")
@@ -453,7 +453,7 @@ class TestAveragingFlows(ShiftCase):
         self.assertEqual(self._hours(last, self.e1), {"REG": 70.0, "OT": 10.0})
 
     def test_labels_in_french(self):
-        self.env["res.lang"]._activate_lang("fr_CA")
+        self.load_french()
         env = self.env(context=dict(self.env.context, lang="fr_CA"))
         labels = dict(env["bf.shift.agreement"]._fields["averaging_source"]
                       ._description_selection(env))
