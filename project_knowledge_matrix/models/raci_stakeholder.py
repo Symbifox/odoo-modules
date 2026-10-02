@@ -1,4 +1,5 @@
 from odoo import api, fields, models, tools
+from odoo.tools import SQL
 
 
 class RaciStakeholder(models.Model):
@@ -29,7 +30,7 @@ class RaciStakeholder(models.Model):
 
     def init(self):
         tools.drop_view_if_exists(self.env.cr, self._table)
-        self.env.cr.execute("""
+        self.env.cr.execute(SQL("""
             CREATE OR REPLACE VIEW %s AS (
                 -- R: Responsable (assigned_user_id → partner)
                 SELECT
@@ -110,4 +111,4 @@ class RaciStakeholder(models.Model):
                     GROUP BY rp.id, rp.name, pp.id, pp.name
                 ) sub
             )
-        """ % self._table)
+        """, SQL.identifier(self._table)))

@@ -9,51 +9,15 @@
             <field name="email_from">{{ (object.email or user.email_formatted) }}</field>
             <field name="email_to">{{ ctx.get('recipient_email', '') }}</field>
             <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
             <field name="body_html" type="html">
 
 <t t-set="company" t-value="(object.company_id if hasattr(object, 'company_id') and object.company_id else user.company_id)"/>
 <t t-set="marque" t-value="company._pkm_brand() if company else {}"/>
 <t t-set="brand_primary" t-value="marque.get('primary') or '#714B67'"/>
 <t t-set="brand_dark" t-value="marque.get('dark') or '#212529'"/>
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="box-sizing:border-box;border-collapse:collapse;background-color:#F8FAFC">
-    <tbody>
-        <tr>
-            <td align="center" style="padding:24px 16px">
-                <table cellspacing="0" cellpadding="0" border="0" width="600" align="center" role="presentation" style="border-collapse:collapse;width:600px;max-width:100%">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#ffffff;border-radius:12px;overflow:hidden">
-                                    <tbody>
-                                        <!-- Header -->
-                                        <tr>
-                                            <td t-attf-style="background-color:{{ brand_dark }};padding:20px 24px">
-                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td align="left">
-                                                                <a href="https://bluefoxconsultant.com" style="text-decoration:none">
-                                                                    <img src="https://bluefoxconsultant.com/web/image/website/1/logo/Blue%20Fox?unique=803cc14" alt="Blue Fox" style="display:block;border:0;height:44px;width:auto" height="44"/>
-                                                                </a>
-                                                            </td>
-                                                            <td align="right" style="color:#E6EDF3;font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:20px;font-weight:700">
-                                                                Rapport documentaire
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Accent bar -->
-                                        <tr>
-                                            <td t-attf-style="height:4px;line-height:4px;background-color:{{ brand_primary }}">&amp;nbsp;</td>
-                                        </tr>
-
-                                        <!-- Content -->
-                                        <tr>
-                                            <td style="padding:24px">
-                                                <!-- Title & Date -->
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Rapport documentaire</p>
+<!-- Title & Date -->
                                                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-bottom:20px">
                                                     <tbody>
                                                         <tr>
@@ -489,50 +453,6 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Footer -->
-                                        <tr>
-                                            <td style="padding:16px 24px;background-color:#f9fafb;border-top:1px solid #e5e7eb">
-                                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#6B7280">
-                                                                <strong t-attf-style="color:{{ brand_dark }}">Blue Fox Inc</strong><br/>
-                                                                <span style="color:#9CA3AF">Rapport généré automatiquement</span>
-                                                            </td>
-                                                            <td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;font-size:12px;color:#9CA3AF">
-                                                                <a href="mailto:service@example.com" t-attf-style="color:{{ brand_primary }};text-decoration:none">Contact</a>
-                                                                <span style="color:#d1d5db"> · </span>
-                                                                <a href="https://bluefoxconsultant.com" style="color:#9CA3AF;text-decoration:none">bluefoxconsultant.com</a>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-
-                                    </tbody>
-                                </table>
-
-                                <!-- Bottom accent bars -->
-                                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:12px;border-collapse:collapse">
-                                    <tbody>
-                                        <tr>
-                                            <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_primary }};width:50%">&amp;nbsp;</td>
-                                            <td t-attf-style="height:3px;line-height:3px;background-color:{{ brand_dark }};width:50%">&amp;nbsp;</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </td>
-        </tr>
-    </tbody>
-</table>
             </field>
         </record>
 

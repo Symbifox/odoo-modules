@@ -4,97 +4,49 @@ from markupsafe import Markup, escape
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+from odoo.tools import is_html_empty
 
-# Blue Fox branded email wrapper. Colors substituted at render time from
-# company.report_brand_primary / report_brand_dark (bf_lexend).
-_BRANDED_WRAPPER = """\
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" \
-width="100%" style="background-color:#F8FAFC;">\
-<tbody><tr><td align="center" style="padding:24px;">\
-<table cellspacing="0" cellpadding="0" border="0" width="100%" \
-align="center" role="presentation"><tbody><tr><td><br/>\
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" \
-width="600" style="width:600px;max-width:600px;margin:0 auto;\
-background-color:#ffffff;border-radius:12px;border:1px solid #e5e7eb;\
-border-collapse:collapse;"><tbody>\
-<tr><td style="background-color:{dark};padding:16px 24px;\
-border-radius:12px 12px 0 0;">\
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" \
-border="0"><tbody><tr>\
-<td align="left" style="color:#FFFFFF;font-family:'Lexend','Segoe UI',\
-Arial,sans-serif;font-size:16px;font-weight:600;">\
-<a href="{company_website}" style="text-decoration:none;">\
-<img src="{logo_url}" alt="{company_name}" style="height:48px;width:auto;\
-display:block;border:0;"/></a></td>\
-<td align="right" style="color:#E6EDF3;font-family:'Lexend','Segoe UI',\
-Arial,sans-serif;font-size:22px;font-weight:800;letter-spacing:0.2px;">\
-Matrice de connaissances</td>\
-</tr></tbody></table></td></tr>\
-<tr><td style="height:4px;line-height:4px;background-color:{primary};">\
-&nbsp;</td></tr>\
-<tr><td style="padding:24px;font-family:'Lexend','Segoe UI',Arial,\
-sans-serif;">\
-{content}\
-<p style="font-size:13px;line-height:20px;color:#6B7280;\
-margin:16px 0 0 0;">\
-Pour toute question, contactez-nous &agrave; \
-<a href="mailto:{company_email}" \
-style="color:{primary};text-decoration:none;">\
-{company_email}</a> ou appelez le \
-<a href="tel:{company_phone}" style="color:{primary};text-decoration:none;">\
-{company_phone}</a>.</p>\
-</td></tr>\
-<tr><td style="height:1px;line-height:1px;background-color:#E5E7EB;">\
-&nbsp;</td></tr>\
-<tr><td style="padding:16px 24px 24px 24px;background-color:#FFFFFF;\
-border-radius:0 0 12px 12px;">\
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" \
-border="0"><tbody><tr>\
-<td style="font-family:'Lexend','Segoe UI',Arial,sans-serif;\
-font-size:12px;color:#6B7280;">\
-<strong style="color:{dark};">{company_name}</strong><br/>\
-Solutions &eacute;thiques et souveraines pour vos donn&eacute;es.</td>\
-<td align="right" style="font-family:'Lexend','Segoe UI',Arial,sans-serif;\
-font-size:12px;color:#9CA3AF;">\
-<a href="{privacy_url}" \
-style="color:#9CA3AF;text-decoration:underline;">\
-Politique de confidentialit&eacute;</a>\
-<span style="color:#9CA3AF;"> | </span>\
-<a href="{terms_url}" \
-style="color:#9CA3AF;text-decoration:underline;">Conditions</a>\
-</td></tr></tbody></table></td></tr>\
-</tbody></table>\
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" \
-width="600" style="width:600px;max-width:600px;margin:12px auto 0;">\
-<tbody><tr>\
-<td style="height:3px;line-height:3px;background-color:{primary};\
-width:50%;">&nbsp;</td>\
-<td style="height:3px;line-height:3px;background-color:{dark};\
-width:50%;">&nbsp;</td>\
-</tr></tbody></table>\
-</td></tr></tbody></table>\
-</td></tr></tbody></table>"""
+# Mise en page commune des courriels maison : bf_onboarding_base la livre,
+# bluefox_branding la remplace par la sienne quand il est installé. Elle porte
+# le logo, les couleurs, le nom, l'adresse et le pied de la société.
+MISE_EN_PAGE = 'bf_onboarding_base.bf_mail_layout'
+_SURTITRE = Markup(
+    '<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; '
+    'text-transform:uppercase; color:#6B7280;">%s</p>')
 
 
-def render_branded_body(company, inner_html):
-    """Enveloppe ``inner_html`` (déjà sûr) dans la mise en page de la société.
+def render_branded_body(company, inner_html, record=None, titre="Matrice de connaissances"):
+    """Habille ``inner_html`` (déjà sûr) de la mise en page commune des courriels.
 
-    Les valeurs de la société sont échappées : elles entrent telles quelles
-    dans du HTML par ``.format`` et un nom saisi avec des balises en ferait.
+    Ce corps part par ``mail.mail`` sans gabarit : on lui donne le contexte que
+    ``mail.template.send_mail`` donne à une mise en page. Les valeurs de la
+    société y entrent par QWeb, donc échappées. Sans la mise en page (socle trop
+    ancien), le contenu part sans habillage plutôt que de ne pas partir.
+
+    Elle remplace une coquille recopiée ici, qui portait le slogan et les liens
+    de l'éditeur dans les courriels de tous les locataires.
     """
-    website = company.website or 'https://bluefoxconsultant.com'
-    return Markup(_BRANDED_WRAPPER.format(
-        primary=escape(company.report_brand_primary or '#714B67'),
-        dark=escape(company.report_brand_dark or '#212529'),
-        company_name=escape(company.name or 'Blue Fox'),
-        company_email=escape(company.email or 'service@example.com'),
-        company_phone=escape(company.phone or ''),
-        company_website=escape(website),
-        logo_url='/web/image/res.company/%d/logo' % company.id,
-        privacy_url=escape(website.rstrip('/') + '/r/politique-de-confidentialite'),
-        terms_url=escape(website.rstrip('/') + '/r/termes-et-conditions'),
-        content=str(inner_html or ''),
-    ))
+    env = company.env
+    corps = _SURTITRE % titre + Markup(inner_html or '')
+    contexte = {
+        'message': env['mail.message'].sudo().new({
+            'body': corps, 'record_name': record.display_name if record else False}),
+        'subtype': env['mail.message.subtype'].sudo(),
+        'model_description': env['ir.model']._get(record._name).display_name if record else False,
+        'record': record,
+        'record_name': False,
+        'subtitles': False,
+        'company': company,
+        'email_add_signature': False,
+        'signature': '',
+        'website_url': '',
+        'is_html_empty': is_html_empty,
+    }
+    html = env['ir.qweb']._render(
+        MISE_EN_PAGE, contexte, minimal_qcontext=True, raise_if_not_found=False)
+    if not html:
+        return corps
+    return Markup(env['mail.render.mixin']._replace_local_links(html))
 
 
 class MatrixSendWizard(models.TransientModel):
@@ -150,11 +102,8 @@ class MatrixSendWizard(models.TransientModel):
         return records
 
     def _wrap_branded_body(self, inner_html):
-        """Wrap inner message HTML with the company-branded email layout.
-        Colors pulled from bf_lexend company fields; falls back to canonical hex.
-        Logo, website, and policy/terms URLs are tenant-aware so each company
-        in the database sends emails with its own visual identity."""
-        return render_branded_body(self.env.company, inner_html)
+        """Habille le message de la mise en page commune, aux couleurs de la société."""
+        return render_branded_body(self.env.company, inner_html, record=self.matrix_id)
 
     def action_preview_pdf(self):
         """Generate PDF preview and re-open wizard with download link."""

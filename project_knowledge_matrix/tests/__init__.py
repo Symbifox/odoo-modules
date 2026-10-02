@@ -7,3 +7,4 @@ from . import test_module_boundaries
 from . import test_knowledge_matrix
 from . import test_release_wizard
 from . import test_report_escaping
+from . import test_mise_en_page

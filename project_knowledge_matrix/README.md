@@ -165,12 +165,32 @@ Generate professional branded PDF reports directly from any knowledge matrix:
 Send branded PDF reports by email — manually or on a configurable schedule:
 
 - **Send Wizard**: "Envoyer rapport" button on matrix form opens a dialog with pre-filled recipients, subject, body (with progress stats), PDF preview, and send action
-- **Branded Email**: Symbifox email wrapper with logo, "Matrice de connaissances" header, a footer carrying the company name, contact info, and privacy links
+- **Branded Email**: the shared mail layout (`bf_onboarding_base.bf_mail_layout`, replaced by `bluefox_branding`'s when installed) with the company's own logo, colours, address and footer, under a "Matrice de connaissances" eyebrow; the scheduled report is signed with the company name
 - **Configurable Recipients**: Set default recipients per matrix via the "Envoi de rapport" tab
 - **Flexible Scheduling**: Four frequency options — Weekly (pick day of week), Biweekly (same day, even ISO weeks), Monthly (pick day 1-28), Custom interval (N days)
 - **Daily Cron**: Runs at 08:00 EST, checks all active non-template matrices with `auto_send=True` and sends reports to matrices that are due
 - **Audit Trail**: Each send updates `last_report_date`, posts a chatter note with recipient names, and attaches the PDF
 - **PDF Preview**: Preview the PDF directly from the wizard before sending
+
+### Shared Mail Layout (13.3.3)
+
+The four document emails (document sent, reminder, update available, document
+report) used to carry their own shell, with the publisher's logo hard-coded in the
+header. The first three also carried the publisher's tagline and privacy link in
+their footer and a placeholder contact address (`service@example.com`) in
+their content; the document report had the placeholder in its footer. They now
+keep only their content and point their `email_layout_xmlid` to the shared mail
+layout, which dresses them with the sending company's identity. The header title
+becomes a small eyebrow, and the contact sentence quotes the company's email
+address, or disappears when the company has none. The report wizard and the
+scheduled report go through the same layout instead of a wrapper copied in code.
+
+The templates are `noupdate` on some databases: migration 18.0.13.3.3 strips every
+stored language with the same tool as the source, all or nothing per template,
+and leaves a body rebuilt by hand as it is. Where the templates are not
+`noupdate`, the update itself has already rewritten the English source and the
+layout field, so a refused language would be dressed twice; the log says so. No
+stored body met so far triggers this case.
 
 ### Automatic Follow-up Activities
 
@@ -507,6 +527,14 @@ This module follows Odoo 18 best practices:
 - Efficient SQL constraints for uniqueness
 
 ## Changelog
+
+### 18.0.13.3.3
+
+- **Shared mail layout**: the four document emails, the report wizard and the scheduled report use the shared mail layout instead of their own shell, which carried a hard-coded logo, tagline and privacy link from the publisher and a placeholder contact address whatever the tenant. The contact sentence now quotes the company's email address, and the scheduled report is signed with the company name. Migration 18.0.13.3.3 strips every stored language of the `noupdate` templates; the French `.po` no longer carries copies of the old bodies
+
+### 18.0.13.3.2
+
+- **Hardening**: the stakeholder view is created through `odoo.tools.SQL` with a quoted identifier instead of string formatting; same view, same result
 
 ### 18.0.13.3.1
 

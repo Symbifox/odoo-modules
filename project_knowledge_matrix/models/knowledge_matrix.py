@@ -284,6 +284,7 @@ class KnowledgeMatrix(models.Model):
                 'res_id': matrix.id,
             })
 
+            company = matrix.project_id.company_id or self.env.company
             # Build branded body
             progress = "%.0f" % matrix.progress
             inner_html = (
@@ -299,19 +300,15 @@ class KnowledgeMatrix(models.Model):
                 "(%d\u00a0/\u00a0%d &#233;l&#233;ments compl&#233;t&#233;s)"
                 "</p>"
                 '<p style="font-size:16px;line-height:26px;color:#374151;'
-                'margin:0;">Cordialement,<br/>Blue Fox</p>'
-            ) % (escape(label), progress, matrix.completed_count, matrix.item_count)
+                'margin:0;">Cordialement,<br/>%s</p>'
+            ) % (escape(label), progress, matrix.completed_count, matrix.item_count,
+                 escape(company.name or ''))
 
-            # Use the same wrapper as the wizard (full .format() — same Python
-            # placeholder set: {primary}/{dark}/{company_name}/{company_email}/
-            # {company_phone}/{content}).  Bug history: an earlier shortcut used
-            # `.replace('{content}', inner_html)` which left the other braces
-            # unrendered, producing literal `{company_email}` in sent emails.
+            # Même habillage que l'assistant : la mise en page commune.
             from odoo.addons.project_knowledge_matrix.wizard.matrix_send_wizard import (
                 render_branded_body,
             )
-            company = matrix.project_id.company_id or self.env.company
-            body_html = render_branded_body(company, inner_html)
+            body_html = render_branded_body(company, inner_html, record=matrix)
 
             subject = "Rapport de matrice \u2014 %s" % label
             sender = self.env.user.email_formatted
