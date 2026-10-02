@@ -3,3 +3,4 @@ from . import test_seniority_list
 from . import test_posting
 from . import test_remittance
 from . import test_views
+from . import test_without_unit

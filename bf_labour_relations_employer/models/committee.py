@@ -17,28 +17,28 @@ DELTAS = {
 
 
 class Committee(models.Model):
-    """Le comité de relations de travail.
+    """Le comité de relations de travail, ou tout comité à cadence imposée.
 
     La plupart des conventions en imposent la fréquence, et c'est cette
     fréquence qui se manque. Le comité porte donc sa cadence, et la date de sa
     prochaine rencontre se DÉDUIT de la dernière tenue : une cadence sans
     dernière rencontre ne réclame rien, ce qui est le bon comportement au
     premier jour.
+
+    Sans unité, c'est un comité de la société : le comité de santé et de
+    sécurité d'une firme non syndiquée a la même mécanique, une cadence et des
+    rencontres qui se tiennent ou non.
     """
 
     _name = "bf.labour.committee"
     _description = "Comité de relations de travail"
-    _inherit = ["mail.thread"]
-    _order = "unit_id, name"
+    _inherit = ["bf.labour.employer.scope", "mail.thread"]
+    _order = "company_id, unit_id, name"
 
     name = fields.Char(string="Nom", required=True, default="Comité de relations de travail")
     unit_id = fields.Many2one(
-        "bf.labour.unit", string="Unité de négociation", required=True,
-        ondelete="cascade", index=True,
-    )
-    company_id = fields.Many2one(
-        "res.company", string="Société", related="unit_id.company_id",
-        store=True, readonly=True, index=True,
+        help="Laissée vide, c'est un comité de la société, par exemple le "
+             "comité de santé et de sécurité d'une firme non syndiquée.",
     )
     cadence = fields.Selection(CADENCES, string="Cadence", default="quarterly", required=True)
     employer_member_ids = fields.Many2many(
@@ -49,7 +49,8 @@ class Committee(models.Model):
         "res.partner", "bf_labour_committee_union_rel", "committee_id", "partner_id",
         string="Représentation syndicale",
         help="Des partenaires, pas des employés : un conseiller syndical "
-             "externe siège souvent au comité.",
+             "externe siège souvent au comité. Sans unité, la représentation "
+             "des salariés, qu'ils désignent eux-mêmes.",
     )
     meeting_ids = fields.One2many(
         "bf.labour.committee.meeting", "committee_id", string="Rencontres",
@@ -99,6 +100,9 @@ class CommitteeMeeting(models.Model):
     company_id = fields.Many2one(
         "res.company", string="Société", related="committee_id.company_id",
         store=True, readonly=True, index=True,
+    )
+    committee_unit_id = fields.Many2one(
+        "bf.labour.unit", string="Unité du comité", related="committee_id.unit_id",
     )
     date = fields.Date(string="Date", required=True, default=fields.Date.context_today)
     state = fields.Selection(

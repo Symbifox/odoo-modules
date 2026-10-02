@@ -2,7 +2,7 @@
     "name": "Relations de travail : côté employeur",
     "summary": "Obligations et rappels, liste d'ancienneté affichée, affichages de "
                "poste et mouvements, préparation de la remise, comité",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.1.0",
     "category": "Human Resources",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
@@ -19,8 +19,8 @@ Le socle décrit ce que la relation **est**. Ce greffon porte ce que l'employeur
 Ce qu'il ajoute
 ---------------
 
-* **Les obligations** (`bf.labour.obligation`) : ce que la convention impose à
-  l'employeur, avec son échéance et son rappel. Transmettre la liste
+* **Les obligations** (`bf.labour.obligation`) : ce que la convention ou la loi
+  impose à l'employeur, avec son échéance et son rappel. Transmettre la liste
   d'ancienneté, afficher un poste dans les délais, convoquer le comité, remettre
   les cotisations. Un traitement planifié pose l'activité avant l'échéance,
   parce qu'une obligation dont personne n'est averti est une obligation manquée.
@@ -38,6 +38,16 @@ Ce qu'il ajoute
   uniformément.
 * **Le comité de relations de travail** (`bf.labour.committee`) et ses
   rencontres, parce que la plupart des conventions en imposent la fréquence.
+
+Sans syndicat aussi
+-------------------
+
+L'unité de négociation est **facultative** sur les obligations, les comités et
+les affichages : c'est alors la **société** qui porte la portée. Un employeur
+non syndiqué y consigne ses obligations légales (affichage des normes du
+travail, politique de harcèlement, équité salariale), son comité de santé et de
+sécurité et ses affichages internes, sans inventer d'unité. La liste
+d'ancienneté et la remise des cotisations, elles, restent propres à une unité.
 
 Ce qu'il ne fait pas
 --------------------

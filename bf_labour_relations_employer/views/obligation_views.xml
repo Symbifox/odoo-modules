@@ -9,7 +9,7 @@
                   decoration-muted="state != 'pending'">
                 <field name="date_due"/>
                 <field name="name"/>
-                <field name="unit_id"/>
+                <field name="unit_id" optional="show"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="responsible_id"/>
                 <field name="recurrence"/>
@@ -44,10 +44,14 @@
                     </div>
                     <group>
                         <group string="Ce qui l'impose">
-                            <field name="unit_id"/>
-                            <field name="agreement_id"/>
-                            <field name="article_id"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="unit_id" placeholder="Toute la société"
+                                   options="{'no_create': True}"/>
+                            <field name="agreement_id" invisible="not unit_id"/>
+                            <field name="article_id" invisible="not agreement_id"/>
+                            <field name="legal_basis"
+                                   placeholder="Loi sur les normes du travail, art. 81.19"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="unit_id" options="{'no_create': True}"/>
                         </group>
                         <group string="Quand, et qui">
                             <field name="date_due"/>
@@ -78,6 +82,7 @@
             <search string="Obligations">
                 <field name="name"/>
                 <field name="unit_id"/>
+                <field name="legal_basis"/>
                 <field name="responsible_id"/>
                 <filter name="pending" string="À faire" domain="[('state', '=', 'pending')]"/>
                 <filter name="late" string="En retard"
@@ -85,7 +90,15 @@
                                  ('date_due', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter name="mine" string="Les miennes"
                         domain="[('responsible_id', '=', uid)]"/>
+                <separator/>
+                <filter name="company_wide" string="Toute la société (sans unité)"
+                        domain="[('unit_id', '=', False)]"/>
+                <filter name="with_unit" string="Rattachées à une unité"
+                        domain="[('unit_id', '!=', False)]"/>
                 <group expand="0" string="Regrouper par">
+                    <filter name="group_company" string="Société"
+                            context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
                     <filter name="group_unit" string="Unité" context="{'group_by': 'unit_id'}"/>
                     <filter name="group_due" string="Échéance" context="{'group_by': 'date_due'}"/>
                     <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
@@ -104,6 +117,9 @@
             <p>Une obligation dont personne n'est averti est une obligation manquée.
                Un traitement planifié pose l'activité de rappel avant l'échéance,
                sur la personne responsable.</p>
+            <p>Sans unité, l'obligation vise toute la société, syndiquée ou non :
+               affichage des normes du travail, politique de harcèlement, équité
+               salariale.</p>
         </field>
     </record>
 

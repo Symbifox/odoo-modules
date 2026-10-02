@@ -9,7 +9,7 @@
                 <field name="date_posted"/>
                 <field name="name"/>
                 <field name="kind"/>
-                <field name="unit_id"/>
+                <field name="unit_id" optional="show"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="date_close"/>
                 <field name="bid_count"/>
@@ -37,6 +37,12 @@
                     <div class="alert alert-info" role="alert" invisible="not is_closed or state != 'open'">
                         Les mises en candidature sont fermées depuis la date indiquée.
                     </div>
+                    <div class="alert alert-light" role="status" invisible="unit_id or state != 'draft'">
+                        Affichage interne, sans unité : aucune liste d'ancienneté ne
+                        classe les candidatures. Saisissez un rang ou une date si
+                        votre politique en retient un ; écarter la candidature
+                        classée en tête demandera alors un motif écrit.
+                    </div>
                     <div class="oe_title">
                         <label for="name"/>
                         <h1><field name="name" placeholder="Titre du poste affiché"/></h1>
@@ -44,14 +50,16 @@
                     <group>
                         <group>
                             <field name="kind"/>
-                            <field name="unit_id"/>
+                            <field name="unit_id" placeholder="Affichage interne à la société"
+                                   options="{'no_create': True}"/>
                             <field name="job_id"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="unit_id" options="{'no_create': True}"/>
                         </group>
                         <group>
                             <field name="date_posted"/>
                             <field name="date_close"/>
-                            <field name="seniority_list_id"/>
+                            <field name="seniority_list_id" invisible="not unit_id"/>
                             <field name="is_closed" invisible="1"/>
                             <field name="bid_count" invisible="1"/>
                         </group>
@@ -100,6 +108,11 @@
                 <field name="unit_id"/>
                 <filter name="open" string="Ouverts" domain="[('state', '=', 'open')]"/>
                 <separator/>
+                <filter name="company_wide" string="Internes (sans unité)"
+                        domain="[('unit_id', '=', False)]"/>
+                <filter name="with_unit" string="Rattachés à une unité"
+                        domain="[('unit_id', '!=', False)]"/>
+                <separator/>
                 <filter name="postings" string="Affichages"
                         domain="[('kind', '=', 'posting')]"/>
                 <filter name="bumps" string="Supplantations"
@@ -107,6 +120,9 @@
                 <filter name="recalls" string="Rappels"
                         domain="[('kind', '=', 'recall')]"/>
                 <group expand="0" string="Regrouper par">
+                    <filter name="group_company" string="Société"
+                            context="{'group_by': 'company_id'}"
+                            groups="base.group_multi_company"/>
                     <filter name="group_unit" string="Unité" context="{'group_by': 'unit_id'}"/>
                     <filter name="group_kind" string="Nature" context="{'group_by': 'kind'}"/>
                     <filter name="group_state" string="État" context="{'group_by': 'state'}"/>

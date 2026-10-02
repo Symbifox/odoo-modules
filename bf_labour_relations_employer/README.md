@@ -7,11 +7,58 @@ Le socle décrit ce que la relation **est**. Ce greffon porte ce que l'employeur
 
 | Modèle | Ce qu'il porte |
 |---|---|
-| `bf.labour.obligation` | Ce que la convention impose, avec échéance, récurrence et rappel |
+| `bf.labour.obligation` | Ce que la convention ou la loi impose, avec échéance, récurrence et rappel |
 | `bf.labour.seniority.list` (+ `.line`) | La liste d'ancienneté **affichée**, figée |
 | `bf.labour.posting` (+ `.bid`) | Affichages, supplantations, rappels, et les candidatures classées |
 | `bf.labour.committee` (+ `.meeting`) | Le comité de relations de travail et sa cadence |
 | extension de `bf.labour.dues.remittance` | L'assiette saisie et la règle appliquée dessus |
+
+## 🔴 Sans syndicat aussi : la société porte la portée
+
+Une société sans syndicat a quand même des obligations légales (affichage des
+normes du travail, politique de prévention du harcèlement, équité salariale),
+un comité de santé et de sécurité et des affichages internes. Exiger une unité
+la forçait à inventer un syndicat pour s'en servir.
+
+L'unité de négociation est donc **facultative** sur les obligations, les
+comités et les affichages (`bf.labour.employer.scope`). Sans unité, c'est la
+**société** qui porte la portée : `company_id` est obligatoire, vaut la société
+active à la création, et c'est sur elle que portent les règles
+d'enregistrement multi-société. Avec une unité, la société **suit l'unité**, et
+une garde refuse qu'elles divergent.
+
+| | Avec une unité | Sans unité |
+|---|---|---|
+| Obligation | Convention et article citables | Le **fondement** se cite (`legal_basis` : loi, règlement, politique) ; aucune convention |
+| Comité | Représentation syndicale, griefs discutés | Représentation des salariés ; les griefs ne s'y rattachent pas |
+| Affichage | Classé par la liste affichée de l'unité | Interne : rien n'est proposé, le classement se **saisit** |
+| Liste d'ancienneté, remise | Par unité | **N'existent pas** : l'ancienneté et la cotisation sont des notions de convention |
+
+### Le classement d'un affichage sans unité
+
+Sans unité, aucune liste affichée ne fait foi et aucune appartenance ne porte
+une date d'ancienneté. Le module ne la tire pas non plus du contrat : la date
+d'embauche vit dans `hr_contract`, dont la famille ne dépend pas, exprès
+(l'ancienneté d'une convention n'est pas celle du contrat).
+
+Le classement est donc **celui que l'employeur saisit** sur la candidature,
+rang ou date, selon sa politique :
+
+* s'il en saisit un, la candidature classée en tête est calculée comme pour une
+  unité (le rang d'abord, la date ensuite), et l'écarter **demande un motif
+  écrit**, comme pour un octroi hors rang ;
+* s'il n'en saisit aucun, il n'y a pas de tête de liste, et l'octroi ne demande
+  que la candidature retenue.
+
+⚠️ Une candidature sans date ne se compare pas aux autres par date : elle ne
+passe pas devant, et elle ne fait plus tomber le calcul (des dates mêlées de
+vides levaient une `TypeError`).
+
+⚠️ La société n'a pas de `default=` : un défaut sur un champ calculé éditable
+passe avant le calcul, et un objet créé avec l'unité d'une autre société que la
+société active prendrait la mauvaise société. Elle est aussi **recopiée**
+(`copy=True`) : sans ça, la reconduction d'une obligation sans unité tomberait
+dans la société active de la personne qui la marque faite.
 
 ## 🔴 La liste affichée est une PHOTO, pas une vue
 
@@ -86,7 +133,37 @@ voit la sienne, l'administration voit toutes.
 
 ## Essais
 
-40 essais. Éprouvés par mutation : faire lire la liste affichée en direct depuis
+55 essais. Éprouvés par mutation : faire lire la liste affichée en direct depuis
 l'appartenance, supprimer l'exigence du motif d'octroi, et prendre la dernière
 règle de cotisation au lieu de celle de la période font tomber trois essais
 nommément.
+
+Les 15 essais sans unité (`test_without_unit.py`) se jouent dans le rôle d'une
+direction RH d'une firme non syndiquée, avec ses seules sociétés permises. Cinq
+mutations les font tomber nommément : retirer `copy=True` de la société, lui
+remettre un `default=`, retirer la garde unité/société, revenir à l'ancien tri
+par date, et ouvrir la règle de société des obligations.
+
+## Historique
+
+### 18.0.1.1.0
+
+- **L'unité devient facultative sur les obligations, les comités et les
+  affichages.** Un employeur non syndiqué y consigne ses obligations légales,
+  son comité de santé et de sécurité et ses affichages internes sans inventer
+  d'unité. La société porte alors la portée, règles multi-société comprises.
+- Avec une unité, la société suit l'unité ; une garde refuse qu'elles
+  divergent, et une convention ou une liste de référence ne se cite qu'avec
+  son unité.
+- Nouveau champ **Fondement** sur l'obligation (loi, règlement, politique).
+- Affichage sans unité : classement saisi à la main, garde du motif écrit dès
+  qu'un classement existe. Une candidature sans date ne fait plus tomber le
+  calcul de la tête de liste.
+- Vues : filtres « sans unité » et regroupement par société, représentation
+  des salariés sur un comité sans unité, griefs bornés à la société.
+- Migration : la société des enregistrements existants est reprise de leur
+  unité avant que la colonne ne devienne obligatoire ; chacun garde son unité.
+
+### 18.0.1.0.0
+
+- Première version publiée.

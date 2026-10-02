@@ -7,7 +7,7 @@
         <field name="arch" type="xml">
             <list string="Comités" decoration-warning="is_overdue == True">
                 <field name="name"/>
-                <field name="unit_id"/>
+                <field name="unit_id" optional="show"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="cadence"/>
                 <field name="last_meeting_date"/>
@@ -21,10 +21,11 @@
         <field name="name">bf.labour.committee.form</field>
         <field name="model">bf.labour.committee</field>
         <field name="arch" type="xml">
-            <form string="Comité de relations de travail">
+            <form string="Comité">
                 <sheet>
                     <div class="alert alert-warning" role="alert" invisible="not is_overdue">
-                        La cadence prévue par la convention n'est plus tenue.
+                        La cadence prévue n'est plus tenue : la dernière rencontre
+                        tenue remonte à plus d'une période.
                     </div>
                     <div class="oe_title">
                         <label for="name"/>
@@ -32,8 +33,10 @@
                     </div>
                     <group>
                         <group>
-                            <field name="unit_id"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="unit_id" placeholder="Comité de la société"
+                                   options="{'no_create': True}"/>
+                            <field name="company_id" groups="base.group_multi_company"
+                                   readonly="unit_id" options="{'no_create': True}"/>
                             <field name="cadence"/>
                             <field name="active" invisible="1"/>
                         </group>
@@ -47,8 +50,13 @@
                         <group string="Représentation patronale">
                             <field name="employer_member_ids" nolabel="1" widget="many2many_tags"/>
                         </group>
-                        <group string="Représentation syndicale">
-                            <field name="union_member_ids" nolabel="1" widget="many2many_tags"/>
+                        <group>
+                            <separator string="Représentation syndicale" colspan="2"
+                                       invisible="not unit_id"/>
+                            <separator string="Représentation des salariés" colspan="2"
+                                       invisible="unit_id"/>
+                            <field name="union_member_ids" nolabel="1" colspan="2"
+                                   widget="many2many_tags"/>
                         </group>
                     </group>
                     <field name="meeting_ids" context="{'default_committee_id': id}">
@@ -100,10 +108,13 @@
                         </group>
                         <group>
                             <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="committee_unit_id" invisible="1"/>
                         </group>
                     </group>
-                    <group string="Griefs discutés">
-                        <field name="grievance_ids" nolabel="1" widget="many2many_tags"/>
+                    <group string="Griefs discutés"
+                           invisible="not committee_unit_id and not grievance_ids">
+                        <field name="grievance_ids" nolabel="1" widget="many2many_tags"
+                               domain="[('company_id', '=', company_id)]"/>
                     </group>
                     <notebook>
                         <page string="Ordre du jour" name="agenda">

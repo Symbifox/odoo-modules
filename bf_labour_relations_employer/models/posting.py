@@ -18,22 +18,26 @@ class Posting(models.Model):
     d'aujourd'hui. Chaque mise en candidature porte donc son rang RECOPIÉ,
     de la même façon que la liste affichée. Une candidature de mars se juge
     avec les rangs de mars.
+
+    Sans unité, l'affichage est interne à la société : aucune convention ne
+    classe les candidatures, aucune liste affichée ne fait foi. Le rang et la
+    date se saisissent alors à la main, s'il y en a un (voir
+    `_most_senior_bid`).
     """
 
     _name = "bf.labour.posting"
     _description = "Affichage de poste"
-    _inherit = ["mail.thread"]
+    _inherit = ["bf.labour.employer.scope", "mail.thread"]
     _order = "date_posted desc, id desc"
 
     name = fields.Char(string="Poste", required=True, tracking=True)
     unit_id = fields.Many2one(
-        "bf.labour.unit", string="Unité de négociation", required=True,
-        ondelete="cascade", index=True, tracking=True,
+        tracking=True,
+        help="Laissée vide, l'affichage est interne à la société : aucune liste "
+             "d'ancienneté ne s'applique, et le rang des candidatures se saisit "
+             "à la main s'il y en a un.",
     )
-    company_id = fields.Many2one(
-        "res.company", string="Société", related="unit_id.company_id",
-        store=True, readonly=True, index=True,
-    )
+    company_id = fields.Many2one(tracking=True)
     job_id = fields.Many2one("hr.job", string="Poste Odoo", ondelete="set null")
     kind = fields.Selection(
         POSTING_KINDS, string="Nature", required=True, default="posting",
@@ -87,6 +91,24 @@ class Posting(models.Model):
         for posting in self:
             posting.is_closed = bool(posting.date_close and posting.date_close < today)
 
+    @api.constrains("seniority_list_id", "unit_id")
+    def _check_seniority_list_unit(self):
+        # La liste de référence est celle de l'unité de l'affichage. Sans
+        # unité, il n'y en a pas : une liste d'ancienneté appartient toujours
+        # à une unité, et classer un affichage interne avec elle mêlerait une
+        # ancienneté conventionnelle à des gens qu'elle ne couvre pas.
+        for posting in self:
+            if posting.seniority_list_id and posting.seniority_list_id.unit_id != posting.unit_id:
+                raise ValidationError(_(
+                    "La liste d'ancienneté de référence n'est pas celle de "
+                    "l'unité de cet affichage."
+                ))
+
+    @api.onchange("unit_id")
+    def _onchange_unit_id(self):
+        if self.seniority_list_id and self.seniority_list_id.unit_id != self.unit_id:
+            self.seniority_list_id = False
+
     @api.constrains("date_posted", "date_close")
     def _check_dates(self):
         for posting in self:
@@ -119,12 +141,21 @@ class Posting(models.Model):
             senior = posting._most_senior_bid()
             skipped = senior and posting.awarded_bid_id != senior
             if skipped and not (posting.award_reason or "").strip():
+                if posting.unit_id:
+                    raise UserError(_(
+                        "Le poste est octroyé à %(retenue)s alors que "
+                        "%(plus_ancienne)s est plus ancienne. Écrivez le motif : "
+                        "c'est ce texte qui se relit en grief.",
+                        retenue=posting.awarded_bid_id.employee_id.display_name,
+                        plus_ancienne=senior.employee_id.display_name,
+                    ))
                 raise UserError(_(
-                    "Le poste est octroyé à %(retenue)s alors que %(plus_ancienne)s "
-                    "est plus ancienne. Écrivez le motif : c'est ce texte qui se "
-                    "relit en grief.",
+                    "Le poste est octroyé à %(retenue)s alors que %(devant)s est "
+                    "classée devant selon le rang ou la date saisis. Écrivez le "
+                    "motif : c'est ce texte qu'on relira si la décision est "
+                    "contestée.",
                     retenue=posting.awarded_bid_id.employee_id.display_name,
-                    plus_ancienne=senior.employee_id.display_name,
+                    devant=senior.employee_id.display_name,
                 ))
             posting.state = "awarded"
         return True
@@ -134,19 +165,32 @@ class Posting(models.Model):
         return True
 
     def _most_senior_bid(self):
-        """La candidature la plus ancienne, selon les rangs RECOPIÉS.
+        """La candidature classée en tête, selon les rangs RECOPIÉS.
 
-        Les candidatures retirées ou jugées non admissibles ne comptent pas :
-        une personne qui s'est retirée n'a pas été sautée.
+        Le rang d'abord, la date d'ancienneté ensuite. Les candidatures
+        retirées ou jugées non admissibles ne comptent pas : une personne qui
+        s'est retirée n'a pas été sautée.
+
+        Sans unité, rien n'est proposé : ni liste affichée, ni appartenance,
+        et l'ancienneté du contrat n'est pas celle d'une convention (le module
+        ne dépend pas de `hr_contract`, exprès). Le classement est alors celui
+        que l'employeur SAISIT, rang ou date. S'il en saisit un, la même garde
+        s'applique (écarter la tête de liste s'écrit) ; s'il n'en saisit
+        aucun, il n'y a pas de tête de liste, et l'octroi ne demande que la
+        candidature retenue.
+
+        ⚠️ Une candidature sans date ne se compare pas aux autres par date :
+        elle ne peut ni passer devant, ni faire tomber le tri.
         """
         self.ensure_one()
         eligible = self.bid_ids.filtered(lambda b: b.state == "submitted")
-        if not eligible:
-            return self.env["bf.labour.posting.bid"]
-        with_rank = eligible.filtered(lambda b: b.seniority_rank)
+        with_rank = eligible.filtered("seniority_rank")
         if with_rank:
-            return with_rank.sorted("seniority_rank")[0]
-        return eligible.sorted("seniority_date")[0]
+            return with_rank.sorted(lambda b: (b.seniority_rank, b.id))[:1]
+        with_date = eligible.filtered("seniority_date")
+        if with_date:
+            return with_date.sorted(lambda b: (b.seniority_date, b.id))[:1]
+        return self.env["bf.labour.posting.bid"]
 
 
 class PostingBid(models.Model):
@@ -174,10 +218,16 @@ class PostingBid(models.Model):
     # avec les rangs de mars.
     seniority_rank = fields.Integer(
         string="Rang au moment de l'affichage",
-        help="Repris de la liste affichée de référence. Zéro si la personne n'y "
-             "figurait pas.",
+        help="Repris de la liste affichée de référence quand l'affichage vise "
+             "une unité. Zéro si la personne n'y figurait pas. Sans unité, il "
+             "se saisit à la main, ou reste à zéro.",
     )
-    seniority_date = fields.Date(string="Date d'ancienneté retenue")
+    seniority_date = fields.Date(
+        string="Date d'ancienneté retenue",
+        help="Reprise de la liste ou de l'appartenance quand l'affichage vise "
+             "une unité. Sans unité, celle que l'employeur retient, saisie à la "
+             "main.",
+    )
     state = fields.Selection(
         [
             ("submitted", "Déposée"),
@@ -206,6 +256,9 @@ class PostingBid(models.Model):
         """
         posting = self.posting_id
         if not (posting and self.employee_id):
+            return
+        if not posting.unit_id:
+            # Rien à proposer : sans unité, le classement se saisit.
             return
         line = posting.seniority_list_id.line_ids.filtered(
             lambda l: l.employee_id == self.employee_id

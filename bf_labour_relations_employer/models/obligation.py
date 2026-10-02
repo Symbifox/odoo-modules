@@ -24,29 +24,31 @@ DELTAS = {
 
 
 class Obligation(models.Model):
-    """Ce que la convention impose à l'employeur, et quand.
+    """Ce que la convention ou la loi impose à l'employeur, et quand.
 
     🔴 Une obligation dont personne n'est averti est une obligation manquée. Le
     modèle ne sert donc pas à consigner après coup : il pose une activité
     `mail.activity` un nombre de jours avant l'échéance, sur la personne
     responsable. Sans ce rappel, il ne serait qu'une liste qu'on relit le jour
-    où le syndicat la ressort.
+    où le syndicat, ou l'inspection, la ressort.
+
+    L'unité est facultative (voir `bf.labour.employer.scope`) : l'affichage des
+    normes du travail ou la politique de harcèlement visent toute la société,
+    syndiquée ou non.
     """
 
     _name = "bf.labour.obligation"
     _description = "Obligation de l'employeur"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["bf.labour.employer.scope", "mail.thread", "mail.activity.mixin"]
     _order = "date_due, id"
 
     name = fields.Char(string="Obligation", required=True, tracking=True)
     unit_id = fields.Many2one(
-        "bf.labour.unit", string="Unité de négociation", required=True,
-        ondelete="cascade", index=True, tracking=True,
+        tracking=True,
+        help="Laissée vide, l'obligation vise toute la société : affichage des "
+             "normes du travail, politique de harcèlement, équité salariale.",
     )
-    company_id = fields.Many2one(
-        "res.company", string="Société", related="unit_id.company_id",
-        store=True, readonly=True, index=True,
-    )
+    company_id = fields.Many2one(tracking=True)
     agreement_id = fields.Many2one(
         "bf.labour.agreement", string="Convention",
         domain="[('unit_id', '=', unit_id)]", ondelete="set null",
@@ -54,6 +56,12 @@ class Obligation(models.Model):
     article_id = fields.Many2one(
         "bf.labour.agreement.article", string="Article",
         domain="[('agreement_id', '=', agreement_id)]", ondelete="set null",
+    )
+    legal_basis = fields.Char(
+        string="Fondement",
+        help="La loi, le règlement ou la politique qui l'impose quand ce n'est "
+             "pas une convention, par exemple « Loi sur les normes du travail, "
+             "art. 81.19 ».",
     )
     description = fields.Text(string="Ce qu'il faut faire")
     responsible_id = fields.Many2one(
@@ -103,6 +111,25 @@ class Obligation(models.Model):
             delta = (obligation.date_due - today).days
             obligation.days_to_due = delta
             obligation.is_late = delta < 0
+
+    @api.constrains("agreement_id", "unit_id")
+    def _check_agreement_unit(self):
+        # Sans unité, il n'y a pas de convention à citer : une convention
+        # appartient toujours à une unité. Le domaine de la vue ne suffit pas,
+        # retirer l'unité après coup laisserait la convention en place.
+        for obligation in self:
+            if obligation.agreement_id and obligation.agreement_id.unit_id != obligation.unit_id:
+                raise ValidationError(_(
+                    "La convention citée n'est pas celle de l'unité de cette "
+                    "obligation. Sans unité, citez plutôt le fondement (loi, "
+                    "règlement, politique)."
+                ))
+
+    @api.onchange("unit_id")
+    def _onchange_unit_id(self):
+        if self.agreement_id and self.agreement_id.unit_id != self.unit_id:
+            self.agreement_id = False
+            self.article_id = False
 
     @api.constrains("reminder_days")
     def _check_reminder_days(self):

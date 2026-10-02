@@ -1,3 +1,4 @@
+from . import scope
 from . import obligation
 from . import seniority_list
 from . import posting
