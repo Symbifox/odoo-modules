@@ -46,3 +46,20 @@ class TestMailOneLanguage(TransactionCase):
         self.assertIn("rprp@ecole.example.invalid", html)
         self.assertIn("%s/privacy/consent/%s/" % (self.consent.get_base_url(), self.consent.id)
                       if "website" not in self.env else "/privacy/consent/%s/" % self.consent.id, html)
+
+    def test_english_fallbacks_are_english(self):
+        """Without an expiry date or a plain-language summary, the English branch
+        printed a French fallback."""
+        self.consent.purpose_id.plain_language_summary = False
+        self.assertFalse(self.consent.expires_at)
+        for xmlid, attendu, francais in (
+                ("privacy_consent.mail_template_consent_request",
+                 "No description available.", "Aucune description disponible."),
+                ("privacy_consent.mail_template_consent_expiring", "Soon", "Bientôt"),
+                ("privacy_consent.mail_template_consent_renewal_confirmation",
+                 "No expiry", "Aucune expiration"),
+                ("privacy_consent.mail_template_consent_granted_confirmation",
+                 "No expiry", "Aucune expiration")):
+            subject, text, html = self._render(xmlid, "en_US")
+            self.assertIn(attendu, text, xmlid)
+            self.assertNotIn(francais, text, xmlid)

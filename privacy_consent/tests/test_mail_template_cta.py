@@ -25,8 +25,11 @@ ajouté un GET) ; chez les locataires ``public_consent_renew`` est en
 ``methods=["POST"]``, donc un GET y répondrait 405 — leurs boutons visent la page
 publique du consentement, qui porte déjà le formulaire.
 
-Le lien ``/my/privacy/preferences`` du pied de page n'est PAS visé : gérer ses
-préférences suppose légitimement un compte, et ce n'est pas l'appel à l'action.
+Le lien ``/my/privacy/preferences`` (centre de préférences, ``auth="user"``)
+menait lui aussi à la connexion, dans les six gabarits. Décision du
+2026-10-02 : il disparaît là où le bouton principal ouvre déjà la page
+à jeton, et le bouton des deux confirmations mène à la page à jeton du
+consentement, qui porte le retrait que leur texte promet « à tout moment ».
 """
 
 import re
@@ -42,9 +45,13 @@ GABARITS_ACTIONNABLES = (
     "mail_template_consent_reminder_1",
     "mail_template_consent_reminder_2",
     "mail_template_consent_expiring",
+    # Le retrait que ces deux-là promettent « à tout moment » est un geste aussi.
+    "mail_template_consent_renewal_confirmation",
+    "mail_template_consent_granted_confirmation",
 )
 
 ROUTE_AUTHENTIFIEE = "/my/privacy/consent/"
+ROUTE_PREFERENCES = "/my/privacy/preferences"
 ROUTE_PUBLIQUE = re.compile(r"(?<!/my)/privacy/consent/")
 
 
@@ -125,3 +132,21 @@ class TestMailTemplateCta(TransactionCase):
                     "access_token", corps,
                     f"{code} [{langue}] construit une URL publique sans jeton.",
                 )
+
+    def test_no_template_leads_to_the_preferences_login(self):
+        """RÉGRESSION — le centre de préférences est ``auth="user"`` :
+        une personne sans session y trouvait l'écran de connexion. Aucun corps
+        stocké, dans aucune langue, ne doit encore y mener."""
+        controles = 0
+        for code in GABARITS_ACTIONNABLES:
+            gabarit = self._gabarit(code)
+            if not gabarit:
+                continue
+            for langue, corps in self._corps_par_langue(gabarit).items():
+                controles += 1
+                self.assertNotIn(
+                    ROUTE_PREFERENCES, corps,
+                    f"{code} [{langue}] mène encore au centre de préférences, "
+                    "donc à la connexion.",
+                )
+        self.assertGreaterEqual(controles, len(GABARITS_ACTIONNABLES))

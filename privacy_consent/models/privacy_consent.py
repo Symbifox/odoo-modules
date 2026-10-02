@@ -637,20 +637,6 @@ class PrivacyConsent(models.Model):
         company = self[:1].company_id or self.env.company
         return (param or company.email or "").strip()
 
-    def _privacy_preferences_link_for(self, mail, contact):
-        path = "/my/privacy/preferences"
-        user = contact.sudo().user_ids[:1]
-        if not mail.body_html or path not in mail.body_html or not user or user.login_date:
-            return
-        contact.sudo().signup_prepare(signup_type="reset")
-        url = contact.sudo()._get_signup_url_for_action(url=path)[contact.id]
-        base = self.get_base_url().rstrip("/")
-        prefix = self.with_context(privacy_contact_lang=contact.lang)._privacy_url_lang()
-        if prefix and url.startswith(base + "/"):
-            url = base + prefix + url[len(base):]
-        mail.body_html = re.sub(r'href="[^"]*%s"' % re.escape(path), 'href="%s"' % url.replace("&", "&amp;"),
-                                mail.body_html)
-
     def _get_email_recipient(self):
         """Return the partner to email for this consent.
 
@@ -811,12 +797,6 @@ class PrivacyConsent(models.Model):
                 mail.body_html = mail.body_html.replace(
                     f"<span>{tag}</span>", val
                 ).replace(tag, val)
-
-        # 🔴 The preferences page needs an account. A contact whose portal account was just
-        # created by _ensure_portal_access (a student from 14, a guardian) never chose a
-        # password and landed on a login screen (QA with real emails, 2026-09-27): the link
-        # lets them choose one, then opens the page, in their language.
-        self._privacy_preferences_link_for(mail, contact)
 
         mail.send()
 

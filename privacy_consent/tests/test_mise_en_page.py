@@ -10,6 +10,7 @@ source, tout ou rien par gabarit.
 
 import html
 import importlib.util
+import json
 import re
 from pathlib import Path
 
@@ -35,9 +36,10 @@ LOGO_ANCIEN = re.compile(r"/brand/logo/\d+/brand")
 RACINE = Path(__file__).resolve().parent.parent
 
 
-def _migration():
-    chemin = RACINE / "migrations" / "18.0.5.3.0" / "post-migrate.py"
-    spec = importlib.util.spec_from_file_location("privacy_consent_migration_5_3_0", chemin)
+def _migration(version="18.0.5.3.0"):
+    chemin = RACINE / "migrations" / version / "post-migrate.py"
+    spec = importlib.util.spec_from_file_location(
+        "privacy_consent_migration_" + version.replace(".", "_"), chemin)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -89,23 +91,33 @@ class TestMiseEnPage(TransactionCase):
                     for titre in {titre_en, titre_fr}:
                         self.assertIn(">%s</p>" % titre, html.unescape(corps), "surtitre")
 
-    def test_le_lien_des_preferences_reste_une_fois_par_langue(self):
-        """Le pied le portait ; la mise en page commune ne l'a pas."""
+    def test_aucun_rendu_ne_mene_aux_preferences(self):
+        """Le centre de préférences demande une session : pour la personne qu'on
+        écrit, c'était l'écran de connexion. Chaque courriel mène à la
+        page à jeton de son consentement."""
+        page = "/privacy/consent/%s/%s" % (self.consent.id, self.consent.access_token)
         for xmlid in GABARITS:
             for lang in ("en_US", "fr_CA"):
                 with self.subTest(gabarit=xmlid, lang=lang):
-                    self.assertEqual(self._rendu(xmlid, lang).count("/my/privacy/preferences"), 1)
+                    rendu = self._rendu(xmlid, lang)
+                    self.assertNotIn("/my/privacy/preferences", rendu)
+                    self.assertEqual(rendu.count(page), 1, "un bouton, la page à jeton")
 
     def test_la_migration_rend_la_source(self):
-        """L'outil de la migration, appliqué à l'ancien corps, rend la source neuve."""
+        """Les outils des migrations 5.3.0 puis 5.4.0, appliqués à l'ancien corps,
+        rendent la source neuve."""
         migration = _migration()
         avant = (RACINE / "tests" / "data" / "consent_request_avant.html").read_text(encoding="utf-8")
         nouveau, n = migration.retirer_coquilles(avant)
         self.assertEqual(n, 2, "une coquille par langue")
+        nouveau, manques = _migration("18.0.5.4.0").retoucher("mail_template_consent_request", nouveau)
+        self.assertEqual(manques, [])
         source = self._valeurs(self._gabarit("mail_template_consent_request"))["en_US"]
         self.assertEqual(_norme(nouveau), _norme(source))
         self.assertEqual(migration.retirer_coquilles(source), (None, 0),
                          "rejouée, la migration retoucherait une valeur déjà découpée")
+        self.assertEqual(_migration("18.0.5.4.0").retoucher("mail_template_consent_request", source),
+                         (source, []), "rejouée, la migration 5.4.0 retoucherait la source")
 
     def test_la_migration_decoupe_chaque_langue_et_pose_la_mise_en_page(self):
         migration = _migration()
@@ -148,3 +160,47 @@ class TestMiseEnPage(TransactionCase):
             self.assertNotIn(trace, courriel.body_html)
         self.assertFalse(LOGO_ANCIEN.search(courriel.body_html))
         self.assertNotIn("utm_medium=email", courriel.body_html)
+
+    def test_la_migration_5_4_rend_la_source_de_chaque_gabarit(self):
+        """Les six corps 5.3.0 tels que stockés chez BF : la migration 5.4.0 en fait la
+        source neuve, dans chaque langue stockée, et rejouée ne fait plus rien.
+        Les gabarits sont en noupdate : c'est elle seule qui les retouche."""
+        migration = _migration("18.0.5.4.0")
+        avants = json.loads((RACINE / "tests" / "data" / "gabarits_18_0_5_3_0.json")
+                            .read_text(encoding="utf-8"))
+        self.assertEqual(set(avants), set(GABARITS))
+        for xmlid, avant in avants.items():
+            with self.subTest(gabarit=xmlid):
+                template = self._gabarit(xmlid)
+                source = self._valeurs(template)["en_US"]
+                self.assertIn("/my/privacy/preferences", avant)
+                self.env.cr.execute(
+                    "UPDATE mail_template SET body_html = jsonb_build_object('en_US', %s, 'fr_CA', %s)"
+                    " WHERE id = %s", [avant, avant, template.id])
+                template.invalidate_recordset()
+                migration.migrate(self.env.cr, "18.0.5.3.0")
+                valeurs = self._valeurs(template)
+                self.assertEqual(set(valeurs), {"en_US", "fr_CA"})
+                for corps in valeurs.values():
+                    self.assertEqual(_norme(corps), _norme(source))
+                migration.migrate(self.env.cr, "18.0.5.3.0")
+                self.assertEqual(self._valeurs(template), valeurs, "rejouée")
+
+    def test_la_migration_5_4_repointe_un_lien_hors_des_reperes(self):
+        """Un corps refait à la main qui mène encore aux préférences mène à la page
+        à jeton ; un corps refait à la main sans ce lien reste tel quel."""
+        migration = _migration("18.0.5.4.0")
+        template = self._gabarit("mail_template_consent_request")
+        maison = ('<div><p>Notre demande.</p><a href="{{ object.get_base_url() }}'
+                  '/my/privacy/preferences">Mes choix</a></div>')
+        sans_lien = '<div><p>Notre demande, sans lien.</p></div>'
+        self.env.cr.execute(
+            "UPDATE mail_template SET body_html = jsonb_build_object('en_US', %s, 'fr_CA', %s)"
+            " WHERE id = %s", [maison, sans_lien, template.id])
+        template.invalidate_recordset()
+        migration.migrate(self.env.cr, "18.0.5.3.0")
+        valeurs = self._valeurs(template)
+        self.assertEqual(valeurs["fr_CA"], sans_lien)
+        self.assertNotIn("/my/privacy/preferences", valeurs["en_US"])
+        self.assertIn("/privacy/consent/{{ object.id }}/{{ object.access_token }}", valeurs["en_US"])
+        self.assertIn("Mes choix", valeurs["en_US"])

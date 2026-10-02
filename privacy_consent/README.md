@@ -256,7 +256,8 @@ The manual covers:
 
 ### Client portal (preference centre)
 
-- A **"My privacy preferences"** page at `/my/privacy/preferences`
+- A **"My privacy preferences"** page at `/my/privacy/preferences`, for people with a portal account and a session
+- Consent emails do not lead there: they open the consent's public token page, which needs no account
 - Self-service management of communication preferences
 - Consent history
 - Responses to pending consent requests
@@ -665,6 +666,7 @@ open a ticket in the repository.
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 18.0.5.4.0 | 2026-10-02 | Emails: no consent email leads to the preference centre any more; it needs a session, so a person without an account landed on the login screen. The request, the reminders and the expiry notice drop that link (their main button already opens the consent's token page); the button of the two confirmations (granted, renewed) opens the consent's token page, where the consent can be withdrawn. The request's 4-hour "choose a password" link is removed. English fallbacks ("No expiry", "Soon", "No description available."); the `noupdate` templates are migrated language by language |
 | 18.0.5.3.0 | 2026-10-01 | Emails: the six consent templates drop their own shell, one per language, and use the shared mail layout (`email_layout_xmlid`); the header title becomes an eyebrow and the link to the person's preferences stays under the content. The `noupdate` templates are migrated language by language, all or nothing per template; a body rebuilt by hand is left as it is, without the shared layout |
 | 18.0.5.2.0 | 2026-09-28 | **Security.** A public token link is valid for 90 days (`access_token_expires_at`); once expired it no longer opens the consent and offers to email a new one to the address on file, which voids the old token. Migration: tokens already issued get 90 days counted from the upgrade |
 | 18.0.5.1.3 | 2026-09-28 | **Security.** The Fernet key is read from `privacy_consent_fernet_key` in odoo.conf (then `BF_PRIVACY_CONSENT_FERNET_KEY`), the same key as the former system parameter, taken over as is; without it, the module falls back to the database parameter with a warning in the log |

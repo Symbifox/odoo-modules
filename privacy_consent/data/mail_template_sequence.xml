@@ -54,7 +54,6 @@
                                     </td>
                                 </tr>
                             </table>
-<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Preferences</a></p>
         
 </t>
 <t t-else="">
@@ -96,7 +95,6 @@
                                     </td>
                                 </tr>
                             </table>
-<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a></p>
         
 </t>
 </field>
@@ -157,7 +155,6 @@
                                     </td>
                                 </tr>
                             </table>
-<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Preferences</a></p>
         
 </t>
 <t t-else="">
@@ -199,7 +196,6 @@
                                     </td>
                                 </tr>
                             </table>
-<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a></p>
         
 </t>
 </field>
@@ -240,22 +236,22 @@
                                     <td style="padding:16px 20px;">
                                         <strong style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:16px; color:#198754;"><t t-out="object.purpose_id.name"/></strong>
                                         <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#0f5132; margin:10px 0 0 0; line-height:20px;">
-                                            <strong>Valid until:</strong> <t t-out="object.expires_at.strftime('%d/%m/%Y') if object.expires_at else 'Aucune expiration'"/>
+                                            <strong>Valid until:</strong> <t t-out="object.expires_at.strftime('%d/%m/%Y') if object.expires_at else 'No expiry'"/>
                                         </p>
                                     </td>
                                 </tr>
                             </table>
 
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
-                                Thank you for your trust. You can manage your preferences at any time.
+                                Thank you for your trust. You can view or withdraw this consent at any time using the link below.
                             </p>
 
                             <!-- CTA Button -->
                             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
                                 <tr>
                                     <td align="left">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
-                                            View my preferences
+                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/privacy/consent/{{ object.id }}/{{ object.access_token }}" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            Manage my consent
                                         </a>
                                     </td>
                                 </tr>
@@ -287,15 +283,15 @@
                             </table>
 
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
-                                Merci de votre confiance. Vous pouvez gérer vos préférences à tout moment.
+                                Merci de votre confiance. Vous pouvez consulter ou retirer ce consentement à tout moment à partir du lien ci-dessous.
                             </p>
 
                             <!-- CTA Button -->
                             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
                                 <tr>
                                     <td align="left">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
-                                            Voir mes préférences
+                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/privacy/consent/{{ object.id }}/{{ object.access_token }}" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            Gérer mon consentement
                                         </a>
                                     </td>
                                 </tr>
@@ -349,7 +345,7 @@
                                             <tr>
                                                 <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#0f5132; padding-top:4px;">Valid until:</td>
                                                 <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#0f5132; padding-top:4px;">
-                                                    <strong><t t-out="object.expires_at.strftime('%d/%m/%Y') if object.expires_at else 'Aucune expiration'"/></strong>
+                                                    <strong><t t-out="object.expires_at.strftime('%d/%m/%Y') if object.expires_at else 'No expiry'"/></strong>
                                                 </td>
                                             </tr>
                                         </table>
@@ -358,15 +354,15 @@
                             </table>
 
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
-                                Under the <t t-out="object.get_framework().law_short_label"/>, you may withdraw your consent at any time from our preferences centre.
+                                Under the <t t-out="object.get_framework().law_short_label"/>, you may withdraw your consent at any time using the link below.
                             </p>
 
                             <!-- CTA Button -->
                             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
                                 <tr>
                                     <td align="left">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
-                                            Manage my preferences
+                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/privacy/consent/{{ object.id }}/{{ object.access_token }}" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            Manage my consent
                                         </a>
                                     </td>
                                 </tr>
@@ -410,15 +406,15 @@
 
                             <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
                                 Conformément à la <t t-out="object.get_framework().law_short_label"/>, vous pouvez retirer votre consentement à tout moment
-                                via notre centre de préférences.
+                                à partir du lien ci-dessous.
                             </p>
 
                             <!-- CTA Button -->
                             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
                                 <tr>
                                     <td align="left">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
-                                            Gérer mes préférences
+                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/privacy/consent/{{ object.id }}/{{ object.access_token }}" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            Gérer mon consentement
                                         </a>
                                     </td>
                                 </tr>

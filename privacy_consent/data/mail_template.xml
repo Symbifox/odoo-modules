@@ -44,7 +44,7 @@
                                             <tr>
                                                 <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#6B7280; padding-top:8px;">Description</td>
                                                 <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#111827; padding-top:8px;">
-                                                    <t t-out="object.purpose_id.plain_language_summary or 'Aucune description disponible.'"/>
+                                                    <t t-out="object.purpose_id.plain_language_summary or 'No description available.'"/>
                                                 </td>
                                             </tr>
                                         </table>
@@ -87,7 +87,7 @@
                                                     • You may refuse without any consequence on your existing services.<br/>
                                                     • You may withdraw your consent at any time by writing to
                                                     <a t-attf-href="mailto:{{ object._privacy_officer_email() }}" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;"><t t-out="object._privacy_officer_email()"/></a>
-                                                    or through your preferences portal.<br/>
+                                                    or from the link in this email.<br/>
                                                     <t t-foreach="framework.right_ids" t-as="r">• <t t-out="r.label_en"/><br/></t>
                                                     • <t t-out="framework.officer_title_en"/> :
                                                     <a t-attf-href="mailto:{{ object._privacy_officer_email() }}" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;"><t t-out="object._privacy_officer_email()"/></a><br/>
@@ -110,7 +110,6 @@
                                     </td>
                                 </tr>
                             </table>
-<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Preferences</a></p>
         
 </t>
 <t t-else="">
@@ -184,7 +183,7 @@
                                                     • Vous pouvez refuser sans conséquence sur vos services existants.<br/>
                                                     • Vous pouvez retirer votre consentement à tout moment en nous écrivant à
                                                     <a t-attf-href="mailto:{{ object._privacy_officer_email() }}" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;"><t t-out="object._privacy_officer_email()"/></a>
-                                                    ou via votre portail de préférences.<br/>
+                                                    ou à partir du lien de ce courriel.<br/>
                                                     <t t-foreach="framework.right_ids" t-as="r">• <t t-out="r.label_fr"/><br/></t>
                                                     • <t t-out="framework.officer_title_fr"/> :
                                                     <a t-attf-href="mailto:{{ object._privacy_officer_email() }}" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;"><t t-out="object._privacy_officer_email()"/></a><br/>
@@ -207,7 +206,6 @@
                                     </td>
                                 </tr>
                             </table>
-<p style="margin:24px 0 0 0; font-size:12px; color:#6B7280;"><a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="color:{{ brand_primary }}; text-decoration:underline;">Préférences</a></p>
         
 </t>
 </field>
@@ -256,7 +254,7 @@
                                             <tr>
                                                 <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#856404; padding-top:8px;">Expires on</td>
                                                 <td style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#856404; padding-top:8px;">
-                                                    <strong><t t-out="object.expires_at.strftime('%d/%m/%Y') if object.expires_at else 'Bientôt'"/></strong>
+                                                    <strong><t t-out="object.expires_at.strftime('%d/%m/%Y') if object.expires_at else 'Soon'"/></strong>
                                                 </td>
                                             </tr>
                                         </table>
@@ -270,12 +268,6 @@
                                     <td align="left">
                                         <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/privacy/consent/{{ object.id }}/{{ object.access_token }}" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
                                             Renew my consent
-                                        </a>
-                                    </td>
-                                    <td width="12"> </td>
-                                    <td align="left">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
-                                            Manage my preferences
                                         </a>
                                     </td>
                                 </tr>
@@ -323,12 +315,6 @@
                                     <td align="left">
                                         <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/privacy/consent/{{ object.id }}/{{ object.access_token }}" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
                                             Renouveler mon consentement
-                                        </a>
-                                    </td>
-                                    <td width="12"> </td>
-                                    <td align="left">
-                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/my/privacy/preferences" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
-                                            Gérer mes préférences
                                         </a>
                                     </td>
                                 </tr>
