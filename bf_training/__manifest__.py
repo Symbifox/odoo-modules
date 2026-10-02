@@ -1,6 +1,6 @@
 {
     "name": "Registre de formation",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.3.0",
     "category": "Human Resources",
     "summary": "Qui doit quelle formation, pour quand, prouvé par quelle pièce, "
                "valide jusqu'à quand. Le registre nominatif que le lecteur eLearning "
@@ -56,6 +56,7 @@ Trois principes de conception, tirés de ce que le natif fait mal
         "views/training_record_views.xml",
         "views/training_assignment_views.xml",
         "views/hr_employee_views.xml",
+        "views/training_my_views.xml",
         "views/training_menus.xml",
     ],
     "installable": True,

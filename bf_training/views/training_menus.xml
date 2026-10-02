@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Depuis 18.0.1.3.0, l'application s'ouvre à toute personne interne : chacun
+         y trouve « Mes formations », et le registre reste à ses agents.
+
+         ⚠️ Le « - » retire le groupe des agents que la 18.0.1.2.x posait sur la
+         racine : à la montée, un `menuitem` AJOUTE les groupes qu'il nomme et ne
+         retire que ceux qu'il nomme précédés d'un « - ».
+
+         Le registre passe avant « Mes formations » : une application s'ouvre sur
+         le premier menu visible, donc l'agent arrive au registre, comme avant, et
+         l'employé, qui ne voit pas le registre, arrive à ses obligations. -->
     <menuitem id="menu_training_root" name="Formation" sequence="76"
               web_icon="bf_training,static/description/icon.png"
-              groups="bf_training.group_training_officer"/>
+              groups="base.group_user,-bf_training.group_training_officer"/>
 
-    <menuitem id="menu_training_registre" name="Registre" parent="menu_training_root" sequence="10"/>
+    <menuitem id="menu_training_registre" name="Registre" parent="menu_training_root" sequence="10"
+              groups="bf_training.group_training_officer"/>
     <menuitem id="menu_training_record" name="Réalisations" parent="menu_training_registre"
               action="action_training_record" sequence="10"/>
     <menuitem id="menu_training_obligation" name="Obligations" parent="menu_training_registre"
@@ -20,6 +31,14 @@
               action="action_training_requirement" sequence="10"/>
     <menuitem id="menu_training_plan" name="Plans de formation" parent="menu_training_regles"
               action="action_training_plan" sequence="20"/>
+
+    <menuitem id="menu_training_mine" name="Mes formations" parent="menu_training_root" sequence="50"/>
+    <menuitem id="menu_training_my_obligation" name="Mes obligations" parent="menu_training_mine"
+              action="action_training_my_obligation" sequence="10"/>
+    <menuitem id="menu_training_my_record" name="Mes réalisations" parent="menu_training_mine"
+              action="action_training_my_record" sequence="20"/>
+    <menuitem id="menu_training_my_assignment" name="Mes assignations" parent="menu_training_mine"
+              action="action_training_my_assignment" sequence="30"/>
 
     <menuitem id="menu_training_config" name="Configuration" parent="menu_training_root" sequence="90"
               groups="bf_training.group_training_manager"/>

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- « Mes formations » : ce que l'employé voit de son propre dossier.
+
+         Des vues à part, en lecture seule, plutôt que celles du registre :
+         celles-ci portent les gestes de l'agent (dispenser, confirmer, relancer)
+         et le coût salarial, que l'employé n'a ni à voir ni à tenter.
+
+         Le domaine de chaque action désigne la personne connectée. Il ne protège
+         rien : ce sont les règles « les miennes » (training_security.xml) qui
+         bornent un employé à son dossier. Le domaine sert à l'agent du registre,
+         que sa règle laisse tout voir, pour qu'il ouvre ici SES formations et
+         non le registre entier.
+
+         ⚠️ Priorité 99 : sans elle, ces vues pourraient devenir les vues par
+         défaut du modèle, et le registre s'ouvrirait sans ses boutons. -->
+
+    <!-- ============================ Obligations ============================ -->
+    <record id="view_training_obligation_list_mine" model="ir.ui.view">
+        <field name="name">bf.training.obligation.list.mine</field>
+        <field name="model">bf.training.obligation</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Mes obligations" create="0" edit="0" delete="0"
+                  decoration-danger="state == 'overdue'"
+                  decoration-warning="state == 'expiring'"
+                  decoration-muted="state == 'exempt'">
+                <field name="requirement_id"/>
+                <field name="activity_id" optional="show"/>
+                <field name="due_date"/>
+                <field name="valid_until" optional="show"/>
+                <field name="hours_done" optional="hide"/>
+                <field name="hours_required" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'covered'"
+                       decoration-warning="state == 'expiring'"
+                       decoration-danger="state == 'overdue'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_obligation_form_mine" model="ir.ui.view">
+        <field name="name">bf.training.obligation.form.mine</field>
+        <field name="model">bf.training.obligation</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Obligation" create="0" edit="0" delete="0" duplicate="0">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,covered,expiring,overdue"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="requirement_id"/>
+                        <h1><field name="requirement_id" options="{'no_open': True}"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="activity_id" options="{'no_open': True}"/>
+                            <field name="due_date"/>
+                            <field name="valid_until"/>
+                        </group>
+                        <group>
+                            <field name="hours_required" invisible="not hours_required"/>
+                            <field name="hours_done" invisible="not hours_required"/>
+                            <field name="covered_by_id"
+                                   context="{'form_view_ref': 'bf_training.view_training_record_form_mine'}"/>
+                            <field name="exempt_reason" invisible="state != 'exempt'"/>
+                        </group>
+                    </group>
+                    <separator string="Ce qu'on vous a demandé"/>
+                    <field name="assignment_ids" readonly="1"
+                           context="{'form_view_ref': 'bf_training.view_training_assignment_form_mine'}">
+                        <list>
+                            <field name="activity_id"/>
+                            <field name="due_date"/>
+                            <field name="state" widget="badge" decoration-success="state == 'done'"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_obligation_search_mine" model="ir.ui.view">
+        <field name="name">bf.training.obligation.search.mine</field>
+        <field name="model">bf.training.obligation</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="requirement_id"/>
+                <field name="activity_id"/>
+                <filter name="a_suivre" string="À suivre"
+                        domain="[('state', 'in', ('pending', 'expiring', 'overdue', 'undated'))]"/>
+                <separator/>
+                <filter name="overdue" string="En retard" domain="[('state', '=', 'overdue')]"/>
+                <filter name="expiring" string="Expirent" domain="[('state', '=', 'expiring')]"/>
+                <filter name="covered" string="À jour" domain="[('state', '=', 'covered')]"/>
+                <filter name="exempt" string="Dispensées" domain="[('state', '=', 'exempt')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                    <filter name="group_requirement" string="Exigence" context="{'group_by': 'requirement_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_training_my_obligation" model="ir.actions.act_window">
+        <field name="name">Mes obligations</field>
+        <field name="res_model">bf.training.obligation</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_a_suivre': 1}</field>
+        <field name="search_view_id" ref="view_training_obligation_search_mine"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_training_obligation_list_mine')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_training_obligation_form_mine')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Rien à suivre pour l'instant</p>
+            <p>Les formations que vous devez suivre s'affichent ici, avec leur
+               échéance. Retirez le filtre « À suivre » pour voir aussi celles qui
+               sont à jour.</p>
+        </field>
+    </record>
+
+    <!-- ============================ Réalisations =========================== -->
+    <record id="view_training_record_list_mine" model="ir.ui.view">
+        <field name="name">bf.training.record.list.mine</field>
+        <field name="model">bf.training.record</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Mes réalisations" create="0" edit="0" delete="0"
+                  decoration-danger="expiry_state == 'expired'"
+                  decoration-warning="expiry_state == 'expiring'">
+                <field name="date_done"/>
+                <field name="activity_id"/>
+                <field name="category_id" optional="hide"/>
+                <field name="hours" sum="Heures"/>
+                <field name="date_expiry" optional="show"/>
+                <field name="expiry_state" widget="badge"
+                       decoration-success="expiry_state == 'valid'"
+                       decoration-warning="expiry_state == 'expiring'"
+                       decoration-danger="expiry_state == 'expired'"/>
+                <field name="missing_info" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_record_form_mine" model="ir.ui.view">
+        <field name="name">bf.training.record.form.mine</field>
+        <field name="model">bf.training.record</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Réalisation" create="0" edit="0" delete="0" duplicate="0">
+                <sheet>
+                    <widget name="web_ribbon" title="Périmée" bg_color="text-bg-danger"
+                            invisible="expiry_state != 'expired'"/>
+                    <div class="oe_title">
+                        <label for="activity_id"/>
+                        <h1><field name="activity_id" options="{'no_open': True}"/></h1>
+                    </div>
+                    <group>
+                        <group string="Quand, combien">
+                            <field name="date_done"/>
+                            <field name="hours"/>
+                            <field name="mode"/>
+                            <field name="category_id" options="{'no_open': True}"/>
+                        </group>
+                        <group string="La preuve">
+                            <field name="provider_partner_id" options="{'no_open': True}"/>
+                            <field name="certificate_number"/>
+                            <field name="date_issued"/>
+                            <field name="date_expiry"/>
+                            <field name="expiry_state"/>
+                        </group>
+                    </group>
+                    <field name="is_complete" invisible="1"/>
+                    <div class="alert alert-warning" role="alert" invisible="is_complete">
+                        Il manque <field name="missing_info" nolabel="1" class="oe_inline"/>.
+                        L'agent du registre complète la ligne quand il a l'information.
+                    </div>
+                    <separator string="Pièces justificatives"/>
+                    <field name="attachment_ids" widget="many2many_binary"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_record_search_mine" model="ir.ui.view">
+        <field name="name">bf.training.record.search.mine</field>
+        <field name="model">bf.training.record</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="activity_id"/>
+                <field name="certificate_number"/>
+                <filter name="expirent" string="Expirent bientôt" domain="[('expiry_state', '=', 'expiring')]"/>
+                <filter name="perimees" string="Périmées" domain="[('expiry_state', '=', 'expired')]"/>
+                <separator/>
+                <filter name="cette_annee" string="Cette année civile"
+                        domain="[('date_done', '&gt;=', (context_today()).strftime('%Y-01-01')),
+                                 ('date_done', '&lt;=', (context_today()).strftime('%Y-12-31'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_activity" string="Activité" context="{'group_by': 'activity_id'}"/>
+                    <filter name="group_category" string="Catégorie" context="{'group_by': 'category_id'}"/>
+                    <filter name="group_date" string="Année" context="{'group_by': 'date_done:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_training_my_record" model="ir.actions.act_window">
+        <field name="name">Mes réalisations</field>
+        <field name="res_model">bf.training.record</field>
+        <field name="view_mode">list,form</field>
+        <!-- Une ligne annulée est une saisie retirée, pas une formation. -->
+        <field name="domain">[('employee_id.user_id', '=', uid), ('state', '!=', 'cancelled')]</field>
+        <field name="search_view_id" ref="view_training_record_search_mine"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_training_record_list_mine')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_training_record_form_mine')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune formation à votre dossier</p>
+            <p>Chaque formation suivie s'inscrit ici, avec sa date, ses heures et sa
+               pièce justificative. C'est l'agent du registre qui l'inscrit.</p>
+        </field>
+    </record>
+
+    <!-- ============================ Assignations =========================== -->
+    <record id="view_training_assignment_list_mine" model="ir.ui.view">
+        <field name="name">bf.training.assignment.list.mine</field>
+        <field name="model">bf.training.assignment</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <list string="Mes assignations" create="0" edit="0" delete="0"
+                  decoration-danger="state in ('pending', 'in_progress') and due_date &lt; current_date">
+                <field name="activity_id"/>
+                <field name="due_date"/>
+                <field name="completion" widget="progressbar"/>
+                <field name="assigned_by_id" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_training_assignment_form_mine" model="ir.ui.view">
+        <field name="name">bf.training.assignment.form.mine</field>
+        <field name="model">bf.training.assignment</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Assignation" create="0" edit="0" delete="0" duplicate="0">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="activity_id"/>
+                        <h1><field name="activity_id" options="{'no_open': True}"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="due_date"/>
+                            <field name="completion" widget="progressbar"/>
+                            <field name="requirement_id" options="{'no_open': True}"/>
+                            <field name="obligation_id"
+                                   context="{'form_view_ref': 'bf_training.view_training_obligation_form_mine'}"/>
+                        </group>
+                        <group>
+                            <field name="assigned_by_id" options="{'no_open': True}"/>
+                            <field name="assigned_date"/>
+                            <field name="record_id"
+                                   context="{'form_view_ref': 'bf_training.view_training_record_form_mine'}"/>
+                        </group>
+                    </group>
+                    <field name="note"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_training_assignment_search_mine" model="ir.ui.view">
+        <field name="name">bf.training.assignment.search.mine</field>
+        <field name="model">bf.training.assignment</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="activity_id"/>
+                <filter name="a_faire" string="À faire" domain="[('state', 'in', ('pending', 'in_progress'))]"/>
+                <filter name="faites" string="Faites" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_state" string="État" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_training_my_assignment" model="ir.actions.act_window">
+        <field name="name">Mes assignations</field>
+        <field name="res_model">bf.training.assignment</field>
+        <field name="view_mode">list,form</field>
+        <!-- Même clé que la règle « Assignations : les miennes » : le contact.
+             Une assignation peut viser quelqu'un qui n'a pas de fiche d'employé. -->
+        <field name="domain">[('partner_id.user_ids', '=', uid)]</field>
+        <field name="context">{'search_default_a_faire': 1}</field>
+        <field name="search_view_id" ref="view_training_assignment_search_mine"/>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_training_assignment_list_mine')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_training_assignment_form_mine')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune formation ne vous est demandée</p>
+            <p>Quand on vous demande de suivre une formation, la demande et son
+               échéance s'affichent ici.</p>
+        </field>
+    </record>
+</odoo>

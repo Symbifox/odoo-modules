@@ -6,14 +6,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 05:19+0000\n"
-"PO-Revision-Date: 2026-09-14 05:19+0000\n"
+"POT-Creation-Date: 2026-10-02 07:09+0000\n"
+"PO-Revision-Date: 2026-10-02 07:09+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form_mine
+msgid ""
+".\n"
+"                        L'agent du registre complète la ligne quand il a l'information."
+msgstr ""
 
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
@@ -103,6 +110,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_record__activity_id
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search_mine
 msgid "Activité"
 msgstr ""
 
@@ -150,6 +158,11 @@ msgid "Annulée"
 msgstr ""
 
 #. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search_mine
+msgid "Année"
+msgstr ""
+
+#. module: bf_training
 #: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__mode__self_study
 #: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__mode__self_study
 msgid "Apprentissage individuel"
@@ -179,8 +192,8 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_assignment.py:0
-#: code:addons/bf_training/models/training_assignment.py:0
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_form_mine
 msgid "Assignation"
 msgstr ""
 
@@ -232,6 +245,16 @@ msgid "Attestation délivrée par l'employeur"
 msgstr ""
 
 #. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_my_assignment
+msgid "Aucune formation ne vous est demandée"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_my_record
+msgid "Aucune formation à votre dossier"
+msgstr ""
+
+#. module: bf_training
 #: model:ir.model.fields.selection,name:bf_training.selection__bf_training_activity__provider_type__other
 msgid "Autre"
 msgstr ""
@@ -269,6 +292,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_record__category_id
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_search
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search_mine
 msgid "Catégorie"
 msgstr ""
 
@@ -300,6 +324,11 @@ msgid "Ce code de catégorie est déjà pris."
 msgstr ""
 
 #. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_form_mine
+msgid "Ce qu'on vous a demandé"
+msgstr ""
+
+#. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
 msgid "Ce que c'est"
 msgstr ""
@@ -322,6 +351,7 @@ msgstr ""
 
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search_mine
 msgid "Cette année civile"
 msgstr ""
 
@@ -333,6 +363,13 @@ msgstr ""
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_form
 msgid "Ceux qui ont suivi l'ancienne version devront la refaire."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_my_record
+msgid ""
+"Chaque formation suivie s'inscrit ici, avec sa date, ses heures et sa\n"
+"               pièce justificative. C'est l'agent du registre qui l'inscrit."
 msgstr ""
 
 #. module: bf_training
@@ -576,6 +613,11 @@ msgid "Dispensée"
 msgstr ""
 
 #. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search_mine
+msgid "Dispensées"
+msgstr ""
+
+#. module: bf_training
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__display_name
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__display_name
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_category__display_name
@@ -640,6 +682,7 @@ msgstr ""
 #. module: bf_training
 #: model:ir.model.fields.selection,name:bf_training.selection__bf_training_obligation__state__overdue
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search_mine
 msgid "En retard"
 msgstr ""
 
@@ -675,6 +718,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__requirement_id
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__name
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search_mine
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
 msgid "Exigence"
 msgstr ""
@@ -709,11 +753,13 @@ msgstr ""
 
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search_mine
 msgid "Expirent"
 msgstr ""
 
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search_mine
 msgid "Expirent bientôt"
 msgstr ""
 
@@ -731,6 +777,11 @@ msgstr ""
 #. module: bf_training
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_record__date_done
 msgid "Faite le"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_search_mine
+msgid "Faites"
 msgstr ""
 
 #. module: bf_training
@@ -831,6 +882,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_list
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_plan_form
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_list
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_list_mine
 msgid "Heures"
 msgstr ""
 
@@ -881,6 +933,7 @@ msgstr ""
 
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form_mine
 msgid "Il manque"
 msgstr ""
 
@@ -964,6 +1017,7 @@ msgstr ""
 
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form_mine
 msgid "La preuve"
 msgstr ""
 
@@ -1022,7 +1076,6 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_plan.py:0
-#: code:addons/bf_training/models/training_plan.py:0
 msgid ""
 "Le plan doit d'abord être consulté. La consultation est une condition de "
 "l'admissibilité, pas une formalité d'après-coup."
@@ -1048,7 +1101,6 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_record.py:0
-#: code:addons/bf_training/models/training_record.py:0
 msgid ""
 "Le plan « %(plan)s » ne couvre pas le %(jour)s. Une durée établie dans un "
 "plan doit l'être dans le plan de la bonne période."
@@ -1072,6 +1124,14 @@ msgstr ""
 #. module: bf_training
 #: model:ir.model.fields,help:bf_training.field_bf_training_record__payroll_charge_rate
 msgid "Les cotisations de l'employeur sur ce salaire."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_my_obligation
+msgid ""
+"Les formations que vous devez suivre s'affichent ici, avec leur\n"
+"               échéance. Retirez le filtre « À suivre » pour voir aussi celles qui\n"
+"               sont à jour."
 msgstr ""
 
 #. module: bf_training
@@ -1106,6 +1166,32 @@ msgstr ""
 #. module: bf_training
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__committee_member_ids
 msgid "Membres du comité"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_my_assignment
+#: model:ir.ui.menu,name:bf_training.menu_training_my_assignment
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_list_mine
+msgid "Mes assignations"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.ui.menu,name:bf_training.menu_training_mine
+msgid "Mes formations"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_my_obligation
+#: model:ir.ui.menu,name:bf_training.menu_training_my_obligation
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_list_mine
+msgid "Mes obligations"
+msgstr ""
+
+#. module: bf_training
+#: model:ir.actions.act_window,name:bf_training.action_training_my_record
+#: model:ir.ui.menu,name:bf_training.menu_training_my_record
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_list_mine
+msgid "Mes réalisations"
 msgstr ""
 
 #. module: bf_training
@@ -1227,6 +1313,7 @@ msgstr ""
 #. module: bf_training
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__obligation_id
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_form_mine
 msgid "Obligation"
 msgstr ""
 
@@ -1312,6 +1399,7 @@ msgstr ""
 #. module: bf_training
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_record__attachment_ids
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form_mine
 msgid "Pièces justificatives"
 msgstr ""
 
@@ -1376,11 +1464,13 @@ msgstr ""
 #. module: bf_training
 #: model:ir.model.fields.selection,name:bf_training.selection__bf_training_record__expiry_state__expired
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form_mine
 msgid "Périmée"
 msgstr ""
 
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search_mine
 msgid "Périmées"
 msgstr ""
 
@@ -1394,6 +1484,18 @@ msgstr ""
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_form
 msgid "Quand"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_my_assignment
+msgid ""
+"Quand on vous demande de suivre une formation, la demande et son\n"
+"               échéance s'affichent ici."
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form_mine
+msgid "Quand, combien"
 msgstr ""
 
 #. module: bf_training
@@ -1433,7 +1535,6 @@ msgstr ""
 
 #. module: bf_training
 #. odoo-python
-#: code:addons/bf_training/models/training_assignment.py:0
 #: code:addons/bf_training/models/training_assignment.py:0
 msgid ""
 "Rappel : l'activité « %(activite)s » est attendue pour le %(echeance)s."
@@ -1477,8 +1578,11 @@ msgstr ""
 
 #. module: bf_training
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_activity_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_search_mine
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search_mine
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_search_mine
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_search
 msgid "Regrouper par"
 msgstr ""
@@ -1527,6 +1631,11 @@ msgid "Rien à montrer pour l'instant"
 msgstr ""
 
 #. module: bf_training
+#: model_terms:ir.actions.act_window,help:bf_training.action_training_my_obligation
+msgid "Rien à suivre pour l'instant"
+msgstr ""
+
+#. module: bf_training
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_activity__reopen_on_change
 msgid "Rouvrir au changement de version"
 msgstr ""
@@ -1544,6 +1653,7 @@ msgstr ""
 #. module: bf_training
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_assignment__record_id
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_record_form_mine
 msgid "Réalisation"
 msgstr ""
 
@@ -1672,7 +1782,6 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_requirement.py:0
-#: code:addons/bf_training/models/training_requirement.py:0
 msgid "Un déclencheur à date fixe doit porter cette date."
 msgstr ""
 
@@ -1703,7 +1812,6 @@ msgstr ""
 
 #. module: bf_training
 #. odoo-python
-#: code:addons/bf_training/models/training_plan.py:0
 #: code:addons/bf_training/models/training_plan.py:0
 msgid ""
 "Un plan ne passe pas à « consulté » sans la date de la consultation : c'est "
@@ -1757,7 +1865,6 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_requirement.py:0
-#: code:addons/bf_training/models/training_requirement.py:0
 msgid ""
 "Une exigence en heures doit dire combien d'heures. Zéro heure n'est pas une "
 "exigence."
@@ -1765,7 +1872,6 @@ msgstr ""
 
 #. module: bf_training
 #. odoo-python
-#: code:addons/bf_training/models/training_requirement.py:0
 #: code:addons/bf_training/models/training_requirement.py:0
 msgid ""
 "Une exigence portant sur une activité précise doit nommer cette activité."
@@ -1792,20 +1898,17 @@ msgstr ""
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_requirement.py:0
-#: code:addons/bf_training/models/training_requirement.py:0
 msgid "Une portée par département doit nommer le département."
 msgstr ""
 
 #. module: bf_training
 #. odoo-python
 #: code:addons/bf_training/models/training_requirement.py:0
-#: code:addons/bf_training/models/training_requirement.py:0
 msgid "Une portée par personnes doit nommer au moins une personne."
 msgstr ""
 
 #. module: bf_training
 #. odoo-python
-#: code:addons/bf_training/models/training_requirement.py:0
 #: code:addons/bf_training/models/training_requirement.py:0
 msgid "Une portée par poste doit nommer le poste."
 msgstr ""
@@ -1901,6 +2004,7 @@ msgstr ""
 
 #. module: bf_training
 #: model:ir.model.fields.selection,name:bf_training.selection__bf_training_obligation__state__pending
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_search_mine
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
 msgid "À faire"
 msgstr ""
@@ -1909,6 +2013,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_requirement__covered_count
 #: model:ir.model.fields.selection,name:bf_training.selection__bf_training_obligation__state__covered
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search_mine
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_requirement_list
 msgid "À jour"
 msgstr ""
@@ -1928,6 +2033,11 @@ msgstr ""
 #. module: bf_training
 #: model:ir.model.fields.selection,name:bf_training.selection__bf_training_requirement__trigger__hire
 msgid "À partir de l'embauche"
+msgstr ""
+
+#. module: bf_training
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search_mine
+msgid "À suivre"
 msgstr ""
 
 #. module: bf_training
@@ -1974,6 +2084,8 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_obligation__state
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_plan__state
 #: model:ir.model.fields,field_description:bf_training.field_bf_training_record__state
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_assignment_search_mine
 #: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search
+#: model_terms:ir.ui.view,arch_db:bf_training.view_training_obligation_search_mine
 msgid "État"
 msgstr ""

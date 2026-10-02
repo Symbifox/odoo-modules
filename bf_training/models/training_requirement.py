@@ -175,7 +175,9 @@ class BfTrainingRequirement(models.Model):
         """
         self.ensure_one()
         if self.trigger == "hire":
-            depart = employe.training_reference_date
+            # sudo : le champ est réservé aux RH, et le registre date l'échéance
+            # même quand son responsable ne l'est pas.
+            depart = employe.sudo().training_reference_date
             if not depart:
                 return False
         elif self.trigger == "fixed":

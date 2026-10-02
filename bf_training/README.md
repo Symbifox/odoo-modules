@@ -89,6 +89,24 @@ n'existe qu'avec les contrats et reste réservé aux gestionnaires RH. Le regist
 pose donc `training_reference_date` sur l'employé, reprise du premier contrat
 quand il existe, sinon de la création de la fiche, et **modifiable à la main**.
 
+Depuis 18.0.1.2.1, elle est **réservée aux RH** (`hr.group_hr_user`), comme les
+autres champs privés de la fiche : sans cette réserve, toute lecture d'un employé
+par une personne sans droit RH, même de son seul nom, levait une erreur d'accès.
+Le registre la lit pour dater les échéances, que son responsable soit RH ou non.
+
+Depuis 18.0.1.3.0, les cinq autres champs que le registre pose sur la fiche
+(réalisations, obligations, et les compteurs du bouton et de la page
+« Formation ») sont réservés de la même façon. Odoo les offrait à toute personne
+interne, et les lire tombait sur la même erreur. La page et le
+bouton de la fiche servent donc les RH qui sont aussi agents du registre ; un
+agent sans droit RH n'ouvre pas la fiche privée d'un employé, Odoo le renvoie au
+profil public, et il tient le registre par l'application « Formation ».
+
+⚠️ Ne pas ajouter le groupe des agents à ces six champs : un agent sans droit RH
+lit les employés par le profil public, qui ne les a pas. Ils lui seraient offerts
+puis refusés, et la date de référence, stockée, ferait tomber jusqu'à la lecture
+du seul nom d'un employé.
+
 ## Tâches planifiées
 
 | Tâche | Ce qu'elle fait | Par défaut |
@@ -131,6 +149,29 @@ Deux groupes : **Agent** tient le registre (saisit, assigne, relance), et
 **ses** réalisations, ses obligations et ses assignations, et rien de celles des
 autres.
 
+## Mes formations
+
+Depuis 18.0.1.3.0, l'application **Formation** s'ouvre à toute personne interne.
+Chacun y trouve le menu **Mes formations** :
+
+| Menu | Ce qu'il montre | Par défaut |
+|---|---|---|
+| Mes obligations | ce que je dois suivre, pour quand, et où j'en suis | filtre « À suivre » (à faire, expire bientôt, en retard, sans échéance) |
+| Mes réalisations | les formations inscrites à mon dossier, avec la pièce justificative | les lignes annulées n'y figurent pas |
+| Mes assignations | ce qu'on m'a demandé de suivre | filtre « À faire » |
+
+Ces écrans sont en **lecture seule** et n'ont aucun bouton d'agent ; ils ne
+montrent pas le coût salarial d'une réalisation. Le registre, les règles et la
+configuration restent aux agents et aux responsables.
+
+Le domaine de chaque menu désigne la personne connectée, mais ce sont les règles
+« les miennes » qui bornent un employé à son dossier : il ne voit rien d'autrui,
+même sans filtre ni domaine. Le domaine sert à l'agent, que sa règle laisse tout
+voir, pour qu'il trouve ici **ses** formations et non le registre entier.
+
+L'application s'ouvre sur le premier menu visible : l'agent arrive au registre,
+comme avant, et l'employé arrive à ses obligations.
+
 ## Ce que le module ne fait pas
 
 Il ne joue aucun contenu, il ne produit pas encore d'attestation en PDF, il ne
@@ -140,10 +181,17 @@ modules séparés qui s'appuient sur celui-ci.
 
 ## Essais
 
-25 essais, et six mutations sur six attrapées : l'expiration qui ne périme plus,
-la dispense défaite par le recalcul, l'exclusion de catégorie ignorée, l'échéance
-ancrée au mauvais jour, la ligne incomplète comptée pour complète, et la fenêtre
-annuelle ouverte sur toute l'histoire.
+60 essais. Au registre lui-même, six mutations sur six attrapées : l'expiration
+qui ne périme plus, la dispense défaite par le recalcul, l'exclusion de catégorie
+ignorée, l'échéance ancrée au mauvais jour, la ligne incomplète comptée pour
+complète, et la fenêtre annuelle ouverte sur toute l'histoire.
+
+Les essais de lecture sans droit RH et de « Mes formations » se jouent **dans le
+rôle** de l'employé ordinaire, cache vidé avant chaque lecture. Trois mutations
+attrapées : la date de référence sans réserve (le calendrier des congés tombe),
+le registre visible des employés, et « Mes assignations » sans domaine (l'agent y
+verrait tout le registre). L'essai du calendrier des congés est sauté si Congés
+n'est pas installé.
 
 ```
 odoo -d <base> -u bf_training --test-enable --test-tags bf_training
@@ -151,5 +199,5 @@ odoo -d <base> -u bf_training --test-enable --test-tags bf_training
 
 ## Licence
 
-Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-09-13.
+Business Source License 1.1, avec passage en LGPL-3.0-or-later le 2030-10-02.
 Voir `LICENSE`.
