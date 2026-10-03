@@ -9,6 +9,7 @@
                 <field name="name"/>
                 <field name="field_count" string="Pavés"/>
                 <field name="signer_count" string="Signataires"/>
+                <field name="document_filename" string="Document"/>
             </list>
         </field>
     </record>
@@ -23,8 +24,20 @@
                         <h1><field name="name" placeholder="Nom du modèle"/></h1>
                     </div>
                     <group>
-                        <field name="signer_count"/>
-                        <field name="company_id" groups="base.group_multi_company"/>
+                        <group>
+                            <field name="signer_count"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="document_file" filename="document_filename"/>
+                            <field name="document_filename" invisible="1"/>
+                            <div colspan="2" class="text-muted small">
+                                Facultatif. Un formulaire qu'on renvoie tel quel garde son
+                                PDF ici : le choisir sur une demande apporte le document et
+                                les pavés. Un bloc de signature posé sur des documents
+                                différents n'en a pas.
+                            </div>
+                        </group>
                     </group>
                     <field name="line_ids">
                         <list editable="bottom">

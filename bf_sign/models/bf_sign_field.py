@@ -276,13 +276,30 @@ class BfSignField(models.Model):
         reqs = self.env["bf.sign.request"].browse(
             [v.get("request_id") for v in vals_list if v.get("request_id")])
         self._assert_draft(reqs.exists())
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        records._settle_template_wait()
+        return records
 
     def write(self, vals):
         if set(vals) - _PROCESS_FIELDS:
             self._assert_draft(self.request_id)
+            self._settle_template_wait()
         return super().write(vals)
 
     def unlink(self):
         self._assert_draft(self.request_id)
+        self._settle_template_wait()
         return super().unlink()
+
+    def _settle_template_wait(self):
+        """Une retouche des pavés à la main règle l'attente du modèle de départ.
+
+        Sans quoi l'arrivée du dernier signataire poserait le modèle par-dessus
+        (``replace=True``) et effacerait, sans le demander, des pavés placés ou
+        ajustés à la main. Les pavés que pose le modèle lui-même ne comptent pas.
+        """
+        if self.env.context.get("bf_sign_template_apply"):
+            return
+        waiting = self.request_id.filtered("field_template_pending")
+        if waiting:
+            waiting.field_template_pending = False

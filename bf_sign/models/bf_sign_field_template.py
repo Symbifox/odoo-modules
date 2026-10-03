@@ -22,6 +22,12 @@ class BfSignFieldTemplate(models.Model):
     field_count = fields.Integer(compute="_compute_counts", string="Pavés")
     signer_count = fields.Integer(compute="_compute_counts", string="Signataires")
     active = fields.Boolean(default=True)
+    # Le formulaire que la disposition habille. Sans lui, choisir
+    # un modèle ne ramène que des pavés et il faut repartir d'un PDF local.
+    # Facultatif : un « bloc de signature » posé sur des contrats différents
+    # n'a pas de document à lui, et ne doit surtout pas en imposer un.
+    document_file = fields.Binary(string="Document (PDF)", attachment=True)
+    document_filename = fields.Char(string="Nom du fichier")
 
     @api.depends("line_ids", "line_ids.signer_index")
     def _compute_counts(self):

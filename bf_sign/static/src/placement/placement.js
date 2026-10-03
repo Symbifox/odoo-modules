@@ -383,7 +383,15 @@ export class BfSignPlacement extends Component {
         if (name === null) {
             return;
         }
-        await this.orm.call("bf.sign.request", "save_field_template", [this.resId, name || ""]);
+        // Un formulaire renvoyé tel quel garde son PDF ; un bloc de
+        // signature posé sur des contrats différents ne doit pas l'emporter.
+        const withDocument = window.confirm(
+            "Garder aussi ce document dans le modèle ?\n" +
+            "Il sera visible par toutes les personnes qui préparent des signatures dans la société.\n\n" +
+            "OK : formulaire qu'on renvoie tel quel (le choisir apportera le PDF).\n" +
+            "Annuler : seulement les pavés, pour les poser sur d'autres documents.");
+        await this.orm.call("bf.sign.request", "save_field_template", [this.resId, name || ""],
+            { with_document: withDocument });
         this.state.templates = await this.orm.searchRead(
             "bf.sign.field.template", [], ["name"]);
         this.notification.add("Modèle enregistré.", { type: "success" });

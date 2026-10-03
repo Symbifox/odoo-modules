@@ -533,6 +533,252 @@ class TestBfSign(BaseNeuve, TransactionCase):
         dst.apply_field_template(tid)  # replace=True clears then recreates
         self.assertEqual(len(dst.field_ids), 1)
 
+    # ── modèle de départ : liste déroulante au-dessus du téléversement ──
+    def _template_with_document(self, signers=2, pages=2):
+        """A template saved WITH its form, the way a recurring form is kept."""
+        src = self._request_of(pages, signers=signers)
+        for i, signer in enumerate(src.signer_ids.sorted("sequence")):
+            self._field(src, signer, y=0.3 + 0.2 * i)
+        tid = src.save_field_template("Formulaire récurrent", with_document=True)
+        return self.env["bf.sign.field.template"].browse(tid), src
+
+    def _signer(self, req, i):
+        return self.Signer.create({
+            "request_id": req.id, "name": "Rang %d" % i,
+            "email": "rang%d@example.com" % i, "sequence": 10 + i})
+
+    def test_template_keeps_document_only_when_asked(self):
+        """Off by default: a signature block reused on other contracts must not
+        carry the last client's contract into the next request."""
+        src = self._request_of(3)
+        self._field(src, src.signer_ids[0])
+        bare = self.env["bf.sign.field.template"].browse(
+            src.save_field_template("Bloc seul"))
+        self.assertFalse(bare.document_file)
+        kept = self.env["bf.sign.field.template"].browse(
+            src.save_field_template("Formulaire", with_document=True))
+        self.assertEqual(base64.b64decode(kept.document_file),
+                         base64.b64decode(src.document_file))
+        self.assertEqual(kept.document_filename, src.document_filename)
+
+    def test_request_from_template_takes_document_then_pads(self):
+        tmpl, src = self._template_with_document(signers=2)
+        req = self.Request.create({"field_template_id": tmpl.id})
+        self.assertEqual(base64.b64decode(req.document_file),
+                         base64.b64decode(src.document_file))
+        self.assertTrue(req.field_template_pending)
+        # One signer of two: rank 1 would have nobody, so nothing is laid yet.
+        self._signer(req, 0)
+        self.assertFalse(req.field_ids)
+        self.assertTrue(req.field_template_pending)
+        self._signer(req, 1)
+        self.assertEqual(len(req.field_ids), 2)
+        self.assertFalse(req.field_template_pending)
+        ranks = req.signer_ids.sorted("sequence")
+        self.assertEqual(set(req.field_ids.mapped("signer_id")), set(ranks))
+
+    def test_signers_given_at_creation_get_pads_at_once(self):
+        tmpl, _src = self._template_with_document(signers=1)
+        req = self.Request.create({
+            "field_template_id": tmpl.id,
+            "signer_ids": [(0, 0, {"name": "Une", "email": "une@example.com"})],
+        })
+        self.assertEqual(len(req.field_ids), 1)
+        self.assertFalse(req.field_template_pending)
+
+    def test_template_never_replaces_an_uploaded_document(self):
+        tmpl, _src = self._template_with_document(signers=1, pages=2)
+        own = self._make_pdf(pages=5)
+        req = self.Request.create({
+            "document_file": base64.b64encode(own), "document_filename": "le mien.pdf"})
+        self._signer(req, 0)
+        req.field_template_id = tmpl
+        self.assertEqual(base64.b64decode(req.document_file), own)
+        self.assertEqual(req.document_filename, "le mien.pdf")
+        self.assertEqual(len(req.field_ids), 1)  # the pads still come
+
+    def test_layout_is_laid_once_not_on_every_save(self):
+        """Pads the preparer removed or moved are not re-laid by a later save."""
+        tmpl, _src = self._template_with_document(signers=1)
+        req = self.Request.create({"field_template_id": tmpl.id})
+        self._signer(req, 0)
+        self.assertEqual(len(req.field_ids), 1)
+        req.field_ids.unlink()
+        self._signer(req, 1)
+        req.write({"title": "Ajusté à la main"})
+        self.assertFalse(req.field_ids)
+
+    def test_manual_apply_settles_the_wait(self):
+        """Fewer signers than the template: « Appliquer » lays what it can, and a
+        signer added afterwards does not wipe the adjusted pads."""
+        tmpl, _src = self._template_with_document(signers=2)
+        req = self.Request.create({"field_template_id": tmpl.id})
+        self._signer(req, 0)
+        res = req.apply_field_template(tmpl.id)
+        self.assertEqual((res["created"], res["skipped"]), (1, 1))
+        self.assertFalse(req.field_template_pending)
+        req.field_ids.pos_x = 0.11
+        self._signer(req, 1)
+        self.assertEqual(req.field_ids.mapped("pos_x"), [0.11])
+
+    def test_onchange_shows_the_pdf_before_saving(self):
+        from odoo.tests import Form
+        tmpl, src = self._template_with_document(signers=1)
+        with Form(self.Request) as form:
+            form.field_template_id = tmpl
+            self.assertTrue(form.document_file)
+            self.assertEqual(form.document_filename, src.document_filename)
+        req = form.save()
+        self.assertEqual(base64.b64decode(req.document_file),
+                         base64.b64decode(src.document_file))
+
+    def test_form_with_a_signer_line_lays_the_pads(self):
+        """The web client's path: template chosen, signer typed on the line,
+        one save. The form also sends the invisible ``field_template_pending``
+        at its default, which once left the request without a single pad."""
+        from odoo.tests import Form
+        tmpl, _src = self._template_with_document(signers=1)
+        form = Form(self.Request)
+        form.field_template_id = tmpl
+        self.assertTrue(form.field_template_pending)
+        with form.signer_ids.new() as line:
+            line.name = "Employée"
+            line.email = "employee@example.com"
+        req = form.save()
+        self.assertEqual(len(req.field_ids), len(tmpl.line_ids))
+        self.assertFalse(req.field_template_pending)
+
+    def test_template_pdf_read_whole_even_under_bin_size(self):
+        """Web client reads ask binaries as sizes (« 1.2 Kb »): copying that
+        string onto the request would lose the PDF without a word."""
+        tmpl, src = self._template_with_document(signers=1)
+        vals = {"field_template_id": tmpl.id}
+        self.Request.with_context(bin_size=True)._take_template_document(vals)
+        self.assertTrue(base64.b64decode(vals["document_file"]).startswith(b"%PDF"))
+        req = self.Request.with_context(bin_size=True).create({"field_template_id": tmpl.id})
+        self.assertEqual(base64.b64decode(req.with_context(bin_size=False).document_file),
+                         base64.b64decode(src.document_file))
+
+    def test_template_without_document_only_brings_pads(self):
+        src = self._request_of(1)
+        self._field(src, src.signer_ids[0])
+        tid = src.save_field_template("Bloc seul")
+        req = self.Request.create({"field_template_id": tid})
+        self.assertFalse(req.document_file)
+        self._signer(req, 0)
+        self.assertEqual(len(req.field_ids), 1)
+
+    def test_changing_the_template_relays_the_pads(self):
+        one, _s1 = self._template_with_document(signers=1)
+        src = self._request_of(1)
+        self._field(src, src.signer_ids[0], y=0.2)
+        self._field(src, src.signer_ids[0], "date", y=0.4)
+        two = self.env["bf.sign.field.template"].browse(src.save_field_template("Deux"))
+        req = self.Request.create({"field_template_id": one.id})
+        self._signer(req, 0)
+        self.assertEqual(len(req.field_ids), 1)
+        req.field_template_id = two
+        self.assertEqual(len(req.field_ids), 2)
+
+    def test_template_choice_locked_once_sent(self):
+        tmpl, _src = self._template_with_document(signers=1)
+        req = self.Request.create({"field_template_id": tmpl.id})
+        self._signer(req, 0)
+        req.action_send()
+        before = req.field_ids
+        req.write({"field_template_pending": True})
+        req._apply_pending_field_template()
+        self.assertEqual(req.field_ids, before)
+
+    def _template_pdf(self, nom, pages):
+        src = self._request_of(pages)
+        self._field(src, src.signer_ids[0])
+        tid = src.save_field_template(nom, with_document=True)
+        return self.env["bf.sign.field.template"].browse(tid)
+
+    def test_hand_placed_pads_survive_the_last_signer(self):
+        """Pads placed by hand while the request waits for its signers are not
+        wiped when the last one arrives: the hand settles the wait."""
+        tmpl, _src = self._template_with_document(signers=2)
+        req = self.Request.create({"field_template_id": tmpl.id})
+        s0 = self._signer(req, 0)
+        mien = self._field(req, s0, "signature", 0.15)
+        self.assertFalse(req.field_template_pending)
+        self._signer(req, 1)
+        self.assertEqual(req.field_ids, mien)
+
+    def test_sending_settles_the_wait(self):
+        tmpl, _src = self._template_with_document(signers=2)
+        req = self.Request.create({"field_template_id": tmpl.id})
+        self._signer(req, 0)
+        self.assertTrue(req.field_template_pending)
+        req.action_send()
+        self.assertFalse(req.field_template_pending)
+
+    def test_switching_templates_switches_the_pdf(self):
+        """Picking A then B before saving must not leave B's pads on A's form."""
+        from odoo.tests import Form
+        a = self._template_pdf("Formulaire A", 2)
+        b = self._template_pdf("Formulaire B", 3)
+        form = Form(self.Request)
+        form.field_template_id = a
+        form.field_template_id = b
+        with form.signer_ids.new() as line:
+            line.name = "Employée"
+            line.email = "employee@example.com"
+        req = form.save()
+        self.assertEqual(base64.b64decode(req.document_file),
+                         base64.b64decode(b.document_file))
+        self.assertEqual(req.document_template_id, b)
+        self.assertEqual(req._document_page_count(), 3)
+
+    def test_uploaded_pdf_is_never_switched_away(self):
+        from odoo.tests import Form
+        a = self._template_pdf("Formulaire A", 2)
+        b = self._template_pdf("Formulaire B", 3)
+        own = base64.b64encode(self._make_pdf(pages=5))
+        form = Form(self.Request)
+        form.field_template_id = a
+        form.document_file = own
+        self.assertFalse(form.document_template_id)
+        form.field_template_id = b
+        req = form.save()
+        self.assertEqual(req._document_page_count(), 5)
+        self.assertFalse(req.document_template_id)
+
+    def test_clearing_the_template_takes_its_pdf_back(self):
+        a = self._template_pdf("Formulaire A", 2)
+        req = self.Request.create({"field_template_id": a.id})
+        self.assertTrue(req.document_file)
+        req.field_template_id = False
+        self.assertFalse(req.document_file)
+        self.assertFalse(req.document_template_id)
+
+    def test_template_takes_the_request_company(self):
+        autre = self.env["res.company"].create({"name": "Société signature B"})
+        src = self._request_of(1)
+        src.company_id = autre
+        self._field(src, src.signer_ids[0])
+        tmpl = self.env["bf.sign.field.template"].browse(
+            src.save_field_template("Chez B", with_document=True))
+        self.assertEqual(tmpl.company_id, autre)
+
+    def test_template_of_another_company_is_refused(self):
+        autre = self.env["res.company"].create({"name": "Société signature C"})
+        etranger = self.env["bf.sign.field.template"].create(
+            {"name": "Modèle de C", "company_id": autre.id})
+        user = self.env["res.users"].with_context(no_reset_password=True).create({
+            "name": "Préparatrice A", "login": "preparatrice-a@example.test",
+            "company_id": self.env.company.id, "company_ids": [(6, 0, self.env.company.ids)],
+            "groups_id": [(6, 0, [self.env.ref("base.group_user").id,
+                                  self.env.ref("bf_sign.group_sign_user").id])]})
+        req = self.Request.with_user(user).create({
+            "document_file": base64.b64encode(self.pdf_bytes), "document_filename": "a.pdf"})
+        with self.assertRaises(AccessError):
+            req.write({"field_template_id": etranger.id})
+        with self.assertRaises(AccessError):
+            self.Request.with_user(user).create({"field_template_id": etranger.id})
+
     # ── field-layout templates : ancrage de page ────────────────────────────────
     def _request_of(self, pages, signers=1):
         """A request whose document really has ``pages`` pages."""

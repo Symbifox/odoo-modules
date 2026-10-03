@@ -151,7 +151,11 @@ class BfSignSigner(models.Model):
         reqs = self.env["bf.sign.request"].browse(
             [v.get("request_id") for v in vals_list if v.get("request_id")])
         self._assert_draft(reqs.exists())
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        # Le dernier signataire attendu par le modèle de départ
+        # déclenche la pose de ses pavés, quel que soit le chemin d'ajout.
+        records.request_id._apply_pending_field_template()
+        return records
 
     def write(self, vals):
         if set(vals) - _PROCESS_FIELDS:

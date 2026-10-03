@@ -33,8 +33,23 @@
                     <field name="progress" widget="progressbar" invisible="state == 'draft'"/>
                     <group>
                         <group string="Document">
+                            <!-- Au-dessus du téléversement, parce que
+                                 c'est par là que commence une demande récurrente. -->
+                            <field name="field_template_id"
+                                   readonly="state != 'draft'"
+                                   placeholder="Choisir un modèle existant…"
+                                   options="{'no_create': True, 'no_open': True}"/>
                             <field name="document_file" filename="document_filename"
                                    readonly="state == 'signed'"/>
+                            <field name="document_filename" invisible="1"/>
+                            <field name="field_template_pending" invisible="1"/>
+                            <field name="document_template_id" invisible="1"/>
+                            <div colspan="2" class="text-muted small"
+                                 invisible="not field_template_pending or state != 'draft'">
+                                Les pavés du modèle se poseront à l'enregistrement, dès que
+                                ses <field name="field_template_signer_count" class="oe_inline"/>
+                                signataire(s) seront ajoutés dans l'onglet « Signataires ».
+                            </div>
                         </group>
                         <group string="Paramètres">
                             <field name="signature_method" readonly="1"/>

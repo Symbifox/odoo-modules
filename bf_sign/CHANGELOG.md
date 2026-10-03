@@ -2,6 +2,27 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.28.0
+
+Partir d'un modèle plutôt que d'un PDF local.
+
+- Une liste « Partir d'un modèle » se place au-dessus du téléversement du
+  document. Le modèle choisi apporte son PDF, si la demande n'en a pas encore,
+  et pose sa disposition de pavés à l'enregistrement, dès que la demande compte
+  autant de signataires que le modèle a de rangs. La pose se fait une fois :
+  une retouche des pavés à la main, ou l'envoi, règle l'attente, et un
+  enregistrement suivant ne remplace rien.
+- Changer de modèle change de PDF, et retirer le modèle reprend le PDF qu'il
+  avait apporté. Un PDF téléversé à la main n'est jamais remplacé.
+- Un modèle de pavés peut garder son document (fiche du modèle, ou
+  « Enregistrer comme modèle », qui le demande et dit qui le verra). C'est
+  facultatif : un bloc de signature posé sur des contrats différents reste sans
+  document, pour ne pas apporter le contrat du dernier client dans la demande
+  suivante. Le modèle prend la société de la demande, et seul un modèle lisible
+  par l'appelant peut être choisi.
+- Lu en `bin_size=False` : le client web lit les binaires en taille, et c'est
+  cette chaîne, pas le PDF, qui aurait été recopiée sur la demande.
+
 ## 18.0.3.27.0
 
 - Courriels : l'invitation, la relance, le document signé, le refus

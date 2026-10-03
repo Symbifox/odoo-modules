@@ -17,6 +17,13 @@ from odoo.tools.pdf import merge_pdf
 from .bf_sign_field import VALUE_TYPES
 from .mail_layout import dress_mail_body
 
+
+def _b64_bytes(value):
+    """Un Binary tel qu'un onchange le voit (str ou bytes), ramené en octets."""
+    if not value:
+        return b""
+    return value.encode() if isinstance(value, str) else value
+
 _logger = logging.getLogger(__name__)
 
 CERTIFICATE_REPORT = "bf_sign.action_report_sign_certificate"
@@ -95,6 +102,23 @@ class BfSignRequest(models.Model):
     # ── Document ────────────────────────────────────────────────────────────
     document_file = fields.Binary(string="Document (PDF)", attachment=True, copy=False)
     document_filename = fields.Char(string="Nom du fichier")
+    # Partir d'un modèle plutôt que d'un PDF local. Le modèle
+    # apporte son document (s'il en a un et que la demande n'en a pas) et sa
+    # disposition, posée une seule fois, dès que les signataires sont au
+    # complet : avant, les rangs du modèle n'auraient personne à qui se donner.
+    field_template_id = fields.Many2one(
+        "bf.sign.field.template", string="Partir d'un modèle", copy=False,
+        domain="[('company_id', 'in', [company_id, False])]",
+        help="Reprend le document du modèle et, dès que ses signataires sont "
+             "tous ajoutés, la disposition de ses pavés.")
+    field_template_pending = fields.Boolean(copy=False)
+    # Le modèle d'où vient le PDF actuel, vide s'il a été téléversé à la main.
+    # C'est ce qui permet de changer de modèle sans garder le formulaire du
+    # premier, sans jamais toucher à un PDF que la personne a choisi elle-même.
+    document_template_id = fields.Many2one(
+        "bf.sign.field.template", string="Document apporté par", copy=False)
+    field_template_signer_count = fields.Integer(
+        related="field_template_id.signer_count", string="Rangs du modèle")
     signed_attachment_id = fields.Many2one(
         "ir.attachment", string="Document signé", readonly=True, copy=False)
     certificate_attachment_id = fields.Many2one(
@@ -322,11 +346,114 @@ class BfSignRequest(models.Model):
         for vals in vals_list:
             if vals.get("name", _("Nouvelle")) == _("Nouvelle"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("bf.sign.request") or _("Nouvelle")
+            if vals.get("field_template_id"):
+                self._check_template_readable(vals["field_template_id"])
+                # Forcé, pas `setdefault` : le formulaire envoie le champ
+                # invisible à sa valeur par défaut (False), et la pose n'aurait
+                # jamais lieu. Mesuré au banc navigateur, invisible aux essais
+                # qui appellent `create` sans cette clé.
+                vals["field_template_pending"] = True
+                self._take_template_document(vals)
         records = super().create(vals_list)
         for rec in records:
             self.env["bf.sign.log"]._append(
                 rec, "created", actor=self.env.user.name, identity_method="internal_user")
+        records._apply_pending_field_template()
         return records
+
+    def write(self, vals):
+        if "field_template_id" in vals and len(self) > 1:
+            # Le document se décide demande par demande (d'où vient le sien ?).
+            for rec in self:
+                rec.write(vals)
+            return True
+        if "field_template_id" in vals:
+            if vals["field_template_id"]:
+                self._check_template_readable(vals["field_template_id"])
+            vals = dict(vals, field_template_pending=bool(vals["field_template_id"]))
+            self._take_template_document(vals, current=self)
+        elif "document_file" in vals and "document_template_id" not in vals:
+            # Un PDF posé hors du formulaire n'est plus celui d'un modèle.
+            vals = dict(vals, document_template_id=False)
+        res = super().write(vals)
+        self._apply_pending_field_template()
+        return res
+
+    # ── Modèle de départ ─────────────────────────────────────────────────────
+    @api.onchange("field_template_id")
+    def _onchange_field_template_id(self):
+        # Montrer le document dès le choix, avant l'enregistrement : c'est lui
+        # qu'on vérifie d'un coup d'œil. Un PDF déjà téléversé n'est JAMAIS
+        # remplacé : le modèle ne vient alors que pour ses pavés.
+        vals = {"field_template_pending": bool(self.field_template_id)}
+        self._take_template_document(vals, current=self)
+        self.update(vals)
+
+    @api.onchange("document_file")
+    def _onchange_document_file(self):
+        # Un PDF téléversé par-dessus celui du modèle devient le sien : le choix
+        # d'un autre modèle ne le remplacera plus.
+        tmpl = self.document_template_id
+        if tmpl and _b64_bytes(self.document_file) != _b64_bytes(
+                tmpl.with_context(bin_size=False).document_file):
+            self.document_template_id = False
+
+    def _check_template_readable(self, template_id):
+        """Le modèle choisi doit être lisible par l'appelant.
+
+        Sans quoi l'id d'un modèle d'une autre société s'enregistrerait sur
+        une demande qui a déjà son document, et la fiche en afficherait le nom
+        et le nombre de rangs (lus en sudo pour l'affichage).
+        """
+        self.env["bf.sign.field.template"].browse(template_id).check_access("read")
+
+    def _take_template_document(self, vals, current=None):
+        """Complète ``vals`` avec le document du modèle qu'elles désignent.
+
+        Le document d'un modèle ne remplace que l'absence de document, ou le
+        document qu'un AUTRE modèle avait apporté (``document_template_id``) :
+        un PDF téléversé à la main n'est jamais touché. Changer de modèle
+        change donc de PDF, sans quoi les pavés de l'un se poseraient sur le
+        formulaire de l'autre ; retirer le modèle reprend le PDF qu'il avait
+        apporté. Lu avec ``bin_size=False`` : le client web lit les binaires en
+        taille (« 182.4 Ko »), et c'est cette chaîne, pas le PDF, qui serait
+        sinon recopiée sur la demande.
+        """
+        if vals.get("document_file"):
+            return
+        if "field_template_id" in vals:
+            tmpl_id = vals["field_template_id"]
+        else:
+            tmpl_id = current.field_template_id.id if current else False
+        apporte = current.document_template_id if current else self.env["bf.sign.field.template"]
+        if current and current.document_file and not apporte:
+            return  # PDF téléversé à la main
+        if apporte and apporte.id == tmpl_id:
+            return  # déjà le PDF de ce modèle
+        tmpl = self.env["bf.sign.field.template"].browse(tmpl_id).with_context(bin_size=False)
+        if tmpl_id and tmpl.exists() and tmpl.document_file:
+            vals.update(
+                document_file=tmpl.document_file,
+                document_filename=tmpl.document_filename or "%s.pdf" % tmpl.name,
+                document_template_id=tmpl.id)
+        elif apporte:
+            vals.update(document_file=False, document_filename=False,
+                        document_template_id=False)
+
+    def _apply_pending_field_template(self):
+        """Pose la disposition du modèle choisi, une fois, dès qu'elle le peut.
+
+        Attend que la demande compte au moins autant de signataires que le
+        modèle a de rangs : posé plus tôt, un pavé du rang 2 serait écarté
+        sans retour possible. Qui veut moins de signataires que le modèle
+        clique « Appliquer » dans l'onglet des pavés, qui écarte et le dit.
+        """
+        for rec in self.filtered(lambda r: r.field_template_pending and r.state == "draft"):
+            tmpl = rec.field_template_id
+            if not tmpl:
+                rec.field_template_pending = False
+            elif rec.signer_ids and len(rec.signer_ids) >= tmpl.signer_count:
+                rec.apply_field_template(tmpl.id)
 
     @api.model
     def create_from_record(self, record, report_ref=None, document_file=None,
@@ -574,6 +701,10 @@ class BfSignRequest(models.Model):
                     "bf_sign.default_expiry_days", "30") or 30)
                 rec.expiry_date = fields.Datetime.now() + timedelta(days=days)
             rec.state = "sent"
+            # Envoyée, la demande n'attend plus rien de son modèle : remise en
+            # brouillon plus tard, un ajout de signataire n'effacera pas ses pavés.
+            if rec.field_template_pending:
+                rec.field_template_pending = False
             # Email the right signers depending on the order, then journal the
             # send from who was ACTUALLY mailed. In sequential mode only the
             # signer whose turn it is receives anything, so a note listing every
@@ -692,7 +823,7 @@ class BfSignRequest(models.Model):
         self.ensure_one()
         return {str(s.id): s._overlay_fields().ids for s in self.signer_ids}
 
-    def save_field_template(self, name, anchor_last_page=True):
+    def save_field_template(self, name, anchor_last_page=True, with_document=False):
         """Save the current pad layout as a reusable template. Returns the id.
 
         Pads that sit on the document's final page are stored as « dernière
@@ -700,6 +831,11 @@ class BfSignRequest(models.Model):
         to be re-applied to documents of other lengths and the final page is
         where the signature block lives. Pass ``anchor_last_page=False`` to keep
         every number absolute.
+
+        ``with_document`` keeps the request's PDF on the template,
+        for a form that is sent again as is. Off by default: a signature block
+        laid over a different contract each time must not carry the last
+        client's contract into the next request.
         """
         self.ensure_one()
         if not self.field_ids:
@@ -726,10 +862,19 @@ class BfSignRequest(models.Model):
             "cell_count": f.cell_count, "option_values": f.option_values,
             "sequence": f.sequence,
         }) for f in self.field_ids]
-        tmpl = self.env["bf.sign.field.template"].create({
+        vals = {
             "name": name or _("Modèle — %s") % (self.document_filename or self.name),
             "line_ids": lines,
-        })
+            # La société de la DEMANDE, pas la société active : sinon une
+            # personne multi-sociétés publierait la disposition (et le contrat,
+            # s'il est gardé) aux utilisateurs d'une autre société.
+            "company_id": self.company_id.id,
+        }
+        if with_document:
+            doc = self.with_context(bin_size=False)
+            vals.update(document_file=doc.document_file,
+                        document_filename=doc.document_filename)
+        tmpl = self.env["bf.sign.field.template"].create(vals)
         return tmpl.id
 
     def apply_field_template(self, template_id, replace=True):
@@ -744,7 +889,9 @@ class BfSignRequest(models.Model):
             raise UserError(_("Ajoutez au moins un signataire avant d'appliquer un modèle."))
         if replace and self.field_ids:
             self.field_ids.unlink()
-        Field = self.env["bf.sign.field"]
+        # Marqué : ces pavés-là viennent du modèle, ils ne règlent pas l'attente
+        # comme le ferait une retouche à la main (`bf.sign.field.create`).
+        Field = self.env["bf.sign.field"].with_context(bf_sign_template_apply=True)
         # L'ancrage est COPIÉ sur le pavé, pas résolu ici : la résolution
         # appartient au scellement, contre le document réellement apposé
         # (`_stamp_document`). `page_count` ne sert plus qu'à prévenir quand un
@@ -769,6 +916,11 @@ class BfSignRequest(models.Model):
                 "option_values": line.option_values, "sequence": line.sequence,
             })
             created += 1
+        # Un modèle appliqué à la main règle aussi l'attente de la pose
+        # automatique : sans quoi l'ajout d'un signataire viendrait, plus
+        # tard, remplacer les pavés que la personne a déjà ajustés.
+        if self.field_template_pending:
+            self.field_template_pending = False
         return {"created": created, "skipped": skipped, "moved": moved}
 
     def action_cancel(self):
