@@ -5,8 +5,12 @@ import secrets
 import uuid
 from datetime import timedelta
 
+from markupsafe import Markup
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+
+from .mail_layout import dress_mail_body
 
 # Fields the signing/sending flow may write once the request has left draft.
 # Identity fields (name, email, partner_id, sequence) are frozen after sending.
@@ -335,31 +339,18 @@ class BfSignSigner(models.Model):
         self.ensure_one()
         company = self.request_id.company_id
         primary = company.report_brand_primary or "#29ABE2"
-        dark = company.report_brand_dark or "#2E3132"
-        # White/light logo on the dark header when configured, else the standard logo.
-        logo_field = "report_brand_logo" if company.report_brand_logo else "logo"
-        body = (
-            '<div style="font-family:Lexend,system-ui,Arial,sans-serif;color:#2E3132;'
-            'font-size:14px;line-height:1.55;max-width:600px;margin:0 auto;">'
-            '<div style="background:%(dark)s;padding:18px 24px;border-radius:10px 10px 0 0;">'
-            '<table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" '
-            'style="border-collapse:collapse;"><tbody><tr>'
-            '<td align="left" style="vertical-align:middle;">'
-            '<img src="/web/image/res.company/%(cid)s/%(lf)s" alt="" style="height:36px;display:block;border:0;"/>'
-            '</td><td align="right" style="vertical-align:middle;color:#fff;'
-            'font-family:Lexend,system-ui,Arial,sans-serif;font-size:20px;font-weight:700;">'
-            'Code de vérification</td></tr></tbody></table>'
-            '</div><div style="height:4px;background:%(primary)s;"></div>'
-            '<div style="background:#fff;border:1px solid #e3e7eb;border-top:0;padding:24px;'
-            'border-radius:0 0 10px 10px;"><p>Bonjour %(name)s,</p>'
-            '<p>Voici votre code pour consulter et signer le document '
-            '<strong>%(doc)s</strong>&nbsp;:</p>'
-            '<p style="font-size:30px;font-weight:700;letter-spacing:6px;color:%(primary)s;'
-            'margin:18px 0;">%(code)s</p>'
+        # Le nom du signataire et celui du document sont saisis par le demandeur :
+        # ``Markup %`` les échappe (ils entraient tels quels dans le HTML).
+        content = Markup(
+            '<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; '
+            'text-transform:uppercase; color:#6B7280;">Code de vérification</p>'
+            '<p>Bonjour %s,</p>'
+            '<p>Voici votre code pour consulter et signer le document <strong>%s</strong>&nbsp;:</p>'
+            '<p style="font-size:30px;font-weight:700;letter-spacing:6px;color:%s;margin:18px 0;">%s</p>'
             '<p style="color:#777;font-size:12px;">Ce code expire dans 10&nbsp;minutes et ne '
-            'doit être partagé avec personne.</p></div></div>'
-        ) % {"dark": dark, "primary": primary, "cid": company.id, "lf": logo_field,
-             "name": self.name or "", "doc": self.request_id.name or "", "code": code}
+            'doit être partagé avec personne.</p>'
+        ) % (self.name or "", self.request_id.name or "", primary, code)
+        body = dress_mail_body(self.env, content, company, record=self)
         mail = self.env["mail.mail"].sudo().create({
             "subject": _("Code de vérification : %s") % (self.request_id.name or ""),
             "email_from": company.email_formatted or self.env.user.email_formatted,

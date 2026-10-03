@@ -15,6 +15,7 @@ from odoo.exceptions import UserError
 from odoo.tools.pdf import merge_pdf
 
 from .bf_sign_field import VALUE_TYPES
+from .mail_layout import dress_mail_body
 
 _logger = logging.getLogger(__name__)
 
@@ -611,6 +612,12 @@ class BfSignRequest(models.Model):
         body = tmpl._render_field("body_html", signer.ids, compute_lang=True)[signer.id]
         subject = tmpl._render_field("subject", signer.ids, compute_lang=True)[signer.id]
         company = signer.request_id.company_id
+        # Comme ``send_mail`` : la mise en page que le gabarit déclare, et aucune
+        # s'il n'en déclare pas (un corps refait à la main porte la sienne).
+        if tmpl.email_layout_xmlid:
+            lang = tmpl._render_lang(signer.ids)[signer.id]
+            body = dress_mail_body(self.env, body, company, record=signer, lang=lang,
+                                   layout=tmpl.email_layout_xmlid)
         self.env["mail.mail"].sudo().create({
             "subject": subject,
             "email_from": company.email_formatted or self.env.user.email_formatted,

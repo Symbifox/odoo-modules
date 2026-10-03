@@ -2,6 +2,20 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.27.0
+
+- Courriels : l'invitation, la relance, le document signé, le refus
+  et le code de vérification passent par la mise en page commune
+  (`bf_onboarding_base.bf_mail_layout`) au lieu de leur coquille. L'invitation,
+  la relance et le code restent des `mail.mail` nus (le jeton de signature ne
+  doit jamais rester dans un message) et sont habillés en code
+  (`models/mail_layout.py`), dans la langue où le gabarit est rendu, et seulement
+  quand le gabarit déclare une mise en page, comme `send_mail`.
+- Sécurité : le courriel du code de vérification échappe le nom du signataire et
+  celui du document, qui entraient tels que saisis par le demandeur.
+- Migration : les quatre gabarits `noupdate` sont découpés dans chaque langue
+  stockée, tout ou rien par gabarit.
+
 ## 18.0.3.26.6
 
 - Remettre en brouillon repart d'une page blanche. Avant, seule la demande

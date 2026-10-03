@@ -6,7 +6,7 @@ provable, tamper-evident simple electronic signature (SES), with an optional
 **PAdES digital seal** (a "signed / not altered" document in a PDF reader, the
 way DocuSeal does it).
 
-- **Version**: `18.0.3.26.6` — see [`CHANGELOG.md`](CHANGELOG.md).
+- **Version**: `18.0.3.27.0` — see [`CHANGELOG.md`](CHANGELOG.md).
 - **Licence**: **BUSL-1.1**. Production use is allowed for your **own internal
   business operations**; providing the module as a product or service to third
   parties (hosted, managed or resold) requires a written agreement. Converts to
@@ -147,6 +147,25 @@ overriding `_sign_report_ref()` (return the PDF report's xmlid), and adding the
 `action_send_for_signature` / `action_view_sign_requests` buttons to the view.
 
 ---
+
+## Emails and the shared mail layout (3.27)
+
+The four emails (invitation, reminder, document signed, refusal) and the
+verification code carry only their content: the shared mail layout
+(`bf_onboarding_base.bf_mail_layout`, which `bluefox_branding` replaces with its
+own when installed) dresses them with the company's logo, colours and footer.
+The completed and refusal notices go through `send_mail`, which reads the
+template's `email_layout_xmlid`. The invitation, the reminder and the code are
+sent as bare `mail.mail` so that the signing token never lands in a stored
+message; `models/mail_layout.py` dresses them in code with the same context
+`send_mail` gives a layout, in the language the template was rendered in, and
+only when the template declares a layout, as `send_mail` does. The
+verification code email now escapes the signer and document names, which used
+to enter its HTML as typed by the requester.
+
+The templates are `noupdate`: migration 18.0.3.27.0 strips every stored
+language with the same tool as the source, all or nothing per template, and
+leaves a body rebuilt by hand as it is.
 
 ## Dependencies
 
