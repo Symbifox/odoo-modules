@@ -25,7 +25,7 @@ _LATE_INVOICE_BODY = """\
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tbody><tr>
 <td align="left">
 <a t-att-href="company.website or '#'" style="text-decoration:none;">
-<img t-attf-src="/web/image/res.company/{{ company.id }}/logo"
+<img t-attf-src="/brand/logo/{{ company.id }}/brand"
      t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
 </a>
 </td>

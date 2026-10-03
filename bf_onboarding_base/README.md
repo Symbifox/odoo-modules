@@ -23,6 +23,10 @@ a module published on its own keeps the last known version of it.
 
 The module now depends on `mail` (the layout calls `mail.notification_preview`).
 
+Since v18.0.2.1.2 the dark header asks for the logo for dark backgrounds
+(`/brand/logo/<company>/brand`: `report_brand_logo`, or the regular logo when the
+company has none), like the `bluefox_branding` layout it is generated from.
+
 ## Public company logo route (v18.0.2.0.1)
 
 `/brand/logo/<company_id>` and `/brand/logo/<company_id>/<variant>` serve a

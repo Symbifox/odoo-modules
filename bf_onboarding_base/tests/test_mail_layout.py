@@ -48,7 +48,8 @@ class TestMailLayout(TransactionCase):
         # La marque vient de res.company, pas du gabarit.
         self.assertIn("#123456", corps)
         self.assertIn(self.company.name, corps)
-        self.assertIn(f"/brand/logo/{self.company.id}", corps)
+        # Fond foncé : le logo de marque s'il existe, sinon le logo ordinaire.
+        self.assertIn(f"/brand/logo/{self.company.id}/brand", corps)
 
     def test_bluefox_branding_fait_foi_quand_il_est_installe(self):
         if not self.env.ref("bluefox_branding.bf_mail_layout", raise_if_not_found=False):
@@ -69,4 +70,5 @@ class TestMailLayout(TransactionCase):
         self.assertIn(MARQUEUR, corps)
         self.assertIn("#123456", corps)
         self.assertIn("#654321", corps)
-        self.assertIn(f"/brand/logo/{self.company.id}", corps)
+        # Fond foncé : le logo de marque s'il existe, sinon le logo ordinaire.
+        self.assertIn(f"/brand/logo/{self.company.id}/brand", corps)

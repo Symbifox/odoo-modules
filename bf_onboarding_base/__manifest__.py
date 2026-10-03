@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Symbifox Onboarding Foundation',
-    'version': '18.0.2.1.1',
+    'version': '18.0.2.1.2',
     'summary': 'Shared helpers for Symbifox per-module onboarding panels.',
     'description': """
 Foundation module for Symbifox onboarding wizards.

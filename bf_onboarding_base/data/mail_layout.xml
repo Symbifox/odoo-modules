@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- GÉNÉRÉ par scripts/symbifox_mail_layout_secours.py depuis
-         bluefox_branding (data/mail_layout_override.xml). Ne pas éditer :
+    <!-- GÉNÉRÉ depuis bluefox_branding (data/mail_layout_override.xml).
+         Ne pas éditer :
          régénérer. Tous les modules maison pointent leurs courriels ici
          (email_layout_xmlid = bf_onboarding_base.bf_mail_layout). Quand
          bluefox_branding est installé, il remplace ce contenu par sa propre
@@ -44,7 +44,7 @@
                                                         <td align="left">
                                                             <t t-if="company">
                                                                 <a t-att-href="company.website or '#'" style="text-decoration:none;">
-                                                                    <img t-attf-src="/brand/logo/{{ company.id }}" t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
+                                                                    <img t-attf-src="/brand/logo/{{ company.id }}/brand" t-att-alt="company.name" style="height:44px;width:auto;display:block;border:0;" height="44"/>
                                                                 </a>
                                                             </t>
                                                         </td>

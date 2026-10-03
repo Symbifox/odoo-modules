@@ -1,6 +1,9 @@
 {
     "name": "Symbifox Branding",
-    "version": "18.0.3.25.0",
+    # 18.0.3.25.1: l'en-tête foncé des courriels (mise en page et gabarits surchargés)
+    #   prend le logo de marque, `report_brand_logo`, s'il existe (variante `brand` de
+    #   la route du logo) ; sinon le logo ordinaire, comme avant.
+    "version": "18.0.3.25.1",
     "category": "Tools",
     "summary": "White-label branding panel + branded email templates",
     "description": """

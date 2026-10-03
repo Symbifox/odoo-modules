@@ -216,6 +216,10 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 
 ## Changelog
 
+### 18.0.3.25.1
+
+- The dark header of the branded emails (the common mail layout, the overridden standard templates and the late-invoice notice) now asks for the company's logo for dark backgrounds, `report_brand_logo`, through the `brand` variant of `/brand/logo/<company>`. It falls back to the regular logo when the company has none, so nothing changes for a company without one. Until now that field was read by no email header, and a dark regular logo was invisible on the dark band. The late-invoice notice also leaves `/web/image/res.company/<id>/logo`, which showed a grey placeholder to anonymous readers for a secondary company. Migration 18.0.3.25.1 replaces the address in the stored bodies of the overridden templates, in every language, without replaying the install hook.
+
 ### 18.0.3.25.0
 
 - The email tagline (`brand_email_tagline`) and the custom email footer (`brand_email_footer_html`) are translatable. The existing value becomes the source; a company writing in French can give its English emails an English tagline and footer instead of the French ones.
