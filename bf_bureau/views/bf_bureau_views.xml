@@ -72,6 +72,7 @@
                                 <list editable="bottom">
                                     <field name="slot"/>
                                     <field name="action_id"
+                                           context="{'bf_bureau_pane_picker': True}"
                                            options="{'no_create': True, 'no_open': True}"/>
                                     <field name="view_type"/>
                                     <field name="weight"/>

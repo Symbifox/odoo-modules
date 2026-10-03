@@ -7,7 +7,14 @@
     #   en français.
     # 18.0.3.3.1: essais d'isolation entre personnes seulement ; aucun code
     #   changé.
-    "version": "18.0.3.3.1",
+    # 18.0.3.3.2: une personne non administratrice crée ses panneaux. La
+    #   contrainte de mode de vue lisait ir.actions.act_window sous ses droits
+    #   (fermé aux internes) et levait une AccessError. Le sélecteur d'action
+    #   du formulaire, même cause : il cherche en superutilisateur et ne rend
+    #   que les actions qu'on pourrait ouvrir (groupe, modèle lu), « Recherche
+    #   avancée » comprise (vues des actions lisibles par tout interne : ce ne
+    #   sont pas des données).
+    "version": "18.0.3.3.2",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

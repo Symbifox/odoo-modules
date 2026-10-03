@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
 
@@ -13,7 +15,11 @@ class BfNoteLink(models.Model):
     res_id = fields.Many2oneReference(
         string="ID", model_field="res_model", required=True, index=True
     )
-    res_name = fields.Char(string="Record name", compute="_compute_res_name", store=True)
+    # Calculé sous les droits de QUI LIT, plus stocké. Stocké, il
+    # se calculait pour l'auteur, et un collègue relisait sur une note partagée
+    # le nom d'une fiche que lui ne peut pas ouvrir.
+    res_name = fields.Char(string="Record name", compute="_compute_res_name",
+                           compute_sudo=False)
     target_ref = fields.Reference(
         string="Form",
         selection="_selection_target_model",
@@ -83,29 +89,30 @@ class BfNoteLink(models.Model):
                 link.res_model = link.target_ref._name
                 link.res_id = link.target_ref.id
 
-    @api.depends("res_model", "res_id", "note_id.user_id")
+    @api.depends("res_model", "res_id")
+    @api.depends_context("uid")
     def _compute_res_name(self):
-        # 🔴 ce champ est STOCKÉ, et Odoo calcule les champs stockés
-        # en superutilisateur (`compute_sudo`). Le `check_access` ci-dessous ne
-        # refusait donc jamais rien : le nom d'une fiche illisible pour
-        # l'auteur de la note restait visible, au bureau comme par l'API
-        # mobile. Le nom se calcule
-        # maintenant sous les droits de l'AUTEUR de la note, explicitement,
-        # quel que soit l'environnement qui déclenche le calcul.
+        # Même règle que l'API mobile (`_mobile_link_name`) : une fiche absente
+        # ou interdite rendent la même chose, aucun nom. ⚠️ Jamais en sudo :
+        # `compute_sudo=False` sur le champ, et `sudo(False)` ici au cas où un
+        # appelant aurait passé un environnement superutilisateur. Une lecture
+        # par modèle, pas par lien : la liste et le kanban en affichent des
+        # dizaines.
+        par_modele = defaultdict(set)
         for link in self:
-            auteur = link.note_id.user_id
-            if link.res_model and link.res_id and link.res_model in self.env and auteur:
-                try:
-                    rec = self.env[link.res_model].with_user(auteur).browse(link.res_id).exists()
-                    if not rec:
-                        link.res_name = False
-                        continue
-                    rec.check_access("read")
-                    link.res_name = rec.display_name
-                except (AccessError, Exception):
-                    link.res_name = False
-            else:
-                link.res_name = False
+            link.res_name = False
+            if link.res_model and link.res_id and link.res_model in self.env:
+                par_modele[link.res_model].add(link.res_id)
+        noms = {}
+        for model_name, ids in par_modele.items():
+            try:
+                lisibles = self.env[model_name].sudo(False).browse(list(ids)).exists() \
+                    ._filtered_access("read")
+                noms[model_name] = {rec.id: rec.display_name for rec in lisibles}
+            except Exception:  # noqa: BLE001 un nom illisible ne casse pas la liste
+                noms[model_name] = {}
+        for link in self:
+            link.res_name = noms.get(link.res_model, {}).get(link.res_id) or False
 
     def action_open(self):
         self.ensure_one()

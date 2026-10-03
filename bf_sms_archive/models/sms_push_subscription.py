@@ -115,8 +115,21 @@ class SmsPushSubscription(models.Model):
             "user_id": user_id, "endpoint": endpoint, "p256dh": p256dh,
             "auth": auth, "ua": (ua or "")[:120], "active": True, "fail_count": 0,
         }
-        existing = self.sudo().search([("endpoint", "=", endpoint)], limit=1)
+        # active_test=False : un abonnement désactivé se réactive (sinon la
+        # contrainte d'unicité de l'endpoint refusait de le recréer).
+        existing = self.sudo().with_context(active_test=False).search(
+            [("endpoint", "=", endpoint)], limit=1)
         if existing:
+            # L'endpoint seul ne prouve rien. Le reprendre au nom
+            # d'un autre usager exige les clés du même abonnement, ce qu'a le
+            # navigateur partagé où l'on change de session. Sans elles, B qui
+            # connaissait l'endpoint de A lui retirait ses notifications.
+            if existing.user_id.id != user_id and (
+                    (existing.p256dh, existing.auth) != (p256dh, auth)):
+                _logger.warning(
+                    "push : abonnement %s d'un autre usager, clés différentes, refusé",
+                    existing.id)
+                return self.browse()
             existing.write(vals)
             return existing
         return self.sudo().create(vals)

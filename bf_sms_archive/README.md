@@ -497,6 +497,29 @@ curl -X POST https://odoo.example.com/bf_sms_archive/api/ingest \
 
 ## Changelog
 
+### Version 18.0.5.26.0
+
+- **SECURITY:** an archived SMS no longer changes outside the superuser. The
+  write rule opens a shared line's messages to its co-users so they can mark
+  them read; a co-user could also rewrite a message's body. Content fields
+  (body, direction, dates, hash, line, owner, sender, delivery state) are now
+  frozen; `is_read` and the contact name stay writable.
+- **SECURITY:** outside the superuser, a message is only created in one's own
+  conversations (the import of one's own backup). A co-user of a shared line
+  could create a complete, back-dated "received" SMS in the owner's thread.
+  MMS parts follow: users can no longer edit a part, and only add one to their
+  own messages.
+- **SECURITY:** a Web Push subscription is no longer taken over by its
+  endpoint alone. Moving it to another user requires the same keys (the case
+  of a shared browser switching sessions), and `push_subscribe` now tells the
+  client when it was refused. A deactivated subscription can be reactivated
+  (the endpoint's unique constraint used to refuse it).
+- **Fix:** the deduplication hash is unique per conversation
+  (`UNIQUE(thread_id, message_hash)`), no longer per database. The same SMS
+  received by two people was swallowed for the second one, who got the first
+  one's message back, and the Android import failed with a UniqueViolation.
+  A replayed duplicate neither creates nor unarchives a conversation.
+
 ### Version 18.0.5.24.1
 
 - **PRIVACY:** three log lines no longer carry a correspondent's phone number:

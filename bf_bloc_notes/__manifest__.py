@@ -26,7 +26,17 @@
     #   on peut refuser le lien (clic ou Alt+L). La fiche proposée est celle
     #   qui est affichée, et non plus celle de l'ouverture du formulaire ; le
     #   libellé nomme « Type · Nom ».
-    "version": "18.0.4.1.0",
+    # 18.0.4.2.0 : le nom d'une fiche liée
+    #   (`bf.note.link.res_name`, `bf.note.res_name`) n'est plus stocké. Il se
+    #   calcule sous les droits de qui lit, comme à l'API mobile, et la
+    #   recherche par ce nom ne porte que sur les fiches que l'on lit. Une
+    #   activité posée sur la fiche liée porte un renvoi à la note, plus son
+    #   corps. Étiquettes : propriétaire (`user_id`) ; celles du module et
+    #   toutes celles d'avant restent communes ; une personne ne crée, renomme
+    #   ou supprime que les siennes, et n'en change pas le propriétaire.
+    #   Les colonnes `res_name` restent en base,
+    #   inutilisées, pour qu'un retour à la 4.1.0 sans -u ne casse rien.
+    "version": "18.0.4.2.0",
     "category": "Productivity",
     "summary": "Notes rapides riches, multi-liens, conversion en activité, raccourcis et systray",
     'author': 'Les services de consultation Blue Fox, Inc.',

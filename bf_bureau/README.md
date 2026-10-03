@@ -49,6 +49,7 @@ Six layouts are available:
 | Conflicting keyboard shortcuts | SQL exclusion: `EXCLUDE (user_id, shortcut_key)` when non-empty. |
 | Slot incompatible with layout | `@api.constrains("slot", "desk_id")` ⇒ `_check_slot_layout`. |
 | `view_type` not supported by the action | `@api.constrains("view_type", "action_id")` ⇒ `_check_view_type_in_action`. |
+| Picking an action without read access to `ir.actions.act_window` | The pane's action field carries a context flag; with it, `name_search`, `web_search_read` and `get_views` read actions in sudo but return only those the user could open (no group or one of theirs, on a model they can read). |
 | Malicious `domain_override` / `context_override` | `ast.literal_eval` server-side (no `eval`/`exec`), `isinstance(list)` / `isinstance(dict)` validation. |
 | Reading the action client-side | `read_desk_for_render` does `pane.action_id.sudo().read([...])` but only after `desk.check_access_rights("read")` + `check_access_rule("read")` on the desk. |
 
@@ -104,6 +105,16 @@ Add the module to Odoo's `addons_path` and install it from the Apps menu. On fir
 - **Sidebar**: ☰ icon in the desk's bar to toggle.
 
 ## Changelog
+
+### 18.0.3.3.2
+- **Fix:** a user who is not an administrator can build their own desks. The view-type constraint read
+  `ir.actions.act_window` under the user's rights, which internal users cannot read, so creating any pane
+  raised an access error. The action is now read in sudo for its view modes and name only; the pane's data
+  still loads under the user's own rights.
+- **Fix:** the form's action picker, same cause. With its context flag it searches window actions in
+  sudo but only returns those the user could open anyway (no group, or one of their groups, on a model
+  they can read), "Search More..." included. Nothing new is exposed: `/web/action/load` already serves any
+  action in sudo to every internal user.
 
 ### 18.0.3.3.1
 - Tests only: per-user isolation of desks and panels

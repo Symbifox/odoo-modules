@@ -8,3 +8,4 @@ from . import test_isolation_mobile
 from . import test_isolation_adverse
 from . import test_couleurs
 from . import test_couleurs_http
+from . import test_isolation_restes

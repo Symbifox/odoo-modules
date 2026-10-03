@@ -1,8 +1,11 @@
 import re
 from datetime import timedelta
 
+from markupsafe import Markup
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError
+from odoo.osv import expression
 
 # Modèles remontés en tête du sélecteur : ce sont ceux qu'on route au
 # quotidien. Le reste de la liste suit par ordre alphabétique.
@@ -68,7 +71,9 @@ class BfNote(models.Model):
     )
     res_model = fields.Char(compute="_compute_res_model_id", store=True, index=True)
     res_id = fields.Integer(compute="_compute_res_model_id", store=True, index=True)
-    res_name = fields.Char(string="Linked to", compute="_compute_res_name", store=True)
+    # Sous les droits de qui lit (voir `bf.note.link.res_name`).
+    res_name = fields.Char(string="Linked to", compute="_compute_res_name",
+                           compute_sudo=False, search="_search_res_name")
 
     tracked_activity_ids = fields.Many2many(
         "mail.activity",
@@ -150,6 +155,7 @@ class BfNote(models.Model):
         return super().write(vals)
 
     @api.depends("link_ids", "link_ids.res_name")
+    @api.depends_context("uid")
     def _compute_res_name(self):
         for note in self:
             names = [l.res_name for l in note.link_ids if l.res_name]
@@ -159,6 +165,39 @@ class BfNote(models.Model):
                 note.res_name = names[0]
             else:
                 note.res_name = f"{names[0]} (+{len(names) - 1})"
+
+    def _search_res_name(self, operator, value):
+        """Chercher par le nom de la fiche liée, parmi les fiches que QUI
+        CHERCHE peut lire : sinon la recherche servait d'oracle sur les noms
+        que seul l'auteur voit."""
+        if operator not in ("ilike", "not ilike", "=", "!=", "like", "=ilike"):
+            return [("id", "=", 0)]
+        positif = operator in ("ilike", "=", "like", "=ilike")
+        op = {"not ilike": "ilike", "!=": "="}.get(operator, operator)
+        if value in (False, None, ""):
+            return [("link_ids", "=" if positif else "!=", False)]
+        models_lies = self.env["bf.note.link"].sudo()._read_group(
+            [("res_model", "!=", False)], ["res_model"])
+        branches = []
+        for (model_name,) in models_lies:
+            if model_name not in self.env:
+                continue
+            # Une sous-requête, jamais la liste des ids : une recherche « a »
+            # balaierait res.partner et project.task en entier. `_search` ne
+            # lance rien en base : une erreur ici est de Python, pas de SQL.
+            Modele = self.env[model_name].sudo(False)
+            if not Modele.has_access("read"):
+                continue  # un modèle qu'on ne lit pas du tout ne répond rien
+            try:
+                sous_requete = Modele._search([("display_name", op, value)])
+            except (AccessError, ValueError, KeyError, NotImplementedError):
+                continue  # un modèle sans recherche par nom
+            branches.append([("link_ids", "any", [
+                ("res_model", "=", model_name), ("res_id", "in", sous_requete)])])
+        if not branches:
+            return [("id", "=", 0)] if positif else []
+        domaine = expression.OR(branches)
+        return domaine if positif else ["!"] + domaine
 
     @api.depends("tracked_activity_ids")
     def _compute_tracked_activity_count(self):
@@ -339,7 +378,7 @@ class BfNote(models.Model):
                 "res_model": model_name,
                 "res_id": rec_id,
                 "summary": self.name or _("Quick note"),
-                "note": self.body or "",
+                "note": self._activity_note_for(model_name, rec_id),
                 "user_id": self.env.user.id,
                 "date_deadline": deadline,
             }
@@ -350,6 +389,22 @@ class BfNote(models.Model):
         if new_activities:
             self.tracked_activity_ids = [(4, a.id) for a in new_activities]
         return new_activities
+
+    def _activity_note_for(self, model_name, rec_id):
+        """Ce que l'activité porte de la note.
+
+        Le corps ne sort pas de la note. Une activité posée sur la
+        fiche liée se lit par tous ceux qui lisent cette fiche : elle recopiait
+        le corps d'une note privée chez eux. Elle porte maintenant un renvoi à
+        la note, que seuls ses lecteurs ouvrent. Sur la note elle-même, le
+        corps reste. L'assistant d'activité, lui, montre le texte avant de
+        l'envoyer : c'est un geste exprès.
+        """
+        self.ensure_one()
+        if (model_name, rec_id) == ("bf.note", self.id):
+            return self.body or ""
+        return Markup('<p>%s <a href="/odoo/bf.note/%s">%s</a></p>') % (
+            _("Note:"), self.id, self.name or _("Quick note"))
 
     def _create_activity_on_self(self, deadline, activity_type_id=None):
         """Create a mail.activity on the bf.note record itself (no linked target)."""

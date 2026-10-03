@@ -119,6 +119,20 @@ odoo -d <db> -u bf_bloc_notes --test-enable --test-tags /bf_bloc_notes --stop-af
 
 ## Changelog
 
+### 18.0.4.2.0
+- **Security:** the name of a linked record is no longer stored. It is computed under the access rights
+  of whoever reads the note, as the mobile API already did: on a shared note, a colleague used to read the
+  name of a record only the author could open. Searching notes by that name only looks at records the
+  searcher can read. The `res_name` columns stay in the database, unused, so a code rollback without
+  `-u` keeps working.
+- **Security:** an activity created on a linked record no longer copies the note's body (anyone who reads
+  that record reads its activities). It carries a link to the note instead; an activity on the note itself
+  keeps the body. The activity wizard still shows the text before sending it.
+- **Security:** tags have an owner. A tag a person creates is theirs: others neither see, rename nor
+  delete it, and its owner cannot be changed except by an administrator. The module's tags, and every tag
+  that existed before this version, stay shared with the whole instance (a migration makes sure of it),
+  and only administrators manage those.
+
 ### 18.0.4.1.0
 - **Quick capture:** the "Linked to" banner becomes a "Link to" checkbox, ticked by default. Unticked
   (click, or `Alt+L` from any field of the dialog), the note is created without a link: the reminder

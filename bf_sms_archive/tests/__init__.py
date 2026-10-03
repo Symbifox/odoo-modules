@@ -18,3 +18,4 @@ from . import test_idempotence
 from . import test_mobile_login_mfa
 from . import test_relais_proprietaire
 from . import test_mobile_org_tz
+from . import test_isolation_restes

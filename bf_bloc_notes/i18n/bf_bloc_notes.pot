@@ -1877,3 +1877,25 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_bloc_notes.bf_note_view_form
 msgid "🗓️ Today"
 msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,help:bf_bloc_notes.field_bf_note_tag__user_id
+msgid "Empty: shared with the whole instance."
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note.py:0
+msgid "Note:"
+msgstr ""
+
+#. module: bf_bloc_notes
+#: model:ir.model.fields,field_description:bf_bloc_notes.field_bf_note_tag__user_id
+msgid "Owner"
+msgstr ""
+
+#. module: bf_bloc_notes
+#. odoo-python
+#: code:addons/bf_bloc_notes/models/bf_note_tag.py:0
+msgid "The owner of a tag cannot be changed."
+msgstr ""

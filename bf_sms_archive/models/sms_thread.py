@@ -975,10 +975,10 @@ class SmsArchiveThread(models.Model):
         pour l'utilisateur connecté. Appelé par la SPA après ``pushManager``."""
         if not (endpoint and p256dh and auth):
             return False
-        self.env["sms.archive.push.subscription"]._upsert(
+        # Un refus (endpoint d'un autre usager) se dit au client.
+        return bool(self.env["sms.archive.push.subscription"]._upsert(
             self.env.uid, endpoint, p256dh, auth, ua,
-        )
-        return True
+        ))
 
     @api.model
     def push_unsubscribe(self, endpoint):

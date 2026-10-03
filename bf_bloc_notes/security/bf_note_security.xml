@@ -56,5 +56,37 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
+        <!-- Étiquettes. On lit les communes (sans propriétaire) et
+             les siennes ; on ne crée, renomme ou supprime que les siennes. Les
+             communes se gèrent par l'administration. -->
+        <record id="bf_note_tag_rule_read" model="ir.rule">
+            <field name="name">Étiquettes de notes : communes ou les miennes</field>
+            <field name="model_id" ref="model_bf_note_tag"/>
+            <field name="domain_force">['|', ('user_id', '=', False), ('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="bf_note_tag_rule_write" model="ir.rule">
+            <field name="name">Étiquettes de notes : les miennes seulement</field>
+            <field name="model_id" ref="model_bf_note_tag"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="bf_note_tag_rule_admin" model="ir.rule">
+            <field name="name">Étiquettes de notes : administration</field>
+            <field name="model_id" ref="model_bf_note_tag"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
     </data>
 </odoo>

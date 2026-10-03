@@ -1,6 +1,7 @@
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError
 
 _logger = logging.getLogger(__name__)
 
@@ -47,6 +48,20 @@ class SmsArchiveMmsPart(models.Model):
         compute="_compute_is_image",
         store=True,
     )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Hors superutilisateur, une pièce ne s'ajoute qu'à SES
+        messages (l'import de sa propre sauvegarde). La règle de création ouvre
+        les messages de la ligne partagée : B glissait une image dans un MMS de
+        A. L'écriture, elle, est retirée de l'ACL des usagers."""
+        if not self.env.su:
+            ids = {vals.get("message_id") for vals in vals_list}
+            messages = self.env["sms.archive.message"].sudo().browse(
+                [i for i in ids if i]).exists()
+            if len(messages) != len(ids) or messages.owner_id != self.env.user:
+                raise AccessError(_("Une pièce MMS ne s'ajoute qu'à vos propres messages."))
+        return super().create(vals_list)
 
     @api.depends("content_type")
     def _compute_is_image(self):

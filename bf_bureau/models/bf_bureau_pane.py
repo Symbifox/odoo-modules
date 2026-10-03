@@ -100,13 +100,19 @@ class BfBureauPane(models.Model):
     @api.constrains("view_type", "action_id")
     def _check_view_type_in_action(self):
         for pane in self:
-            modes = (pane.action_id.view_mode or "").split(",")
+            # Lu en sudo. ir.actions.act_window est fermé aux
+            # internes : la contrainte levait une AccessError, et une personne
+            # non administratrice ne pouvait créer aucun panneau. Seuls les
+            # modes de vue et le nom de l'action sont lus ; les données du
+            # panneau restent sous les droits de qui l'ouvre.
+            action = pane.action_id.sudo()
+            modes = (action.view_mode or "").split(",")
             if pane.view_type not in [m.strip() for m in modes]:
                 raise ValidationError(_(
                     "The view type \"%(view)s\" is not supported by the action "
                     "\"%(action)s\" (available modes: %(modes)s).",
-                    view=pane.view_type, action=pane.action_id.name,
-                    modes=pane.action_id.view_mode,
+                    view=pane.view_type, action=action.name,
+                    modes=action.view_mode,
                 ))
 
     @api.constrains("domain_override")

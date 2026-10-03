@@ -11,6 +11,14 @@ from odoo.exceptions import AccessError, UserError
 
 _logger = logging.getLogger(__name__)
 
+# Ce que le message dit, et d'où il vient. Seul le superutilisateur
+# (ingestion, envoi, accusés de livraison) les écrit.
+_CONTENU_FIGE = frozenset({
+    "body", "direction", "date_sent", "date_sent_ms", "message_hash", "owner_id",
+    "line_id", "sent_by_id", "voipms_id", "is_mms", "import_batch_id",
+    "delivery_state", "error", "mms_part_ids",
+})
+
 
 def _ms_to_naive_utc(date_ms):
     """Convert millisecond epoch (int/str) to naive UTC datetime (Odoo convention)."""
@@ -151,10 +159,14 @@ class SmsArchiveMessage(models.Model):
         compute="_compute_display_name",
     )
 
+    # L'empreinte vaut par fil, plus pour toute la base. Elle ne
+    # porte pas le propriétaire (numéro, date, corps) : le même SMS reçu par
+    # deux personnes était avalé chez la deuxième, qui recevait en retour le
+    # message de la première, et l'import plantait (UniqueViolation).
     _sql_constraints = [
         (
             "hash_uniq",
-            "UNIQUE(message_hash)",
+            "UNIQUE(thread_id, message_hash)",
             "Ce message existe déjà (hash dupliqué).",
         ),
     ]
@@ -370,7 +382,14 @@ class SmsArchiveMessage(models.Model):
             f"{phone_norm}|{date_ms}|{body_text}".encode("utf-8")
         ).hexdigest()
 
-        existing = self.sudo().search([("message_hash", "=", msg_hash)], limit=1)
+        # Le fil de CE propriétaire, lu sans le créer ni le désarchiver : un
+        # doublon rejoué ne doit rien changer.
+        thread = Thread.with_context(active_test=False).search([
+            ("phone_normalized", "=", phone_norm), ("owner_id", "=", owner_id),
+        ], limit=1)
+        existing = thread and self.sudo().search([
+            ("thread_id", "=", thread.id), ("message_hash", "=", msg_hash),
+        ], limit=1)
         if existing:
             if voipms_id and not existing.voipms_id:
                 existing.sudo().write({"voipms_id": str(voipms_id)})
@@ -806,17 +825,32 @@ class SmsArchiveMessage(models.Model):
         if not self.env.su:
             for vals in vals_list:
                 if vals.get("thread_id"):
-                    self.env["sms.archive.thread"].browse(vals["thread_id"]).check_access("write")
+                    fil = self.env["sms.archive.thread"].browse(vals["thread_id"])
+                    fil.check_access("write")
+                    # La règle d'écriture du fil s'ouvre aux co-usagers de la
+                    # ligne partagée : B y créait un SMS « reçu » entier,
+                    # antidaté, que A lisait dans sa conversation. Hors
+                    # superutilisateur (envoi, ingestion), on ne crée que dans
+                    # SES fils : l'import de sa propre sauvegarde.
+                    if fil.sudo().owner_id != self.env.user:
+                        raise AccessError(_("Un SMS ne se crée que dans vos propres conversations."))
                 if vals.get("line_id"):
                     self.env["sms.archive.line"].browse(vals["line_id"]).check_access("read")
         return super().create(vals_list)
 
     def write(self, vals):
-        """Un message ne change JAMAIS de fil hors superutilisateur.
+        """Le contenu d'un SMS archivé ne se réécrit pas hors superutilisateur.
+        La règle d'écriture ouvre le message aux co-usagers de la ligne
+        partagée (pour le marquer lu) : B réécrivait le corps d'un SMS de A.
+        Restent permis : ``is_read`` et le nom du contact.
+
+        Un message ne change JAMAIS de fil hors superutilisateur.
 
         Contrôler le fil d'arrivée ne suffit pas : une commande `(4, id)`
         passée depuis son propre fil y rattacherait le message d'un autre fil.
         Aucun chemin du module ne déplace un message."""
+        if not self.env.su and _CONTENU_FIGE.intersection(vals):
+            raise AccessError(_("Le contenu d'un SMS archivé ne se modifie pas."))
         if not self.env.su and "thread_id" in vals:
             cible = vals["thread_id"]
             cible = cible.id if hasattr(cible, "id") else cible

@@ -1,7 +1,19 @@
 {
     "name": "SMS & Calls",
     "summary": "Messagerie SMS/MMS live via VOIP.ms + archivage de SMS et journaux d'appels Android",
-    "version": "18.0.5.24.1",
+    # 18.0.5.26.0 : le contenu d'un SMS archivé
+    #   ne se réécrit plus hors superutilisateur (un co-usager de la ligne
+    #   partagée réécrivait le corps) ; une pièce MMS ne s'ajoute qu'à ses
+    #   propres messages et ne se modifie plus ; l'endpoint de poussée ne se
+    #   reprend au nom d'un autre usager qu'avec les clés du même abonnement, et
+    #   un abonnement désactivé se réactive ; l'empreinte de dédoublonnage vaut
+    #   par fil (UNIQUE(thread_id, message_hash)) : le même SMS reçu par deux
+    #   personnes n'est plus avalé chez la deuxième. Hors
+    #   superutilisateur, un SMS ne se crée que dans ses propres fils (un
+    #   co-usager forgeait un SMS « reçu » dans le fil de la propriétaire), et
+    #   `push_subscribe` dit au client qu'il a été refusé. 18.0.5.25.0 n'a
+    #   jamais été publiée.
+    "version": "18.0.5.26.0",
     "category": "Tools",
     'author': 'Les services de consultation Blue Fox, Inc.',
     'website': 'https://symbifox.com',
