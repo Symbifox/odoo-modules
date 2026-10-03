@@ -153,6 +153,11 @@ Linux, which is why this catalogue targets Blue Fox OS machines.
 
 ## Changelog
 
+- **18.0.2.11.2** — The org is chosen from the host Odoo itself kept: under
+  `proxy_mode` the one ProxyFix folded in (the last X-Forwarded-Host hop), and
+  without it the header's last hop, never the first one a client can write.
+  `/machine` no longer returns the directory bind password: the periodic sync
+  only rewrites the staged policy, which must stay without it.
 - **18.0.2.11.1** — `/me` returns the directory bind password only to a token issued
   to the install client (`aud`/`azp` = the configured client id), even while the
   audience check is off; new organisations have the audience check on by default.

@@ -1,6 +1,6 @@
 {
     "name": "Symbifox — Blue Fox OS Policy",
-    "version": "18.0.2.11.1",
+    "version": "18.0.2.11.2",
     "category": "Tools",
     "summary": "Group-policy plane for Blue Fox OS endpoints — single source of "
                "truth for zero-touch install + config + policies",

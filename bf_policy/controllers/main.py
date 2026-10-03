@@ -43,6 +43,7 @@ from xml.sax.saxutils import escape as xml_escape
 
 from odoo import http
 from odoo.http import request
+from odoo.tools import config
 
 from ..models.bf_policy import EnrolConflict
 
@@ -150,13 +151,22 @@ def _match_user(claim_value: str):
 
 def _request_host() -> str:
     """The host the operator typed at GRUB. Behind a reverse proxy the original
-    host arrives in X-Forwarded-Host; fall back to the werkzeug host
-    for non-proxied dev."""
-    return (
-        request.httprequest.headers.get("X-Forwarded-Host")
-        or request.httprequest.host
-        or ""
-    )
+    host arrives in X-Forwarded-Host; fall back to the werkzeug host for
+    non-proxied dev.
+
+    ⚠️ With ``proxy_mode`` on, ProxyFix has already folded X-Forwarded-Host
+    into ``httprequest.host``, keeping the LAST hop (the one our own proxy
+    wrote). Reading the raw header here and keeping its FIRST element picked
+    whatever the client had put in front: « X-Forwarded-Host: b, a » chose
+    org b while Odoo itself routed the request to a. Without ``proxy_mode``
+    (dev), the header's last hop stands in for ProxyFix.
+    """
+    httprequest = request.httprequest
+    if config.get("proxy_mode"):
+        return httprequest.host or ""
+    forwarded = httprequest.headers.get("X-Forwarded-Host") or ""
+    last_hop = forwarded.split(",")[-1].strip()
+    return last_hop or httprequest.host or ""
 
 
 def _client_ip() -> str:
@@ -365,7 +375,10 @@ class BfPolicyController(http.Controller):
         machine._touch(_client_ip())
         _logger.info("[bf_policy] served policy to machine=%s user=%s ip=%s",
                      machine.hostname, user.login, _client_ip())
-        return _json_response(org.get_policy_json(user), 200)
+        # Sans le mot de passe de liaison LDAP : la synchro quotidienne ne
+        # reapplique pas sssd, elle ne fait que reecrire provisioning.json.
+        # L'y remettre chaque jour defaisait le retrait fait a l'installation.
+        return _json_response(org.get_policy_json(user, bind_password=False), 200)
 
     # --- Extensions Symbifox hors boutique --------------------------------
     # Brave, sur un poste Blue Fox OS, interroge cette adresse pour chaque

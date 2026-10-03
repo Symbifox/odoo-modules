@@ -26,6 +26,7 @@ import re
 
 from odoo import http
 from odoo.http import Response, request
+from odoo.tools import config
 
 _logger = logging.getLogger(__name__)
 
@@ -106,11 +107,17 @@ class ZeroTouchInstallController(http.Controller):
         # original host arrives in X-Forwarded-Host; fall back to the werkzeug
         # host for non-proxied dev. sudo(): the public user reads tenant config
         # (no secrets — image ref + service URLs are public anyway).
-        host = (
-            request.httprequest.headers.get("X-Forwarded-Host")
-            or request.httprequest.host
-            or ""
-        )
+        #
+        # ⚠️ With proxy_mode, ProxyFix has already folded X-Forwarded-Host into
+        # httprequest.host, keeping the LAST hop (our proxy's). The raw header,
+        # of which _resolve_for_host keeps the FIRST element, let a client pick
+        # the tenant by writing in front of it (same fix as bf_policy).
+        httprequest = request.httprequest
+        if config.get("proxy_mode"):
+            host = httprequest.host or ""
+        else:
+            forwarded = httprequest.headers.get("X-Forwarded-Host") or ""
+            host = forwarded.split(",")[-1].strip() or httprequest.host or ""
         # The Policy org (bf_policy) is the single source of truth. _select_for_host
         # gives single-org fallback (the common case) and refuses an unmatched host
         # when several tenants exist. sudo(): the public user reads tenant config
@@ -138,11 +145,11 @@ class ZeroTouchInstallController(http.Controller):
                 status=500,
                 mimetype="text/plain; charset=utf-8",
             )
-        # X-Forwarded-For first hop is the real client; the rest of the chain
-        # is preserved for forensic tracing (CDN/proxy hops). remote_addr
-        # fallback is for non-proxied dev setups.
+        # The client is remote_addr, already corrected by ProxyFix under
+        # proxy_mode. The FIRST X-Forwarded-For hop is whatever the client
+        # wrote: it stays in the log as `chain`, never as `ip`.
         xff = request.httprequest.headers.get("X-Forwarded-For", "").strip()
-        client_ip = xff.split(",")[0].strip() if xff else request.httprequest.remote_addr
+        client_ip = request.httprequest.remote_addr
         _logger.info(
             "[bf_zerotouch] served slug=%s ip=%s ua=%s chain=%s",
             kvars["TENANT_SLUG"],

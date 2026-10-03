@@ -452,6 +452,17 @@ def apply(policy, root="/", run=subprocess.run, writer=None):
             record("seat-sudo", lambda: writer(
                 "/etc/sudoers.d/10-bluefox-seat", render_seat_sudoers(policy),
                 mode=0o440))
+    # Le mot de passe de liaison n'a plus rien a faire dans la politique stagee une
+    # fois sssd.conf ecrit : bluefox-tpm-enroll, bluefox-seat-credentials
+    # et l'agent d'accueil n'en lisent pas le bloc login, et la synchro
+    # quotidienne ne reapplique pas sssd. On la reecrit donc sans lui, toujours
+    # en 0600. Si l'ecriture de sssd.conf a echoue, on le garde : c'est ce qui
+    # permet de rejouer ce script a la main pour reparer la machine.
+    sssd_rate = login.get("mode") == "sssd" and not any(
+        a == "sssd-conf" and ok for a, ok, _d in results)
+    if login.get("bind_password") and not sssd_rate:
+        record("policy-staged-expurgee", lambda: writer(
+            STAGED_JSON, render_public_policy(policy), mode=0o600))
     # La copie expurgee, pour l'agent d'accueil qui tourne en tant que l'usager.
     # Ecrite QUELLE QUE SOIT la branche de connexion : c'est elle qui porte les
     # preferences de session, les montages et les PWA.
