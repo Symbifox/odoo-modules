@@ -400,7 +400,13 @@
     #   Les quatre surfaces : le courriel de confirmation et les quatre rappels,
     #   la page publique du rendez-vous, la description de l'.ics, et celle de
     #   l'événement d'agenda (donc le CalDAV).
-    "version": "18.0.2.62.1",
+    # 18.0.2.62.2: /appointment porte enfin un H1 (« Prendre rendez-vous »,
+    #   taille H2 conservée par la classe `h2`), pour le référencement.
+    # 18.0.2.64.0: les courriels passent par la mise en page commune
+    #   (`bf_onboarding_base.bf_mail_layout`, que `bluefox_branding` remplace
+    #   par la sienne) ; voir le README. Publie aussi le limiteur borné du
+    #   formulaire public : plus de `clear()` passé 10 000 adresses.
+    "version": "18.0.2.64.0",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',

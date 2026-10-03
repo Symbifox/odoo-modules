@@ -61,6 +61,30 @@ _BOOK_WINDOW = 600   # per 10 minutes / IP
 
 _bucket_lock = threading.Lock()
 _bucket_data = defaultdict(list)  # (seau, IP) -> [horodatages]
+_bucket_window = {}  # seau -> fenêtre la plus longue vue, pour l'élagage
+
+
+def _borner_seaux(maintenant):
+    """Tenir `_bucket_data` sous `_MAX_TRACKED_IPS` clés sans relâcher un bloqué.
+
+    ⚠️ Il y avait ici un `clear()` : passé 10 000 clés, tout le monde repartait
+    à zéro, y compris la source qu'on était en train de plafonner. Faire
+    défiler assez d'adresses suffisait à effacer son propre blocage.
+    On retire d'abord les clés échues (fenêtre de LEUR seau) ; si le flot est
+    frais, celles qui pèsent le moins. Une clé bloquée a atteint son plafond :
+    elle sort en dernier. Appelée sous `_bucket_lock`.
+    """
+    if len(_bucket_data) <= _MAX_TRACKED_IPS:
+        return
+    for ident in [i for i, v in _bucket_data.items()
+                  if not v or v[-1] <= maintenant - _bucket_window.get(i[0], 0)]:
+        del _bucket_data[ident]
+    if len(_bucket_data) > _MAX_TRACKED_IPS:
+        cible = _MAX_TRACKED_IPS * 9 // 10
+        ordre = sorted(_bucket_data,
+                       key=lambda i: (len(_bucket_data[i]), _bucket_data[i][-1]))
+        for ident in ordre[:len(_bucket_data) - cible]:
+            del _bucket_data[ident]
 
 
 def bf_rate_limit(bucket, max_hits, window, key=None, consume=True):
@@ -93,8 +117,8 @@ def bf_rate_limit(bucket, max_hits, window, key=None, consume=True):
         # Same bound as the three named limiters, and it matters more here:
         # the key is (bucket, IP), so a distinct-IP flood grows this dict
         # once per bucket it touches.
-        if len(_bucket_data) > _MAX_TRACKED_IPS:
-            _bucket_data.clear()
+        _bucket_window[bucket] = max(window, _bucket_window.get(bucket, 0))
+        _borner_seaux(now)
         cutoff = now - window
         hits = [t for t in _bucket_data[ident] if t > cutoff]
         if len(hits) >= max_hits:
@@ -118,6 +142,8 @@ def bf_rate_limit_record(bucket, window, key=None):
     ident = (bucket, key or _client_ip())
     now = time.monotonic()
     with _bucket_lock:
+        _bucket_window[bucket] = max(window, _bucket_window.get(bucket, 0))
+        _borner_seaux(now)
         cutoff = now - window
         hits = [t for t in _bucket_data[ident] if t > cutoff]
         hits.append(now)

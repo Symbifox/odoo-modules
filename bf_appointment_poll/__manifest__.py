@@ -141,7 +141,11 @@
     #   partait déjà dans le `STATUS` de l'ICS. Posé sous condition : ce module
     #   ne dépend pas de `bf_calendar_invite`, et une clé inconnue passée à
     #   `create()` lève.
-    "version": "18.0.1.15.4",
+    # 18.0.1.16.0: les courriels passent par la mise en page commune
+    #   (`bf_onboarding_base.bf_mail_layout`), au nom de la société du type de
+    #   rendez-vous du sondage. Un participant sans nom apparaît sous le début
+    #   de son adresse, jamais sous son adresse complète.
+    "version": "18.0.1.16.0",
     "category": "Appointments",
     "summary": "Proposer plusieurs créneaux, récolter les disponibilités, "
                "puis fixer la rencontre",

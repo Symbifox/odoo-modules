@@ -15,3 +15,4 @@ from . import resource_calendar
 from . import mail_compose_message
 from . import res_partner
 from . import resource_booking_guest
+from . import mail_layout

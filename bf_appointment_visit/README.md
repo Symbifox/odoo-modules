@@ -82,6 +82,15 @@ unit, and the unit gains a "show this dwelling" button. It stays a separate
 module on purpose, because a broker has no property portfolio to speak of, and
 a landlord has no use for a brokerage register.
 
+## Emails and the shared mail layout (1.2)
+
+`visit_email_layout` now carries only the eyebrow title, the content and the
+button; the six templates declare the shared mail layout
+(`bf_onboarding_base.bf_mail_layout`, which `bluefox_branding` replaces with its
+own when installed). Migration 18.0.1.2.0 rewrites the view in every stored
+language, declares the layout and expands the `background:` / `border-left:`
+shorthands that a message body drops.
+
 ## What it does not do
 
 - **Lockboxes.** Supra and SentriLock have no public API and depend on the

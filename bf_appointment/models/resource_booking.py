@@ -588,7 +588,7 @@ class ResourceBooking(models.Model):
         moment où il est créé : les commandes `(4, id)` sont additives, donc un
         événement né sans ses participants ne se répare jamais tout seul. Vécu
         sur un rendez-vous réel (2026-07-15), sorti avec le seul partenaire
-        2026-07-15), sorti avec le seul partenaire de l'organisateur — ajouté 13
+        de l'organisateur — ajouté 13
         minutes plus tard par le recalcul de `partner_ids` — sans jamais voir ni
         le client ni la ressource. La fenêtre exacte nous a échappé : la même
         méthode rejoue aujourd'hui la bonne liste. On arrête donc d'en dépendre
@@ -1537,16 +1537,17 @@ class ResourceBooking(models.Model):
         n'écrit rien, donc le gabarit reste identique à lui-même sur un
         locataire sans satellite.
 
-        Le bouton reprend la couleur de marque du type, comme le bouton
-        « Voir mon rendez-vous » juste au-dessus, pour que les deux se lisent
-        comme une même famille.
+        Le bouton reprend la couleur de marque de la société du type, comme le
+        bouton « Voir mon rendez-vous » juste au-dessus, pour que les deux se
+        lisent comme une même famille. Depuis la mise en page commune, c'est
+        `report_brand_primary`, celle de l'en-tête.
         """
         self.ensure_one()
         links = self.bf_extra_links()
         if not links:
             return Markup("")
         company = self.type_id.company_id
-        couleur = (company and company.appointment_brand_primary) or "#714B67"
+        couleur = (company and company.report_brand_primary) or "#714B67"
         parts = []
         for link in links:
             url = (link.get("url") or "").strip()
@@ -1868,7 +1869,7 @@ class ResourceBooking(models.Model):
         write it. On a real database, hundreds of Québec contacts carried
         ``Europe/Paris`` from
         a batch import, so a Montréal slot picker offered Paris hours
-        (mesuré en production, 2026-09-10). The browser says where the reader
+        (measured in production, 2026-09-10). The browser says where the reader
         actually is; the contact record only says what was once typed there.
         """
         self.ensure_one()

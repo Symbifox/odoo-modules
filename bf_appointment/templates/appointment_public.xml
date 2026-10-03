@@ -22,7 +22,8 @@
 <t t-set="brand_dark" t-value="(env.company and env.company.report_brand_dark) or '#212529'"/>
 <div class="bf-appointment-landing">
                 <div class="bf-section-header text-center">
-                    <h2 t-out="'Book a meeting' if _en else 'Prendre rendez-vous'"/>
+                    <!-- The page's only H1 (SEO), kept at the H2 size of the band. -->
+                    <h1 class="h2" t-out="'Book a meeting' if _en else 'Prendre rendez-vous'"/>
                     <p t-out="'Pick the type of meeting that works for you.' if _en else 'Choisissez le type de rendez-vous qui vous convient.'"/>
                 </div>
                 <t t-if="not booking_types">

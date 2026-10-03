@@ -1725,3 +1725,73 @@ class TestPollSelfSignupRoutes(HttpCase, TestAppointmentPoll):
         self.assertIn("motif=domain", r.headers["Location"])
         self.assertFalse(self.poll.participant_ids.filtered(
             lambda p: p.email == "dehors@ailleurs.com"))
+
+
+@tagged("-at_install", "post_install", "bf_appointment_poll")
+class TestPollCourrielDesAutres(HttpCase, TestAppointmentPoll):
+    """🔴 La page d'un participant ne montre pas le courriel des autres.
+
+    Avec `show_votes`, chaque réponse d'un autre s'affiche sous son nom. Un
+    participant SANS nom s'affichait sous son adresse complète, lisible par
+    tous les autres porteurs d'un lien. La création pose le début de l'adresse
+    comme nom, mais un nom vidé ensuite dans la fiche retombait sur l'adresse.
+    """
+
+    def test_un_participant_sans_nom_ne_montre_pas_son_courriel(self):
+        slots = self._add_slots(1)
+        self.required_participant.name = False
+        self.env["appointment.poll.vote"].create({
+            "participant_id": self.required_participant.id,
+            "slot_id": slots[0].id,
+            "answer": "yes",
+        })
+        # Ouvert sans passer par `action_open` : ni retenue ni invitation.
+        self.poll.state = "open"
+        self.env.flush_all()
+        r = self.url_open("/appointment/poll/%s"
+                          % self.optional_participant.access_token)
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("bf-poll-who", r.text, "les réponses des autres sont montrées")
+        self.assertNotIn("obligatoire@test.invalid", r.text)
+        self.assertNotIn("@test.invalid", r.text)
+        vus = self.poll._others_votes(self.optional_participant)[slots[0].id]
+        self.assertEqual(vus[0][0], "obligatoire")
+
+    # -- Mise en page commune des courriels ---------------
+
+    def test_courriels_sur_la_mise_en_page_commune(self):
+        from unittest.mock import patch
+        gabarits = ("mail_template_poll_invitation", "mail_template_poll_reminder",
+                    "mail_template_poll_otp", "mail_template_poll_scheduled")
+        for xmlid in gabarits:
+            template = self.env.ref("bf_appointment_poll." + xmlid)
+            self.assertEqual(template.email_layout_xmlid, "bf_onboarding_base.bf_mail_layout")
+            self.env.flush_all()
+            self.env.cr.execute("SELECT body_html FROM mail_template WHERE id = %s", [template.id])
+            for lang, corps in (self.env.cr.fetchone()[0] or {}).items():
+                with self.subTest(gabarit=xmlid, lang=lang):
+                    self.assertNotIn('width="600"', corps)
+                    self.assertNotIn("appointment_brand_", corps)
+                    self.assertIn("text-transform:uppercase; color:#6B7280;", corps)
+        with patch("odoo.addons.mail.models.mail_mail.MailMail.send", lambda s, *a, **k: None):
+            avant = self.env["mail.mail"].sudo().search([]).ids
+            self.env.ref("bf_appointment_poll.mail_template_poll_invitation").send_mail(
+                self.required_participant.id, force_send=False)
+            courriel = self.env["mail.mail"].sudo().search([("id", "not in", avant)])
+        self.assertEqual(len(courriel), 1)
+        self.assertEqual(courriel.body_html.count("box-shadow:0 4px 24px"), 1, "une carte, la commune")
+        self.assertIn("transmis par", courriel.body_html, "la mention du pied reste dans le contenu")
+        self.assertNotIn("border-radius:12px 12px 0 0", courriel.body_html)
+
+    def test_un_participant_prend_la_societe_du_sondage(self):
+        """La société du type de rendez-vous d'abord, puis celle du sondage ; jamais
+        celle de l'utilisateur qui envoie."""
+        Societe = self.env["res.company"]
+        du_type, du_sondage = Societe.create({"name": "Société du type"}), Societe.create(
+            {"name": "Société du sondage"})
+        type_rdv = self.env["resource.booking.type"].new({"name": "Type", "company_id": du_type.id})
+        sondage = self.env["appointment.poll"].new({"company_id": du_sondage.id, "type_id": type_rdv})
+        participant = self.env["appointment.poll.participant"].new({"poll_id": sondage})
+        self.assertEqual(list(participant._mail_get_companies().values()), [du_type])
+        sondage.type_id = False
+        self.assertEqual(list(participant._mail_get_companies().values()), [du_sondage])

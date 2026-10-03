@@ -1,7 +1,7 @@
 """Le fuseau que voit le client : son navigateur d'abord, sinon Montréal.
 
-Ce que ces tests protègent est né d'un défaut en production (
-2026-09-10) : la fiche de contact venait EN PREMIER dans la chaîne, et
+Ce que ces tests protègent est né d'un défaut en production
+(2026-09-10) : la fiche de contact venait EN PREMIER dans la chaîne, et
 `res_partner.tz` n'est pas rempli par la personne qu'il décrit — un lot
 d'import avait posé `Europe/Paris` sur des centaines de fiches québécoises. Une
 page de créneaux à Montréal a donc proposé des heures de Paris.

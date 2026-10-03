@@ -1,0 +1,12 @@
+<t t-set="company" t-value="(object.type_id.company_id) or user.company_id"/>
+<t t-set="brand_primary" t-value="(company and company.report_brand_primary) or '#714B67'"/>
+<t t-set="brand_dark" t-value="(company and company.report_brand_dark) or '#212529'"/>
+<div style="font-family:'Lexend','Segoe UI',Arial,sans-serif; max-width:600px; margin:0 auto; padding:24px;">
+    <h2 t-attf-style="color:{{ (object.type_id.company_id and object.type_id.company_id.appointment_brand_dark) or '{{ brand_dark }}' }}; margin:0 0 16px 0;">Rendez-vous annulé</h2>
+    <p style="color:#374151; font-size:14px; line-height:22px;">
+        Le rendez-vous suivant a été annulé par le client (ou via le lien d'annulation public) :
+    </p>
+    <p style="color:#6B7280; font-size:12px; margin-top:16px;">
+        Le créneau est libre à nouveau dans votre agenda.
+    </p>
+</div>

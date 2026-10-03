@@ -621,8 +621,12 @@ class AppointmentPoll(models.Model):
                 autre = vote.participant_id
                 if autre == participant:
                     continue
+                # 🔴 Jamais l'adresse complète d'un autre. Un nom
+                # vidé dans la fiche retombait sur le courriel, lisible par
+                # tous les porteurs d'un lien ; on retombe sur ce que la
+                # création pose déjà, le début de l'adresse.
                 lignes.append((
-                    autre.name or autre.email,
+                    autre.name or (autre.email or "").split("@")[0] or "?",
                     vote.answer,
                     autre.required,
                 ))

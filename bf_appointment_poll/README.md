@@ -140,6 +140,11 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
 
 ## Changelog
 
+### 18.0.1.16.0
+
+- **Emails go through the shared mail layout.** The four poll emails carry only their content and go through `bf_onboarding_base.bf_mail_layout`, on behalf of the company of the poll's booking type (`_mail_get_companies`; the poll's own company when the type has none). The note "Ce sondage vous a été transmis par…" stays at the end of the content. Migration 18.0.1.16.0 strips every stored language, all or nothing per template.
+- **Privacy.** On a participant's page, another participant without a name is shown under the start of their address, never under the full address.
+
 ### 18.0.1.15.4
 
 - **Security.** The shared sign-up link only matches people who signed up through it, and only after the open and allowed-domain checks. A named invitee's personal link is never returned for a typed e-mail address: the invitation is e-mailed to them instead.

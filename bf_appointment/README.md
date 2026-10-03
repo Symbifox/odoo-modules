@@ -153,6 +153,38 @@ Public self-service booking pages, extending *Resource Booking* (OCA).
   strict.
 - **"Appointment" button on the calendar event.** A calendar event that holds a
   booking opens it from its smart-button area, cancelled bookings included.
+- **One H1 on the public booking page** (v18.0.2.62.2): "Book a meeting" is the
+  page heading, kept at its previous size.
+- **Bounded rate limiter on the public forms** (v18.0.2.64.0). Past 10,000
+  tracked addresses the limiter used to clear every bucket, which let a source
+  erase its own block by cycling addresses. It now drops expired keys first, then
+  the lightest ones; a blocked key goes last.
+- **Emails go through the shared mail layout** (v18.0.2.64.0), see below.
+
+## Emails and the shared mail layout
+
+The fifteen booking emails (acknowledgement, confirmation, reminders, follow-ups,
+cancellation, organizer notices, guest emails) carry only their content: the shared
+mail layout (`bf_onboarding_base.bf_mail_layout`, which `bluefox_branding` replaces
+with its own when installed) dresses them with the logo, colours and footer of the
+booking type's company. A booking and a guest have no `company_id`, so
+`_mail_get_companies` names the booking type's company. Accents in the content, and
+the extra-link buttons, use the company brand colours (`report_brand_*`), like the
+layout. The contact sentence reads `res.company.bf_appointment_contact()`, which
+skips the placeholder defaults (`service@example.com`, `555-555-5555`) for the
+company's own email and phone, and hides the sentence when there is nothing to cite.
+Footer notes that are not branding ("Notification interne", "Invitation transmise
+via…") stay at the end of the content.
+
+⚠️ The privacy and terms links now come from the layout footer, that is from the
+company's brand settings (`brand_privacy_url`, `brand_terms_url` in
+`bluefox_branding`). The appointment-specific URLs are no longer read by the
+emails: copy them there if your company relied on them.
+
+The templates are `noupdate`: migration 18.0.2.64.0 strips every stored language
+with the same tool as the source, all or nothing per template, and leaves a body
+rebuilt by hand as it is. "Rendez-vous : Rappel (ancien)" is unused and left
+untouched.
 
 ## Notes on the confirmation links
 

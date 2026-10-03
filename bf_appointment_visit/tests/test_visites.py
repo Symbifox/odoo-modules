@@ -442,3 +442,44 @@ class TestVisites(TransactionCase):
             absente.state, "no_show",
             "Une visite sans arrivée constatée n'est pas « faite ».",
         )
+
+    # ------------------------------------------------------------------
+    # Mise en page commune des courriels
+    # ------------------------------------------------------------------
+    def test_courriels_sur_la_mise_en_page_commune(self):
+        from pathlib import Path
+        from unittest.mock import patch
+        import importlib.util
+        vue = self.env.ref("bf_appointment_visit.visit_email_layout")
+        self.assertNotIn('width="600"', vue.arch_db)
+        self.assertIn(">Visite</p>", vue.arch_db)
+        for xmlid in ("mail_visit_pending", "mail_visit_approved", "mail_visit_declined",
+                      "mail_visit_seller_request", "mail_visit_tenant_notice",
+                      "mail_visit_feedback_request"):
+            self.assertEqual(self.env.ref("bf_appointment_visit." + xmlid).email_layout_xmlid,
+                             "bf_onboarding_base.bf_mail_layout")
+        racine = Path(__file__).resolve().parent.parent
+        spec = importlib.util.spec_from_file_location(
+            "bf_visit_migration_1_2_0", racine / "migrations" / "18.0.1.2.0" / "post-migrate.py")
+        migration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(migration)
+        avant = (racine / "tests" / "data" / "habillage_avant.xml").read_text(encoding="utf-8")
+        nouvelle, ok = migration.vue_sans_coquille(avant)
+        self.assertTrue(ok)
+        self.assertEqual(migration.vue_sans_coquille(nouvelle), (None, False))
+        # Un samedi à venir : le samedi fixe des autres essais est passé.
+        from datetime import date, datetime, timedelta
+        jour = date.today() + timedelta(days=(5 - date.today().weekday()) % 7 + 14)
+        samedi = datetime(jour.year, jour.month, jour.day)
+        inscription = self._inscription()
+        self._plage(inscription, date=jour)
+        inscription.action_publish()
+        visite = self._demander_visite(inscription, heure_utc=samedi.replace(hour=17))
+        with patch("odoo.addons.mail.models.mail_mail.MailMail.send", lambda s, *a, **k: None):
+            avant_ids = self.env["mail.mail"].sudo().search([]).ids
+            self.env.ref("bf_appointment_visit.mail_visit_approved").send_mail(visite.id, force_send=False)
+            courriel = self.env["mail.mail"].sudo().search([("id", "not in", avant_ids)])
+        self.assertEqual(len(courriel), 1)
+        self.assertEqual(courriel.body_html.count("box-shadow:0 4px 24px"), 1, "une carte, la commune")
+        self.assertNotIn("border-radius:12px 12px 0 0", courriel.body_html)
+        self.assertIn(">Visite</p>", courriel.body_html)
