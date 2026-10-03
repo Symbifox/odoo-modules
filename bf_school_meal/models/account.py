@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import format_amount
 
 _logger = logging.getLogger(__name__)
 
@@ -189,6 +190,14 @@ class MealEntry(models.Model):
     topup_id = fields.Many2one("bf.school.meal.topup", "Top-up", ondelete="restrict")
     note = fields.Char()
 
+    @api.depends("kind", "order_id", "topup_id", "note")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        kinds = dict(self._fields["kind"]._description_selection(self.env))
+        for entry in self:
+            entry.display_name = " · ".join(filter(None, [
+                kinds.get(entry.kind), entry.order_id.display_name or entry.topup_id.display_name or entry.note]))
+
     def write(self, vals):
         raise UserError(_("A movement is not changed: record an adjustment."))
 
@@ -212,6 +221,17 @@ class MealTopup(models.Model):
     amount = fields.Monetary(required=True)
     invoice_id = fields.Many2one("account.move", required=True, readonly=True)
     state = fields.Selection([("pending", "To pay"), ("paid", "Paid")], default="pending", required=True)
+
+    @api.depends("create_date", "amount", "currency_id")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        # Not the invoice's number: the office reads the top-ups without Invoicing, which
+        # opens account.move (adversarial review, 2026-10-03).
+        for topup in self:
+            tz = topup.account_id.company_id.partner_id.tz or "America/Toronto"
+            day = topup.create_date and fields.Datetime.context_timestamp(topup.with_context(tz=tz), topup.create_date).date()
+            topup.display_name = " · ".join(filter(None, [
+                fields.Date.to_string(day), format_amount(self.env, topup.amount, topup.currency_id)]))
 
     def _school_paid(self):
         for topup in self.filtered(lambda t: t.state == "pending"):

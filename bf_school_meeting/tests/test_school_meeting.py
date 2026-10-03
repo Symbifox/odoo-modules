@@ -197,3 +197,17 @@ class TestMeetingFrench(MeetingCase):
         self.assertEqual(mail.subject, "Alpha Essai : rencontre avec Prof Un")
         self.assertIn("Votre rencontre est réservée", mail.body_html)
         self.assertIn("18:00", mail.body_html)
+
+    def test_open_session_is_an_adjective(self):
+        # The state « Open » read « Ouvrir » (a verb) on a session (demo École, 2026-10-02).
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_school_meeting"], ["fr_CA"])
+        labels = dict(self.env["bf.school.meeting.session"].with_context(lang="fr_CA")
+                      ._fields["state"]._description_selection(self.env(context={"lang": "fr_CA"})))
+        self.assertEqual(labels["open"], "Ouverte")
+
+    def test_teacher_hours_have_a_name(self):
+        # They read « bf.school.meeting.availability,1 » (sweep of the demo École, 2026-10-03).
+        self.env["res.lang"]._activate_lang("fr_CA")
+        hours = self.meeting.availability_ids.filtered(lambda a: a.teacher_id == self.t1)
+        self.assertEqual(hours.with_context(lang="fr_CA").display_name, "Prof Un · 15 octobre, 18:00–18:30")

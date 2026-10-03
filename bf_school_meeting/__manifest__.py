@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : rencontres de parents",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "Parent-teacher meetings: the office sets each teacher's hours, parents book "
                "a slot with each teacher of their child, without overlaps",

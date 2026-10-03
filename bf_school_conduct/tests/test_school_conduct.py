@@ -59,6 +59,11 @@ class ConductCase(HttpCase):
 @tagged("post_install", "-at_install")
 class TestConduct(ConductCase):
 
+    def test_incident_has_a_name(self):
+        # The breadcrumb read « bf.school.incident,1 » (demo École, 2026-10-02).
+        incident = self._incident()
+        self.assertEqual(incident.display_name, "Enfant Essai · %s" % self.phone.name)
+
     def test_graduated_suggestion(self):
         first = self._incident()
         self.assertEqual((first.prior_count, first.suggested_sanction_id), (0, self.warning))
@@ -153,6 +158,14 @@ class TestConductPortal(ConductCase):
 
 @tagged("post_install", "-at_install")
 class TestConductFrench(ConductCase):
+
+    def test_states_agree_with_un_manquement(self):
+        # « Ouvert » next to « Fermée » for the same breach (adversarial review, 2026-10-03).
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_school_conduct"], ["fr_CA"])
+        labels = dict(self.env["bf.school.incident"]._fields["state"]._description_selection(
+            self.env(context={"lang": "fr_CA"})))
+        self.assertEqual((labels["open"], labels["closed"]), ("Ouvert", "Fermé"))
 
     def test_emails_render_in_french(self):
         """🔴 Each French body is a separate translation: a wrong one crashes only in French."""

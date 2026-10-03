@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 20:37+0000\n"
-"PO-Revision-Date: 2026-09-27 20:37+0000\n"
+"POT-Creation-Date: 2026-10-03 13:00+0000\n"
+"PO-Revision-Date: 2026-10-03 13:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -225,6 +225,11 @@ msgid "Campaigns"
 msgstr ""
 
 #. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Choose 5 documents at most."
+msgstr ""
+
+#. module: bf_school_admission
 #. odoo-python
 #: code:addons/bf_school_admission/controllers/portal.py:0
 msgid "Choose a level."
@@ -332,6 +337,11 @@ msgstr ""
 #. module: bf_school_admission
 #: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission_campaign__state__draft
 msgid "Draft"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_form
+msgid "Each document is 10 MB at most: one of the documents chosen is larger."
 msgstr ""
 
 #. module: bf_school_admission
@@ -647,8 +657,12 @@ msgstr ""
 
 #. module: bf_school_admission
 #: model:ir.model.fields.selection,name:bf_school_admission.selection__bf_school_admission_campaign__state__open
-#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
 msgid "Open"
+msgstr ""
+
+#. module: bf_school_admission
+#: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_campaign_view_form
+msgid "Open the campaign"
 msgstr ""
 
 #. module: bf_school_admission
@@ -899,6 +913,15 @@ msgid "The email address is not valid."
 msgstr ""
 
 #. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid ""
+"The fee invoice of %(application)s must be a customer invoice of %(fee)s, "
+"the campaign's fee; it is %(amount)s. Someone with Invoicing corrects it "
+"before it is confirmed."
+msgstr ""
+
+#. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.admission_status
 msgid ""
 "The re-enrolment is confirmed. The school will send the contract for "
@@ -935,6 +958,14 @@ msgid "This application is not waiting for a decision."
 msgstr ""
 
 #. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/models/admission.py:0
+msgid ""
+"This invoice is the fee of %s: withdraw the application instead of deleting "
+"it."
+msgstr ""
+
+#. module: bf_school_admission
 #: model_terms:ir.ui.view,arch_db:bf_school_admission.bf_school_admission_view_search
 msgid "To decide"
 msgstr ""
@@ -945,6 +976,14 @@ msgstr ""
 msgid ""
 "Too many applications were sent from here in the last hour. Try again later,"
 " or contact the school office."
+msgstr ""
+
+#. module: bf_school_admission
+#. odoo-python
+#: code:addons/bf_school_admission/controllers/portal.py:0
+msgid ""
+"Too many attempts were sent from here in the last minutes. Try again later, "
+"or contact the school office."
 msgstr ""
 
 #. module: bf_school_admission
@@ -996,22 +1035,4 @@ msgstr ""
 msgid ""
 "{{ object.school_id.name }}: {{ object.campaign_id.name }}, {{ object.name "
 "}}"
-msgstr ""
-
-#. module: bf_school_admission
-#. odoo-python
-#: code:addons/bf_school_admission/models/admission.py:0
-msgid "This invoice is the fee of %s: withdraw the application instead of deleting it."
-msgstr ""
-
-#. module: bf_school_admission
-#. odoo-python
-#: code:addons/bf_school_admission/models/admission.py:0
-msgid "The fee invoice of %(application)s must be a customer invoice of %(fee)s, the campaign's fee; it is %(amount)s. Someone with Invoicing corrects it before it is confirmed."
-msgstr ""
-
-#. module: bf_school_admission
-#. odoo-python
-#: code:addons/bf_school_admission/controllers/portal.py:0
-msgid "Too many attempts were sent from here in the last minutes. Try again later, or contact the school office."
 msgstr ""

@@ -37,6 +37,21 @@
         </field>
     </record>
 
+    <!-- Without it, Odoo's default list showed the ID column only (demo École, 2026-10-02). -->
+    <record id="bf_school_health_record_view_list" model="ir.ui.view">
+        <field name="name">bf.school.health.record.list</field>
+        <field name="model">bf.school.health.record</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="student_id"/>
+                <field name="allergies"/>
+                <field name="conditions"/>
+                <field name="physician" optional="hide"/>
+                <field name="updated_on"/>
+            </list>
+        </field>
+    </record>
+
     <record id="bf_school_health_record_view_form" model="ir.ui.view">
         <field name="name">bf.school.health.record.form</field>
         <field name="model">bf.school.health.record</field>

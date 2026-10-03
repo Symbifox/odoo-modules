@@ -53,6 +53,7 @@ class Incident(models.Model):
     _description = "Breach of the rules of conduct"
     _inherit = ["mail.thread"]
     _order = "date desc, id desc"
+    _rec_names_search = ["student_id", "rule_id"]
 
     student_id = fields.Many2one("res.partner", "Student", required=True, ondelete="restrict", index=True,
                                  domain=[("is_student", "=", True)])
@@ -77,6 +78,13 @@ class Incident(models.Model):
         help="Required for sexual violence when the student is 14 or older.", tracking=True)
     parents_informed_on = fields.Datetime(readonly=True, tracking=True)
     state = fields.Selection([("open", "Open"), ("closed", "Closed")], default="open", required=True, tracking=True)
+
+    @api.depends("student_id", "rule_id")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        # Without it, the breadcrumb read « bf.school.incident,1 » (demo École, 2026-10-02).
+        for incident in self:
+            incident.display_name = "%s · %s" % (incident.student_id.name or "", incident.rule_id.name or "")
 
     def _school_year_start(self):
         self.ensure_one()
@@ -187,6 +195,7 @@ class Followup(models.Model):
     last_communication = fields.Date(compute="_compute_last", store=True)
 
     @api.depends("student_id.name", "case")
+    @api.depends_context("lang")
     def _compute_display_name(self):
         # Without it, the to-do and its notice read « bf.school.followup,2 » (QA, 2026-09-27).
         cases = dict(self._fields["case"]._description_selection(self.env))
@@ -223,6 +232,7 @@ class FollowupCommunication(models.Model):
     _name = "bf.school.followup.communication"
     _description = "Monthly news to the parents"
     _order = "date desc, id desc"
+    _rec_names_search = ["student_id"]
 
     followup_id = fields.Many2one("bf.school.followup", required=True, ondelete="cascade", index=True)
     student_id = fields.Many2one(related="followup_id.student_id", store=True)
@@ -232,6 +242,13 @@ class FollowupCommunication(models.Model):
     channel = fields.Selection([("email", "Email from Symbifox"), ("phone", "Phone call"),
                                 ("meeting", "Meeting"), ("other", "Other")], default="email", required=True)
     author_id = fields.Many2one("res.users", default=lambda s: s.env.user, readonly=True)
+
+    @api.depends("followup_id", "date")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        for communication in self:
+            communication.display_name = "%s · %s" % (
+                communication.followup_id.display_name or "", fields.Date.to_string(communication.date) or "")
 
     @api.model_create_multi
     def create(self, vals_list):

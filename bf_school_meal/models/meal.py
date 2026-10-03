@@ -90,6 +90,7 @@ class MealDay(models.Model):
     _sql_constraints = [("one_per_date", "UNIQUE(school_id, date)", "A school has one menu per day.")]
 
     @api.depends("date", "item_ids.name", "closed")
+    @api.depends_context("lang")
     def _compute_display_name(self):
         # The calendar of menus shows the meals, not the date it already sits on (QA, 2026-09-27).
         for day in self:
@@ -134,6 +135,7 @@ class MealOrder(models.Model):
     _name = "bf.school.meal.order"
     _description = "Meal ordered"
     _order = "date desc, id desc"
+    _rec_names_search = ["student_id", "item_id"]
 
     student_id = fields.Many2one("res.partner", "Student", required=True, ondelete="cascade", index=True,
                                  domain=[("is_student", "=", True)])
@@ -154,6 +156,14 @@ class MealOrder(models.Model):
     ordered_by_id = fields.Many2one("res.partner", "Ordered by", readonly=True)
     student_allergen_ids = fields.Many2many(related="student_id.meal_allergen_ids", string="Allergies")
     group_names = fields.Char("Group", compute="_compute_group_names")
+
+    @api.depends("date", "student_id", "item_id")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        # Without it, a meal account's movements read « bf.school.meal.order,222 » (demo École, 2026-10-02).
+        for order in self:
+            order.display_name = " · ".join(filter(None, [
+                fields.Date.to_string(order.date), order.student_id.name, order.item_id.name]))
 
     def _compute_group_names(self):
         for order in self:

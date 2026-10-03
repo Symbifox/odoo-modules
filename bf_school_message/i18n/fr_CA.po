@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 00:41+0000\n"
+"POT-Creation-Date: 2026-10-03 13:00+0000\n"
 "PO-Revision-Date: 2026-09-27 00:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -16,11 +16,8 @@ msgstr ""
 #. module: bf_school_message
 #. odoo-python
 #: code:addons/bf_school_message/models/babillard_post.py:0
-msgid ""
-"%(n)s adult(s) who receive notices have no email address and were not told."
-msgstr ""
-"%(n)s adulte(s) qui reçoi(ven)t les avis n'ont pas d'adresse courriel et "
-"n'ont pas été prévenu(s)."
+msgid "%(n)s adult(s) who receive notices have no email address and were not told."
+msgstr "%(n)s adulte(s) qui reçoi(ven)t les avis n'ont pas d'adresse courriel : aucun avis ne leur a été envoyé."
 
 #. module: bf_school_message
 #: model:mail.template,body_html:bf_school_message.mail_template_school_news
@@ -82,12 +79,8 @@ msgstr "<i class=\"fa fa-check me-1\"/>J'ai lu"
 #. module: bf_school_message
 #. odoo-python
 #: code:addons/bf_school_message/models/babillard_post.py:0
-msgid ""
-"A teacher writes to the families of their own groups only. Choose one or "
-"more of your groups, or ask the school office."
-msgstr ""
-"Un enseignant écrit seulement aux familles de ses propres groupes. "
-"Choisissez un ou plusieurs de vos groupes, ou adressez-vous au secrétariat."
+msgid "A teacher writes to the families of their own groups only. Choose one or more of your groups, or ask the school office."
+msgstr "Le personnel enseignant écrit seulement aux familles de ses propres groupes. Choisissez un ou plusieurs de vos groupes, ou adressez-vous au secrétariat."
 
 #. module: bf_school_message
 #: model:ir.ui.menu,name:bf_school_message.menu_school_news
@@ -111,12 +104,8 @@ msgstr "Confirmée"
 
 #. module: bf_school_message
 #: model:ir.model.fields,help:bf_school_message.field_bf_babillard_post__school_group_ids
-msgid ""
-"Empty: every family of the school. Otherwise the families of these groups "
-"only."
-msgstr ""
-"Vide : toutes les familles de l'école. Sinon, seulement les familles de ces "
-"groupes."
+msgid "Empty: every family of the school. Otherwise the families of these groups only."
+msgstr "Vide : toutes les familles de l'école. Sinon, seulement les familles de ces groupes."
 
 #. module: bf_school_message
 #: model_terms:ir.ui.view,arch_db:bf_school_message.bf_babillard_post_form_school

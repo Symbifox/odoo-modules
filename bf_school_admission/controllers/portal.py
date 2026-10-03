@@ -10,6 +10,8 @@ from odoo.tools import email_normalize
 
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
+from ..models.admission import school_address, school_network
+
 _logger = logging.getLogger(__name__)
 
 #: Documents a family attaches to an application.
@@ -17,14 +19,17 @@ MAX_FILES = 5
 MAX_FILE_SIZE = 10 * 1024 * 1024
 ALLOWED_TYPES = ("application/pdf", "image/jpeg", "image/png", "image/heic", "image/heif")
 
-#: Every POST to the public form counts, valid or not, before the documents are read: the
-#: limit per hour on applications (models) only sees the ones that were created. The IP is
+#: Every POST to the public form counts, valid or not, before the documents are checked (the
+#: request body itself is already read, up to the route's `max_content_length`): the limit
+#: per hour on applications (models) only sees the ones that were created. The IP is
 #: the peer's, as corrected by ProxyFix: behind a reverse proxy, Odoo must run with
 #: `proxy_mode` and the proxy must send X-Forwarded-Host and X-Forwarded-For, or every
 #: family shares the proxy's address and its limit.
 _submit_lock = threading.Lock()
-_submit_data = defaultdict(list)  # IP -> [times of the attempts]
+_submit_data = defaultdict(list)  # IPv4 address, IPv6 /64 or /48 -> [times of the attempts]
 _SUBMIT_MAX = 5  # attempts
+_SUBMIT_MAX_48 = 100  # attempts from a whole IPv6 /48 (a tunnel or a server holds one; a mobile
+#                       carrier serves many families from one, typing errors counted too)
 _SUBMIT_WINDOW = 600  # per 10 minutes and per IP
 _MAX_TRACKED_IPS = 10000
 
@@ -51,15 +56,19 @@ def _bound(now):
 
 def _check_submit_rate_limit(ip):
     """True (and the attempt is counted) if this IP may still post the form."""
-    ip = ip or "unknown"
+    buckets = [(school_network(ip) or "unknown", _SUBMIT_MAX)]
+    if "/" in buckets[0][0]:
+        buckets.append((school_network(ip, prefix=48), _SUBMIT_MAX_48))
     now = time.monotonic()
     with _submit_lock:
         _bound(now)
         cutoff = now - _SUBMIT_WINDOW
-        _submit_data[ip] = [t for t in _submit_data[ip] if t > cutoff]
-        if len(_submit_data[ip]) >= _SUBMIT_MAX:
+        for key, __ in buckets:
+            _submit_data[key] = [t for t in _submit_data[key] if t > cutoff]
+        if any(len(_submit_data[key]) >= cap for key, cap in buckets):
             return False
-        _submit_data[ip].append(now)
+        for key, __ in buckets:
+            _submit_data[key].append(now)
         return True
 
 
@@ -79,21 +88,24 @@ class SchoolAdmissionPortal(CustomerPortal):
         if not campaign:
             raise request.not_found()
         return request.render("bf_school_admission.admission_form", {
+            "max_files": MAX_FILES, "max_file_size": MAX_FILE_SIZE,
             "campaign": campaign, "accepting": campaign._is_accepting(),
             "error": kw.get("error"), "values": {},
         })
 
     @http.route("/school/admission/<int:campaign_id>/submit", type="http", auth="public",
-                methods=["POST"], website=True)
+                methods=["POST"], website=True, max_content_length=MAX_FILES * MAX_FILE_SIZE + 1024 * 1024)
     def admission_submit(self, campaign_id, **post):
         campaign = self._campaign_or_404(campaign_id)
         if not campaign or not campaign._is_accepting():
             raise request.not_found()
-        ip = request.httprequest.remote_addr
+        ip = school_address(request.httprequest.remote_addr)
         if not _check_submit_rate_limit(ip):
             _logger.info("bf_school_admission: too many attempts from %s", ip)
+            # The family's typing is given back: only the documents must be chosen again.
             return request.render("bf_school_admission.admission_form", {
-                "campaign": campaign, "accepting": True, "values": {},
+                "max_files": MAX_FILES, "max_file_size": MAX_FILE_SIZE,
+                "campaign": campaign, "accepting": True, "values": post,
                 "error": _("Too many attempts were sent from here in the last minutes. Try again "
                            "later, or contact the school office.")})
         # A field hidden from people: a robot fills it, a family never does.
@@ -117,6 +129,7 @@ class SchoolAdmissionPortal(CustomerPortal):
                       "or contact the school office.")
         if error:
             return request.render("bf_school_admission.admission_form", {
+                "max_files": MAX_FILES, "max_file_size": MAX_FILE_SIZE,
                 "campaign": campaign, "accepting": True, "error": error, "values": post})
 
         env = request.env(su=True)

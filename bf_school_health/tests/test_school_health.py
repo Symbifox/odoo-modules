@@ -1,5 +1,5 @@
 import re
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from odoo import fields
 from odoo.exceptions import AccessError, UserError, ValidationError
@@ -102,6 +102,15 @@ class TestSchoolHealth(HttpCase):
         med.action_ask_family()
         mails = self.env["mail.mail"].search([("model", "=", "bf.school.medication"), ("res_id", "=", med.id)])
         self.assertEqual(mails.recipient_ids, self.p.partner_id)
+
+    def test_record_reads_as_the_student(self):
+        # The breadcrumb read « bf.school.health.record,1 » and the list showed the ID
+        # column only (demo École, 2026-10-02).
+        record = self.env["bf.school.health.record"].search([("student_id", "=", self.a.id)])
+        self.assertEqual(record.display_name, "Alpha Essai")
+        arch = self.env["bf.school.health.record"].get_views([(False, "list")])["views"]["list"]["arch"]
+        self.assertIn('name="student_id"', arch)
+        self.assertIn('name="allergies"', arch)
 
     # Register of doses
     def _give(self, user, **vals):
@@ -226,3 +235,47 @@ class TestSchoolHealth(HttpCase):
         self.authenticate("school_he_r", "school_he_r")
         page = self.url_open("/my/school/health").text
         self.assertNotIn("Méthylphénidate", page, "r receives notices but holds no parental authority")
+
+    def test_dose_has_a_name(self):
+        self.env["res.lang"]._activate_lang("en_US")  # inactive on a base installed in fr_CA
+        dose = self._give(self.staff, emergency_epinephrine=True, given_on=datetime(2026, 10, 1, 15, 47))
+        self.assertEqual(dose.with_context(lang="en_US").display_name, "Alpha Essai · Epinephrine · 1 October, 11:47")
+
+    def test_dose_name_follows_the_language(self):
+        # The name holds a translation: read in French first, it stayed French in English
+        # (cached without the language, website + fr_CA bench, 2026-10-03).
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["res.lang"]._activate_lang("en_US")
+        self.env["ir.module.module"]._load_module_terms(["bf_school_health"], ["fr_CA"])
+        dose = self._give(self.staff, emergency_epinephrine=True, given_on=datetime(2026, 10, 1, 15, 47))
+        self.assertEqual(dose.with_context(lang="fr_CA").display_name, "Alpha Essai · Épinéphrine · 1 octobre, 11:47")
+        self.assertEqual(dose.with_context(lang="en_US").display_name, "Alpha Essai · Epinephrine · 1 October, 11:47")
+
+    def test_emergency_dose_never_names_an_authorisation(self):
+        # The staff member reads their own dose, not the authorisations: the name (breadcrumb,
+        # email header) must not reveal one (adversarial review, 2026-10-03).
+        self.env["res.lang"]._activate_lang("en_US")
+        epi = self._signed(name="EpiPen 0,3 mg", route="epinephrine", dosage="1 auto-injecteur")
+        dose = self._give(self.staff, emergency_epinephrine=True, medication_id=epi.id)
+        name = dose.with_user(self.staff).with_context(lang="en_US").display_name
+        self.assertIn("Epinephrine", name)
+        self.assertNotIn("EpiPen", name)
+
+    def test_former_nurse_reads_their_old_doses(self):
+        # Removed from the health group, a staff member still reads the doses they gave (own
+        # doses rule): the name must not open the authorisations (adversarial review, 2026-10-03).
+        self.env["res.lang"]._activate_lang("en_US")
+        nurse = new_test_user(self.env, login="school_he_former",
+                              groups="bf_school_core.group_school_user,bf_school_health.group_school_health")
+        med = self._signed()
+        dose = self._give(nurse, medication_id=med.id)
+        nurse.groups_id = [(3, self.env.ref("bf_school_health.group_school_health").id)]
+        self.env.invalidate_all()
+        name = dose.with_user(nurse).with_context(lang="en_US").display_name
+        self.assertIn("Medication", name)
+        self.assertNotIn(med.name, name)
+
+    def test_emergency_box_does_not_carry_another_medication(self):
+        med = self._signed()  # oral methylphenidate
+        with self.assertRaises(UserError):
+            self._give(self.staff, emergency_epinephrine=True, medication_id=med.id)

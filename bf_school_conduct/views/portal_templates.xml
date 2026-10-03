@@ -17,6 +17,7 @@
 
     <template id="portal_school_conduct" name="School: follow-up">
         <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Follow-up</t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Follow-up</t>

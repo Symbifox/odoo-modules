@@ -34,6 +34,7 @@
 
     <template id="portal_school_news" name="School: announcements">
         <t t-call="portal.portal_layout">
+            <t t-set="additional_title">School announcements</t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">School announcements</t>
@@ -63,6 +64,7 @@
 
     <template id="portal_school_news_detail" name="School: announcement">
         <t t-call="portal.portal_layout">
+            <t t-set="additional_title" t-value="post.name"/>
             <div class="o_portal_school_news mt-3" style="max-width: 760px;">
                 <small class="text-muted">
                     <t t-out="post.school_id.name"/>

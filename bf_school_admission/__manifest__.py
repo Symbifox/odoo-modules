@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : admission et réinscription",
-    "version": "18.0.1.0.5",
+    "version": "18.0.1.0.6",
     "category": "Education/School",
     "summary": "Admission of new students (public form, fee, exam, waiting list, decision by "
                "a person) and re-enrolment from the family portal",
@@ -40,6 +40,9 @@ Admission and re-enrolment
         "views/admission_views.xml",
         "views/portal_templates.xml",
     ],
+    "assets": {
+        "web.assets_frontend": ["bf_school_admission/static/src/js/admission_form.js"],
+    },
     "installable": True,
     "application": False,
 }

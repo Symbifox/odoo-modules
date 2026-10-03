@@ -52,8 +52,12 @@ families follow theirs through the personal link, checked in constant time. Anot
 family's re-enrolment page is a 404.
 
 The public form accepts at most 5 posts per address in 10 minutes, counted before the
-documents are read (valid or not), and at most 3 applications per address or per email
-in an hour. The first count lives in each server process's memory.
+documents are checked (valid or not), and at most 3 applications per address or per email
+in an hour. An IPv6 address counts for its whole /64 (a home or a phone picks a new one in
+it at will), and a /48 for at most 100 posts in 10 minutes; a port added by a proxy is
+dropped. The first counts live in each server process's memory. The browser checks the
+number and the size of the documents before sending: past the route's size limit, Odoo
+answers before the form and the family would lose what it typed.
 
 ## What has not been confirmed
 

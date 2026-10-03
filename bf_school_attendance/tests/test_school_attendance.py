@@ -218,3 +218,13 @@ class TestAttendanceFrench(AttendanceCase):
         mail = self._mails_to(self.p.partner_id)
         self.assertEqual(mail.subject, "Alpha Essai : absence aujourd'hui")
         self.assertIn("Motiver l'absence", mail.body_html)
+
+    def test_slot_reads_as_words(self):
+        # « am » was shown raw in the roll call and its list (demo École, 2026-10-02).
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(["bf_school_attendance"], ["fr_CA"])
+        am = self._session().with_context(lang="fr_CA")
+        self.assertEqual(am.slot_label, "Matin")
+        line = self._line(am, self.a)
+        self.assertEqual(line.display_name, "Alpha Essai · %s" % am.display_name)
+        self.assertIn("matin", line.display_name)

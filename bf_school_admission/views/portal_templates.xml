@@ -2,6 +2,7 @@
 <odoo>
     <template id="admission_form" name="School: admission form">
         <t t-call="portal.frontend_layout">
+            <t t-set="additional_title" t-value="campaign.name"/>
             <div class="container py-4" style="max-width: 760px;">
                 <small class="text-muted" t-out="campaign.school_id.name"/>
                 <h2 class="mt-1" t-out="campaign.name"/>
@@ -13,7 +14,10 @@
                     <div t-if="campaign.intro_html" class="mb-3" t-out="campaign.intro_html"/>
                     <div t-if="error" class="alert alert-warning" t-out="error"/>
                     <form method="post" t-att-action="'/school/admission/%s/submit' % campaign.id"
-                          enctype="multipart/form-data">
+                          enctype="multipart/form-data" class="o_school_admission_form"
+                          t-att-data-max-files="max_files" t-att-data-max-size="max_file_size">
+                        <div class="d-none o_school_too_many">Choose 5 documents at most.</div>
+                        <div class="d-none o_school_too_big">Each document is 10 MB at most: one of the documents chosen is larger.</div>
                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                         <div class="d-none" aria-hidden="true">
                             <label>Website <input type="text" name="website_url" tabindex="-1" autocomplete="off"/></label>
@@ -78,6 +82,7 @@
 
     <template id="admission_status" name="School: application status">
         <t t-call="portal.frontend_layout">
+            <t t-set="additional_title" t-value="application.campaign_id.name"/>
             <t t-set="app" t-value="application"/>
             <div class="container py-4" style="max-width: 760px;">
                 <small class="text-muted" t-out="app.school_id.name"/>
@@ -112,6 +117,7 @@
 
     <template id="reenroll_form" name="School: re-enrolment">
         <t t-call="portal.portal_layout">
+            <t t-set="additional_title" t-value="campaign.name"/>
             <div class="mt-3" style="max-width: 760px;">
                 <h3>Re-enrol <t t-out="student.name"/> for <t t-out="campaign.target_year"/></h3>
                 <p>

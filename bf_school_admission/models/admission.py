@@ -1,3 +1,4 @@
+import ipaddress
 import logging
 import secrets
 
@@ -17,6 +18,37 @@ APPLICATION_SYSTEM_FIELDS = {"state", "decided_by_id", "decided_on", "invoice_id
                              "access_token", "purged", "client_ip"}
 #: Anonymous applications accepted per hour from one address, or for one email.
 MAX_PUBLIC_PER_HOUR = 3
+
+
+def school_address(ip):
+    """The address alone: a port added by a proxy (« 1.2.3.4:51234 », « [2001:db8::1]:443 ») is
+    dropped, so that the address stored on an application and the one compared are the same."""
+    ip = (ip or "").strip()
+    if ip.startswith("[") and "]" in ip:
+        return ip[1:ip.index("]")]
+    if ip.count(":") == 1:
+        return ip.split(":")[0]
+    return ip
+
+
+def school_network(ip, prefix=64):
+    """What a limit counts as one sender: an IPv4 address, or the /64 (or /48) of an IPv6 one.
+
+    A home connection or a phone holds a whole IPv6 /64 and picks a new address in it at
+    will: counted by address, a robot rotating in its /64 was never limited. A port added by
+    a proxy (« 1.2.3.4:51234 », « [2001:db8::1]:443 ») is dropped; an address that still
+    does not parse is one shared sender, not a new one per connection.
+    """
+    try:
+        address = ipaddress.ip_address(school_address(ip))
+    except ValueError:
+        return "unparsed"
+    if address.version == 6:
+        if address.ipv4_mapped:
+            return str(address.ipv4_mapped)
+        return str(ipaddress.ip_network("%s/%s" % (address, prefix), strict=False))
+    return str(address)
+
 
 class AdmissionCampaign(models.Model):
     """One admission or re-enrolment round of a school, for one coming school year."""
@@ -156,7 +188,15 @@ class AdmissionCampaign(models.Model):
         """Too many anonymous applications from this address or for this email lately."""
         since = fields.Datetime.subtract(fields.Datetime.now(), hours=1)
         Application = self.env["bf.school.admission"].sudo()
-        by_ip = Application.search_count([("client_ip", "=", ip), ("create_date", ">=", since)]) if ip else 0
+        by_ip = 0
+        ip = school_address(ip)
+        network = school_network(ip) if ip else ""
+        if "/" in network:  # IPv6: every address of the /64 is the same sender
+            recent = Application.search_read([("client_ip", "like", ":"), ("create_date", ">=", since)],
+                                             ["client_ip"])
+            by_ip = sum(1 for row in recent if school_network(row["client_ip"]) == network)
+        elif ip:
+            by_ip = Application.search_count([("client_ip", "=", ip), ("create_date", ">=", since)])
         by_email = Application.search_count([("guardian_ids.email", "=ilike", email),
                                              ("create_date", ">=", since)]) if email else 0
         return by_ip >= MAX_PUBLIC_PER_HOUR or by_email >= MAX_PUBLIC_PER_HOUR

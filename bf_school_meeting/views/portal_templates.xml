@@ -30,6 +30,7 @@
 
     <template id="portal_school_meetings" name="School: parent-teacher meetings">
         <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Parent-teacher meetings</t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Parent-teacher meetings</t>

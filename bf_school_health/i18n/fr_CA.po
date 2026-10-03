@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 20:37+0000\n"
+"POT-Creation-Date: 2026-10-03 13:00+0000\n"
 "PO-Revision-Date: 2026-09-27 03:21+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -119,6 +119,12 @@ msgstr "Un médicament au besoin exige des conditions d'utilisation claires."
 #: code:addons/bf_school_health/models/health.py:0
 msgid "An authorisation ends after it starts."
 msgstr "Une autorisation se termine après son début."
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "An emergency dose is epinephrine: this authorisation is for another medication."
+msgstr "Une dose d'urgence est de l'épinéphrine : cette autorisation porte sur un autre médicament."
 
 #. module: bf_school_health
 #: model:ir.model.fields,help:bf_school_health.field_bf_school_medication_administration__emergency_epinephrine
@@ -240,6 +246,12 @@ msgstr "Épinéphrine d'urgence"
 #: model:ir.model.fields.selection,name:bf_school_health.selection__bf_school_medication__route__enteral
 msgid "Enteral"
 msgstr "Entérale"
+
+#. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
+msgid "Epinephrine"
+msgstr "Épinéphrine"
 
 #. module: bf_school_health
 #: model_terms:ir.ui.view,arch_db:bf_school_health.portal_school_health
@@ -423,6 +435,8 @@ msgid "Last Updated on"
 msgstr "Mis à jour le"
 
 #. module: bf_school_health
+#. odoo-python
+#: code:addons/bf_school_health/models/health.py:0
 #: model:ir.model.fields,field_description:bf_school_health.field_bf_school_medication__name
 #: model_terms:ir.ui.view,arch_db:bf_school_health.bf_school_medication_view_form
 msgid "Medication"

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 00:41+0000\n"
+"POT-Creation-Date: 2026-10-03 13:00+0000\n"
 "PO-Revision-Date: 2026-09-27 00:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -123,8 +123,7 @@ msgstr "Les réservations sont fermées."
 #. odoo-python
 #: code:addons/bf_school_meeting/models/meeting.py:0
 msgid "Booking is closed: contact the school office to cancel."
-msgstr ""
-"Les réservations sont fermées : contactez le secrétariat pour annuler."
+msgstr "Les réservations sont fermées : contactez le secrétariat pour annuler."
 
 #. module: bf_school_meeting
 #: model:ir.model.fields,field_description:bf_school_meeting.field_bf_school_meeting_session__booking_open
@@ -343,7 +342,7 @@ msgstr "Seul l'adulte qui a réservé peut annuler."
 #. module: bf_school_meeting
 #: model:ir.model.fields.selection,name:bf_school_meeting.selection__bf_school_meeting_session__state__open
 msgid "Open"
-msgstr "Ouvrir"
+msgstr "Ouverte"
 
 #. module: bf_school_meeting
 #: model_terms:ir.ui.view,arch_db:bf_school_meeting.bf_school_meeting_session_view_form
@@ -482,7 +481,5 @@ msgstr "Vous avez déjà une rencontre à cette heure."
 
 #. module: bf_school_meeting
 #: model:mail.template,subject:bf_school_meeting.mail_template_meeting_booked
-msgid ""
-"{{ object.student_id.name }}: meeting with {{ object.teacher_id.name }}"
-msgstr ""
-"{{ object.student_id.name }} : rencontre avec {{ object.teacher_id.name }}"
+msgid "{{ object.student_id.name }}: meeting with {{ object.teacher_id.name }}"
+msgstr "{{ object.student_id.name }} : rencontre avec {{ object.teacher_id.name }}"

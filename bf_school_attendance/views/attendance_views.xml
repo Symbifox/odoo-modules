@@ -31,7 +31,8 @@
                                    domain="[('teacher_ids', 'in', [uid]), ('year_id.state', '=', 'current')]"
                                    options="{'no_create': True}"/>
                             <field name="date" readonly="id"/>
-                            <field name="slot" readonly="id" placeholder="am, pm, or a period number"/>
+                            <field name="slot" invisible="id" placeholder="am, pm, or a period number"/>
+                            <field name="slot_label" invisible="not id"/>
                         </group>
                         <group>
                             <field name="teacher_id"/>
@@ -65,7 +66,7 @@
             <list>
                 <field name="date"/>
                 <field name="group_id"/>
-                <field name="slot"/>
+                <field name="slot_label"/>
                 <field name="teacher_id"/>
                 <field name="absent_count"/>
                 <field name="late_count"/>

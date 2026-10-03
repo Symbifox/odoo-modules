@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : autorisations",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Education/School",
     "summary": "Field trip and activity authorisations: one click per guardian, dated "
                "evidence, a refusal always wins",

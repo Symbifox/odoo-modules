@@ -82,6 +82,14 @@ class TestSchoolMeal(HttpCase):
             order._school_cancel_by(self.p.partner_id)
         self.assertEqual(account.balance, 10, "credited once")
 
+    def test_order_and_entry_have_a_name(self):
+        # A meal account's movements read « bf.school.meal.order,222 » (demo École, 2026-10-02).
+        account = self._fund(10)
+        order = self._place()
+        self.assertEqual(order.display_name, "%s · Alpha Essai · %s" % (order.date, self.pasta.name))
+        entry = account.entry_ids.filtered(lambda e: e.order_id == order)
+        self.assertEqual(entry.with_context(lang="en_US").display_name, "Meal · %s" % order.display_name)
+
     def test_price_is_frozen(self):
         self._fund(20)
         order = self._place()
@@ -89,6 +97,17 @@ class TestSchoolMeal(HttpCase):
         self.assertEqual(order.price, 6.5)
         with self.assertRaises(UserError):
             order.write({"item_id": self.satay.id})
+
+    def test_office_reads_a_topup_without_invoicing(self):
+        # Named by its invoice, a top-up opened account.move: closed to the office without
+        # Invoicing (adversarial review, 2026-10-03).
+        self.env["res.lang"]._activate_lang("en_US")  # inactive on a base installed in fr_CA
+        topup = self._account()._school_topup(50)
+        office = new_test_user(self.env, login="school_ml_office_topup", groups="bf_school_core.group_school_manager")
+        self.assertFalse(office.has_group("account.group_account_invoice"))
+        name = topup.with_user(office).with_context(lang="en_US").display_name
+        self.assertIn("50.00", name)
+        self.assertNotIn(topup.invoice_id.name, name)
 
     def test_topup_paid_credits_once(self):
         account = self._account()

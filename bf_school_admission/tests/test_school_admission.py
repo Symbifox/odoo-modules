@@ -432,3 +432,26 @@ class TestAdmissionFrench(AdmissionCase):
         self.assertEqual(len(mail), 1)
         self.assertIn("Nous avons reçu la demande", mail.body_html)
         self.assertTrue(mail.subject.startswith("École des Essais : Admission 2027-2028, "))
+
+
+@tagged("post_install", "-at_install")
+class TestScreens(AdmissionCase):
+    """What the demo École showed on 2026-10-02."""
+
+    def test_public_pages_name_the_campaign_in_the_tab(self):
+        # The tab read « School: admission form » (the template's technical name). Like Odoo's
+        # own portal pages, the title is composed by website's layout: without it, « Odoo ».
+        if "website" not in self.env:
+            self.skipTest("website composes the tab title")
+        page = self.url_open("/school/admission/%s" % self.campaign.id).text
+        title = re.search(r"<title>([^<]*)</title>", page).group(1)
+        self.assertIn("Admission 2027-2028", title)
+        self.assertNotIn("School:", title)
+        self._apply()
+        page = self.url_open(self._last()._status_url()).text
+        self.assertNotIn("School:", re.search(r"<title>([^<]*)</title>", page).group(1))
+
+    def test_open_button_has_its_own_words(self):
+        # One msgid « Open » for the button and the state: in fr_CA one of them was wrong.
+        arch = self.env.ref("bf_school_admission.bf_school_admission_campaign_view_form").arch_db
+        self.assertIn('string="Open the campaign"', arch)

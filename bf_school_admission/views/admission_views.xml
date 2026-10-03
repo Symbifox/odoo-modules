@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_open" type="object" string="Open" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_open" type="object" string="Open the campaign" class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_close" type="object" string="Close" invisible="state != 'open'"/>
                     <button name="action_purge" type="object" string="Purge the applications not enrolled"
                             invisible="state != 'closed'"

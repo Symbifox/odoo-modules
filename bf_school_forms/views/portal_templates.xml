@@ -30,6 +30,7 @@
 
     <template id="portal_school_forms" name="School: authorisations">
         <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Authorisations</t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Authorisations</t>
@@ -56,6 +57,7 @@
 
     <template id="portal_school_form" name="School: one authorisation">
         <t t-call="portal.frontend_layout">
+            <t t-set="additional_title" t-value="form.name"/>
             <div class="container py-4" style="max-width: 760px;">
                 <small class="text-muted">
                     <t t-out="form.school_id.name"/> · <t t-out="answer.student_id.name"/>

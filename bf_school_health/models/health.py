@@ -3,7 +3,7 @@ import secrets
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.tools import consteq
+from odoo.tools import consteq, format_datetime
 
 #: Professional Code (C-26) s. 39.8: routes a school staff member may use for a
 #: PRESCRIBED medication ready to be administered. Epinephrine for anaphylaxis rests on
@@ -39,6 +39,7 @@ class HealthRecord(models.Model):
     _name = "bf.school.health.record"
     _description = "Student health record"
     _inherit = ["mail.thread"]
+    _rec_name = "student_id"  # one per student; the breadcrumb read « bf.school.health.record,1 »
 
     student_id = fields.Many2one("res.partner", "Student", required=True, ondelete="cascade", index=True)
     company_id = fields.Many2one("res.company", related="student_id.company_id", store=True)
@@ -175,6 +176,7 @@ class MedicationAdministration(models.Model):
     _name = "bf.school.medication.administration"
     _description = "Medication given at school"
     _order = "given_on desc, id desc"
+    _rec_names_search = ["student_id"]
 
     medication_id = fields.Many2one("bf.school.medication", "Authorisation", ondelete="restrict", index=True)
     student_id = fields.Many2one("res.partner", "Student", required=True, ondelete="cascade", index=True)
@@ -187,6 +189,24 @@ class MedicationAdministration(models.Model):
         help="Anyone may give epinephrine for a severe allergic reaction, without written "
              "authorisation. The family is told at once.")
     note = fields.Text()
+
+    @api.depends("student_id", "medication_id", "emergency_epinephrine", "given_on")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        for dose in self:
+            # An emergency dose is named « Epinephrine », never by the authorisation it may point
+            # to: the staff member who recorded it reads the dose, not the authorisations (health
+            # group only), and the name goes into the family's email. Any other dose names its
+            # authorisation to whoever may read it.
+            if dose.emergency_epinephrine:
+                what = _("Epinephrine")
+            elif dose.medication_id.has_access("read"):
+                what = dose.medication_id.name
+            else:  # someone who left the health group still reads the doses they gave
+                what = _("Medication")
+            when = format_datetime(self.env, dose.given_on, tz=dose.company_id.partner_id.tz or "America/Toronto",
+                                   dt_format="d MMMM, HH:mm") if dose.given_on else ""
+            dose.display_name = " · ".join(filter(None, [dose.student_id.name, what, when]))
 
     @api.model
     def default_get(self, fields_list):
@@ -221,6 +241,9 @@ class MedicationAdministration(models.Model):
         if self.medication_id and self.medication_id.sudo().student_id != self.student_id:
             raise UserError(_("This authorisation is for another student."))
         if self.emergency_epinephrine:
+            # The emergency box lets anyone record a dose: it must not carry another medication.
+            if self.medication_id and self.medication_id.sudo().route != "epinephrine":
+                raise UserError(_("An emergency dose is epinephrine: this authorisation is for another medication."))
             return
         # Any staff member may record emergency epinephrine; the rest is the health group's.
         if not self.env.su and not self.env.user.has_group("bf_school_health.group_school_health"):

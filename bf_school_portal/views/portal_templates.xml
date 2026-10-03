@@ -22,6 +22,7 @@
 
     <template id="portal_my_school" name="School: my children">
         <t t-call="portal.portal_layout">
+            <t t-set="additional_title">My children</t>
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">My children</t>

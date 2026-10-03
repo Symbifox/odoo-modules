@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import format_datetime
 
 
 class MeetingSession(models.Model):
@@ -103,12 +104,23 @@ class MeetingAvailability(models.Model):
     _name = "bf.school.meeting.availability"
     _description = "Teacher's hours for parent-teacher meetings"
     _order = "session_id, teacher_id, start"
+    _rec_names_search = ["teacher_id"]
 
     session_id = fields.Many2one("bf.school.meeting.session", required=True, ondelete="cascade")
     company_id = fields.Many2one(related="session_id.company_id", store=True)
     teacher_id = fields.Many2one("res.users", "Teacher", required=True, domain=[("share", "=", False)])
     start = fields.Datetime(required=True)
     stop = fields.Datetime(required=True)
+
+    @api.depends("teacher_id", "start", "stop")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        for availability in self:
+            tz = availability.company_id.partner_id.tz or "America/Toronto"
+            hours = availability.start and availability.stop and "%s–%s" % (
+                format_datetime(self.env, availability.start, tz=tz, dt_format="d MMMM, HH:mm"),
+                format_datetime(self.env, availability.stop, tz=tz, dt_format="HH:mm"))
+            availability.display_name = " · ".join(filter(None, [availability.teacher_id.name, hours]))
 
     @api.constrains("start", "stop")
     def _check_dates(self):

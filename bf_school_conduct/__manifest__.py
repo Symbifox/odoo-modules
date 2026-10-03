@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : conduite et suivi mensuel",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Education/School",
     "summary": "Breaches of the rules of conduct with graduated sanctions, parents' notices "
                "under the law, and the monthly news of Régime pédagogique s. 29.2",

@@ -37,6 +37,7 @@ class AbsenceDeclaration(models.Model):
     _name = "bf.school.absence.declaration"
     _description = "Absence declared by the family"
     _order = "date_from desc, id desc"
+    _rec_names_search = ["student_id", "reason_id"]
 
     student_id = fields.Many2one("res.partner", "Student", required=True, ondelete="cascade", index=True)
     date_from = fields.Date("From", required=True)
@@ -49,6 +50,15 @@ class AbsenceDeclaration(models.Model):
     source = fields.Selection([("portal", "Family portal"), ("office", "School office")],
                               default="office", required=True)
     company_id = fields.Many2one("res.company", related="student_id.company_id", store=True)
+
+    @api.depends("student_id", "date_from", "date_to", "reason_id")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        for declaration in self:
+            dates = " – ".join(dict.fromkeys(filter(None, [
+                fields.Date.to_string(declaration.date_from), fields.Date.to_string(declaration.date_to)])))
+            declaration.display_name = " · ".join(filter(None, [
+                declaration.student_id.name, dates, declaration.reason_id.name]))
 
     @api.constrains("date_from", "date_to", "part")
     def _check_dates(self):
@@ -97,6 +107,8 @@ class AttendanceSession(models.Model):
     slot = fields.Char(
         "Half-day or period", required=True,
         help="am or pm in half-day mode; the period number (1, 2...) in period mode.")
+    # What a person reads: « am » was shown raw once the roll call was saved (demo École, 2026-10-02).
+    slot_label = fields.Char("Time of day", compute="_compute_slot_label")
     teacher_id = fields.Many2one("res.users", "Taken by", default=lambda s: s.env.user, readonly=True)
     state = fields.Selection([("draft", "In progress"), ("done", "Taken")], default="draft", required=True)
     line_ids = fields.One2many("bf.school.attendance.line", "session_id", "Students")
@@ -113,9 +125,17 @@ class AttendanceSession(models.Model):
             session.absent_count = len(session.line_ids.filtered(lambda l: l.status == "absent"))
             session.late_count = len(session.line_ids.filtered(lambda l: l.status == "late"))
 
+    @api.depends_context("lang")
     def _compute_display_name(self):
         for session in self:
             session.display_name = "%s, %s, %s" % (session.group_id.name, session.date, session._slot_label())
+
+    @api.depends("slot")
+    @api.depends_context("lang")
+    def _compute_slot_label(self):
+        for session in self:
+            label = session._slot_label() if session.slot else ""
+            session.slot_label = label[:1].upper() + label[1:]
 
     def _half(self):
         self.ensure_one()
@@ -177,6 +197,7 @@ class AttendanceLine(models.Model):
     _name = "bf.school.attendance.line"
     _description = "Attendance of a student"
     _order = "session_id, student_id"
+    _rec_names_search = ["student_id"]
 
     session_id = fields.Many2one("bf.school.attendance.session", required=True, ondelete="cascade", index=True)
     date = fields.Date(related="session_id.date", store=True, index=True)
@@ -195,6 +216,12 @@ class AttendanceLine(models.Model):
     _sql_constraints = [
         ("one_line", "UNIQUE(session_id, student_id)", "A student appears once per roll call."),
     ]
+
+    @api.depends("student_id", "session_id")
+    @api.depends_context("lang")
+    def _compute_display_name(self):
+        for line in self:
+            line.display_name = "%s · %s" % (line.student_id.name or "", line.session_id.display_name or "")
 
     @api.depends("status", "reason_id.is_justified", "declaration_id")
     def _compute_justified(self):
