@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_slide_channel_form_school" model="ir.ui.view">
+        <field name="name">slide.channel.form.school</field>
+        <field name="model">slide.channel</field>
+        <field name="inherit_id" ref="website_slides.view_slide_channel_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_school_renew" type="object" string="Renew for another year"
+                        invisible="not school_group_ids"/>
+            </xpath>
+            <xpath expr="//page[@name='options']/group[1]" position="before">
+                <group name="school" string="School">
+                    <group>
+                        <field name="school_group_ids" widget="many2many_tags"
+                               domain="[('year_id.state', '!=', 'closed')]" options="{'no_create': True}"/>
+                        <field name="school_include_guardians" invisible="not school_group_ids"/>
+                    </group>
+                    <group>
+                        <div class="text-muted" colspan="2" invisible="not school_group_ids">
+                            The students of these groups are the attendees, and only they (with their
+                            parents) see the course. Comments, reviews and karma are off.
+                        </div>
+                    </group>
+                </group>
+            </xpath>
+            <field name="visibility" position="attributes">
+                <attribute name="readonly">school_group_ids</attribute>
+            </field>
+            <field name="allow_comment" position="attributes">
+                <attribute name="readonly">school_group_ids</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="slide_channel_view_search_school" model="ir.ui.view">
+        <field name="name">slide.channel.search.school</field>
+        <field name="model">slide.channel</field>
+        <field name="inherit_id" ref="website_slides.slide_channel_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="school_group_ids"/>
+                <filter name="school_courses" string="School courses" domain="[('school_group_ids', '!=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_school_courses" model="ir.actions.act_window">
+        <field name="name">Courses</field>
+        <field name="res_model">slide.channel</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_school_courses': 1}</field>
+    </record>
+
+    <menuitem id="menu_school_courses" name="Courses" parent="bf_school_core.menu_school_root"
+              action="action_school_courses" sequence="21"/>
+</odoo>

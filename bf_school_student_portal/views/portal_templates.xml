@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_student" name="School: a student's own page"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[@t-if='not cards']" position="after">
+            <div t-if="school_own_student" class="alert alert-light border mt-3">
+                Hello <t t-out="user_id.partner_id.name"/>: your work, your homework and your courses are here.
+            </div>
+        </xpath>
+        <xpath expr="//div[@t-if='not cards']" position="attributes">
+            <attribute name="t-if">not cards and not school_own_student</attribute>
+        </xpath>
+    </template>
+
+    <template id="portal_side_content_student" name="School: a student does not edit their card"
+              inherit_id="portal.side_content">
+        <xpath expr="//a[@href='/my/account']" position="attributes">
+            <attribute name="t-if">not (user_id.share and user_id.partner_id.sudo().is_student)</attribute>
+        </xpath>
+    </template>
+</odoo>

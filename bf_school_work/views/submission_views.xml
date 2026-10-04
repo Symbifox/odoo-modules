@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_submission_view_form" model="ir.ui.view">
+        <field name="name">bf.school.homework.submission.form</field>
+        <field name="model">bf.school.homework.submission</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_return" type="object" string="Return" class="btn-primary"
+                            invisible="state == 'returned'"/>
+                    <button name="action_reopen" type="object" string="Reopen" invisible="state != 'returned'"
+                            confirm="The mark is hidden from the family again and the work can be handed in again."/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="student_id" options="{'no_open': True}"/></h1>
+                        <h3><field name="homework_id"/></h3>
+                    </div>
+                    <group>
+                        <group string="Handed in">
+                            <field name="group_id"/>
+                            <field name="date_due"/>
+                            <field name="submission_mode" invisible="1"/>
+                            <field name="submitted_on"/>
+                            <field name="submitted_by_id" options="{'no_open': True}"/>
+                            <field name="is_late"/>
+                            <field name="attachment_ids" widget="many2many_binary" invisible="submission_mode != 'file'"/>
+                            <field name="survey_answer_id" invisible="submission_mode != 'survey'"/>
+                        </group>
+                        <group string="Returned">
+                            <label for="grade"/>
+                            <div class="o_row">
+                                <field name="grade"/>
+                                <span invisible="not points_total">/ <field name="points_total" nolabel="1" class="oe_inline"/></span>
+                            </div>
+                            <field name="correction_ids" widget="many2many_binary"/>
+                            <field name="returned_on"/>
+                            <field name="returned_by_id"/>
+                        </group>
+                    </group>
+                    <field name="feedback" placeholder="A comment for the student and the parents, shown when the work is returned."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="bf_school_submission_view_list" model="ir.ui.view">
+        <field name="name">bf.school.homework.submission.list</field>
+        <field name="model">bf.school.homework.submission</field>
+        <field name="arch" type="xml">
+            <list create="false" decoration-muted="state == 'todo'" decoration-danger="is_late">
+                <field name="date_due"/>
+                <field name="group_id"/>
+                <field name="homework_id"/>
+                <field name="student_id"/>
+                <field name="state" widget="badge" decoration-info="state == 'submitted'"
+                       decoration-success="state == 'returned'"/>
+                <field name="submitted_on"/>
+                <field name="is_late" optional="show"/>
+                <field name="grade"/>
+                <field name="points_total" string="Out of" optional="show"/>
+                <field name="returned_on" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="bf_school_submission_view_search" model="ir.ui.view">
+        <field name="name">bf.school.homework.submission.search</field>
+        <field name="model">bf.school.homework.submission</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="student_id"/>
+                <field name="homework_id"/>
+                <field name="group_id"/>
+                <filter name="to_correct" string="To correct" domain="[('state', '=', 'submitted')]"/>
+                <filter name="todo" string="Not handed in" domain="[('state', '=', 'todo')]"/>
+                <filter name="late" string="Late" domain="[('is_late', '=', True)]"/>
+                <filter name="returned" string="Returned" domain="[('state', '=', 'returned')]"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_homework" string="Homework" context="{'group_by': 'homework_id'}"/>
+                    <filter name="by_group" string="Group" context="{'group_by': 'group_id'}"/>
+                    <filter name="by_state" string="State" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="bf_school_submission_action" model="ir.actions.act_window">
+        <field name="name">Hand-ins</field>
+        <field name="res_model">bf.school.homework.submission</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_to_correct': 1, 'search_default_by_homework': 1}</field>
+    </record>
+
+    <menuitem id="menu_school_submission" name="Hand-ins" parent="bf_school_core.menu_school_root"
+              action="bf_school_submission_action" sequence="20"/>
+</odoo>

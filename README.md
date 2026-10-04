@@ -13,7 +13,7 @@ modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**220 modules are BUSL-1.1.** The source is published and auditable, and **you
+**223 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -314,6 +314,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_message` | Symbifox École : annonces aux familles | 18.0.1.0.1 | BUSL-1.1 | School announcements to families, by school or group, with an email that names the children and a dated read receipt on the portal |
 | `bf_school_portal` | Symbifox École : portail des familles | 18.0.1.0.2 | BUSL-1.1 | One portal account per adult for all their children: groups, teachers, and what the school allows them to do |
 | `bf_school_privacy` | Symbifox École : consentements | 18.0.1.0.1 | BUSL-1.1 | Law 25 consents for a school: photos, publication, family contact list, educational platforms, asked each year of the right person |
+| `bf_school_slides` | Symbifox École : contenus de cours | 18.0.1.0.0 | BUSL-1.1 | Course contents in the eLearning app, given to the students of school groups and their parents, and renewed from one school year to the next |
+| `bf_school_student_portal` | Symbifox École : l'élève au portail | 18.0.1.0.0 | BUSL-1.1 | Students sign in to the family portal with their school directory account, the one that opens the school's computers |
+| `bf_school_work` | Symbifox École : remise de travaux | 18.0.1.0.0 | BUSL-1.1 | Students hand in their work on the portal, the teacher returns a corrected copy with a mark; scored quizzes through Surveys |
 | `bf_securetransfer` | Transfert sécurisé (Secure Transfer) | 18.0.1.21.8 | BUSL-1.1 | Secure file transfer and secure messaging: browser-direct S3 uploads (presigned, multipart, ETag-pinned integrity), tokenized links with expiry, download budget, password, recipient and sender OTP (email or SMS), burn-after-download, download notification; message-only mode; personal drop pages `/to/<slug>` with per-employee auto-provisioning; backend secure-send wizard; sender/recipient allowlists, abuse reporting with automatic suspension, IP and sender quotas, rate limiting, hardened headers and CSP; hash-chained tamper-evident access log with CSV export and integrity verification (Law 25); auto-purge and GC crons; multi-brand skinning by host with free/paid tiers and white-label toggle; dashboard; guided S3 bucket setup with data-residency probe; open-audience data rooms where a link names nobody and each visitor self-declares an email or mobile, confirms a one-time code on that channel, and gets a per-person download budget and watermark |
 | `bf_securetransfer_sign` | Symbifox — Transfert sécurisé : entente de confidentialité | 18.0.1.2.0 | BUSL-1.1 | Bridge between bf_securetransfer and bf_sign: require each visitor to sign a confidentiality agreement, in the identity they just confirmed, before the content of a transfer opens; gated on the download page and on the direct file route alike |
 | `bf_security_awareness` | Security Awareness | 18.0.2.0.1 | BUSL-1.1 | KnowBe4/Terranova-style platform: phishing simulations (open/click/submit, QR, attachments), per-person risk profiles, eLearning remediation, OWL dashboards, a Phish Alert Button with sim-aware triage, and email clawback (PhishRIP-style) to pull a confirmed malicious email from every mailbox (M365 app-only XOAUTH2 or per-mailbox IMAP) into reversible quarantine — see `SECURITY.md` |
@@ -392,7 +395,7 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **220 modules: BUSL-1.1.** Production use for your own internal business
+- **223 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.

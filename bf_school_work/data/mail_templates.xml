@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sent only to the people who ticked it on the portal, one email each, in their
+             language, in the school's layout (bf_school_core, school_lang). The mark is in it:
+             only adults with parental authority and the student themselves receive it.
+             🔴 No gender agreement: a contact carries no gender. -->
+        <record id="mail_template_work_returned" model="mail.template">
+            <field name="name">School: work returned</field>
+            <field name="model_id" ref="model_bf_school_homework_submission"/>
+            <field name="subject">{{ object.student_id.name }}: work returned, {{ object.homework_id.name }}</field>
+            <field name="email_from">{{ object.company_id.email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 12px 0;">The work <strong t-out="object.homework_id.name or ''"/> of <strong t-out="object.student_id.name or ''"/> was returned by the teacher.</p>
+    <p t-if="object.points_total" style="margin:0 0 12px 0;">Mark: <strong t-out="'%g / %g' % (object.grade, object.points_total)"/></p>
+    <p style="margin:0 0 12px 0;">The comment and the corrected copy, if any, are on the portal.</p>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/work/{{ object.homework_id.id }}/{{ object.student_id.id }}"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            See the returned work
+        </a>
+    </p>
+    <p style="margin:0;color:#6c757d;font-size:13px;">You receive this email because you chose it on the portal (Work to hand in). Untick it there to stop.</p>
+</div>
+            </field>
+        </record>
+
+        <!-- The daily summary, one per person who ticked it, only when something changed.
+             The sections come from the job (ctx['school_digest']): [(student, {...})]. -->
+        <record id="mail_template_work_digest" model="mail.template">
+            <field name="name">School: daily summary of the work</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="subject">School work: today's summary</field>
+            <field name="email_from">{{ (object.company_id or user.company_id).email_formatted or user.email_formatted }}</field>
+            <field name="lang">{{ ctx.get('school_lang') }}</field>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html" type="html">
+<div>
+    <p style="margin:0 0 12px 0;">Hello,</p>
+    <p style="margin:0 0 16px 0;">Here is what changed in the school work since the last summary.</p>
+    <t t-foreach="ctx.get('school_digest') or []" t-as="pair">
+        <t t-set="student" t-value="pair[0]"/>
+        <t t-set="parts" t-value="pair[1]"/>
+        <h3 style="margin:16px 0 8px 0;font-size:16px;" t-out="student.name or ''"/>
+        <t t-if="parts['returned']">
+            <p style="margin:0 0 4px 0;font-weight:600;">Work returned</p>
+            <ul style="margin:0 0 12px 0;">
+                <li t-foreach="parts['returned']" t-as="submission">
+                    <t t-out="submission.homework_id.name or ''"/>
+                    <t t-if="submission.points_total">: <t t-out="'%g / %g' % (submission.grade, submission.points_total)"/></t>
+                </li>
+            </ul>
+        </t>
+        <t t-if="parts['due']">
+            <p style="margin:0 0 4px 0;font-weight:600;">To hand in soon</p>
+            <ul style="margin:0 0 12px 0;">
+                <li t-foreach="parts['due']" t-as="homework">
+                    <t t-out="homework.name or ''"/>, <t t-out="format_date(homework.date_due) or ''"/>
+                </li>
+            </ul>
+        </t>
+        <t t-if="parts['late']">
+            <p style="margin:0 0 4px 0;font-weight:600;">Not handed in, due date passed</p>
+            <ul style="margin:0 0 12px 0;">
+                <li t-foreach="parts['late']" t-as="homework">
+                    <t t-out="homework.name or ''"/>, <t t-out="format_date(homework.date_due) or ''"/>
+                </li>
+            </ul>
+        </t>
+        <t t-if="parts['contents']">
+            <p style="margin:0 0 4px 0;font-weight:600;">New course contents</p>
+            <ul style="margin:0 0 12px 0;">
+                <li t-foreach="parts['contents']" t-as="content">
+                    <t t-out="content.name or ''"/> (<t t-out="content.channel_id.name or ''"/>)
+                </li>
+            </ul>
+        </t>
+    </t>
+    <p style="margin:24px 0;">
+        <a t-attf-href="{{ object.get_base_url() }}/my/school/work"
+           style="background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;">
+            See the work on the portal
+        </a>
+    </p>
+    <p style="margin:0;color:#6c757d;font-size:13px;">You receive this summary because you chose it on the portal (Work to hand in). Untick it there to stop.</p>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>

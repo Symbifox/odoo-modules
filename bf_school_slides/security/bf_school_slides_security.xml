@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Teachers write their courses: the staff gets the eLearning Officer role, which
+         writes the courses one is responsible for and reads the others. -->
+    <record id="bf_school_core.group_school_user" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('website_slides.group_website_slides_officer'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,229 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_slides
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-04 00:18+0000\n"
+"PO-Revision-Date: 2026-10-04 00:18+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr_CA\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_slides
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.portal_my_school_courses_link
+msgid "<i class=\"fa fa-graduation-cap me-1\"/>Courses"
+msgstr "<i class=\"fa fa-graduation-cap me-1\"/>Cours"
+
+#. module: bf_school_slides
+#. odoo-python
+#: code:addons/bf_school_slides/models/res_users.py:0
+msgid "A student's profile is not published on the website."
+msgstr "Le profil d'un élève ne se publie pas sur le site web."
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_slide_channel_partner__school_synced
+msgid "Added from a school group"
+msgstr "Inscription par un groupe de l'école"
+
+#. module: bf_school_slides
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.bf_school_slide_renew_view_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_bf_school_slide_renew__channel_id
+msgid "Channel"
+msgstr "Cours"
+
+#. module: bf_school_slides
+#: model:ir.model,name:bf_school_slides.model_slide_channel_partner
+msgid "Channel / Partners (Members)"
+msgstr "Cours / partenaires (participants)"
+
+#. module: bf_school_slides
+#: model:ir.model,name:bf_school_slides.model_slide_channel
+msgid "Course"
+msgstr "Cours"
+
+#. module: bf_school_slides
+#: model:ir.actions.act_window,name:bf_school_slides.action_school_courses
+#: model:ir.ui.menu,name:bf_school_slides.menu_school_courses
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.portal_breadcrumbs_school_courses
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.portal_school_courses
+msgid "Courses"
+msgstr "Cours"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_bf_school_slide_renew__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_bf_school_slide_renew__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_bf_school_slide_renew__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_school_slides
+#: model:ir.model,name:bf_school_slides.model_bf_school_enrollment
+msgid "Enrolment"
+msgstr "Inscription"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_bf_school_slide_renew__group_ids
+msgid "Groups of the new year"
+msgstr "Groupes de la nouvelle année"
+
+#. module: bf_school_slides
+#: model:ir.model,name:bf_school_slides.model_bf_school_guardian_link
+msgid "Guardian of a student"
+msgstr "Lien parental"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_bf_school_slide_renew__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_bf_school_slide_renew__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_bf_school_slide_renew__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_bf_school_slide_renew__name
+msgid "Name of the copy"
+msgstr "Nom de la copie"
+
+#. module: bf_school_slides
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.portal_school_courses
+msgid "No course for now."
+msgstr "Aucun cours pour l'instant."
+
+#. module: bf_school_slides
+#. odoo-python
+#: code:addons/bf_school_slides/wizard/renew_course.py:0
+msgid "Only the person responsible for the course renews it."
+msgstr "Seule la personne responsable du cours le reconduit."
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_slide_channel__school_include_guardians
+msgid "Parents follow the course"
+msgstr "Les parents suivent le cours"
+
+#. module: bf_school_slides
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.bf_school_slide_renew_view_form
+msgid "Renew"
+msgstr "Reconduire"
+
+#. module: bf_school_slides
+#: model:ir.model,name:bf_school_slides.model_bf_school_slide_renew
+msgid "Renew a course for another year"
+msgstr "Reconduire un cours pour une autre année"
+
+#. module: bf_school_slides
+#. odoo-python
+#: code:addons/bf_school_slides/models/slide_channel.py:0
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.view_slide_channel_form_school
+msgid "Renew for another year"
+msgstr "Reconduire pour une autre année"
+
+#. module: bf_school_slides
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.view_slide_channel_form_school
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_slides
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.slide_channel_view_search_school
+msgid "School courses"
+msgstr "Cours de l'école"
+
+#. module: bf_school_slides
+#: model:ir.model,name:bf_school_slides.model_bf_school_group
+msgid "School group"
+msgstr "Groupe scolaire"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,field_description:bf_school_slides.field_slide_channel__school_group_ids
+msgid "School groups"
+msgstr "Groupes de l'école"
+
+#. module: bf_school_slides
+#: model:ir.actions.server,name:bf_school_slides.ir_cron_school_sync_course_members_ir_actions_server
+msgid "School: course attendees follow the groups"
+msgstr "École : les participants des cours suivent les groupes"
+
+#. module: bf_school_slides
+#: model:ir.model,name:bf_school_slides.model_slide_slide
+msgid "Slides"
+msgstr "Contenus"
+
+#. module: bf_school_slides
+#: model:ir.model.fields,help:bf_school_slides.field_slide_channel_partner__school_synced
+msgid ""
+"Taken away when the student leaves the group. An attendee invited by hand "
+"stays."
+msgstr "Retirée quand l'élève quitte le groupe. Une inscription faite à la main reste."
+
+#. module: bf_school_slides
+#: model:ir.model.fields,help:bf_school_slides.field_slide_channel__school_include_guardians
+msgid ""
+"The adults who receive the school's notices for these students are attendees"
+" too: at primary school, they open the course with the child. They get no "
+"email when a content is published."
+msgstr "Les adultes qui reçoivent les avis de l'école pour ces élèves participent aussi : au primaire, le cours s'ouvre en famille. Aucun courriel ne leur est envoyé quand un contenu est publié."
+
+#. module: bf_school_slides
+#. odoo-python
+#: code:addons/bf_school_slides/wizard/renew_course.py:0
+msgid "The copy is for other groups than the course's own."
+msgstr "La copie est pour d'autres groupes que ceux du cours."
+
+#. module: bf_school_slides
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.bf_school_slide_renew_view_form
+msgid ""
+"The copy takes the contents, their files and their quizzes. It is not published:\n"
+"                    check it, then publish it for the new groups. This course does not change."
+msgstr "La copie reprend les contenus, leurs fichiers et leurs quiz. Elle n'est pas publiée :\n                    vérifiez-la, puis publiez-la pour les nouveaux groupes. Ce cours ne change pas."
+
+#. module: bf_school_slides
+#: model_terms:ir.ui.view,arch_db:bf_school_slides.view_slide_channel_form_school
+msgid ""
+"The students of these groups are the attendees, and only they (with their\n"
+"                            parents) see the course. Comments, reviews and karma are off."
+msgstr "Les élèves de ces groupes sont les participants, et eux seuls (avec leurs\n                            parents) voient le cours. Commentaires, avis et karma sont coupés."
+
+#. module: bf_school_slides
+#: model:ir.model.fields,help:bf_school_slides.field_slide_channel__school_group_ids
+msgid ""
+"Their students are the course's attendees, kept up to date as students join "
+"or leave the group. The course is then shown to its attendees only."
+msgstr "Leurs élèves sont les participants du cours, tenus à jour quand un élève entre dans le groupe ou le quitte. Le cours n'est alors montré qu'à ses participants."
+
+#. module: bf_school_slides
+#: model:ir.model,name:bf_school_slides.model_res_users
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_school_slides
+#. odoo-python
+#: code:addons/bf_school_slides/models/slide_channel.py:0
+msgid ""
+"You do not teach %s: only the school office ties a course to another "
+"teacher's group."
+msgstr "Vous n'enseignez pas à %s : seule l'administration de l'école rattache un cours à un groupe où vous n'enseignez pas."

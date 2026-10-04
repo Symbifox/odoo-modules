@@ -1,0 +1,916 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_work
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-04 02:05+0000\n"
+"PO-Revision-Date: 2026-10-04 02:05+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr_CA\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid " (late)"
+msgstr " (en retard)"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "%(name)s is larger than %(size)s MB."
+msgstr "%(name)s dépasse %(size)s Mo."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "%(name)s: this kind of file is not accepted (%(kinds)s)."
+msgstr "%(name)s : ce type de fichier n'est pas accepté (%(kinds)s)."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/homework.py:0
+msgid ""
+"%(students)s student(s) already handed in %(homework)s: its group, how it is"
+" handed in and its quiz no longer change. Create another homework."
+msgstr "%(students)s élève(s) ont déjà remis %(homework)s : son groupe, sa remise et son questionnaire ne changent plus. Créez un autre devoir."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "%s has started this quiz: only they can finish it."
+msgstr "%s a commencé ce questionnaire : seule cette personne peut le terminer."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "%s is empty."
+msgstr "%s est vide."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/homework.py:0
+msgid "%s was not uploaded here."
+msgstr "%s n'a pas été téléversé ici."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "(at most"
+msgstr "(au plus"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "(late)"
+msgstr "(en retard)"
+
+#. module: bf_school_work
+#: model:mail.template,body_html:bf_school_work.mail_template_work_returned
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The work <strong t-out=\"object.homework_id.name or ''\"/> of <strong t-out=\"object.student_id.name or ''\"/> was returned by the teacher.</p>\n"
+"    <p t-if=\"object.points_total\" style=\"margin:0 0 12px 0;\">Mark: <strong t-out=\"'%g / %g' % (object.grade, object.points_total)\"/></p>\n"
+"    <p style=\"margin:0 0 12px 0;\">The comment and the corrected copy, if any, are on the portal.</p>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/work/{{ object.homework_id.id }}/{{ object.student_id.id }}\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            See the returned work\n"
+"        </a>\n"
+"    </p>\n"
+"    <p style=\"margin:0;color:#6c757d;font-size:13px;\">You receive this email because you chose it on the portal (Work to hand in). Untick it there to stop.</p>\n"
+"</div>\n"
+"            "
+msgstr "<div>\n    <p style=\"margin:0 0 12px 0;\">Bonjour,</p>\n    <p style=\"margin:0 0 12px 0;\">Le travail <strong t-out=\"object.homework_id.name or ''\"/> de <strong t-out=\"object.student_id.name or ''\"/> a été retourné.</p>\n    <p t-if=\"object.points_total\" style=\"margin:0 0 12px 0;\">Note : <strong t-out=\"'%g / %g' % (object.grade, object.points_total)\"/></p>\n    <p style=\"margin:0 0 12px 0;\">Le commentaire et la copie corrigée, s'il y en a, sont au portail.</p>\n    <p style=\"margin:24px 0;\">\n        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/work/{{ object.homework_id.id }}/{{ object.student_id.id }}\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n            Voir le travail retourné\n        </a>\n    </p>\n    <p style=\"margin:0;color:#6c757d;font-size:13px;\">Vous recevez ce courriel parce que vous l'avez choisi au portail (Travaux à remettre). Décochez-le pour ne plus le recevoir.</p>\n</div>\n            "
+
+#. module: bf_school_work
+#: model:mail.template,body_html:bf_school_work.mail_template_work_digest
+msgid ""
+"<div>\n"
+"    <p style=\"margin:0 0 12px 0;\">Hello,</p>\n"
+"    <p style=\"margin:0 0 16px 0;\">Here is what changed in the school work since the last summary.</p>\n"
+"    <t t-foreach=\"ctx.get('school_digest') or []\" t-as=\"pair\">\n"
+"        <t t-set=\"student\" t-value=\"pair[0]\"/>\n"
+"        <t t-set=\"parts\" t-value=\"pair[1]\"/>\n"
+"        <h3 style=\"margin:16px 0 8px 0;font-size:16px;\" t-out=\"student.name or ''\"/>\n"
+"        <t t-if=\"parts['returned']\">\n"
+"            <p style=\"margin:0 0 4px 0;font-weight:600;\">Work returned</p>\n"
+"            <ul style=\"margin:0 0 12px 0;\">\n"
+"                <li t-foreach=\"parts['returned']\" t-as=\"submission\">\n"
+"                    <t t-out=\"submission.homework_id.name or ''\"/>\n"
+"                    <t t-if=\"submission.points_total\">: <t t-out=\"'%g / %g' % (submission.grade, submission.points_total)\"/></t>\n"
+"                </li>\n"
+"            </ul>\n"
+"        </t>\n"
+"        <t t-if=\"parts['due']\">\n"
+"            <p style=\"margin:0 0 4px 0;font-weight:600;\">To hand in soon</p>\n"
+"            <ul style=\"margin:0 0 12px 0;\">\n"
+"                <li t-foreach=\"parts['due']\" t-as=\"homework\">\n"
+"                    <t t-out=\"homework.name or ''\"/>, <t t-out=\"format_date(homework.date_due) or ''\"/>\n"
+"                </li>\n"
+"            </ul>\n"
+"        </t>\n"
+"        <t t-if=\"parts['late']\">\n"
+"            <p style=\"margin:0 0 4px 0;font-weight:600;\">Not handed in, due date passed</p>\n"
+"            <ul style=\"margin:0 0 12px 0;\">\n"
+"                <li t-foreach=\"parts['late']\" t-as=\"homework\">\n"
+"                    <t t-out=\"homework.name or ''\"/>, <t t-out=\"format_date(homework.date_due) or ''\"/>\n"
+"                </li>\n"
+"            </ul>\n"
+"        </t>\n"
+"        <t t-if=\"parts['contents']\">\n"
+"            <p style=\"margin:0 0 4px 0;font-weight:600;\">New course contents</p>\n"
+"            <ul style=\"margin:0 0 12px 0;\">\n"
+"                <li t-foreach=\"parts['contents']\" t-as=\"content\">\n"
+"                    <t t-out=\"content.name or ''\"/> (<t t-out=\"content.channel_id.name or ''\"/>)\n"
+"                </li>\n"
+"            </ul>\n"
+"        </t>\n"
+"    </t>\n"
+"    <p style=\"margin:24px 0;\">\n"
+"        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/work\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n"
+"            See the work on the portal\n"
+"        </a>\n"
+"    </p>\n"
+"    <p style=\"margin:0;color:#6c757d;font-size:13px;\">You receive this summary because you chose it on the portal (Work to hand in). Untick it there to stop.</p>\n"
+"</div>\n"
+"            "
+msgstr "<div>\n    <p style=\"margin:0 0 12px 0;\">Bonjour,</p>\n    <p style=\"margin:0 0 16px 0;\">Voici ce qui a changé dans les travaux scolaires depuis le dernier résumé.</p>\n    <t t-foreach=\"ctx.get('school_digest') or []\" t-as=\"pair\">\n        <t t-set=\"student\" t-value=\"pair[0]\"/>\n        <t t-set=\"parts\" t-value=\"pair[1]\"/>\n        <h3 style=\"margin:16px 0 8px 0;font-size:16px;\" t-out=\"student.name or ''\"/>\n        <t t-if=\"parts['returned']\">\n            <p style=\"margin:0 0 4px 0;font-weight:600;\">Travaux retournés</p>\n            <ul style=\"margin:0 0 12px 0;\">\n                <li t-foreach=\"parts['returned']\" t-as=\"submission\">\n                    <t t-out=\"submission.homework_id.name or ''\"/>\n                    <t t-if=\"submission.points_total\">: <t t-out=\"'%g / %g' % (submission.grade, submission.points_total)\"/></t>\n                </li>\n            </ul>\n        </t>\n        <t t-if=\"parts['due']\">\n            <p style=\"margin:0 0 4px 0;font-weight:600;\">À remettre bientôt</p>\n            <ul style=\"margin:0 0 12px 0;\">\n                <li t-foreach=\"parts['due']\" t-as=\"homework\">\n                    <t t-out=\"homework.name or ''\"/>, <t t-out=\"format_date(homework.date_due) or ''\"/>\n                </li>\n            </ul>\n        </t>\n        <t t-if=\"parts['late']\">\n            <p style=\"margin:0 0 4px 0;font-weight:600;\">Non remis, date de remise passée</p>\n            <ul style=\"margin:0 0 12px 0;\">\n                <li t-foreach=\"parts['late']\" t-as=\"homework\">\n                    <t t-out=\"homework.name or ''\"/>, <t t-out=\"format_date(homework.date_due) or ''\"/>\n                </li>\n            </ul>\n        </t>\n        <t t-if=\"parts['contents']\">\n            <p style=\"margin:0 0 4px 0;font-weight:600;\">Nouveaux contenus de cours</p>\n            <ul style=\"margin:0 0 12px 0;\">\n                <li t-foreach=\"parts['contents']\" t-as=\"content\">\n                    <t t-out=\"content.name or ''\"/> (<t t-out=\"content.channel_id.name or ''\"/>)\n                </li>\n            </ul>\n        </t>\n    </t>\n    <p style=\"margin:24px 0;\">\n        <a t-attf-href=\"{{ object.get_base_url() }}/my/school/work\" style=\"background-color:#875A7B;color:#FFFFFF;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;display:inline-block;\">\n            Voir les travaux au portail\n        </a>\n    </p>\n    <p style=\"margin:0;color:#6c757d;font-size:13px;\">Vous recevez ce résumé parce que vous l'avez choisi au portail (Travaux à remettre). Décochez-le pour ne plus le recevoir.</p>\n</div>\n            "
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_my_school_work_link
+msgid "<i class=\"fa fa-inbox me-1\"/>Work to hand in"
+msgstr "<i class=\"fa fa-inbox me-1\"/>Travaux à remettre"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.school_work_state_badge
+msgid "<span class=\"badge text-bg-info\">Handed in</span>"
+msgstr "<span class=\"badge text-bg-info\">Remis</span>"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.school_work_state_badge
+msgid "<span class=\"badge text-bg-success\">Returned</span>"
+msgstr "<span class=\"badge text-bg-success\">Retourné</span>"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_homework_view_form_work
+msgid "<span class=\"o_stat_text\">Handed in</span>"
+msgstr "<span class=\"o_stat_text\">Remis</span>"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_form
+msgid ""
+"A comment for the student and the parents, shown when the work is returned."
+msgstr "Un commentaire pour l'élève et les parents, affiché au retour du travail."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
+msgid ""
+"A daily summary: work returned, to hand in soon or late, new course contents"
+msgstr "Un résumé quotidien : travaux retournés, à remettre bientôt ou en retard, nouveaux contenus de cours"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "A hand-in's files, dates and state are kept by the system."
+msgstr "Les fichiers, les dates et l'état d'une remise sont tenus par le système."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/homework.py:0
+msgid "A mark already given (%(mark)s) is above this total."
+msgstr "Une note déjà donnée (%(mark)s) dépasse ce total."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "A mark cannot be negative."
+msgstr "Une note ne peut pas être négative."
+
+#. module: bf_school_work
+#: model:ir.model.constraint,message:bf_school_work.constraint_bf_school_homework_submission_homework_student_unique
+msgid "A student hands in a homework once."
+msgstr "Un élève remet un devoir une seule fois."
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework__survey_id
+msgid ""
+"A survey with scoring. Each student answers it once, signed in; the score, "
+"out of the homework's total, becomes the mark. Its answers are read by the "
+"group's teachers and the office only."
+msgstr "Un sondage noté. Chaque élève y répond une fois, en étant connecté ; le score, ramené au total du devoir, devient la note. Seuls le personnel enseignant du groupe et l'administration en lisent les réponses."
+
+#. module: bf_school_work
+#: model:ir.model.constraint,message:bf_school_work.constraint_bf_school_homework_points_total_positive
+msgid "A total cannot be negative."
+msgstr "Un total ne peut pas être négatif."
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework__accept_late
+msgid "Accept late work"
+msgstr "Accepter les retards"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_needaction
+msgid "Action Needed"
+msgstr "Action requise"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework__accept_late
+msgid ""
+"After the due date, work is still handed in and shown as late. Unticked, the"
+" portal refuses it."
+msgstr "Après la date de remise, le travail se remet encore et paraît en retard. Décoché, le portail le refuse."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_view_form_work
+msgid ""
+"An email offered here is sent only to the adults (with parental authority)\n"
+"                            and the students who tick it on the portal."
+msgstr "Un courriel offert ici n'est envoyé qu'aux adultes (avec l'autorité parentale)\n                            et aux élèves qui le cochent au portail."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
+msgid "An email when the teacher returns a work, with the mark"
+msgstr "Un courriel quand un travail est retourné, avec la note"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/homework.py:0
+msgid "An online quiz needs its survey."
+msgstr "Un questionnaire en ligne demande son sondage."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Answered on"
+msgstr "Répondu le"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "At most %s files."
+msgstr "Au plus %s fichiers."
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_attachment_count
+msgid "Attachment Count"
+msgstr "Nombre de pièces jointes"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "Choose at least one file."
+msgstr "Choisissez au moins un fichier."
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__feedback
+msgid "Comment"
+msgstr "Commentaire"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_school_work
+#: model:ir.model,name:bf_school_work.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__correction_ids
+msgid "Corrected copy"
+msgstr "Copie corrigée"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_res_partner__school_work_digest_sent
+#: model:ir.model.fields,field_description:bf_school_work.field_res_users__school_work_digest_sent
+msgid "Daily summary last sent"
+msgstr "Dernier résumé quotidien envoyé"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_res_partner__school_work_digest
+#: model:ir.model.fields,field_description:bf_school_work.field_res_users__school_work_digest
+msgid "Daily summary of the work"
+msgstr "Résumé quotidien des travaux"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_homework_work_link
+msgid "Documents"
+msgstr "Documents"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework__material_ids
+msgid "Documents for the students"
+msgstr "Documents pour les élèves"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Documents from the teacher"
+msgstr "Documents du cours"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
+msgid "Due"
+msgstr "Pour le"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__date_due
+msgid "Due on"
+msgstr "Dû le"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school__work_offer_return_email
+msgid ""
+"Each adult with parental authority, and each student with their own account,"
+" chooses on the portal whether to receive it. Nothing is sent until they do."
+msgstr "Chaque adulte qui a l'autorité parentale, et chaque élève qui a son propre compte, choisit au portail de le recevoir ou non. Rien n'est envoyé avant."
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_res_partner__school_work_return_email
+#: model:ir.model.fields,field_description:bf_school_work.field_res_users__school_work_return_email
+msgid "Email when work is returned"
+msgstr "Courriel au retour d'un travail"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
+msgid "Emails"
+msgstr "Courriels"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_view_form_work
+msgid "Emails offered to the families"
+msgstr "Courriels offerts aux familles"
+
+#. module: bf_school_work
+#: model:ir.model.fields.selection,name:bf_school_work.selection__bf_school_homework__submission_mode__file
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Files"
+msgstr "Fichiers"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_follower_ids
+msgid "Followers"
+msgstr "Abonnés"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Abonnés (partenaires)"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_homework_view_form_work
+msgid "For the students"
+msgstr "Pour les élèves"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__group_id
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_search
+msgid "Group"
+msgstr "Groupe"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_search
+msgid "Group by"
+msgstr "Regrouper par"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Hand in"
+msgstr "Remettre"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_homework_work_link
+msgid "Hand in, documents and mark"
+msgstr "Remise, documents et note"
+
+#. module: bf_school_work
+#: model:ir.model,name:bf_school_work.model_bf_school_homework_submission
+msgid "Hand-in"
+msgstr "Remise"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework__submission_mode
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__submission_mode
+msgid "Hand-in mode"
+msgstr "Mode de remise"
+
+#. module: bf_school_work
+#: model:ir.actions.act_window,name:bf_school_work.bf_school_submission_action
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework__submission_ids
+#: model:ir.ui.menu,name:bf_school_work.menu_school_submission
+msgid "Hand-ins"
+msgstr "Remises"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework__submission_count
+msgid "Hand-ins expected"
+msgstr "Remises attendues"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/homework.py:0
+msgid "Hand-ins: %s"
+msgstr "Remises : %s"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework__submitted_count
+#: model:ir.model.fields.selection,name:bf_school_work.selection__bf_school_homework_submission__state__submitted
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_homework_view_list_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_form
+msgid "Handed in"
+msgstr "Remis"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework_submission__is_late
+msgid "Handed in after the end of the due date, at the school's time."
+msgstr "Remis après la fin de la date de remise, à l'heure de l'école."
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__submitted_by_id
+msgid "Handed in by"
+msgstr "Remis par"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "Handed in by %(who)s%(late)s: %(files)s"
+msgstr "Remis par %(who)s%(late)s : %(files)s"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__submitted_on
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Handed in on"
+msgstr "Remis le"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__has_message
+msgid "Has Message"
+msgstr "A un message"
+
+#. module: bf_school_work
+#: model:ir.model,name:bf_school_work.model_bf_school_homework
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__homework_id
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_search
+msgid "Homework"
+msgstr "Devoirs"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework_submission__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si coché, de nouveaux messages demandent votre attention."
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework_submission__message_has_error
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework_submission__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si coché, certains messages ont une erreur de livraison."
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_is_follower
+msgid "Is Follower"
+msgstr "Est abonné"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__is_late
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_search
+#: model_terms:ir.ui.view,arch_db:bf_school_work.school_work_state_badge
+msgid "Late"
+msgstr "En retard"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework__points_total
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework_submission__points_total
+msgid "Leave at 0 for work that is not marked."
+msgstr "Laisser à 0 pour un travail non noté."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "MB each)"
+msgstr "Mo chacun)"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__grade
+msgid "Mark"
+msgstr "Note"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework__points_total
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__points_total
+msgid "Marked out of"
+msgstr "Noté sur"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_has_error
+msgid "Message Delivery error"
+msgstr "Erreur de livraison du message"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_ids
+msgid "Messages"
+msgstr "Messages"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
+msgid "No work to hand in for now."
+msgstr "Aucun travail à remettre pour l'instant."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_search
+msgid "Not handed in"
+msgstr "Non remis"
+
+#. module: bf_school_work
+#: model:ir.model.fields.selection,name:bf_school_work.selection__bf_school_homework__submission_mode__none
+msgid "Not online"
+msgstr "Pas en ligne"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework__submission_mode
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework_submission__submission_mode
+msgid ""
+"Not online: on paper or in class. Files: each student hands in files on the "
+"portal. Online quiz: each student answers a scored survey, whose score "
+"becomes the mark."
+msgstr "Pas en ligne : sur papier ou en classe. Fichiers : chaque élève remet des fichiers au portail. Questionnaire en ligne : chaque élève répond à un sondage noté, dont le score devient la note."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Nothing handed in yet."
+msgstr "Rien de remis pour l'instant."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
+msgid "Nothing is sent unless you tick it."
+msgstr "Rien n'est envoyé si vous ne cochez pas."
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Nombre d'actions"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_has_error_counter
+msgid "Number of errors"
+msgstr "Nombre d'erreurs"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework_submission__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Nombre de messages demandant une action"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework_submission__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Nombre de messages avec une erreur de livraison"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school__work_offer_digest
+msgid "Offer a daily summary"
+msgstr "Offrir un résumé quotidien"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school__work_offer_return_email
+msgid "Offer an email when work is returned"
+msgstr "Offrir un courriel au retour d'un travail"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school__work_offer_digest
+msgid ""
+"One email a day at most: work returned, work to hand in soon or late, new "
+"course contents. Each adult and each student chooses on the portal whether "
+"to receive it."
+msgstr "Au plus un courriel par jour : travaux retournés, à remettre bientôt ou en retard, nouveaux contenus de cours. Chaque adulte et chaque élève choisit au portail de le recevoir ou non."
+
+#. module: bf_school_work
+#: model:ir.model.fields.selection,name:bf_school_work.selection__bf_school_homework__submission_mode__survey
+msgid "Online quiz"
+msgstr "Questionnaire en ligne"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "Only the teacher of the group returns this work."
+msgstr "Seul le personnel enseignant du groupe retourne ce travail."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_list
+msgid "Out of"
+msgstr "Sur"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework__survey_id
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Quiz"
+msgstr "Questionnaire"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__survey_answer_id
+msgid "Quiz answer"
+msgstr "Réponse au questionnaire"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "Quiz answered by %(who)s: %(score)s %%."
+msgstr "Questionnaire répondu par %(who)s : %(score)s %%."
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__rating_ids
+msgid "Ratings"
+msgstr "Évaluations"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_form
+msgid "Reopen"
+msgstr "Rouvrir"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "Reopened by %s."
+msgstr "Rouvert par %s."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Replace with these files"
+msgstr "Remplacer par ces fichiers"
+
+#. module: bf_school_work
+#: model:ir.actions.server,name:bf_school_work.action_submission_return
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_form
+msgid "Return"
+msgstr "Retourner"
+
+#. module: bf_school_work
+#: model:ir.model.fields.selection,name:bf_school_work.selection__bf_school_homework_submission__state__returned
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_form
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_search
+msgid "Returned"
+msgstr "Retourné"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__returned_by_id
+msgid "Returned by"
+msgstr "Retourné par"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "Returned by %s."
+msgstr "Retourné par %s."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Returned by the teacher"
+msgstr "Travail corrigé"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__returned_on
+msgid "Returned on"
+msgstr "Retourné le"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Erreur de livraison SMS"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
+msgid "Save"
+msgstr "Enregistrer"
+
+#. module: bf_school_work
+#: model:ir.model,name:bf_school_work.model_bf_school
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_work
+#: model:ir.model,name:bf_school_work.model_bf_school_group
+msgid "School group"
+msgstr "Groupe scolaire"
+
+#. module: bf_school_work
+#: model:mail.template,subject:bf_school_work.mail_template_work_digest
+msgid "School work: today's summary"
+msgstr "Travaux scolaires : le résumé du jour"
+
+#. module: bf_school_work
+#: model:ir.actions.server,name:bf_school_work.ir_cron_school_work_digest_ir_actions_server
+#: model:mail.template,name:bf_school_work.mail_template_work_digest
+msgid "School: daily summary of the work"
+msgstr "École : résumé quotidien des travaux"
+
+#. module: bf_school_work
+#: model:mail.template,name:bf_school_work.mail_template_work_returned
+msgid "School: work returned"
+msgstr "École : travail retourné"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework__material_ids
+msgid ""
+"Served on the portal to the students of the group and to their parents."
+msgstr "Servis au portail aux élèves du groupe et à leurs parents."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "Start the quiz"
+msgstr "Commencer le questionnaire"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__state
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_search
+msgid "State"
+msgstr "État"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__student_id
+msgid "Student"
+msgstr "Élève"
+
+#. module: bf_school_work
+#: model:ir.model,name:bf_school_work.model_survey_user_input
+msgid "Survey User Input"
+msgstr "Réponse au sondage"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__teacher_id
+msgid "Teacher"
+msgstr "Professeur"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "The due date has passed and this quiz is not accepted late."
+msgstr "La date de remise est passée et ce questionnaire n'est pas accepté en retard."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/controllers/portal.py:0
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "The due date has passed and this work is not accepted late."
+msgstr "La date de remise est passée et ce travail n'est pas accepté en retard."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "The due date has passed: the work will be shown as late."
+msgstr "La date de remise est passée : le travail paraîtra en retard."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_form
+msgid ""
+"The mark is hidden from the family again and the work can be handed in "
+"again."
+msgstr "La note est de nouveau cachée à la famille et le travail peut être remis à nouveau."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "The mark of %(student)s is above the total (%(total)s)."
+msgstr "La note de %(student)s dépasse le total (%(total)s)."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "The student is no longer in this group."
+msgstr "L'élève n'est plus dans ce groupe."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "The teacher has returned this work."
+msgstr "Ce travail a déjà été retourné."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "The work"
+msgstr "Le travail"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "This quiz was already answered."
+msgstr "Ce questionnaire a déjà été répondu."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/homework.py:0
+msgid "This work changed at the same moment: open it again."
+msgstr "Ce travail a changé au même moment : ouvrez-le de nouveau."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "This work is not an online quiz."
+msgstr "Ce travail n'est pas un questionnaire en ligne."
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "This work is not handed in as files."
+msgstr "Ce travail ne se remet pas en fichiers."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_submission_view_search
+msgid "To correct"
+msgstr "À corriger"
+
+#. module: bf_school_work
+#: model:ir.model.fields.selection,name:bf_school_work.selection__bf_school_homework_submission__state__todo
+#: model_terms:ir.ui.view,arch_db:bf_school_work.school_work_state_badge
+msgid "To hand in"
+msgstr "À remettre"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "Told by email: %s."
+msgstr "Avis envoyé par courriel à : %s."
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__website_message_ids
+msgid "Website Messages"
+msgstr "Messages du site web"
+
+#. module: bf_school_work
+#: model:ir.model.fields,help:bf_school_work.field_bf_school_homework_submission__website_message_ids
+msgid "Website communication history"
+msgstr "Historique des communications du site web"
+
+#. module: bf_school_work
+#: model:ir.model.fields,field_description:bf_school_work.field_bf_school_homework_submission__attachment_ids
+#: model_terms:ir.ui.view,arch_db:bf_school_work.bf_school_view_form_work
+msgid "Work handed in"
+msgstr "Travail remis"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_breadcrumbs_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
+msgid "Work to hand in"
+msgstr "Travaux à remettre"
+
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/homework.py:0
+msgid "You do not teach %s."
+msgstr "Vous n'enseignez pas à %s."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
+msgid "Your choice is saved."
+msgstr "Votre choix est enregistré."
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "by"
+msgstr "par"
+
+#. module: bf_school_work
+#: model:mail.template,subject:bf_school_work.mail_template_work_returned
+msgid ""
+"{{ object.student_id.name }}: work returned, {{ object.homework_id.name }}"
+msgstr "{{ object.student_id.name }} : travail retourné, {{ object.homework_id.name }}"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "· due"
+msgstr "· à remettre le"
+
+#. module: bf_school_work
+#: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
+msgid "· out of"
+msgstr "· sur"

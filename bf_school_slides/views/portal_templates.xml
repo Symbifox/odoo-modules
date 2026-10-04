@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_courses_link" name="School: link to the courses"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a href="/my/school/courses" class="btn btn-secondary">
+                <i class="fa fa-graduation-cap me-1"/>Courses</a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_courses" name="School: courses breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="38">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_courses'" class="breadcrumb-item active">Courses</li>
+        </xpath>
+    </template>
+
+    <template id="portal_school_courses" name="School: courses">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Courses</t>
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Courses</t>
+            </t>
+            <div t-if="not courses" class="alert alert-info mt-3">No course for now.</div>
+            <div class="list-group mt-3">
+                <a t-foreach="courses" t-as="course" t-att-href="course.website_url"
+                   class="list-group-item list-group-item-action">
+                    <strong t-out="course.name"/>
+                    <small class="text-muted"> · <t t-out="', '.join(course.sudo().school_group_ids.mapped('name'))"/>
+                        <t t-if="course.user_id"> · <t t-out="course.user_id.name"/></t></small>
+                </a>
+            </div>
+        </t>
+    </template>
+</odoo>

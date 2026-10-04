@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_view_form_work" model="ir.ui.view">
+        <field name="name">bf.school.form.work</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_core.bf_school_view_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Work handed in" name="work" groups="bf_school_core.group_school_manager">
+                    <group string="Emails offered to the families">
+                        <field name="work_offer_return_email"/>
+                        <field name="work_offer_digest"/>
+                        <div colspan="2" class="text-muted">
+                            An email offered here is sent only to the adults (with parental authority)
+                            and the students who tick it on the portal.
+                        </div>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

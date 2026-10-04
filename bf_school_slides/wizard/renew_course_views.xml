@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_slide_renew_view_form" model="ir.ui.view">
+        <field name="name">bf.school.slide.renew.form</field>
+        <field name="model">bf.school.slide.renew</field>
+        <field name="arch" type="xml">
+            <form>
+                <p class="text-muted">
+                    The copy takes the contents, their files and their quizzes. It is not published:
+                    check it, then publish it for the new groups. This course does not change.
+                </p>
+                <group>
+                    <field name="channel_id" invisible="1"/>
+                    <field name="name"/>
+                    <field name="group_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_renew" type="object" string="Renew" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_school_work_link" name="School: link to the work"
+              inherit_id="bf_school_portal.portal_my_school">
+        <xpath expr="//div[hasclass('o_school_links')]" position="inside">
+            <a href="/my/school/work" class="btn btn-secondary">
+                <i class="fa fa-inbox me-1"/>Work to hand in</a>
+        </xpath>
+    </template>
+
+    <template id="portal_school_homework_work_link" name="School: homework opens the work page"
+              inherit_id="bf_school_homework.portal_school_homework">
+        <xpath expr="//div[@t-if='hw.description']" position="after">
+            <a t-if="pair[1].id in (school_work_student_ids or []) and (hw.submission_mode != 'none' or hw.material_ids)"
+               t-attf-href="/my/school/work/#{hw.id}/#{pair[1].id}" class="small">
+                <t t-if="hw.submission_mode == 'none'">Documents</t>
+                <t t-else="">Hand in, documents and mark</t>
+            </a>
+        </xpath>
+    </template>
+
+    <template id="portal_breadcrumbs_school_work" name="School: work breadcrumbs"
+              inherit_id="portal.portal_breadcrumbs" priority="37">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'school_work'" class="breadcrumb-item active">Work to hand in</li>
+            <t t-if="page_name == 'school_work_page'">
+                <li class="breadcrumb-item"><a href="/my/school/work">Work to hand in</a></li>
+                <li class="breadcrumb-item active" t-out="homework.name"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="school_work_state_badge" name="School: hand-in state">
+        <t t-if="not submission or submission.state == 'todo'">
+            <span t-if="homework.submission_mode != 'none'" class="badge text-bg-warning">To hand in</span>
+        </t>
+        <t t-elif="submission.state == 'submitted'">
+            <span class="badge text-bg-info">Handed in</span>
+            <span t-if="submission.is_late" class="badge text-bg-danger ms-1">Late</span>
+        </t>
+        <t t-else="">
+            <span class="badge text-bg-success">Returned</span>
+            <span t-if="homework.points_total" class="badge text-bg-light border ms-1">
+                <t t-out="'%g' % submission.grade"/> / <t t-out="'%g' % homework.points_total"/>
+            </span>
+        </t>
+    </template>
+
+    <template id="portal_school_work" name="School: work to hand in">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">Work to hand in</t>
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Work to hand in</t>
+            </t>
+            <div t-if="saved" class="alert alert-success mt-3" role="status">Your choice is saved.</div>
+            <div t-if="not rows" class="alert alert-info mt-3">No work to hand in for now.</div>
+            <div class="list-group mt-3">
+                <a t-foreach="rows" t-as="row" class="list-group-item list-group-item-action"
+                   t-attf-href="/my/school/work/#{row['homework'].id}/#{row['student'].id}">
+                    <t t-set="homework" t-value="row['homework']"/>
+                    <t t-set="submission" t-value="row['submission']"/>
+                    <div class="d-flex justify-content-between flex-wrap gap-2">
+                        <div>
+                            <strong t-out="homework.name"/>
+                            <small class="text-muted"> · <t t-out="row['student'].name"/> · <t t-out="homework.group_id.name"/></small>
+                        </div>
+                        <div>
+                            <t t-call="bf_school_work.school_work_state_badge"/>
+                            <span class="badge text-bg-light border ms-1">Due <span t-field="homework.date_due"/></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div t-if="offer_return or offer_digest" class="card mt-4">
+                <div class="card-body">
+                    <h6>Emails</h6>
+                    <form method="post" action="/my/school/work/notices">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <div t-if="offer_return" class="form-check">
+                            <input class="form-check-input" type="checkbox" name="return_email" id="school_work_return_email"
+                                   t-att-checked="me.school_work_return_email or None"/>
+                            <label class="form-check-label" for="school_work_return_email">An email when the teacher returns a work, with the mark</label>
+                        </div>
+                        <div t-if="offer_digest" class="form-check">
+                            <input class="form-check-input" type="checkbox" name="digest" id="school_work_digest"
+                                   t-att-checked="me.school_work_digest or None"/>
+                            <label class="form-check-label" for="school_work_digest">A daily summary: work returned, to hand in soon or late, new course contents</label>
+                        </div>
+                        <p class="small text-muted mt-2 mb-2">Nothing is sent unless you tick it.</p>
+                        <button type="submit" class="btn btn-sm btn-secondary">Save</button>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_school_work_page" name="School: one work">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title" t-value="homework.name"/>
+            <div class="mt-3">
+                <h3 class="mb-1" t-out="homework.name"/>
+                <div class="text-muted mb-2">
+                    <t t-out="student.name"/> · <t t-out="homework.group_id.name"/> ·
+                    <span t-field="homework.kind"/> · due <span t-field="homework.date_due"/>
+                    <t t-if="homework.points_total"> · out of <t t-out="'%g' % homework.points_total"/></t>
+                </div>
+                <t t-call="bf_school_work.school_work_state_badge"/>
+            </div>
+            <div t-if="error" class="alert alert-danger mt-3" role="alert" t-out="error"/>
+            <div t-if="homework.description" class="mt-3" t-out="homework.description"/>
+
+            <div t-if="homework.material_ids" class="card mt-3">
+                <div class="card-body">
+                    <h6>Documents from the teacher</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li t-foreach="homework.material_ids" t-as="doc">
+                            <a t-attf-href="/my/school/work/#{homework.id}/#{student.id}/file/#{doc.id}">
+                                <i class="fa fa-download me-1"/><t t-out="doc.name"/></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Files -->
+            <div t-if="homework.submission_mode == 'file'" class="card mt-3">
+                <div class="card-body">
+                    <h6>The work</h6>
+                    <t t-if="submission and submission.attachment_ids">
+                        <p class="small text-muted mb-1">
+                            Handed in on <span t-field="submission.submitted_on" t-options="{'widget': 'datetime', 'format': 'yyyy-MM-dd HH:mm'}"/>
+                            by <t t-out="submission.submitted_by_id.name"/>
+                            <span t-if="submission.is_late" class="text-danger">(late)</span>
+                        </p>
+                        <ul class="list-unstyled">
+                            <li t-foreach="submission.attachment_ids" t-as="doc">
+                                <a t-attf-href="/my/school/work/#{homework.id}/#{student.id}/file/#{doc.id}">
+                                    <i class="fa fa-file-o me-1"/><t t-out="doc.name"/></a>
+                            </li>
+                        </ul>
+                    </t>
+                    <p t-else="" class="small text-muted">Nothing handed in yet.</p>
+                    <t t-if="submission and submission.state == 'returned'"/>
+                    <div t-elif="refusal" class="alert alert-secondary small mb-0" t-out="refusal"/>
+                    <form t-else="" method="post" enctype="multipart/form-data"
+                          t-attf-action="/my/school/work/#{homework.id}/#{student.id}/hand-in">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <p t-if="due_passed" class="small text-danger mb-2">
+                            The due date has passed: the work will be shown as late.
+                        </p>
+                        <label class="form-label small" for="school_work_files">
+                            <t t-if="submission and submission.attachment_ids">Replace with these files</t>
+                            <t t-else="">Files</t>
+                            (at most <t t-out="max_files"/>, <t t-out="max_file_size_mb"/> MB each)
+                        </label>
+                        <input id="school_work_files" type="file" name="files" multiple="multiple" required="required"
+                               class="form-control" t-att-accept="accept"/>
+                        <button type="submit" class="btn btn-primary mt-2">Hand in</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quiz -->
+            <div t-if="homework.submission_mode == 'survey'" class="card mt-3">
+                <div class="card-body">
+                    <h6>Quiz</h6>
+                    <p t-if="submission and submission.state != 'todo'" class="small text-muted mb-0">
+                        Answered on <span t-field="submission.submitted_on" t-options="{'widget': 'datetime', 'format': 'yyyy-MM-dd HH:mm'}"/>
+                        by <t t-out="submission.submitted_by_id.name"/>
+                        <span t-if="submission.is_late" class="text-danger">(late)</span>
+                    </p>
+                    <form t-else="" method="post" t-attf-action="/my/school/work/#{homework.id}/#{student.id}/quiz">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <p t-if="due_passed and not homework.accept_late" class="small text-muted">
+                            The due date has passed and this quiz is not accepted late.
+                        </p>
+                        <button t-else="" type="submit" class="btn btn-primary">Start the quiz</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Returned -->
+            <div t-if="submission and submission.state == 'returned'" class="card mt-3 border-success">
+                <div class="card-body">
+                    <h6>Returned by the teacher</h6>
+                    <p t-if="homework.points_total" class="fs-5 mb-2">
+                        <strong t-out="'%g' % submission.grade"/> / <t t-out="'%g' % homework.points_total"/>
+                    </p>
+                    <p t-if="submission.feedback" class="mb-2" style="white-space: pre-line" t-out="submission.feedback"/>
+                    <ul t-if="submission.correction_ids" class="list-unstyled mb-0">
+                        <li t-foreach="submission.correction_ids" t-as="doc">
+                            <a t-attf-href="/my/school/work/#{homework.id}/#{student.id}/file/#{doc.id}">
+                                <i class="fa fa-download me-1"/><t t-out="doc.name"/></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_view_form_student_portal" model="ir.ui.view">
+        <field name="name">bf.school.form.student.portal</field>
+        <field name="model">bf.school</field>
+        <field name="inherit_id" ref="bf_school_device.bf_school_view_form_device"/>
+        <field name="arch" type="xml">
+            <field name="directory_user_path" position="after">
+                <field name="student_oauth_provider_id" groups="base.group_system"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="bf_school_account_view_form_portal" model="ir.ui.view">
+        <field name="name">bf.school.account.form.portal</field>
+        <field name="model">bf.school.account</field>
+        <field name="inherit_id" ref="bf_school_device.bf_school_account_view_form"/>
+        <field name="arch" type="xml">
+            <field name="directory_pk" position="after">
+                <field name="portal_user_id" readonly="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>

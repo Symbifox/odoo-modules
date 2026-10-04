@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Late afternoon in Québec (21:00 UTC): the day's returns are in, tomorrow's work is ahead. -->
+    <record id="ir_cron_school_work_digest" model="ir.cron">
+        <field name="name">School: daily summary of the work</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_school_work_digest()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 21:00:00')"/>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

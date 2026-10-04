@@ -1,0 +1,153 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_school_student_portal
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-04 00:19+0000\n"
+"PO-Revision-Date: 2026-10-04 00:19+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr_CA\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/account.py:0
+msgid "%(student)s already has a user (%(login)s)."
+msgstr "%(student)s a déjà un usager (%(login)s)."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/account.py:0
+msgid "%s is not marked as a student."
+msgstr "La fiche de %s n'est pas une fiche d'élève."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/account.py:0
+msgid "%s is the guardian of a student."
+msgstr "%s est responsable d'un élève."
+
+#. module: bf_school_student_portal
+#: model_terms:ir.ui.view,arch_db:bf_school_student_portal.portal_my_school_student
+msgid ": your work, your homework and your courses are here."
+msgstr " : tes travaux, tes devoirs et tes cours sont ici."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/res_users.py:0
+msgid ""
+"A student signs in through the school's directory: the school office gives a"
+" new password."
+msgstr "Un élève se connecte par l'annuaire de l'école : c'est l'administration qui donne un nouveau mot de passe."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/res_users.py:0
+msgid "A student's account is managed by the school."
+msgstr "Le compte d'un élève est géré par l'école."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/account.py:0
+msgid "A student's portal user is kept by the system."
+msgstr "L'usager portail d'un élève est tenu par le système."
+
+#. module: bf_school_student_portal
+#: model_terms:ir.ui.view,arch_db:bf_school_student_portal.portal_my_school_student
+msgid "Hello"
+msgstr "Bonjour"
+
+#. module: bf_school_student_portal
+#: model:ir.model.fields,field_description:bf_school_student_portal.field_bf_school_account__portal_user_id
+msgid "Portal user"
+msgstr "Usager portail"
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/account.py:0
+msgid "Portal user archived."
+msgstr "Usager portail archivé."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/account.py:0
+msgid "Portal user brought back in line with the account."
+msgstr "Usager portail remis en accord avec le compte."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/account.py:0
+msgid "Portal user created: %s."
+msgstr "Usager portail créé : %s."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/account.py:0
+msgid "Portal user not synchronised: %s"
+msgstr "Usager portail non synchronisé : %s"
+
+#. module: bf_school_student_portal
+#: model:ir.model,name:bf_school_student_portal.model_bf_school
+msgid "School"
+msgstr "École"
+
+#. module: bf_school_student_portal
+#: model:ir.actions.server,name:bf_school_student_portal.ir_cron_school_portal_sync_ir_actions_server
+msgid "School: students' portal users follow their accounts"
+msgstr "École : les usagers portail des élèves suivent leurs comptes"
+
+#. module: bf_school_student_portal
+#: model:ir.model,name:bf_school_student_portal.model_bf_school_account
+msgid "Student directory account"
+msgstr "Compte d'annuaire de l'élève"
+
+#. module: bf_school_student_portal
+#: model:ir.model.fields,field_description:bf_school_student_portal.field_bf_school__student_oauth_provider_id
+msgid "Student sign-in"
+msgstr "Connexion des élèves"
+
+#. module: bf_school_student_portal
+#: model:ir.model.fields,help:bf_school_student_portal.field_bf_school__student_oauth_provider_id
+msgid ""
+"The OpenID application of the school's directory, whose subject is the "
+"user's id (Authentik: subject mode « Based on the User's ID »). Students "
+"sign in to the portal through it with the account that opens the school's "
+"computers."
+msgstr "L'application OpenID de l'annuaire de l'école, dont le sujet est l'identifiant de l'usager (Authentik : mode de sujet « Based on the User's ID »). Les élèves s'y connectent au portail avec le compte qui ouvre les ordinateurs de l'école."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/account.py:0
+msgid "The portal user %s is not this student's: left alone."
+msgstr "L'usager portail %s n'est pas celui de cet élève : il n'est pas touché."
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/school.py:0
+msgid "The student sign-in must go through the school's own directory (%s)."
+msgstr "La connexion des élèves doit passer par l'annuaire de l'école (%s)."
+
+#. module: bf_school_student_portal
+#: model:ir.model.fields,help:bf_school_student_portal.field_bf_school_account__portal_user_id
+msgid ""
+"The student's portal user, tied to this directory account: the student signs"
+" in to the portal through the school's directory."
+msgstr "L'usager portail de l'élève, lié à ce compte d'annuaire : l'élève se connecte au portail par l'annuaire de l'école."
+
+#. module: bf_school_student_portal
+#: model:ir.model,name:bf_school_student_portal.model_res_users
+msgid "User"
+msgstr "Utilisateur"
+
+#. module: bf_school_student_portal
+#. odoo-python
+#: code:addons/bf_school_student_portal/models/school.py:0
+msgid "not configured"
+msgstr "non configuré"

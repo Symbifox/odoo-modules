@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_school_homework_view_form_work" model="ir.ui.view">
+        <field name="name">bf.school.homework.form.work</field>
+        <field name="model">bf.school.homework</field>
+        <field name="inherit_id" ref="bf_school_homework.bf_school_homework_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_school_open_submissions" type="object" class="oe_stat_button"
+                            icon="fa-inbox" invisible="submission_mode == 'none' or not id">
+                        <div class="o_stat_info">
+                            <span class="o_stat_value"><field name="submitted_count"/> / <field name="submission_count"/></span>
+                            <span class="o_stat_text">Handed in</span>
+                        </div>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="after">
+                <group string="For the students">
+                    <group>
+                        <field name="submission_mode" widget="radio"/>
+                        <field name="survey_id" invisible="submission_mode != 'survey'"
+                               required="submission_mode == 'survey'" groups="survey.group_survey_user"/>
+                        <field name="accept_late" invisible="submission_mode == 'none'"/>
+                        <field name="points_total"/>
+                    </group>
+                    <group>
+                        <field name="material_ids" widget="many2many_binary"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="bf_school_homework_view_list_work" model="ir.ui.view">
+        <field name="name">bf.school.homework.list.work</field>
+        <field name="model">bf.school.homework</field>
+        <field name="inherit_id" ref="bf_school_homework.bf_school_homework_view_list"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="submission_mode" optional="show"/>
+                <field name="submitted_count" string="Handed in" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>
