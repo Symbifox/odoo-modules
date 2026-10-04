@@ -36,7 +36,8 @@
                     <button string="Révéler le lien" name="action_confirm_reveal" type="object"
                             class="btn-primary" invisible="revealed"/>
                     <button string="Annuler" class="btn-secondary" special="cancel" invisible="revealed"/>
-                    <button string="Fermer" class="btn-primary" special="cancel" invisible="not revealed"/>
+                    <button string="Fermer" name="action_close" type="object"
+                            class="btn-primary" invisible="not revealed"/>
                 </footer>
             </form>
         </field>

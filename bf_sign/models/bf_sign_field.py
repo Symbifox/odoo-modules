@@ -1,5 +1,5 @@
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 # Fields the signing flow is allowed to write once the request has left draft.
 # Everything else (placement, type, signer, fill rules) is frozen after sending.
@@ -276,11 +276,30 @@ class BfSignField(models.Model):
         reqs = self.env["bf.sign.request"].browse(
             [v.get("request_id") for v in vals_list if v.get("request_id")])
         self._assert_draft(reqs.exists())
+        if not self.env.is_system():
+            # La valeur saisie est celle du signataire, écrite par le
+            # parcours (sudo). Imposée vide, elle ne vient ni des valeurs, ni du
+            # contexte, ni d'un ir.default personnel.
+            vals_list = [dict(vals, filled_value=False) for vals in vals_list]
         records = super().create(vals_list)
+        if not self.env.is_system():
+            # La demande peut venir du contexte (default_request_id) ou
+            # d'un ir.default, que le contrôle d'avant ne voit pas.
+            self._assert_draft(records.request_id)
         records._settle_template_wait()
         return records
 
     def write(self, vals):
+        if "filled_value" in vals and not self.env.is_system():
+            # Réécrire la valeur d'un signataire après coup la faisait
+            # apposer au scellement comme s'il l'avait saisie.
+            raise AccessError(_(
+                "La valeur d'un pavé est celle que le signataire saisit ; elle ne "
+                "s'écrit que par le parcours de signature."))
+        if "request_id" in vals and not self.env.is_system() and self.filtered(
+                lambda f: f.request_id.id != vals["request_id"]):
+            # Un pavé ne change pas de demande ; il se pose sur la sienne.
+            raise AccessError(_("Un pavé ne passe pas d'une demande à une autre."))
         if set(vals) - _PROCESS_FIELDS:
             self._assert_draft(self.request_id)
             self._settle_template_wait()

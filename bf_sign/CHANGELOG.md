@@ -2,6 +2,62 @@
 
 Versioning follows the Odoo `18.0.MAJOR.MINOR.PATCH` convention.
 
+## 18.0.3.28.1
+
+Un lien de signature ne se lit plus que par la révélation journalisée.
+
+- L'assistant « Révéler le lien de signature » est réservé à son auteur. Un
+  enregistrement transitoire n'appartient pas à son créateur en Odoo 18 : tout
+  gestionnaire lisait les liens que les autres venaient de révéler, sans trace
+  au journal.
+- Le jeton, le lien et l'empreinte du code de vérification du signataire
+  (`access_token`, `signing_url`, `otp_hash`) passent des gestionnaires aux
+  administrateurs. Un gestionnaire les lisait par RPC ou par l'export, pour
+  tous les signataires, sans passer par la révélation. Aucun écran ne les
+  montrait ; le contrôleur public, les courriels et les ponts les lisent en
+  sudo, comme avant.
+- « Fermer » efface le lien de l'assistant au lieu d'attendre le ménage des
+  transitoires.
+- Hors administrateur, le jeton d'un signataire ne se choisit plus : il est tiré
+  à la création, quelle que soit la valeur donnée, par le contexte, par un
+  défaut personnel (`ir.default`) ou par une copie. Un préparateur pouvait créer
+  un signataire avec un jeton connu de lui et signer à sa place, sans aucune
+  révélation au journal.
+- Hors administrateur, les champs du parcours de signature (état, signature,
+  paraphe, consentement, adresse IP, code de vérification, relances, ouvertures)
+  ne s'écrivent plus à la main et partent toujours de leur valeur de départ à
+  la création ; le parcours lui-même les écrit en sudo, comme avant. Un
+  « Signé » écrit à la main, avec une image, finissait sur le document scellé et
+  sur le certificat. L'état n'est plus modifiable dans la liste des signataires.
+- De même pour la demande : son état et sa preuve (empreintes, horodatage,
+  sceau, jeton de vérification, pièces signées) ne s'écrivent que par l'envoi,
+  l'annulation, la remise en brouillon et la signature. Un `write` direct
+  forgeait un « Signé » que la page de vérification déclarait authentique, ou
+  une remise en brouillon qui gardait signatures, codes et liens.
+- Le document et ses conditions (PDF, texte de consentement, ordre et méthode
+  de signature, code de vérification exigé, modèle, code QR de vérification,
+  certificat joint) sont figés dès l'envoi : le scellement apposait le document
+  tel qu'il était au dernier signataire, même remplacé entre-temps. Et chaque
+  signature vérifie que le document est encore celui dont l'empreinte a été
+  prise au premier envoi ; sinon elle est refusée. Un renvoi ne recalcule plus
+  cette empreinte.
+- Les pièces jointes de preuve ne se réécrivent plus par `ir.attachment` hors
+  administrateur : document envoyé, images de signature et de paraphe, document
+  scellé, certificat, jeton d'horodatage. C'était la voie de côté des champs
+  binaires, qui ne passe pas par le `write` de la demande. Elles ne se
+  suppriment plus non plus par l'édition d'un message ou le bouton
+  « supprimer » du chatter, qui passent en sudo ; et une pièce créée en sudo
+  (message, téléversement) ne reçoit plus de champ par un défaut de contexte ou
+  un `ir.default` personnel. Enfin, aucun module ne les détache plus en sudo
+  pour le compte d'un usager (réacheminement d'un courriel, signalement
+  d'hameçonnage) : la garde juge sur l'usager réel.
+- La valeur d'un pavé est celle que le signataire saisit : elle ne s'écrit plus
+  à la main, avant ni après sa signature.
+- Un signataire ou un pavé ne change plus de demande, et ne s'ajoute plus à une
+  demande déjà envoyée, même par un défaut de contexte ou un `ir.default`.
+- La révélation d'un lien vérifie que le gestionnaire peut lire ce signataire :
+  un gestionnaire d'une société obtenait le lien d'un signataire d'une autre.
+
 ## 18.0.3.28.0
 
 Partir d'un modèle plutôt que d'un PDF local.

@@ -40,7 +40,7 @@
                                    placeholder="Choisir un modèle existant…"
                                    options="{'no_create': True, 'no_open': True}"/>
                             <field name="document_file" filename="document_filename"
-                                   readonly="state == 'signed'"/>
+                                   readonly="state != 'draft'"/>
                             <field name="document_filename" invisible="1"/>
                             <field name="field_template_pending" invisible="1"/>
                             <field name="document_template_id" invisible="1"/>
@@ -110,7 +110,7 @@
                             <widget name="bf_sign_placement"/>
                         </page>
                         <page string="Consentement">
-                            <field name="consent_text" nolabel="1" readonly="state == 'signed'"/>
+                            <field name="consent_text" nolabel="1" readonly="state != 'draft'"/>
                         </page>
                         <page string="Preuve" invisible="state != 'signed'">
                             <group>

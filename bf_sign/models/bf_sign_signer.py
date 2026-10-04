@@ -8,7 +8,7 @@ from datetime import timedelta
 from markupsafe import Markup
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 
 from .mail_layout import dress_mail_body
 
@@ -23,6 +23,9 @@ _PROCESS_FIELDS = frozenset({
     "consent_given", "consent_timestamp", "signature_image", "initials_image",
     "otp_hash", "otp_sent_at", "otp_verified", "otp_attempts", "otp_send_count",
 })
+# What only the signing flow itself (under sudo) or an administrator may write:
+# the flow's fields plus the personal token.
+_GUARDED_FIELDS = _PROCESS_FIELDS | {"access_token"}
 
 OTP_LENGTH = 6
 OTP_TTL = 600          # seconds a code stays valid
@@ -53,12 +56,14 @@ class BfSignSigner(models.Model):
 
     # The personal signing token is the signer's identity factor: it must NOT be
     # readable by the requester (a basic sign user), otherwise they could open
-    # the link and sign on the signer's behalf. Restricted to managers; the
+    # the link and sign on the signer's behalf. Nor by a sign manager: a manager
+    # gets a link only through the reveal wizard, which writes the reveal to the
+    # audit trail first (18.0.3.28.1). Readable by administrators only; the
     # public controller reads it via sudo, and the invitation email is rendered
     # under sudo (see bf.sign.request._email_signer).
     access_token = fields.Char(
         default=lambda self: str(uuid.uuid4()), copy=False, index=True, readonly=True,
-        groups="bf_sign.group_sign_manager",
+        groups="base.group_system",
     )
     state = fields.Selection(
         selection=[
@@ -67,7 +72,7 @@ class BfSignSigner(models.Model):
             ("signed", "Signé"),
             ("refused", "Refusé"),
         ],
-        string="État", default="pending", copy=False,
+        string="État", default="pending", copy=False, readonly=True,
     )
     signed_on = fields.Datetime(readonly=True, copy=False)
     # Opening the document is tracked on the record itself, not only in the
@@ -97,7 +102,7 @@ class BfSignSigner(models.Model):
     initials_image = fields.Binary(string="Paraphe", readonly=True, copy=False)
 
     # Email OTP (identity check at signing time — gated by request.require_signer_otp).
-    otp_hash = fields.Char(copy=False, groups="bf_sign.group_sign_manager")
+    otp_hash = fields.Char(copy=False, groups="base.group_system")
     otp_sent_at = fields.Datetime(copy=False)
     otp_verified = fields.Boolean(copy=False)
     otp_attempts = fields.Integer(copy=False, default=0)
@@ -107,7 +112,7 @@ class BfSignSigner(models.Model):
     field_count = fields.Integer(compute="_compute_field_count")
     signing_url = fields.Char(
         string="Lien de signature", compute="_compute_signing_url",
-        groups="bf_sign.group_sign_manager")
+        groups="base.group_system")
 
     @api.depends("access_token", "request_id")
     def _compute_signing_url(self):
@@ -151,13 +156,52 @@ class BfSignSigner(models.Model):
         reqs = self.env["bf.sign.request"].browse(
             [v.get("request_id") for v in vals_list if v.get("request_id")])
         self._assert_draft(reqs.exists())
+        if not self.env.is_system():
+            # Hors administrateur, un jeton choisi à la création ouvrait
+            # la page de signature à son auteur, et un « Signé » posé d'avance
+            # passait pour la signature du destinataire. Le jeton est tiré ici et
+            # les champs du parcours sont IMPOSÉS à leur valeur de départ : retirés
+            # seulement, un défaut de contexte ou un ir.default personnel les
+            # reposerait.
+            vals_list = [
+                dict({k: v for k, v in vals.items() if k != "has_viewed"},
+                     **self._valeurs_de_depart())
+                for vals in vals_list]
         records = super().create(vals_list)
+        if not self.env.is_system():
+            # La demande peut venir du contexte (default_request_id) ou
+            # d'un ir.default, que le contrôle d'avant ne voit pas.
+            self._assert_draft(records.request_id)
         # Le dernier signataire attendu par le modèle de départ
         # déclenche la pose de ses pavés, quel que soit le chemin d'ajout.
         records.request_id._apply_pending_field_template()
         return records
 
+    def _valeurs_de_depart(self):
+        """Le jeton neuf et les champs du parcours à leur valeur de départ."""
+        vals = {"access_token": str(uuid.uuid4())}
+        for name in _PROCESS_FIELDS:
+            field = self._fields[name]
+            if field.compute:
+                continue  # has_viewed se calcule depuis first_viewed_on
+            vals[name] = ("pending" if name == "state"
+                          else 0 if field.type in ("integer", "float") else False)
+        return vals
+
     def write(self, vals):
+        # Le parcours de signature (contrôleur public, envoi, relance,
+        # code de vérification, remise en brouillon) écrit ces champs en sudo. Une
+        # écriture directe faisait passer un signataire pour « Signé », avec une
+        # image, une adresse IP et un code vérifié qu'il n'a jamais donnés.
+        if set(vals) & _GUARDED_FIELDS and not self.env.is_system():
+            raise AccessError(_(
+                "L'état, la signature et le code de vérification d'un signataire "
+                "ne s'écrivent que par le parcours de signature."))
+        if "request_id" in vals and not self.env.is_system() and self.filtered(
+                lambda s: s.request_id.id != vals["request_id"]):
+            # Un signataire ne change pas de demande. Il emportait son
+            # jeton (révélé ailleurs) et laissait ses pavés sur l'autre document.
+            raise AccessError(_("Un signataire ne passe pas d'une demande à une autre."))
         if set(vals) - _PROCESS_FIELDS:
             self._assert_draft(self.request_id)
         return super().write(vals)
@@ -261,6 +305,9 @@ class BfSignSigner(models.Model):
         self.ensure_one()
         if not self.env.user.has_group("bf_sign.group_sign_manager"):
             raise UserError(_("Action réservée aux gestionnaires de signature."))
+        # Un signataire d'une autre société n'est pas lisible par ce
+        # gestionnaire ; son lien ne l'est pas davantage.
+        self.check_access("read")
         wizard = self.env["bf.sign.reveal.link.wizard"].create({"signer_id": self.id})
         return {
             "type": "ir.actions.act_window",

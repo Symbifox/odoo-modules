@@ -7,3 +7,4 @@ from . import bf_sign_field_template
 from . import bf_sign_request
 from . import res_config_settings
 from . import onboarding_onboarding
+from . import ir_attachment

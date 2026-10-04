@@ -71,7 +71,7 @@ signed document is then **posted back into the source record's thread**.
 ### Signer identity
 - **A personal tokenised link** per signer (UUID, constant-time comparison), sent by email — the proof is control of the inbox.
 - **Optional code verification (OTP)**: the signer enters a 6-digit code sent to their email **before** viewing and signing (proof of inbox control *at the moment of signing*). Can be enabled globally and/or per request. Time-limited code, capped attempts.
-- **The signing link is never exposed to the requester**: `access_token` and `signing_url` are manager-only; a manager can reveal the link through a **"Copy link"** action, which is **written to the audit trail**.
+- **The signing link is never exposed to the requester**: `access_token` and `signing_url` are readable by administrators only; a sign manager gets a link solely through the **"Copy link"** action, which is **written to the audit trail** first, and the revealed link is visible to that manager alone.
 
 ### Integrity & evidence
 - **PAdES digital seal** (pyHanko) *(optional)*: an invisible cryptographic "organisation" signature on the final document, so a PDF reader (Adobe and others) shows "signed / not modified".
@@ -102,7 +102,7 @@ signed document is then **posted back into the source record's thread**.
 | Model | Role |
 |---|---|
 | `bf.sign.request` | The signature request: document, settings, signers, fields, hashes, signed artefacts, `res_model`/`res_id` link to the source record. |
-| `bf.sign.signer` | A signer: email, `access_token` (manager-only), state, signature/initials image, OTP fields. |
+| `bf.sign.signer` | A signer: email, `access_token` (administrators only), state, signature/initials image, OTP fields. |
 | `bf.sign.field` | A placed field (type, page, fractional position, fill mode, preset value, presentation order). |
 | `bf.sign.field.template` (+ `.line`) | A reusable field layout, per signer rank. |
 | `bf.sign.log` | The chained append-only log (immutable). |
@@ -255,8 +255,20 @@ leaves a body rebuilt by hand as it is.
 ## Security model (summary)
 
 - **Token-based access**: a UUID `access_token` per signer, compared in constant
-  time (`hmac.compare_digest`), **manager-only** (the requester cannot sign on
-  their own behalf); a manager revealing it is **logged**.
+  time (`hmac.compare_digest`), readable by **administrators only** (the requester
+  cannot sign on the signer's behalf); a sign manager reaches a link only by
+  revealing it, which is **logged**, for a signer they may read, and sees only
+  the links they revealed.
+- **The signing flow alone writes the signing state**: outside administrators,
+  a signer's token is drawn at creation (a supplied value, a context default, a
+  personal default or a copy is ignored), and the flow's fields (state,
+  signature, consent, IP, verification code) cannot be written by hand. The
+  same holds for the request's state and proof (hashes, timestamp, seal,
+  verification token, signed files) and for the values signers type into pads.
+  The document and its conditions are frozen once sent, including through their
+  attachments, and every signature checks that the document still matches the
+  imprint taken at first send. The flow writes all of this under sudo, after
+  its own checks.
 - **Email OTP** (optional): proof of inbox control at the moment of signing;
   expiry plus an attempt cap; the `/document`, `/submit` and `/refuse` routes
   are blocked until verified.

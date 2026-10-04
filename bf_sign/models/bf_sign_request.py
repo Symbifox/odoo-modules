@@ -11,7 +11,7 @@ from datetime import timedelta, timezone
 from markupsafe import Markup, escape
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tools.pdf import merge_pdf
 
 from .bf_sign_field import VALUE_TYPES
@@ -37,6 +37,29 @@ EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 # Whitespace a signer may paste inside a number (thin, non-breaking, regular).
 _NUM_SPACES = (" ", " ", " ", " ")
+
+
+# L'état et la preuve d'une demande ne s'écrivent que par son
+# parcours. L'envoi, l'annulation et la remise en brouillon les écrivent en sudo
+# après leurs propres contrôles ; la signature et le scellement passent par le
+# contrôleur public (sudo), l'échéance par un cron. Hors administrateur, un
+# write direct forgeait un « Signé » que /sign/verify déclarait authentique, ou
+# une remise en brouillon qui gardait signatures, codes et liens.
+_FLOW_FIELDS = {
+    "state": "draft", "hash_original": False, "hash_signed": False,
+    "hash_stamped": False, "signed_on": False, "tsa_token": False, "tsa_url": False,
+    "tsa_timestamp": False, "tsa_gentime": False, "sealed": False,
+    "verify_token": False, "signed_attachment_id": False,
+    "certificate_attachment_id": False,
+}
+# Ce que les signataires ont reçu : figé dès l'envoi, hors administrateur. Le
+# scellement appose le document tel qu'il est au dernier signataire.
+_SENT_FROZEN_FIELDS = frozenset({
+    "document_file", "document_filename", "consent_text", "signing_order",
+    "signature_method", "require_signer_otp", "field_template_id",
+    "document_template_id", "verify_qr", "verify_qr_position", "verify_qr_pages",
+    "append_certificate",
+})
 
 
 class BfSignRequest(models.Model):
@@ -343,6 +366,10 @@ class BfSignRequest(models.Model):
     # ── Creation ─────────────────────────────────────────────────────────────
     @api.model_create_multi
     def create(self, vals_list):
+        if not self.env.is_system():
+            # Imposées, pas retirées : un défaut de contexte ou un ir.default
+            # personnel les reposerait sinon.
+            vals_list = [dict(vals, **_FLOW_FIELDS) for vals in vals_list]
         for vals in vals_list:
             if vals.get("name", _("Nouvelle")) == _("Nouvelle"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("bf.sign.request") or _("Nouvelle")
@@ -362,6 +389,15 @@ class BfSignRequest(models.Model):
         return records
 
     def write(self, vals):
+        if not self.env.is_system():
+            if set(vals) & set(_FLOW_FIELDS):
+                raise AccessError(_(
+                    "L'état et la preuve d'une demande de signature ne s'écrivent que "
+                    "par son parcours : envoi, annulation, remise en brouillon, signature."))
+            if set(vals) & _SENT_FROZEN_FIELDS and self.filtered(lambda r: r.state != "draft"):
+                raise UserError(_(
+                    "Le document et ses conditions sont figés dès l'envoi. Remettez la "
+                    "demande en brouillon pour les modifier."))
         if "field_template_id" in vals and len(self) > 1:
             # Le document se décide demande par demande (d'où vient le sien ?).
             for rec in self:
@@ -516,6 +552,14 @@ class BfSignRequest(models.Model):
             self.env["ir.config_parameter"].sudo().get_param("web.base.url")
             or self.get_base_url()
         )
+
+    def _document_intact(self):
+        """Le document courant est-il celui dont l'empreinte a été prise à l'envoi ?"""
+        self.ensure_one()
+        if not self.hash_original:
+            return True  # rien à comparer (demande reprise, ou jamais envoyée)
+        doc = self.sudo().with_context(bin_size=False).document_file
+        return bool(doc) and self._sha256_hex(base64.b64decode(doc)) == self.hash_original
 
     @staticmethod
     def _sha256_hex(data_bytes):
@@ -695,12 +739,16 @@ class BfSignRequest(models.Model):
                             for f in hors),
                     ))
             rec._ensure_signer_partners()
-            rec.hash_original = rec._sha256_hex(doc_bytes)
+            rec.check_access("write")
+            # L'empreinte se prend au PREMIER envoi : un renvoi ne la recalcule
+            # pas, sans quoi il maquillerait un document remplacé entre-temps.
+            if rec.state == "draft" or not rec.hash_original:
+                rec.sudo().hash_original = rec._sha256_hex(doc_bytes)
             if not rec.expiry_date:
                 days = int(self.env["ir.config_parameter"].sudo().get_param(
                     "bf_sign.default_expiry_days", "30") or 30)
                 rec.expiry_date = fields.Datetime.now() + timedelta(days=days)
-            rec.state = "sent"
+            rec.sudo().state = "sent"
             # Envoyée, la demande n'attend plus rien de son modèle : remise en
             # brouillon plus tard, un ajout de signataire n'effacera pas ses pavés.
             if rec.field_template_pending:
@@ -927,7 +975,8 @@ class BfSignRequest(models.Model):
         for rec in self:
             if rec.state == "signed":
                 raise UserError(_("Un document signé ne peut être annulé."))
-            rec.state = "cancelled"
+            rec.check_access("write")
+            rec.sudo().state = "cancelled"
             self.env["bf.sign.log"]._append(rec, "cancelled", actor=self.env.user.name)
         return True
 
@@ -947,16 +996,16 @@ class BfSignRequest(models.Model):
                 raise UserError(_("Un document signé ne peut être remis en brouillon."))
             ecartes = rec.signer_ids.filtered(lambda s: s.state == "signed")
             # Brouillon d'abord : signataires et pavés ne s'écrivent qu'en brouillon.
-            # Écrit avec les droits de la personne (contrôle d'accès de l'original) ;
-            # le sudo ne sert qu'aux signataires, dont otp_hash est réservé aux
-            # gestionnaires.
+            # Le droit d'écrire la demande est contrôlé ici ; l'état et l'empreinte
+            # s'écrivent ensuite en sudo, comme tout le parcours.
+            rec.check_access("write")
             vals = {"state": "draft", "hash_original": False}
             # Une échéance déjà passée (demande expirée) serait gardée par l'envoi
             # suivant : la demande ré-expirerait dans l'heure et les nouveaux
             # liens répondraient « expiré ». L'envoi en pose alors une neuve.
             if rec.expiry_date and rec.expiry_date <= fields.Datetime.now():
                 vals["expiry_date"] = False
-            rec.write(vals)
+            rec.sudo().write(vals)
             rec.signer_ids.sudo()._reset_for_new_round()
             rec.field_ids.sudo().write({"filled_value": False})
             note = _("Remise en brouillon : signataires remis en attente, nouveaux liens personnels.")
@@ -1174,6 +1223,14 @@ class BfSignRequest(models.Model):
         self.ensure_one()
         if not self._signer_can_sign(signer):
             raise UserError(_("Vous ne pouvez pas signer cette demande pour le moment."))
+        # Avant toute écriture. Le contrôleur rend ce refus sur la page
+        # et valide la transaction : refuser plus loin (au scellement) laisserait
+        # un signataire « Signé » sur un document qui ne sera jamais scellé.
+        if not self._document_intact():
+            raise UserError(_(
+                "Le document a changé depuis son envoi : la signature est refusée. "
+                "Prévenez l'expéditeur, qui doit remettre la demande en brouillon "
+                "et la renvoyer."))
         if not consent:
             raise UserError(_("Le consentement est requis pour signer."))
         # Validate the drawn images BEFORE marking the signer as signed, so a
@@ -1320,12 +1377,16 @@ class BfSignRequest(models.Model):
         hash_signed = self._sha256_hex(signed_pdf)
 
         signed_name = self._signed_filename()
+        # res_field et public explicites : le contrôleur tourne en sudo avec l'uid
+        # du dernier signataire, dont les défauts personnels s'appliqueraient sinon.
         att_signed = self.env["ir.attachment"].create({
             "name": signed_name, "datas": base64.b64encode(signed_pdf),
-            "res_model": self._name, "res_id": self.id, "mimetype": "application/pdf"})
+            "res_model": self._name, "res_id": self.id, "mimetype": "application/pdf",
+            "res_field": False, "public": False})
         att_cert = self.env["ir.attachment"].create({
             "name": "Certificat - %s.pdf" % self.name, "datas": base64.b64encode(cert_pdf),
-            "res_model": self._name, "res_id": self.id, "mimetype": "application/pdf"})
+            "res_model": self._name, "res_id": self.id, "mimetype": "application/pdf",
+            "res_field": False, "public": False})
         self.write({
             "signed_attachment_id": att_signed.id,
             "certificate_attachment_id": att_cert.id,

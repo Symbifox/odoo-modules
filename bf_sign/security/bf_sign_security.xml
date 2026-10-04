@@ -167,4 +167,16 @@
             <field name="global" eval="True"/>
         </record>
 
+        <!-- 🔴 L'assistant « Révéler le lien de signature » écrit le lien en
+             clair dans son champ url, et un enregistrement transitoire n'est
+             pas réservé à son créateur en Odoo 18 : sans cette règle, chaque
+             gestionnaire lisait les liens révélés par les autres, sans passer
+             par action_confirm_reveal, donc sans trace au journal.
+             Règle globale : elle vaut aussi pour les administrateurs. -->
+        <record id="rule_sign_reveal_link_wizard_own" model="ir.rule">
+            <field name="name">Révélation du lien : son auteur seulement</field>
+            <field name="model_id" ref="model_bf_sign_reveal_link_wizard"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        </record>
+
 </odoo>
