@@ -147,6 +147,15 @@ class Submission(models.Model):
                              "submitted_by_id": False, "is_late": False, "grade": 0})
             submission.write(vals)
             submission._message_log(body=_("Reopened by %s.", self.env.user.name))
+            # Returned then reopened before the mail queue ran: the mark must not leave (found
+            # in review). The return email is a template email (not a chatter notification),
+            # waiting or failed (an administrator could resend it).
+            waiting = self.env["mail.mail"].sudo().search([
+                ("model", "=", submission._name), ("res_id", "=", submission.id),
+                ("is_notification", "=", False), ("state", "in", ("outgoing", "exception"))])
+            if waiting:
+                waiting.unlink()
+                submission._message_log(body=_("Return email withdrawn: the work was reopened."))
         return True
 
     # ------------------------------------------------------------ the family

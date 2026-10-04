@@ -20,7 +20,10 @@ Students sign in to the family portal with their school directory account.
   website's sign-up setting: Odoo's OAuth would otherwise open a portal user for any
   directory account, staff included. Only a student directory account gives one.
 - The provider must be the school's own directory (same host as the directory address): a
-  user id from another Authentik would be someone else. It is set by an administrator only.
+  user id from another Authentik would be someone else. It is set by an administrator only,
+  and checked again whenever the provider's addresses or the directory address change.
+- When the school signs its students in through its directory, that is the only door: a
+  password an administrator gave a student does not sign them in.
 - The portal user is set by the system only, at creation too, and the synchronisation only
   ever writes a portal user tied to the student's own card. It refuses a card that already
   has a user or that is a guardian's (an adult made a "student" would act for their

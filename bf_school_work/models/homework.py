@@ -139,11 +139,7 @@ class Homework(models.Model):
         return super().unlink()
 
     def _school_check_change(self, vals, keys):
-        if "group_id" in vals and not (
-                self.env.su or self.env.user.has_group("bf_school_core.group_school_manager")):
-            group = self.env["bf.school.group"].sudo().browse(vals["group_id"])
-            if self.env.user not in group.teacher_ids:
-                raise AccessError(_("You do not teach %s.", group.name))
+        # A teacher moving a homework to a group they do not teach: refused by bf_school_homework.
         for homework in self:
             started = homework.sudo().submission_ids.filtered(
                 lambda s: s.state != "todo" or s.survey_answer_id)

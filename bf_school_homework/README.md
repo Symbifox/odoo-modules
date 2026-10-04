@@ -15,8 +15,9 @@ Homework on the family portal and in the parents' own calendar.
 
 ## Security
 
-A teacher manages the homework of the groups they teach; the office sees all. Families
-have no access right; the feed is public but secret per adult.
+A teacher manages the homework of the groups they teach, and moves a homework only to a
+group they teach; the office sees all. Families have no access right; the feed is public
+but secret per adult.
 
 ## What has not been confirmed
 

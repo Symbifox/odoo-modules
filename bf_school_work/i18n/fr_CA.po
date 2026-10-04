@@ -884,12 +884,6 @@ msgid "Work to hand in"
 msgstr "Travaux à remettre"
 
 #. module: bf_school_work
-#. odoo-python
-#: code:addons/bf_school_work/models/homework.py:0
-msgid "You do not teach %s."
-msgstr "Vous n'enseignez pas à %s."
-
-#. module: bf_school_work
 #: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work
 msgid "Your choice is saved."
 msgstr "Votre choix est enregistré."
@@ -914,3 +908,8 @@ msgstr "· à remettre le"
 #: model_terms:ir.ui.view,arch_db:bf_school_work.portal_school_work_page
 msgid "· out of"
 msgstr "· sur"
+#. module: bf_school_work
+#. odoo-python
+#: code:addons/bf_school_work/models/submission.py:0
+msgid "Return email withdrawn: the work was reopened."
+msgstr "Avis de retour retiré : le travail a été rouvert."

@@ -87,6 +87,10 @@ class ResPartner(models.Model):
         student = submission.student_id.sudo()
         if not submission.group_id.school_id.work_offer_return_email:
             return self.browse()
+        # The portal no longer shows the work of a student who left the group: the email's
+        # link would end on a 404 (found in review).
+        if not submission._school_is_enrolled():
+            return self.browse()
         people = student.student_guardian_link_ids.filtered(
             lambda l: l.has_parental_authority and l.receives_notices).guardian_id
         if student.user_ids.filtered("share"):
@@ -127,19 +131,21 @@ class ResPartner(models.Model):
                 lambda h: today <= h.date_due <= today + timedelta(days=DIGEST_AHEAD_DAYS))
             late = pending.filtered(
                 lambda h: today - timedelta(days=DIGEST_LATE_DAYS) <= h.date_due < today)
-            contents = self._school_work_new_contents(student, since, until)
+            contents = self._school_work_new_contents(student, since, until, groups)
             if returned or due or late or contents:
                 sections.append((student, {"returned": returned, "due": due.sorted("date_due"),
-                                           "late": late.sorted("date_due"), "contents": contents}))
+                                           "late": late.sorted("date_due"), "contents": contents,
+                                           "school": enrolments[:1].school_id}))
         return sections
 
-    def _school_work_new_contents(self, student, since, until):
+    def _school_work_new_contents(self, student, since, until, groups):
         """Course contents published since `since` in the school courses this person attends
         for this student (with bf_school_slides installed; nothing otherwise)."""
         self.ensure_one()
         if "slide.channel" not in self.env or "school_group_ids" not in self.env["slide.channel"]._fields:
             return []
-        groups = student.student_enrollment_ids.filtered(lambda e: e.state == "active").group_id
+        # `groups`: those of the current year whose school offers the summary, like the other
+        # sections (found in review).
         attended = self.env["slide.channel.partner"].sudo().search([
             ("partner_id", "=", self.id), ("member_status", "!=", "invited"),
             ("channel_id.school_group_ids", "in", groups.ids),
@@ -168,15 +174,24 @@ class ResPartner(models.Model):
                     if not sections:
                         continue
                     lang = person.lang or "fr_CA"
-                    template.with_context(lang=lang, school_lang=lang, school_digest=sections).send_mail(
-                        person.id, force_send=False,
-                        email_layout_xmlid=self.env["bf.school"]._school_mail_layout(),
-                        # Tied to no document: on the parent's card, the summary (every mark of
-                        # every child) was in the chatter of a contact any employee may open,
-                        # for as long as it waited to be sent, and for good if sending failed
-                        # (found in review).
-                        email_values={"recipient_ids": [(6, 0, person.ids)], "email_to": False,
-                                      "model": False, "res_id": False})
+                    # One summary per company of the children's schools, from that company: in a
+                    # multi-company database it went out from the cron user's company, and a
+                    # parent with children at two schools got both in one (found in review).
+                    by_company = {}
+                    for student, parts in sections:
+                        by_company.setdefault(parts["school"].company_id, []).append((student, parts))
+                    for company, part in by_company.items():
+                        sender = {"email_from": company.email_formatted} if company.email else {}
+                        template.with_company(company).with_context(
+                            lang=lang, school_lang=lang, school_digest=part).send_mail(
+                            person.id, force_send=False,
+                            email_layout_xmlid=self.env["bf.school"]._school_mail_layout(),
+                            # Tied to no document: on the parent's card, the summary (every mark
+                            # of every child) was in the chatter of a contact any employee may
+                            # open, for as long as it waited to be sent, and for good if sending
+                            # failed (found in review).
+                            email_values=dict(sender, recipient_ids=[(6, 0, person.ids)], email_to=False,
+                                              model=False, res_id=False))
             except Exception:
                 _logger.exception("School work summary not sent to partner %s", person.id)
         self.env.ref("mail.ir_cron_mail_scheduler_action").sudo()._trigger()

@@ -22,7 +22,8 @@ The caterer's menus and meal orders on the family portal.
   it already ordered.
 - **Food allergies**: Health Canada's priority allergens. A meal containing a declared
   allergy of the student cannot be ordered; the kitchen list opens on tomorrow's
-  ordered meals, grouped by meal, and shows every allergy.
+  ordered meals, grouped by meal, and shows every allergy. A student's allergies are for
+  internal users only (the portal reads them in sudo to refuse a meal).
 - **Closed day** (storm, closure): every order is cancelled and credited at once.
 - **The balance is a register**: movements are never edited or deleted; the office
   records an adjustment with its reason. An order's price, state and invoice move only

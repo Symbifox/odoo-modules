@@ -22,6 +22,8 @@ Health alerts, health records and medication at school, on two levels.
   member records it (menu Health, Emergency epinephrine) and the family is told at
   once, without waiting for the mail queue. The register always names the person who
   recorded the dose, and a dose recorded is not rewritten: only a note is added.
+- The health alert is for internal users only: a student with their own portal account
+  does not read it on their card, over RPC either.
 - **Family portal** (**Health**), for the adults with parental authority: the alerts,
   the authorisations to sign, what is authorised and what was given in the last 60
   days. The detailed record never reaches the portal.

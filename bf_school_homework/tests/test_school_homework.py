@@ -93,3 +93,10 @@ class TestSchoolHomework(HttpCase):
     def test_portal_has_no_rpc_access(self):
         with self.assertRaises(AccessError):
             self.env["bf.school.homework"].with_user(self.p).search([])
+
+    def test_teacher_moves_a_homework_to_own_groups_only(self):
+        """The record rule reads the homework where it is, not where it goes (review, 2026-10-04)."""
+        homework = self._hw(user=self.t1)
+        with self.assertRaises(AccessError):
+            homework.with_user(self.t1).group_id = self.g2
+        self.assertEqual(homework.group_id, self.g1)

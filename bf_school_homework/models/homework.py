@@ -1,7 +1,7 @@
 import secrets
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
 from odoo.tools import consteq
 
 KINDS = [("homework", "Homework"), ("study", "Study"), ("project", "Project"), ("test", "Announced test")]
@@ -30,6 +30,16 @@ class Homework(models.Model):
         for homework in self:
             if homework.date_due < homework.date_assigned:
                 raise ValidationError(_("A homework is due after it is given."))
+
+    def write(self, vals):
+        # The record rule is checked on the homework as it is, not on where it goes: a teacher
+        # moved a homework to a group they do not teach (found in review).
+        if vals.get("group_id") and not (
+                self.env.su or self.env.user.has_group("bf_school_core.group_school_manager")):
+            group = self.env["bf.school.group"].sudo().browse(vals["group_id"])
+            if self.env.user not in group.teacher_ids:
+                raise AccessError(_("You do not teach %s.", group.name))
+        return super().write(vals)
 
     @api.model
     def _school_for_partner(self, partner, since=None):

@@ -24,10 +24,13 @@ class ResPartner(models.Model):
 
     # Level 1: every staff member sees it (the allergic students' list with photo is
     # posted in every class; replacement teachers must know).
+    # Staff only, like the record below: what the parents told the school is not read by the
+    # student on their own card (found in review). The portal reads it in sudo.
     health_alert = fields.Char(
-        "Health alert", help="Short, for every staff member: the allergy or condition and what to do. "
+        "Health alert", groups="base.group_user", help="Short, for every staff member: the allergy or condition and what to do. "
                              "Example: severe peanut allergy, auto-injector in the backpack.")
-    health_alert_level = fields.Selection([("info", "To know"), ("severe", "Severe")], "Alert level")
+    health_alert_level = fields.Selection([("info", "To know"), ("severe", "Severe")], "Alert level",
+                                          groups="base.group_user")
     # Level 2: the health group only (Private Sector Act s. 20: need-to-know).
     health_record_ids = fields.One2many("bf.school.health.record", "student_id", "Health record",
                                         groups="bf_school_health.group_school_health")

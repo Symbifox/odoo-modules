@@ -15,7 +15,7 @@ class School(models.Model):
              "(Authentik: subject mode « Based on the User's ID »). Students sign in to the "
              "portal through it with the account that opens the school's computers.")
 
-    @api.constrains("student_oauth_provider_id")
+    @api.constrains("student_oauth_provider_id", "directory_url")
     def _check_student_oauth_provider(self):
         for school in self.sudo():
             provider = school.student_oauth_provider_id
@@ -35,3 +35,20 @@ class School(models.Model):
                 raise ValidationError(_(
                     "The student sign-in must go through the school's own directory (%s).",
                     directory or _("not configured")))
+
+
+class AuthOAuthProvider(models.Model):
+    _inherit = "auth.oauth.provider"
+
+    _SCHOOL_ADDRESS_FIELDS = {"auth_endpoint", "validation_endpoint", "token_endpoint", "jwks_uri",
+                              "data_endpoint"}
+
+    def write(self, vals):
+        res = super().write(vals)
+        # The school checks the provider's addresses when it chooses it; a provider pointed
+        # elsewhere afterwards is checked as well (found in review). Only on an address: a
+        # provider already wrong can still be disabled.
+        if self._SCHOOL_ADDRESS_FIELDS & set(vals):
+            self.env["bf.school"].sudo().search(
+                [("student_oauth_provider_id", "in", self.ids)])._check_student_oauth_provider()
+        return res

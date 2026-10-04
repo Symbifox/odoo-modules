@@ -59,7 +59,8 @@
                        decoration-success="state == 'returned'"/>
                 <field name="submitted_on"/>
                 <field name="is_late" optional="show"/>
-                <field name="grade"/>
+                <!-- A hand-in not yet marked showed « 0.00 », read as a mark of zero (found on a capture). -->
+                <field name="grade" invisible="state != 'returned' and not grade"/>
                 <field name="points_total" string="Out of" optional="show"/>
                 <field name="returned_on" optional="hide"/>
             </list>

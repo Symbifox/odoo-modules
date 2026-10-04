@@ -48,6 +48,10 @@ Students hand in their work on the portal; the teacher returns a corrected copy 
 - The daily summary is tied to no record: it never sits in the chatter of the parent's
   contact, which other employees may open. The return email is logged on the hand-in, read
   by the group's teachers and the office only.
+- The summary goes out per company of the children's schools, from that company: a parent
+  with children at two schools of different companies gets two summaries. A work reopened
+  before its return email left takes the email back (a teacher's message on the hand-in is
+  not touched), and no return email goes to a student who left the group.
 - The choices are written by the portal page, for the person themselves and among what the
   school offers; anywhere else, by administrators only.
 - Files are served as downloads, never inline, and only to the people above: the teacher's

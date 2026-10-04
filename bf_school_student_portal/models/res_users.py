@@ -1,5 +1,5 @@
 from odoo import _, api, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessDenied, UserError
 
 
 class ResUsers(models.Model):
@@ -20,6 +20,18 @@ class ResUsers(models.Model):
 
     def _school_is_student_user(self):
         return any(user.share and user.partner_id.sudo().is_student for user in self)
+
+    def _check_credentials(self, credential, env):
+        # When the school signs its students in through its directory, that is the only door:
+        # a password an administrator gave would open the portal outside it, and keep working
+        # whatever the directory says (found in review). Without a directory, a student user
+        # exists only if an administrator made it, password included.
+        if credential.get("type") == "password" and self._school_is_student_user():
+            accounts = self.env["bf.school.account"].sudo().search(
+                [("student_id", "in", self.partner_id.ids)])
+            if accounts.school_id.filtered("student_oauth_provider_id"):
+                raise AccessDenied()
+        return super()._check_credentials(credential, env)
 
     @property
     def SELF_WRITEABLE_FIELDS(self):

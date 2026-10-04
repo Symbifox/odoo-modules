@@ -40,8 +40,8 @@
                 <div class="card-body">
                     <h6>In your calendar</h6>
                     <p class="small text-muted mb-2">
-                        Subscribe to this address in Google Calendar or Apple Calendar: the due dates of your
-                        children's homework appear there and update by themselves. The address is personal.
+                        Subscribe to this address in Google Calendar or Apple Calendar: the due dates of the
+                        homework on this page appear there and update by themselves. The address is personal.
                     </p>
                     <input class="form-control form-control-sm" readonly="1" t-att-value="ical_url" onclick="this.select()"/>
                     <form method="post" action="/my/school/homework/new-link" class="mt-2">

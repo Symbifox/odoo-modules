@@ -18,10 +18,15 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     is_student = fields.Boolean("Student", index=True)
-    student_birthdate = fields.Date("Birth date")
-    student_age = fields.Integer("Age", compute="_compute_student_age")
+    # The staff's notes (the Notes tab says « Visible to the school staff only »): a student
+    # with their own portal account read them on their card by RPC (found in review).
+    comment = fields.Html(groups="base.group_user")
+    # Staff only: a student with their own portal account read their card by RPC, permanent
+    # code and birth date included (found in review). The portal reads them in sudo.
+    student_birthdate = fields.Date("Birth date", groups="base.group_user")
+    student_age = fields.Integer("Age", compute="_compute_student_age", groups="base.group_user")
     student_permanent_code = fields.Char(
-        "Permanent code", size=12, copy=False, index=True,
+        "Permanent code", size=12, copy=False, index=True, groups="base.group_user",
         help="The code the Ministry of Education gives every student: four letters "
              "then eight digits.")
     student_enrollment_ids = fields.One2many(

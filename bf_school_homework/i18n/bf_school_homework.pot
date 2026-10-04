@@ -161,8 +161,8 @@ msgstr ""
 #. module: bf_school_homework
 #: model_terms:ir.ui.view,arch_db:bf_school_homework.portal_school_homework
 msgid ""
-"Subscribe to this address in Google Calendar or Apple Calendar: the due dates of your\n"
-"                        children's homework appear there and update by themselves. The address is personal."
+"Subscribe to this address in Google Calendar or Apple Calendar: the due dates of the\n"
+"                        homework on this page appear there and update by themselves. The address is personal."
 msgstr ""
 
 #. module: bf_school_homework
@@ -173,4 +173,10 @@ msgstr ""
 #. module: bf_school_homework
 #: model_terms:ir.ui.view,arch_db:bf_school_homework.bf_school_homework_view_form
 msgid "What to do, what to bring back."
+msgstr ""
+
+#. module: bf_school_homework
+#. odoo-python
+#: code:addons/bf_school_homework/models/homework.py:0
+msgid "You do not teach %s."
 msgstr ""

@@ -33,7 +33,8 @@ class ResPartner(models.Model):
     # Every staff member sees them, like the health alert: the lunch supervisors must know.
     meal_allergen_ids = fields.Many2many(
         "bf.school.allergen", "bf_school_student_allergen_rel", "partner_id", "allergen_id",
-        "Food allergies", help="A meal containing one of these cannot be ordered for this student.")
+        "Food allergies", groups="base.group_user",  # staff only, the portal reads it in sudo
+        help="A meal containing one of these cannot be ordered for this student.")
 
 
 class Allergen(models.Model):

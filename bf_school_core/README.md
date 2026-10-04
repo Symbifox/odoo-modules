@@ -40,6 +40,9 @@ answer.
 - **Administration** creates and edits everything, and invites families.
 - Portal users have no access right on any school model. The family portal reads
   through the adult's own links (see `bf_school_portal`).
+- A student's birth date, age and permanent code, and the staff's notes on any contact, are
+  for internal users only: a student with their own portal account does not read them on
+  their card, over RPC either. The portal pages read what they show in sudo.
 - Multi-company rules on every model.
 
 ## What has not been confirmed

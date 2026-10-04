@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : santé",
-    "version": "18.0.1.0.2",
+    "version": "18.0.1.0.3",
     "category": "Education/School",
     "summary": "Health alerts for every staff member, detailed health records and medication "
                "for a restricted group, parents' authorisations signed on the portal",

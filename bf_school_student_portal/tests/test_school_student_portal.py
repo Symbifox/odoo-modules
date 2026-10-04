@@ -1,6 +1,6 @@
 from datetime import date
 
-from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.exceptions import AccessDenied, AccessError, UserError, ValidationError
 from odoo.tests import HttpCase, new_test_user, tagged
 
 
@@ -88,6 +88,9 @@ class TestSchoolStudentPortal(HttpCase):
         user.sudo().password = "school_sp_alpha"
         with self.assertRaises(UserError):
             user.sudo()._deactivate_portal_user()
+        # The pages, not the door: through the directory, a password does not sign a student in
+        # (test_password_refused_through_the_directory), so this school goes without one here.
+        self.school.student_oauth_provider_id = False
         self.authenticate(user.login, "school_sp_alpha")
         # (the website first adds its language prefix, then the module sends the student away)
         self.assertTrue(self.url_open("/my/account").url.endswith("/my/school"))
@@ -147,3 +150,41 @@ class TestSchoolStudentPortal(HttpCase):
         self.assertFalse(controller._can_access_consent(self.student, consent))
         self.student.is_minor_child = False  # 14 or more: the student is the one who consents
         self.assertTrue(controller._can_access_consent(self.student, consent))
+
+    # ---------------------------------------------------------------- review, 2026-10-04
+
+    def test_password_refused_through_the_directory(self):
+        """The directory is the only door: a password an administrator gave does not open it."""
+        self.account._school_portal_sync()
+        user = self.account.portal_user_id
+        user.sudo().password = "school_sp_alpha"
+        credential = {"type": "password", "password": "school_sp_alpha"}
+        with self.assertRaises(AccessDenied):
+            user.with_user(user)._check_credentials(credential, {"interactive": True})
+        self.school.student_oauth_provider_id = False
+        user.with_user(user)._check_credentials(credential, {"interactive": True})
+
+    def test_provider_moved_to_another_directory_refused(self):
+        with self.assertRaises(ValidationError):
+            self.provider.auth_endpoint = "https://auth.ailleurs.test/application/o/authorize/"
+
+    def test_student_does_not_read_the_school_fields_of_their_card(self):
+        """Permanent code, birth date, health alert and allergies: the staff's, read in sudo by the
+        portal pages, not by the student over RPC."""
+        self.student.write({"student_permanent_code": "ESSA12345678", "student_birthdate": date(2014, 5, 4),
+                            "comment": "<p>Garde partagée, voir le dossier</p>"})
+        self.account._school_portal_sync()
+        card = self.student.with_user(self.account.portal_user_id)
+        names = [f for f in ("comment", "student_permanent_code", "student_birthdate", "student_age",
+                             "health_alert", "health_alert_level", "meal_allergen_ids")
+                 if f in self.student._fields]
+        for name in names:
+            with self.assertRaises(AccessError, msg=name):
+                card.read([name])
+        self.assertEqual(card.read(["name"])[0]["name"], "Alpha Essai")
+
+    def test_directory_moved_away_from_the_provider_refused(self):
+        with self.assertRaises(ValidationError):
+            self.school.directory_url = "https://auth.ailleurs.test"
+        self.provider.enabled = False  # not an address: disabling stays possible
+

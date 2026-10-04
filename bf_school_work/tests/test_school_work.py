@@ -628,3 +628,91 @@ class TestSchoolWork(HttpCase):
         self.assertTrue(partner.school_work_digest)
         self.assertFalse(partner.school_work_digest_sent)
 
+    def test_reopened_at_once_the_mark_does_not_leave(self):
+        self.school.work_offer_return_email = True
+        self.p.partner_id.write({"school_work_return_email": True, "email": "parent@example.com"})
+        sub = self._returned()
+        sub.with_user(self.t1).action_return()
+        notice = self._mails(sub, self.p.partner_id)
+        self.assertTrue(notice)
+        notice.state = "exception"  # failed: an administrator could still resend it
+        chatter = self.env["mail.mail"].sudo().create({
+            "model": sub._name, "res_id": sub.id, "is_notification": True, "state": "outgoing",
+            "subject": "Un mot de l'enseignante", "body_html": "<p>Bravo</p>",
+            "recipient_ids": [(6, 0, self.p.partner_id.ids)]})
+        sub.with_user(self.t1).action_reopen()
+        self.assertFalse(notice.exists(), "taken back before it could leave")
+        self.assertTrue(chatter.exists(), "a teacher's message on the hand-in is not the return email")
+
+    def test_no_return_email_once_the_student_left(self):
+        self.school.work_offer_return_email = True
+        self.p.partner_id.write({"school_work_return_email": True, "email": "parent@example.com"})
+        sub = self._returned()
+        self.a.student_enrollment_ids.filtered(lambda e: e.group_id == self.g1).state = "left"
+        sub.with_user(self.t1).action_return()
+        self.assertFalse(self._mails(sub, self.p.partner_id), "its link would end on a 404")
+
+    def test_summary_contents_of_offering_schools_only(self):
+        if "slide.channel" not in self.env or "school_group_ids" not in self.env["slide.channel"]._fields:
+            self.skipTest("bf_school_slides is not installed")
+        self.school.work_offer_digest = True
+        other = self.env["bf.school"].create({"name": "Autre école des Essais"})
+        year = self.env["bf.school.year"].create({"name": "2026-2027", "school_id": other.id,
+                                                  "date_start": date(2026, 8, 27), "date_end": date(2027, 6, 23)})
+        year.action_set_current()
+        g3 = self.env["bf.school.group"].create({"name": "Musique", "school_id": other.id, "year_id": year.id})
+        self.env["bf.school.enrollment"].create({"student_id": self.a.id, "group_id": g3.id})
+        course = self.env["slide.channel"].create({"name": "Musique 101", "website_published": True,
+                                                   "school_group_ids": [(6, 0, g3.ids)]})
+        self.env["slide.slide"].create({"name": "Les gammes", "channel_id": course.id, "slide_category": "article",
+                                        "html_content": "<p>Do ré mi</p>", "is_published": True})
+        self._hw(name="Exposé oral", date_due=self.today + timedelta(days=1))
+        now = fields.Datetime.now() + timedelta(minutes=1)
+        sections = dict(self.p.partner_id._school_work_digest_sections(now - timedelta(days=1), now))
+        self.assertTrue(sections.get(self.a), "the offering school still has something to say")
+        self.assertFalse(sections[self.a]["contents"], "the other school does not offer the summary")
+
+    def test_summary_from_the_school_company(self):
+        company = self.env["res.company"].create({"name": "École B des Essais",
+                                                  "email": "secretariat@ecole-b.example.com"})
+        self.school.company_id = company
+        self.school.work_offer_digest = True
+        partner = self.p.partner_id
+        partner.write({"school_work_digest": True, "email": "parent@example.com", "lang": "en_US",
+                       "school_work_digest_sent": fields.Datetime.now() - timedelta(days=1)})
+        self._hw(name="Exposé oral", date_due=self.today + timedelta(days=1))
+        self.env["res.partner"]._cron_school_work_digest()
+        mail = self._digests(partner)
+        self.assertEqual(len(mail), 1)
+        self.assertIn("secretariat@ecole-b.example.com", mail.email_from)
+
+    def test_one_summary_per_company(self):
+        """Children at schools of two companies: two summaries, each from its own company."""
+        self.school.company_id.email = "ecole-a@example.com"
+        self.school.work_offer_digest = True
+        company = self.env["res.company"].create({"name": "École B des Essais", "email": "ecole-b@example.com"})
+        other = self.env["bf.school"].create({"name": "Autre école des Essais", "company_id": company.id,
+                                              "work_offer_digest": True})
+        year = self.env["bf.school.year"].create({"name": "2026-2027", "school_id": other.id,
+                                                  "date_start": date(2026, 8, 27), "date_end": date(2027, 6, 23)})
+        year.action_set_current()
+        g3 = self.env["bf.school.group"].create({"name": "B-301", "school_id": other.id, "year_id": year.id})
+        delta = self.env["res.partner"].create({"name": "Delta Essai", "is_student": True})
+        self.env["bf.school.enrollment"].create({"student_id": delta.id, "group_id": g3.id})
+        self.env["bf.school.guardian.link"].create({"student_id": delta.id, "guardian_id": self.p.partner_id.id})
+        partner = self.p.partner_id
+        partner.write({"school_work_digest": True, "email": "parent@example.com", "lang": "en_US",
+                       "school_work_digest_sent": fields.Datetime.now() - timedelta(days=1)})
+        self._hw(name="Exposé oral", date_due=self.today + timedelta(days=1))
+        self._hw(group=g3, name="Carte du Nord", date_due=self.today + timedelta(days=1))
+        self.env["res.partner"]._cron_school_work_digest()
+        mails = self._digests(partner)
+        self.assertEqual(len(mails), 2)
+        a = mails.filtered(lambda m: "ecole-a@example.com" in m.email_from)
+        b = mails.filtered(lambda m: "ecole-b@example.com" in m.email_from)
+        self.assertTrue(a and b)
+        self.assertIn("Exposé oral", a.body_html)
+        self.assertNotIn("Carte du Nord", a.body_html)
+        self.assertIn("Carte du Nord", b.body_html)
+        self.assertNotIn("Alpha Essai", b.body_html)
+

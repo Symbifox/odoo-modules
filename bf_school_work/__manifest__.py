@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : remise de travaux",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "Students hand in their work on the portal, the teacher returns a corrected "
                "copy with a mark; scored quizzes through Surveys",
