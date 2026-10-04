@@ -54,6 +54,13 @@ company's brand CSS variables (`--brand-primary`, `--brand-dark`) instead of
 fixed hex values, so each database shows its own palette. The previous colours
 remain as fallbacks when no brand variable is defined.
 
+Since 2.1.3 the copy leaves out the mail of a deactivated IMAP account
+(`account_id not any active = false`, lines without an account still count),
+and since 2.1.4 it counts our own copies from the `Sent` folder, which now
+enter the inbox like a message sent from Odoo (`bf_email_management`
+18.0.11.53.1 and 18.0.11.54.0). The pinning tests live in
+`bf_email_management` (`test_compte_desactive`, `test_envois_imap_en_boite`).
+
 ## Dependencies
 
 `web`, `bf_email_management`.

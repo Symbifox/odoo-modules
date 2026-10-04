@@ -35,10 +35,17 @@ function inboxDomain() {
         // Un fil en sourdine ne compte pas dans le badge, sinon la
         // pastille annonce du travail qu'on a explicitement écarté.
         ["is_muted", "=", false],
+        // Le courrier d'un compte désactivé ne compte plus. Les
+        // lignes sans compte (chatter, passerelle) passent : « not any ».
+        ["account_id", "not any", [["active", "=", false]]],
+        "|",
         "|",
         "|",
         ["imap_in_inbox", "=", true],
         ["source", "in", ["chatter", "gateway"]],
+        // Nos copies du dossier « Sent » entrent en boîte comme un
+        // envoi fait depuis Odoo.
+        ["imap_folder", "=ilike", "Sent"],
         ["imap_folder", "=", false],
     ];
 }
