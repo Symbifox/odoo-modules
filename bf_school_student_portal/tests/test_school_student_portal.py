@@ -1,4 +1,8 @@
+import html
+import json
+import re
 from datetime import date
+from urllib.parse import parse_qs, unquote_plus, urlparse
 
 from odoo.exceptions import AccessDenied, AccessError, UserError, ValidationError
 from odoo.tests import HttpCase, new_test_user, tagged
@@ -187,4 +191,28 @@ class TestSchoolStudentPortal(HttpCase):
         with self.assertRaises(ValidationError):
             self.school.directory_url = "https://auth.ailleurs.test"
         self.provider.enabled = False  # not an address: disabling stays possible
+
+    # ---------------------------------------------------------------- landing, 2026-10-04
+
+    def _returns(self, url):
+        """{provider id: where it returns after sign-in}, read from the sign-in page's links."""
+        page = self.url_open(url).text
+        returns = {}
+        for link in re.findall(r'href="([^"]*state=[^"]*)"', page):
+            state = json.loads(parse_qs(urlparse(html.unescape(link)).query)["state"][0])
+            returns[state["p"]] = unquote_plus(state["r"])
+        return returns
+
+    def test_student_lands_on_their_portal(self):
+        """Through the school's directory, the student lands on their portal, not on the
+        website's home page (auth_oauth returns to /web, then sends a portal user to /)."""
+        other = self.env["auth.oauth.provider"].create({
+            "name": "Autre fournisseur", "client_id": "autre", "enabled": True, "body": "Autre",
+            "auth_endpoint": "https://ailleurs.test/authorize",
+            "validation_endpoint": "https://ailleurs.test/userinfo", "scope": "openid"})
+        returns = self._returns("/web/login")
+        self.assertTrue(returns[self.provider.id].endswith("/my/school"), returns)
+        self.assertTrue(returns[other.id].endswith("/web"), "another provider is left alone")
+        returns = self._returns("/web/login?redirect=/my/school/work")
+        self.assertTrue(returns[self.provider.id].endswith("/my/school/work"), "an explicit redirect is kept")
 

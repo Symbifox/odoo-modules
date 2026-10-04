@@ -12,7 +12,8 @@ Students sign in to the family portal with their school directory account.
   this year (even if the directory cannot be reached), active again when they are. A daily
   job and every synchronisation keep it in line.
 - On the portal, a student sees their own page (work, homework, courses), not the parents'
-  view.
+  view. Signing in through the school's directory lands them there, not on the website's
+  home page (a portal link followed while signed out still leads to that link).
 
 ## Security
 

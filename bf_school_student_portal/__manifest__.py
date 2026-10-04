@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : l'élève au portail",
-    "version": "18.0.1.0.1",
+    "version": "18.0.1.0.2",
     "category": "Education/School",
     "summary": "Students sign in to the family portal with their school directory account, "
                "the one that opens the school's computers",
