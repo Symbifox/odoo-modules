@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Email template: Link to the consent.
+         Sent when someone asks for a new link from an expired one, and by the
+         "Envoyer lien portail" button. Its text and button follow the state of the
+         consent: the request template asked to "answer this request" even when the
+         consent was already granted. -->
+    <record id="mail_template_consent_link" model="mail.template">
+        <field name="name">Vie privée : Lien vers le consentement</field>
+        <field name="model_id" ref="model_privacy_consent"/>
+        <field name="email_from">{{ (object.company_id.partner_id.email or object.company_id.email or 'noreply@example.com') }}</field>
+        <field name="partner_to">{{ object._privacy_mail_partner_to() }}</field>
+        <field name="subject">{{ 'Your consent link' if object._privacy_mail_is_en() else 'Votre lien de consentement' }} - {{ object.purpose_id.name }}</field>
+        <field name="lang">{{ object._privacy_mail_lang() }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+    <field name="body_html" type="html">
+<t t-set="company" t-value="('company_id' in object._fields and object.company_id) or user.company_id"/>
+<t t-set="_wlf" t-value="company._fields"/>
+<t t-set="brand_primary" t-value="('report_brand_primary' in _wlf and company.report_brand_primary) or '#714B67'"/>
+
+<t t-set="is_en" t-value="object._privacy_mail_is_en()"/>
+<t t-set="status" t-value="object.status"/>
+<t t-if="is_en">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Your link</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#000000; margin:0 0 8px 0;">
+                                <t t-out="object.purpose_id.name"/>
+                            </h1>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
+                                Hello <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Here is your personal link to your consent for the purpose above.
+                                <t t-if="status == 'pending'">It lets you answer this request: grant or refuse it.</t>
+                                <t t-elif="status == 'granted'">It lets you view this consent and withdraw it at any time.</t>
+                                <t t-elif="status == 'expired'">This consent has expired: the link lets you renew it if you wish.</t>
+                                <t t-else="">It lets you view this consent.</t>
+                            </p>
+
+                            <!-- CTA Button - Public URL with token (no login required) -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+                                <tr>
+                                    <td align="left">
+                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/privacy/consent/{{ object.id }}/{{ object.access_token }}" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            <t t-if="status == 'pending'">Answer this request</t>
+                                            <t t-elif="status == 'granted'">Manage my consent</t>
+                                            <t t-elif="status == 'expired'">Renew my consent</t>
+                                            <t t-else="">View my consent</t>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 16px 0;">
+                                This link is personal and remains valid for 90 days: please do not forward it.
+                            </p>
+</t>
+<t t-else="">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Votre lien</p>
+<h1 style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:24px; font-weight:500; color:#000000; margin:0 0 8px 0;">
+                                <t t-out="object.purpose_id.name"/>
+                            </h1>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:17px; font-weight:300; color:#374151; margin:0 0 16px 0; line-height:26px;">
+                                Bonjour <t t-out="object.subject_partner_id.name"/>,
+                            </p>
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#374151; line-height:22px; margin:0 0 16px 0;">
+                                Voici le lien personnel vers votre consentement pour la finalité ci-dessus.
+                                <t t-if="status == 'pending'">Il vous permet de répondre à cette demande : l'accorder ou la refuser.</t>
+                                <t t-elif="status == 'granted'">Il vous permet de consulter ce consentement et de le retirer à tout moment.</t>
+                                <t t-elif="status == 'expired'">Ce consentement est expiré : le lien vous permet de le renouveler si vous le souhaitez.</t>
+                                <t t-else="">Il vous permet de consulter ce consentement.</t>
+                            </p>
+
+                            <!-- CTA Button - Public URL with token (no login required) -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+                                <tr>
+                                    <td align="left">
+                                        <a t-attf-href="{{ object.get_base_url() }}{{ object._privacy_url_lang() }}/privacy/consent/{{ object.id }}/{{ object.access_token }}" t-attf-style="display:inline-block; background-color:{{ brand_primary }}; color:#ffffff; font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; font-weight:600; padding:12px 18px; border-radius:8px; text-decoration:none;">
+                                            <t t-if="status == 'pending'">Répondre à cette demande</t>
+                                            <t t-elif="status == 'granted'">Gérer mon consentement</t>
+                                            <t t-elif="status == 'expired'">Renouveler mon consentement</t>
+                                            <t t-else="">Consulter mon consentement</t>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:13px; color:#6B7280; line-height:20px; margin:0 0 16px 0;">
+                                Ce lien vous est personnel et reste valide 90 jours : ne le transférez pas.
+                            </p>
+</t>
+</field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+</odoo>

@@ -22,3 +22,4 @@ from . import test_securite_correctifs
 from . import test_cle_hors_base
 from . import test_lien_echu
 from . import test_mise_en_page
+from . import test_lien_prolonge_et_destinataires

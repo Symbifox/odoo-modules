@@ -5,7 +5,7 @@
         <field name="name">Vie privée : Rappel de consentement 1 (7 jours)</field>
         <field name="model_id" ref="model_privacy_consent"/>
         <field name="email_from">{{ (object.company_id.partner_id.email or object.company_id.email or 'noreply@example.com') }}</field>
-        <field name="partner_to">{{ object.subject_partner_id.id }}</field>
+        <field name="partner_to">{{ object._privacy_mail_partner_to() }}</field>
         <field name="subject">{{ 'Reminder: consent request' if object._privacy_mail_is_en() else 'Rappel : demande de consentement' }} - {{ object.purpose_id.name }}</field>
         <field name="lang">{{ object._privacy_mail_lang() }}</field>
         <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -106,7 +106,7 @@
         <field name="name">Vie privée : Rappel de consentement 2 (14 jours)</field>
         <field name="model_id" ref="model_privacy_consent"/>
         <field name="email_from">{{ (object.company_id.partner_id.email or object.company_id.email or 'noreply@example.com') }}</field>
-        <field name="partner_to">{{ object.subject_partner_id.id }}</field>
+        <field name="partner_to">{{ object._privacy_mail_partner_to() }}</field>
         <field name="subject">{{ 'Final reminder: consent request' if object._privacy_mail_is_en() else 'Dernier rappel : demande de consentement' }} - {{ object.purpose_id.name }}</field>
         <field name="lang">{{ object._privacy_mail_lang() }}</field>
         <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -207,7 +207,7 @@
         <field name="name">Vie privée : Confirmation de renouvellement</field>
         <field name="model_id" ref="model_privacy_consent"/>
         <field name="email_from">{{ (object.company_id.partner_id.email or object.company_id.email or 'noreply@example.com') }}</field>
-        <field name="partner_to">{{ object.subject_partner_id.id }}</field>
+        <field name="partner_to">{{ object._privacy_mail_partner_to() }}</field>
         <field name="subject">{{ 'Consent renewed' if object._privacy_mail_is_en() else 'Consentement renouvelé' }} - {{ object.purpose_id.name }}</field>
         <field name="lang">{{ object._privacy_mail_lang() }}</field>
         <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
@@ -307,7 +307,7 @@
         <field name="name">Vie privée : Confirmation de consentement accordé</field>
         <field name="model_id" ref="model_privacy_consent"/>
         <field name="email_from">{{ (object.company_id.partner_id.email or object.company_id.email or 'noreply@example.com') }}</field>
-        <field name="partner_to">{{ object.subject_partner_id.id }}</field>
+        <field name="partner_to">{{ object._privacy_mail_partner_to() }}</field>
         <field name="subject">{{ 'Consent confirmation' if object._privacy_mail_is_en() else 'Confirmation de consentement' }} - {{ object.purpose_id.name }}</field>
         <field name="lang">{{ object._privacy_mail_lang() }}</field>
         <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>

@@ -593,6 +593,7 @@ privacy_consent/
 - **Consent request**: sent on a new request
 - **Expiry warning**: available for manual or automated sending
 - **Automated sequences**: configurable email sequences (reminders, renewals)
+- **Your link**: the consent's link, worded for its state; sent from an expired link's page and by the "Envoyer lien portail" button
 
 Since 18.0.5.3.0 these six emails carry only their content, in both languages:
 the shared mail layout (`bf_onboarding_base.bf_mail_layout`, which
@@ -602,6 +603,12 @@ eyebrow, and the "Preferences" link to the person's portal stays under the
 content. The templates are `noupdate`: the migration strips every stored
 language with the same tool as the source, and leaves a body rebuilt by hand as
 it is (without the shared layout, so it is not dressed twice).
+
+Since 18.0.5.5.0 a seventh template, "Your link", sends the consent's link with the
+text and button of its state. All these emails go to the same recipients as the
+request (a minor's legal guardians who have an email address), and each one pushes
+the public link's deadline back by 90 days without changing the token, including an
+email written in the composer.
 
 ---
 
@@ -644,7 +651,7 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2029-07-20, this version converts automatically to
+- **Change Date**: on 2030-10-04, this version converts automatically to
   **LGPL-3.0-or-later**.
 
 ## Disclaimer
@@ -666,6 +673,7 @@ open a ticket in the repository.
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 18.0.5.5.0 | 2026-10-02 | Emails: every email that carries the public link extends it by 90 days with the same token, including an email written in the composer (from the record or in bulk from the list); the links in earlier emails come back to life with it. New "Your link" template (`mail_template_consent_link`), whose text and button follow the consent's state: it serves the new link requested from an expired link's page and the "Envoyer lien portail" button, which both sent the request even for a granted consent. Reminders, the renewal confirmation and the link go through the same sending path as the request: for a minor, to those legal guardians who have an email address, never to the child. The templates' "To" field gives the same recipients for a manual send (the six `noupdate` templates are migrated only while they still hold the shipped value). The chatter note records an SMTP failure as a failure, and a reminder that did not go out is not counted |
 | 18.0.5.4.0 | 2026-10-02 | Emails: no consent email leads to the preference centre any more; it needs a session, so a person without an account landed on the login screen. The request, the reminders and the expiry notice drop that link (their main button already opens the consent's token page); the button of the two confirmations (granted, renewed) opens the consent's token page, where the consent can be withdrawn. The request's 4-hour "choose a password" link is removed. English fallbacks ("No expiry", "Soon", "No description available."); the `noupdate` templates are migrated language by language |
 | 18.0.5.3.0 | 2026-10-01 | Emails: the six consent templates drop their own shell, one per language, and use the shared mail layout (`email_layout_xmlid`); the header title becomes an eyebrow and the link to the person's preferences stays under the content. The `noupdate` templates are migrated language by language, all or nothing per template; a body rebuilt by hand is left as it is, without the shared layout |
 | 18.0.5.2.0 | 2026-09-28 | **Security.** A public token link is valid for 90 days (`access_token_expires_at`); once expired it no longer opens the consent and offers to email a new one to the address on file, which voids the old token. Migration: tokens already issued get 90 days counted from the upgrade |

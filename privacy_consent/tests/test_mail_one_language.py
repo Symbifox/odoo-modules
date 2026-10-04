@@ -30,7 +30,8 @@ class TestMailOneLanguage(TransactionCase):
                       "privacy_consent.mail_template_consent_reminder_1",
                       "privacy_consent.mail_template_consent_reminder_2",
                       "privacy_consent.mail_template_consent_renewal_confirmation",
-                      "privacy_consent.mail_template_consent_granted_confirmation"):
+                      "privacy_consent.mail_template_consent_granted_confirmation",
+                      "privacy_consent.mail_template_consent_link"):
             subject, text, html = self._render(xmlid, "en_US")
             self.assertIn("Hello", text, xmlid)
             self.assertNotIn("Bonjour", text, xmlid)

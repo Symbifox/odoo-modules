@@ -654,8 +654,9 @@ class PrivacyPortal(CustomerPortal):
                 "privacy_consent.mail_template_consent_renewal_confirmation",
                 raise_if_not_found=False,
             )
-            if template:
-                template.sudo().send_mail(new_consent.id, force_send=True)
+            # Aux responsables d'un mineur, comme la demande : le bouton de la
+            # confirmation permet de retirer le consentement.
+            new_consent.sudo()._send_consent_mail(template, "de confirmation du renouvellement")
         except Exception:  # noqa: BLE001 - l'octroi prime sur la confirmation
             _logger.exception(
                 "Renouvellement %s : échec de l'envoi du courriel de confirmation.",

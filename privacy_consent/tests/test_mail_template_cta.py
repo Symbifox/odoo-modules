@@ -48,6 +48,8 @@ GABARITS_ACTIONNABLES = (
     # Le retrait que ces deux-là promettent « à tout moment » est un geste aussi.
     "mail_template_consent_renewal_confirmation",
     "mail_template_consent_granted_confirmation",
+    # Le lien neuf et le bouton « Envoyer lien portail ».
+    "mail_template_consent_link",
 )
 
 ROUTE_AUTHENTIFIEE = "/my/privacy/consent/"

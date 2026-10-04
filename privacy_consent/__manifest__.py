@@ -1,6 +1,6 @@
 {
     "name": "Suivi des consentements (Loi 25)",
-    "version": "18.0.5.4.0",
+    "version": "18.0.5.5.0",
     "category": "Privacy/Compliance",
     "summary": "Vie privée, consentements et destruction documentaire (Loi 25)",
     "description": """
@@ -52,6 +52,7 @@ Destruction et anonymisation documentaire :
         "data/privacy_retention_cron.xml",
         "data/mail_template.xml",
         "data/mail_template_sequence.xml",
+        "data/mail_template_link.xml",
         "data/mail_activity_type.xml",
         # Vues
         "views/privacy_purpose_views.xml",

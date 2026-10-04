@@ -47,6 +47,14 @@ GABARITS = (
 )
 PREFERENCES = "/my/privacy/preferences"
 JETON = "/privacy/consent/{{ object.id }}/{{ object.access_token }}"
+# Un `href` simple n'interpole pas `{{ object.id }}` : il devient `t-attf-href`.
+HREF_SIMPLE = re.compile(r'(?<![-\w])href="([^"]*)' + re.escape(PREFERENCES) + '"')
+
+
+def _vers_jeton(corps):
+    corps = HREF_SIMPLE.sub(lambda m: 't-attf-href="%s%s"' % (m.group(1), JETON), corps)
+    return corps.replace(PREFERENCES + '"', JETON + '"')
+
 
 _LIEN = r'<a\b[^>]*%s"[^>]*>[^<]*</a>' % re.escape(PREFERENCES)
 # Le lien sous le contenu (demande, rappels) : tout le paragraphe part avec lui.
@@ -105,7 +113,7 @@ def retoucher(xmlid, corps):
         corps, n = SECOND_BOUTON.subn("", corps)
     else:
         n = corps.count(PREFERENCES + '"')
-        corps = corps.replace(PREFERENCES + '"', JETON + '"')
+        corps = _vers_jeton(corps)
     if not n and PREFERENCES in corps:
         manques.append(PREFERENCES)
     for gabarit, motif, remplacement in TEXTES:
@@ -119,7 +127,7 @@ def retoucher(xmlid, corps):
     corps = anglais + sinon + reste
     # Filet : un lien vers les préférences resté dans un corps retouché à la main
     # mène à la page à jeton plutôt qu'à la connexion.
-    corps = corps.replace(PREFERENCES + '"', JETON + '"')
+    corps = _vers_jeton(corps)
     return corps, (manques if standard else [])
 
 

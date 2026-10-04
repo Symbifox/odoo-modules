@@ -1,6 +1,7 @@
-import re
 import uuid
 from datetime import timedelta
+
+from markupsafe import Markup
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -326,6 +327,21 @@ class PrivacyConsent(models.Model):
         return bool(self.access_token_expires_at
                     and self.access_token_expires_at < fields.Datetime.now())
 
+    def _extend_access_token(self):
+        """Repousser à 90 jours l'échéance du lien public, sans changer le jeton.
+
+        Décision du 2026-10-02 : chaque courriel qui porte le
+        lien le prolonge. Avant, l'avis d'expiration d'un consentement de plus de
+        90 jours partait avec un lien déjà échu. Le jeton reste le même : le lien
+        qu'on envoie vaut, et ceux des courriels précédents revivent avec lui. Un
+        nouveau jeton à chaque envoi aurait mené les liens précédents à « Lien
+        invalide », une page qui n'offre pas d'en recevoir un neuf.
+        """
+        echeance = self._access_token_deadline()
+        for consent in self.filtered("access_token"):
+            if not consent.access_token_expires_at or consent.access_token_expires_at < echeance:
+                consent.sudo().write({"access_token_expires_at": echeance})
+
     def _renew_access_token_and_send(self):
         """Nouveau jeton, nouvelle échéance, et le lien part aux destinataires au dossier.
 
@@ -337,7 +353,7 @@ class PrivacyConsent(models.Model):
             "access_token": self._generate_access_token(),
             "access_token_expires_at": self._access_token_deadline(),
         })
-        self._send_consent_request_email()
+        self._send_consent_link_email()
 
     def _generate_access_token(self):
         """Generate a unique access token for public URL access."""
@@ -567,14 +583,18 @@ class PrivacyConsent(models.Model):
         }
 
     def action_send_portal_link(self):
-        """Re-send the consent request email (with portal link) to the contact."""
+        """Envoyer le lien du consentement, avec le texte qui convient à son état.
+
+        Ce bouton envoyait le gabarit de DEMANDE, « Répondre à cette demande », même
+        pour un consentement déjà accordé.
+        """
         self.ensure_one()
-        if not self.subject_partner_id.email:
+        if not self._get_email_recipients():
             raise UserError(
-                "Le contact n'a pas d'adresse courriel. / "
-                "The contact has no email address."
+                "Aucun destinataire n'a d'adresse courriel. / "
+                "No recipient has an email address."
             )
-        self._send_consent_request_email()
+        self._send_consent_link_email()
         return True
 
     # === Email ===
@@ -648,6 +668,64 @@ class PrivacyConsent(models.Model):
             return self.given_by_partner_ids[0]
         return self.subject_partner_id
 
+    def _get_email_recipients(self):
+        """Tous les destinataires d'un courriel de consentement : les responsables
+        d'un mineur qui ont une adresse, sinon la personne concernée si elle en a une.
+
+        Avant la 18.0.5.5.0, seule la demande passait par les responsables. Les rappels,
+        l'avis d'expiration et les confirmations partaient à l'enfant, avec le lien
+        qui lui permettait d'accorder ou de retirer à la place du responsable.
+        """
+        self.ensure_one()
+        if self.is_minor and self.given_by_partner_ids:
+            return self.given_by_partner_ids.filtered("email")
+        return self.subject_partner_id.filtered("email")
+
+    def _privacy_mail_partner_to(self):
+        """Le champ « À » des gabarits : les mêmes destinataires, pour un envoi à la main."""
+        return ",".join(str(partner_id) for partner_id in self._get_email_recipients().ids)
+
+    def _send_consent_mail(self, template, quoi):
+        """Envoyer `template` à chaque destinataire, dans sa langue, et le noter au chatter.
+
+        Le lien prolonge son échéance (`_extend_access_token`) et ne paraît pas au
+        chatter (`_send_single_consent_email` retire la copie). `quoi` complète
+        « Courriel … envoyé à ». Rend les adresses dont l'envoi n'a pas échoué ; un
+        échec SMTP est écrit comme tel au chatter, avec sa raison.
+        """
+        self.ensure_one()
+        contacts = self._get_email_recipients()
+        if not template or not contacts:
+            return []
+        # Le gabarit suit l'environnement du consentement : depuis le portail, celui-ci
+        # est en sudo, le gabarit lu par l'utilisateur public ne l'est pas.
+        template = template.with_env(self.env)
+        self._extend_access_token()
+        echecs = {}
+        for contact in contacts:
+            echec = self._send_single_consent_email(template, contact)
+            if echec:
+                echecs[contact.email] = echec
+        emails = [e for e in contacts.mapped("email") if e not in echecs]
+        corps = Markup()
+        if emails:
+            liste = Markup(", ").join(Markup("<a href='mailto:%s'>%s</a>") % (e, e) for e in emails)
+            if self.is_minor and self.given_by_partner_ids:
+                corps += Markup("<p>Courriel %s envoyé aux responsables de %s : %s.</p>") % (
+                    quoi, self.subject_partner_id.name, liste)
+            else:
+                corps += Markup("<p>Courriel %s envoyé à %s.</p>") % (quoi, liste)
+        for email, raison in echecs.items():
+            corps += Markup("<p>⚠ Courriel %s NON envoyé à %s : %s</p>") % (quoi, email, raison)
+        self.message_post(body=corps, message_type="notification")
+        return emails
+
+    def _send_consent_link_email(self):
+        """Le lien du consentement, avec le texte de son état : lien neuf
+        demandé depuis la page d'un lien échu, ou bouton « Envoyer lien portail »."""
+        template = self.env.ref("privacy_consent.mail_template_consent_link", raise_if_not_found=False)
+        return self._send_consent_mail(template, "du lien vers le consentement")
+
     def _send_consent_request_email(self):
         """Send consent request email using template.
 
@@ -669,52 +747,14 @@ class PrivacyConsent(models.Model):
             "privacy_consent.mail_template_consent_request",
             raise_if_not_found=False,
         )
-        recipient = self._get_email_recipient()
-        if not template or not recipient.email:
+        if not template:
             return
 
-        # Créer le compte portail pour le destinataire principal
-        self._ensure_portal_access(recipient)
+        # Un compte portail pour chaque destinataire (les responsables d'un mineur)
+        for contact in self._get_email_recipients():
+            self._ensure_portal_access(contact)
 
-        # Pour les mineurs : créer un compte portail pour TOUS les responsables
-        if self.is_minor and self.given_by_partner_ids:
-            for guardian in self.given_by_partner_ids:
-                if guardian.email:
-                    self._ensure_portal_access(guardian)
-
-        # Déterminer tous les responsables à notifier
-        guardians_to_notify = self.env["res.partner"]
-        if self.is_minor and self.given_by_partner_ids:
-            guardians_to_notify = self.given_by_partner_ids.filtered("email")
-
-        # Envoyer un courriel à chaque responsable (ou au sujet si non-mineur)
-        sent_emails = []
-        recipients = guardians_to_notify or recipient
-        for contact in recipients:
-            self._send_single_consent_email(template, contact)
-            sent_emails.append(contact.email)
-
-        # Ajouter une note au chatter
-        if sent_emails:
-            child = self.subject_partner_id
-            if self.is_minor and guardians_to_notify:
-                email_list = ", ".join(
-                    f"<a href='mailto:{e}'>{e}</a>" for e in sent_emails
-                )
-                chatter_body = (
-                    f"<p>Courriel de demande de consentement envoyé aux "
-                    f"responsables de {child.name} : {email_list}.</p>"
-                )
-            else:
-                e = sent_emails[0]
-                chatter_body = (
-                    f"<p>Courriel de demande de consentement envoyé à "
-                    f"<a href='mailto:{e}'>{e}</a>.</p>"
-                )
-            self.message_post(
-                body=chatter_body,
-                message_type="notification",
-            )
+        self._send_consent_mail(template, "de demande de consentement")
 
     def _send_single_consent_email(self, template, contact):
         """Envoyer un courriel de consentement à un contact spécifique.
@@ -733,11 +773,11 @@ class PrivacyConsent(models.Model):
             privacy_contact_lang=contact.lang or self.company_id.partner_id.lang,
         ).send_mail(self.id, force_send=False)
         if not mail_id:
-            return
+            return "rendu impossible"
 
         mail = self.env["mail.mail"].sudo().browse(mail_id)
         if not mail.exists():
-            return
+            return "rendu impossible"
 
         # Rediriger vers le contact cible.
         #
@@ -799,10 +839,13 @@ class PrivacyConsent(models.Model):
                 ).replace(tag, val)
 
         mail.send()
+        # Lu AVANT l'effacement : la note du chatter doit dire un échec comme un échec.
+        echec = mail.state == "exception" and (mail.failure_reason or "échec d'envoi")[:300]
 
         # Supprimer le message chatter auto-généré (on ajoute le nôtre après)
         if mail.mail_message_id:
             mail.mail_message_id.sudo().unlink()
+        return echec
 
     # === DocuSeal Integration ===
 
@@ -1032,7 +1075,7 @@ class PrivacyConsent(models.Model):
         )
 
         new_consent.action_send_request()
-        if new_consent._get_email_recipient().email:
+        if new_consent._get_email_recipients():
             new_consent._send_consent_request_email()
         else:
             # ⚠ `_send_consent_request_email` sort en silence sans adresse.
@@ -1089,11 +1132,9 @@ class PrivacyConsent(models.Model):
         """Process email sequences for pending consents."""
         Sequence = self.env["privacy.email.sequence"]
 
-        # Get all pending consents
-        pending = self.search([
-            ("status", "=", "pending"),
-            ("subject_partner_id.email", "!=", False),
-        ])
+        # Les consentements en attente. Pas de filtre sur l'adresse de la personne :
+        # celle d'un mineur n'en a souvent pas, ses responsables oui.
+        pending = self.search([("status", "=", "pending")])
 
         for consent in pending:
             # Find applicable sequence
@@ -1126,17 +1167,14 @@ class PrivacyConsent(models.Model):
                             # This would require mail_tracking integration
                             pass
 
-                        # Send the reminder
-                        if seq.mail_template_id:
-                            seq.mail_template_id.send_mail(consent.id, force_send=True)
+                        # Le rappel part aux mêmes destinataires que la demande : les
+                        # responsables d'un mineur, jamais l'enfant.
+                        if seq.mail_template_id and consent._send_consent_mail(
+                                seq.mail_template_id, f"de rappel n° {seq.sequence}"):
                             consent.write({
                                 "last_reminder_sent_at": fields.Datetime.now(),
                                 "reminder_count": seq.sequence,
                             })
-                            consent.message_post(
-                                body=f"Rappel #{seq.sequence} envoyé.",
-                                message_type="notification",
-                            )
                     break
 
     @api.model
