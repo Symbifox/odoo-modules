@@ -84,6 +84,78 @@ body.bf_dark_mode {
 }
 
 // =============================================================================
+// 1b. LES VARIABLES QU'ODOO 18 LIT VRAIMENT
+// =============================================================================
+// Odoo 18 compile Bootstrap avec un préfixe VIDE : ses règles lisent
+// `--body-color`, `--info-bg-subtle`, `--table-bg`, jamais `--bs-body-color`.
+// Mesuré au navigateur : 40 des 47 `--bs-*` du bloc 1 ne sont lues par aucune
+// règle. Le thème ne tenait que par ses règles explicites, composant par
+// composant. Un écran maison qui hérite du `body` (la boîte de bf_email)
+// gardait donc le texte `#495057` du mode clair sur un fond sombre (1,6:1), et
+// toute classe utilitaire pâle gardait son fond clair sous le texte clair du
+// thème (barre de sélection `bg-info-subtle` : 1,03:1).
+//
+// Seules les variables RACINE se posent ici : Bootstrap les déclare sur
+// `:root`, une valeur posée sur `body` l'emporte donc pour toute la page.
+// Celles d'un composant (`--card-bg`, `--table-bg`…) sont redéclarées sur le
+// composant même, où une valeur de `body` serait masquée : les variantes de
+// tableau ont leur bloc, en 17.
+//
+// Les teintes « subtle » sont calculées à l'exécution depuis la couleur du
+// locataire (`--primary`, `--info`…), comme Odoo les compile en mode clair :
+// 16 % de la couleur dans la surface pour le fond, 35 % dans le blanc pour le
+// texte d'emphase. Vérifié sur douze couleurs de marque, du marine au jaune :
+// texte du thème ≥ 5,2:1 sur le fond, emphase ≥ 4,9:1 sur le surélevé.
+body.bf_dark_mode {
+  --body-color: #{$dk-text};
+  --body-color-rgb: 209, 213, 216;
+  --body-bg: #{$dk-bg};
+  --emphasis-color: #{$dk-text-bright};
+  --emphasis-color-rgb: 232, 234, 236;
+  --heading-color: #{$dk-text-bright};
+  --secondary-color: #{$dk-text-muted};
+  --secondary-color-rgb: 182, 188, 191;
+  --tertiary-color: rgba(209, 213, 216, 0.55);
+  --tertiary-color-rgb: 209, 213, 216;
+  --secondary-bg: #{$dk-surface};
+  --tertiary-bg: #{$dk-raised};
+  --border-color: #{$dk-border};
+  --border-color-translucent: rgba(74, 81, 83, 0.6);
+  --code-color: #e685b5;
+  // Les liens de Bootstrap 5.3 se peignent en `rgba(var(--link-color-rgb), …)` :
+  // la composante RGB est celle de `$dk-accent-text`. Une marque qui fournira un
+  // jour `--brand-primary-on-dark` devra fournir aussi sa composante RGB.
+  --link-color: var(--bf-dark-accent-text);
+  --link-color-rgb: 127, 205, 237;
+  --link-hover-color: #{$dk-accent-text-hover};
+  --link-hover-color-rgb: 163, 221, 243;
+
+  @each $v in primary, success, info, warning, danger {
+    --#{$v}-bg-subtle: color-mix(in srgb, var(--#{$v}) 16%, #{$dk-surface});
+    --#{$v}-border-subtle: color-mix(in srgb, var(--#{$v}) 40%, #{$dk-surface});
+    --#{$v}-text-emphasis: color-mix(in srgb, var(--#{$v}) 35%, white);
+  }
+  --secondary-bg-subtle: #{$dk-raised};
+  --secondary-border-subtle: #{$dk-border-soft};
+  --secondary-text-emphasis: #{$dk-text};
+  --light-bg-subtle: #{$dk-raised};
+  --light-border-subtle: #{$dk-border-soft};
+  --light-text-emphasis: #{$dk-text};
+  --dark-bg-subtle: #{$dk-bg};
+  --dark-border-subtle: #{$dk-border};
+  --dark-text-emphasis: #{$dk-text};
+
+  // ⚠️ L'infobulle d'Odoo 18 prend son FOND dans `--emphasis-color` (noir en
+  // mode clair) et garde un texte codé en dur `#e9ecef`. Rendue claire
+  // ci-dessus, `--emphasis-color` donnait fond clair sous texte clair, ~1,0:1,
+  // sur chaque survol (vu en relecture adverse). L'infobulle garde donc
+  // son fond noir. `.tooltip .tooltip-inner` du bloc 14 ne vise rien en 18 :
+  // l'infobulle vit dans `div.o_popover`, sans ancêtre `.tooltip`.
+  .tooltip, .o-tooltip { --tooltip-bg: #000; --tooltip-color: #{$dk-text-bright}; }
+  .o-tooltip + .popover-arrow { --popover-bg: #000; }
+}
+
+// =============================================================================
 // 2. ODOO 18 COMPONENT CSS VARIABLES
 // =============================================================================
 body.bf_dark_mode {
@@ -175,6 +247,10 @@ body.bf_dark_mode {
   // surélevé (fragment en gras des résultats de la palette) et 3,57:1 au
   // survol (autocomplétion de la barre de recherche).
   .text-primary  { color: var(--bf-dark-accent-text) !important; }
+  // L'info de Bootstrap telle qu'Odoo la sert (#0180a5) mesure 2,89:1 sur la
+  // surface : la flèche « entrant » de la boîte de bf_email. Même
+  // teinte que les « emphasis » du bloc 1b.
+  .text-info     { color: var(--info-text-emphasis) !important; }
   .text-600      { color: $dk-text-muted !important; }
   .text-700      { color: $dk-text !important; }
   // 800 et 900 sont les gris les plus FONCÉS d'Odoo : du quasi-noir sur du
@@ -870,6 +946,61 @@ body.bf_dark_mode {
   table.table { color: $dk-text; }
   .table-bordered th, .table-bordered td { border-color: $dk-border; }
   table.table-hover tbody tr:hover { color: $dk-text; background-color: $dk-hover; }
+
+  // Variantes (`table-primary`, `table-info`, `table-light`…). Elles
+  // déclarent leurs `--table-bg`, `--table-hover-bg`… sur la ligne même, en
+  // teintes claires, et la règle générique ci-dessus peint chaque cellule en
+  // surface. Effet mesuré sur la ligne courante de la boîte de bf_email :
+  // invisible hors survol (même fond que les autres lignes), et au survol
+  // (donc juste après le clic) le bleu pâle de `--table-hover-bg` sous le
+  // texte clair, 1,08:1. On redéclare les variables au même endroit et on
+  // rend aux cellules d'une variante le fond de leur variante.
+  @each $v in primary, success, info, warning, danger {
+    .table-#{$v} {
+      --table-bg: color-mix(in srgb, var(--#{$v}) 16%, #{$dk-surface});
+      --table-color: #{$dk-text};
+      --table-border-color: color-mix(in srgb, var(--#{$v}) 40%, #{$dk-surface});
+      --table-striped-bg: color-mix(in srgb, var(--#{$v}) 22%, #{$dk-surface});
+      --table-striped-color: #{$dk-text};
+      --table-active-bg: color-mix(in srgb, var(--#{$v}) 22%, #{$dk-surface});
+      --table-active-color: #{$dk-text-bright};
+      --table-hover-bg: color-mix(in srgb, var(--#{$v}) 22%, #{$dk-surface});
+      --table-hover-color: #{$dk-text-bright};
+    }
+  }
+  .table-secondary, .table-light {
+    --table-bg: #{$dk-raised};
+    --table-color: #{$dk-text};
+    --table-border-color: #{$dk-border-soft};
+    --table-striped-bg: #{$dk-hover};
+    --table-striped-color: #{$dk-text};
+    --table-active-bg: #{$dk-hover};
+    --table-active-color: #{$dk-text-bright};
+    --table-hover-bg: #{$dk-hover};
+    --table-hover-color: #{$dk-text-bright};
+  }
+  .table-dark {
+    --table-bg: #{$dk-bg};
+    --table-color: #{$dk-text};
+    --table-border-color: #{$dk-border};
+    --table-striped-bg: #{$dk-surface-alt};
+    --table-striped-color: #{$dk-text};
+    --table-active-bg: #{$dk-surface-alt};
+    --table-active-color: #{$dk-text-bright};
+    --table-hover-bg: #{$dk-surface-alt};
+    --table-hover-color: #{$dk-text-bright};
+  }
+  @each $v in primary, secondary, success, info, warning, danger, light, dark {
+    // ligne (`tr.table-x`), section (`thead.table-x`) ou tableau entier
+    .table > :not(caption) > .table-#{$v} > *,
+    .table > .table-#{$v} > * > *,
+    .table-#{$v} > :not(caption) > * > * {
+      background-color: var(--table-bg);
+      border-bottom-color: var(--table-border-color);
+    }
+  }
+  // Le survol d'une variante passe le texte au vif : le fond s'y éclaircit.
+  .table-hover > tbody > tr:hover > * { color: var(--table-hover-color, #{$dk-text}); }
 }
 
 // =============================================================================

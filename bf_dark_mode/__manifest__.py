@@ -5,7 +5,7 @@
     #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
     #   la langue source : un usager réglé en anglais lisait le module
     #   en français.
-    'version': '18.0.1.5.0',
+    'version': '18.0.1.6.0',
     'summary': 'Dark mode for the Symbifox Odoo backend, using the BF brand gray palette.',
     'category': 'Tools',
     'author': 'Les services de consultation Blue Fox, Inc.',

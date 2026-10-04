@@ -113,6 +113,8 @@ No configuration required. The toggle is available to all backend users.
 ### Odoo 18 SCSS Constraints
 - No SCSS color functions (`lighten()`, `darken()`, `mix()`) are used -- all hex values are pre-computed to avoid libsass compilation issues in Odoo's asset pipeline
 - No `rgba()` calls with SCSS variable interpolation inside `#{}` blocks
+- Tints that depend on the tenant's colors (`--primary`, `--info`…) are mixed at runtime with CSS `color-mix()`, never with SCSS `mix()`
+- Odoo 18 compiles Bootstrap with an EMPTY prefix: its rules read `--body-color`, `--info-bg-subtle`, `--table-bg`, never `--bs-*`. Root variables are set under both names; component variables (tables) are redeclared on the component itself
 
 ### Compatibility
 - Does not conflict with Odoo's native color scheme (Bootstrap dark mode is disabled in Odoo 18)
@@ -141,6 +143,28 @@ bf_dark_mode/
 ```
 
 ## Changelog
+
+### 18.0.1.6.0
+
+- Odoo 18 compiles Bootstrap without a prefix, so 40 of the 47 `--bs-*`
+  variables the theme set were read by no rule at all. Any custom screen that
+  inherits its text from `<body>` kept the light theme's `#495057` on a dark
+  surface (**1.6:1**, 87 elements in the email inbox's folder pane and preview
+  header). The theme now also sets the root variables Odoo actually reads:
+  body, emphasis, heading, secondary and tertiary text, borders, links.
+- Pale utilities kept their light tint under the theme's light text: the
+  inbox selection bar (`bg-info-subtle`, **1.03:1**), "no folder" badges
+  (`bg-warning-subtle`, **1.29:1**). The `*-bg-subtle`, `*-border-subtle` and
+  `*-text-emphasis` variables are now derived at runtime from the tenant's
+  colors (16 % of the color in the surface, 35 % in white for emphasis).
+- Table variants (`table-primary`, `table-info`, `table-light`…): the current
+  row of a list was invisible when not hovered (the generic cell rule painted
+  it like every other row) and pale blue under light text when hovered,
+  **1.08:1**. Variants now get dark tints of their own color.
+- Odoo 18 tooltips take their background from `--emphasis-color` and keep a
+  hard-coded light text: with the emphasis color now light, they keep the
+  black background they had. `.text-info` (Odoo's `#0180a5`, 2.89:1 on the
+  surface) takes the info emphasis tint.
 
 ### 18.0.1.5.0
 
