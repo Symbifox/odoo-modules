@@ -8,7 +8,7 @@ import time
 from collections import defaultdict
 
 import odoo
-from odoo import http
+from odoo import fields, http
 from odoo.addons.bf_ai_bridge.tools import transport
 from odoo.addons.bf_claude_chat.models.claude_chat_instruction import (
     STEERING_MAX_CHARS,
@@ -417,6 +417,102 @@ def usage_vals(payload):
 def settings_auto_brief(icp):
     """True when the proactive brief is enabled (default on)."""
     return icp.get_param("bf_claude_chat.auto_brief", "True") == "True"
+
+
+# Plafond d'un « Envoyer vers Gen » groupé depuis le bureau : une
+# conversation et un tour par fiche. La
+# valeur vit sur le modèle (`_send_to_gen_max`), qui sert aussi de sonde de
+# capacité à la boîte de bf_email_management.
+def _send_to_gen_max(env):
+    return env["claude.chat.session"]._send_to_gen_max()
+
+# Un fil qui a échoué en série repart de zéro plutôt que d'être repris. Le
+# téléphone a toujours compté trois échecs, le flux du bureau deux
+# (`_STREAM_FAIL_THRESHOLD`) : le tour d'arrière-plan garde le seuil du
+# téléphone, dont il vient.
+_BACKGROUND_FAIL_THRESHOLD = 3
+
+
+def launch_background_turn(env, session, question, settings, *, internal=False,
+                           session_was_new=False):
+    """Pose ``question`` dans ``session`` et lance le tour en arrière-plan.
+
+    Le fil de `controllers/turns.py` : il écrit l'avancement dans le
+    message « en cours », survit au processus qui l'a lancé (le cron s'y
+    rattache) et reprend seul une fin propre du pont. Personne n'a besoin
+    d'écouter. Partagé par le téléphone (`mobile_api.ask`) et le
+    bouton « Envoyer vers Gen » du bureau, qui doivent faire
+    exactement la même chose.
+
+    ``session`` appartient déjà à ``env.user`` : c'est à l'appelant de l'avoir
+    vérifié. ⚠️ La transaction de l'appelant est COMMISE ici : le fil cherche
+    le message en base dès son départ.
+    """
+    user = env.user
+    Session = env["claude.chat.session"]
+    Message = env["claude.chat.message"]
+    Message.create({
+        "session_id": session.id, "role": "user", "content": question,
+        # La consigne de départ ne s'affiche pas, comme au bureau.
+        "internal": bool(internal),
+    })
+    # sudo : les champs du tour ne s'écrivent que côté serveur
+    # (`TURN_FIELDS`), et la session appartient à cet usager.
+    pending = Message.sudo().create({
+        # `content` est requis : un point d'attente, remplacé au fil du flux.
+        "session_id": session.id, "role": "assistant", "content": "…",
+        "state": "pending",
+    })
+
+    claude_sid = session.claude_session_id or None
+    if claude_sid and session.stream_fail_count >= _BACKGROUND_FAIL_THRESHOLD:
+        claude_sid = None
+
+    payload = {
+        "session_id": claude_sid,
+        "message": question,
+        "user_name": user.name,
+        "user_id": user.id,
+        "user_email": user.email or "",
+        "model": settings["model"],
+        "max_turns": settings["max_turns"],
+        "tenant": settings["tenant"],
+    }
+    # La fiche de la conversation, à chaque tour, comme au bureau.
+    fiche_model = session.res_model if session.res_model and session.res_id else None
+    if fiche_model:
+        fiche_model, fiche_id = _validated_context_ref(
+            env, {"model": session.res_model, "res_id": session.res_id})
+    if fiche_model:
+        base = env["ir.config_parameter"].sudo().get_param("web.base.url") or ""
+        payload["context"] = {
+            "model": fiche_model, "res_id": fiche_id,
+            "display_name": Session._record_title(fiche_model, fiche_id),
+            "view_type": "form",
+            "url": "%s/odoo/%s/%s" % (base, fiche_model, fiche_id),
+        }
+        persona = _resolve_persona_summary(env, fiche_model, fiche_id)
+        if persona:
+            payload["context"]["persona_summary"] = persona[:2000]
+    _attach_identity(env, payload)
+    _attach_steering(env, payload, fiche_model)
+
+    # La clé d'API n'est pas stockée : le fil la relit au départ.
+    reglages = turns.turn_settings(env)
+    pending.sudo().write({
+        "turn_key": turns.new_turn_key(env.cr.dbname, pending.id),
+        "turn_payload": json.dumps(payload),
+        "runner_heartbeat": fields.Datetime.now(),
+    })
+    # Le fil doit démarrer APRÈS l'écriture, sinon il cherche un message que
+    # personne ne voit encore.
+    env.cr.commit()
+    turns.start_runner(
+        env.cr.dbname, pending.id, settings["socket"], settings["timeout"],
+        max_continue=reglages["auto_continue"],
+        wall_seconds=reglages["wall_seconds"], session_was_new=session_was_new,
+    )
+    return pending
 
 
 class ClaudeChatController(http.Controller):
@@ -1065,6 +1161,86 @@ class ClaudeChatController(http.Controller):
             "closure_enabled": Session._closure_enabled(),
         }
 
+    @http.route("/claude-chat/send-to-gen", type="json", auth="user", methods=["POST"])
+    def send_to_gen(self, model=None, res_ids=None):
+        """« 🪄 Envoyer vers Gen » depuis le bureau.
+
+        Le pendant de « Envoyer à Gen » du téléphone : pour chaque
+        fiche, une conversation rattachée, la consigne de départ en message
+        interne, et le tour part en arrière-plan. L'écran qui a cliqué
+        n'attend rien et la personne continue ce qu'elle faisait.
+
+        Une fiche qui a déjà une conversation ACTIVE de cet usager n'en reçoit
+        pas une seconde : on la rend telle quelle (``existing``), sans relancer
+        de topo. Une conversation archivée ne compte pas : renvoyer la fiche à
+        Gen après l'avoir fermée est une nouvelle demande.
+
+        Rend un résultat par fiche, dans l'ordre reçu ; une fiche refusée
+        (introuvable, illisible, plafond de requêtes) ne bloque pas les autres.
+        """
+        settings = _get_settings()
+        if not settings["enabled"]:
+            return {"error": "disabled"}
+        try:
+            ids = list(dict.fromkeys(int(i) for i in (res_ids or []) if int(i) > 0))
+        except (TypeError, ValueError):
+            return {"error": "bad_request"}
+        if not model or not ids:
+            return {"error": "bad_request"}
+        plafond = _send_to_gen_max(request.env)
+        if len(ids) > plafond:
+            return {"error": "too_many", "max": plafond}
+        # Le pont absent, chaque tour finirait en erreur après une minute
+        # d'attente, et l'avis aurait annoncé « Envoyé ». Rien ne part.
+        if not request.env["bf.ai.bridge"].available():
+            return {"error": "unavailable"}
+
+        user = request.env.user
+        Session = request.env["claude.chat.session"]
+        results = []
+        for res_id in ids:
+            # Même contrôle d'accès que le panneau et le téléphone : droits,
+            # règles d'enregistrement et sociétés de l'APPELANT.
+            ctx_model, ctx_res_id = _validated_context_ref(
+                request.env, {"model": model, "res_id": res_id})
+            if not ctx_model:
+                results.append({"res_id": res_id, "error": "not_found"})
+                continue
+            existing = Session.search([
+                ("user_id", "=", user.id), ("origin", "in", ("web", "mobile")),
+                ("res_model", "=", ctx_model), ("res_id", "=", ctx_res_id),
+            ], order="id desc", limit=1)
+            if existing:
+                results.append({"res_id": res_id, "session_id": existing.id,
+                                "name": existing.name, "existing": True})
+                continue
+            if not _check_rate_limit(user.id):
+                results.append({"res_id": res_id, "error": "rate_limited"})
+                continue
+            # Chaque fiche est commise par `launch_background_turn` : une
+            # erreur imprévue sur la k-ième ne doit ni perdre le compte rendu
+            # des k-1 premières (déjà parties), ni laisser la k-ième à moitié
+            # écrite.
+            try:
+                session = Session.create({
+                    "name": Session._record_title(ctx_model, ctx_res_id) or "New Chat",
+                    "user_id": user.id,
+                    "res_model": ctx_model,
+                    "res_id": ctx_res_id,
+                })
+                pending = launch_background_turn(
+                    request.env, session, AUTO_BRIEF_PROMPT, settings,
+                    internal=True, session_was_new=True,
+                )
+            except Exception:  # noqa: BLE001 - rapporté par fiche
+                _logger.exception("send-to-gen : %s %s", ctx_model, ctx_res_id)
+                request.env.cr.rollback()
+                results.append({"res_id": res_id, "error": "failed"})
+                continue
+            results.append({"res_id": res_id, "session_id": session.id,
+                            "turn_id": pending.id, "name": session.name})
+        return {"results": results}
+
     @http.route("/claude-chat/closure-answer", type="json", auth="user", methods=["POST"])
     def closure_answer(self, session_id, answer):
         """« Archiver » ou « Pas encore » sur la proposition de Gen."""
@@ -1115,8 +1291,25 @@ class ClaudeChatController(http.Controller):
             ["role", "content", "create_date", "state", "end_reason", "followup"],
             order="create_date asc, id asc",
         )
+        # Au bureau, cette route ne sert qu'à OUVRIR une
+        # conversation à l'écran. Le téléphone ne la montrera plus à lire,
+        # jusqu'au dernier message FINI : une réponse encore en cours sera « à
+        # lire » si l'on part avant la fin (la fin d'un tour suivi la marque).
+        vu = next((m["id"] for m in reversed(messages) if m.get("state") != "pending"), None)
+        if vu:
+            session._mark_seen(vu)
         return {"messages": messages, "session_name": session.name,
                 **session._closure_payload()}
+
+    @http.route("/claude-chat/seen", type="json", auth="user", methods=["POST"])
+    def mark_seen(self, session_id, message_id=None):
+        """Un tour suivi à l'écran jusqu'au bout vaut lecture."""
+        session = request.env["claude.chat.session"].search(
+            [("id", "=", int(session_id or 0)), ("user_id", "=", request.env.user.id)], limit=1)
+        if not session:
+            return {"error": "Session not found"}
+        session._mark_seen(int(message_id) if message_id else None)
+        return {"ok": True}
 
     @http.route("/claude-chat/rename-session", type="json", auth="user", methods=["POST"])
     def rename_session(self, session_id, name=""):

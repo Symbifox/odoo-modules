@@ -1,5 +1,40 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.34.0 - 2026-10-03
+
+### Ce qui reste à lire
+
+- Chaque conversation retient le dernier message que la personne a vu
+  (`seen_message_id`). Elle est « à lire » quand Gen a écrit après lui.
+- Api mobile 8 : `unread` sur chaque conversation de `/sessions`, et `/seen`,
+  que l'app appelle quand la conversation est à l'écran. Lire `/messages` ne
+  vaut pas lecture : l'app le relit en fin de tour même quand on est parti.
+- Au bureau, ouvrir une conversation la rend lue jusqu'au dernier message fini,
+  et un tour suivi à l'écran jusqu'au bout aussi (`/claude-chat/seen`).
+- La montée marque tout l'existant comme lu : sans cela, chaque conversation
+  où Gen a déjà répondu passerait en gras.
+- La main « t'attend » disparaît de la liste ; une conversation que Gen juge
+  terminée porte 📥, au bureau comme au téléphone.
+
+## 18.0.1.33.0 - 2026-10-02
+
+### Envoyer vers Gen depuis un autre module
+
+- Route `/claude-chat/send-to-gen` : un modèle et jusqu'à dix fiches. Chaque
+  fiche reçoit sa conversation rattachée, et la consigne de départ part en tour
+  d'arrière-plan, exactement comme « Envoyer à Gen » du téléphone. Une fiche
+  qui a déjà une conversation active de la personne est rendue telle quelle,
+  sans seconde consigne. L'accès est vérifié sous l'appelant, fiche par fiche.
+  Rien n'est créé quand le pont est absent (`unavailable`), et l'échec d'une
+  fiche ne fait pas perdre le résultat des autres.
+- `launch_background_turn()` sort de `mobile_api.ask` : le téléphone et le
+  bureau partagent le même lancement.
+- `claude.chat.session._send_to_gen_max()` donne le plafond et sert de sonde de
+  capacité aux modules qui ne dépendent pas de celui-ci (la boîte de
+  `bf_email_management`).
+- « Ouvrir » après l'envoi passe la conversation en paramètre de l'action
+  (`gen_session`), sans recharger la page.
+
 ## 18.0.1.32.0 - 2026-09-30
 
 ### Le chemin sans flux

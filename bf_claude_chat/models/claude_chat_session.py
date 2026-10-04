@@ -165,6 +165,15 @@ class ClaudeChatSession(models.Model):
         "project.task", string="Suggested Task", copy=False, ondelete="set null")
     link_proposed = fields.Boolean(string="Link Proposed", copy=False)
 
+    # ------------------------------------------------------------------
+    # Ce que la personne a lu
+    # ------------------------------------------------------------------
+    # Le dernier message que la personne a VU à l'écran, au téléphone ou au
+    # bureau. Une conversation est « à lire » quand Gen a écrit après lui.
+    # Un entier et non un Many2one : un repère, pas un lien à tenir à jour
+    # quand un message disparaît. Écrit par `_mark_seen` seulement.
+    seen_message_id = fields.Integer(string="Last Seen Message", copy=False, readonly=True)
+
     # 🔴 Relecture adverse du 2026-09-30 : la règle d'accès ne vérifie
     # l'écriture qu'AVANT d'écrire. Une personne pouvait céder sa conversation
     # à une autre (`user_id`) en lui forgeant une raison et une fiche, et la
@@ -208,6 +217,16 @@ class ClaudeChatSession(models.Model):
     def _compute_message_count(self):
         for rec in self:
             rec.message_count = len(rec.message_ids)
+
+    @api.model
+    def _send_to_gen_max(self):
+        """Plafond de « Envoyer vers Gen », et sonde de capacité.
+
+        La boîte de `bf_email_management` n'offre son bouton que si cette
+        méthode existe : la route `/claude-chat/send-to-gen` naît avec elle
+        (18.0.1.33.0), et la boîte ne dépend pas de ce module.
+        """
+        return 10
 
     @api.model
     def _fil_de_passe(self, origin, res_model=False, res_id=False,
@@ -559,6 +578,48 @@ class ClaudeChatSession(models.Model):
         par_id = {s.id: s._closure_payload() for s in sessions}
         for row in rows:
             row.update(par_id.get(row["id"], {}))
+        return rows
+
+    def _mark_seen(self, message_id=None):
+        """La personne a vu la conversation jusqu'à `message_id` (le dernier sinon).
+
+        Ne recule jamais, et ne dépasse pas le dernier message de la
+        conversation : un identifiant forgé ne marque pas d'avance ce que Gen
+        n'a pas encore écrit.
+
+        ⚠️ En SQL : un `write` toucherait `write_date` et prendrait le verrou
+        de la ligne que le tour de Gen écrit au même moment. Rendre lue une
+        conversation ne doit ni la faire bouger ni faire échouer un tour.
+        """
+        self.ensure_one()
+        self.env.cr.execute("""
+            UPDATE claude_chat_session s
+               SET seen_message_id = m.dernier
+              FROM (SELECT LEAST(MAX(id), COALESCE(%s, MAX(id))) AS dernier
+                      FROM claude_chat_message
+                     WHERE session_id = %s) m
+             WHERE s.id = %s
+               AND m.dernier IS NOT NULL
+               AND COALESCE(s.seen_message_id, 0) < m.dernier
+        """, (int(message_id) if message_id else None, self.id, self.id))
+        self.invalidate_recordset(["seen_message_id"])
+
+    @api.model
+    def _with_unread(self, rows):
+        """Ajoute `unread` aux lignes d'une liste : Gen a écrit depuis la
+        dernière lecture. Seuls les messages de Gen comptent, et pas les
+        consignes internes : sa propre question n'est jamais « à lire »."""
+        ids = [row["id"] for row in rows]
+        derniers = {}
+        if ids:
+            for session, dernier in self.env["claude.chat.message"].sudo()._read_group(
+                    [("session_id", "in", ids), ("role", "=", "assistant"),
+                     ("internal", "=", False)],
+                    ["session_id"], ["id:max"]):
+                derniers[session.id] = dernier
+        vus = {s.id: s.seen_message_id for s in self.browse(ids)}
+        for row in rows:
+            row["unread"] = derniers.get(row["id"], 0) > (vus.get(row["id"]) or 0)
         return rows
 
     @api.model

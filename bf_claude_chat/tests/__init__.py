@@ -7,3 +7,5 @@ from . import test_plafond
 from . import test_nommage
 from . import test_liste
 from . import test_fermeture
+from . import test_envoyer_vers_gen
+from . import test_non_lu

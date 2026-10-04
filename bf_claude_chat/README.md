@@ -134,6 +134,17 @@ is sent on the user's behalf asking for a short situation report plus next
 actions. It is stored as an `internal` message: the assistant sees it, the panel
 never renders it.
 
+The same brief can be sent without opening anything. Other modules call
+`/claude-chat/send-to-gen` with a model and up to ten record ids (the email
+inbox's "🪄 Send to Gen" button does): each record gets its own linked
+conversation and the brief runs as a background turn, exactly like the mobile
+app's "Send to Gen". A record that already has an active conversation of the
+user's is returned as is, without a second brief. Access is checked as the
+caller, per record. Nothing is created when the bridge socket is missing
+(`unavailable`), and one record failing does not lose the others' results.
+`claude.chat.session._send_to_gen_max()` gives the cap and doubles as a
+capability probe for modules that do not depend on this one.
+
 ### Steering instructions
 
 `claude.chat.instruction` holds short directives composed into the system prompt.
@@ -270,6 +281,8 @@ Every endpoint is `type="json"`, `auth="user"`, `methods=["POST"]`.
 | `/claude-chat/link-answer` | Links the conversation to the suggested task, or not |
 | `/claude-chat/search-tasks` | Task search (for Share) |
 | `/claude-chat/share-to-task` | Posts the conversation into the chatter |
+| `/claude-chat/send-to-gen` | Opens a linked conversation per record (max 10) and runs the brief in the background |
+| `/claude-chat/seen` | A turn followed on screen to its end counts as read |
 
 `/claude-chat/stream` is the streaming counterpart of `/send`: `type="http"`,
 `auth="user"`, CSRF replaced by the `X-Claude-Stream: 1` header. `/claude-chat/attach`
@@ -292,6 +305,7 @@ bearer token (no session cookie, `save_session=False`):
 | `POST /bf_claude_chat/mobile/v1/list-mode` | Stores the Titles / Records choice on the user (same setting as the web) |
 | `POST /bf_claude_chat/mobile/v1/closure-answer` | `archive` or `later` on Gen's proposal |
 | `POST /bf_claude_chat/mobile/v1/link-answer` | Links the conversation to the suggested task, or not |
+| `POST /bf_claude_chat/mobile/v1/seen` | The conversation is on screen up to `message_id`: what Gen wrote before it is no longer "to read" |
 
 `/sessions` accepts `q` (every word must appear in the title or a visible
 message), `limit` and `offset`, and returns `res_label` ("Type · Name", or
@@ -300,7 +314,10 @@ the API level: 4 adds `/stop` and per-conversation `busy`, 5 adds search,
 renaming and "Send to Gen" from a record, 6 adds `res_label` and `/list-mode`,
 7 adds `closure_state`, `closure_reason` and `link_task` on conversations and
 `/messages`, `followup` on a follow-up message, `/sessions?follow=1`,
-`/closure-answer` and `/link-answer`.
+`/closure-answer` and `/link-answer`, 8 adds `unread` on each conversation of
+`/sessions` (Gen wrote since the last reading) and `/seen`. Reading `/messages`
+does not count as reading: the app reloads it at the end of a turn even when
+the user has left.
 
 ## Talking to the bridge
 

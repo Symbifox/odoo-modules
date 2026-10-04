@@ -57,14 +57,16 @@ export const closureMixin = {
         return _t("Link this conversation to this task?");
     },
 
-    /** L'icône d'une ligne de la liste : ce qui attend quelque chose. */
+    /** L'icône d'une ligne de la liste : ce qui attend quelque chose.
+     *  « Terminée » s'écrit 📥 (gabarit, `closureInbox`), et
+     *  « t'attend » n'a plus de signe ; la main ne se lisait pas. */
     closureIcon(session) {
-        switch (session.closure_state) {
-            case "done": return "fa-check-circle text-success";
-            case "waiting": return "fa-hand-paper-o text-warning";
-            case "idle": return "fa-moon-o text-muted";
-            default: return "";
-        }
+        return session.closure_state === "idle" ? "fa-moon-o text-muted" : "";
+    },
+
+    /** 📥 : Gen juge la conversation terminée, prête à archiver. */
+    closureInbox(session) {
+        return session.closure_state === "done";
     },
 
     closureIconTitle(session) {

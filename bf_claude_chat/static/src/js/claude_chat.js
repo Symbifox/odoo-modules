@@ -214,8 +214,11 @@ class ClaudeChatAction extends Component {
         // (`?gen_session=<id>`). Lu ICI, avant tout `await` : le service
         // d'actions réécrit l'adresse au montage et le paramètre disparaît.
         // Le serveur refuse la conversation d'un autre.
+        // « Ouvrir » après « Envoyer vers Gen » passe la
+        // conversation en paramètre de l'action, sans recharger la page.
         const demandee = parseInt(
-            (router.current || {}).gen_session
+            ((this.props.action || {}).params || {}).gen_session
+            || (router.current || {}).gen_session
             || new URLSearchParams(window.location.search).get("gen_session"), 10);
         onMounted(async () => {
             await this.loadSessions();
@@ -268,6 +271,19 @@ class ClaudeChatAction extends Component {
             return;
         }
         this._resumePending();
+    }
+
+    /** Un tour suivi à l'écran jusqu'au bout vaut lecture ; le
+     *  téléphone ne montrera pas la réponse « à lire ». Rien n'est dit en cas
+     *  d'échec : la conversation y restera en gras, sans plus. */
+    async _markSeen() {
+        const sessionId = this.state.activeSessionId;
+        if (!(sessionId > 0)) return;
+        try {
+            await rpc("/claude-chat/seen", { session_id: sessionId });
+        } catch {
+            // Pas grave : voir plus haut.
+        }
     }
 
     // ── Actions ────────────────────────────────────────────────
@@ -363,6 +379,7 @@ class ClaudeChatAction extends Component {
                 await this._sendBuffered(message, sessionId);
             } finally {
                 this.state.isThinking = false;
+                await this._markSeen();
                 await this.loadSessions();
                 if (wasNewSession) setTimeout(() => this.loadSessions(), 4000);
                 this.scrollToBottom();
@@ -397,6 +414,7 @@ class ClaudeChatAction extends Component {
             this.state.messages.splice(this.state.messages.indexOf(assistant), 1);
             await this._sendBuffered(message, sessionId);
         }
+        await this._markSeen();
         await this.loadSessions();
         if (wasNewSession) setTimeout(() => this.loadSessions(), 4000);
         this.scrollToBottom();

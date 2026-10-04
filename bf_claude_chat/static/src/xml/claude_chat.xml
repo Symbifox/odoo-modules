@@ -27,7 +27,8 @@
         <t t-set="closureBar" t-value="closureBarKind()"/>
         <div t-if="closureBar === 'archive'"
              class="bf-gen-closure-bar d-flex align-items-center gap-2 px-3 py-2 border-top">
-            <i t-att-class="'fa ' + (state.closure.state === 'done' ? 'fa-check-circle text-success' : 'fa-moon-o text-muted')"/>
+            <span t-if="state.closure.state === 'done'" aria-hidden="true">📥</span>
+            <i t-else="" class="fa fa-moon-o text-muted"/>
             <div class="flex-grow-1 small overflow-hidden">
                 <!-- Par t-esc : un texte de gabarit voit ses blancs repliés par
                      OWL (\s+), espace insécable comprise, et le « ? » tombait seul
@@ -94,7 +95,9 @@
                                 </t>
                                 <t t-else="">
                                     <t t-set="label" t-value="sessionLabel(session)"/>
-                                    <i t-if="closureIcon(session)"
+                                    <span t-if="closureInbox(session)" class="me-1 bf-gen-closure-icon"
+                                          t-att-title="closureIconTitle(session)">📥</span>
+                                    <i t-elif="closureIcon(session)"
                                        t-att-class="'fa me-1 mt-1 bf-gen-closure-icon ' + closureIcon(session)"
                                        t-att-title="closureIconTitle(session)"/>
                                     <span t-att-class="'bf-chat-session-title text-truncate flex-grow-1'
@@ -386,7 +389,9 @@
                                     <t t-else="">
                                         <t t-set="label" t-value="sessionLabel(session)"/>
                                         <div class="d-flex align-items-center">
-                                            <i t-if="closureIcon(session)"
+                                            <span t-if="closureInbox(session)" class="me-1 bf-gen-closure-icon"
+                                                  t-att-title="closureIconTitle(session)">📥</span>
+                                            <i t-elif="closureIcon(session)"
                                                t-att-class="'fa me-1 bf-gen-closure-icon ' + closureIcon(session)"
                                                t-att-title="closureIconTitle(session)"/>
                                             <small t-att-class="'text-truncate flex-grow-1'

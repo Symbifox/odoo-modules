@@ -24,15 +24,14 @@ moitiés de l'app, le contrôleur reconnaît celle qui est là.
 import json
 import logging
 
-from odoo import fields, http
+from odoo import http
 from odoo.http import request
 
 from odoo.addons.bf_ai_bridge.tools import transport
 
-from . import turns
 from .main import (
-    AUTO_BRIEF_PROMPT, _attach_identity, _attach_steering, _check_rate_limit,
-    _get_settings, _resolve_persona_summary, _validated_context_ref,
+    AUTO_BRIEF_PROMPT, _check_rate_limit, _get_settings, _validated_context_ref,
+    launch_background_turn,
 )
 
 _logger = logging.getLogger(__name__)
@@ -146,7 +145,12 @@ class BfClaudeChatMobileApi(http.Controller):
             # `/closure-answer` et `/link-answer`. La notification du jour a
             # le type `genfox_follow` (title, body, count, fermer, attend,
             # relance) et part avec le courriel quotidien.
-            "api": 7,
+            # api 8 : `unread` sur chaque conversation de
+            # `/sessions` (Gen a écrit depuis la dernière lecture), et `/seen`
+            # que l'app appelle quand la conversation est À L'ÉCRAN. Lire
+            # `/messages` ne vaut pas lecture : l'app la relit en fin de tour,
+            # même quand la personne est partie ailleurs.
+            "api": 8,
             "enabled": bool(settings["enabled"]),
             # Parité complète depuis l'api 2 : mêmes outils qu'au bureau.
             "readonly": False,
@@ -198,6 +202,7 @@ class BfClaudeChatMobileApi(http.Controller):
             row["turn_id"] = tour.id if tour else False
         Session._with_res_labels(rows)
         Session._with_closure(rows)
+        Session._with_unread(rows)
         return _json({"sessions": rows, "list_mode": Session._list_mode(),
                       "closure_enabled": Session._closure_enabled()})
 
@@ -284,72 +289,11 @@ class BfClaudeChatMobileApi(http.Controller):
                 vals["name"] = Session._record_title(ctx_model, ctx_res_id) or "New Chat"
             session = Session.create(vals)
 
-        Message = request.env["claude.chat.message"]
-        Message.create({
-            "session_id": session.id, "role": "user", "content": question,
-            # La consigne de départ ne s'affiche pas, comme au bureau.
-            "internal": brief,
-        })
-        # sudo : les champs du tour ne s'écrivent que côté serveur
-        # (`TURN_FIELDS`), et la session vient d'être vérifiée à cet usager.
-        pending = Message.sudo().create({
-            # `content` est requis : un point d'attente, remplacé au fil du flux.
-            "session_id": session.id, "role": "assistant", "content": "…",
-            "state": "pending",
-        })
-
-        # Même anti-poison que le panneau web : un fil qui a échoué en série
-        # repart de zéro plutôt que d'être repris.
-        claude_sid = session.claude_session_id or None
-        if claude_sid and session.stream_fail_count >= 3:
-            claude_sid = None
-
-        payload = {
-            "session_id": claude_sid,
-            "message": question,
-            "user_name": user.name,
-            "user_id": user.id,
-            "user_email": user.email or "",
-            "model": settings["model"],
-            "max_turns": settings["max_turns"],
-            "tenant": settings["tenant"],
-        }
-        # La fiche de la conversation, à chaque tour, comme au bureau.
-        fiche_model = session.res_model if session.res_model and session.res_id else None
-        if fiche_model:
-            fiche_model, fiche_id = _validated_context_ref(
-                request.env, {"model": session.res_model, "res_id": session.res_id})
-        if fiche_model:
-            base = request.env["ir.config_parameter"].sudo().get_param("web.base.url") or ""
-            payload["context"] = {
-                "model": fiche_model, "res_id": fiche_id,
-                "display_name": Session._record_title(fiche_model, fiche_id),
-                "view_type": "form",
-                "url": "%s/odoo/%s/%s" % (base, fiche_model, fiche_id),
-            }
-            persona = _resolve_persona_summary(request.env, fiche_model, fiche_id)
-            if persona:
-                payload["context"]["persona_summary"] = persona[:2000]
-        _attach_identity(request.env, payload)
-        _attach_steering(request.env, payload, fiche_model)
-
-        # Le même fil que le bureau (`controllers/turns.py`) : il écrit
-        # l'avancement dans le message, survit au processus qui l'a lancé
-        # (le cron s'y rattache), et reprend seul une fin propre du pont.
-        # La clé d'API n'est pas stockée : le fil la relit au départ.
-        reglages = turns.turn_settings(request.env)
-        pending.sudo().write({
-            "turn_key": turns.new_turn_key(request.env.cr.dbname, pending.id),
-            "turn_payload": json.dumps(payload),
-            "runner_heartbeat": fields.Datetime.now(),
-        })
-        # Le fil doit démarrer APRÈS l'écriture, sinon il cherche un message que
-        # personne ne voit encore.
-        request.env.cr.commit()
-        turns.start_runner(
-            request.env.cr.dbname, pending.id, settings["socket"], settings["timeout"],
-            max_continue=reglages["auto_continue"],
-            wall_seconds=reglages["wall_seconds"], session_was_new=session_was_new,
+        # Le même fil que le bureau (`controllers/turns.py`), lancé par la
+        # fonction que partage le bouton « Envoyer vers Gen » du bureau.
+        pending = launch_background_turn(
+            request.env, session, question, settings,
+            internal=brief, session_was_new=session_was_new,
         )
 
         return _json({
@@ -504,6 +448,28 @@ class BfClaudeChatMobileApi(http.Controller):
         if not retenu:
             return _json({"error": "mode inconnu"}, 400)
         return _json({"ok": True, "list_mode": retenu})
+
+    @http.route(f"{BASE}/seen", type="http", auth="public",
+                methods=["POST"], csrf=False, save_session=False)
+    def seen(self, **kw):
+        """La conversation est à l'écran jusqu'à `message_id`."""
+        device = _device()
+        if not device:
+            return _json({"error": "unauthorized"}, 401)
+        request.update_env(user=device.user_id.id)
+        body = _body()
+        try:
+            sid = int(body.get("session_id") or 0)
+            mid = int(body.get("message_id") or 0)
+        except (TypeError, ValueError):
+            sid, mid = 0, 0
+        # Cherchée parmi les SIENNES, comme `/rename-session`.
+        session = request.env["claude.chat.session"].search(
+            [("id", "=", sid), ("user_id", "=", request.env.user.id)], limit=1)
+        if not session:
+            return _json({"error": "conversation introuvable"}, 404)
+        session._mark_seen(mid or None)
+        return _json({"ok": True})
 
     @http.route(f"{BASE}/rename-session", type="http", auth="public",
                 methods=["POST"], csrf=False, save_session=False)

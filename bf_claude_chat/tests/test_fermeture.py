@@ -548,7 +548,8 @@ class TestRoutesMobile(HttpCase):
         return self.url_open(url, data=json.dumps(body), headers=entetes, timeout=30)
 
     def test_l_appli_lit_l_etat_et_repond(self):
-        self.assertEqual(self._appel("/ping").json()["api"], 7)
+        # Au moins 7 : l'api 8 garde tout ce que la 7 apporte.
+        self.assertGreaterEqual(self._appel("/ping").json()["api"], 7)
         corps = self._appel("/sessions").json()
         self.assertTrue(corps["closure_enabled"])
         rangs = {r["id"]: r for r in corps["sessions"]}
