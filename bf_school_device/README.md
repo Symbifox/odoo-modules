@@ -41,7 +41,9 @@ The directory configuration (address, token, student group, folder) is for syste
 administrators only: whoever sets the address chooses where the token is sent, and
 whoever sets the student group chooses which group every student joins. A new address
 drops the old token. The token is stored encrypted with bf_policy's escrow key and never
-shown again. A directory user outside the student folder is never adopted. A shown
+shown again. An account's directory id, user name and synchronisation state are written by
+the system only, at creation as on any change: the office chooses the student and the
+school, never which directory user the account drives. A directory user outside the student folder is never adopted. A shown
 password is deleted when closed, or at the next synchronisation after five minutes. Families have no
 access right: the portal reads their own children's loans through their guardian links.
 

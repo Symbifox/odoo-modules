@@ -541,6 +541,17 @@ class TestSchoolDevice(HttpCase):
             with self.assertRaises(AccessError, msg=vals):
                 alpha.write(vals)
 
+    def test_office_cannot_create_an_account_with_system_fields(self):
+        # The same fields at creation: write() refused them, create() took them.
+        Account = self.env["bf.school.account"].with_user(self.office)
+        for vals in ({"directory_pk": 1}, {"username": "akadmin"},
+                     {"password_set_on": fields.Datetime.now()}, {"synced_signature": "x"}):
+            with self.assertRaises(AccessError, msg=vals):
+                Account.create(dict({"student_id": self.alpha.id, "school_id": self.school.id}, **vals))
+        account = Account.create({"student_id": self.alpha.id, "school_id": self.school.id})
+        self.assertTrue(account.username, "the office still creates an account")
+        self.assertFalse(account.directory_pk)
+
     def test_office_cannot_write_a_loan_status_or_its_notices(self):
         self._accounts()
         loan = self._lend(user=self.office)

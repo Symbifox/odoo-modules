@@ -144,6 +144,14 @@ class SchoolAccount(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        # 🔴 At creation too: write() refused these fields, create() took them. An account
+        # created by the office with the directory id of an Authentik administrator had
+        # "New password" set THAT user's password and show it to the office (found in review,
+        # 2026-10-03). The student and the school are chosen at creation; the rest is the
+        # system's.
+        given = self._SYSTEM_FIELDS - {"student_id", "school_id"}
+        if not self.env.su and any(given & set(vals) for vals in vals_list):
+            raise AccessError(_("These fields of a student account are kept by the system."))
         for vals in vals_list:
             if not vals.get("username"):
                 vals["username"] = self.env["ir.sequence"].next_by_code("bf.school.account")

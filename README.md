@@ -305,7 +305,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_school_conduct` | Symbifox École : conduite et suivi mensuel | 18.0.1.0.2 | BUSL-1.1 | Breaches of the rules of conduct with graduated sanctions, parents' notices under the law, and the monthly news of Régime pédagogique s. 29.2 |
 | `bf_school_contract` | Symbifox École : contrat de services éducatifs | 18.0.1.0.2 | BUSL-1.1 | Québec private school contract for educational services: the Act's caps enforced, mandatory mentions printed, signed with Symbifox Sign |
 | `bf_school_core` | Symbifox École | 18.0.1.0.1 | BUSL-1.1 | Schools, school years, levels, groups, students and their guardians, with roles for shared custody |
-| `bf_school_device` | Symbifox École : postes des élèves | 18.0.1.0.0 | BUSL-1.1 | Student accounts in the school's directory and Blue Fox OS computers lent to students, bridged to the Blue Fox OS policy |
+| `bf_school_device` | Symbifox École : postes des élèves | 18.0.1.0.1 | BUSL-1.1 | Student accounts in the school's directory and Blue Fox OS computers lent to students, bridged to the Blue Fox OS policy |
 | `bf_school_forms` | Symbifox École : autorisations | 18.0.1.0.2 | BUSL-1.1 | Field trip and activity authorisations: one click per guardian, dated evidence, a refusal always wins |
 | `bf_school_health` | Symbifox École : santé | 18.0.1.0.2 | BUSL-1.1 | Health alerts for every staff member, detailed health records and medication for a restricted group, parents' authorisations signed on the portal |
 | `bf_school_homework` | Symbifox École : devoirs et agenda | 18.0.1.0.1 | BUSL-1.1 | Homework, studies, projects and announced tests per group, on the family portal and in the parents' own calendar (iCal) |

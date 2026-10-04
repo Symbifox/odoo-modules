@@ -1,6 +1,6 @@
 {
     "name": "Symbifox École : postes des élèves",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Education/School",
     "summary": "Student accounts in the school's directory and Blue Fox OS computers "
                "lent to students, bridged to the Blue Fox OS policy",
