@@ -97,20 +97,39 @@ class TestMobileConversation(MobileApiCase):
         self.assertTrue(config["accounts"])
         self.assertEqual(config["accounts"][0]["login"], "owner@test.invalid")
 
+    def _couleurs(self):
+        return {a["id"]: a["color"] for a in self.as_owner().get_mobile_config()["accounts"]}
+
+    def _marque(self, couleur):
+        societe = self.account.company_id.sudo()
+        for champ in ("report_brand_primary", "primary_color"):
+            if champ in societe._fields:
+                societe[champ] = couleur
+
     def test_config_gives_each_account_its_desk_colour(self):
-        """Le téléphone peint la boîte de la couleur de l'avis au bureau ;
-        sans couleur choisie, il n'en reçoit aucune et choisit."""
+        """Le téléphone peint la boîte de la couleur que la boîte de réception
+        lui donne au bureau : celle de la société, même quand l'avis a la
+        sienne. Une boîte orange au bureau ne devient pas ardoise au
+        téléphone."""
+        self._marque("#E17A4B")
+        self.account.sudo().popup_color = "slate"
+        self.assertEqual(self._couleurs()[self.account.id], "#E17A4B")
+        self.assertEqual(self._couleurs()[self.account.id], self.account._brand_colour())
+
+    def test_without_company_colour_the_popup_colour_then_nothing(self):
+        """Sans couleur de société, celle de l'avis ; sans l'une ni l'autre,
+        rien : l'app en choisit une."""
+        self._marque(False)
+        if self.account._brand_colour():
+            self.skipTest("la société garde une couleur d'office sur cette base")
         self.account.sudo().popup_color = "amber"
-        comptes = {a["id"]: a for a in self.as_owner().get_mobile_config()["accounts"]}
-        self.assertEqual(comptes[self.account.id]["color"], "#D97706")
+        self.assertEqual(self._couleurs()[self.account.id], "#D97706")
         self.account.sudo().popup_color = False
-        comptes = {a["id"]: a for a in self.as_owner().get_mobile_config()["accounts"]}
-        self.assertEqual(comptes[self.account.id]["color"], "")
+        self.assertEqual(self._couleurs()[self.account.id], "")
 
     def test_counts_come_per_account_too_and_the_total_is_not_their_sum(self):
-        """Les sections d'une liste filtrée sur une boîte comptent CETTE boîte
-. Un fil qui a touché deux boîtes compte dans chacune, mais une
-        seule fois au total : additionner les boîtes le compterait deux fois."""
+        """Les sections d'une liste filtrée sur une boîte comptent CETTE boîte. Un fil qui a touché deux boîtes compte dans
+        chacune, mais une seule fois au total : additionner les boîtes le compterait deux fois."""
         autre = self.env["bf.email.account"].create({
             "name": "Seconde boîte — owner@second.test", "user_id": self.owner.id,
             "host": "imap.test.invalid", "port": 993,

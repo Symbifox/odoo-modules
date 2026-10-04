@@ -280,8 +280,20 @@ class BfEmailAccount(models.Model):
         Centralisée pour que le mode d'authentification se décide à un seul
         endroit : douze appels directs à ``open_connection`` auraient voulu
         douze corrections le jour où Microsoft est arrivé.
+
+        Un compte désactivé n'ouvre plus rien. Les tâches planifiées
+        ne relevaient déjà que les comptes actifs, mais les gestes de l'usager
+        (Traité, Remettre en boîte, le navigateur IMAP) prenaient le compte de
+        la ligne sans regarder son état : traiter un vieux courriel d'une
+        boîte qu'on venait de retirer allait encore le déplacer sur son
+        serveur. Tous les appelants rattrapent déjà `ImapConnectionError`.
         """
         self.ensure_one()
+        if not self.active:
+            raise bf_email_imap.ImapConnectionError(_(
+                "Le compte « %s » est désactivé : Odoo ne s'y connecte plus.",
+                self.display_name,
+            ))
         extra = {}
         if self.auth_mode == "xoauth2":
             # ⚠️ Le mot-clé n'est passé QUE dans ce cas : un compte par mot de
@@ -654,6 +666,28 @@ class BfEmailAccount(models.Model):
 
         self._store_imap_folders(folders)
         return folders
+
+    def _sent_folder_names(self):
+        """Le dossier des envoyés de ce compte, en minuscules, lu au cache.
+
+        « Sent », et le dossier marqué ``\\Sent`` quel que soit son nom
+        (``[Gmail]/Sent Mail``, ``Sent Items``). Aucun appel au serveur : le
+        cron miroir tient ``folder_cache`` au chaud, et un cache vide rend
+        « Sent » seul (11.54.1).
+        """
+        self.ensure_one()
+        noms = {bf_email_imap.SENT_FOLDER.lower()}
+        try:
+            entrees = json.loads(self.sudo().folder_cache or "[]") or []
+        except (TypeError, ValueError):
+            entrees = []
+        for entree in entrees:
+            if not isinstance(entree, dict) or not entree.get("name"):
+                continue
+            special = {s.lower() for s in entree.get("special") or ()}
+            if bf_email_imap.SENT_SPECIAL_USE in special:
+                noms.add(entree["name"].lower())
+        return noms
 
     def _store_imap_folders(self, folders):
         """Poser l'arborescence relevée ailleurs (le cron miroir, p. ex.).

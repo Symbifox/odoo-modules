@@ -288,7 +288,7 @@
                                     <select class="form-select form-select-sm"
                                             t-att-value="state.settings.dateFormat"
                                             t-on-change="(ev) => this.onSettingChange('dateFormat', ev)">
-                                        <option value="relative">Relatif (aujourd'hui 14:35)</option>
+                                        <option value="relative">Relatif (14:35, hier 14:35, 3 oct.)</option>
                                         <option value="absolute">Absolu (2026-05-10 14:35)</option>
                                     </select>
                                 </div>
@@ -410,6 +410,20 @@
                                 t-on-click="markUnhandled">
                             <i class="fa fa-inbox me-1"/> Remettre en boîte
                         </button>
+                        <button t-if="state.currentFolder === 'awaiting'"
+                                class="btn btn-sm btn-light o_bf_no_followup"
+                                t-att-disabled="state.acting"
+                                t-on-click="dismissAwaiting"
+                                title="Sortir ces fils de « Relance à faire » sans les traiter">
+                            <i class="fa fa-hourglass-end me-1"/> Pas de relance
+                        </button>
+                        <button t-if="state.genChatAvailable"
+                                class="btn btn-sm btn-light o_bf_send_to_gen"
+                                t-att-disabled="state.genSending or selectedCount > 10"
+                                t-on-click="() => this.sendToGen(selectedIdList)"
+                                t-att-title="selectedCount > 10 ? 'Au plus 10 courriels à la fois vers Gen' : 'Une conversation Gen par courriel, topo en arrière-plan. Les courriels restent en boîte.'">
+                            <span class="o_bf_gen_wand" aria-hidden="true">🪄</span> Envoyer vers Gen
+                        </button>
                         <button class="btn btn-sm btn-link ms-auto" t-on-click="clearSelection">
                             Effacer la sélection
                         </button>
@@ -473,10 +487,10 @@
                                                t-att-checked="state.selectedIds[m.id]"
                                                t-on-click="(ev) => this.toggleSelection(m.id, ev)"/>
                                     </td>
-                                    <td t-if="cols.date" class="small"
+                                    <td t-if="cols.date" class="small text-nowrap"
                                         t-att-class="m.is_late ? 'text-danger fw-bold' : ''"
                                         t-att-title="m.is_late ? 'Date d\'envoi dépassée — le message part au prochain passage du planificateur.' : ''">
-                                        <t t-esc="formatDate(m.date)"/>
+                                        <t t-esc="formatListDate(m.date)"/>
                                     </td>
                                     <td t-if="cols.correspondent" class="text-truncate" t-att-title="m.to">
                                         <i class="fa fa-clock-o text-warning me-1" title="Envoi programmé"/>
@@ -525,7 +539,7 @@
                                                t-att-checked="state.selectedIds[m.id]"
                                                t-on-click="(ev) => this.toggleSelection(m.id, ev)"/>
                                     </td>
-                                    <td t-if="cols.date" class="small"><t t-esc="formatDate(m.date)"/></td>
+                                    <td t-if="cols.date" class="small text-nowrap"><t t-esc="formatListDate(m.date)"/></td>
                                     <td t-if="cols.correspondent" class="text-truncate"
                                         t-att-title="m.direction === 'out' ? m.to : m.from">
                                         <span t-if="m.colour" class="d-inline-block rounded-circle me-1"
@@ -775,6 +789,20 @@
                                         t-on-click="() => this.askGen('reply')"
                                         title="Proposer une réponse (brouillon, jamais envoyé)">
                                     <i class="fa fa-magic me-1"/><span class="o_bf_ribbon_label"> Proposer</span>
+                                </button>
+                                <button t-if="state.preview.is_awaiting_reply"
+                                        class="btn btn-sm btn-light o_bf_no_followup"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="dismissAwaiting"
+                                        title="Ce fil n'attend pas de réponse : le sortir de « Relance à faire », sans le traiter">
+                                    <i class="fa fa-hourglass-end me-1"/><span class="o_bf_ribbon_label"> Pas de relance</span>
+                                </button>
+                                <button t-if="state.genChatAvailable"
+                                        class="btn btn-sm btn-light o_bf_send_to_gen"
+                                        t-att-disabled="state.genSending"
+                                        t-on-click="() => this.sendToGen([state.selectedId])"
+                                        title="Envoyer vers Gen : une conversation sur ce courriel, le topo s'écrit en arrière-plan. Le courriel reste en boîte.">
+                                    <span class="o_bf_gen_wand" aria-hidden="true">🪄</span><span class="o_bf_ribbon_label"> Envoyer vers Gen</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"

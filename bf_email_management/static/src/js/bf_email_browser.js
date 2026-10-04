@@ -681,6 +681,11 @@ export class BfEmailBrowser extends Component {
         return formatRelativeDate(iso, this.state.settings);
     }
 
+    /** Cellule de liste : l'heure seule pour un courriel du jour. */
+    formatListDate(iso) {
+        return formatRelativeDate(iso, this.state.settings, { compact: true });
+    }
+
     /**
      * Contenu de la colonne « Expéditeur », selon la préférence senderDisplay.
      * L'adresse complète reste dans l'infobulle de la ligne (`m.from`).

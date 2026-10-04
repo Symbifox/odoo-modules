@@ -96,8 +96,18 @@ export function persistSettings(settings) {
 /**
  * Date à la Apple Mail, ou "YYYY-MM-DD HH:mm" si l'usager a choisi le format
  * absolu. ``iso`` est au format serveur (UTC sans suffixe).
+ *
+ * ``compact`` sert la CELLULE de liste : un courriel du jour n'y
+ * affiche que son heure. La colonne fait 92 px en mode compact ou aperçu à
+ * droite, et « aujourd'hui 14:35 » y était coupé en « aujourd'hui… », soit
+ * précisément la partie qui ne dit rien. L'en-tête de l'aperçu a la place et
+ * garde la forme longue.
+ *
+ * L'heure est toujours celle du NAVIGATEUR (`Date` locale), jamais le fuseau
+ * du profil Odoo : un profil réglé sur un autre fuseau que le poste ne déplace
+ * pas l'heure affichée.
  */
-export function formatRelativeDate(iso, settings = DEFAULT_SETTINGS) {
+export function formatRelativeDate(iso, settings = DEFAULT_SETTINGS, { compact = false } = {}) {
     if (!iso) return "";
     const d = new Date(iso.replace(" ", "T") + (iso.endsWith("Z") ? "" : "Z"));
     if (Number.isNaN(d.getTime())) return iso;
@@ -113,7 +123,7 @@ export function formatRelativeDate(iso, settings = DEFAULT_SETTINGS) {
     const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);
     const isYesterday = d.toDateString() === yesterday.toDateString();
-    if (sameDay) return `aujourd'hui ${hm}`;
+    if (sameDay) return compact ? hm : `aujourd'hui ${hm}`;
     if (isYesterday) return `hier ${hm}`;
     const ageDays = (now - d) / (24 * 3600 * 1000);
     if (ageDays >= 0 && ageDays < 7) {

@@ -20,8 +20,13 @@ from email.utils import parseaddr, parsedate_to_datetime
 _logger = logging.getLogger(__name__)
 
 
+# Le dossier de nos envois. Comparé sans la casse : l'ingestion y lit la
+# direction « out », la boîte de réception y prend nos copies d'envoi et le
+# miroir y surveille leur archivage.
+SENT_FOLDER = "Sent"
+
 # Folders the live cron polls. Backfill wizard targets a single folder.
-DEFAULT_LIVE_FOLDERS = ("INBOX", "Sent")
+DEFAULT_LIVE_FOLDERS = ("INBOX", SENT_FOLDER)
 
 # Folders we never poll: trash / drafts / junk produce noise. Les alias
 # français sont là parce qu'un serveur peut les servir localisés (Migadu

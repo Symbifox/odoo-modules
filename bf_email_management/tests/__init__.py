@@ -54,3 +54,7 @@ from . import test_isolation_adverse
 from . import test_regle_expression_securite
 from . import test_rappel_mobile
 from . import test_imip_reply
+from . import test_envoyer_vers_gen
+from . import test_envois_et_relances
+from . import test_compte_desactive
+from . import test_envois_imap_en_boite

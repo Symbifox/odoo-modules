@@ -4,6 +4,164 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.54.1] - 2026-10-04
+
+### Fixed
+
+- **Upgrading no longer pours the Sent backlog into the inbox.** Coming from a
+  version before 18.0.11.54.0, every Sent copy never handled since the account
+  was connected entered the inbox at once (on a real base, dozens of copies,
+  the oldest ten months old). They are marked handled at the upgrade, so the
+  inbox stays as it was; Follow-up does not change. A base already on 11.54.0
+  is left alone.
+- **Back to inbox sticks.** Putting one of our messages back in the inbox
+  forgets its stale server location, so the mirror's `Sent` pass no longer
+  handles it again within five minutes. A copy the mirror handled keeps its
+  UID: dragged back into the server INBOX, it comes back to the inbox.
+- **Our own messages never go to the server INBOX.** The restore guard is now
+  `_is_our_send()`: the outgoing direction, or a line filed in the account's
+  sent folder whatever its name (`[Gmail]/Sent Mail`, `Sent Items`, read from
+  the folder cache, where a message sent from an alias carries the incoming
+  direction). A message archived from Thunderbird or filed there comes back
+  to the inbox without moving on the server. A message you sent to yourself
+  is now put back in Odoo's inbox only.
+- The mirror's `Sent` pass: one Message-ID the server refuses (BAD or NO) no
+  longer stalls the Sent tracking of the whole account, a lost connection stops
+  the pass and concludes nothing further, and a transport error no longer rolls
+  back the cron run.
+- The dashboard's "Active inbox" tile counts what its click lists (the
+  owner's `_inbox_domain`).
+- The inbox unread pills (the shared inbox and each account's own) no longer
+  count our own messages, as on the phone.
+- "🪄 Send to Gen" is only offered when the bridge is present, the same test
+  as the route.
+
+## [18.0.11.54.0] - 2026-10-03
+
+### Changed
+
+- **A message sent from another mail client enters the inbox like one sent
+  from Odoo.** The copy in the IMAP `Sent` folder of a message sent from
+  Thunderbird or a phone was captured but never reached the inbox: an IMAP
+  line only entered it when the message physically sat in the server INBOX,
+  while a message sent from Odoo does. `_inbox_domain` now takes our `Sent`
+  copies too (mirrored in the phone's SQL, the systray badge 18.0.2.1.4 and
+  the two XML domains), and `_inherit_thread_handled` has them born handled
+  when their thread already is.
+- **Filing that copy on the server marks it handled.** The IMAP mirror gains
+  a third pass over the `Sent` folder, opened only when there are unhandled
+  copies to follow. A vanished UID is first looked up by Message-ID (an
+  `UIDVALIDITY` change); an unreadable server answer handles nothing.
+
+### Fixed
+
+- "Back to inbox" never copies a `Sent` copy into the server INBOX any more:
+  it comes back to the inbox through the rule, without moving.
+
+## [18.0.11.53.1] - 2026-10-03
+
+### Fixed
+
+- **A deactivated account leaves the work lists.** Deactivating an IMAP
+  account stopped fetching, but the mail it had already brought stayed in the
+  inbox, Unread, To reply, Unfiled, Snoozed, Follow-up, the badge and the
+  phone. These lists now leave out the lines of a deactivated account
+  (`_inbox_live_account_domain`). The lines are not modified: reactivating the
+  account brings them back, and Handled, Sent, All and the categories keep the
+  history. Mail born in Odoo, which has no account, is not affected.
+- The rule is mirrored in the phone's SQL, the systray badge
+  (`bf_email_systray` 18.0.2.1.3), the list view's Inbox filter, the action
+  domain and the dashboard counters; `test_compte_desactive` pins each copy.
+- `_ouvrir_imap()` refuses a deactivated account. Scheduled jobs already only
+  fetched active accounts, but Handled, Back to inbox and the IMAP browser took
+  the line's account without checking it: handling a message from a removed
+  mailbox still moved it on that server.
+
+## [18.0.11.53.0] - 2026-10-03
+
+### Changed
+
+- The phone paints each mailbox in the colour the desktop inbox gives it: the
+  company's (`_brand_colour`). The notification colour is only a fallback. A
+  mailbox without a notification colour used to be one colour on the desktop
+  and another on the phone.
+
+## [18.0.11.52.1] - 2026-10-03
+
+### Security
+
+- **The mail gateway no longer files a reply into someone else's record.** A
+  reply's record is inferred from the Message-IDs it quotes. The record found
+  had to be writable, but the check ran as superuser (the gateway reads the
+  line with sudo) and always passed: a reply reaching user B that quoted the
+  Message-ID of a private note of user A was filed into that note. The check
+  now runs as the line's owner, with the model's posting operation
+  (`_mail_post_access`).
+- The explicit link of a line goes through the same check. Over RPC, a line
+  can only be linked to a record where one may post a message, and its owner
+  can no longer be changed (B could link B's own line to a private task of A,
+  and the gateway then filed the replies there). "Assign to" goes through the
+  rules engine, which sets the owner as superuser, last. The automatic linking
+  of orphans (cron inactive by default) searches as the line's owner.
+
+### Documentation
+
+- README: `mail_composer_cc_bcc` and `mail_quoted_reply` come from OCA/mail
+  and are not in this repository.
+
+## [18.0.11.52.0] - 2026-10-02
+
+### Changed
+
+- **A message sent into an already handled thread is born handled.** An
+  outgoing line born from the chatter or the gateway entered the inbox, and a
+  thank-you sent into a filed thread brought the thread back with only our
+  own message in it. Only when nothing earlier in the thread, for the same
+  owner, is still in the inbox (in the inbox's sense: a Sent copy that never
+  was in the inbox holds nothing back); a message that opens a thread or joins
+  one still in the inbox is unchanged, and a received reply always brings the
+  thread back. Also applies to a Sent copy promoted to the chatter or the
+  gateway. Nothing is removed from the inbox retroactively.
+- **Follow-up has ways out.** The "No follow-up" action (preview ribbon when
+  the message carries the flag, selection bar of the folder), Handled and the
+  trash set `awaiting_dismissed` on our last message of the thread, whether or
+  not it already carries the flag; the cron honours it. "Back to inbox" clears
+  it and sets the flag again at once. Under the rights of whoever clicks: the
+  mail administrator, who reads every mailbox, does not write into others'.
+  The action counts, not the state: a message born handled by the rule above
+  can still be followed up. On upgrade, the last message of each thread, when
+  it is ours and already handled, gets "No follow-up", then the list is
+  recomputed.
+
+### Fixed
+
+- The follow-up cron flushes pending ORM writes before its SQL: within one
+  transaction it read a stale state.
+
+## [18.0.11.51.0] - 2026-10-02
+
+### Added
+
+- **🪄 Send to Gen**, in the preview ribbon and the selection bar. Each
+  message gets its own Gen conversation, linked to it, and the "Brief me"
+  prompt runs as a background turn, like "Send to Gen" on the phone: you stay
+  in your inbox, and a notification offers "Open". At most 10 messages per
+  action. A message that already has an active conversation does not get a
+  second one. The message stays in the inbox. If the Gen bridge is missing, nothing
+  is sent and the notification says so. Offered when `bf_claude_chat`
+  18.0.1.33.0 or later is installed and open to the user (route
+  `/claude-chat/send-to-gen`, probed through `_send_to_gen_max`); it is not the
+  `bf_email.gen_enabled` switch of Summarize and Draft, which is unchanged.
+
+### Changed
+
+- **Date:** in the list column, a message from today shows its time only
+  ("04:05"). "today 04:05" was cut to "today…" in the 92 px column (compact
+  mode, preview on the right) and wrapped onto two lines elsewhere, like
+  "yesterday 19:10": the date cell no longer wraps. The preview header keeps
+  the long form. The time is the browser's, never the Odoo profile's time
+  zone. Also applies to the IMAP browser.
+
 ## [18.0.11.50.0] - 2026-09-29
 
 ### Added

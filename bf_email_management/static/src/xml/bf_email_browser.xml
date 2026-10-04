@@ -146,7 +146,7 @@
                                     <select class="form-select form-select-sm"
                                             t-att-value="state.settings.dateFormat"
                                             t-on-change="(ev) => this.onSettingChange('dateFormat', ev)">
-                                        <option value="relative">Relatif (aujourd'hui 14:35)</option>
+                                        <option value="relative">Relatif (14:35, hier 14:35, 3 oct.)</option>
                                         <option value="absolute">Absolu (2026-05-10 14:35)</option>
                                     </select>
                                 </div>
@@ -260,7 +260,7 @@
                                                t-att-checked="state.selectedUids[m.uid]"
                                                t-on-click="(ev) => this.toggleSelection(m.uid, ev)"/>
                                     </td>
-                                    <td t-if="cols.date" class="small"><t t-esc="formatRelativeDate(m.date)"/></td>
+                                    <td t-if="cols.date" class="small text-nowrap"><t t-esc="formatListDate(m.date)"/></td>
                                     <td t-if="cols.sender" class="text-truncate"
                                         t-att-style="'max-width: ' + colWidths.correspondent + 'px;'"
                                         t-att-title="m.from">

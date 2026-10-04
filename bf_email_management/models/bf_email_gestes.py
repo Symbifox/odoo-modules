@@ -89,6 +89,10 @@ class BfEmailGestes(models.Model):
                         "bf.email #%s : corbeille IMAP refusée, la ligne est "
                         "quand même archivée", rec.id, exc_info=True)
         self.write({"is_handled": True, "active": False})
+        # Jeter vaut aussi « Pas de relance » ; sinon le message
+        # devenu dernier du fil (notre envoi précédent, ou notre question dont
+        # on vient de jeter la réponse) revenait dans « Relance à faire ».
+        self._dismiss_awaiting()
         return False
 
     # ------------------------------------------------------------------

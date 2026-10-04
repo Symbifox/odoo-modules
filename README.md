@@ -127,7 +127,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.0.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
-| `bf_claude_chat` | Gen | 18.0.1.32.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
+| `bf_claude_chat` | Gen | 18.0.1.34.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.3.0 | BUSL-1.1 | Daily digest sections: Claude usage per account (windows, reset, probe state) and the recipient's Gen conversations to follow |
 | `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
@@ -165,7 +165,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_sms` | Expérience client : invitation de sondage par SMS | 18.0.1.0.0 | BUSL-1.1 | Survey link sent by SMS to contacts without an email address |
 | `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.0.1 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
-| `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.5.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
+| `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.6.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.1.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.5.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
@@ -176,8 +176,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.1 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
 | `bf_editorial_social` | Atelier éditorial — réseaux sociaux | 18.0.1.5.0 | BUSL-1.1 | Deferred distribution to social networks from the editorial workshop, with a no-duplicate guarantee and measurement coming back |
-| `bf_email_management` | Gestion des courriels | 18.0.11.50.0 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
-| `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.1.2 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
+| `bf_email_management` | Gestion des courriels | 18.0.11.54.1 | BUSL-1.1 | Unified IMAP inbox + Odoo chatter projection, two-pane OWL folder browser (Apple Mail / Thunderbird), bulk per-row target inference |
+| `bf_email_systray` | Boîte de réception bf.email — barre Odoo | 18.0.2.1.4 | LGPL-3 | Systray button opening the bf.email inbox with a (read + unread) counter |
 | `bf_employee_experience` | Expérience employé | 18.0.1.0.1 | BUSL-1.1 | Benefits catalogue, rule-based eligibility, usage register and retention indicators |
 | `bf_employee_experience_dashboard` | Expérience employé — tuile tableau de bord | 18.0.1.0.1 | BUSL-1.1 | Benefits take-up, and a count of paid benefits nobody claims |
 | `bf_employee_experience_digest` | Expérience employé — digest quotidien | 18.0.1.0.2 | BUSL-1.1 | "Benefits" digest section: pending claims, usages with no entitlement, benefits nobody takes |

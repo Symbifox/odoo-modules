@@ -29,6 +29,7 @@ import {
 import { useService } from "@web/core/utils/hooks";
 import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
 import { _t } from "@web/core/l10n/translation";
+import { rpc } from "@web/core/network/rpc";
 import {
     loadSettings,
     persistSettings,
@@ -52,6 +53,10 @@ const DROP_ACTIONS = {
 // Dossier des envois programmés. Sa source n'est pas ``bf.email`` : la liste
 // et l'aperçu changent d'appel serveur quand il est ouvert.
 const DRAFTS_FOLDER = "drafts";
+
+// Plafond d'un « Envoyer vers Gen » groupé, le même que la route serveur
+// (`SEND_TO_GEN_MAX` de bf_claude_chat).
+const GEN_SEND_MAX = 10;
 
 // Ce qui se défait, et par quoi. Voir `undoLast` pour ce qui n'y est pas.
 const UNDO_INVERSE = {
@@ -102,6 +107,10 @@ export class BfEmailInbox extends Component {
             genText: null,
             genKind: null,
             genLoading: false,
+            // « 🪄 Envoyer vers Gen » : offert si Gen est installé
+            // et ouvert à cet usager, indépendamment de `genAvailable`.
+            genChatAvailable: false,
+            genSending: false,
             subscriptions: null,
             loadingFolders: true,
             loadingMessages: false,
@@ -134,6 +143,12 @@ export class BfEmailInbox extends Component {
                     "bf.email", "inbox_gen_available", []);
             } catch {
                 this.state.genAvailable = false;
+            }
+            try {
+                this.state.genChatAvailable = await this.orm.call(
+                    "bf.email", "inbox_gen_chat_available", []);
+            } catch {
+                this.state.genChatAvailable = false;
             }
         });
 
@@ -604,6 +619,93 @@ export class BfEmailInbox extends Component {
         this.state.genKind = null;
     }
 
+    /**
+     * « 🪄 Envoyer vers Gen ». Une conversation par courriel, rattachée
+     * à lui ; la consigne « Mets-moi en contexte » part en tour d'arrière-plan,
+     * le même que « Envoyer à Gen » du téléphone. La personne reste dans sa
+     * boîte et le courriel n'en sort pas.
+     * Un courriel qui a déjà sa conversation active n'en reçoit pas une
+     * seconde : l'avis propose de l'ouvrir.
+     */
+    async sendToGen(ids) {
+        const cibles = [...new Set((ids || []).filter(Boolean))];
+        if (!cibles.length || this.state.genSending) {
+            return;
+        }
+        if (cibles.length > GEN_SEND_MAX) {
+            this.notification.add(
+                _t("Au plus %s courriels à la fois vers Gen.", GEN_SEND_MAX),
+                { type: "warning" });
+            return;
+        }
+        this.state.genSending = true;
+        try {
+            const res = await rpc("/claude-chat/send-to-gen", {
+                model: "bf.email", res_ids: cibles,
+            });
+            if (res.error) {
+                const raisons = {
+                    disabled: _t("Gen est éteint sur cette instance."),
+                    unavailable: _t("Gen ne répond pas en ce moment. Rien n'a été envoyé."),
+                };
+                this.notification.add(
+                    raisons[res.error] || _t("Gen n'a pas pu recevoir ces courriels."),
+                    { type: "danger" });
+                return;
+            }
+            this._notifySentToGen(res.results || []);
+        } catch (err) {
+            this.notification.add(_t("Gen : ") + (err.message || err),
+                                  { type: "danger" });
+        } finally {
+            this.state.genSending = false;
+        }
+    }
+
+    _notifySentToGen(results) {
+        const envoyes = results.filter((r) => r.session_id && !r.existing);
+        const deja = results.filter((r) => r.existing);
+        const refuses = results.filter((r) => r.error);
+        const lignes = [];
+        if (envoyes.length === 1) {
+            lignes.push(_t("Envoyé à Gen : %s", envoyes[0].name));
+        } else if (envoyes.length > 1) {
+            lignes.push(_t("%s courriels envoyés à Gen, un topo chacun.", envoyes.length));
+        }
+        if (deja.length === 1) {
+            lignes.push(_t("Déjà chez Gen : %s", deja[0].name));
+        } else if (deja.length > 1) {
+            lignes.push(_t("%s courriels avaient déjà leur conversation.", deja.length));
+        }
+        if (refuses.length) {
+            lignes.push(_t("%s refusé(s) : introuvable ou trop de demandes en une minute.",
+                           refuses.length));
+        }
+        const cible = envoyes.at(-1) || deja.at(-1);
+        // Dix secondes plutôt que les quatre d'Odoo : le temps de lire l'avis
+        // ET d'atteindre « Ouvrir », qui le referme.
+        const fermer = this.notification.add(lignes.join(" "), {
+            type: refuses.length ? "warning" : "success",
+            autocloseDelay: 10000,
+            buttons: cible ? [{
+                name: _t("Ouvrir"),
+                primary: true,
+                onClick: () => {
+                    fermer();
+                    this.openGenSession(cible.session_id);
+                },
+            }] : [],
+        });
+    }
+
+    openGenSession(sessionId) {
+        this.action.doAction({
+            type: "ir.actions.client",
+            tag: "claude_chat",
+            params: { gen_session: sessionId },
+        });
+    }
+
     async toggleMute() {
         const preview = this.state.preview;
         if (!preview || !preview.id) {
@@ -947,7 +1049,9 @@ export class BfEmailInbox extends Component {
         if (!ids.length) return;
         // Sortir de la boîte ne retire la ligne de la liste que dans les
         // dossiers d'où le traitement la fait disparaître.
-        const removes = ["inbox", "unread", "to_reply", "unrouted"]
+        // « Traité » vaut aussi « Pas de relance », la ligne quitte
+        // donc « Relance à faire » comme la boîte.
+        const removes = ["inbox", "unread", "to_reply", "unrouted", "awaiting"]
             .includes(this.state.currentFolder) ? ids : [];
         await this._dispatch("handle", ids, {
             removeIds: removes,
@@ -956,6 +1060,32 @@ export class BfEmailInbox extends Component {
                 : _t("Courriel traité."),
             errorPrefix: _t("Échec « Traité » : "),
         });
+        if (!removes.length) await this.refreshCurrent();
+    }
+
+    /**
+     * « Pas de relance » : le fil sort de « Relance à faire » sans
+     * sortir de la boîte. Vaut pour le message attendu : écrire de nouveau
+     * dans le fil peut le ramener.
+     */
+    async dismissAwaiting() {
+        if (this.isDraftFolder) return;
+        const ids = this.actionTargets;
+        if (!ids.length) return;
+        const removes = this.state.currentFolder === "awaiting" ? ids : [];
+        // `_dispatch` rend null sur un échec ou un refus : rien n'a été écrit,
+        // l'aperçu ne doit pas faire comme si.
+        const resultat = await this._dispatch("no_followup", ids, {
+            removeIds: removes,
+            notify: ids.length > 1
+                ? _t("%s fils sortis de « Relance à faire ».", ids.length)
+                : _t("Pas de relance pour ce fil."),
+            errorPrefix: _t("Échec « Pas de relance » : "),
+        });
+        if (resultat === null) return;
+        if (this.state.preview && ids.includes(this.state.preview.id)) {
+            this.state.preview.is_awaiting_reply = false;
+        }
         if (!removes.length) await this.refreshCurrent();
     }
 
@@ -1329,6 +1459,11 @@ export class BfEmailInbox extends Component {
     // ------------------------------------------------------------------
     formatDate(iso) {
         return formatRelativeDate(iso, this.state.settings);
+    }
+
+    /** Cellule de liste : l'heure seule pour un courriel du jour. */
+    formatListDate(iso) {
+        return formatRelativeDate(iso, this.state.settings, { compact: true });
     }
 
     senderCell(m) {

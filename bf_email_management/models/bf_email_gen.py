@@ -174,3 +174,36 @@ class BfEmailGen(models.Model):
     @api.model
     def inbox_gen_available(self):
         return self._gen_available()
+
+    # ------------------------------------------------------------------
+    # « 🪄 Envoyer vers Gen »
+    # ------------------------------------------------------------------
+    @api.model
+    def inbox_gen_chat_available(self):
+        """Vrai si la conversation de Gen est offerte à cet usager.
+
+        Le bouton ouvre une conversation Gen rattachée au courriel et y lance
+        la consigne de départ en arrière-plan, par la route
+        `/claude-chat/send-to-gen` de `bf_claude_chat`.
+
+        ⚠️ Ce n'est PAS l'interrupteur `bf_email.gen_enabled` des gestes
+        ci-dessus. Le bouton raccourcit un chemin que la fiche du courriel et
+        le panneau de Gen ouvrent déjà ; il n'ouvre aucune communication
+        nouvelle. Et `bf_claude_chat` n'est pas une dépendance : absent, le
+        bouton n'est simplement pas offert.
+        """
+        # La sonde de capacité : la route naît avec cette méthode (Gen
+        # 18.0.1.33.0). Un Gen plus ancien répondrait 404 à chaque clic.
+        if "claude.chat.session" not in self.env or not callable(getattr(
+                self.env["claude.chat.session"], "_send_to_gen_max", None)):
+            return False
+        actif = self.env["ir.config_parameter"].sudo().get_param(
+            "bf_claude_chat.enabled", "True")
+        if actif != "True":
+            return False
+        # Le même test que la route (`/claude-chat/send-to-gen` répond
+        # « unavailable » sans le pont) : un bouton offert là où chaque clic
+        # échoue n'est pas offert (11.54.1).
+        if "bf.ai.bridge" not in self.env or not self.env["bf.ai.bridge"].available():
+            return False
+        return self.env["claude.chat.session"].has_access("create")

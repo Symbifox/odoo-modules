@@ -92,7 +92,7 @@ Deactivates the device and clears its push endpoint. → `{"ok": true}`
   "signature": "",          // follows the server setting — see below
   "accounts": [{"id": 1, "name": "Work", "login": "jane@example.com",
                 "aliases": "", "state": "connected",
-                "color": "#29ABE2"}],   // "" when none is chosen (18.0.11.36.1)
+                "color": "#29ABE2"}],   // company colour, else the notice colour; "" when none
   "counts": {"inbox": 12, "unread": 3, "snoozed": 2, "unrouted": 5,
              "by_account": {"1": {"inbox": 9, "unread": 2, "inbox_unread": 2,
                                   "snoozed": 2, "unrouted": 4}}},  // 18.0.11.36.1
@@ -111,9 +111,9 @@ overall totals, which are NOT the sum of the mailboxes (a thread that reached tw
 mailboxes counts once in each, once overall). Every response that carries
 `counts` carries it.
 `accounts` carries addressing only — never host/login/password. `color` is the
-account's desk notification colour (`popup_color`) as `#RRGGBB`, so the phone
-paints a mailbox the same colour as its desk notice; empty when none is set,
-and the app picks one.
+colour the desk inbox paints the mailbox with, as `#RRGGBB`: the company's
+(`_brand_colour()`, 18.0.11.53.0), else the desk notification colour
+(`popup_color`); empty when neither is set, and the app picks one.
 `routable_models` and `spawn_kinds` are filtered to what this instance actually
 has installed and the user may read, so the app can build its menus from the
 response instead of hardcoding Odoo apps.

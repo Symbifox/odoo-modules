@@ -82,7 +82,7 @@ class BfEmailDashboard(models.AbstractModel):
                 ("status", "in", ("new", "read")),
                 ("is_handled", "=", False),
                 ("external_age_hours", ">=", 24),
-            ],
+            ] + self.env["bf.email"]._inbox_live_account_domain(),
         }
 
     @api.model
@@ -97,7 +97,7 @@ class BfEmailDashboard(models.AbstractModel):
                 ("source", "=", "imap"),
                 ("res_model", "=", False),
                 ("is_handled", "=", False),
-            ],
+            ] + self.env["bf.email"]._inbox_live_account_domain(),
         }
 
     @api.model
@@ -112,7 +112,7 @@ class BfEmailDashboard(models.AbstractModel):
                 ("direction", "=", "in"),
                 ("is_handled", "=", False),
                 ("priority", "in", ("2", "3")),
-            ],
+            ] + self.env["bf.email"]._inbox_live_account_domain(),
         }
 
     @api.model
@@ -243,28 +243,32 @@ class BfEmailDashboard(models.AbstractModel):
         """Inbox-Zero actionable counts. Period filter respected."""
         BfEmail = self.env["bf.email"]
         dd = self._date_domain(date_from, date_to)
+        # Un compte désactivé ne compte plus comme du travail.
+        live = BfEmail._inbox_live_account_domain()
         return {
-            "inbox_active": BfEmail.search_count([
-                ("is_handled", "=", False),
-                "|", ("imap_in_inbox", "=", True),
-                     ("source", "in", ("chatter", "gateway")),
-            ] + dd),
+            # Le domaine du clic (`action_view_inbox_active`) : la tuile ne
+            # recopie plus la boîte à la main. Sa copie n'avait ni la
+            # sourdine, ni l'emplacement inconnu, ni les copies « Sent »
+            # (11.54.1).
+            "inbox_active": BfEmail.search_count(
+                [("user_id", "=", self.env.uid)]
+                + BfEmail._inbox_domain() + dd),
             "awaiting_reply": BfEmail.search_count([
                 ("direction", "=", "in"),
                 ("status", "in", ("new", "read")),
                 ("is_handled", "=", False),
                 ("external_age_hours", ">=", 24),
-            ] + dd),
+            ] + live + dd),
             "unrouted_orphans": BfEmail.search_count([
                 ("source", "=", "imap"),
                 ("res_model", "=", False),
                 ("is_handled", "=", False),
-            ] + dd),
+            ] + live + dd),
             "vip_pending": BfEmail.search_count([
                 ("direction", "=", "in"),
                 ("is_handled", "=", False),
                 ("priority", "in", ("2", "3")),
-            ] + dd),
+            ] + live + dd),
         }
 
     @api.model

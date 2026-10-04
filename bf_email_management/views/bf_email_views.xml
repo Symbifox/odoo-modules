@@ -405,7 +405,7 @@
                 <separator/>
                 <filter name="filter_inbox"
                         string="Bo&#238;te de r&#233;ception"
-                        domain="[('user_id', '=', uid), ('is_handled', '=', False), '|', '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway')), ('imap_folder', '=', False)]"
+                        domain="[('user_id', '=', uid), ('is_handled', '=', False), ('account_id', 'not any', [('active', '=', False)]), '|', '|', '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway')), ('imap_folder', '=ilike', 'Sent'), ('imap_folder', '=', False)]"
                         help="Mime l'INBOX IMAP : courriels actifs en IMAP plus tous les chatters non trait&#233;s. Exclut les trait&#233;s."/>
                 <filter name="filter_to_reply"
                         string="&#192; r&#233;pondre"
@@ -649,7 +649,7 @@
         <field name="res_model">bf.email</field>
         <field name="view_mode">list,kanban,form,graph,pivot</field>
         <field name="search_view_id" ref="bf_email_view_search"/>
-        <field name="domain">[('user_id', '=', uid), ('is_handled', '=', False), '|', '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway')), ('imap_folder', '=', False)]</field>
+        <field name="domain">[('user_id', '=', uid), ('is_handled', '=', False), ('account_id', 'not any', [('active', '=', False)]), '|', '|', '|', ('imap_in_inbox', '=', True), ('source', 'in', ('chatter', 'gateway')), ('imap_folder', '=ilike', 'Sent'), ('imap_folder', '=', False)]</field>
         <field name="context">{'search_default_filter_inbox': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

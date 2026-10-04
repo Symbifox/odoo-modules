@@ -6,6 +6,7 @@ import email.utils
 import logging
 import mimetypes
 import html
+import imaplib
 import re
 import time
 import unicodedata
@@ -942,6 +943,82 @@ class BfEmail(models.Model):
         if a_marquer:
             a_marquer.sudo().write({"is_muted": True})
 
+    def _is_sent_copy(self):
+        """La ligne est-elle notre copie IMAP du dossier « Sent » ?"""
+        self.ensure_one()
+        return (self.source == "imap"
+                and (self.imap_folder or "").lower() == bf_email_imap.SENT_FOLDER.lower())
+
+    def _is_our_send(self):
+        """Un de nos envois, que rien ne copie jamais dans l'INBOX du serveur.
+
+        La direction « out » (l'expéditeur est l'adresse du compte), ou une
+        ligne rangée dans le dossier des envoyés du compte quel que soit son
+        nom : un envoi fait depuis un alias y porte la direction « in ».
+        ⚠️ Un courriel qu'on s'est envoyé à soi-même porte lui aussi « out » :
+        remis en boîte, il revient dans celle d'Odoo sans retourner dans
+        l'INBOX du serveur (11.54.1).
+        """
+        self.ensure_one()
+        if self.direction == "out":
+            return True
+        folder = (self.imap_folder or "").lower()
+        return bool(folder and self.account_id
+                    and folder in self.account_id._sent_folder_names())
+
+    def _inherit_thread_handled(self):
+        """Un envoi dans un fil déjà traité naît traité.
+
+        Une ligne sortante née du chatter ou de la passerelle n'a pas de copie
+        IMAP à consulter : la deuxième branche de `_inbox_domain` la met donc
+        en boîte. Un merci envoyé dans un fil classé y ramenait le fil, avec
+        notre seul message dedans, et sur une boîte réelle cela arrivait des
+        centaines de fois. Gmail ne ramène pas un fil archivé sur un envoi ;
+        ici non plus.
+
+        Seulement si RIEN de ce qui précède dans le fil, pour le même
+        titulaire, n'est encore en boîte, et qu'il y a quelque chose avant. Un
+        envoi qui ouvre un fil, ou qui rejoint un fil encore en boîte, reste
+        comme avant. Une réponse REÇUE n'est pas concernée : elle doit ramener
+        le fil.
+
+        ⚠️ « En boîte » au sens de `_inbox_domain`, pas « non traité » : une
+        ligne non traitée hors de la boîte (rangée au serveur, en sourdine)
+        aurait bloqué la règle à jamais dans son fil (relecture adverse).
+
+        Notre copie du dossier « Sent » suit la même règle. Envoyer depuis
+        un autre client de courriel ou depuis Odoo doit donner la même boîte ;
+        avant, la copie IMAP n'entrait jamais en boîte et naissait non traitée
+        pour toujours.
+        """
+        cibles = self.filtered(
+            lambda r: r.direction == "out"
+            and (r.source in ("chatter", "gateway") or r._is_sent_copy())
+            and r.thread_root_id and r.user_id and not r.is_handled)
+        if not cibles:
+            return
+        # Les lignes à la corbeille (inactives) sont traitées : elles comptent.
+        Email = self.sudo().with_context(active_test=False)
+        a_traiter = self.browse()
+        for rec in cibles:
+            precedent = [
+                ("user_id", "=", rec.user_id.id),
+                ("thread_root_id", "=", rec.thread_root_id),
+                ("id", "not in", cibles.ids),
+            ]
+            if rec.date:
+                precedent.append(("date", "<=", rec.date))
+            if not Email.search_count(precedent, limit=1):
+                continue
+            if Email.search_count(precedent + self._inbox_domain(), limit=1):
+                continue
+            a_traiter |= rec
+        if a_traiter:
+            a_traiter.sudo().write({
+                "is_handled": True,
+                "handled_at": fields.Datetime.now(),
+            })
+
     def action_mute_thread(self):
         """Met en sourdine le fil de chaque ligne choisie.
 
@@ -1521,10 +1598,17 @@ class BfEmail(models.Model):
                  if rec.account_id else default_threshold) or default_threshold
             return rec.date >= now - timedelta(days=t)
         orphans = orphans.filtered(within_threshold)
-        Task = self.env["project.task"]
-        Ticket = self.env["helpdesk.ticket"] if "helpdesk.ticket" in self.env else None
         linked = 0
         for email in orphans:
+            # Chercher sous le propriétaire de la ligne. En
+            # superutilisateur, B recevait le nom d'une tâche d'un projet
+            # privé de A (même client), et la passerelle y classait la suite.
+            owner = email.user_id
+            if not owner or owner._is_superuser():
+                continue
+            Task = self.env["project.task"].with_user(owner)
+            Ticket = (self.env["helpdesk.ticket"].with_user(owner)
+                      if "helpdesk.ticket" in self.env else None)
             partner_id = email.partner_id.id
             target = None
             tasks = Task.search([
@@ -1545,7 +1629,7 @@ class BfEmail(models.Model):
                 email.write({
                     "res_model": target._name,
                     "res_id": target.id,
-                    "record_name": (target.display_name or "")[:200],
+                    "record_name": (target.sudo().display_name or "")[:200],
                 })
                 linked += 1
         _logger.info(
@@ -1627,11 +1711,15 @@ class BfEmail(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         self._bf_garde_message_source(vals_list)
+        for vals in vals_list:
+            self.browse()._bf_garde_lien_et_proprietaire(vals)
         records = super().create(vals_list)
         # : un message qui rejoint un fil déjà en sourdine naît en
         # sourdine. Sans ça, mettre un fil en sourdine ne tiendrait que
         # jusqu'au message suivant, c'est-à-dire jusqu'à ce que ça compte.
         records._inherit_thread_mute()
+        # Un envoi dans un fil déjà traité naît traité.
+        records._inherit_thread_handled()
         for rec in records:
             if rec.direction != "out" or not rec.in_reply_to:
                 continue
@@ -1655,7 +1743,13 @@ class BfEmail(models.Model):
 
     def write(self, vals):
         self._bf_garde_message_source([vals])
+        self._bf_garde_lien_et_proprietaire(vals)
         res = super().write(vals)
+        # Une copie d'Envoyés promue vers le chatter ou la passerelle
+        # entre en boîte par la 2e branche de `_inbox_domain` : même règle
+        # qu'à la création.
+        if vals.get("source") in ("chatter", "gateway"):
+            self._inherit_thread_handled()
         # Only the fields that move a row between folders are worth a tick.
         # Everything else (body recompute, imap_uid bookkeeping) would wake
         # every open window for nothing.
@@ -1677,6 +1771,50 @@ class BfEmail(models.Model):
         except AccessError:
             return False
         return True
+
+    def _bf_garde_lien_et_proprietaire(self, vals):
+        """Une ligne ne se lie qu'à une fiche
+        où l'on peut écrire un message, et ne change pas de propriétaire par
+        RPC.
+
+        Odoo ne relit pas la règle d'accès après un `write`. B écrivait sur SA
+        ligne `res_model`/`res_id` d'une tâche privée de A : la passerelle y
+        classait ensuite toute réponse à cette ligne, en superutilisateur. Et
+        `user_id` mettait la ligne dans la boîte d'une autre personne.
+        « Confier à » passe par le moteur de règles et la relève d'absence,
+        qui écrivent `user_id` en superutilisateur. Même borne que
+        `_bf_garde_message_source` : les appels portés par une requête.
+        """
+        if self.env.su or not request:
+            return
+        if "user_id" in vals:
+            nouveau = vals["user_id"]
+            nouveau = nouveau.id if hasattr(nouveau, "id") else nouveau
+            if any(rec.user_id.id != nouveau for rec in self):
+                raise AccessError(_("Un courriel ne change pas de propriétaire."))
+        if "res_model" in vals or "res_id" in vals:
+            for rec in self or [None]:
+                model = vals.get("res_model", rec.res_model if rec else False)
+                res_id = vals.get("res_id", rec.res_id if rec else False)
+                if model and res_id:
+                    self._bf_check_link_target(model, res_id)
+
+    @api.model
+    def _bf_check_link_target(self, model, res_id):
+        """La fiche visée existe et l'usager courant peut y écrire un message
+        (``_mail_post_access`` du modèle, lecture pour une ligne de la boîte)."""
+        if model not in self.env or self.env[model]._abstract or self.env[model]._transient:
+            raise AccessError(_("Dossier inconnu : %s", model))
+        record = self.env[model].browse(res_id).exists()
+        if not record:
+            raise AccessError(_("Dossier introuvable."))
+        record.check_access(self._bf_post_operation(record))
+
+    @api.model
+    def _bf_post_operation(self, record):
+        if record._name in _NON_FILING_MODELS:
+            return "read"
+        return getattr(record, "_mail_post_access", "write") or "write"
 
     def _bf_garde_message_source(self, vals_list):
         """On ne rattache à sa ligne qu'un message qu'on peut lire.
@@ -1806,7 +1944,15 @@ class BfEmail(models.Model):
                     if rule.stop_processing:
                         break
                 if vals:
-                    rec.write(vals)
+                    # « Confier à » est le seul chemin d'une
+                    # ligne vers la boîte d'autrui. `write` le refuse par RPC ;
+                    # le moteur le pose en superutilisateur, en DERNIER : après
+                    # la passation, l'usager ne peut plus écrire la ligne.
+                    route_user = vals.pop("user_id", None)
+                    if vals:
+                        rec.write(vals)
+                    if route_user is not None:
+                        rec.sudo().write({"user_id": route_user})
                     if vals.get("is_handled"):
                         auto_handled |= rec
                 folder = extras.get("folder")
@@ -1991,12 +2137,29 @@ class BfEmail(models.Model):
         Depuis que c'est un balayage du doigt sur un téléphone, c'est l'erreur
         que tout le monde fait.
         """
+        # Une copie du dossier « Sent » revient en boîte par la règle
+        # de `_inbox_domain`, sans bouger. La « restaurer » la copierait dans
+        # l'INBOX du serveur, où notre propre envoi n'a rien à faire.
+        # 11.54.1 : la garde porte sur `_is_our_send` (la direction, ou le
+        # dossier des envoyés du compte quel que soit son nom), plus sur le
+        # seul nom « Sent ». Un envoi rangé ailleurs (archivé depuis
+        # Thunderbird, `[Gmail]/Sent Mail`, `Sent Items`) était copié dans
+        # l'INBOX du serveur. Il oublie désormais son emplacement et revient
+        # en boîte par la branche « emplacement inconnu », sans bouger au
+        # serveur. Une copie encore dans « Sent » aussi : gardé, son UID
+        # périmé laissait la passe 3 du miroir la retraiter en cinq minutes.
         restorable = self.filtered(
             lambda r: r.is_handled and r.account_id
             and r.account_id.writeback_archive and r.message_id_header
-            and not r.imap_in_inbox
+            and not r.imap_in_inbox and not r._is_our_send()
+        )
+        parked_out = self.filtered(
+            lambda r: r.is_handled and r.source == "imap" and r.imap_folder
+            and not r.imap_in_inbox and r._is_our_send()
         )
         self.write({"is_handled": False, "handled_at": False, "snoozed_until": False})
+        if parked_out:
+            parked_out._imap_forget_location()
         if restorable:
             try:
                 restorable._imap_writeback_restore()
@@ -2040,6 +2203,11 @@ class BfEmail(models.Model):
                 for rec in recs:
                     source = rec.imap_folder or ""
                     if not source or source.upper() == "INBOX":
+                        continue
+                    # Jamais nos envois vers l'INBOX (voir
+                    # `action_unhandle`), même appelé directement, quel que
+                    # soit le dossier où ils sont rangés.
+                    if rec._is_our_send():
                         continue
                     if not bf_email_imap.select_folder(conn, source, readonly=False):
                         # Le dossier a été renommé ou supprimé au webmail. Il
@@ -2104,7 +2272,7 @@ class BfEmail(models.Model):
         """« On ne sait plus où est la copie serveur » — dit franchement.
 
         Vider ``imap_folder`` n'est pas un détail cosmétique : c'est la
-        troisième branche de ``_inbox_domain``. Une ligne non traitée dont
+        quatrième branche de ``_inbox_domain``. Une ligne non traitée dont
         l'emplacement serveur est inconnu revient dans la boîte de réception,
         au lieu de tomber entre « Traités » qu'elle vient de quitter et
         « Boîte de réception » où ``imap_in_inbox`` faux l'empêchait d'entrer.
@@ -2716,7 +2884,12 @@ class BfEmail(models.Model):
         """
         self.ensure_one()
         if self.res_id and self._is_filing_model(self.res_model):
-            return self.res_model, self.res_id
+            # Contrôlé lui aussi. Un lien posé en superutilisateur
+            # (rattachement automatique) ou d'avant la garde d'écriture ne doit
+            # pas classer chez autrui.
+            target = self._check_filing_target(self.res_model, self.res_id)
+            if target:
+                return target
         for row in self._anchor_chain():
             if row.res_id and self._is_filing_model(row.res_model):
                 target = self._check_filing_target(row.res_model, row.res_id)
@@ -2791,14 +2964,25 @@ class BfEmail(models.Model):
         return [m for m in ordered if m and not (m in seen or seen.add(m))]
 
     def _check_filing_target(self, model, res_id):
-        """Valider une piste : modèle classable, fiche vivante, accessible."""
+        """Valider une piste : modèle classable, fiche vivante, accessible
+        en écriture au PROPRIÉTAIRE de la rangée.
+
+        ⚠️ Sous le propriétaire, jamais sous l'appelant : la passerelle lit la
+        rangée en sudo, et ``check_access`` en sudo laisse toujours passer.
+        Une réponse qui citait le Message-ID d'une note privée d'autrui était
+        classée dans cette note.
+        """
         if not res_id or not self._is_filing_model(model):
             return False
-        record = self.env[model].browse(res_id).exists()
+        owner = self.sudo().user_id
+        # `with_user` sur l'uid 1 rend un environnement superutilisateur.
+        if not owner or owner._is_superuser():
+            return False
+        record = self.env[model].with_user(owner).browse(res_id).exists()
         if not record:
             return False
         try:
-            record.check_access("write")
+            record.check_access(self._bf_post_operation(record))
         except Exception:
             return False
         return model, res_id
@@ -4486,7 +4670,7 @@ class BfEmail(models.Model):
                 )
                 continue
             folders = []
-            returned = anchored = 0
+            returned = anchored = sent_handled = 0
             # Les UID que des lignes revendiquent déjà comme étant en boîte.
             # Sert deux fois : à savoir ce qui est « inconnu » côté serveur,
             # et comme portée de la passe de sortie. Petit par construction,
@@ -4531,6 +4715,17 @@ class BfEmail(models.Model):
                     returned, anchored = self._imap_mirror_adopt(
                         conn, account, unclaimed,
                     )
+                # Passe 3, même connexion : nos copies « Sent » non
+                # traitées que leur propriétaire a rangées au serveur.
+                # ⚠️ Une erreur de transport y remonterait au cron, qui
+                # annulerait tout le passage (passes des comptes précédents,
+                # réveils) : la passe 3 échoue seule (11.54.1).
+                try:
+                    sent_handled = self._imap_mirror_sent(conn, account)
+                except (OSError, imaplib.IMAP4.error):
+                    _logger.warning(
+                        "bf.email IMAP mirror (%s) : passe Sent interrompue",
+                        account.display_name, exc_info=True)
             finally:
                 try:
                     conn.logout()
@@ -4553,13 +4748,111 @@ class BfEmail(models.Model):
                     vals["handled_at"] = now
                     auto_handled += 1
                 row.write(vals)
-            if flipped_out or returned or anchored:
+            if flipped_out or returned or anchored or sent_handled:
                 _logger.info(
                     "bf.email IMAP mirror (%s): %s sortie(s) dont %s "
-                    "auto-Traité, %s retour(s) en boîte, %s ancrage(s) posé(s)",
+                    "auto-Traité, %s retour(s) en boîte, %s ancrage(s) posé(s), "
+                    "%s envoi(s) rangé(s) au serveur",
                     account.display_name, flipped_out, auto_handled,
-                    returned, anchored,
+                    returned, anchored, sent_handled,
                 )
+
+    def _imap_mirror_sent(self, conn, account):
+        """Traiter une copie « Sent » que son propriétaire a rangée.
+
+        Une copie de nos envois entre en boîte comme un envoi fait depuis
+        Odoo (voir `_inbox_domain`). Il fallait donc que la ranger au serveur
+        — l'archiver ou la supprimer depuis Thunderbird — la traite, comme
+        l'archivage d'un courriel reçu le fait depuis l'INBOX. La passe 2 ne
+        regarde que l'INBOX : celle-ci regarde le dossier « Sent », et
+        seulement s'il y a des copies non traitées à suivre, ce qui est rare
+        et petit (une par fil encore ouvert).
+
+        Un UID disparu n'est conclu qu'après une recherche par Message-ID dans
+        le même dossier : si la boîte a changé d'``UIDVALIDITY``, la copie y
+        est encore sous un autre numéro et on la réancre. Une réponse
+        illisible au SEARCH du dossier, ou une connexion perdue, arrête la
+        passe SANS rien traiter : une coupure réseau ne doit pas vider la
+        boîte. Une recherche refusée pour UNE ligne (Message-ID que le serveur
+        rejette) laisse cette ligne en l'état et passe à la suivante : sinon
+        elle revenait en tête à chaque passage et figeait le suivi de tout le
+        compte (11.54.1).
+
+        Une copie traitée ici GARDE son emplacement : glissée ensuite dans
+        l'INBOX au serveur, l'adoption du miroir la reconnaît à son UID et la
+        remet en boîte (« vue sortie »). C'est « Remettre en boîte » qui
+        l'oublie (voir `action_unhandle`), sans quoi cette passe la
+        retraitait en cinq minutes (11.54.1).
+
+        La connexion est celle du miroir ; le dossier sélectionné change, et
+        c'est la dernière passe à l'utiliser.
+
+        Rend le nombre de lignes passées à « Traité ».
+        """
+        Rows = self.sudo().with_context(active_test=False)
+        rows = Rows.search([
+            ("account_id", "=", account.id),
+            ("source", "=", "imap"),
+            ("imap_folder", "=ilike", bf_email_imap.SENT_FOLDER),
+            ("is_handled", "=", False),
+            ("imap_uid", "!=", False),
+        ])
+        if not rows:
+            return 0
+        handled = 0
+        now = fields.Datetime.now()
+        for folder in set(rows.mapped("imap_folder")):
+            if not bf_email_imap.select_folder(conn, folder, readonly=True):
+                continue
+            try:
+                status, data = conn.uid("SEARCH", None, "ALL")
+            except Exception:
+                _logger.warning("bf.email IMAP mirror (%s) : %s illisible",
+                                account.display_name, folder, exc_info=True)
+                return handled
+            if status != "OK":
+                return handled
+            raw = data[0] if data and data[0] else b""
+            if isinstance(raw, bytes):
+                raw = raw.decode("ascii", errors="ignore")
+            live = {x for x in raw.split() if x.isdigit()}
+            for row in rows.filtered(lambda r: r.imap_folder == folder):
+                if str(row.imap_uid) in live:
+                    continue
+                found = None
+                if row.message_id_header:
+                    try:
+                        status, data = conn.uid(
+                            "SEARCH", None, "HEADER", "Message-ID",
+                            bf_email_imap.imap_reject_crlf(
+                                row.message_id_header, "Message-ID"),
+                        )
+                    except (OSError, imaplib.IMAP4.abort):
+                        _logger.warning(
+                            "bf.email IMAP mirror (%s) : connexion perdue "
+                            "dans %s", account.display_name, folder,
+                            exc_info=True)
+                        return handled
+                    except Exception:
+                        # BAD du serveur ou Message-ID refusé avant l'envoi :
+                        # propre à cette ligne.
+                        _logger.warning(
+                            "bf.email IMAP mirror (%s) : recherche de #%s "
+                            "refusée dans %s", account.display_name, row.id,
+                            folder, exc_info=True)
+                        continue
+                    if status != "OK":
+                        continue
+                    raw = data[0] if data and data[0] else b""
+                    if isinstance(raw, bytes):
+                        raw = raw.decode("ascii", errors="ignore")
+                    found = next((x for x in raw.split() if x.isdigit()), None)
+                if found:
+                    row.write({"imap_uid": found})
+                    continue
+                row.write({"is_handled": True, "handled_at": now})
+                handled += 1
+        return handled
 
     def _imap_mirror_adopt(self, conn, account, uids):
         """Rattacher les UID de l'INBOX qu'aucune ligne ancrée ne revendique.

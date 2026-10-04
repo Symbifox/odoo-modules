@@ -434,16 +434,25 @@ class BfEmailMobile(models.Model):
         # domaine a l'air de dire. `('is_muted', '=', False)` devient
         # `is_muted IS NULL OR is_muted = false`, et un Char à False
         # devient `IS NULL OR = ''`. Or Odoo ne remplit pas un booléen neuf
-        # dans les lignes existantes : `is_muted = false` écartait les
-        # 16 161 lignes d'avant la sourdine, et le téléphone montrait une
+        # dans les lignes existantes : `is_muted = false` écartait toutes
+        # les lignes d'avant la sourdine, et le téléphone montrait une
         # boîte vide au-dessus des trois courriels du poste.
+        # Transcription de `bf.email._inbox_live_account_domain`.
+        # `not any` de l'ORM = « pas un compte désactivé, ou pas de compte ».
+        live = ("(account_id IS NULL OR account_id NOT IN "
+                "(SELECT id FROM bf_email_account WHERE active IS NOT TRUE))")
         inbox = ("is_handled IS NOT TRUE AND is_muted IS NOT TRUE "
+                 "AND %s "
                  "AND (imap_in_inbox IS TRUE "
                  "OR source IN ('chatter','gateway') "
-                 "OR imap_folder IS NULL OR imap_folder = '')")
+                 # Nos copies « Sent » (`=ilike` de l'ORM, sans joker).
+                 "OR imap_folder ILIKE '%s' "
+                 "OR imap_folder IS NULL OR imap_folder = '')"
+                 % (live, bf_email_imap.SENT_FOLDER))
         clauses = {
             "inbox": (inbox, []),
-            "unread": ("status = 'new' AND is_handled IS NOT TRUE", []),
+            "unread": ("status = 'new' AND is_handled IS NOT TRUE AND %s"
+                       % live, []),
             # La pastille de l'onglet Courriel : les non-lus DE LA
             # BOÎTE. « unread » compte aussi la sourdine et ce qui est rangé
             # hors de l'INBOX du serveur, d'où une pastille à 12 au-dessus d'une
@@ -452,12 +461,12 @@ class BfEmailMobile(models.Model):
             # « pas sortant » veut donc dire « in »).
             "inbox_unread": ("(%s) AND status = 'new' AND direction = 'in'" % inbox, []),
             "snoozed": ("is_handled = true AND snoozed_until IS NOT NULL "
-                        "AND snoozed_until > %s", [now]),
+                        "AND snoozed_until > %%s AND %s" % live, [now]),
             "handled": ("is_handled = true AND (snoozed_until IS NULL "
                         "OR snoozed_until <= %s)", [now]),
             "sent": ("direction = 'out'", []),
             "unrouted": ("source = 'imap' AND res_model IS NULL "
-                         "AND is_handled IS NOT TRUE", []),
+                         "AND is_handled IS NOT TRUE AND %s" % live, []),
             "all": ("true", []),
         }
         if name not in clauses:
@@ -632,10 +641,11 @@ class BfEmailMobile(models.Model):
                 "login": acc.login or "",
                 "aliases": acc.email_aliases or "",
                 "state": acc.state,
-                # La couleur de l'avis au bureau, pour que le téléphone peigne
-                # la boîte de la même teinte. Vide : l'app en choisit
-                # une elle-même.
-                "color": ACCOUNT_COLOR_HEX.get(acc.popup_color or "", ""),
+                # La couleur de la boîte AU BUREAU : celle de la société du
+                # compte, que la boîte de réception peint (`_brand_colour`).
+                # La couleur de l'avis seulement à défaut. Vide : l'app en
+                # choisit une elle-même.
+                "color": acc._brand_colour() or ACCOUNT_COLOR_HEX.get(acc.popup_color or "", ""),
             } for acc in accounts],
             "counts": self._mobile_counts(),
             "snooze_presets": self._mobile_snooze_presets(),

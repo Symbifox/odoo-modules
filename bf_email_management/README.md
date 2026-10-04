@@ -160,6 +160,14 @@ Set by a cron, because "the last message of a thread" is not something an ORM
 domain can express, and a computed field depending on all its siblings would
 recompute on every arrival.
 
+**Ways out (11.52+).** **No follow-up** (preview ribbon, selection bar),
+**Handled** and the trash set `awaiting_dismissed` on our last message of the
+thread, and the cron honours it; **Back to inbox** clears it. The action counts,
+not the state: a message born handled (below) can still be followed up. A
+message sent into a thread that is already handled is **born handled** when
+nothing earlier in that thread is still in the owner's inbox, so a thank-you
+does not bring a filed thread back; a received reply always does.
+
 ### Unsubscribe, read from the headers (11.34+)
 
 `List-Unsubscribe` (RFC 2369) and one-click `List-Unsubscribe-Post` (RFC 8058)
@@ -209,6 +217,15 @@ instance switch is **off** until somebody turns it on, because mail carries
 clients' personal information and sending it to a model is a disclosure to a
 third party. And the bridge module is **not** a manifest dependency: without it
 the buttons are not offered and everything else works.
+
+**🪄 Send to Gen (11.51+)** is a different door, and the switch above does not
+govern it. From the preview ribbon or the selection bar (at most 10 messages),
+each message gets its own Gen conversation, linked to it, and the "Brief me"
+prompt runs as a background turn; you stay in the inbox and a notification
+offers **Open**. It shortens a path the Gen panel already opens, so it is
+offered whenever `bf_claude_chat` 18.0.1.33.0 or later is installed and open to
+the user (probed through `_send_to_gen_max`) and the bridge is present (the
+route's own test, since 11.54.1), and hidden otherwise.
 
 ### Interactive Dashboard (OWL)
 - Date range filters: 7d / 30d / 90d / year / all / custom — **all charts including daily volume now respect the selection** (preset "Tout" derives the range from the actual data).
@@ -621,7 +638,9 @@ The 8 heuristic signals are based on empirical email-overload research:
 - Odoo 18 Community or Enterprise.
 - `mail` module (included in Odoo) — provides `mail.message`, `mail.thread`, `mail.scheduled.message`.
 - Python 3.10+ (uses standard library `imaplib`, `email.policy.default`, no extra pip deps).
-- Optional: `mail_quoted_reply` for quoted-reply composer body.
+- Two modules from the Odoo Community Association, **not shipped in this repository**: get them from [OCA/mail](https://github.com/OCA/mail) (branch `18.0`) and put them in your addons path first, or the install fails on a missing dependency.
+  - `mail_composer_cc_bcc`: Cc and Bcc in the composer.
+  - `mail_quoted_reply`: the quoted reply body (required: the reply and forward composers open empty without it).
 
 ## Installation
 
@@ -733,6 +752,12 @@ The fast path now verifies the UID (`UID FETCH … BODY.PEEK[HEADER.FIELDS (MESS
 
 ### One definition of "inbox" (11.3+)
 It used to live in six copies — folder rail, mobile SQL filter, dashboard action, list-view search filter, window action domain, and the systray badge in JavaScript (`bf_email_systray`) — each carrying a comment asking the other five to stay in step. `bf.email._inbox_domain()` is now the source. The Python copies derive from it; the two that cannot are pinned by tests — the mobile SQL is compared to the domain **over the same rows** (not over its text), and the badge's JavaScript is read off disk and checked for every leaf.
+
+### Messages sent from another mail client (11.54+)
+The copy that lands in the IMAP `Sent` folder (Thunderbird, a phone) enters the inbox under the same rule as a message sent from Odoo: `_inbox_domain` takes lines whose `imap_folder` is `Sent` (`=ilike`, no wildcard), and a copy is born handled when its thread already is. Filing that copy on the server marks it handled: the IMAP mirror runs a third pass over `Sent`, only when there are unhandled copies to follow, and looks a vanished UID up by Message-ID before concluding. **Back to inbox** never copies one of our own messages into the server INBOX, whatever folder it was filed in (11.54.1): outgoing, or filed in the account's sent folder whatever its name. It forgets the stale location instead, so the line comes back through the unknown-location branch; a message you sent to yourself comes back in Odoo's inbox only. Upgrading from a version before 11.54.0 marks the existing Sent copies handled, so the inbox does not fill with months of old messages. ⚠️ Only a folder named exactly `Sent` is followed: the copies captured from a sent folder with another name (`[Gmail]/Sent Mail`, `Sent Items`) are born handled, as before.
+
+### A deactivated account leaves the work lists (11.53.1+)
+Deactivating an IMAP account stops fetching **and** takes its mail out of the inbox, Unread, To reply, Unfiled, Snoozed, Follow-up, the badge, the phone and the dashboard counters (`_inbox_live_account_domain`). Nothing is written: reactivating the account brings the lines back, and Handled, Sent, All and the categories keep the history. Mail born in Odoo has no account and is unaffected. No action opens a connection to a deactivated account any more (`_ouvrir_imap()` refuses it).
 
 ### Recipient groups (11.21+)
 

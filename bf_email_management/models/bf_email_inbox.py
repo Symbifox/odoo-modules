@@ -15,6 +15,8 @@ import logging
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
+from .bf_email_imap import SENT_FOLDER
+
 _logger = logging.getLogger(__name__)
 
 # Nombre de lignes maximum qu'une page peut demander. Le composant OWL propose
@@ -96,17 +98,25 @@ class BfEmail(models.Model):
         """
         now = fields.Datetime.now()
         inbox_domain = self._inbox_domain()
+        # Les autres listes de travail écartent elles aussi un compte
+        # désactivé ; l'historique (Traités, Envoyés, Tous) le garde.
+        live = self._inbox_live_account_domain()
         defs = [
             {
                 "key": "inbox", "label": _("Boîte de réception"),
                 "icon": "fa-inbox", "parent": False,
                 "domain": inbox_domain,
-                "unread_domain": inbox_domain + [("status", "=", "new")],
+                # Comme `inbox_unread` du téléphone : nos propres envois
+                # (chatter, copies « Sent ») ne sont pas du courrier à lire,
+                # même nés au statut « new » (11.54.1).
+                "unread_domain": inbox_domain + [
+                    ("status", "=", "new"), ("direction", "=", "in")],
             },
             {
                 "key": "unread", "label": _("Non lus"),
                 "icon": "fa-envelope", "parent": False,
-                "domain": [("status", "=", "new"), ("is_handled", "=", False)],
+                "domain": [("status", "=", "new"), ("is_handled", "=", False)]
+                + live,
             },
             {
                 "key": "to_reply", "label": _("À répondre"),
@@ -115,7 +125,7 @@ class BfEmail(models.Model):
                     ("direction", "=", "in"),
                     ("is_handled", "=", False),
                     ("status", "in", ("new", "read")),
-                ],
+                ] + live,
             },
             {
                 "key": "unrouted", "label": _("Sans dossier"),
@@ -124,7 +134,7 @@ class BfEmail(models.Model):
                     ("source", "=", "imap"),
                     ("res_model", "=", False),
                     ("is_handled", "=", False),
-                ],
+                ] + live,
             },
             {
                 "key": "snoozed", "label": _("Reportés"),
@@ -133,7 +143,7 @@ class BfEmail(models.Model):
                     ("is_handled", "=", True),
                     ("snoozed_until", "!=", False),
                     ("snoozed_until", ">", now),
-                ],
+                ] + live,
             },
             {
                 # Un « non lu » sortant n'existe pas : c'est nous qui l'avons
@@ -211,7 +221,7 @@ class BfEmail(models.Model):
         defs.append({
             "key": "awaiting", "label": _("Relance à faire"),
             "icon": "fa-hourglass-half", "parent": False,
-            "domain": [("is_awaiting_reply", "=", True)],
+            "domain": [("is_awaiting_reply", "=", True)] + live,
             "unread": False,
         })
         defs.append({
@@ -238,29 +248,59 @@ class BfEmail(models.Model):
         promesse, pas un mécanisme. Les quatre exemplaires Python en dérivent
         désormais ; les deux autres sont épinglés par un test.
 
-        Trois façons d'être « dans la boîte » :
+        Quatre façons d'être « dans la boîte » :
 
         1. le message est physiquement dans l'INBOX du serveur ;
         2. la ligne vient d'un chatter ou de la passerelle, elle n'a pas de
            contrepartie IMAP à consulter ;
-        3. ⚠️ on ne sait plus **où** est la copie serveur (`imap_folder` vide).
-           Ce troisième cas naît quand une remise en boîte échoue parce que le
+        3. c'est notre copie du dossier « Sent » : un envoi fait depuis un
+           client de courriel (Thunderbird, le téléphone) suit la même règle
+           qu'un envoi fait depuis Odoo. Il entre en boîte, sauf s'il naît
+           traité parce que son
+           fil l'est déjà (`_inherit_thread_handled`), et l'archiver au
+           serveur le traite (`_cron_imap_mirror`) ;
+        4. ⚠️ on ne sait plus **où** est la copie serveur (`imap_folder` vide).
+           Ce quatrième cas naît quand une remise en boîte échoue parce que le
            dossier a été renommé ou vidé au webmail. Sans lui, la ligne
            quittait « Traités » sans jamais réapparaître dans la boîte : elle
            tombait hors de toute liste de travail, en silence.
         """
         return [
             ("is_handled", "=", False),
-            # : un fil mis en sourdine sort de la boîte sans être
+            # Un fil mis en sourdine sort de la boîte sans être
             # traité. Le drapeau est sur la LIGNE parce que les deux autres
             # transcriptions de ce domaine — le SQL du téléphone et le
             # JavaScript du badge — ne savent pas interroger une table de
             # sourdines.
             ("is_muted", "=", False),
-            "|", "|", ("imap_in_inbox", "=", True),
+            *self._inbox_live_account_domain(),
+            "|", "|", "|", ("imap_in_inbox", "=", True),
             ("source", "in", ("chatter", "gateway")),
+            # `=ilike` sans joker : le nom exact, à la casse près. C'est le
+            # même test que l'ingestion pour donner la direction « out ».
+            ("imap_folder", "=ilike", SENT_FOLDER),
             ("imap_folder", "=", False),
         ]
+
+    @api.model
+    def _inbox_live_account_domain(self):
+        """Écarte des listes de travail le courrier d'un compte désactivé.
+
+        Désactiver un compte arrêtait la relève, mais tout ce qu'il avait
+        déjà apporté restait dans la boîte, « À répondre » et le badge : un
+        compte personnel retiré y laissait plus d'un millier de lignes non
+        traitées.
+
+        Les lignes ne sont pas touchées : réactiver le compte les ramène, et
+        « Traités », « Envoyés », « Tous » et les catégories gardent
+        l'historique. Le courrier né dans Odoo n'a pas de compte et reste
+        (« not any » laisse passer `account_id` vide).
+
+        ⚠️ Recopié dans le SQL du téléphone (`_mobile_filter_sql`), le badge
+        du systray et les deux domaines XML de `bf_email_views.xml` ; les
+        tests de `test_compte_desactive` épinglent les quatre.
+        """
+        return [("account_id", "not any", [("active", "=", False)])]
 
     @api.model
     def _inbox_account_defs(self):
@@ -292,7 +332,8 @@ class BfEmail(models.Model):
                            name=account.login or "",
                            company=account.company_id.name or _("sans société")),
                 "domain": domain,
-                "unread_domain": domain + [("status", "=", "new")],
+                "unread_domain": domain + [
+                    ("status", "=", "new"), ("direction", "=", "in")],
             })
         return out
 
@@ -1109,6 +1150,8 @@ class BfEmail(models.Model):
         "mark_replied": "action_mark_replied",
         "mute": "action_mute_thread",
         "unmute": "action_unmute_thread",
+        # Sortir un fil de « Relance à faire » sans le traiter.
+        "no_followup": "action_dismiss_awaiting",
         "unsubscribe": "action_unsubscribe",
         # Les petits gestes de.
         "unsnooze": "action_unsnooze",
