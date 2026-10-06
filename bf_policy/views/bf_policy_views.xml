@@ -99,12 +99,12 @@
                 <field name="disk_escrow"/>
               </group>
               <div class="text-muted" invisible="not disk_escrow">
-                Le sequestre exige une cle de chiffrement posee HORS de la base,
+                Le séquestre exige une clé de chiffrement posée HORS de la base,
                 dans la variable d'environnement <code>BF_POLICY_ESCROW_KEY</code>
                 ou dans <code>odoo.conf</code> sous <code>bf_policy_escrow_key</code>.
                 Sans elle, l'installateur ne tente rien et fait taper la phrase
-                de passe comme avant. La lire ensuite demande le droit dedie
-                « Peut reveler les phrases de passe de disque », que
+                de passe comme avant. La lire ensuite demande le droit dédié
+                « Peut révéler les phrases de passe de disque », que
                 l'administration d'Odoo n'accorde pas d'office.
               </div>
             </page>
@@ -469,7 +469,7 @@
     <field name="name">bf.policy.machine.list</field>
     <field name="model">bf.policy.machine</field>
     <field name="arch" type="xml">
-      <list string="Machines enrolees">
+      <list string="Machines enrôlées">
         <field name="hostname"/>
         <field name="user_id"/>
         <field name="seat_profile_id" optional="show"/>
@@ -492,30 +492,30 @@
     <field name="name">bf.policy.machine.form</field>
     <field name="model">bf.policy.machine</field>
     <field name="arch" type="xml">
-      <form string="Machine enrolee">
+      <form string="Machine enrôlée">
         <header>
-          <button name="action_revoke" type="object" string="Revoquer"
+          <button name="action_revoke" type="object" string="Révoquer"
                   class="btn-danger" invisible="not active"
-                  confirm="Revoquer ce poste ? Il gardera sa derniere politique connue, mais ne pourra plus la re-tirer ni se re-enroler."/>
+                  confirm="Révoquer ce poste ? Il gardera sa dernière politique connue, mais ne pourra plus la re-tirer ni se re-enrôler."/>
           <button name="action_reveal_passphrase" type="object"
-                  string="Reveler la phrase de passe"
+                  string="Révéler la phrase de passe"
                   groups="bf_policy.group_disk_escrow_read"
                   invisible="not disk_escrowed"
-                  confirm="Cette lecture sera comptee, horodatee et attribuee a votre compte sur la fiche de ce poste. Continuer ?"/>
+                  confirm="Cette lecture sera comptée, horodatée et attribuée à votre compte sur la fiche de ce poste. Continuer ?"/>
           <button name="action_forget_passphrase" type="object"
-                  string="Retirer le sequestre" class="btn-secondary"
+                  string="Retirer le séquestre" class="btn-secondary"
                   groups="bf_policy.group_disk_escrow_read"
                   invisible="not disk_escrowed"
-                  confirm="Retirer la phrase de passe du depot ? Elle est irrecuperable ensuite. A ne faire que si le disque a ete detruit ou reinitialise."/>
+                  confirm="Retirer la phrase de passe du dépôt ? Elle est irrécupérable ensuite. À ne faire que si le disque a été détruit ou réinitialisé."/>
         </header>
         <sheet>
-          <widget name="web_ribbon" title="Revoquee" bg_color="text-bg-danger"
+          <widget name="web_ribbon" title="Révoquée" bg_color="text-bg-danger"
                   invisible="active"/>
           <div class="oe_title">
             <h1><field name="hostname" readonly="1"/></h1>
           </div>
           <group>
-            <group string="Identite">
+            <group string="Identité">
               <field name="user_id" readonly="1" invisible="seat_profile_id"/>
               <field name="seat_profile_id" readonly="1" invisible="not seat_profile_id"/>
               <field name="seat_allowed_users" invisible="not seat_profile_id"/>
@@ -532,7 +532,7 @@
               <field name="sync_count"/>
             </group>
           </group>
-          <group string="Sequestre du disque">
+          <group string="Séquestre du disque">
             <field name="disk_escrowed" readonly="1"/>
             <field name="disk_escrowed_on" invisible="not disk_escrowed"/>
             <field name="disk_reveal_count" invisible="not disk_escrowed"/>
@@ -542,16 +542,16 @@
                    invisible="not disk_reveal_count"/>
           </group>
           <div class="text-muted mt-3">
-            Le jeton de cette machine n'est rendu qu'une fois, a l'enrolement :
+            Le jeton de cette machine n'est rendu qu'une fois, à l'enrôlement :
             Odoo n'en conserve que l'empreinte. Un poste qui doit retrouver un
-            jeton se reinstalle.
+            jeton se réinstalle.
           </div>
           <div class="text-muted mt-2" invisible="disk_escrowed">
-            Aucune phrase de passe de disque en depot pour ce poste. Soit il a
-            ete installe avant l'activation du sequestre, soit le depot a echoue
-            et la phrase a ete tapee a la main : dans les deux cas, elle
-            n'existe que chez la personne qui l'a saisie. Le sequestre ne
-            s'ajoute pas apres coup, il faudrait reinstaller.
+            Aucune phrase de passe de disque en dépôt pour ce poste. Soit il a
+            été installé avant l'activation du séquestre, soit le dépôt a échoué
+            et la phrase a été tapée à la main : dans les deux cas, elle
+            n'existe que chez la personne qui l'a saisie. Le séquestre ne
+            s'ajoute pas après coup, il faudrait réinstaller.
           </div>
         </sheet>
       </form>
@@ -562,7 +562,7 @@
     <field name="name">bf.policy.machine.search</field>
     <field name="model">bf.policy.machine</field>
     <field name="arch" type="xml">
-      <search string="Machines enrolees">
+      <search string="Machines enrôlées">
         <field name="hostname"/>
         <field name="user_id"/>
         <field name="machine_uuid"/>
@@ -570,9 +570,9 @@
         <field name="seat_allowed_users"/>
         <filter name="filter_shared" string="Shared seats" domain="[('seat_profile_id','!=',False)]"/>
         <filter name="filter_active" string="Actives" domain="[('active','=',True)]"/>
-        <filter name="filter_revoked" string="Revoquees" domain="[('active','=',False)]"/>
+        <filter name="filter_revoked" string="Révoquées" domain="[('active','=',False)]"/>
         <separator/>
-        <filter name="filter_never_seen" string="Jamais synchronisee"
+        <filter name="filter_never_seen" string="Jamais synchronisée"
                 domain="[('last_seen','=',False)]"/>
         <group expand="0" string="Regrouper par">
           <filter name="group_user" string="Usager" context="{'group_by':'user_id'}"/>
@@ -584,16 +584,16 @@
   </record>
 
   <record id="action_bf_policy_machine" model="ir.actions.act_window">
-    <field name="name">Machines enrolees</field>
+    <field name="name">Machines enrôlées</field>
     <field name="res_model">bf.policy.machine</field>
     <field name="view_mode">list,form</field>
     <field name="search_view_id" ref="view_bf_policy_machine_search"/>
     <field name="help" type="html">
-      <p class="o_view_nocontent_smiling_face">Aucune machine enrolee</p>
+      <p class="o_view_nocontent_smiling_face">Aucune machine enrôlée</p>
       <p>
-        Une machine s'enrole toute seule pendant son installation zero-touch,
-        au moment ou l'operateur s'authentifie. Elle re-tire ensuite sa
-        politique une fois par jour, sans que personne n'ait a intervenir.
+        Une machine s'enrôle toute seule pendant son installation zero-touch,
+        au moment où l'opérateur s'authentifie. Elle re-tire ensuite sa
+        politique une fois par jour, sans que personne n'ait à intervenir.
       </p>
     </field>
   </record>
@@ -612,9 +612,9 @@
           <field name="passphrase" readonly="1" class="fw-bold"/>
         </group>
         <div class="alert alert-warning mt-2" role="alert">
-          Cette lecture vient d'etre inscrite sur la fiche du poste, avec
-          l'heure et votre nom. Refermez des que vous avez ce qu'il vous faut :
-          la valeur reste affichee tant que la fenetre est ouverte.
+          Cette lecture vient d'être inscrite sur la fiche du poste, avec
+          l'heure et votre nom. Refermez dès que vous avez ce qu'il vous faut :
+          la valeur reste affichée tant que la fenêtre est ouverte.
         </div>
         <footer>
           <button string="Fermer" class="btn-primary" special="cancel"/>

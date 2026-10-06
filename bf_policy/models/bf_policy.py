@@ -196,14 +196,14 @@ class BfPolicyOrg(models.Model):
         "Nextcloud URL",
         help="Racine de l'instance Nextcloud du locataire, p. ex. "
              "https://nextcloud.example.com. Sert au %pre pour frapper le mot "
-             "de passe d'application, et a l'agent pour le montage rclone.")
+             "de passe d'application, et à l'agent pour le montage rclone.")
     nextcloud_oidc_client_id = fields.Char(
         "Nextcloud OIDC Client ID",
         help="client_id du fournisseur Nextcloud dans Authentik. Sert "
-             "d'audience a l'echange de jetons RFC 8693. Ce n'est pas un "
-             "secret. ⚠️ Le fournisseur CIBLE doit par ailleurs declarer "
-             "federer avec le client d'installation cote Authentik "
-             "(jwt_federation_providers), sinon l'echange est refuse avec "
+             "d'audience à l'échange de jetons RFC 8693. Ce n'est pas un "
+             "secret. ⚠️ Le fournisseur CIBLE doit par ailleurs déclarer "
+             "fédérer avec le client d'installation côté Authentik "
+             "(jwt_federation_providers), sinon l'échange est refusé avec "
              "invalid_target.")
 
     # --- Seat login (sssd against the Authentik LDAP outpost) ---
@@ -218,13 +218,13 @@ class BfPolicyOrg(models.Model):
     # d'ailleurs une cle ABSENTE comme « oui ». Le couper est un choix explicite.
     break_glass_account = fields.Boolean(
         "Compte de secours local", default=True,
-        help="Cree bfos-secours, ouvert sur la phrase du disque sequestree. "
-             "Decoche : le compte est retire a l'installation. ⚠️ Sans lui, "
-             "root verrouille et sssd seul, si l'annuaire est injoignable AVANT "
-             "la premiere connexion, personne n'ouvre de session localement ; "
-             "la recuperation passe alors par un demarrage de secours et la "
-             "phrase LUKS sequestree. Ignore en mode local : le poste garde le "
-             "compte plutot que de laisser une machine sans porte d'entree.")
+        help="Crée bfos-secours, ouvert sur la phrase du disque séquestrée. "
+             "Décoché : le compte est retiré à l'installation. ⚠️ Sans lui, "
+             "root verrouillé et sssd seul, si l'annuaire est injoignable AVANT "
+             "la première connexion, personne n'ouvre de session localement ; "
+             "la récupération passe alors par un démarrage de secours et la "
+             "phrase LUKS séquestrée. Ignoré en mode local : le poste garde le "
+             "compte plutôt que de laisser une machine sans porte d'entrée.")
     ldap_uri = fields.Char(string="LDAP outpost URI",
                            help="e.g. ldaps://ldap.example.com:636")
     ldap_base_dn = fields.Char(string="LDAP base DN",
@@ -244,7 +244,7 @@ class BfPolicyOrg(models.Model):
     # sous groups= pour la meme raison que la phrase de passe — administrer
     # Odoo ne doit pas valoir « lire l'annuaire de tout le monde ».
     ldap_bind_password_enc = fields.Char(
-        "Mot de passe de liaison (chiffre)", copy=False, readonly=True,
+        "Mot de passe de liaison (chiffré)", copy=False, readonly=True,
         groups="bf_policy.group_disk_escrow_read")
     # Champ de SAISIE, jamais stocke : il ne rend jamais la valeur, il ne fait
     # que la prendre. Un fields.Char stocke aurait une vraie colonne en clair,
@@ -360,11 +360,11 @@ class BfPolicyOrg(models.Model):
     app_ids = fields.Many2many(
         "bf.policy.app", "bf_policy_org_app_install_rel", "org_id", "app_id",
         string="Default apps",
-        help="Installees en plus de la base bakee dans l'image.")
+        help="Installées en plus de la base bakée dans l'image.")
     app_remove_ids = fields.Many2many(
         "bf.policy.app", "bf_policy_org_app_remove_rel", "org_id", "app_id",
         string="Apps to remove",
-        help="Retirees de la base bakee dans l'image (Brave, Thunderbird, "
+        help="Retirées de la base bakée dans l'image (Brave, Thunderbird, "
              "Nextcloud, Bitwarden). Le retrait l'emporte sur l'ajout.")
 
     # --- Extensions du navigateur ---
@@ -373,7 +373,7 @@ class BfPolicyOrg(models.Model):
     extension_ids = fields.Many2many(
         "bf.policy.extension", "bf_policy_org_extension_rel", "org_id", "extension_id",
         string="Browser extensions",
-        help="Installees d'office dans Brave sur les postes de l'organisation. "
+        help="Installées d'office dans Brave sur les postes de l'organisation. "
              "La personne ne peut pas les retirer.")
 
     _sql_constraints = [
@@ -842,7 +842,7 @@ class BfPolicyUser(models.Model):
     extension_remove_ids = fields.Many2many(
         "bf.policy.extension", "bf_policy_user_extension_remove_rel", "user_id",
         "extension_id", string="Browser extensions to skip",
-        help="Extensions de l'organisation qui ne s'imposent pas a cette personne.")
+        help="Extensions de l'organisation qui ne s'imposent pas à cette personne.")
 
     _sql_constraints = [
         ("user_company_uniq", "unique(user_id, company_id)",
@@ -913,20 +913,20 @@ class BfPolicyApp(models.Model):
     flatpak_id = fields.Char(
         required=True, index=True, string="Flatpak ID",
         help="Identifiant Flathub, ex. com.brave.Browser.")
-    name = fields.Char(help="Nom lisible, renseigne par la synchronisation Flathub.")
+    name = fields.Char(help="Nom lisible, renseigné par la synchronisation Flathub.")
     summary = fields.Char()
     categories = fields.Char(
-        help="Categories AppStream, separees par des virgules (Network, Office…).")
+        help="Catégories AppStream, séparées par des virgules (Network, Office…).")
     recommended = fields.Boolean(
-        index=True, default=False, string="Recommandee BF",
-        help="Fait partie de la courte liste approuvee. C'est le filtre par "
-             "defaut des vues de selection ; il peut etre retire pour choisir "
+        index=True, default=False, string="Recommandée BF",
+        help="Fait partie de la courte liste approuvée. C'est le filtre par "
+             "défaut des vues de sélection ; il peut être retiré pour choisir "
              "n'importe quelle application de Flathub.")
     active = fields.Boolean(default=True)
 
     _sql_constraints = [
         ("flatpak_id_uniq", "unique(flatpak_id)",
-         "Cette application est deja au catalogue."),
+         "Cette application est déjà au catalogue."),
     ]
 
     @api.depends("name", "flatpak_id")
@@ -1079,24 +1079,24 @@ class BfPolicyMachine(models.Model):
     """
 
     _name = "bf.policy.machine"
-    _description = "Blue Fox Policy — Machine enrolee"
+    _description = "Blue Fox Policy — Machine enrôlée"
     _order = "last_seen desc, id desc"
     _rec_name = "hostname"
 
     hostname = fields.Char(
         required=True, index=True,
-        help="Nom d'hote applique par la politique au moment de l'installation.")
+        help="Nom d'hôte appliqué par la politique au moment de l'installation.")
     machine_uuid = fields.Char(
         "UUID machine", required=True, index=True, copy=False, readonly=True,
-        help="Identifiant tire au sort par la machine a l'installation. Une "
-             "reinstallation en tire un nouveau : les deux fiches coexistent, "
+        help="Identifiant tiré au sort par la machine à l'installation. Une "
+             "réinstallation en tire un nouveau : les deux fiches coexistent, "
              "et c'est `Vue le` qui dit laquelle est encore vivante.")
     org_id = fields.Many2one(
         "bf.policy.org", required=True, ondelete="cascade", index=True)
     user_id = fields.Many2one(
         "res.users", ondelete="cascade", index=True,
-        help="Personne dont la politique fusionnee est servie a ce poste. Vide "
-             "pour un poste partage, qui recoit celle de son profil.")
+        help="Personne dont la politique fusionnée est servie à ce poste. Vide "
+             "pour un poste partagé, qui reçoit celle de son profil.")
     # --- Poste partage (18.0.2.12.0) ---------------------------------------
     # Un poste partage n'a pas de proprietaire : il appartient a un profil
     # (laboratoire, pret). Exactement l'un des deux est rempli.
@@ -1117,9 +1117,9 @@ class BfPolicyMachine(models.Model):
         "Empreinte du jeton", required=True, index=True, copy=False,
         readonly=True, groups="base.group_system")
     enrolled_on = fields.Datetime(
-        "Enrole le", default=fields.Datetime.now, readonly=True)
+        "Enrôlée le", default=fields.Datetime.now, readonly=True)
     last_seen = fields.Datetime("Vue le", readonly=True)
-    last_seen_ip = fields.Char("Derniere IP", readonly=True)
+    last_seen_ip = fields.Char("Dernière IP", readonly=True)
     os_version = fields.Char("Version de l'image", readonly=True)
     sync_count = fields.Integer("Synchronisations", default=0, readonly=True)
     active = fields.Boolean(default=True)
@@ -1130,21 +1130,21 @@ class BfPolicyMachine(models.Model):
     # des roles ; sinon « qui peut administrer Odoo » devient « qui peut ouvrir
     # tous les disques du parc », ce que personne n'a jamais decide.
     disk_passphrase_enc = fields.Char(
-        "Phrase de passe (chiffree)", copy=False, readonly=True,
+        "Phrase de passe (chiffrée)", copy=False, readonly=True,
         groups="bf_policy.group_disk_escrow_read")
     # PAS de groups= ici, a dessein : savoir QU'UNE cle existe n'est pas la
     # lire, et l'exploitation courante a besoin de le voir pour reperer les
     # postes non couverts.
-    disk_escrowed_on = fields.Datetime("Sequestre le", readonly=True, copy=False)
+    disk_escrowed_on = fields.Datetime("Séquestrée le", readonly=True, copy=False)
     disk_escrowed = fields.Boolean(
-        "Phrase sequestree", compute="_compute_disk_escrowed", store=False,
-        help="Une phrase de passe de disque est en depot pour cette machine.")
+        "Phrase séquestrée", compute="_compute_disk_escrowed", store=False,
+        help="Une phrase de passe de disque est en dépôt pour cette machine.")
     disk_reveal_count = fields.Integer(
-        "Revelations", default=0, readonly=True, copy=False)
+        "Révélations", default=0, readonly=True, copy=False)
     disk_last_revealed_on = fields.Datetime(
-        "Derniere revelation", readonly=True, copy=False)
+        "Dernière révélation", readonly=True, copy=False)
     disk_last_revealed_by = fields.Many2one(
-        "res.users", string="Revelee par", readonly=True, copy=False)
+        "res.users", string="Révélée par", readonly=True, copy=False)
 
     # depend de disk_escrowed_on et NON du champ chiffre : un compute qui lit
     # un champ sous groups= leve AccessError pour tout le monde sauf les
@@ -1156,7 +1156,7 @@ class BfPolicyMachine(models.Model):
 
     _sql_constraints = [
         ("machine_uuid_uniq", "unique(machine_uuid)",
-         "Cette machine est deja enrolee."),
+         "Cette machine est déjà enrôlée."),
         # Un poste est a une personne OU a un profil, jamais aux deux ni a
         # personne : sans ca, /machine ne saurait pas quelle politique servir.
         ("owner_xor_seat",
@@ -1384,22 +1384,22 @@ class BfPolicyMachine(models.Model):
         self.ensure_one()
         if not self.env.user.has_group("bf_policy.group_disk_escrow_read"):
             raise AccessError(_(
-                "Il faut le droit « Peut reveler les phrases de passe de "
-                "disque » pour lire un sequestre."))
+                "Il faut le droit « Peut révéler les phrases de passe de "
+                "disque » pour lire un séquestre."))
         if not self.disk_escrowed_on:
             raise UserError(_(
-                "Aucune phrase de passe n'est en depot pour ce poste. Il a ete "
-                "installe avant l'activation du sequestre, ou le depot a "
-                "echoue et la phrase a ete tapee a la main."))
+                "Aucune phrase de passe n'est en dépôt pour ce poste. Il a été "
+                "installé avant l'activation du séquestre, ou le dépôt a "
+                "échoué et la phrase a été tapée à la main."))
         try:
             passphrase = self._read_disk_passphrase()
         except escrow.EscrowUnavailable as exc:
             raise UserError(_(
-                "Le sequestre n'est pas configure sur ce serveur : %s", exc))
+                "Le séquestre n'est pas configuré sur ce serveur : %s", exc))
         except Exception as exc:  # noqa: BLE001 — cle changee, donnee abimee
             raise UserError(_(
-                "Impossible de dechiffrer ce depot (%s). La cle de sequestre "
-                "a-t-elle change depuis l'installation de ce poste ?", exc))
+                "Impossible de déchiffrer ce dépôt (%s). La clé de séquestre "
+                "a-t-elle changé depuis l'installation de ce poste ?", exc))
 
         # Trace durable AVANT de rendre la valeur : si l'ecriture echoue, la
         # phrase ne sort pas. Un audit qu'on peut contourner en faisant planter
@@ -1442,8 +1442,8 @@ class BfPolicyMachine(models.Model):
         self.ensure_one()
         if not self.env.user.has_group("bf_policy.group_disk_escrow_read"):
             raise AccessError(_(
-                "Il faut le droit « Peut reveler les phrases de passe de "
-                "disque » pour retirer un sequestre."))
+                "Il faut le droit « Peut révéler les phrases de passe de "
+                "disque » pour retirer un séquestre."))
         self.sudo().write({
             "disk_passphrase_enc": False,
             "disk_escrowed_on": False,
@@ -1489,7 +1489,7 @@ class BfPolicyMachineReveal(models.TransientModel):
     """
 
     _name = "bf.policy.machine.reveal"
-    _description = "Blue Fox Policy — Reveler une phrase de passe"
+    _description = "Blue Fox Policy — Révéler une phrase de passe"
 
     machine_id = fields.Many2one("bf.policy.machine", readonly=True)
     passphrase = fields.Char("Phrase de passe", readonly=True,
@@ -1499,8 +1499,8 @@ class BfPolicyMachineReveal(models.TransientModel):
     def create(self, vals_list):
         if not (self.env.su and self.env.context.get(_REVEAL_CTX)):
             raise AccessError(_(
-                "Une phrase de passe de disque ne se revele que par le bouton "
-                "« Reveler la phrase de passe » de la fiche du poste."))
+                "Une phrase de passe de disque ne se révèle que par le bouton "
+                "« Révéler la phrase de passe » de la fiche du poste."))
         return super().create(vals_list)
 
     @api.depends("machine_id")
@@ -1560,24 +1560,24 @@ class BfPolicyExtension(models.Model):
     name = fields.Char(required=True)
     extension_id = fields.Char(
         required=True, index=True, string="Extension ID",
-        help="Identifiant Chromium : 32 lettres de a a p "
+        help="Identifiant Chromium : 32 lettres de a à p "
              "(la fin de l'adresse de la fiche dans la boutique Chrome).")
     source = fields.Selection(
         [("store", "Chrome Web Store"), ("symbifox", "Symbifox (served by this instance)")],
         required=True, default="store")
     managed_instance = fields.Boolean(
         string="Pass the instance address",
-        help="Pose l'adresse de l'Odoo de l'organisation dans le stockage gere "
-             "de l'extension (cle « instance »). L'extension doit la declarer "
-             "dans son schema ; Symbifox Signets le fait. Elle ne fait que "
-             "pre-remplir ses reglages : l'acces reste accorde par la personne.")
-    recommended = fields.Boolean(index=True, default=False, string="Recommandee BF")
+        help="Pose l'adresse de l'Odoo de l'organisation dans le stockage géré "
+             "de l'extension (clé « instance »). L'extension doit la déclarer "
+             "dans son schéma ; Symbifox Signets le fait. Elle ne fait que "
+             "pré-remplir ses réglages : l'accès reste accordé par la personne.")
+    recommended = fields.Boolean(index=True, default=False, string="Recommandée BF")
     note = fields.Char()
     active = fields.Boolean(default=True)
 
     _sql_constraints = [
         ("extension_id_uniq", "unique(extension_id)",
-         "Cette extension est deja au catalogue."),
+         "Cette extension est déjà au catalogue."),
     ]
 
     @api.depends("name", "extension_id")
@@ -1595,7 +1595,7 @@ class BfPolicyExtension(models.Model):
                 from odoo.exceptions import ValidationError
                 raise ValidationError(_(
                     "« %s » n'est pas un identifiant d'extension Chromium "
-                    "(32 lettres de a a p).", rec.extension_id))
+                    "(32 lettres de a à p).", rec.extension_id))
 
     def _update_url(self, domain: str) -> str:
         self.ensure_one()

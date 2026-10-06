@@ -153,6 +153,12 @@ Linux, which is why this catalogue targets Blue Fox OS machines.
 
 ## Changelog
 
+- **18.0.2.13.0** — Interface languages: the French labels of the machine
+  record, the escrow screens and the org settings are now properly accented
+  ("Révoquer", "Machines enrôlées", "Séquestre du disque"…), and the module
+  ships an `en_CA` catalogue, so an English-speaking user sees the whole
+  interface in English instead of the French source. The catalogue template
+  (`bf_policy.pot`) is shipped too. No change to models, data or behaviour.
 - **18.0.2.12.0** — Shared seats: a machine belongs to a person or to a seat
   profile (lab or loan), enforced in the database. The profile names the
   directory groups allowed to log in; a lent machine also opens to its

@@ -10,7 +10,6 @@ msgstr ""
 "PO-Revision-Date: 2026-10-06 06:07+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -23,39 +22,35 @@ msgid ""
 "%s is not a valid code: 2 to 32 lowercase letters, digits or dashes, "
 "starting with a letter or a digit."
 msgstr ""
-"%s n'est pas un code valide : de 2 à 32 lettres minuscules, chiffres ou "
-"tirets, commençant par une lettre ou un chiffre."
 
 #. module: bf_policy
 #. odoo-python
 #: code:addons/bf_policy/models/seat.py:0
 msgid "%s is not a valid group name."
-msgstr "%s n'est pas un nom de groupe valide."
+msgstr ""
 
 #. module: bf_policy
 #. odoo-python
 #: code:addons/bf_policy/models/bf_policy.py:0
 msgid "%s is not a valid user name."
-msgstr "%s n'est pas un nom d'usager valide."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__login_mode
 msgid "'sssd' syncs the Linux seat login with Authentik via the LDAP outpost."
 msgstr ""
-"« sssd » synchronise l'ouverture de session Linux avec Authentik par "
-"l'avant-poste LDAP."
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__clock_format__12h
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_user__clock_format__12h
 msgid "12 h (AM/PM)"
-msgstr "12 h (AM/PM)"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__clock_format__24h
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_user__clock_format__24h
 msgid "24 h"
-msgstr "24 h"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
@@ -64,20 +59,16 @@ msgid ""
 "                when the loan is recorded. Back on the shelf, it opens to these\n"
 "                groups only."
 msgstr ""
-"Un poste prêté s'ouvre aussi à son emprunteur, inscrit sur le poste\n"
-"                quand le prêt est enregistré. Revenu sur la tablette, il ne s'ouvre\n"
-"                qu'à ces groupes."
 
 #. module: bf_policy
 #: model:ir.model.constraint,message:bf_policy.constraint_bf_policy_machine_owner_xor_seat
 msgid "A machine belongs either to a person or to a shared seat profile."
 msgstr ""
-"Un poste appartient soit à une personne, soit à un profil de poste partagé."
 
 #. module: bf_policy
 #: model:ir.model.constraint,message:bf_policy.constraint_bf_policy_org_company_uniq
 msgid "A policy record already exists for this company."
-msgstr "Une politique existe déjà pour cette société."
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.actions.act_window,help:bf_policy.action_bf_policy_seat_profile
@@ -86,9 +77,6 @@ msgid ""
 "        people log in, or a machine lent to one borrower at a time. Type the\n"
 "        profile code at install time to enrol a machine under it."
 msgstr ""
-"Un poste partagé appartient à un profil plutôt qu'à une personne : un laboratoire\n"
-"        où plusieurs personnes ouvrent une session, ou un poste prêté à un emprunteur\n"
-"        à la fois. Tapez le code du profil à l'installation pour y enrôler le poste."
 
 #. module: bf_policy
 #. odoo-python
@@ -97,15 +85,12 @@ msgid ""
 "A shared seat needs the directory login (sssd): with local accounts the "
 "machine would only know the person who installed it."
 msgstr ""
-"Un poste partagé exige l'ouverture de session par l'annuaire (sssd) : avec "
-"des comptes locaux, le poste ne connaîtrait que la personne qui l'a "
-"installé."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__accent_color
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__accent_color
 msgid "Accent Color"
-msgstr "Couleur d'accent"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__active
@@ -114,18 +99,18 @@ msgstr "Couleur d'accent"
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__active
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__active
 msgid "Active"
-msgstr "Active"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_search
 msgid "Actives"
-msgstr "Actives"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__offline_login
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__offline_login
 msgid "Allow offline login"
-msgstr "Permettre la connexion hors ligne"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
@@ -138,8 +123,6 @@ msgid ""
 "An archived profile stops serving its machines at their next sync, and no "
 "new machine can enrol under it."
 msgstr ""
-"Un profil archivé cesse de servir ses postes à leur prochaine "
-"synchronisation, et aucun nouveau poste ne peut s'y enrôler."
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__provision_mode__any
@@ -149,17 +132,17 @@ msgstr ""
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 msgid "Applications"
-msgstr "Applications"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__app_remove_ids
 msgid "Applications to remove"
-msgstr "Applications à retirer"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Apps"
-msgstr "Applications"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__app_remove_ids
@@ -167,12 +150,12 @@ msgstr "Applications"
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Apps to remove"
-msgstr "Applications à retirer"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 msgid "Archived"
-msgstr "Archivé"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.actions.act_window,help:bf_policy.action_bf_policy_extension
@@ -206,43 +189,43 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__authentik_device_url
 msgid "Authentik Device URL"
-msgstr "URL d'appareil Authentik"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__login_mode__sssd
 msgid "Authentik LDAP (sssd)"
-msgstr "LDAP Authentik (sssd)"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__authentik_token_url
 msgid "Authentik Token URL"
-msgstr "URL de jeton Authentik"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__authentik_userinfo_url
 msgid "Authentik userinfo endpoint"
-msgstr "Point userinfo Authentik"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Authorization"
-msgstr "Autorisation"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__provision_group_ids
 msgid "Authorized groups"
-msgstr "Groupes autorisés"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__provision_user_ids
 msgid "Authorized users"
-msgstr "Usagers autorisés"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__auto_lock_minutes
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__auto_lock_minutes
 msgid "Auto-lock (minutes)"
-msgstr "Verrouillage automatique (minutes)"
+msgstr ""
 
 #. module: bf_policy
 #: model:res.groups,comment:bf_policy.group_disk_escrow_read
@@ -259,8 +242,6 @@ msgid ""
 "Bind the LUKS volume to the machine's TPM2 so the disk unlocks without typing the passphrase at boot. The passphrase is KEPT as a recovery method — enrolling the TPM never removes it.\n"
 "Trade-off: with no PIN, anyone who powers on the machine reaches the login screen with the disk already unlocked. At-rest protection then rests on the session password alone."
 msgstr ""
-"Lie le volume LUKS au TPM2 de la machine pour que le disque se déverrouille sans taper la phrase de passe au démarrage. La phrase de passe est CONSERVÉE comme méthode de secours : l'enrôlement du TPM ne la retire jamais.\n"
-"Contrepartie : sans NIP, quiconque allume la machine arrive à l'écran de connexion avec le disque déjà déverrouillé. La protection au repos repose alors sur le seul mot de passe de session."
 
 #. module: bf_policy
 #: model:res.groups,name:bf_policy.group_disk_escrow_read
@@ -270,12 +251,12 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_extension
 msgid "Blue Fox Policy — Browser Extension"
-msgstr "Politique Blue Fox — Extension de navigateur"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_app
 msgid "Blue Fox Policy — Flatpak Application (Flathub)"
-msgstr "Politique Blue Fox — Application Flatpak (Flathub)"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_machine
@@ -285,22 +266,22 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_mount
 msgid "Blue Fox Policy — Nextcloud/WebDAV Mount"
-msgstr "Politique Blue Fox — Montage Nextcloud/WebDAV"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_org
 msgid "Blue Fox Policy — Organization Defaults"
-msgstr "Politique Blue Fox — Valeurs par défaut de l'organisation"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_user
 msgid "Blue Fox Policy — Per-User Overrides"
-msgstr "Politique Blue Fox — Surcharges par usager"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_pwa
 msgid "Blue Fox Policy — Progressive Web App"
-msgstr "Politique Blue Fox — Application web progressive"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_machine_reveal
@@ -310,40 +291,40 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model,name:bf_policy.model_bf_policy_seat_profile
 msgid "Blue Fox Policy — Shared seat profile"
-msgstr "Blue Fox Policy — Profil de poste partagé"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__seat_allowed_users
 msgid "Borrowers allowed to log in"
-msgstr "Emprunteurs autorisés à ouvrir une session"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Brave, LibreOffice…"
-msgstr "Brave, LibreOffice…"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Browser"
-msgstr "Navigateur"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.actions.act_window,name:bf_policy.action_bf_policy_extension
 #: model:ir.ui.menu,name:bf_policy.menu_bf_policy_extension
 msgid "Browser Extensions"
-msgstr "Extensions de navigateur"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__extension_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_extension_list
 msgid "Browser extensions"
-msgstr "Extensions de navigateur"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__extension_remove_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Browser extensions to skip"
-msgstr "Extensions de navigateur à ignorer"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.actions.act_window,help:bf_policy.action_bf_policy_app
@@ -353,7 +334,7 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__categories
 msgid "Categories"
-msgstr "Catégories"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_app__categories
@@ -404,18 +385,18 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_extension__source__store
 msgid "Chrome Web Store"
-msgstr "Chrome Web Store"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__clock_format
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__clock_format
 msgid "Clock format"
-msgstr "Format de l'horloge"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__code
 msgid "Code"
-msgstr "Code"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__x_options
@@ -423,21 +404,19 @@ msgid ""
 "Comma-separated XKB options, e.g. 'grp:alt_shift_toggle' to cycle layouts "
 "with Alt+Shift."
 msgstr ""
-"Options XKB séparées par des virgules, p. ex. « grp:alt_shift_toggle » pour "
-"alterner les dispositions avec Alt+Maj."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__company_id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__company_id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__company_id
 msgid "Company"
-msgstr "Société"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__company_id
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_seat_profile__company_id
 msgid "Company this policy applies to. One record per company."
-msgstr "Société à laquelle s'applique cette politique. Une fiche par société."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__break_glass_account
@@ -458,9 +437,6 @@ msgid ""
 "Console keymap written to /etc/vconsole.conf (`localectl list-keymaps`). "
 "This does NOT set the desktop layout — see the XKB fields below."
 msgstr ""
-"Disposition de la console écrite dans /etc/vconsole.conf (`localectl list-"
-"keymaps`). Elle ne règle PAS la disposition du bureau : voir les champs XKB "
-"ci-dessous."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__create_uid
@@ -473,7 +449,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__create_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__create_uid
 msgid "Created by"
-msgstr "Créé par"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__create_date
@@ -486,7 +462,7 @@ msgstr "Créé par"
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__create_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__create_date
 msgid "Created on"
-msgstr "Créé le"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__break_glass_account
@@ -503,26 +479,24 @@ msgstr ""
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__offline_max_days
 msgid "Days the cached password stays valid offline. 0 = never expires."
 msgstr ""
-"Nombre de jours pendant lesquels le mot de passe en cache reste valide hors "
-"ligne. 0 = n'expire jamais."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__pwa_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Default PWAs"
-msgstr "Applications web par défaut"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__app_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Default apps"
-msgstr "Applications par défaut"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__mount_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Default mounts"
-msgstr "Montages par défaut"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__last_seen_ip
@@ -540,8 +514,6 @@ msgid ""
 "Desktop keyboard layout, e.g. 'ca' or 'ca,us' (`localectl list-x11-keymap-"
 "layouts`). Blank falls back to the console keymap."
 msgstr ""
-"Disposition du clavier du bureau, p. ex. « ca » ou « ca,us » (`localectl "
-"list-x11-keymap-layouts`). Vide : reprend la disposition de la console."
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_seat_profile__login_groups
@@ -550,10 +522,6 @@ msgid ""
 "in one of these groups may open a session on these seats. For a loan "
 "profile, keep it to the IT staff: the borrower is added per machine."
 msgstr ""
-"Noms de groupes de l'annuaire (Authentik), séparés par des virgules ou des "
-"espaces. Toute personne membre d'un de ces groupes peut ouvrir une session "
-"sur ces postes. Pour un profil de prêt, limitez-le au personnel TI : "
-"l'emprunteur s'ajoute poste par poste."
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_machine__seat_allowed_users
@@ -562,9 +530,6 @@ msgid ""
 "the profile's groups. Written by whoever records a loan; empty = only the "
 "profile's groups."
 msgstr ""
-"Noms d'usager de l'annuaire autorisés à ouvrir une session sur ce poste "
-"partagé, en plus des groupes du profil. Inscrits par la personne qui "
-"enregistre un prêt; vide = seulement les groupes du profil."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__display_name
@@ -577,12 +542,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__display_name
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__display_name
 msgid "Display Name"
-msgstr "Nom affiché"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__domain
 msgid "Domain"
-msgstr "Domaine"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__token_hash
@@ -592,12 +557,12 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__root_mode__enabled
 msgid "Enabled"
-msgstr "Activé"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__enrolled_by_id
 msgid "Enrolled by"
-msgstr "Enrôlé par"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__enrolled_on
@@ -607,7 +572,7 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__disk_escrow
 msgid "Escrow disk passphrase"
-msgstr "Séquestrer la phrase de passe du disque"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
@@ -617,10 +582,6 @@ msgid ""
 "            Odoo preference before the org value — fill it in only to pin a\n"
 "            machine to a timezone that isn't its operator's."
 msgstr ""
-"Chaque champ ci-dessous est vide par défaut et reprend les valeurs de\n"
-"            l'organisation. Le fuseau horaire reprend d'abord la préférence Odoo\n"
-"            de l'usager, puis celle de l'organisation : ne le remplir que pour\n"
-"            fixer une machine sur un fuseau qui n'est pas celui de son usager."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
@@ -630,12 +591,12 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__provision_mode__allowlist
 msgid "Explicit users"
-msgstr "Usagers nommés"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__extension_id
 msgid "Extension ID"
-msgstr "Identifiant d'extension"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_user__extension_remove_ids
@@ -655,31 +616,31 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__pwa_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Extra PWAs"
-msgstr "Applications web en plus"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__app_ids
 msgid "Extra applications"
-msgstr "Applications ajoutées"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__app_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Extra apps"
-msgstr "Applications en plus"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__extension_ids
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__extension_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Extra browser extensions"
-msgstr "Extensions de navigateur en plus"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__mount_ids
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Extra mounts"
-msgstr "Montages en plus"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_app__recommended
@@ -695,8 +656,6 @@ msgid ""
 "Fallback timezone. A user whose Odoo preference (Preferences > Timezone) is "
 "set overrides this for their own machines."
 msgstr ""
-"Fuseau horaire de repli. Un usager dont la préférence Odoo (Préférences > "
-"Fuseau horaire) est renseignée le remplace pour ses propres machines."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_reveal_form
@@ -707,38 +666,38 @@ msgstr ""
 #: model:ir.actions.act_window,name:bf_policy.action_bf_policy_app
 #: model:ir.ui.menu,name:bf_policy.menu_bf_policy_app
 msgid "Flatpak Catalogue"
-msgstr "Catalogue Flatpak"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__flatpak_id
 msgid "Flatpak ID"
-msgstr "Identifiant Flatpak"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_app_form
 msgid "Flatpak application"
-msgstr "Application Flatpak"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_app_list
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_app_search
 msgid "Flatpak applications"
-msgstr "Applications Flatpak"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_user__tpm_autounlock_override__off
 msgid "Force off"
-msgstr "Forcer à non"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_user__tpm_autounlock_override__on
 msgid "Force on"
-msgstr "Forcer à oui"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__login_groups
 msgid "Groups allowed to log in"
-msgstr "Groupes autorisés à ouvrir une session"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__disk_escrow
@@ -747,20 +706,17 @@ msgid ""
 "Only ever written at install time, while the operator's bearer is in hand. Stored encrypted with a key that lives OUTSIDE the database, so a stolen dump does not open a single disk.\n"
 "Off by default, and inert on existing machines: a fleet installed before this was enabled keeps its typed passphrases."
 msgstr ""
-"L'installateur tire lui-même la phrase de passe LUKS et la dépose ici, au lieu qu'une personne en tape une que personne ne consigne.\n"
-"Écrite uniquement à l'installation, pendant que le jeton de l'opérateur est valide. Chiffrée avec une clé qui vit HORS de la base : une sauvegarde volée n'ouvre aucun disque.\n"
-"Désactivé par défaut, et sans effet sur les machines existantes : un parc installé avant l'activation garde ses phrases tapées."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__hostname
 msgid "Hostname"
-msgstr "Nom d'hôte"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__hostname_pattern
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__hostname_pattern
 msgid "Hostname Pattern"
-msgstr "Modèle de nom d'hôte"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__tenant_name
@@ -770,10 +726,6 @@ msgid ""
 "because the OS label (e.g. 'Example Inc.') can differ from the Odoo company "
 "record name (e.g. 'Example')."
 msgstr ""
-"Nom lisible inscrit dans le kickstart et dans tenant.json (lu par "
-"l'assistant d'accueil au premier démarrage). Reprend le nom de la société à "
-"défaut. Distinct parce que l'étiquette du système (p. ex. « Example Inc. ») "
-"peut différer du nom de la fiche société dans Odoo (p. ex. « Example »)."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__id
@@ -786,7 +738,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__id
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_extension__extension_id
@@ -811,7 +763,7 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__identity_claim
 msgid "Identity claim"
-msgstr "Revendication d'identité"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_form
@@ -822,7 +774,6 @@ msgstr ""
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__auto_lock_minutes
 msgid "Idle minutes before the session locks. 0 = disabled."
 msgstr ""
-"Minutes d'inactivité avant le verrouillage de la session. 0 = désactivé."
 
 #. module: bf_policy
 #. odoo-python
@@ -852,18 +803,18 @@ msgstr ""
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_user__clock_format__inherit
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_user__tpm_autounlock_override__inherit
 msgid "Inherit from org"
-msgstr "Hériter de l'organisation"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Install"
-msgstr "Installation"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Install image"
-msgstr "Image d'installation"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__extension_ids
@@ -885,19 +836,19 @@ msgstr ""
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Keyboard"
-msgstr "Clavier"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__keymap
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__keymap
 msgid "Keymap"
-msgstr "Disposition de la console"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__seat_kind
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__kind
 msgid "Kind"
-msgstr "Type"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.actions.act_window,help:bf_policy.action_bf_policy_extension
@@ -909,22 +860,22 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__ldap_base_dn
 msgid "LDAP base DN"
-msgstr "DN de base LDAP"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__ldap_bind_dn
 msgid "LDAP bind DN"
-msgstr "DN de liaison LDAP"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__ldap_uri
 msgid "LDAP outpost URI"
-msgstr "URI de l'avant-poste LDAP"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_seat_profile__kind__lab
 msgid "Lab (many people)"
-msgstr "Laboratoire (plusieurs personnes)"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.actions.act_window,help:bf_policy.action_bf_policy_app
@@ -945,7 +896,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__write_uid
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__write_uid
 msgid "Last Updated by"
-msgstr "Dernière modification par"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__write_date
@@ -958,7 +909,7 @@ msgstr "Dernière modification par"
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__write_date
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__write_date
 msgid "Last Updated on"
-msgstr "Dernière modification le"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__x_variant
@@ -967,9 +918,6 @@ msgid ""
 "(`localectl list-x11-keymap-variants ca`). Blank = the layout's default "
 "variant."
 msgstr ""
-"Variante de disposition, p. ex. « multix » pour la disposition canadienne "
-"multilingue normalisée (CSA) (`localectl list-x11-keymap-variants ca`). Vide"
-" = variante par défaut de la disposition."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_form
@@ -1000,23 +948,23 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_seat_profile__kind__loan
 msgid "Loan (one borrower)"
-msgstr "Prêt (un emprunteur)"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__login_mode__local
 msgid "Local accounts"
-msgstr "Comptes locaux"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__locale
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__locale
 msgid "Locale"
-msgstr "Langue et région"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__root_mode__locked
 msgid "Locked"
-msgstr "Verrouillé"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__offline_login
@@ -1024,34 +972,31 @@ msgid ""
 "Log in with the last-used password when offline (sssd credential cache). "
 "First login must be online to populate the cache."
 msgstr ""
-"Se connecter hors ligne avec le dernier mot de passe utilisé (cache "
-"d'identifiants de sssd). La première connexion doit se faire en ligne pour "
-"remplir le cache."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Login"
-msgstr "Connexion"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__login_mode
 msgid "Login Mode"
-msgstr "Mode de connexion"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__mfa_required
 msgid "MFA required"
-msgstr "Authentification multifacteur exigée"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine_reveal__machine_id
 msgid "Machine"
-msgstr "Machine"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__machine_count
 msgid "Machine Count"
-msgstr "Nombre de postes"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_form
@@ -1062,7 +1007,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__machine_ids
 #: model:ir.ui.menu,name:bf_policy.menu_bf_policy_machine
 msgid "Machines"
-msgstr "Machines"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.actions.act_window,name:bf_policy.action_bf_policy_machine
@@ -1074,7 +1019,7 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__provision_mode__group
 msgid "Members of selected groups"
-msgstr "Membres des groupes choisis"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__ldap_bind_password
@@ -1089,7 +1034,7 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__mount_point
 msgid "Mount Point"
-msgstr "Point de montage"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__name
@@ -1098,27 +1043,27 @@ msgstr "Point de montage"
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_pwa__name
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__name
 msgid "Name"
-msgstr "Nom"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__next_number
 msgid "Next Number"
-msgstr "Prochain numéro"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__nextcloud_oidc_client_id
 msgid "Nextcloud OIDC Client ID"
-msgstr "ID client OIDC de Nextcloud"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__nextcloud_url
 msgid "Nextcloud URL"
-msgstr "URL de Nextcloud"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.actions.act_window,help:bf_policy.action_bf_policy_seat_profile
 msgid "No shared seat profile"
-msgstr "Aucun profil de poste partagé"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_machine__hostname
@@ -1136,24 +1081,21 @@ msgid ""
 "Not applied by Blue Fox OS yet. Meant for labs: nothing a person leaves on "
 "the machine would survive their logout."
 msgstr ""
-"Pas encore appliqué par Blue Fox OS. Pensé pour les laboratoires : rien de "
-"ce qu'une personne laisse sur le poste ne survivrait à sa fermeture de "
-"session."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__note
 msgid "Note"
-msgstr "Note"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__oci_image_ref
 msgid "OCI Image"
-msgstr "Image OCI"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__oidc_client_id
 msgid "OIDC Client ID"
-msgstr "ID client OIDC"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__authentik_device_url
@@ -1161,13 +1103,11 @@ msgid ""
 "OIDC device-authorization endpoint the %pre device flow starts, e.g. "
 "https://auth.example.com/application/o/device/"
 msgstr ""
-"Point d'autorisation d'appareil OIDC où démarre le flux d'appareil du %pre, "
-"p. ex. https://auth.example.com/application/o/device/"
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "OIDC device-flow bootstrap"
-msgstr "Amorçage du flux d'appareil OIDC"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__authentik_token_url
@@ -1175,8 +1115,6 @@ msgid ""
 "OIDC token endpoint the %pre device flow polls, e.g. "
 "https://auth.example.com/application/o/token/"
 msgstr ""
-"Point de jeton OIDC qu'interroge le flux d'appareil du %pre, p. ex. "
-"https://auth.example.com/application/o/token/"
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__authentik_userinfo_url
@@ -1184,8 +1122,6 @@ msgid ""
 "OIDC userinfo URL used to validate the bearer token presented to "
 "/api/v1/policy/me, e.g. https://auth.example.com/application/o/userinfo/"
 msgstr ""
-"URL userinfo OIDC qui valide le jeton porteur présenté à /api/v1/policy/me, "
-"p. ex. https://auth.example.com/application/o/userinfo/"
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_seat_profile__offline_login
@@ -1193,14 +1129,12 @@ msgid ""
 "Off for a lab (always on the school network), on for a machine that goes "
 "home."
 msgstr ""
-"Désactivé pour un laboratoire (toujours sur le réseau de l'école), activé "
-"pour un poste qui va à la maison."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__offline_max_days
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__offline_max_days
 msgid "Offline validity (days)"
-msgstr "Validité hors ligne (jours)"
+msgstr ""
 
 #. module: bf_policy
 #. odoo-python
@@ -1209,8 +1143,6 @@ msgid ""
 "Only a shared seat takes borrowers; a personal machine is already its "
 "owner's."
 msgstr ""
-"Seul un poste partagé prend des emprunteurs; un poste personnel est déjà à "
-"son propriétaire."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__org_id
@@ -1218,18 +1150,18 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_pwa__org_id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__org_id
 msgid "Org"
-msgstr "Organisation"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.actions.act_window,name:bf_policy.action_bf_policy_org
 #: model:ir.ui.menu,name:bf_policy.menu_bf_policy_org
 msgid "Org Defaults"
-msgstr "Valeurs de l'organisation"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_list
 msgid "Org Policies"
-msgstr "Politiques de l'organisation"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_search
@@ -1242,44 +1174,41 @@ msgid ""
 "Overrides both the org default AND the user's Odoo timezone preference. "
 "Leave blank to let the Odoo preference win."
 msgstr ""
-"Remplace à la fois la valeur de l'organisation ET la préférence de fuseau "
-"horaire Odoo de l'usager. Laisser vide pour que la préférence Odoo "
-"l'emporte."
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_user__x_options
 msgid "Overrides the org default XKB options if set."
-msgstr "Remplace les options XKB de l'organisation si renseigné."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_user__accent_color
 msgid "Overrides the org default accent if set."
-msgstr "Remplace la couleur d'accent de l'organisation si renseigné."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_user__keymap
 msgid "Overrides the org default console keymap if set."
-msgstr "Remplace la disposition de console de l'organisation si renseigné."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_user__x_layout
 msgid "Overrides the org default desktop layout if set."
-msgstr "Remplace la disposition du bureau de l'organisation si renseigné."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_user__x_variant
 msgid "Overrides the org default layout variant if set."
-msgstr "Remplace la variante de disposition de l'organisation si renseigné."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_user__locale
 msgid "Overrides the org default locale if set."
-msgstr "Remplace la langue et région de l'organisation si renseigné."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_user__wallpaper_url
 msgid "Overrides the org default wallpaper if set."
-msgstr "Remplace le fond d'écran de l'organisation si renseigné."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__clock_format
@@ -1287,18 +1216,16 @@ msgid ""
 "Panel clock format on the org's machines. A person can override it on their "
 "own policy row."
 msgstr ""
-"Format de l'horloge du tableau de bord sur les machines de l'organisation. "
-"Une personne peut le remplacer sur sa propre fiche."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__managed_instance
 msgid "Pass the instance address"
-msgstr "Transmettre l'adresse de l'instance"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_machine__enrolled_by_id
 msgid "Person who authenticated at install time."
-msgstr "Personne qui s'est authentifiée à l'installation."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_machine__user_id
@@ -1332,7 +1259,7 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_pwa__pinned
 msgid "Pinned"
-msgstr "Épinglée"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__tpm_pcrs
@@ -1342,31 +1269,26 @@ msgid ""
 "passphrase) if Secure Boot is turned off. Adding 0 also seals to the "
 "firmware itself — safer, but a BIOS update then forces the passphrase."
 msgstr ""
-"Registres PCR auxquels l'enrôlement est scellé. 7 = état du Secure Boot : "
-"survit aux mises à jour du noyau et du micrologiciel, cède (retour à la "
-"phrase de passe) si le Secure Boot est désactivé. Ajouter 0 scelle aussi au "
-"micrologiciel lui-même : plus sûr, mais une mise à jour du BIOS impose alors"
-" la phrase de passe."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Policies"
-msgstr "Politiques"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.ui.menu,name:bf_policy.menu_bf_policy_root
 msgid "Policy"
-msgstr "Politique"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Policy — Organization Defaults"
-msgstr "Politique — Valeurs de l'organisation"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Policy — Per-User Override"
-msgstr "Politique — Surcharge par usager"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__provision_mode
@@ -1374,8 +1296,6 @@ msgid ""
 "Portal users, archived users and users outside this policy's company are "
 "refused in every mode."
 msgstr ""
-"Les usagers portail, les usagers archivés et ceux qui n'appartiennent pas à "
-"la société de cette politique sont refusés, quel que soit le mode."
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_extension__managed_instance
@@ -1389,13 +1309,12 @@ msgstr ""
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 msgid "Profile"
-msgstr "Profil"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__oidc_client_id
 msgid "Public OIDC client id used by the install-time device flow."
 msgstr ""
-"ID client OIDC public utilisé par le flux d'appareil à l'installation."
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__nextcloud_url
@@ -1428,14 +1347,11 @@ msgid ""
 "above (checked on the token's aud/azp claims). Needs the identity provider "
 "to issue JWT access tokens."
 msgstr ""
-"Refuser un porteur dont le jeton d'accès n'a pas été émis pour l'identifiant"
-" de client OIDC ci-dessus (vérifié sur les revendications aud/azp du jeton)."
-" Le fournisseur d'identité doit émettre des jetons d'accès JWT."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Regional"
-msgstr "Régional"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_app_search
@@ -1446,12 +1362,12 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_mount__remote_path
 msgid "Remote Path"
-msgstr "Chemin distant"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__token_audience_check
 msgid "Require install client in token"
-msgstr "Exiger le client d'installation dans le jeton"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_form
@@ -1475,7 +1391,7 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__root_mode
 msgid "Root Mode"
-msgstr "Mode du compte root"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__domain
@@ -1487,12 +1403,6 @@ msgid ""
 "Optional: with a single org row, the controller serves it regardless of "
 "host."
 msgstr ""
-"Domaine racine sur lequel arrive la requête /api/v1/policy/me (le domaine "
-"tapé par l'opérateur à l'entrée zéro-contact de GRUB, repris de "
-"bf.zerotouch.tenant). Comparé sans égard à la casse à l'hôte de la requête "
-"pour router la politique dans un déploiement multilocataire, p. ex. « "
-"example.com ». Facultatif : avec une seule organisation, elle est servie "
-"quel que soit l'hôte."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_form
@@ -1541,13 +1451,12 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__addsupport
 msgid "Secondary Locale"
-msgstr "Langue secondaire"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__addsupport
 msgid "Secondary locale offered at install (kickstart lang --addsupport)."
 msgstr ""
-"Langue secondaire offerte à l'installation (kickstart lang --addsupport)."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
@@ -1559,37 +1468,31 @@ msgid ""
 "                derived from the routing domain. Leave the OCI image blank to\n"
 "                disable zero-touch for this org."
 msgstr ""
-"Servi sans authentification à\n"
-"                <code>https://&lt;domain&gt;/blue-fox-install.ks</code> quand\n"
-"                l'opérateur choisit l'entrée zéro-contact de GRUB. La langue, la\n"
-"                disposition et le fuseau viennent de l'onglet <b>Installation</b> ;\n"
-"                l'URL de la politique découle du domaine de routage. Laisser l'image\n"
-"                OCI vide pour désactiver le zéro-contact pour cette organisation."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_form
 msgid "Session"
-msgstr "Session"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.ui.menu,name:bf_policy.menu_bf_policy_seat_profile
 msgid "Shared Seats"
-msgstr "Postes partagés"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__seat_profile_id
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_search
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 msgid "Shared seat profile"
-msgstr "Profil de poste partagé"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.actions.act_window,name:bf_policy.action_bf_policy_seat_profile
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_list
 msgid "Shared seat profiles"
-msgstr "Profils de postes partagés"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_search
@@ -1602,8 +1505,6 @@ msgid ""
 "Short code typed or chosen at install time to enrol a machine under this "
 "profile: lowercase letters, digits and dashes (e.g. lab-library)."
 msgstr ""
-"Code court tapé ou choisi à l'installation pour enrôler un poste sous ce "
-"profil : lettres minuscules, chiffres et tirets (p. ex. labo-biblio)."
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__slug
@@ -1611,34 +1512,31 @@ msgid ""
 "Short tenant id baked into the kickstart hostname seed + server logs, e.g. "
 "'bf'. Falls back to the first label of the domain."
 msgstr ""
-"Identifiant court du locataire, inscrit dans le nom d'hôte de départ du "
-"kickstart et dans les journaux du serveur, p. ex. « bf ». Reprend le premier"
-" segment du domaine à défaut."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__slug
 msgid "Slug"
-msgstr "Identifiant court"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_extension__source
 msgid "Source"
-msgstr "Source"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_app__summary
 msgid "Summary"
-msgstr "Résumé"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_extension__source__symbifox
 msgid "Symbifox (served by this instance)"
-msgstr "Symbifox (servie par cette instance)"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Symbifox Signets, Bitwarden…"
-msgstr "Symbifox Signets, Bitwarden…"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_form
@@ -1668,18 +1566,18 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__tpm_pcrs
 msgid "TPM2 PCRs"
-msgstr "PCR TPM2"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__tpm_autounlock
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__tpm_autounlock_override
 msgid "TPM2 auto-unlock"
-msgstr "Déverrouillage automatique TPM2"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__tenant_name
 msgid "Tenant Display Name"
-msgstr "Nom affiché du locataire"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
@@ -1688,9 +1586,6 @@ msgid ""
 "                    settings. Set both, or the terminal and the graphical\n"
 "                    session end up on different layouts."
 msgstr ""
-"La disposition de la console et celle du bureau sont deux réglages\n"
-"                    distincts. Réglez les deux, sinon le terminal et la session\n"
-"                    graphique n'auront pas la même disposition."
 
 #. module: bf_policy
 #. odoo-python
@@ -1699,35 +1594,33 @@ msgid ""
 "The hostname pattern must contain {n}, or every machine of the profile would"
 " get the same name."
 msgstr ""
-"Le modèle de nom d'hôte doit contenir {n}, sinon tous les postes du profil "
-"porteraient le même nom."
 
 #. module: bf_policy
 #. odoo-python
 #: code:addons/bf_policy/models/bf_policy.py:0
 msgid "The shared seat profile belongs to another organisation."
-msgstr "Le profil de poste partagé appartient à une autre organisation."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.constraint,message:bf_policy.constraint_bf_policy_seat_profile_code_org_uniq
 msgid "This code is already used by another profile of the same organisation."
-msgstr "Ce code est déjà pris par un autre profil de la même organisation."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.constraint,message:bf_policy.constraint_bf_policy_user_user_company_uniq
 msgid "This user already has an override record for this company."
-msgstr "Cet usager a déjà une surcharge pour cette société."
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Thunderbird…"
-msgstr "Thunderbird…"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__timezone
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__timezone
 msgid "Timezone"
-msgstr "Fuseau horaire"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__machine_uuid
@@ -1758,7 +1651,7 @@ msgstr ""
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_pwa__url
 msgid "Url"
-msgstr "URL"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_machine_search
@@ -1771,14 +1664,14 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_pwa__user_id
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__user_id
 msgid "User"
-msgstr "Usager"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.actions.act_window,name:bf_policy.action_bf_policy_user
 #: model:ir.ui.menu,name:bf_policy.menu_bf_policy_user
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_user_list
 msgid "User Overrides"
-msgstr "Surcharges par usager"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__identity_claim
@@ -1786,9 +1679,6 @@ msgid ""
 "Userinfo claim matched (exactly, case-insensitively) against the Odoo login."
 " Several matching users, or none, means refusal."
 msgstr ""
-"Revendication userinfo comparée (exactement, sans égard à la casse) à "
-"l'identifiant de connexion Odoo. Plusieurs usagers correspondants, ou aucun,"
-" valent refus."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_machine__os_version
@@ -1804,61 +1694,60 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__wallpaper_url
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__wallpaper_url
 msgid "Wallpaper Url"
-msgstr "URL du fond d'écran"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_mount__remote_path
 msgid "WebDAV path on the Nextcloud server."
-msgstr "Chemin WebDAV sur le serveur Nextcloud."
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__provision_mode
 msgid "Who can provision"
-msgstr "Qui peut installer"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 msgid "Who logs in"
-msgstr "Qui ouvre une session"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_seat_profile__ephemeral_home
 msgid "Wipe the session at logout"
-msgstr "Effacer la session à la fermeture"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__keyboard_x
 msgid "X Layouts"
-msgstr "Dispositions X"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__keyboard_x
 msgid "X keyboard layouts for the installer (kickstart keyboard --xlayouts)."
 msgstr ""
-"Dispositions de clavier X de l'installateur (kickstart keyboard --xlayouts)."
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__x_layout
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__x_layout
 msgid "XKB layout"
-msgstr "Disposition XKB"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__x_options
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__x_options
 msgid "XKB options"
-msgstr "Options XKB"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_org__x_variant
 #: model:ir.model.fields,field_description:bf_policy.field_bf_policy_user__x_variant
 msgid "XKB variant"
-msgstr "Variante XKB"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
 msgid "Zero-Touch"
-msgstr "Zéro-contact"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
@@ -1894,22 +1783,22 @@ msgstr ""
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 msgid "e.g. Library lab"
-msgstr "p. ex. Laboratoire de la bibliothèque"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__ldap_base_dn
 msgid "e.g. dc=ldap,dc=goauthentik,dc=io"
-msgstr "p. ex. dc=ldap,dc=goauthentik,dc=io"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__ldap_uri
 msgid "e.g. ldaps://ldap.example.com:636"
-msgstr "p. ex. ldaps://ldap.example.com:636"
+msgstr ""
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_seat_profile_form
 msgid "e.g. students it-staff"
-msgstr "p. ex. eleves personnel-ti"
+msgstr ""
 
 #. module: bf_policy
 #: model:ir.model.fields.selection,name:bf_policy.selection__bf_policy_org__identity_claim__email
@@ -1933,9 +1822,6 @@ msgid ""
 "os:latest. Required to serve a zero-touch kickstart for this org; blank "
 "disables /blue-fox-install.ks."
 msgstr ""
-"Image ghcr.io sur laquelle l'installateur se base, p. ex. "
-"ghcr.io/example/blue-fox-os:latest. Requise pour servir un kickstart zéro-"
-"contact à cette organisation ; vide, /blue-fox-install.ks est désactivé."
 
 #. module: bf_policy
 #: model_terms:ir.ui.view,arch_db:bf_policy.view_bf_policy_org_form
@@ -1974,16 +1860,12 @@ msgid ""
 "{code} is the profile code, {n} a number that grows with each enrolled "
 "machine (3 digits)."
 msgstr ""
-"{code} est le code du profil, {n} un numéro qui augmente à chaque poste "
-"enrôlé (3 chiffres)."
 
 #. module: bf_policy
 #: model:ir.model.fields,help:bf_policy.field_bf_policy_org__hostname_pattern
 msgid ""
 "{username} is replaced with the provisioning user's login (local part)."
 msgstr ""
-"{username} est remplacé par l'identifiant de l'usager qui installe (partie "
-"locale)."
 
 #. module: bf_policy
 #. odoo-python
