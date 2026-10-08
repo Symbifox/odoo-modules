@@ -406,7 +406,11 @@
     #   (`bf_onboarding_base.bf_mail_layout`, que `bluefox_branding` remplace
     #   par la sienne) ; voir le README. Publie aussi le limiteur borné du
     #   formulaire public : plus de `clear()` passé 10 000 adresses.
-    "version": "18.0.2.64.0",
+    # 18.0.2.64.2: le champ `resource_booking_ids` que resource_booking (OCA)
+    #   pose dans le formulaire de rencontre est réservé au groupe Réservations
+    #   (views/calendar_event_booking_access.xml). Sans lui, un compte interne
+    #   sans ce groupe ne pouvait ouvrir aucune rencontre enregistrée.
+    "version": "18.0.2.64.2",
     "category": "Appointments",
     "summary": "Public self-service booking pages extending Resource Booking",
     'author': 'Les services de consultation Blue Fox, Inc.',
@@ -425,6 +429,7 @@
         "views/resource_booking_type_views.xml",
         "views/resource_booking_views.xml",
         "views/calendar_event_views.xml",
+        "views/calendar_event_booking_access.xml",
         "views/res_config_settings_views.xml",
         "views/appointment_onetime_wizard_views.xml",
         "views/appointment_cancel_wizard_views.xml",

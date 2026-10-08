@@ -146,6 +146,24 @@ class TestPlanifierDepuisOdj(TransactionCase):
         arch = self.env['calendar.event'].with_user(calendrier).get_view(view.id)['arch']
         self.assertNotIn('meeting_agenda_id', arch)
 
+    def test_une_rencontre_s_ouvre_sans_les_rencontres(self):
+        """🔴 18.0.3.65.2 : le formulaire de rencontre ne lit rien des Rencontres
+        pour qui n'en a pas le groupe. Le client web lit tous les champs d'une
+        vue, invisibles compris : un compte sans ce groupe recevait un refus
+        d'accès sur `meeting.agenda` en ouvrant n'importe quelle rencontre."""
+        interne = self.env['res.users'].create({
+            'name': 'Interne sans Rencontres', 'login': 'bf_planif_sans_rencontres',
+            'email': 'interne.sans.rencontres@example.com',
+            'groups_id': [Command.set([self.env.ref('base.group_user').id])],
+        })
+        vue = self.env.ref('calendar.view_calendar_event_form').id
+        arch = self.env['calendar.event'].with_user(interne).get_view(vue)['arch']
+        for nom in ('meeting_agenda_id', 'meeting_record_id', 'meeting_agenda_count',
+                    'meeting_record_count', 'bf_needs_agenda'):
+            self.assertNotIn('name="%s"' % nom, arch, nom)
+        arch = self.env['calendar.event'].with_user(self.organiser).get_view(vue)['arch']
+        self.assertIn('name="meeting_agenda_id"', arch)
+
     # --- le recalage de l'OdJ -----------------------------------------------
 
     def test_lier_depuis_la_rencontre_recale_date_et_duree(self):
@@ -285,7 +303,7 @@ class TestPlanifierDepuisOdj(TransactionCase):
         seconde invitation : c'est l'OdJ qui suit, pas l'inverse."""
         agenda = self._agenda(objectives='Arrêter le périmètre')
         event = self._event()
-        with Form(event.with_context(no_mail_to_attendees=True)) as form:
+        with Form(event.with_user(self.organiser).with_context(no_mail_to_attendees=True)) as form:
             form.meeting_agenda_id = agenda
             self.assertEqual(form.name, 'Rencontre existante')
             self.assertEqual(form.duration, 1.5)

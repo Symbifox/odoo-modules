@@ -2,6 +2,13 @@
 <odoo>
 
     <!-- Extend calendar.event form to add meeting record + agenda links -->
+    <!--
+      🔴 Tout ce qui, ici, lit un ordre du jour ou un compte rendu est réservé au
+      groupe Rencontres (18.0.3.65.2). Le client web lit tous les champs d'une
+      vue, invisibles compris : sans cette garde, un compte interne qui n'a pas
+      les Rencontres recevait un refus d'accès sur `meeting.agenda` en ouvrant
+      N'IMPORTE QUELLE rencontre enregistrée.
+    -->
     <record id="calendar_event_view_form_inherit_meeting" model="ir.ui.view">
         <field name="name">calendar.event.form.inherit.meeting</field>
         <field name="model">calendar.event</field>
@@ -10,27 +17,32 @@
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_meeting_agenda" type="object"
                         class="oe_stat_button" icon="fa-list-alt"
+                        groups="bf_meeting.group_meeting_user"
                         invisible="meeting_agenda_count == 0">
                     <field name="meeting_agenda_count" widget="statinfo" string="Ordre du jour"/>
                 </button>
                 <button name="action_create_meeting_agenda" type="object"
                         class="oe_stat_button" icon="fa-plus-circle"
+                        groups="bf_meeting.group_meeting_user"
                         invisible="meeting_agenda_count > 0 or bf_skip_agenda">
                     <span class="o_stat_text">Créer OdJ</span>
                 </button>
                 <button name="action_view_meeting_record" type="object"
                         class="oe_stat_button" icon="fa-file-text-o"
+                        groups="bf_meeting.group_meeting_user"
                         invisible="meeting_record_count == 0">
                     <field name="meeting_record_count" widget="statinfo" string="Compte rendu"/>
                 </button>
                 <button name="action_create_meeting_record" type="object"
                         class="oe_stat_button" icon="fa-plus-circle"
+                        groups="bf_meeting.group_meeting_user"
                         invisible="meeting_record_count > 0">
                     <span class="o_stat_text">Créer compte rendu</span>
                 </button>
             </xpath>
             <xpath expr="//sheet" position="before">
                 <div class="alert alert-warning" role="alert"
+                     groups="bf_meeting.group_meeting_user"
                      invisible="not bf_needs_agenda">
                     <i class="fa fa-exclamation-triangle"/>
                     Cette rencontre n'a pas d'ordre du jour. Créer un OdJ ou cocher
@@ -61,7 +73,8 @@
               « où sont ces champs » mais « on ne comprend pas ce qu'ils sont ».
             -->
             <xpath expr="//notebook" position="before">
-                <group string="Préparation de la rencontre" name="bf_meeting_prep">
+                <group string="Préparation de la rencontre" name="bf_meeting_prep"
+                       groups="bf_meeting.group_meeting_user">
                     <group name="bf_meeting_prep_agenda">
                         <!-- Ne propose que les OdJ « à planifier » :
                              sans filtre, la liste offrait tous les OdJ,
@@ -84,7 +97,7 @@
                     </group>
                 </group>
                 <!-- Lu par l'encart d'avertissement posé avant le `<sheet>`. -->
-                <field name="bf_needs_agenda" invisible="1"/>
+                <field name="bf_needs_agenda" invisible="1" groups="bf_meeting.group_meeting_user"/>
             </xpath>
         </field>
     </record>

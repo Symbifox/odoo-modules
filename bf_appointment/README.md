@@ -186,6 +186,14 @@ with the same tool as the source, all or nothing per template, and leaves a body
 rebuilt by hand as it is. "Rendez-vous : Rappel (ancien)" is unused and left
 untouched.
 
+## Meetings open without the Bookings group (18.0.2.64.2)
+
+The OCA `resource_booking` module puts `resource_booking_ids` on the meeting form
+without restricting it to a group. The web client reads every field of a view,
+invisible ones included, so an internal user without the Bookings group got an
+access error when opening any saved meeting. The field is now restricted to that
+group (`views/calendar_event_booking_access.xml`).
+
 ## Notes on the confirmation links
 
 Booking, cancellation and guest-confirmation links travel by email and by

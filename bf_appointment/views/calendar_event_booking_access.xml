@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+      Le module resource_booking (OCA) pose `resource_booking_ids` dans le
+      formulaire de rencontre sans le réserver à un groupe. Le client web lit
+      tous les champs d'une vue, invisibles compris, et lire celui-ci exige le
+      droit de lecture sur `resource.booking` : un compte interne sans le
+      groupe Réservations recevait un refus d'accès en ouvrant N'IMPORTE
+      QUELLE rencontre enregistrée, qu'elle porte un rendez-vous ou non.
+      Réservé ici au groupe, comme le bouton « Rendez-vous » de la vue voisine.
+    -->
+    <record id="view_calendar_event_form_booking_access" model="ir.ui.view">
+        <field name="name">calendar.event.form.bf.booking.access</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="resource_booking.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='resource_booking_ids']" position="attributes">
+                <attribute name="groups">resource_booking.group_user</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -204,7 +204,14 @@ class TestCalendarBadges(TransactionCase):
         """
         from lxml import etree
 
-        arch = self.env['calendar.event'].get_view(
+        # Lue par une usagère des Rencontres : depuis 18.0.3.65.2, ces champs
+        # sont réservés au groupe, et le superutilisateur ne les voit pas.
+        lectrice = self.env['res.users'].create({
+            'name': 'Lectrice Rencontres', 'login': 'bf_badges_lectrice',
+            'groups_id': [Command.set([self.env.ref('base.group_user').id,
+                                      self.env.ref('bf_meeting.group_meeting_user').id])],
+        })
+        arch = self.env['calendar.event'].with_user(lectrice).get_view(
             self.env.ref('calendar.view_calendar_event_form').id, 'form',
         )['arch']
         arbre = etree.fromstring(arch.encode('utf-8'))
