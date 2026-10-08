@@ -4,6 +4,7 @@
     <t t-name="bf_email_management.Inbox">
         <div class="o_bf_email_browser o_bf_email_inbox d-flex flex-grow-1"
              t-att-class="state.dragging ? 'o_bf_email_dragging' : ''"
+             t-ref="root"
              style="height: 100%;">
 
         <div t-if="state.subscriptions"
@@ -94,8 +95,10 @@
                         <div><kbd>Y</kbd> router</div>
                         <div><kbd>T</kbd> activité</div>
                         <div><kbd>O</kbd> ouvrir la fiche</div>
+                        <div><kbd>!</kbd> pourriel</div>
                         <div><kbd>Z</kbd> annuler</div>
                         <div><kbd>Maj</kbd>+<kbd>U</kbd> tout marquer lu</div>
+                        <div><kbd>[</kbd> replier les dossiers</div>
                         <div><kbd>?</kbd> cette grille</div>
                     </div>
                 </div>
@@ -108,8 +111,46 @@
             </div>
         </div>
 
-            <!-- GAUCHE : dossiers virtuels (états, pas des boîtes IMAP) -->
-            <div class="o_bf_email_folders border-end bg-light" style="width: 260px; min-width: 260px; overflow-y: auto;">
+            <!-- GAUCHE, replié : un rail d'icônes. Les dossiers de
+                 premier niveau, leurs pastilles et les trois cibles de dépôt
+                 restent ; les sous-dossiers et les catégories demandent de
+                 rouvrir. -->
+            <div t-if="foldersCollapsed"
+                 class="o_bf_email_folders o_bf_email_rail border-end bg-light d-flex flex-column align-items-center">
+                <button class="btn btn-sm btn-link o_bf_email_rail_btn"
+                        t-on-click="toggleFoldersPane"
+                        title="Afficher les dossiers (touche [)">
+                    <i class="fa fa-angle-double-right"/>
+                </button>
+                <button class="btn btn-sm btn-primary o_bf_email_rail_btn"
+                        t-att-disabled="state.acting"
+                        t-on-click="compose"
+                        title="Composer (touche C)">
+                    <i class="fa fa-pencil"/>
+                </button>
+                <button class="btn btn-sm btn-link o_bf_email_rail_btn"
+                        t-att-disabled="state.syncing"
+                        t-on-click="syncNow"
+                        title="Synchroniser maintenant">
+                    <i t-att-class="state.syncing ? 'fa fa-refresh fa-spin' : 'fa fa-refresh'"/>
+                </button>
+                <div class="o_bf_email_rail_sep"/>
+                <div t-foreach="railFolders" t-as="f" t-key="f.key"
+                     class="o_bf_email_rail_item position-relative"
+                     t-att-class="(f.key === state.currentFolder ? 'bg-primary text-white ' : '') + (state.dropTarget === f.key ? 'o_bf_email_rail_drop ' : '')"
+                     t-att-title="f.label + (f.unread_count ? ' (' + f.unread_count + ')' : (f.count ? ' (' + f.count + ')' : ''))"
+                     t-on-click="() => this.onFolderClick(f)"
+                     t-on-dragover="(ev) => this.onFolderDragOver(ev, f.key)"
+                     t-on-dragleave="() => this.onFolderDragLeave(f.key)"
+                     t-on-drop="(ev) => this.onFolderDrop(ev, f.key)">
+                    <i t-att-class="'fa ' + f.icon"
+                       t-att-style="f.colour and f.key !== state.currentFolder ? 'color: ' + f.colour + ';' : ''"/>
+                    <span t-if="f.unread_count" class="o_bf_email_rail_badge badge rounded-pill text-bg-secondary"
+                          t-esc="f.unread_count > 99 ? '99+' : f.unread_count"/>
+                </div>
+            </div>
+            <div t-else="" class="o_bf_email_folders border-end bg-light" style="width: 260px; min-width: 260px; overflow-y: auto;">
+                <!-- GAUCHE : dossiers virtuels (états, pas des boîtes IMAP) -->
                 <div class="p-2 border-bottom">
                     <button class="btn btn-primary w-100"
                             t-att-disabled="state.acting"
@@ -120,12 +161,19 @@
                 </div>
                 <div class="px-3 py-2 fw-bold border-bottom d-flex justify-content-between align-items-center">
                     <span>Dossiers</span>
+                    <span class="d-flex align-items-center gap-2">
                     <button class="btn btn-sm btn-link p-0"
                             t-att-disabled="state.syncing"
                             t-on-click="syncNow"
                             title="Synchroniser maintenant : relever les chatters et l'IMAP, puis recompter">
                         <i t-att-class="state.syncing ? 'fa fa-refresh fa-spin' : 'fa fa-refresh'"/>
                     </button>
+                    <button class="btn btn-sm btn-link p-0 o_bf_email_folders_toggle"
+                            t-on-click="toggleFoldersPane"
+                            title="Replier les dossiers en rail d'icônes (touche [)">
+                        <i class="fa fa-angle-double-left"/>
+                    </button>
+                    </span>
                 </div>
                 <div t-if="state.loadingFolders and !state.folders.length" class="p-3 text-center text-muted">
                     <i class="fa fa-spinner fa-spin"/> Chargement…
@@ -410,6 +458,12 @@
                                 t-on-click="markUnhandled">
                             <i class="fa fa-inbox me-1"/> Remettre en boîte
                         </button>
+                        <button class="btn btn-sm btn-light o_bf_report_spam"
+                                t-att-disabled="state.acting"
+                                t-on-click="reportSpam"
+                                title="Signaler comme pourriel : ranger dans Indésirables, bloquer, porter plainte (touche !)">
+                            <i class="fa fa-ban me-1"/> Pourriel
+                        </button>
                         <button t-if="state.currentFolder === 'awaiting'"
                                 class="btn btn-sm btn-light o_bf_no_followup"
                                 t-att-disabled="state.acting"
@@ -429,7 +483,43 @@
                         </button>
                     </div>
 
-                    <div class="flex-grow-1" style="overflow-y: auto;">
+                    <!-- Les lots d'anciens courriels retenus. -->
+                    <div t-if="isHeldFolder" class="flex-grow-1 p-3 o_bf_email_held" style="overflow-y: auto;">
+                        <p class="text-muted small">
+                            Ces courriels sont apparus sur le serveur avec une date de plus de
+                            <t t-esc="state.heldMaxAge"/> jours. Ils ne sont pas entrés seuls dans
+                            la boîte. Les ajouter les range comme les autres, sans avis ni
+                            déplacement sur le serveur ; les ignorer les laisse où ils sont, et la
+                            question ne revient pas.
+                        </p>
+                        <div t-if="!state.heldLots.length and !state.loadingMessages" class="text-muted">
+                            Rien n'attend de décision.
+                        </div>
+                        <div t-foreach="state.heldLots" t-as="lot" t-key="lot.account_id + '|' + lot.folder"
+                             class="card mb-2">
+                            <div class="card-body py-2 d-flex align-items-center gap-3 flex-wrap">
+                                <div class="flex-grow-1">
+                                    <strong><t t-esc="lot.count"/> ancien(s) courriel(s)</strong>
+                                    dans <code class="ms-1" t-esc="lot.folder"/>
+                                    <span class="text-muted ms-1">(<t t-esc="lot.account"/>)</span>
+                                    <div class="small text-muted" t-if="lot.date_min">
+                                        du <t t-esc="lot.date_min"/> au <t t-esc="lot.date_max"/>
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-primary"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.decideHeld(lot, 'add')">
+                                    <i class="fa fa-plus me-1"/> Les ajouter à la boîte
+                                </button>
+                                <button class="btn btn-sm btn-light"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="() => this.decideHeld(lot, 'ignore')">
+                                    Ignorer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div t-else="" class="flex-grow-1" style="overflow-y: auto;">
                         <table t-att-class="'table table-hover mb-0 ' + (state.settings.density === 'compact' ? 'table-sm o_bf_email_compact ' : '')">
                             <thead class="bg-light" style="position: sticky; top: 0; z-index: 1;">
                                 <tr t-if="isDraftFolder">
@@ -809,6 +899,12 @@
                                         t-on-click="() => this.runAction('trash')"
                                         title="Mettre à la corbeille">
                                     <i class="fa fa-trash-o me-1"/><span class="o_bf_ribbon_label"> Corbeille</span>
+                                </button>
+                                <button class="btn btn-sm btn-light o_bf_report_spam"
+                                        t-att-disabled="state.acting"
+                                        t-on-click="reportSpam"
+                                        title="Signaler comme pourriel : ranger dans Indésirables, bloquer, porter plainte (touche !)">
+                                    <i class="fa fa-ban me-1"/><span class="o_bf_ribbon_label"> Pourriel</span>
                                 </button>
                                 <button class="btn btn-sm btn-light"
                                         t-att-disabled="state.acting"

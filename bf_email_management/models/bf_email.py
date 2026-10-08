@@ -1898,6 +1898,12 @@ class BfEmail(models.Model):
         """
         if not self:
             return
+        # L'ajout d'un lot de vieux courriels retenus classe (catégorie,
+        # priorité, traité) sans rien faire sortir ni bouger : ni renvoi, ni
+        # réponse d'absence, ni déplacement IMAP.
+        local_only = bool(self.env.context.get("bf_email_rules_local_only"))
+        if local_only:
+            allow_outbound = False
         Rule = self.env["bf.email.rule"].sudo()
         # Group records by owner so each user's rule set and address set are
         # resolved once.
@@ -1943,6 +1949,15 @@ class BfEmail(models.Model):
                         extras.setdefault("forward_rules", []).append(rule_id)
                     if rule.stop_processing:
                         break
+                if vals and local_only:
+                    # Relecture adverse : « Les ajouter à la boîte »
+                    # veut dire en boîte. Une ligne traitée encore dans
+                    # l'INBOX du serveur serait rangée dans l'heure par le
+                    # balayage : un déplacement promis absent. On classe,
+                    # sans traiter, reporter ni confier.
+                    for cle in ("is_handled", "handled_at", "snoozed_until",
+                                "user_id"):
+                        vals.pop(cle, None)
                 if vals:
                     # « Confier à » est le seul chemin d'une
                     # ligne vers la boîte d'autrui. `write` le refuse par RPC ;
@@ -1965,7 +1980,7 @@ class BfEmail(models.Model):
         # An explicit destination folder supersedes the archive writeback: the
         # message must land in one place, not be copied twice and expunged once.
         moved = self.browse()
-        for folder, rows in moves.items():
+        for folder, rows in ({} if local_only else moves).items():
             targets = rows.filtered(
                 lambda r: r.account_id and r.account_id.writeback_archive
             )
@@ -1998,7 +2013,7 @@ class BfEmail(models.Model):
         writeback_rows = (auto_handled - moved).filtered(
             lambda r: r.account_id and r.account_id.writeback_archive
         )
-        if writeback_rows:
+        if writeback_rows and not local_only:
             try:
                 writeback_rows._imap_writeback_archive()
             except Exception:
@@ -2086,6 +2101,23 @@ class BfEmail(models.Model):
         writeback_rows = self.filtered(
             lambda r: r.account_id and r.account_id.writeback_archive
         )
+        if writeback_rows and self.env.context.get("bf_email_defer_writeback"):
+            # Depuis la boîte web, l'écriture IMAP (1 à 2 s vers le
+            # serveur, mesuré) ne retient plus la réponse. Elle part au cron
+            # déclenché à l'instant ; voir `_cron_imap_writeback_pending`.
+            # Relecture adverse : seulement ce que l'écriture déplacerait
+            # (compte actif, Message-ID, encore en INBOX). Le reste suit le
+            # chemin d'avant, synchrone : une ligne d'un compte désactivé
+            # reste traitée sans rebondir.
+            differees = writeback_rows.filtered(
+                lambda r: r.account_id.active and r.message_id_header
+                and r.imap_in_inbox)
+            if differees:
+                differees.write({"imap_writeback_pending": True})
+                self.env.ref(
+                    "bf_email_management.ir_cron_bf_email_writeback_pending"
+                ).sudo()._trigger()
+            writeback_rows -= differees
         if writeback_rows:
             try:
                 writeback_rows._imap_writeback_archive()
@@ -2148,16 +2180,30 @@ class BfEmail(models.Model):
         # en boîte par la branche « emplacement inconnu », sans bouger au
         # serveur. Une copie encore dans « Sent » aussi : gardé, son UID
         # périmé laissait la passe 3 du miroir la retraiter en cinq minutes.
+        # 11.55.0 (relecture adverse) : la corbeille et « Pourriel » déplacent
+        # au serveur même sans « Réécriture des archives » ; les annuler doit
+        # donc ramener le message dans les mêmes conditions, sinon il restait
+        # dans Junk ou Trash, hors de toute liste, jusqu'à la purge du serveur.
         restorable = self.filtered(
             lambda r: r.is_handled and r.account_id
-            and r.account_id.writeback_archive and r.message_id_header
+            and (r.account_id.writeback_archive or r.report_kind
+                 or (not r.active and (r.imap_folder or "") == "Trash"))
+            and r.message_id_header
             and not r.imap_in_inbox and not r._is_our_send()
         )
         parked_out = self.filtered(
             lambda r: r.is_handled and r.source == "imap" and r.imap_folder
             and not r.imap_in_inbox and r._is_our_send()
         )
-        self.write({"is_handled": False, "handled_at": False, "snoozed_until": False})
+        # 11.55.0 : `active` et `report_kind` aussi. La corbeille et le
+        # signalement désactivent la ligne ; « Annuler » (`z`) passait par ici
+        # et la remettait « non traitée » mais INVISIBLE, ni en boîte ni
+        # ailleurs, pendant que le message, lui, revenait dans l'INBOX.
+        self.write({"is_handled": False, "handled_at": False,
+                    "snoozed_until": False, "active": True,
+                    "report_kind": False, "reported_at": False,
+                    # Défait avant le passage du cron, rien à ranger.
+                    "imap_writeback_pending": False})
         if parked_out:
             parked_out._imap_forget_location()
         if restorable:
@@ -2327,7 +2373,8 @@ class BfEmail(models.Model):
         """
         return self._imap_writeback_move(None)
 
-    def _imap_writeback_move(self, folder_template, account=None):
+    def _imap_writeback_move(self, folder_template, account=None,
+                             create_missing=True):
         """Move the corresponding IMAP messages from INBOX to a folder.
 
         ``folder_template`` may contain ``{YYYY}`` and ``{MM}``, expanded per
@@ -2348,6 +2395,12 @@ class BfEmail(models.Model):
         once an hour. Measured on BF 2026-08-26: three mails handled since
         the day before, still in the other mailbox's INBOX, replayed hourly
         with no effect and no warning. Task.
+
+        ``create_missing=False`` never CREATEs the destination: a refused COPY
+        leaves the message in the INBOX. The spam gesture passes it:
+        its destination is the server's own ``\\Junk`` folder, and creating a
+        « Junk » on a server that files spam elsewhere (``[Gmail]/Spam``)
+        would only add a folder nobody reads.
 
         ⚠️ When acting on a foreign mailbox the row is **not** rewritten:
         its ``imap_uid`` / ``imap_folder`` describe *its own* copy, in *its
@@ -2440,7 +2493,8 @@ class BfEmail(models.Model):
                         # guard a refused COPY (folder absent, quota, lock) is
                         # still followed by STORE \Deleted + EXPUNGE and the
                         # message is destroyed with no copy anywhere.
-                        if status != "OK" and target not in ensured:
+                        if (status != "OK" and create_missing
+                                and target not in ensured):
                             # By far the most common refusal is a destination
                             # that does not exist: a rule names a folder the
                             # owner never created. Create it and try once
@@ -2510,6 +2564,24 @@ class BfEmail(models.Model):
         """
         if not self:
             return
+        # Un courriel signalé dont le déplacement a échoué va dans
+        # Indésirables, pas dans les archives ; sans dossier connu, il reste.
+        reported = self.filtered("report_kind")
+        if reported:
+            groups = {}
+            for rec in reported:
+                acc = account or rec.account_id
+                if acc:
+                    groups.setdefault(acc, self.browse())
+                    groups[acc] |= rec
+            for acc, rows in groups.items():
+                junk = acc._junk_folder_name()
+                if junk:
+                    rows._imap_writeback_move(
+                        junk, account=account, create_missing=False)
+            self = self - reported
+            if not self:
+                return
         Rule = self.env["bf.email.rule"].sudo()
         rules_by_owner = {}
         ctx_by_owner = {}
@@ -4443,6 +4515,9 @@ class BfEmail(models.Model):
         try:
             for folder in bf_email_imap.DEFAULT_LIVE_FOLDERS:
                 BfEmail._sync_imap_folder(conn, folder, account)
+            # Ce que la garde a retenu pendant cette passe, annoncé en
+            # un seul avis par dossier.
+            self.env["bf.email.held"]._announce(account)
             account.write({
                 "state": "connected",
                 "last_error": False,
@@ -4486,6 +4561,11 @@ class BfEmail(models.Model):
         )
         forced_folders = list(folders) if folders else None
         since = (fields.Datetime.now() - timedelta(days=lookback)).date()
+        # La passe du cron est gardée ; un rattrapage lancé avec
+        # `days` ou `folders` est déjà une décision et passe outre : les
+        # grosses vagues de vieux courriels relevées avant la garde étaient
+        # toutes de ce genre-là.
+        guarded = days is None and folders is None
 
         Account = self.env["bf.email.account"].sudo()
         accounts = Account.search([("active", "=", True)])
@@ -4553,6 +4633,14 @@ class BfEmail(models.Model):
                                 ("user_id", "=", account.user_id.id),
                             ], ["message_id_header"])
                         }
+                        # Relecture adverse : un courriel retenu,
+                        # ignoré ou en cours d'ajout est connu aussi. Sans ça
+                        # la passe retéléchargeait en entier chaque vieux
+                        # courriel retenu, toutes les 6 h pendant 30 jours.
+                        known |= set(self.env["bf.email.held"].sudo().search([
+                            ("account_id", "=", account.id),
+                            ("message_id", "in", list(wanted)),
+                        ]).mapped("message_id"))
                         for message_id, uid in wanted.items():
                             if message_id in known:
                                 continue
@@ -4561,7 +4649,9 @@ class BfEmail(models.Model):
                                 continue
                             try:
                                 with self.env.cr.savepoint():
-                                    if BfEmail._ingest_rfc822(
+                                    if BfEmail.with_context(
+                                        bf_email_ingest_guard=guarded,
+                                    )._ingest_rfc822(
                                         raw, uid, folder, account
                                     ):
                                         recovered += 1
@@ -4576,6 +4666,8 @@ class BfEmail(models.Model):
                 except Exception:
                     pass
 
+            if guarded:
+                self.env["bf.email.held"]._announce(account)
             if recovered:
                 _logger.info(
                     "bf.email reconcile (%s): recovered %d missing message(s) "
@@ -4933,6 +5025,11 @@ class BfEmail(models.Model):
                 if row.is_handled and not row.snoozed_until:
                     vals["is_handled"] = False
                     vals["handled_at"] = False
+                    # 11.55.0 : sauvé de Junk ou de la corbeille au webmail,
+                    # le message est de retour ; la ligne doit l'être aussi.
+                    if not row.active or row.report_kind:
+                        vals.update({"active": True, "report_kind": False,
+                                     "reported_at": False})
                     returned += 1
                 row.write(vals)
         return returned, anchored
@@ -5068,7 +5165,11 @@ class BfEmail(models.Model):
                 continue
             try:
                 with self.env.cr.savepoint():
-                    if self._ingest_rfc822(raw, uid, folder, account):
+                    # Chemin automatique, donc gardé. Un Message-ID
+                    # jamais vu et vieux de plus de `ingest_max_age_days` est
+                    # retenu au lieu d'entrer seul dans la boîte.
+                    if self.with_context(bf_email_ingest_guard=True)._ingest_rfc822(
+                            raw, uid, folder, account):
                         created += 1
                     else:
                         skipped += 1
@@ -5141,6 +5242,15 @@ class BfEmail(models.Model):
                 existing.write(backfill)
             return False
 
+        # Un vieux courriel jamais vu n'entre pas seul. Après la
+        # déduplication (un Message-ID connu n'est jamais retenu) et avant
+        # toute création, chatter compris. Le contexte n'est posé que par les
+        # chemins automatiques ; un rattrapage voulu ne le pose pas.
+        if self.env.context.get("bf_email_ingest_guard") and self.env[
+                "bf.email.held"]._hold_if_old(
+                    msg, raw_bytes, uid, folder, account, message_id):
+            return False
+
         # Internal Odoo wins: if a mail.message with the same Message-ID
         # already exists (chatter or gateway projected previously), link
         # to it instead of creating an IMAP orphan.
@@ -5202,7 +5312,8 @@ class BfEmail(models.Model):
                     mail_create_nosubscribe=True,
                     tracking_disable=True,
                 ).create(chatter_vals)
-                self._maybe_ingest_calendar_invite(msg, account, folder)
+                if not self.env.context.get("bf_email_rules_local_only"):
+                    self._maybe_ingest_calendar_invite(msg, account, folder)
                 return True
 
         vals = self._prepare_imap_email_vals(msg, raw_bytes, uid, folder, account)
@@ -5212,7 +5323,10 @@ class BfEmail(models.Model):
             mail_create_nosubscribe=True,
             tracking_disable=True,
         ).create(vals)
-        self._maybe_ingest_calendar_invite(msg, account, folder)
+        # Un vieux REQUEST ou CANCEL ajouté d'un lot retenu ne doit
+        # pas réécrire ni annuler un événement d'aujourd'hui.
+        if not self.env.context.get("bf_email_rules_local_only"):
+            self._maybe_ingest_calendar_invite(msg, account, folder)
         return True
 
     @api.model

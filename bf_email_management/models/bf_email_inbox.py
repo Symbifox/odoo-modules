@@ -30,6 +30,8 @@ MAX_PAGE = 500
 # s'affiche ici en ferait un faux courriel dans tous les comptages. La liste
 # bascule donc de source selon le dossier ouvert.
 DRAFTS_FOLDER = "drafts"
+# Les lots d'anciens courriels retenus. Pas un dossier de bf.email.
+HELD_FOLDER = "held"
 
 # Dossiers IMAP réels dans l'arbre de gauche. L'arborescence
 # vient du serveur (cache `bf.email.account.folder_cache`) mais le CONTENU
@@ -207,6 +209,7 @@ class BfEmail(models.Model):
                 "icon": "fa-tag",
                 "parent": "categories",
                 "domain": [("category", "=", value)],
+                "category_count": value,
             })
         # Sans elle, une bonne part du courrier n'apparaît sous aucune
         # catégorie et le groupe ne totalise pas la boîte : l'auto-classement
@@ -217,6 +220,7 @@ class BfEmail(models.Model):
             "icon": "fa-tag",
             "parent": "categories",
             "domain": [("category", "in", (False, ""))],
+            "category_count": "__none__",
         })
         defs.append({
             "key": "awaiting", "label": _("Relance à faire"),
@@ -233,9 +237,26 @@ class BfEmail(models.Model):
         defs.append({
             "key": "all", "label": _("Tous les courriels"),
             "icon": "fa-archive", "parent": False, "domain": [],
-            "unread": False,
+            "unread": False, "category_count": "__all__",
         })
         return defs
+
+    @api.model
+    def _inbox_category_counts(self, base):
+        """(total, non lus) par catégorie, plus « __none__ » et « __all__ ».
+
+        Deux ``_read_group`` sous les droits de l'usager (règles comprises),
+        au lieu de deux ``search_count`` par catégorie. Mêmes domaines que les
+        dossiers : ``category = valeur``, ``category in (False, "")`` pour
+        « Sans catégorie », rien pour « Tous ».
+        """
+        total, unread = {}, {}
+        for cible, domaine in ((total, base), (unread, base + [("status", "=", "new")])):
+            for categorie, nombre in self._read_group(domaine, ["category"], ["__count"]):
+                cle = categorie if categorie else "__none__"
+                cible[cle] = cible.get(cle, 0) + nombre
+                cible["__all__"] = cible.get("__all__", 0) + nombre
+        return total, unread
 
     @api.model
     def _inbox_domain(self):
@@ -579,6 +600,10 @@ class BfEmail(models.Model):
         # gauche d'une douzaine de requêtes à chaque ouverture, sur un champ
         # qui n'est pas indexé. Deux regroupements suffisent.
         imap_total, imap_unread = self._inbox_imap_counts(defs)
+        # Les catégories et « Tous » comptaient chacun TOUT l'historique,
+        # deux fois par catégorie : l'essentiel du temps de cette liste, mesuré
+        # sur une base réelle. Deux regroupements les remplacent.
+        cat_total, cat_unread = self._inbox_category_counts(base)
         out = []
         for d in defs:
             if d["domain"] is None:
@@ -600,6 +625,17 @@ class BfEmail(models.Model):
                     "parent": d["parent"], "selectable": True,
                     "count": count,
                     "unread_count": imap_unread.get(imap_key, 0),
+                })
+                continue
+            if d.get("category_count"):
+                out.append({
+                    "key": d["key"], "label": d["label"], "icon": d["icon"],
+                    "title": d.get("title") or d["label"],
+                    "colour": d.get("colour") or False,
+                    "parent": d["parent"], "selectable": True,
+                    "count": cat_total.get(d["category_count"], 0),
+                    "unread_count": (0 if d.get("unread") is False
+                                     else cat_unread.get(d["category_count"], 0)),
                 })
                 continue
             count = self.search_count(base + d["domain"])
@@ -638,6 +674,20 @@ class BfEmail(models.Model):
             (i + 1 for i, f in enumerate(out) if f["key"] == "sent"), len(out)
         )
         out.insert(insert_at, drafts)
+        # « À décider » ne paraît que lorsqu'un lot d'anciens
+        # courriels attend, juste avant « Non lus ». Ce n'est pas un dossier de
+        # `bf.email` : le composant y affiche les lots et leurs deux boutons.
+        held = self.env["bf.email.held"].held_count()
+        if held:
+            at = next((i for i, f in enumerate(out) if f["key"] == "unread"), 1)
+            out.insert(at, {
+                "key": HELD_FOLDER, "label": _("À décider"),
+                "icon": "fa-history",
+                "title": _("Anciens courriels apparus sur le serveur : les "
+                           "ajouter à la boîte ou les ignorer"),
+                "colour": False, "parent": False, "selectable": True,
+                "count": held, "unread_count": held,
+            })
         return out
 
     # ------------------------------------------------------------------
@@ -1156,6 +1206,8 @@ class BfEmail(models.Model):
         # Les petits gestes de.
         "unsnooze": "action_unsnooze",
         "trash": "action_trash",
+        # La fenêtre « Signaler » (ranger, bloquer, porter plainte).
+        "spam": "action_report_spam",
         "link_partner": "action_link_partner",
         "create_rule": "action_create_rule_here",
         # « Ajouter » — créer une fiche À PARTIR du courriel, celui-ci étant
@@ -1214,6 +1266,11 @@ class BfEmail(models.Model):
                 "« %s » agit sur un seul courriel à la fois ; %s ont été "
                 "envoyés.", action, len(records),
             ))
+        if action == "handle":
+            # La ligne sort tout de suite, l'écriture IMAP suit par
+            # un cron déclenché ; un échec de connexion la remet en boîte avec
+            # un avis (`_cron_imap_writeback_pending`).
+            records = records.with_context(bf_email_defer_writeback=True)
         method = getattr(records, self._INBOX_ACTIONS[action])
         # Les actions à cible unique refusent un lot : on garde le message
         # d'erreur d'Odoo plutôt que de deviner laquelle appliquer.

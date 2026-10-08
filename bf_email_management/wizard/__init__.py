@@ -10,3 +10,4 @@ from . import bf_email_rule_quick
 from . import bf_email_absence_preview
 from . import bf_email_cleanup
 from . import bf_email_account_setup
+from . import bf_email_report_wizard

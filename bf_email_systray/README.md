@@ -14,6 +14,10 @@ A button in Odoo's systray that opens the `bf.email` inbox, with a counter
   (filters, grouping, pivot, export), plus a choice of what a plain click does.
 - The panel is resizable from the grip in its bottom-left corner. Size and
   chosen mode are remembered per person, in the browser.
+- Since 2.1.5 the panel tells the inbox it is a panel: its folder pane starts
+  folded into a rail when the panel is narrower than 900 px, and keeps its own
+  folded/open choice, separate from the full page (needs `bf_email_management`
+  18.0.11.55.0).
 
 ## Settings
 

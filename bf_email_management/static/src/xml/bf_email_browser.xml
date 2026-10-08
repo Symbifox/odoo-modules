@@ -6,13 +6,32 @@
              t-att-class="state.dragging ? 'o_bf_email_dragging' : ''"
              style="height: 100%;">
 
-            <!-- LEFT: Folder tree sidebar -->
-            <div class="o_bf_email_folders border-end bg-light" style="width: 260px; min-width: 260px; overflow-y: auto;">
+            <!-- LEFT, replié : la bascule et le dossier ouvert. -->
+            <div t-if="foldersCollapsed"
+                 class="o_bf_email_folders o_bf_email_rail border-end bg-light d-flex flex-column align-items-center">
+                <button class="btn btn-sm btn-link o_bf_email_rail_btn"
+                        t-on-click="toggleFoldersPane"
+                        title="Afficher les dossiers (touche [)">
+                    <i class="fa fa-angle-double-right"/>
+                </button>
+                <div class="o_bf_email_rail_item bg-primary text-white"
+                     t-att-title="state.currentFolder">
+                    <i class="fa fa-folder-open-o"/>
+                </div>
+            </div>
+            <div t-else="" class="o_bf_email_folders border-end bg-light" style="width: 260px; min-width: 260px; overflow-y: auto;">
                 <div class="px-3 py-2 fw-bold border-bottom d-flex justify-content-between align-items-center">
                     <span>Dossiers IMAP</span>
+                    <span class="d-flex align-items-center gap-2">
                     <button class="btn btn-sm btn-link p-0" t-on-click="() => this.loadFolders()" title="Rafraîchir la liste">
                         <i class="fa fa-refresh"/>
                     </button>
+                    <button class="btn btn-sm btn-link p-0 o_bf_email_folders_toggle"
+                            t-on-click="toggleFoldersPane"
+                            title="Replier les dossiers (touche [)">
+                        <i class="fa fa-angle-double-left"/>
+                    </button>
+                    </span>
                 </div>
                 <div t-if="state.loadingFolders" class="p-3 text-center text-muted">
                     <i class="fa fa-spinner fa-spin"/> Chargement…

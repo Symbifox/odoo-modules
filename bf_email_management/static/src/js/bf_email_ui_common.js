@@ -49,6 +49,52 @@ export const DEFAULT_SETTINGS = {
     ribbonCollapsed: false,
 };
 
+// Volet des dossiers replié en rail, par écran : "inbox", "panel", "browser".
+// Absent = jamais choisi : la pleine page l'ouvre, le panneau du
+// systray le replie sous 900 px. Sa PROPRE clé : chaque écran réécrit ses
+// préférences d'affichage en entier depuis sa copie, et le choix de rail de
+// l'autre écran s'y perdait (relecture adverse).
+export const RAIL_KEY = "bf_email_folders_rail_v1";
+
+export function loadRail() {
+    try {
+        return JSON.parse(window.localStorage.getItem(RAIL_KEY) || "{}") || {};
+    } catch {
+        return {};
+    }
+}
+
+export function saveRail(screen, collapsed) {
+    const rail = loadRail();
+    rail[screen] = collapsed;
+    try {
+        window.localStorage.setItem(RAIL_KEY, JSON.stringify(rail));
+    } catch {
+        // Navigation privée : le choix vaut pour la session.
+    }
+    return rail;
+}
+
+// Le clavier natif (`!`, `[`, `/`, `?`) appartient au DERNIER écran courriel
+// monté : le panneau du systray ouvert par-dessus la pleine page, pas les deux
+// à la fois (deux fenêtres « Signaler », deux volets repliés).
+const KEY_OWNERS = [];
+
+export function claimKeys(owner) {
+    KEY_OWNERS.push(owner);
+}
+
+export function releaseKeys(owner) {
+    const i = KEY_OWNERS.lastIndexOf(owner);
+    if (i >= 0) {
+        KEY_OWNERS.splice(i, 1);
+    }
+}
+
+export function ownsKeys(owner) {
+    return KEY_OWNERS[KEY_OWNERS.length - 1] === owner;
+}
+
 // Clés dont la valeur par défaut est un objet : elles se fusionnent en
 // profondeur au chargement. Un `{...defaut, ...stocke}` naïf remplacerait
 // l'objet entier, donc une préférence enregistrée par une version antérieure

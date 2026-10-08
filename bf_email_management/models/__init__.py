@@ -55,3 +55,9 @@ from . import res_partner
 from . import res_users
 from . import ir_mail_server
 from . import owner_guard_parents
+# Signaler un pourriel (après bf_email et bf_email_account, dont il hérite).
+from . import bf_email_report
+# Les anciens courriels retenus à l'ingestion.
+from . import bf_email_held
+# « Traité » sans attendre le serveur IMAP.
+from . import bf_email_writeback_pending

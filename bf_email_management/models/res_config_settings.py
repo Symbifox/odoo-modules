@@ -88,6 +88,12 @@ class ResConfigSettings(models.TransientModel):
              "une décision, pas un réglage d'affichage.",
     )
 
+    # Plaintes de pourriel, par société.
+    bf_email_complaints_enabled = fields.Boolean(
+        related="company_id.bf_email_complaints_enabled", readonly=False)
+    bf_email_complaint_project_id = fields.Many2one(
+        related="company_id.bf_email_complaint_project_id", readonly=False)
+
     bf_email_dnd_enabled = fields.Boolean(
         string="Mode « ne pas déranger »",
         default=False,

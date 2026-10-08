@@ -1,7 +1,7 @@
 {
     "name": "Gestion des courriels",
     "summary": "Inbox unifiée IMAP + chatters Odoo, avec re-routage UI",
-    "version": "18.0.11.54.1",
+    "version": "18.0.11.56.0",
     "category": "Productivity",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -39,6 +39,9 @@
         "data/calendar_reminder_cron.xml",
         "data/bf_dnd_cron.xml",
         "data/bf_onboarding.xml",
+        "data/bf_email_report_authority.xml",
+        "data/bf_email_held_cron.xml",
+        "data/bf_email_writeback_pending_cron.xml",
         "wizard/bf_email_initial_sync_views.xml",
         "wizard/bf_email_reroute_views.xml",
         "wizard/bf_email_imap_backfill_views.xml",
@@ -56,8 +59,11 @@
         "views/bf_recipient_group_views.xml",
         "views/mail_compose_message_views.xml",
         "views/mail_scheduled_message_views.xml",
+        # Before the settings view, which calls the authorities action.
+        "views/bf_email_report_views.xml",
         "views/res_config_settings_views.xml",
         "views/bf_email_menu.xml",
+        "views/bf_email_report_menu.xml",
         # After the parent menu: this file declares a menu item whose
         # parent is declared there. Listed before it, a FRESH INSTALL
         # fails with a ParseError, and an upgrade never sees it because
@@ -84,6 +90,8 @@
             # Arrival notice. After the calendar reminder and unrelated to
             # it: this service replaces nothing, it sits alongside.
             "bf_email_management/static/src/js/bf_email_popup.js",
+            # "Old emails appeared" notice, one per batch.
+            "bf_email_management/static/src/js/bf_email_held_notice.js",
             # Do-not-disturb toggle in the user menu. After the popup:
             # the service reads the same `bf_dnd/state` channel.
             "bf_email_management/static/src/js/bf_dnd_usermenu.js",

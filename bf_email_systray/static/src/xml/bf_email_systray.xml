@@ -67,7 +67,7 @@
                     </div>
                 </header>
                 <div class="o_bf_email_panel_body">
-                    <BfEmailInbox/>
+                    <BfEmailInbox inPanel="true"/>
                 </div>
                 <div class="o_bf_email_panel_grip" title="Redimensionner"
                      t-on-pointerdown="startResize"

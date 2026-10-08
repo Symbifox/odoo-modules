@@ -4,6 +4,80 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.56.0] - 2026-10-08
+
+### Changed
+
+- **The web inbox opens and sorts without waiting.** Measured on a copy of a
+  real database, before and after: the inbox shows its list in about a third
+  of the time (1.5 s to 0.5 s), reopening it (the systray panel, coming back
+  from another app) is immediate (about 60 ms), and the folder counters cost
+  a third of what they did. The folder list and the first page now load in
+  parallel, the Gen buttons no longer hold up the first paint, each gesture
+  refreshes the folders once instead of twice, and the category counters are
+  two grouped queries instead of two counts per category.
+- **"Handled" (`e`) no longer waits for the mail server.** The line leaves the
+  list at once and the next key works right away; the move to the server's
+  archive folder follows within seconds (`ir_cron_bf_email_writeback_pending`).
+  If the account cannot be reached at that moment, the message comes back to
+  the inbox with a notice. Only lines the move would actually touch are
+  deferred; an inactive account keeps the previous behaviour.
+- **What the tab has already seen is shown first.** The last folder tree and
+  the last page of each folder are kept in the tab's memory, per user, shown
+  at once and then refreshed through the ORM. Nothing is written to disk,
+  nothing is kept for a search, and message bodies are never cached (opening
+  one marks it read).
+
+### Fixed
+
+- Undoing (`z`) while "Handled" was still in flight no longer undoes the
+  previous gesture, and an undo that lands while the server is moving the
+  message brings it back instead of being silently lost (the deferred move
+  locks its lines before touching the server).
+
+## [18.0.11.55.0] - 2026-10-08
+
+### Added
+
+- **Collapse the folder pane.** The chevron in the "Folders" header, or the
+  `[` key, folds the pane into a 48 px rail: one icon per top-level folder,
+  with its unread pill, still a drop target (in the IMAP browser, the rail
+  keeps only the toggle and the open folder). Each screen remembers its own
+  choice (full page, systray panel, IMAP browser), and the systray panel
+  starts folded when it is narrower than 900 px.
+- **Old mail that appears is held, not ingested.** On the automatic paths
+  only (live sync and the reconciliation cron), a Message-ID never seen
+  whose `Date` is older than `bf_email.ingest_max_age_days` (30 by default)
+  is held instead of entering the inbox: a grouped notice per batch and a
+  "To decide" folder offer *Add to the inbox* (classified by the rules, with
+  no notice, no forward, no reply and no move on the server) or *Ignore*
+  (remembered). A catch-up you start yourself is not held. Nothing is
+  touched on the server.
+- **"Spam" button** (ribbon, selection bar, list action, `!` key). The
+  message goes to the server's own junk folder, the one flagged `\Junk`
+  (RFC 6154), falling back to a known name; a folder is never created. It
+  can be undone with `z`. The same window can block the sender (a personal
+  rule using the new `{JUNK}` folder token, resolved per account), report a
+  phishing attempt to `bf_security_awareness` when it is installed, and
+  prepare complaints.
+- **Spam complaints**, per company (Settings, email management, inbox block):
+  one complaint per message (on a batch, the window files and blocks only),
+  against a list of authorities,
+  shipped with Canada's Spam Reporting Centre (email, CASL complaint), the US
+  FTC (web form: the window gives the link and the text to paste) and the
+  APWG (email, phishing). An email complaint waits as a **draft** on a task of
+  the chosen project, with the original message attached (`.eml`); nothing is
+  sent before "Send now". The section 6(2) grounds are established from the
+  message: no contact-information ground when a phone number or postal address
+  appears, no unsubscribe ground when an unsubscribe header or wording is
+  present. The consent ground (section 6(1)) is stated in the complainant's
+  name; review it in the draft before sending.
+
+### Fixed
+
+- Undoing a trash (`z`) brings the line back: it used to come back unhandled
+  but inactive, visible nowhere.
+
 ## [18.0.11.54.1] - 2026-10-04
 
 ### Fixed

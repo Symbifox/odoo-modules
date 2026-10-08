@@ -82,3 +82,59 @@
         }
     }
 }
+
+// Volet des dossiers replié en rail d'icônes. 48 px : de quoi tenir
+// une icône, sa pastille et la cible d'un dépôt, et rien d'autre.
+.o_bf_email_browser .o_bf_email_rail {
+    width: 48px;
+    min-width: 48px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 4px 0;
+    gap: 2px;
+
+    .o_bf_email_rail_btn {
+        width: 36px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .o_bf_email_rail_sep {
+        width: 28px;
+        border-top: 1px solid var(--border-color, rgba(0, 0, 0, .15));
+        margin: 4px 0;
+    }
+
+    .o_bf_email_rail_item {
+        width: 36px;
+        height: 32px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        user-select: none;
+
+        &:not(.bg-primary):hover {
+            background: rgba(0, 0, 0, .06);
+        }
+
+        &.o_bf_email_rail_drop {
+            outline: 2px dashed var(--brand-primary, #29ABE2);
+            outline-offset: -2px;
+        }
+    }
+
+    .o_bf_email_rail_badge {
+        position: absolute;
+        top: -2px;
+        right: -4px;
+        font-size: .6rem;
+        padding: 2px 4px;
+        line-height: 1;
+        pointer-events: none;
+    }
+}

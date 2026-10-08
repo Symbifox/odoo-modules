@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vérifié le 2026-10-07. noupdate : chaque société ajuste sa liste. -->
+<odoo noupdate="1">
+    <record id="report_authority_crtc" model="bf.email.report.authority">
+        <field name="name">CRTC, Centre de notification des pourriels</field>
+        <field name="sequence">10</field>
+        <field name="country_id" ref="base.ca"/>
+        <field name="channel">email</field>
+        <field name="email">spam@fightspam.gc.ca</field>
+        <field name="for_spam" eval="True"/>
+        <field name="for_phish" eval="False"/>
+        <field name="template">casl</field>
+        <field name="note">Loi canadienne anti-pourriel (LCAP). La plainte cite les motifs que le courriel établit et joint l'original (.eml).</field>
+    </record>
+    <record id="report_authority_ftc" model="bf.email.report.authority">
+        <field name="name">FTC (États-Unis)</field>
+        <field name="sequence">20</field>
+        <field name="country_id" ref="base.us"/>
+        <field name="channel">form</field>
+        <field name="url">https://reportfraud.ftc.gov/</field>
+        <field name="for_spam" eval="True"/>
+        <field name="for_phish" eval="False"/>
+        <field name="template">generic</field>
+        <field name="note">La FTC a retiré sa boîte spam@uce.gov : elle ne reçoit plus le pourriel que par son formulaire web.</field>
+    </record>
+    <record id="report_authority_apwg" model="bf.email.report.authority">
+        <field name="name">APWG (hameçonnage)</field>
+        <field name="sequence">30</field>
+        <field name="channel">email</field>
+        <field name="email">reportphishing@apwg.org</field>
+        <field name="for_spam" eval="False"/>
+        <field name="for_phish" eval="True"/>
+        <field name="template">generic</field>
+        <field name="note">Anti-Phishing Working Group, à qui la FTC renvoie les courriels d'hameçonnage. Reçoit le courriel d'origine en pièce jointe.</field>
+    </record>
+</odoo>

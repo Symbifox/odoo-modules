@@ -370,7 +370,8 @@ class BfEmailRule(models.Model):
     set_folder = fields.Char(
         string="Déplacer vers le dossier",
         help="Dossier IMAP de destination. {YYYY} et {MM} sont remplacés par "
-             "l'année et le mois du courriel. Demande « Réécriture des "
+             "l'année et le mois du courriel, {JUNK} par le dossier "
+             "Indésirables du compte qui a reçu le courriel. Demande « Réécriture des "
              "archives » sur le compte IMAP : sans elle rien n'est déplacé, "
              "ni côté serveur ni côté Odoo — la fiche ne peut pas annoncer "
              "un dossier où le message n'est pas.",
@@ -732,10 +733,25 @@ class BfEmailRule(models.Model):
         return vals, extras
 
     def _resolve_folder(self, record):
-        """Expand {YYYY} / {MM} in the destination folder."""
+        """Expand {YYYY} / {MM} / {JUNK} in the destination folder.
+
+        ``{JUNK}`` is the record's OWN account junk folder, the one the
+        server marks ``\\Junk`` (``[Gmail]/Spam``, ``Junk``, ``Indésirables``).
+        A blocking rule then lands in the right folder on every mailbox of its
+        owner and never makes the writeback CREATE a « Junk » elsewhere. An
+        account without one resolves to "" : no move, the archive fallback of
+        a handled row applies, as for a rule without a folder.
+        """
         self.ensure_one()
         when = record.date or fields.Datetime.now()
-        return (self.set_folder or "").replace(
+        folder = self.set_folder or ""
+        if "{JUNK}" in folder:
+            junk = (record.account_id._junk_folder_name()
+                    if record.account_id else False)
+            if not junk:
+                return ""
+            folder = folder.replace("{JUNK}", junk)
+        return folder.replace(
             "{YYYY}", when.strftime("%Y")).replace("{MM}", when.strftime("%m"))
 
     # ------------------------------------------------------------------

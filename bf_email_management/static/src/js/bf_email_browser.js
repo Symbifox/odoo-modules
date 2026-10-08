@@ -33,6 +33,11 @@ import { _t } from "@web/core/l10n/translation";
 import {
     loadSettings,
     persistSettings,
+    loadRail,
+    saveRail,
+    claimKeys,
+    releaseKeys,
+    ownsKeys,
     formatRelativeDate,
     senderCell,
     buildPreviewSrcdoc,
@@ -80,6 +85,8 @@ export class BfEmailBrowser extends Component {
             expandedFolders: {},
             dragUid: null,
             settings: initialSettings,
+            // Volet replié, mémorisé à part (voir `loadRail`).
+            rail: loadRail(),
             settingsOpen: false,
             columnsOpen: false,
             dragging: false,
@@ -103,11 +110,13 @@ export class BfEmailBrowser extends Component {
                 this._observer.observe(this.listBottomRef.el);
             }
             document.addEventListener("keydown", this._onSlashKey);
+            claimKeys(this);
         });
 
         onWillUnmount(() => {
             if (this._observer) this._observer.disconnect();
             document.removeEventListener("keydown", this._onSlashKey);
+            releaseKeys(this);
         });
 
         // --- Keyboard shortcuts ---
@@ -136,6 +145,17 @@ export class BfEmailBrowser extends Component {
 
         // Native "/" handler — fires on document keydown when not in editable.
         this._onSlashKey = (ev) => {
+            if (!ownsKeys(this)) return;
+            // `[` replie l'arbre des dossiers, comme dans la boîte.
+            if (ev.key === "[" && !ev.ctrlKey && !ev.metaKey && !ev.altKey) {
+                const c = ev.target;
+                const saisie = c && (c.tagName === "INPUT" || c.tagName === "TEXTAREA"
+                    || c.tagName === "SELECT" || c.isContentEditable);
+                if (saisie || document.querySelector(".modal.show, .o_dialog")) return;
+                ev.preventDefault();
+                this.toggleFoldersPane();
+                return;
+            }
             if (ev.key !== "/") return;
             const t = ev.target;
             const editable = t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable);
@@ -207,6 +227,18 @@ export class BfEmailBrowser extends Component {
         };
         walk(tree, 0);
         return flat;
+    }
+
+    /**
+     * Volet replié. Les dossiers IMAP n'ont pas d'icône propre : le
+     * rail ne garde que la bascule et le nom du dossier ouvert.
+     */
+    get foldersCollapsed() {
+        return this.state.rail.browser === true;
+    }
+
+    toggleFoldersPane() {
+        this.state.rail = saveRail("browser", !this.foldersCollapsed);
     }
 
     toggleFolder(name) {

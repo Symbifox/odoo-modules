@@ -403,4 +403,28 @@
         <field name="groups" eval="[(4, ref('group_email_admin'))]"/>
     </record>
 
+    <!-- Les anciens courriels retenus. Écrits par la garde et le cron
+         (sudo) ; l'usager les LIT et décide par `held_decide`, qui vérifie que
+         le lot est le sien. -->
+    <record id="bf_email_held_rule_owner" model="ir.rule">
+        <field name="name">Anciens courriels retenus : les miens</field>
+        <field name="model_id" ref="model_bf_email_held"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="bf_email_held_rule_admin" model="ir.rule">
+        <field name="name">Anciens courriels retenus : tout (admin courriel)</field>
+        <field name="model_id" ref="model_bf_email_held"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_email_admin'))]"/>
+    </record>
+
+    <!-- Une autorité d'une autre société ne s'offre pas ici. -->
+    <record id="bf_email_report_authority_rule_company" model="ir.rule">
+        <field name="name">Autorités : la mienne ou partagées</field>
+        <field name="model_id" ref="model_bf_email_report_authority"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
 </odoo>

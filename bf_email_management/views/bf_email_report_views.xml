@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Signaler un pourriel, et les autorités qui reçoivent les plaintes. -->
+<odoo>
+    <record id="view_bf_email_report_authority_list" model="ir.ui.view">
+        <field name="name">bf.email.report.authority.list</field>
+        <field name="model">bf.email.report.authority</field>
+        <field name="arch" type="xml">
+            <list string="Autorités">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="country_id"/>
+                <field name="channel"/>
+                <field name="email" optional="show"/>
+                <field name="url" optional="show" widget="url"/>
+                <field name="for_spam"/>
+                <field name="for_phish"/>
+                <field name="template" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_email_report_authority_form" model="ir.ui.view">
+        <field name="name">bf.email.report.authority.form</field>
+        <field name="model">bf.email.report.authority</field>
+        <field name="arch" type="xml">
+            <form string="Autorité">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivée" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="country_id"/>
+                            <field name="channel" widget="radio"/>
+                            <field name="email" invisible="channel != 'email'" required="channel == 'email'"/>
+                            <field name="url" widget="url" invisible="channel != 'form'" required="channel == 'form'"/>
+                        </group>
+                        <group>
+                            <field name="for_spam"/>
+                            <field name="for_phish"/>
+                            <field name="template"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Ce qu'il faut savoir avant de porter plainte ici."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_email_report_authority" model="ir.actions.act_window">
+        <field name="name">Autorités (plaintes de pourriel)</field>
+        <field name="res_model">bf.email.report.authority</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'active_test': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune autorité</p>
+            <p>Une autorité reçoit les plaintes préparées depuis la fenêtre « Signaler » de la boîte.</p>
+        </field>
+    </record>
+
+    <record id="view_bf_email_report_wizard_form" model="ir.ui.view">
+        <field name="name">bf.email.report.wizard.form</field>
+        <field name="model">bf.email.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Signaler">
+                <field name="email_ids" invisible="1"/>
+                <field name="phish_available" invisible="1"/>
+                <field name="complaints_enabled" invisible="1"/>
+                <field name="available_authority_ids" invisible="1"/>
+                <group>
+                    <field name="email_count" string="Courriels" readonly="1"/>
+                    <field name="sender_summary" readonly="1"/>
+                    <field name="junk_summary" readonly="1"/>
+                    <field name="kind" widget="radio" options="{'horizontal': true}"
+                           invisible="not phish_available"/>
+                    <field name="block_sender" invisible="kind == 'phish'"/>
+                </group>
+                <div invisible="kind != 'phish'" class="alert alert-info" role="status">
+                    Le signalement part aussi à la sécurité, qui le trie, peut retirer les copies des autres boîtes et reconnaît un exercice d'hameçonnage.
+                </div>
+                <group invisible="not complaints_enabled or not available_authority_ids">
+                    <field name="authority_ids" widget="many2many_checkboxes"
+                           domain="[('id', 'in', available_authority_ids)]"/>
+                </group>
+                <div invisible="not complaints_enabled or not authority_ids" class="text-muted small mb-2">
+                    Une autorité par courriel reçoit une plainte en brouillon (dossier Brouillons) : rien ne part sans « Envoyer maintenant ».
+                </div>
+                <field name="form_help" readonly="1" nolabel="1" invisible="not form_help"/>
+                <footer>
+                    <button name="action_confirm" type="object" string="Signaler"
+                            class="btn-primary" data-hotkey="q"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_email_report_spam_list" model="ir.actions.server">
+        <field name="name">Signaler comme pourriel</field>
+        <field name="model_id" ref="model_bf_email"/>
+        <field name="binding_model_id" ref="model_bf_email"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_report_spam()</field>
+    </record>
+</odoo>

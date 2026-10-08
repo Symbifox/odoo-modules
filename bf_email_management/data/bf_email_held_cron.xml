@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--
+          L'ajout des lots de vieux courriels qu'on a choisi
+          d'ajouter. Réveillé par `held_decide` (`_trigger`), puis il se
+          réveille lui-même tant qu'un lot attend ; le passage quotidien n'est
+          qu'un filet. Sans lot en attente, une recherche vide et rien d'autre.
+        -->
+        <record id="ir_cron_bf_email_held_ingest" model="ir.cron">
+            <field name="name">Courriels : ajouter les anciens courriels retenus</field>
+            <field name="model_id" ref="model_bf_email_held"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_ingest_queued()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

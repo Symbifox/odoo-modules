@@ -58,3 +58,5 @@ from . import test_envoyer_vers_gen
 from . import test_envois_et_relances
 from . import test_compte_desactive
 from . import test_envois_imap_en_boite
+from . import test_pourriel_et_garde
+from . import test_perf_boite

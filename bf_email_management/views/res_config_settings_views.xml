@@ -72,6 +72,21 @@
                                  help="Retient les avis pendant les rencontres, sur interrupteur manuel, ou aux heures calmes. Rien n'est jet&#233; : un seul r&#233;sum&#233; sort &#224; la fin. Chacun r&#232;gle ce qui l'arme dans ses pr&#233;f&#233;rences. D&#233;coch&#233; par d&#233;faut, y compris apr&#232;s la mise &#224; jour.">
                             <field name="bf_email_dnd_enabled"/>
                         </setting>
+                        <setting id="bf_email_complaints_setting"
+                                 string="Plaintes de pourriel"
+                                 help="Dans la fen&#234;tre &#171;&#160;Signaler&#160;&#187;, porter plainte aupr&#232;s d'une autorit&#233; (CRTC, FTC, APWG&#8230;). Une plainte par courriel attend en brouillon sur une t&#226;che du projet choisi ; rien ne part sans &#171;&#160;Envoyer maintenant&#160;&#187;.">
+                            <field name="bf_email_complaints_enabled"/>
+                            <div class="mt-2" invisible="not bf_email_complaints_enabled">
+                                <field name="bf_email_complaint_project_id"
+                                       required="bf_email_complaints_enabled"
+                                       placeholder="Projet des plaintes"/>
+                            </div>
+                            <div class="mt-2">
+                                <button name="%(bf_email_management.action_bf_email_report_authority)d"
+                                        type="action" icon="oi-arrow-right"
+                                        string="Autorit&#233;s" class="btn-link"/>
+                            </div>
+                        </setting>
                     </block>
                     <block title="Comptes OAuth (Microsoft, Google)"
                            name="bf_email_oauth_block">

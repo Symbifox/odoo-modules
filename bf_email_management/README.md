@@ -227,6 +227,93 @@ offered whenever `bf_claude_chat` 18.0.1.33.0 or later is installed and open to
 the user (probed through `_send_to_gen_max`) and the bridge is present (the
 route's own test, since 11.54.1), and hidden otherwise.
 
+### Folder rail (11.55+)
+
+The chevron in the "Folders" header, or the `[` key, folds the folder pane into a
+48 px rail: Compose, Sync, and one icon per top-level folder with its unread pill.
+The three drop targets (Handled, Inbox, Snoozed) still accept a dragged row;
+sub-folders, per-account boxes and categories need the pane reopened. Each screen
+keeps its own choice (full page, systray panel, IMAP browser) in the
+`bf_email_folders_rail_v1` key of `localStorage`, apart from the display
+preferences so that no screen overwrites another's choice, and the systray panel
+starts folded when it is narrower than
+900 px until you choose. The IMAP browser gets the same toggle; its rail keeps
+only the toggle and the open folder, since IMAP folders have no icon of their
+own. The native keys (`!`, `[`, `/`, `?`) belong to the last
+mail screen mounted, so a panel opened over the full page does not act twice.
+
+### Spam and phishing reports (11.55+)
+
+A **Spam** button (preview ribbon, selection bar, list action, `!` key) opens a
+small window. It is refused on a message filed against a record (like the trash)
+and on our own sends:
+
+- the message goes to the **server's own junk folder** — the one flagged `\Junk`
+  (RFC 6154), else a known name (Junk, Spam, Indésirables, Pourriels). A folder
+  is never created: on a server that files spam elsewhere (`[Gmail]/Spam`), a
+  hard-coded "Junk" would only add a folder nobody reads. Without one, the row
+  leaves the inbox and the server is left as it is. `z` undoes it;
+- **block the sender**: a personal rule on the sender's real address (never the
+  display name) whose destination is the `{JUNK}` folder token, resolved per
+  account. On accounts with *Archive write-back* enabled, the message is moved to
+  that account's own junk folder; an account without a known junk folder gets no
+  rule;
+- **phishing**: when `bf_security_awareness` is installed, a report is filed
+  there with the original `.eml` (clawback, ticket, drill recognition), with no
+  manifest dependency;
+- **complaints**, one per message, when the company enables them (Settings,
+  email management, inbox block, *Spam complaints*): authorities
+  are a list (`bf.email.report.authority`), shipped with Canada's Spam Reporting
+  Centre (email, CASL complaint), the US FTC (web form: the window shows the link
+  and the text to paste, since the FTC retired its forwarding address) and the
+  APWG (email, phishing: offered with the *Phishing* choice, which needs
+  `bf_security_awareness`). An email complaint is prepared as a **draft** on a task
+  of the chosen project, the original message attached; nothing leaves before
+  *Send now*. The section 6(2) grounds of the CASL text are established from the
+  message: no contact-information ground when a phone number or postal address
+  appears, no unsubscribe ground when a `List-Unsubscribe` header or unsubscribe
+  wording is present. The consent ground (section 6(1)) is stated in the
+  complainant's name, and a look-alike domain ground is added when the subject
+  advertises a domain name: both are for the complainant to confirm in the draft
+  before sending.
+
+### Old mail held for a decision (11.55+)
+
+On the automatic paths only (live INBOX/Sent sync and the reconciliation cron), a
+Message-ID never seen whose `Date` header is older than
+`bf_email.ingest_max_age_days` (30 by default, `0` turns the guard off) is
+**held** in `bf.email.held` instead of entering the inbox. This is what an import
+dated today, a restore or a drag from another client would otherwise pour into the
+inbox. Nothing is touched on the server. A grouped notice per batch (account and
+folder, never subjects or senders) and a **To decide** folder offer:
+
+- *Add to the inbox*: ingested in the background by batches of 200, with no
+  arrival notice; rules classify (category, priority) but nothing is forwarded,
+  answered, handled, snoozed, reassigned or moved on the server, and old
+  calendar invitations are not replayed;
+- *Ignore*: remembered, never asked again for those Message-IDs.
+
+A catch-up you start yourself (catch-up assistant, reconciliation run with
+`days`, IMAP browser) is not held: it is already a decision. A message without a
+readable `Date` header is never held.
+
+### A web inbox that does not wait (11.56+)
+
+- The folder list and the first page load in parallel; the Gen buttons no longer
+  hold up the first paint.
+- The tab keeps, in memory and per user, the last folder tree and the last page of
+  each folder: reopening the inbox or the systray panel shows them at once, then
+  refreshes them through the ORM. Nothing reaches the disk, a search is never
+  cached, and message bodies are never cached (opening one marks it read).
+- **Handled** (`e`) removes the row at once and lets the next key through; the
+  move to the server's archive folder follows within seconds through
+  `ir_cron_bf_email_writeback_pending`, which locks its rows first so an undo
+  arriving mid-move is replayed correctly. If the account cannot be reached, the
+  rows come back to the inbox with a notice. Only rows the move would touch are
+  deferred; every other caller of `action_archive` keeps the synchronous move.
+- One folder refresh per gesture instead of two, and the category counters are
+  two grouped queries instead of two counts per category.
+
 ### Interactive Dashboard (OWL)
 - Date range filters: 7d / 30d / 90d / year / all / custom — **all charts including daily volume now respect the selection** (preset "Tout" derives the range from the actual data).
 - Inbox-Zero actionable cards: Boîte de réception active, En attente > 24h, IMAP orphelins à router, VIP en attente.
@@ -726,6 +813,7 @@ The inbox client action calls these `@api.model` methods on `bf.email`. They sta
 - `inbox_compose()` / `inbox_close_compose(shell_id)` — open the composer on a fresh unattached row, then adopt or delete that row when the dialog closes.
 - `_inbox_imap_folder_defs()` / `_inbox_imap_counts(defs)` (11.1+) — build the IMAP subtree from each account's cached `LIST` and count its rows in two grouped queries. Neither opens a connection; `bf.email.account.get_imap_folders(force=False)` owns the cache and the refresh.
 - `_inbox_folder_domain(key)` resolves `imapf:<account>:<folder>` and `imapacct:<account>` keys **without** going through `_inbox_folder_defs` (11.1+): the domain is needed on every folder click and every page, and routing it through discovery would put a cache refresh — so, one day in two, an IMAP round-trip — behind a click. Account ownership is verified against the caller, never inferred from the key.
+- `bf.email.held.held_summary()` / `held_count()` / `held_decide(account_id, folder, decision)` (11.55+) — the "To decide" batches of the current user. `held_decide` checks that the account is the caller's and active; `add` queues the batch for the background ingestion, `ignore` remembers it.
 - `inbox_sync_now()` — same work as the list view's *Synchroniser maintenant*, but returns only the notification text. `action_sync_now` ends with `next: {tag: reload}`, which reloads the whole web client and would throw away the open preview and selection.
 
 ### IMAP write-back sweep (9.0+)

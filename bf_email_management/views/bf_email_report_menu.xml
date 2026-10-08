@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Après bf_email_menu.xml : le parent `menu_bf_email_config` doit exister. -->
+<odoo>
+    <menuitem id="menu_bf_email_report_authority"
+              name="Autorités (pourriel)"
+              parent="menu_bf_email_config"
+              action="action_bf_email_report_authority"
+              groups="group_email_admin"
+              sequence="80"/>
+</odoo>
