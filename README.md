@@ -228,7 +228,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.5.0 | LGPL-3 | Import .eml files into the Odoo chatter |
 | `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.2.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
 | `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.4.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
-| `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.0 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
+| `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.1 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
 | `bf_meeting` | Rencontres | 18.0.3.65.2 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |
 | `bf_meeting_call_archive` | Rencontres ↔ Archive d'appels | 18.0.1.0.0 | BUSL-1.1 | Optional link between a meeting record and an archived call |

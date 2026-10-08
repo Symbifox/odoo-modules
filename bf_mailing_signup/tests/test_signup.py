@@ -109,6 +109,12 @@ class TestMailingSignup(HttpCase):
         return ctl._token(self.env, self.liste.id, self.adresse,
                           date.today().toordinal())
 
+    def _confirmer(self, jeton=None, lang="fr"):
+        """Le geste de la personne : le POST du bouton de la page de confirmation."""
+        return self.url_open("/infolettre/confirmer", data={
+            "e": self.adresse, "j": jeton or self._jeton(), "lang": lang},
+            allow_redirects=False)
+
     # ------------------------------------------------------------------ essais
 
     def test_inscription_naît_desactivee(self):
@@ -121,9 +127,7 @@ class TestMailingSignup(HttpCase):
 
     def test_confirmation_active(self):
         self._poster()
-        r = self.url_open(
-            f"/infolettre/confirmer?e={self.adresse}&j={self._jeton()}&lang=fr",
-            allow_redirects=False)
+        r = self._confirmer()
         self.assertEqual(r.status_code, 303)
         self.assertEqual(r.headers["Location"], "/infolettre-confirme.html")
         self.assertFalse(self._inscription().opt_out)
@@ -140,8 +144,7 @@ class TestMailingSignup(HttpCase):
         self._poster()
         vieux = ctl._token(self.env, self.liste.id, self.adresse,
                            date.today().toordinal() - ctl.CONFIRM_DAYS - 1)
-        self.url_open(f"/infolettre/confirmer?e={self.adresse}&j={vieux}&lang=fr",
-                      allow_redirects=False)
+        self._confirmer(jeton=vieux)
         self.assertTrue(self._inscription().opt_out)
 
     def test_resoumission_ne_reactive_pas_une_desinscription(self):
@@ -214,8 +217,7 @@ class TestMailingSignup(HttpCase):
         """Le lien confirme, il ne déclenche pas un deuxième courriel."""
         self._poster()
         self.envois.clear()
-        self.url_open(f"/infolettre/confirmer?e={self.adresse}&j={self._jeton()}&lang=fr",
-                      allow_redirects=False)
+        self._confirmer()
         self.assertEqual(self.envois, [])
 
     # -------------------------------------------------------------- habillage
@@ -328,8 +330,7 @@ class TestMailingSignup(HttpCase):
             ctl.ICP_NOTIFY, "veille@example.com")
         self._poster()
         self.envois.clear()
-        self.url_open(f"/infolettre/confirmer?e={self.adresse}&j={self._jeton()}&lang=fr",
-                      allow_redirects=False)
+        self._confirmer()
         avis = self._avis("inscription confirmée")
         self.assertIsNotNone(avis, "la confirmation doit prévenir l'interne")
         self.assertIn("Consentement exprès confirmé", self._corps_html(avis))
@@ -347,10 +348,9 @@ class TestMailingSignup(HttpCase):
         self.env["ir.config_parameter"].sudo().set_param(
             ctl.ICP_NOTIFY, "veille@example.com")
         self._poster()
-        lien = f"/infolettre/confirmer?e={self.adresse}&j={self._jeton()}&lang=fr"
-        self.url_open(lien, allow_redirects=False)
+        self._confirmer()
         self.envois.clear()
-        self.url_open(lien, allow_redirects=False)
+        self._confirmer()
         self.assertEqual(self.envois, [], "le deuxième passage n'avise personne")
 
     def test_un_avis_qui_casse_ne_casse_pas_l_inscription(self):
@@ -369,3 +369,50 @@ class TestMailingSignup(HttpCase):
         self.assertEqual(len(self.envois), 1, "la confirmation est partie")
         self.assertIn(self._jeton(), self._corps_html(self.envois[0]))
 
+    # ------------------------------------------------ robots d'analyse de liens
+    #
+    # 🔴 Ouvrir le lien ne confirme rien, seul le bouton confirme.
+    #
+    # Les passerelles de courriel ouvrent chaque lien d'un message avant la
+    # personne (en GET, parfois en HEAD). Tant que le GET activait l'inscription,
+    # un tiers pouvait inscrire l'adresse d'une entreprise dont la passerelle
+    # analyse les liens : le double consentement se confirmait tout seul.
+
+    def _lien(self):
+        return f"/infolettre/confirmer?e={self.adresse}&j={self._jeton()}&lang=fr"
+
+    def test_le_get_du_lien_n_active_pas(self):
+        self._poster()
+        r = self.url_open(self._lien(), allow_redirects=False)
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(self._inscription().opt_out, "un robot a confirmé")
+        self.assertIn('method="post"', r.text)
+        self.assertIn(self._jeton(), r.text)
+
+    def test_le_head_du_lien_n_active_pas(self):
+        self._poster()
+        self.opener.head(self.base_url() + self._lien(), timeout=10,
+                         allow_redirects=False)
+        self.assertTrue(self._inscription().opt_out)
+
+    def test_le_get_d_un_lien_faux_renvoie_au_formulaire(self):
+        self._poster()
+        r = self.url_open(
+            f"/infolettre/confirmer?e={self.adresse}&j={'0' * 32}&lang=fr",
+            allow_redirects=False)
+        self.assertEqual(r.headers["Location"], "/#infolettre")
+
+    def test_le_bouton_confirme(self):
+        self._poster()
+        r = self._confirmer()
+        self.assertEqual(r.status_code, 303)
+        self.assertEqual(r.headers["Location"], "/infolettre-confirme.html")
+        self.assertFalse(self._inscription().opt_out)
+
+    def test_la_page_anglaise_est_en_anglais(self):
+        self._poster(lang="en")
+        r = self.url_open(
+            f"/infolettre/confirmer?e={self.adresse}&j={self._jeton()}&lang=en",
+            allow_redirects=False)
+        self.assertIn('lang="en"', r.text)
+        self.assertTrue(self._inscription().opt_out)

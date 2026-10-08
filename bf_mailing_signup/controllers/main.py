@@ -67,9 +67,32 @@ _EMAIL_MAX = 254  # RFC 5321
 _bucket_lock = threading.Lock()
 _bucket_data = defaultdict(list)
 # Un flot venant d'adresses toutes différentes fait grossir ce dictionnaire une
-# fois par adresse. Plafond franc, purge totale : perdre l'historique d'un seau
-# est sans gravité, laisser la mémoire enfler ne l'est pas.
+# fois par adresse. Plafond franc, élagage par `_borner_seaux` : perdre
+# l'historique d'un seau est sans gravité, laisser la mémoire enfler ne l'est pas.
 _MAX_TRACKED_IPS = 10000
+_bucket_window = {}  # seau -> fenêtre la plus longue vue, pour l'élagage
+
+
+def _borner_seaux(maintenant):
+    """Tenir `_bucket_data` sous `_MAX_TRACKED_IPS` clés sans relâcher un bloqué.
+
+    ⚠️ La purge totale remettait à zéro la source même qu'on plafonnait :
+    faire défiler assez d'adresses effaçait son propre blocage. On
+    retire d'abord les clés échues (fenêtre de leur seau) ; si le flot est
+    frais, celles qui pèsent le moins. Une clé bloquée sort en dernier.
+    Appelée sous `_bucket_lock`.
+    """
+    if len(_bucket_data) <= _MAX_TRACKED_IPS:
+        return
+    for ident in [i for i, v in _bucket_data.items()
+                  if not v or v[-1] <= maintenant - _bucket_window.get(i[0], 0)]:
+        del _bucket_data[ident]
+    if len(_bucket_data) > _MAX_TRACKED_IPS:
+        cible = _MAX_TRACKED_IPS * 9 // 10
+        ordre = sorted(_bucket_data,
+                       key=lambda i: (len(_bucket_data[i]), _bucket_data[i][-1]))
+        for ident in ordre[:len(_bucket_data) - cible]:
+            del _bucket_data[ident]
 
 
 def _client_ip():
@@ -93,8 +116,8 @@ def _rate_ok(bucket, max_hits, window):
     ident = (bucket, _client_ip())
     now = time.monotonic()
     with _bucket_lock:
-        if len(_bucket_data) > _MAX_TRACKED_IPS:
-            _bucket_data.clear()
+        _bucket_window[bucket] = max(window, _bucket_window.get(bucket, 0))
+        _borner_seaux(now)
         cutoff = now - window
         hits = [t for t in _bucket_data[ident] if t > cutoff]
         if len(hits) >= max_hits:
@@ -458,6 +481,34 @@ def _aviser(env, moment, email, lang, contact=None):
         _logger.exception("bf_mailing_signup : avis interne non envoyé (%s)", moment)
 
 
+
+def _page_bouton(env, email, jeton, lang):
+    """La page que le lien de confirmation ouvre : un bouton, rien d'autre.
+
+    ⚠️ Pas de script qui soumet tout seul : un robot d'analyse qui exécute le
+    JavaScript confirmerait encore. Consentir est un geste de la personne.
+    """
+    b = _marque(env)
+    t = {k: v.format(marque=b["marque"], societe=b["societe"], site=_site(env))
+         for k, v in TEXTES[lang].items()}
+    return f"""<!doctype html>
+<html lang="{lang}"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>{_ech(t["titre"])}</title></head>
+<body style="margin:0;background:#FFFFFF;color:#2E3132;font-family:{POLICE}">
+<main style="max-width:32rem;margin:10vh auto;padding:0 16px">
+<h1 style="font-size:1.5rem">{_ech(t["titre"])}</h1>
+<p>{_ech(t["intro"])}</p>
+<form method="post" action="/infolettre/confirmer">
+<input type="hidden" name="e" value="{_att(email)}">
+<input type="hidden" name="j" value="{_att(jeton)}">
+<input type="hidden" name="lang" value="{_att(lang)}">
+<button type="submit" style="font:inherit;font-weight:600;padding:12px 22px;border:0;border-radius:8px;background:#2E3132;color:#FFFFFF;cursor:pointer">{_ech(t["bouton"])}</button>
+</form>
+<p style="font-size:.9rem;color:#5A5F61">{_ech(t["note"])}</p>
+</main></body></html>"""
+
 class BfMailingSignup(http.Controller):
 
     # ⚠️ `csrf=False` est obligatoire, pas commode : la page appelante est un
@@ -502,8 +553,14 @@ class BfMailingSignup(http.Controller):
             _logger.exception("bf_mailing_signup : échec d'inscription")
         return merci
 
-    @http.route("/infolettre/confirmer", type="http", auth="public", methods=["GET"],
-                csrf=False, website=False, sitemap=False)
+    # 🔴 Ouvrir le lien ne confirme RIEN. Les passerelles de
+    # courriel (Safe Links, Proofpoint, Mimecast…) et les aperçus ouvrent chaque
+    # lien d'un message avant la personne, en GET ou en HEAD : tant que le GET
+    # activait, un tiers inscrivait l'adresse d'une entreprise dont la
+    # passerelle analyse les liens, et le double consentement se confirmait
+    # tout seul. Le GET rend un bouton ; seul le POST de ce bouton active.
+    @http.route("/infolettre/confirmer", type="http", auth="public",
+                methods=["GET", "POST"], csrf=False, website=False, sitemap=False)
     def confirm(self, e=None, j=None, lang=None, **kw):
         lang = _lang(lang)
         pages = PAGES[lang]
@@ -516,6 +573,13 @@ class BfMailingSignup(http.Controller):
             # Lien périmé, tronqué ou fabriqué : on renvoie au formulaire, qui
             # est la seule chose utile à faire ensuite.
             return werkzeug.utils.redirect(pages["retour"], 303)
+        if request.httprequest.method != "POST":
+            return request.make_response(
+                _page_bouton(env, email, j, lang),
+                headers=[("Content-Type", "text/html; charset=utf-8"),
+                         ("Cache-Control", "no-store"),
+                         ("X-Robots-Tag", "noindex"),
+                         ("Referrer-Policy", "no-referrer")])
         try:
             self._activate(env, list_id, email, lang)
         except Exception:               # noqa: BLE001

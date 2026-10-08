@@ -27,6 +27,21 @@ déjà désinscrite ne se réactive pas non plus par une resoumission du formula
 Et la confirmation laisse une preuve de consentement exprès datée au fil du
 contact, ce dont une entreprise qui vend de la conformité a besoin.
 
+## Ouvrir le lien ne confirme rien
+
+Les passerelles de courriel (liens réécrits, antivirus) et les aperçus de
+messagerie ouvrent chaque lien d'un message avant la personne, en `GET` ou en
+`HEAD`. Tant que le `GET` confirmait, un tiers pouvait inscrire l'adresse d'une
+entreprise dont la passerelle analyse les liens : le double consentement se
+confirmait tout seul. Le lien ouvre donc une page qui porte un bouton, et seul
+le `POST` de ce bouton confirme. La page n'a aucun script qui soumettrait le
+formulaire de lui-même ; sinon, un robot qui exécute le JavaScript confirmerait.
+
+Le limiteur de débit garde aussi ses blocages : passé 10 000 clés suivies, il
+retire d'abord les clés échues, puis celles qui comptent le moins de requêtes
+récentes. Les adresses IP qu'on fait défiler en comptent chacune une ou deux :
+elles partent avant la source qu'elles voulaient débloquer.
+
 ## Le lien ne stocke rien
 
 Le jeton est `HMAC(database.secret, "liste:adresse:quantième")`, tronqué à
@@ -39,7 +54,8 @@ cron. Un lien plus vieux ne confirme plus, il faut refaire une demande.
 | Méthode | Route | Effet |
 |---|---|---|
 | POST | `/infolettre` | Crée l'inscription désactivée et envoie le lien. Redirige **toujours** vers la page de remerciement. |
-| GET | `/infolettre/confirmer?e=&j=&lang=` | Lève l'`opt_out` si le jeton vaut. Sinon renvoie au formulaire. |
+| GET | `/infolettre/confirmer?e=&j=&lang=` | Si le jeton vaut, rend une page avec un seul bouton « Confirmer mon inscription ». Ne confirme **rien**. Sinon renvoie au formulaire. |
+| POST | `/infolettre/confirmer` | Le bouton de cette page : lève l'`opt_out` si le jeton vaut. |
 
 ⚠️ Le POST rend la **même** réponse quoi qu'il arrive : adresse connue, adresse
 refusée, pot de miel rempli, plafond atteint. Une réponse qui varierait ferait de
