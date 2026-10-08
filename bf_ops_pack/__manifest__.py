@@ -1,7 +1,9 @@
 {
     "name": "Symbifox — Operations Pack",
     "summary": "Unified inbox, meetings, contact intelligence, and chatter polish for consulting/MSP teams",
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: fr_CA.po traduit le nom et le résumé du module dans
+    #   Apps (ir.module.module, identifiant base.module_bf_ops_pack).
+    "version": "18.0.1.1.0",
     "category": "Productivity",
     "license": "Other proprietary",
     "author": "Les services de consultation Blue Fox, Inc.",

@@ -11,7 +11,9 @@
         res.company.font will still have the asset present (~120KB total, self-hosted,
         font-display: swap) but the rest of the UI/PDFs will render in the chosen font.
     """,
-    "version": "18.0.3.0.0",
+    # 18.0.3.1.0: fr_CA.po traduit le nom et le résumé du module dans
+    #   Apps (ir.module.module, identifiant base.module_bf_lexend).
+    "version": "18.0.3.1.0",
     "category": "Theme/Backend",
     "license": "LGPL-3",
     "author": "Les services de consultation Blue Fox, Inc.",
