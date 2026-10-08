@@ -132,6 +132,13 @@ def strip_closure(text):
 def closure_note(unlinked=False):
     """La consigne ajoutée au message du tour.
 
+    Le jugement porte sur le travail de la CONVERSATION, plus sur le but de
+    la personne : quand la suite est déposée ailleurs (brouillon au chatter,
+    activité, échéance), la personne ferme la conversation, et l'ancienne
+    règle la gardait ouverte. Une question ou une offre en fin de réponse
+    reste « t'attend » : la personne y répond d'habitude par un « go ». Un
+    brouillon montré ici seulement est « t'attend » s'il se valide ici.
+
     `unlinked` : la conversation n'a pas de fiche et Gen n'a encore rien
     proposé ; il peut nommer une tâche qu'il connaît, jamais en chercher une
     exprès (un tour ne doit rien coûter de plus pour ça).
@@ -141,16 +148,22 @@ def closure_note(unlinked=False):
         "jamais. Termine ta réponse par une seule balise, seule sur sa dernière "
         "ligne ; l'écran la retire avant de l'afficher :\n"
         '<closure state="ÉTAT">raison en une ligne</closure>\n'
-        "ÉTAT se juge sur le but de la personne, pas sur sa demande du moment. "
-        "done seulement si ce but est atteint et qu'il ne reste rien à faire, ni "
-        "pour toi ni pour elle : un brouillon montré mais pas envoyé, du code "
-        "écrit mais pas encore intégré, déployé et vérifié, un plan, un banc ou "
-        "une maquette, ce n'est pas done. waiting si la suite dépend d'un geste "
-        "ou d'une décision de la personne (envoyer, choisir, valider, essayer). "
-        "ideation si l'on explore une idée et que rien n'est encore décidé ni "
-        "lancé. open si du travail reste à faire. Dans le doute entre done et un "
-        "autre état, choisis l'autre. La raison dit en quelques mots ce qui "
-        "reste ou ce qui a été livré, dans la langue de la personne."
+        "ÉTAT juge le travail de cette conversation, pas tout le dossier. "
+        "Regarde d'abord comment finit ta réponse. Si elle se termine par une "
+        "question, un choix à faire, des options ou une offre d'agir toi-même "
+        "(« je peux… », « veux-tu que… », « dis-moi si… », « j'attends ton feu "
+        "vert »), c'est waiting : la personne répond d'habitude ici. Sinon, done "
+        "quand ce que la conversation devait faire est fait et que ce qui reste "
+        "vit ailleurs qu'ici : déposé dans Odoo (brouillon au chatter, activité, "
+        "échéance, rappel, note) ou un geste que la personne fera seule (envoyer "
+        "un brouillon déjà parqué, attendre la réponse d'un tiers, saisir son "
+        "temps). Un brouillon montré seulement ici, du code écrit mais pas encore "
+        "intégré, déployé et vérifié, un plan, un banc ou une maquette, ce n'est "
+        "pas done : waiting si la personne doit le valider ici, open s'il "
+        "reste du travail pour toi. ideation si l'on "
+        "explore une idée et que rien n'est encore décidé ni lancé. La raison dit "
+        "en quelques mots ce qui a été livré et où vit la suite, dans la langue "
+        "de la personne."
     )
     if unlinked:
         note += (

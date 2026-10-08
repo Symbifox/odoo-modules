@@ -101,6 +101,16 @@ class ClaudeChatMessage(models.Model):
         help="Why the turn did not end normally, as the bridge said it "
              "(timeout, max_turns, stopped, unknown_turn...).",
     )
+    # Le jugement de fermeture de CE tour. La conversation ne garde
+    # que le dernier ; ici, chaque tour garde le sien, pour comparer après coup
+    # ce que Gen disait au moment où la personne a archivé.
+    closure_state = fields.Selection(
+        [("open", "Work left"), ("waiting", "Waiting for you"),
+         ("ideation", "Ideation"), ("done", "Done")],
+        string="Closure (this turn)", copy=False, readonly=True, index=True,
+    )
+    closure_reason = fields.Char(string="Closure Reason (this turn)", copy=False,
+                                 readonly=True)
 
     # 🔴 Ces champs pilotent un fil qui tourne en superutilisateur et parle au
     # pont. `readonly=True` ne garde que l'écran : la règle d'accès laisse tout
@@ -111,7 +121,7 @@ class ClaudeChatMessage(models.Model):
     TURN_FIELDS = frozenset({
         "state", "turn_key", "client_token", "runner_heartbeat",
         "auto_continue_count", "prefix_len", "stop_requested", "turn_payload",
-        "end_reason",
+        "end_reason", "closure_state", "closure_reason",
     })
 
     def _check_turn_fields(self, vals_list):
@@ -141,7 +151,7 @@ class ClaudeChatMessage(models.Model):
             if (rec.state != "done" or rec.turn_key or rec.client_token
                     or rec.runner_heartbeat or rec.auto_continue_count
                     or rec.prefix_len or rec.stop_requested or rec.turn_payload
-                    or rec.end_reason):
+                    or rec.end_reason or rec.closure_state or rec.closure_reason):
                 raise AccessError(_(
                     "Only the server may set these fields on a Gen message: %s",
                     "state"))

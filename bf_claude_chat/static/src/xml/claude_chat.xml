@@ -53,6 +53,62 @@
         </div>
     </t>
 
+    <!-- Chercher dans les conversations, et voir les archivées -->
+    <t t-name="bf_claude_chat.ListTools">
+        <div class="input-group input-group-sm mt-2 bf-gen-search">
+            <span class="input-group-text"><i class="fa fa-search"/></span>
+            <input type="search" class="form-control" placeholder="Search conversations"
+                   t-att-value="state.query"
+                   t-on-input.stop="onSearchInput"
+                   t-on-click.stop="() => {}"/>
+            <button t-if="state.query" class="btn btn-outline-secondary" type="button"
+                    title="Clear" t-on-click.stop="onClearSearch">
+                <i class="fa fa-times"/>
+            </button>
+        </div>
+        <button t-if="!recordFiltered" type="button"
+                t-att-class="'btn btn-sm w-100 mt-1 bf-gen-archived-switch ' + (state.archivedView ? 'btn-secondary' : 'btn-outline-secondary')"
+                t-on-click.stop="onToggleArchivedView">
+            <i class="fa fa-archive me-1"/>Show archived
+        </button>
+    </t>
+
+    <!-- Le forfait et ce que la conversation a consommé, avec ↻ -->
+    <t t-name="bf_claude_chat.Meters">
+        <div t-if="state.plan or totalsLabel()"
+             class="bf-gen-meters d-flex align-items-center gap-2 text-muted text-nowrap overflow-hidden">
+            <t t-foreach="planWindows()" t-as="w" t-key="w.key">
+                <span t-att-class="'bf-gen-meter' + (w.level ? ' text-' + w.level : '')"
+                      t-att-title="w.title + (w.title ? '\n' : '') + planTitle()" t-esc="w.label"/>
+            </t>
+            <span t-if="totalsLabel()" class="bf-gen-meter bf-gen-meter-total text-truncate"
+                  t-att-title="totalsTitle()" t-esc="totalsLabel()"/>
+            <button type="button" class="btn btn-link btn-sm p-0 text-muted bf-gen-meters-refresh"
+                    title="Refresh the counters" t-on-click.stop="onRefreshUsage">
+                <i t-att-class="'fa fa-refresh' + (state.refreshingUsage ? ' fa-spin' : '')"/>
+            </button>
+        </div>
+    </t>
+
+    <!-- Une conversation archivée se relit ; y écrire la rouvre -->
+    <t t-name="bf_claude_chat.ArchivedNotice">
+        <div t-if="state.activeArchived and state.activeSessionId > 0"
+             class="bf-gen-archived-notice d-flex align-items-center gap-2 px-3 py-1 border-top small text-muted">
+            <i class="fa fa-archive"/>
+            <span class="flex-grow-1">Archived conversation. Writing here reopens it.</span>
+            <button type="button" class="btn btn-link btn-sm p-0"
+                    t-on-click.stop="() => this.restoreSession(state.activeSessionId)">Restore</button>
+        </div>
+    </t>
+
+    <!-- La ligne d'une conversation, signes communs aux deux listes -->
+    <t t-name="bf_claude_chat.RowSigns">
+        <i t-if="isSessionBusy(session)" class="fa fa-circle-o-notch fa-spin me-1 text-primary bf-gen-row-busy"
+           title="Gen is answering"/>
+        <i t-elif="!session.active and session.active !== undefined"
+           class="fa fa-archive me-1 text-muted bf-gen-row-archived" t-att-title="archivedTitle(session)"/>
+    </t>
+
     <!-- L'élément associé en pastille, lien vers la fiche -->
     <t t-name="bf_claude_chat.RecordPill">
         <a t-if="recordHref(session)"
@@ -75,11 +131,13 @@
                     </button>
                     <t t-call="bf_claude_chat.ListModeSwitch"/>
                     <t t-call="bf_claude_chat.ToFollowSwitch"/>
+                    <t t-call="bf_claude_chat.ListTools"/>
                 </div>
                 <div class="bf-chat-session-list flex-grow-1 overflow-auto">
                     <t t-foreach="state.sessions" t-as="session" t-key="session.id">
                         <div t-att-class="'bf-chat-session-item p-3 border-bottom cursor-pointer '
-                                         + (state.activeSessionId === session.id ? 'active' : '')"
+                                         + (state.activeSessionId === session.id ? 'active' : '')
+                                         + (session.active === false ? ' bf-gen-archived' : '')"
                              t-on-click="() => this.onSelectSession(session.id)">
                             <div class="d-flex justify-content-between align-items-start">
                                 <!-- Inline rename input -->
@@ -95,9 +153,10 @@
                                 </t>
                                 <t t-else="">
                                     <t t-set="label" t-value="sessionLabel(session)"/>
-                                    <span t-if="closureInbox(session)" class="me-1 bf-gen-closure-icon"
+                                    <t t-call="bf_claude_chat.RowSigns"/>
+                                    <span t-if="closureInbox(session) and session.active !== false" class="me-1 bf-gen-closure-icon"
                                           t-att-title="closureIconTitle(session)">📥</span>
-                                    <i t-elif="closureIcon(session)"
+                                    <i t-elif="closureIcon(session) and session.active !== false"
                                        t-att-class="'fa me-1 mt-1 bf-gen-closure-icon ' + closureIcon(session)"
                                        t-att-title="closureIconTitle(session)"/>
                                     <span t-att-class="'bf-chat-session-title text-truncate flex-grow-1'
@@ -118,10 +177,17 @@
                                             title="Rename">
                                         <i class="fa fa-pencil"/>
                                     </button>
-                                    <button class="btn btn-link btn-sm text-muted p-0 ms-1 bf-chat-action-btn"
+                                    <button t-if="session.active !== false"
+                                            class="btn btn-link btn-sm text-muted p-0 ms-1 bf-chat-action-btn"
                                             t-on-click.stop="() => this.onDeleteSession(session.id)"
                                             title="Archive">
                                         <i class="fa fa-archive"/>
+                                    </button>
+                                    <button t-else=""
+                                            class="btn btn-link btn-sm text-muted p-0 ms-1 bf-chat-action-btn"
+                                            t-on-click.stop="() => this.restoreSession(session.id)"
+                                            title="Restore">
+                                        <i class="fa fa-undo"/>
                                     </button>
                                 </div>
                             </div>
@@ -132,7 +198,9 @@
                         </div>
                     </t>
                     <div t-if="state.sessions.length === 0" class="p-3 text-muted text-center">
-                        No conversations yet
+                        <t t-if="state.query">No conversation matches</t>
+                        <t t-elif="state.archivedView">No archived conversation</t>
+                        <t t-else="">No conversations yet</t>
                     </div>
                 </div>
             </div>
@@ -141,9 +209,12 @@
             <div class="bf-chat-panel d-flex flex-column flex-grow-1">
                 <t t-if="state.activeSessionId">
                     <!-- Chat header with share button -->
-                    <div class="bf-chat-panel-header d-flex align-items-center justify-content-end px-3 py-2 border-bottom"
-                         t-if="state.activeSessionId > 0">
-                        <button class="btn btn-sm btn-link text-muted p-1" title="Share to task"
+                    <div class="bf-chat-panel-header d-flex align-items-center gap-2 px-3 py-2 border-bottom">
+                        <div class="flex-grow-1 overflow-hidden">
+                            <t t-call="bf_claude_chat.Meters"/>
+                        </div>
+                        <button t-if="state.activeSessionId > 0"
+                                class="btn btn-sm btn-link text-muted p-1" title="Share to task"
                                 t-on-click="onToggleShare">
                             <i class="fa fa-share-alt"/>
                         </button>
@@ -200,7 +271,10 @@
                                              t-att-class="'bf-chat-content' + (msg.streaming ? ' bf-streaming' : '')"
                                              t-out="renderMarkdown(msg.content)"/>
                                         <GenWaitLine t-if="msg.streaming" msg="msg"/>
-                                        <div t-if="msg.reconnecting" class="bf-stream-notice">
+                                        <div t-if="msg.reconnecting and msg.viewerFull" class="bf-stream-notice">
+                                            <i class="fa fa-users me-1"/>Too many screens follow this answer. It will appear here.
+                                        </div>
+                                        <div t-elif="msg.reconnecting" class="bf-stream-notice">
                                             <i class="fa fa-plug me-1"/>Connection lost. Picking the thread back up…
                                         </div>
                                         <div t-if="msg.interrupted" class="bf-stream-interrupted">
@@ -243,6 +317,7 @@
                     </div>
 
                     <t t-call="bf_claude_chat.ClosureBar"/>
+                    <t t-call="bf_claude_chat.ArchivedNotice"/>
 
                     <!-- Input area -->
                     <div class="bf-chat-input-area border-top p-3">
@@ -369,12 +444,23 @@
                         <!-- Mini session list -->
                         <div class="bf-side-panel-sessions border-end">
                             <div class="px-2 py-1 border-bottom">
+                                <!-- Depuis une fiche, sa liste ou toutes -->
+                                <div t-if="hasFilteredContext" class="btn-group btn-group-sm w-100 mt-1 bf-gen-scope" role="group">
+                                    <button type="button"
+                                            t-att-class="'btn ' + (!state.allConversations ? 'btn-secondary' : 'btn-outline-secondary')"
+                                            t-on-click.stop="() => state.allConversations and this.onToggleAllConversations()">This record</button>
+                                    <button type="button"
+                                            t-att-class="'btn ' + (state.allConversations ? 'btn-secondary' : 'btn-outline-secondary')"
+                                            t-on-click.stop="() => !state.allConversations and this.onToggleAllConversations()">All</button>
+                                </div>
                                 <t t-call="bf_claude_chat.ListModeSwitch"/>
                                 <t t-call="bf_claude_chat.ToFollowSwitch"/>
+                                <t t-call="bf_claude_chat.ListTools"/>
                             </div>
                             <t t-foreach="state.sessions" t-as="session" t-key="session.id">
                                 <div t-att-class="'bf-side-panel-session-item px-2 py-1 cursor-pointer text-truncate '
-                                                 + (state.activeSessionId === session.id ? 'active' : '')"
+                                                 + (state.activeSessionId === session.id ? 'active' : '')
+                                                 + (session.active === false ? ' bf-gen-archived' : '')"
                                      t-on-click.stop="() => this.onSelectSession(session.id)"
                                      t-att-title="sessionLabel(session).text">
                                     <t t-if="state.editingSessionId === session.id">
@@ -389,23 +475,45 @@
                                     <t t-else="">
                                         <t t-set="label" t-value="sessionLabel(session)"/>
                                         <div class="d-flex align-items-center">
-                                            <span t-if="closureInbox(session)" class="me-1 bf-gen-closure-icon"
+                                            <t t-call="bf_claude_chat.RowSigns"/>
+                                            <span t-if="closureInbox(session) and session.active !== false" class="me-1 bf-gen-closure-icon"
                                                   t-att-title="closureIconTitle(session)">📥</span>
-                                            <i t-elif="closureIcon(session)"
+                                            <i t-elif="closureIcon(session) and session.active !== false"
                                                t-att-class="'fa me-1 bf-gen-closure-icon ' + closureIcon(session)"
                                                t-att-title="closureIconTitle(session)"/>
                                             <small t-att-class="'text-truncate flex-grow-1'
                                                                 + (label.dim ? ' bf-gen-label-dim' : '')"
                                                    t-on-dblclick.stop="() => this.onStartRename(session)"
                                                    t-esc="label.text"/>
-                                            <button t-if="session.res_label"
-                                                    class="btn btn-link btn-sm text-muted p-0 ms-1 bf-side-panel-flip"
-                                                    t-on-click.stop="() => this.onFlipRow(session)"
-                                                    title="Switch between title and linked record">
-                                                <i class="fa fa-exchange"/>
-                                            </button>
+                                            <span class="d-flex flex-shrink-0 bf-side-panel-row-actions">
+                                                <button t-if="session.res_label"
+                                                        class="btn btn-link btn-sm text-muted p-0 ms-1 bf-side-panel-flip"
+                                                        t-on-click.stop="() => this.onFlipRow(session)"
+                                                        title="Switch between title and linked record">
+                                                    <i class="fa fa-exchange"/>
+                                                </button>
+                                                <button class="btn btn-link btn-sm text-muted p-0 ms-1"
+                                                        t-on-click.stop="() => this.onStartRename(session)"
+                                                        title="Rename">
+                                                    <i class="fa fa-pencil"/>
+                                                </button>
+                                                <button t-if="session.active !== false"
+                                                        class="btn btn-link btn-sm text-muted p-0 ms-1"
+                                                        t-on-click.stop="() => this.onDeleteSession(session.id)"
+                                                        title="Archive">
+                                                    <i class="fa fa-archive"/>
+                                                </button>
+                                                <button t-else=""
+                                                        class="btn btn-link btn-sm text-muted p-0 ms-1"
+                                                        t-on-click.stop="() => this.onRestoreSession(session.id)"
+                                                        title="Restore">
+                                                    <i class="fa fa-undo"/>
+                                                </button>
+                                            </span>
                                         </div>
-                                        <div t-if="recordHref(session)" class="d-flex bf-gen-session-meta">
+                                        <div class="d-flex align-items-center bf-gen-session-meta">
+                                            <small class="text-muted flex-shrink-0 me-1"
+                                                   t-esc="formatDate(session.list_date or session.write_date)"/>
                                             <t t-call="bf_claude_chat.RecordPill"/>
                                         </div>
                                     </t>
@@ -413,7 +521,9 @@
                             </t>
                             <div t-if="state.sessions.length === 0"
                                  class="text-muted text-center small p-2">
-                                <t t-if="hasFilteredContext">No chats for this record</t>
+                                <t t-if="state.query">No conversation matches</t>
+                                <t t-elif="recordFiltered">No chats for this record</t>
+                                <t t-elif="state.archivedView">No archived conversation</t>
                                 <t t-else="">No chats</t>
                             </div>
                         </div>
@@ -421,6 +531,9 @@
                         <!-- Chat area -->
                         <div class="bf-side-panel-chat-main d-flex flex-column flex-grow-1">
                             <t t-if="showChat">
+                                <div t-if="state.plan or totalsLabel()" class="px-2 py-1 border-bottom bf-side-panel-meters">
+                                    <t t-call="bf_claude_chat.Meters"/>
+                                </div>
                                 <!-- Messages -->
                                 <div class="bf-side-panel-messages flex-grow-1 overflow-auto p-2"
                                      t-ref="systrayMessages">
@@ -444,7 +557,10 @@
                                                          t-att-class="'bf-chat-content' + (msg.streaming ? ' bf-streaming' : '')"
                                                          t-out="renderMarkdown(msg.content)"/>
                                                     <GenWaitLine t-if="msg.streaming" msg="msg"/>
-                                                    <div t-if="msg.reconnecting" class="bf-stream-notice">
+                                                    <div t-if="msg.reconnecting and msg.viewerFull" class="bf-stream-notice">
+                                                        <i class="fa fa-users me-1"/>Too many screens follow this answer. It will appear here.
+                                                    </div>
+                                                    <div t-elif="msg.reconnecting" class="bf-stream-notice">
                                                         <i class="fa fa-plug me-1"/>Connection lost. Picking the thread back up…
                                                     </div>
                                                     <div t-if="msg.interrupted" class="bf-stream-interrupted">
@@ -487,6 +603,7 @@
                                 </div>
 
                                 <t t-call="bf_claude_chat.ClosureBar"/>
+                                <t t-call="bf_claude_chat.ArchivedNotice"/>
 
                                 <!-- Input -->
                                 <div class="bf-side-panel-input border-top p-2">

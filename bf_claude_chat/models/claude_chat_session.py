@@ -26,6 +26,17 @@ RETITLE_WINDOW_DAYS = 7
 #: Plafond par passe : chaque titre coûte un appel au pont.
 RETITLE_BATCH = 20
 
+#: D'où vient un archivage. Le chemin le dit par la clé de
+#: contexte `gen_archive_source` ; une écriture sans elle (RPC, interface
+#: d'administration) est « autre ».
+ARCHIVE_SOURCES = [
+    ("banner", "Closure banner"),
+    ("list", "Conversation list"),
+    ("mobile", "Phone"),
+    ("batch", "Batch archiving"),
+    ("other", "Other"),
+]
+
 
 class ClaudeChatSession(models.Model):
     _name = "claude.chat.session"
@@ -165,6 +176,22 @@ class ClaudeChatSession(models.Model):
         "project.task", string="Suggested Task", copy=False, ondelete="set null")
     link_proposed = fields.Boolean(string="Link Proposed", copy=False)
 
+    # Le moment et le chemin de l'archivage. Sans eux, on ne
+    # pouvait pas comparer ce que Gen disait au geste de la personne :
+    # `write_date` bouge à chaque fin de tour, et bandeau, liste, téléphone et
+    # passe en lot donnaient tous le même `active = False`. Posés par `write`,
+    # effacés quand la conversation revient.
+    archive_date = fields.Datetime(string="Archived On", copy=False, readonly=True,
+                                   index=True)
+    archive_source = fields.Selection(
+        ARCHIVE_SOURCES, string="Archived From", copy=False, readonly=True)
+    # « Pas encore » efface l'état « fait » : sans ce compteur, une proposition
+    # refusée ne laissait aucune trace.
+    closure_later_count = fields.Integer(string="Proposals Declined", copy=False,
+                                         readonly=True)
+    closure_later_date = fields.Datetime(string="Last Declined On", copy=False,
+                                         readonly=True)
+
     # ------------------------------------------------------------------
     # Ce que la personne a lu
     # ------------------------------------------------------------------
@@ -183,6 +210,8 @@ class ClaudeChatSession(models.Model):
     CLOSURE_FIELDS = frozenset({
         "closure_state", "closure_reason", "closure_date", "last_activity",
         "list_date", "followup_date", "link_task_id", "link_proposed",
+        "archive_date", "archive_source", "closure_later_count",
+        "closure_later_date",
     })
 
     def _check_closure_fields(self, vals_list):
@@ -197,14 +226,48 @@ class ClaudeChatSession(models.Model):
             if "user_id" in vals and vals["user_id"] and vals["user_id"] != self.env.uid:
                 raise AccessError(_("A Gen conversation cannot be handed to someone else."))
 
+    #: Ce qu'une création par une personne doit laisser vide. `last_activity`
+    #: et `list_date` ont un défaut (maintenant) : ils n'y sont pas.
+    CLOSURE_EMPTY_AT_CREATE = CLOSURE_FIELDS - {"last_activity", "list_date"}
+
     @api.model_create_multi
     def create(self, vals_list):
         self._check_closure_fields(vals_list)
-        return super().create(vals_list)
+        if self.env.su:
+            return super().create(vals_list)
+        # 🔴 le contrôle ne lit
+        # que les valeurs passées. Les défauts s'ajoutent APRÈS, dans
+        # super().create(), depuis les clés `default_*` du contexte ou un
+        # `ir.default` personnel : le journal se forgeait par là. Même parade
+        # que les messages : retirer les clés, puis vérifier ce qui est créé.
+        propre = {k: v for k, v in self.env.context.items()
+                  if not (k.startswith("default_") and k[8:] in self.CLOSURE_FIELDS)}
+        records = super(ClaudeChatSession, self.with_context(propre)).create(vals_list)
+        for rec in records.sudo():
+            forges = [f for f in self.CLOSURE_EMPTY_AT_CREATE if rec[f]]
+            if forges:
+                raise AccessError(_(
+                    "Only the server may set these fields on a Gen conversation: %s",
+                    ", ".join(sorted(forges))))
+        return records
 
     def write(self, vals):
         self._check_closure_fields([vals])
-        return super().write(vals)
+        if "active" not in vals:
+            return super().write(vals)
+        # Seules les conversations qui CHANGENT d'état reçoivent
+        # la date ; réarchiver une archivée ne la déplace pas.
+        bascule = self.filtered(lambda s: s.active != bool(vals["active"]))
+        res = super().write(vals)
+        if bascule and vals["active"]:
+            bascule.sudo().write({"archive_date": False, "archive_source": False})
+        elif bascule:
+            source = self.env.context.get("gen_archive_source")
+            if source not in dict(ARCHIVE_SOURCES):
+                source = "other"
+            bascule.sudo().write({"archive_date": fields.Datetime.now(),
+                                  "archive_source": source})
+        return res
 
     # Un nom donné à la main n'est plus jamais réécrit, ni par le
     # titrage du premier échange ni par la passe périodique.
@@ -509,6 +572,59 @@ class ClaudeChatSession(models.Model):
         return vals
 
     @api.model
+    def _running_turns(self, session_ids):
+        """Les tours en cours, par conversation : {session_id: message}.
+
+        Seuls comptent les tours DÉTACHÉS (`turn_key` posé) : un « en cours »
+        d'avant ce mécanisme ne se termine jamais, et le compter bloquerait la
+        conversation pour toujours. Le bureau les clôt en « orphan » quand il
+        en croise un.
+
+        ⚠️ En sudo : `turn_key` ne se lit qu'en administration depuis
+        18.0.1.22.1. L'appelant ne passe que des conversations dont il a
+        vérifié la propriété.
+        """
+        rows = self.env["claude.chat.message"].sudo().search([
+            ("session_id", "in", list(session_ids)), ("role", "=", "assistant"),
+            ("state", "=", "pending"), ("turn_key", "!=", False),
+        ], order="id desc")
+        running = {}
+        for row in rows:
+            running.setdefault(row.session_id.id, row)
+        return running
+
+    def _usage_totals(self):
+        """Ce que la conversation entière a consommé.
+
+        Toutes les réponses comptent, celles d'un topo automatique comprises :
+        c'est la conversation qui a coûté, pas seulement ce qui s'affiche.
+        """
+        self.ensure_one()
+        # Les relances de la passe de nuit ne sont pas des tours.
+        groupes = self.env["claude.chat.message"].sudo()._read_group(
+            [("session_id", "=", self.id), ("role", "=", "assistant"),
+             ("followup", "=", False)],
+            aggregates=["net_tokens:sum", "total_tokens:sum", "cost_usd:sum",
+                        "duration_ms:sum", "__count"])
+        net, total, cout, duree, nombre = groupes[0] if groupes else (0, 0, 0.0, 0, 0)
+        return {"net_tokens": net or 0, "total_tokens": total or 0,
+                "cost_usd": round(cout or 0.0, 4), "duration_ms": duree or 0,
+                "turns": nombre or 0}
+
+    @api.model
+    def _closure_message_vals(self, closure_vals):
+        """Ce que la réponse du tour garde du jugement.
+
+        Rien quand la fermeture ne s'applique pas (`closure_state` absent des
+        valeurs de la conversation) : un tour d'une passe sans personne n'a
+        pas de jugement à garder.
+        """
+        if "closure_state" not in closure_vals:
+            return {}
+        return {"closure_state": closure_vals["closure_state"] or False,
+                "closure_reason": closure_vals.get("closure_reason") or False}
+
+    @api.model
     def _own(self, session_id):
         """La conversation de l'usager courant, ou rien.
 
@@ -542,7 +658,7 @@ class ClaudeChatSession(models.Model):
         """« Archiver » ou « Pas encore » sur la proposition de fermeture."""
         self.ensure_one()
         if answer == "archive":
-            self.write({"active": False})
+            self.with_context(gen_archive_source="banner").write({"active": False})
         elif answer == "later":
             # Gen ne repropose qu'après un nouveau tour ; la passe de nuit
             # relancera si rien ne bouge. Écrit en sudo : l'appelant a vérifié
@@ -550,7 +666,9 @@ class ClaudeChatSession(models.Model):
             maintenant = fields.Datetime.now()
             self.sudo().write({"closure_state": "open", "closure_reason": False,
                                "last_activity": maintenant, "list_date": maintenant,
-                               "followup_date": False})
+                               "followup_date": False,
+                               "closure_later_count": self.closure_later_count + 1,
+                               "closure_later_date": maintenant})
         else:
             return False
         return True

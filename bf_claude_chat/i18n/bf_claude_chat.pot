@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 02:30+0000\n"
-"PO-Revision-Date: 2026-10-01 02:30+0000\n"
+"POT-Creation-Date: 2026-10-08 09:18+0000\n"
+"PO-Revision-Date: 2026-10-08 09:18+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -101,6 +101,12 @@ msgid "API Key (optional)"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "API-equivalent cost: Max plan, nothing is billed per token."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account__active
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__active
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__active
@@ -116,6 +122,12 @@ msgstr ""
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Advanced"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "All"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -152,6 +164,34 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
 msgid "Archived"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__archive_source
+msgid "Archived From"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__archive_date
+msgid "Archived On"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Archived conversation. Writing here reopens it."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Archived on %s. Writing here reopens it."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Archived. Writing here reopens it."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -243,6 +283,11 @@ msgid "Bascule (UTC brut)"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__archive_source__batch
+msgid "Batch archiving"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__block_usage
 msgid "Block usage"
 msgstr ""
@@ -330,6 +375,18 @@ msgid "Claude Steering Instruction"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Claude plan, read at %s. Click ↻ for a fresh reading."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Claude plan. Click ↻ for a fresh reading."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__origin__mobile
 msgid "Clavardage (mobile)"
 msgstr ""
@@ -337,6 +394,12 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__origin__web
 msgid "Clavardage (web)"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Clear"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -357,8 +420,23 @@ msgid "Closure"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__closure_state
+msgid "Closure (this turn)"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__closure_reason
 msgid "Closure Reason"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__closure_reason
+msgid "Closure Reason (this turn)"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__archive_source__banner
+msgid "Closure banner"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -448,9 +526,20 @@ msgid "Conversation archived."
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__archive_source__list
+msgid "Conversation list"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_config_settings__claude_closure
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Conversations aim to close"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Cost at public API rates."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -532,6 +621,7 @@ msgid "Display Name"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__closure_state__done
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__closure_state__done
 msgid "Done"
 msgstr ""
@@ -708,8 +798,26 @@ msgid "Gen Assistant"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Gen finished before reading your question. Here it is again."
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_res_users__gen_closure_push_date
 msgid "Gen follow-up push"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Gen had already finished. Send your question again."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Gen is answering"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -928,6 +1036,7 @@ msgid "ID"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__closure_state__ideation
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__closure_state__ideation
 msgid "Ideation"
 msgstr ""
@@ -1046,8 +1155,18 @@ msgid "Last Activity"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__closure_later_date
+msgid "Last Declined On"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__list_date
 msgid "Last Movement"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__seen_message_id
+msgid "Last Seen Message"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1282,8 +1401,20 @@ msgstr ""
 
 #. module: bf_claude_chat
 #. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "New tokens: %s"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 msgid "No"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "No archived conversation"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1296,6 +1427,12 @@ msgstr ""
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
 msgid "No chats for this record"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "No conversation matches"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1377,6 +1514,11 @@ msgid "Order in which instructions are composed into the prompt."
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__archive_source__other
+msgid "Other"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__tool_log
 msgid "Outils appelés"
 msgstr ""
@@ -1412,6 +1554,11 @@ msgid "Personality"
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__archive_source__mobile
+msgid "Phone"
+msgstr ""
+
+#. module: bf_claude_chat
 #. odoo-python
 #: code:addons/bf_claude_chat/models/claude_chat_instruction.py:0
 msgid "Pick a record type, or set the scope back to « Every conversation »."
@@ -1443,6 +1590,17 @@ msgstr ""
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Proactive brief"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Processed, re-read context included: %s"
+msgstr ""
+
+#. module: bf_claude_chat
+#: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__closure_later_count
+msgid "Proposals Declined"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1528,6 +1686,12 @@ msgid "Records"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Refresh the counters"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_account_search
 msgid "Regrouper par"
 msgstr ""
@@ -1566,6 +1730,12 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Resets %s"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.res_config_settings_view_form_claude
 msgid "Response Timeout"
 msgstr ""
@@ -1578,6 +1748,12 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_account_window__heures_restantes
 msgid "Reste (h)"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Restore"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1621,6 +1797,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__scope
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_search
 msgid "Scope"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Search conversations"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1678,6 +1860,8 @@ msgid "Sequence"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_message__session_id
 msgid "Session"
 msgstr ""
@@ -1732,6 +1916,12 @@ msgstr ""
 #. module: bf_claude_chat
 #: model:ir.model.fields,help:bf_claude_chat.field_claude_chat_instruction__name
 msgid "Short label shown in the list. Not sent to Claude."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Show archived"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -1897,6 +2087,18 @@ msgid "This conversation has been dormant for a while. Archive it?"
 msgstr ""
 
 #. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "This conversation: %s turns"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "This record"
+msgstr ""
+
+#. module: bf_claude_chat
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_instruction__name
 #: model:ir.model.fields,field_description:bf_claude_chat.field_claude_chat_session__name
 msgid "Title"
@@ -1934,6 +2136,12 @@ msgstr ""
 msgid ""
 "Token drawn by the screen when asking: a question sent again after a cut "
 "finds its turn instead of starting a second one."
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/xml/claude_chat.xml:0
+msgid "Too many screens follow this answer. It will appear here."
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2018,8 +2226,15 @@ msgstr ""
 #. module: bf_claude_chat
 #. odoo-javascript
 #: code:addons/bf_claude_chat/static/src/js/gen_closure.js:0
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__closure_state__waiting
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__closure_state__waiting
 msgid "Waiting for you"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "Week"
 msgstr ""
 
 #. module: bf_claude_chat
@@ -2059,6 +2274,7 @@ msgid ""
 msgstr ""
 
 #. module: bf_claude_chat
+#: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_message__closure_state__open
 #: model:ir.model.fields.selection,name:bf_claude_chat.selection__claude_chat_session__closure_state__open
 msgid "Work left"
 msgstr ""
@@ -2100,6 +2316,12 @@ msgstr ""
 #. module: bf_claude_chat
 #: model_terms:ir.ui.view,arch_db:bf_claude_chat.view_claude_instruction_form
 msgid "e.g. Always quote the source"
+msgstr ""
+
+#. module: bf_claude_chat
+#. odoo-javascript
+#: code:addons/bf_claude_chat/static/src/js/gen_screen.js:0
+msgid "tokens"
 msgstr ""
 
 #. module: bf_claude_chat

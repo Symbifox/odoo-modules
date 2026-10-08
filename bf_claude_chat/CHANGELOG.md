@@ -1,5 +1,45 @@
 # Changelog - Gen (bf_claude_chat)
 
+## 18.0.1.35.0 - 2026-10-08
+
+### Fin de conversation, historique d'une fiche, roue et compteurs
+
+- **Le jugement de fermeture porte sur la conversation.** Gen dit « fait »
+  quand le travail de la conversation est fait et que la suite vit ailleurs
+  (brouillon au chatter, activité, échéance, rappel, geste de la personne).
+  Une question ou une offre en fin de réponse reste « t'attend », comme un
+  brouillon à valider ici.
+- **Journal** : chaque réponse garde le jugement de son tour
+  (`closure_state`, `closure_reason` sur `claude.chat.message`) ; une
+  conversation garde la date et le chemin de son archivage (`archive_date`,
+  `archive_source` : bandeau, liste, téléphone, lot, autre) et les « Pas
+  encore » (`closure_later_count`, `closure_later_date`). Champs du serveur
+  seulement, y compris à la création. Le chemin se passe par la clé de
+  contexte `gen_archive_source`.
+- **Sur une fiche, tout l'historique** : le panneau liste aussi les
+  conversations archivées, en grisé, les actives d'abord. Une archivée se
+  relit ; y écrire la rouvre ; « Rendre » la ramène. Le topo automatique ne
+  part plus que sur une fiche sans aucune conversation.
+- **Le panneau rattrape le plein écran** : archiver, renommer (crayon), date,
+  question pendant un tour, lu en fin de tour ; « Cette fiche | Toutes »
+  depuis une fiche. Recherche et vue des archivées dans les deux.
+- **La roue suit sa conversation** : les tours sont suivis par conversation.
+  On peut en ouvrir une autre pendant un tour et revenir : la réponse avance
+  toujours, et « Arrêter » vise la bonne. Le panneau rouvert relit sa
+  conversation et reprend un tour lancé ailleurs. La liste du bureau dit
+  « Gen répond ». Le chrono part du début du tour, et « trop d'écrans » n'est
+  plus annoncé comme une connexion perdue.
+- **Compteurs** en tête de conversation, pour les usagers internes : forfait
+  (session, semaine) demandé au pont (`/claude-chat/usage`, 8 s au plus), et
+  total de la conversation. ↻ relit le forfait. L'étiquette d'un tour survit
+  au rechargement.
+- **Api mobile 9** : `totals` dans `/messages`, `/usage`, et l'archivage du
+  téléphone daté et nommé.
+- Corrigé : un appel du panneau avec envoi automatique (`bf-claude-chat-open`)
+  ne partait jamais et perdait sa consigne sur une fiche sans conversation ;
+  ouvrir, renommer ou archiver la conversation d'un autre levait une erreur
+  d'accès au lieu de « introuvable ».
+
 ## 18.0.1.34.0 - 2026-10-03
 
 ### Ce qui reste à lire

@@ -31,7 +31,7 @@ from odoo.addons.bf_ai_bridge.tools import transport
 
 from .main import (
     AUTO_BRIEF_PROMPT, _check_rate_limit, _get_settings, _validated_context_ref,
-    launch_background_turn,
+    launch_background_turn, plan_usage,
 )
 
 _logger = logging.getLogger(__name__)
@@ -86,21 +86,10 @@ def _tools(tool_log):
 def _running_turn(env, session_ids):
     """Les tours en cours, par conversation : {session_id: message}.
 
-    Seuls comptent les tours DÉTACHÉS (`turn_key` posé) : un « en cours » d'avant
-    ce mécanisme ne se termine jamais, et le compter bloquerait la conversation
-    pour toujours. Le bureau les clôt en « orphan » quand il en croise un.
-
-    ⚠️ En sudo : `turn_key` ne se lit qu'en administration depuis 18.0.1.22.1.
-    L'appelant ne passe que des conversations dont il a vérifié la propriété.
+    La liste du bureau en a besoin aussi ; la règle vit sur le
+    modèle (`claude.chat.session._running_turns`).
     """
-    rows = env["claude.chat.message"].sudo().search([
-        ("session_id", "in", list(session_ids)), ("role", "=", "assistant"),
-        ("state", "=", "pending"), ("turn_key", "!=", False),
-    ], order="id desc")
-    running = {}
-    for row in rows:
-        running.setdefault(row.session_id.id, row)
-    return running
+    return env["claude.chat.session"]._running_turns(session_ids)
 
 
 def _push(env, user, session, text):
@@ -150,7 +139,12 @@ class BfClaudeChatMobileApi(http.Controller):
             # que l'app appelle quand la conversation est À L'ÉCRAN. Lire
             # `/messages` ne vaut pas lecture : l'app la relit en fin de tour,
             # même quand la personne est partie ailleurs.
-            "api": 8,
+            # api 9 : `totals` dans `/messages` (jetons neufs,
+            # traités, coût et durée de la conversation entière, nombre de
+            # tours), et `/usage?fresh=1` : le forfait (`plan`, `windows` :
+            # five_hour et seven_day avec `utilization` et `resets_at`,
+            # `measured_at`). Le pont garde un relevé 5 min, 15 s avec fresh.
+            "api": 9,
             "enabled": bool(settings["enabled"]),
             # Parité complète depuis l'api 2 : mêmes outils qu'au bureau.
             "readonly": False,
@@ -213,9 +207,11 @@ class BfClaudeChatMobileApi(http.Controller):
         if not device:
             return _json({"error": "unauthorized"}, 401)
         request.update_env(user=device.user_id.id)
-        session = request.env["claude.chat.session"].browse(
-            int(kw.get("session_id") or 0))
-        if not session.exists() or session.user_id != request.env.user:
+        # Cherchée parmi les SIENNES ; celle d'un autre levait une
+        # erreur d'accès, qui disait qu'elle existe.
+        session = request.env["claude.chat.session"].with_context(
+            active_test=False)._own(kw.get("session_id"))
+        if not session:
             return _json({"error": "conversation introuvable"}, 404)
         rows = request.env["claude.chat.message"].search_read(
             [("session_id", "=", session.id), ("internal", "=", False)],
@@ -230,7 +226,18 @@ class BfClaudeChatMobileApi(http.Controller):
             # `search_read` rend `false` pour un texte vide ; `/turn` rend "".
             row["end_reason"] = row.get("end_reason") or ""
         return _json({"session_id": session.id, "session_name": session.name,
-                      "messages": rows, **session._closure_payload()})
+                      "messages": rows, "totals": session._usage_totals(),
+                      **session._closure_payload()})
+
+    # ── Le forfait ────────────────────────────────────────
+    @http.route(f"{BASE}/usage", type="http", auth="public", methods=["GET"],
+                csrf=False, save_session=False)
+    def usage(self, **kw):
+        device = _device()
+        if not device:
+            return _json({"error": "unauthorized"}, 401)
+        request.update_env(user=device.user_id.id)
+        return _json(plan_usage(request.env, kw.get("fresh") in ("1", "true")))
 
     # ── Poser une question ────────────────────────────────────────────
     @http.route(f"{BASE}/ask", type="http", auth="public", methods=["POST"],
@@ -391,7 +398,7 @@ class BfClaudeChatMobileApi(http.Controller):
             int(_body().get("session_id") or 0))
         if not session.exists() or session.user_id != request.env.user:
             return _json({"error": "conversation introuvable"}, 404)
-        session.write({"active": False})
+        session.with_context(gen_archive_source="mobile").write({"active": False})
         return _json({"ok": True})
 
     # ── Fermeture ─────────────────────────────────────────

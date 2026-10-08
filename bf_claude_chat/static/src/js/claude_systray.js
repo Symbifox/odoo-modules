@@ -9,52 +9,9 @@ import { router } from "@web/core/browser/router";
 import { GenSteps, GenWaitLine } from "@bf_claude_chat/js/gen_wait";
 import { listModeMixin } from "@bf_claude_chat/js/gen_list_mode";
 import { closureMixin } from "@bf_claude_chat/js/gen_closure";
-import {
-    followTurn, newClientToken, pendingToStreaming, stopTurn, streamingFields,
-} from "@bf_claude_chat/js/gen_turn";
+import { screenMixin } from "@bf_claude_chat/js/gen_screen";
+import { newClientToken, streamingFields } from "@bf_claude_chat/js/gen_turn";
 
-/**
- * Étiquette de consommation d'un tour, dans le vocabulaire commun au Cockpit
- * et à Comms.
- *
- * ⚠️ On affiche les jetons NEUFS (entrée + mise en cache + sortie), PAS le
- * total : le total additionne le contexte relu, qui vaut ~93 % du volume et
- * n'est pas du travail neuf. C'est ce qui faisait lire « 50 000 jetons » pour
- * un bonjour — vrai, mais incompréhensible. Le contexte relu part dans
- * l'infobulle, où il informe sans écraser.
- */
-function usageLabel(u) {
-    if (!u) return "";
-    const parts = [];
-    // Calculé ici à défaut : un pont plus ancien n'envoie pas `net_tokens`,
-    // et l'étiquette doit rester juste plutôt que de disparaître.
-    const neufs = u.net_tokens
-        || (u.input_tokens || 0) + (u.cache_write_tokens || 0) + (u.output_tokens || 0);
-    if (neufs) {
-        parts.push(neufs >= 1000
-            ? `${(neufs / 1000).toFixed(1)} k jetons`
-            : `${neufs} jetons`);
-    }
-    if (u.cost_usd) parts.push(`${u.cost_usd.toFixed(3)} $`);
-    if (u.duration_ms) parts.push(`${(u.duration_ms / 1000).toFixed(1)} s`);
-    return parts.join(" · ");
-}
-
-function usageTitle(u) {
-    if (!u) return "";
-    const relu = u.cache_read_tokens || 0;
-    const lignes = [
-        `Jetons neufs : ${((u.net_tokens
-            || (u.input_tokens || 0) + (u.cache_write_tokens || 0)
-               + (u.output_tokens || 0))).toLocaleString("fr-CA")}`,
-        `Contexte relu : ${relu.toLocaleString("fr-CA")} (dix fois moins cher)`,
-        `Total traité : ${((u.total_tokens
-            || (u.input_tokens || 0) + (u.cache_write_tokens || 0)
-               + (u.output_tokens || 0) + relu)).toLocaleString("fr-CA")}`,
-        "Coût équivalent API — forfait Max, rien n'est facturé au jeton.",
-    ];
-    return lignes.join("\n");
-}
 
 
 /**
@@ -297,6 +254,9 @@ export class ClaudeSystrayItem extends Component {
             editingSessionId: null,
             ...listModeMixin.listModeState(),
             ...closureMixin.closureState(),
+            ...screenMixin.screenState(),
+            // Depuis une fiche, voir toutes les conversations.
+            allConversations: false,
             editingName: "",
             pageContext: null,       // {model, res_id, display_name, view_type, url}
             contextDismissed: false, // user dismissed the context badge
@@ -377,14 +337,21 @@ export class ClaudeSystrayItem extends Component {
                 this.state.loaded = true;
                 this.scrollToBottom();
             }
-            this.focusInput();
-            if (detail.prompt && this.inputRef.el) {
-                this.inputRef.el.value = detail.prompt;
-                this.inputRef.el.dispatchEvent(new Event("input", { bubbles: true }));
-            }
-            if (detail.autosend) {
-                setTimeout(() => this.onSendMessage && this.onSendMessage(), 80);
-            }
+            // Sur une fiche sans conversation, la zone de saisie
+            // n'existait pas encore et la consigne préremplie se perdait.
+            if (detail.prompt && !this.showChat) this.onNewChat();
+            setTimeout(() => {
+                const input = this.inputRef.el;
+                if (detail.prompt && input) {
+                    input.value = detail.prompt;
+                    input.dispatchEvent(new Event("input", { bubbles: true }));
+                    input.focus();
+                }
+                // 🔴 Appelait `onSendMessage`, qui n'a jamais existé : un appel
+                // avec `autosend` ne partait jamais. Pas pendant un tour : la
+                // consigne se glisserait dans le tour d'une autre demande.
+                if (detail.autosend && detail.prompt && !this.state.isThinking) this.onSend();
+            }, 120);
         };
         onMounted(() => window.addEventListener("bf-claude-chat-open", this._onExternalOpen));
         onWillUnmount(() => window.removeEventListener("bf-claude-chat-open", this._onExternalOpen));
@@ -394,8 +361,8 @@ export class ClaudeSystrayItem extends Component {
         // when the panel opens, and most abandoned ones are left within seconds
         // by a reload. Leaving the page stops that one, as before.
         this._onPageHide = () => {
-            const assistant = this._streamAssistant;
-            if (!assistant || !assistant.internalBrief || !assistant.turnId || assistant.finalized) return;
+            const assistant = this._internalBriefInFlight();
+            if (!assistant) return;
             const body = JSON.stringify({
                 jsonrpc: "2.0", method: "call", params: { turn_id: assistant.turnId },
             });
@@ -412,9 +379,11 @@ export class ClaudeSystrayItem extends Component {
         if (this.state.open) {
             // Capture context every time panel opens
             this._capturePageContext();
+            this.state.allConversations = false;
             // Always reload sessions (context may have changed)
-            await this.loadSessions();
+            await this.loadSessions({ reopen: true });
             this.state.loaded = true;
+            this.loadPlan();
             this.scrollToBottom();
             this.focusInput();
             await this._maybeAutoBrief();
@@ -456,15 +425,24 @@ export class ClaudeSystrayItem extends Component {
     // ── Data loading ────────────────────────────────────────
 
     _sessionFilterParams() {
-        const ctx = this.state.pageContext;
-        const params = this.state.toFollow ? { to_follow: true } : {};
-        if (ctx && ctx.model && ctx.res_id) {
+        const params = this._listParams();
+        if (this.recordFiltered) {
+            // Sur une fiche, tout son historique : les archivées viennent
+            // d'office, l'interrupteur des archives n'a pas lieu.
+            delete params.archived;
+            const ctx = this.state.pageContext;
             return { ...params, res_model: ctx.model, res_id: ctx.res_id };
         }
         return params;
     }
 
-    async loadSessions() {
+    /**
+     * @param {Object} opts  `reopen` : le panneau vient de s'ouvrir. La
+     *   conversation affichée est relue (un tour lancé ailleurs pendant
+     *   qu'il était fermé y apparaît), ou remplacée si elle n'appartient pas
+     *   à la fiche qu'on regarde maintenant.
+     */
+    async loadSessions({ reopen = false } = {}) {
         try {
             const params = this._sessionFilterParams();
             const result = await rpc("/claude-chat/sessions", params);
@@ -474,9 +452,17 @@ export class ClaudeSystrayItem extends Component {
             if (result.streaming !== undefined) this.state.streaming = result.streaming;
             if (result.auto_brief !== undefined) this.state.autoBrief = result.auto_brief;
             if (result.auto_brief_prompt) this.state.autoBriefPrompt = result.auto_brief_prompt;
-            // Auto-select most recent session if none active
+            const active = this.state.activeSessionId;
+            const inList = this.state.sessions.some((s) => s.id === active);
+            if (active > 0 && !inList && this.recordFiltered) {
+                // 🔴 Le panneau montrait la conversation de la fiche A sous la
+                // liste de la fiche B.
+                this._clearConversation(null);
+            }
             if (this.state.sessions.length > 0 && !this.state.activeSessionId) {
                 await this.selectSession(this.state.sessions[0].id);
+            } else if (reopen && this.state.activeSessionId > 0) {
+                await this.selectSession(this.state.activeSessionId);
             }
         } catch {
             this.notification.add(_t("Failed to load sessions"), { type: "danger" });
@@ -485,14 +471,15 @@ export class ClaudeSystrayItem extends Component {
 
     async selectSession(sessionId) {
         this.state.activeSessionId = sessionId;
+        this._syncThinking();
         // L'ancien bandeau ne doit pas viser la nouvelle conversation.
         this.state.closure = null;
         try {
             const result = await rpc("/claude-chat/messages", {
                 session_id: sessionId,
             });
-            this.state.messages = (result.messages || []).map((m) => (
-                m.state === "error" ? { ...m, interrupted: true } : m));
+            if (result.error || this.state.activeSessionId !== sessionId) return;
+            this.applyConversation(result);
             this.applyClosure(result);
             this.scrollToBottom();
         } catch {
@@ -507,9 +494,7 @@ export class ClaudeSystrayItem extends Component {
     async onNewChat() {
         // Re-capture context for the new chat
         this._capturePageContext();
-        this.state.activeSessionId = -1; // sentinel for new
-        this.state.messages = [];
-        this.state.closure = null;
+        this._clearConversation(-1); // sentinel for new
         this.focusInput();
     }
 
@@ -522,7 +507,13 @@ export class ClaudeSystrayItem extends Component {
         const textarea = this.inputRef.el;
         if (!textarea) return;
         const message = textarea.value.trim();
-        if (!message || this.state.isThinking) return;
+        if (!message) return;
+        // Comme au plein écran, la question part dans le tour en
+        // cours au lieu d'être ignorée.
+        if (this.state.isThinking) {
+            if (this.state.streamingActive) await this._sayInTurn(message, textarea);
+            return;
+        }
         textarea.value = "";
         await this._send(message);
     }
@@ -537,11 +528,16 @@ export class ClaudeSystrayItem extends Component {
      */
     async _maybeAutoBrief() {
         if (!this.state.autoBrief || !this.state.autoBriefPrompt) return;
-        if (!this.hasFilteredContext) return;
+        if (!this.recordFiltered) return;
+        // La liste d'une fiche porte maintenant ses archivées ; une
+        // fiche déjà travaillée avec Gen ne relance plus de topo. Une liste
+        // vidée par un filtre (À suivre, recherche) ne dit rien de la fiche.
+        if (this.state.toFollow || this.state.query.trim()) return;
         if (this.state.sessions.length > 0) return;
+        // L'état d'une conversation d'avant (total, avis, tour) ne passe pas au
+        // topo, et c'est le tour de CETTE conversation neuve qui compte.
+        this._clearConversation(-1);
         if (this.state.isThinking) return;
-        this.state.activeSessionId = -1;
-        this.state.messages = [];
         await this._send(this.state.autoBriefPrompt, { internal: true });
     }
 
@@ -549,6 +545,7 @@ export class ClaudeSystrayItem extends Component {
         if (!message || this.state.isThinking) return;
 
         const sessionId = this.state.activeSessionId === -1 ? null : this.state.activeSessionId;
+        this._onWrite();
 
         // Optimistic user message — a directive posted on the user's behalf
         // must not appear as something they typed.
@@ -565,13 +562,15 @@ export class ClaudeSystrayItem extends Component {
 
         // Legacy buffered path when streaming is disabled server-side.
         if (this.state.streaming === false) {
-            this.state.isThinking = true;
+            this._bufferedBusy = true;
+            this._syncThinking();
             this.scrollToBottom();
             try {
                 await this._sendBuffered(message, sessionId, context, internal);
             } finally {
-                this.state.isThinking = false;
-                await this._refreshSessions(wasNewSession);
+                this._bufferedBusy = false;
+                this._syncThinking();
+                await this._refreshList(wasNewSession);
                 this.scrollToBottom();
                 this.focusInput();
             }
@@ -611,60 +610,24 @@ export class ClaudeSystrayItem extends Component {
             this.state.messages.splice(this.state.messages.indexOf(assistant), 1);
             await this._sendBuffered(message, sessionId, context, internal);
         }
-        await this._refreshSessions(wasNewSession);
+        await this._refreshList(wasNewSession);
         this.scrollToBottom();
         this.focusInput();
-    }
-
-    async _followTurn(assistant, { start = null, turnId = null, onBusy = null }) {
-        this.state.isThinking = true;
-        this.state.streamingActive = true;
-        this.scrollToBottom();
-        const controller = new AbortController();
-        this._streamAbort = controller;
-        this._streamAssistant = assistant;
-        let outcome;
-        try {
-            outcome = await followTurn({
-                onSessionId: (id) => { this.state.activeSessionId = id; },
-                scrollToBottom: () => this.scrollToBottom(),
-                onBusy,
-            }, assistant, { start, turnId, signal: controller.signal, labels: { usageLabel, usageTitle } });
-        } finally {
-            if (outcome === "stopped") assistant.interrupted = true;
-            assistant.streaming = false;
-            assistant.reconnecting = false;
-            this.state.isThinking = false;
-            this.state.streamingActive = false;
-            this._streamAbort = null;
-            this._streamAssistant = null;
-        }
-        if (assistant.closure && this.state.messages.includes(assistant)) {
-            this.applyClosure(assistant.closure);
-        }
-        return outcome;
-    }
-
-    /** A turn still running when the conversation is opened (page reloaded). */
-    async _resumePending() {
-        const last = this.state.messages[this.state.messages.length - 1];
-        if (!last || last.role !== "assistant" || this.state.isThinking) return;
-        if (last.state !== "pending") return;
-        pendingToStreaming(last);
-        await this._followTurn(last, { turnId: last.id });
-        await this._refreshSessions(false);
     }
 
     async _sendBuffered(message, sessionId, context, internal = false) {
         const payload = { session_id: sessionId, message };
         if (context) payload.context = context;
         if (internal) payload.internal = true;
+        const affichee = this.state.activeSessionId;
         try {
             const result = await rpc("/claude-chat/send", payload);
             if (result.error) {
                 this.notification.add(result.error, { type: "danger" });
                 return;
             }
+            // La réponse va à SA conversation.
+            if (this.state.activeSessionId !== affichee) return;
             if (result.session_id) this.state.activeSessionId = result.session_id;
             this.state.messages.push({
                 id: result.message_id,
@@ -676,7 +639,7 @@ export class ClaudeSystrayItem extends Component {
         }
     }
 
-    async _refreshSessions(wasNewSession) {
+    async _refreshList(wasNewSession = false) {
         const filterParams = this._sessionFilterParams();
         try {
             const sessResult = await rpc("/claude-chat/sessions", filterParams);
@@ -693,16 +656,27 @@ export class ClaudeSystrayItem extends Component {
         } catch { /* keep existing sidebar */ }
     }
 
-    onStop() {
-        stopTurn(this._streamAssistant);
-        if (this._streamAbort) this._streamAbort.abort();
-    }
-
     onInputKeydown(ev) {
         if (ev.key === "Enter" && !ev.shiftKey) {
             ev.preventDefault();
             this.onSend();
         }
+    }
+
+    // ── Archives et portée de la liste ──────────
+
+    onDeleteSession(sessionId) {
+        this.archiveWithUndo(sessionId, "list");
+    }
+
+    async onRestoreSession(sessionId) {
+        await this.restoreSession(sessionId);
+    }
+
+    async onToggleAllConversations() {
+        this.state.allConversations = !this.state.allConversations;
+        if (!this.state.allConversations) this.state.archivedView = false;
+        await this.loadSessions();
     }
 
     // ── Rename ──────────────────────────────────────────────
@@ -837,6 +811,11 @@ export class ClaudeSystrayItem extends Component {
         return ctx && ctx.model && ctx.res_id;
     }
 
+    /** La liste suit la fiche affichée (Sauf « Toutes »). */
+    get recordFiltered() {
+        return Boolean(this.hasFilteredContext && !this.state.allConversations);
+    }
+
     get activeSessionName() {
         if (this.state.activeSessionId === -1) return "New Chat";
         const s = this.state.sessions.find((s) => s.id === this.state.activeSessionId);
@@ -844,7 +823,7 @@ export class ClaudeSystrayItem extends Component {
     }
 }
 
-Object.assign(ClaudeSystrayItem.prototype, listModeMixin, closureMixin);
+Object.assign(ClaudeSystrayItem.prototype, listModeMixin, closureMixin, screenMixin);
 
 export const systrayClaudeChat = {
     Component: ClaudeSystrayItem,

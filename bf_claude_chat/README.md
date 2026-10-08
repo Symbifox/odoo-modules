@@ -159,8 +159,19 @@ turn Gen says where the conversation stands - work left, waiting for you,
 ideation, done - through a hidden tag that the turn runner strips from the
 stream before it reaches the screen or the database (`closure.py`). The
 instruction travels with the turn's message, not the system prompt, and it
-judges the person's goal rather than the request of the moment: a draft that
-has not been sent, or code that is not yet deployed and verified, is not done.
+judges the work of the conversation rather than the whole file: once what the
+conversation had to do is done and what remains lives elsewhere (a draft in the
+chatter, an activity, a deadline, a reminder), the conversation is done. A reply
+that ends on a question, a choice or an offer to act stays "waiting for you",
+and so does a draft shown only in the conversation that must be validated
+there; code not yet deployed and verified is still work left.
+
+- **Journal**: every reply keeps the judgment of its own turn
+  (`claude.chat.message.closure_state` / `closure_reason`), and a conversation
+  keeps when and from where it was archived (`archive_date`, `archive_source`:
+  closure banner, conversation list, phone, batch, other) and how many proposals
+  were answered "Not yet". Comparing what Gen said with what the person did is
+  then a query, and it can be repeated after every change of the instruction.
 
 - **"Everything seems done. Archive this conversation?"** appears under a done
   (or dormant) conversation, with "Not yet". Archiving keeps five seconds to
@@ -179,6 +190,26 @@ has not been sent, or code that is not yet deployed and verified, is not done.
   module nothing is sent.
 - **"To follow" filter** and a state icon in the list, on the side panel and
   the full page. `?gen_session=<id>` in the page URL opens that conversation.
+
+### History of a record, turns per conversation, and counters
+
+- **On a record, the side panel lists the record's whole history**, archived
+  conversations included (greyed, active ones first). An archived conversation
+  can be read; writing in it reopens it, and "Restore" brings it back. The
+  proactive brief only starts on a record that has no conversation at all.
+  Elsewhere, archived conversations appear only in the "Show archived" view.
+- **The side panel matches the full page**: archive from the list, rename
+  (pencil), date, a question slipped into a running turn, read at the end of a
+  turn, search, and "This record | All" from a record.
+- **Turns are followed per conversation**: open another conversation during a
+  turn and come back, the answer is still streaming and "Stop" acts on the right
+  turn. A reopened panel reloads its conversation and picks up a turn started
+  elsewhere (full page, phone, another tab). The desktop list shows "Gen is
+  answering"; the elapsed time starts with the turn on the server.
+- **Counters** at the top of a conversation, for internal users: the Claude plan
+  windows (5-hour session, week) read through the bridge, and the total of the
+  conversation (new tokens, API-equivalent cost). ↻ asks for a fresh reading.
+  The usage label under each answer survives a reload.
 
 Closure fields are written by the server only, and a conversation can never be
 handed to another user (Odoo checks the write rule before the write, not after).
@@ -227,6 +258,8 @@ modules the mobile routes simply answer 401.
 | last_activity, list_date | Datetime (indexed) | Last turn; last movement (turn or follow-up), the list order |
 | followup_date | Datetime | Last nightly follow-up; one per idle period |
 | link_task_id, link_proposed | Many2one(project.task), Boolean | The task Gen suggested for a conversation without a record, proposed once |
+| archive_date, archive_source | Datetime, Selection | When and from where the conversation was archived (banner, list, mobile, batch, other); set by `write` from the `gen_archive_source` context key, cleared when it comes back |
+| closure_later_count, closure_later_date | Integer, Datetime | Closure proposals answered "Not yet", and the last time |
 
 `res.users` gains `gen_list_mode` (Selection `title` / `element`, default
 `title`): what the conversation list shows, shared by the web and the mobile app,
@@ -251,6 +284,7 @@ and `gen_closure_push_date`, the local day of the last daily notification.
 | cost_usd | Float | What the turn would cost at public API rates |
 | duration_ms | Integer | Turn duration |
 | followup | Boolean | A follow-up posted by the nightly pass, not by a turn of Gen |
+| closure_state, closure_reason | Selection, Char | The closure judgment of this turn (server-written) |
 
 ### claude.chat.instruction
 
@@ -270,12 +304,13 @@ Every endpoint is `type="json"`, `auth="user"`, `methods=["POST"]`.
 | Route | Description |
 |-------|-------------|
 | `/claude-chat/send` | Sends a message, returns the assistant's reply |
-| `/claude-chat/sessions` | Lists sessions (filterable by res_model/res_id) |
+| `/claude-chat/sessions` | Lists sessions. On a record (res_model/res_id): its whole history, archived included, active first; elsewhere `archived=True` lists archived ones only. Also `query` and `to_follow`; each row carries `active`, `archive_date` and `busy` |
 | `/claude-chat/list-mode` | Remembers whether the list shows titles or linked records |
-| `/claude-chat/messages` | A session's messages |
+| `/claude-chat/messages` | One of the user's sessions, archived included: messages with their usage, `active`, `archive_date` and `totals` |
+| `/claude-chat/usage` | Internal users: the Claude plan (session and week windows) read through the bridge, and `totals` of the user's own `session_id`; `fresh=True` asks for a new reading |
 | `/claude-chat/say` | Slips a question into the owner's running turn; nothing is recorded until the bridge confirms Gen read it |
 | `/claude-chat/rename-session` | Renames a session |
-| `/claude-chat/delete-session` | Archives a session |
+| `/claude-chat/delete-session` | Archives a session; `source` = `list` or `banner` |
 | `/claude-chat/restore-session` | Restores the owner's archived session ("Undo") |
 | `/claude-chat/closure-answer` | "Archive" or "Not yet" on Gen's proposal |
 | `/claude-chat/link-answer` | Links the conversation to the suggested task, or not |
@@ -296,11 +331,12 @@ bearer token (no session cookie, `save_session=False`):
 |-------|-------------|
 | `GET  /bf_claude_chat/mobile/v1/ping` | Discovery; the version is disclosed only to a recognised device |
 | `GET  /bf_claude_chat/mobile/v1/sessions` | The device user's conversations, each with `busy` and the running `turn_id` |
-| `GET  /bf_claude_chat/mobile/v1/messages` | One conversation's messages, with `end_reason` |
+| `GET  /bf_claude_chat/mobile/v1/messages` | One conversation's messages, with `end_reason`, and `totals` for the whole conversation |
+| `GET  /bf_claude_chat/mobile/v1/usage` | The Claude plan, like `/claude-chat/usage`; `?fresh=1` for a new reading |
 | `POST /bf_claude_chat/mobile/v1/ask` | Records the question, returns a turn_id; `409 busy` (with the running `turn_id`) while that conversation already has a turn |
 | `GET  /bf_claude_chat/mobile/v1/turn` | Turn state, partial text, tool log and `end_reason` (`stopped` after the Stop button) |
 | `POST /bf_claude_chat/mobile/v1/stop` | The Stop button: flags the turn and cancels it at the bridge, like `/claude-chat/stop` |
-| `POST /bf_claude_chat/mobile/v1/delete-session` | Archives a conversation |
+| `POST /bf_claude_chat/mobile/v1/delete-session` | Archives a conversation (source `mobile`) |
 | `POST /bf_claude_chat/mobile/v1/rename-session` | Renames a conversation; a manual name is never rewritten by the automatic titling |
 | `POST /bf_claude_chat/mobile/v1/list-mode` | Stores the Titles / Records choice on the user (same setting as the web) |
 | `POST /bf_claude_chat/mobile/v1/closure-answer` | `archive` or `later` on Gen's proposal |
@@ -315,9 +351,9 @@ renaming and "Send to Gen" from a record, 6 adds `res_label` and `/list-mode`,
 7 adds `closure_state`, `closure_reason` and `link_task` on conversations and
 `/messages`, `followup` on a follow-up message, `/sessions?follow=1`,
 `/closure-answer` and `/link-answer`, 8 adds `unread` on each conversation of
-`/sessions` (Gen wrote since the last reading) and `/seen`. Reading `/messages`
-does not count as reading: the app reloads it at the end of a turn even when
-the user has left.
+`/sessions` (Gen wrote since the last reading) and `/seen`, 9 adds `totals` in
+`/messages` and `/usage`. Reading `/messages` does not count as reading: the app
+reloads it at the end of a turn even when the user has left.
 
 ## Talking to the bridge
 
@@ -334,6 +370,14 @@ coexisted; the migration removes the old keys.
 
 The smart title is generated in the background by a daemon thread calling
 `/generate-title` on the bridge after the first exchange.
+
+The plan counters call `/usage` on the bridge with the tenant and a `fresh`
+flag. The bridge reads the plan of the account that pays this tenant's turns (a
+tenant can run on its own subscription) with the host probe's own functions. It
+keeps a reading five minutes, makes at most one real call per fifteen seconds
+and per account when `fresh` is set, one call at a time, and keeps a failure a
+minute; a failed reading never erases the last good one. The token never leaves
+the host.
 
 ## How a turn is assembled
 

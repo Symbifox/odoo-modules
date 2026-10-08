@@ -90,7 +90,9 @@ function applyEvent(host, assistant, event, data, labels) {
         case "viewer_full":
             // Trop d'écrans en direct sur le serveur : le tour continue, cet
             // écran revient par /claude-chat/attach dès qu'une place se libère.
+            // Le dire tel quel ; « connexion perdue » était faux.
             assistant.reconnecting = true;
+            assistant.viewerFull = true;
             break;
         case "snapshot":
             // Relecture du tour depuis le début : ce que les reprises
@@ -101,6 +103,7 @@ function applyEvent(host, assistant, event, data, labels) {
                 raw: t.name, label: toolLabel(t.name), detail: t.detail || "", sub: [],
             }));
             assistant.reconnecting = false;
+            assistant.viewerFull = false;
             break;
         case "resume": {
             const done = (assistant.content || "").trimEnd();
@@ -114,6 +117,7 @@ function applyEvent(host, assistant, event, data, labels) {
         case "text":
             assistant.content += data.delta || "";
             assistant.reconnecting = false;
+            assistant.viewerFull = false;
             host.scrollToBottom();
             break;
         case "tool":
@@ -121,6 +125,8 @@ function applyEvent(host, assistant, event, data, labels) {
             break;
         case "done":
             if (data.response) assistant.content = (assistant.prefix || "") + data.response;
+            // Gardée pour le total de la conversation.
+            if (data.usage) assistant.usage = data.usage;
             if (labels && data.usage) {
                 assistant.usageLabel = labels.usageLabel(data.usage);
                 assistant.usageTitle = labels.usageTitle(data.usage);
@@ -153,6 +159,7 @@ function applyEvent(host, assistant, event, data, labels) {
             if (data.message_id) assistant.id = data.message_id;
             // Où en est la conversation, selon Gen.
             if (data.closure) assistant.closure = data.closure;
+            if (data.usage && data.usage.duration_ms) assistant.usage = data.usage;
             if (labels && data.usage && data.usage.duration_ms) {
                 assistant.usageLabel = labels.usageLabel(data.usage);
                 assistant.usageTitle = labels.usageTitle(data.usage);
@@ -237,9 +244,17 @@ export async function stopTurn(assistant) {
     }
 }
 
-/** Une bulle chargée « en cours » (page rechargée pendant un tour). */
+/** Une bulle chargée « en cours » (page rechargée pendant un tour).
+ *
+ *  Le chrono part de la création du tour au serveur, pas de la
+ *  réouverture ; il repartait à zéro à chaque retour sur la conversation. */
 export function pendingToStreaming(msg) {
     const content = msg.content === "…" ? "" : (msg.content || "");
-    Object.assign(msg, streamingFields(), { content, prefix: "", turnId: msg.id });
+    const depart = msg.create_date
+        ? Date.parse(`${String(msg.create_date).replace(" ", "T")}Z`) : NaN;
+    Object.assign(msg, streamingFields(), {
+        content, prefix: "", turnId: msg.id,
+        startedAt: Number.isNaN(depart) ? Date.now() : Math.min(depart, Date.now()),
+    });
     return msg;
 }

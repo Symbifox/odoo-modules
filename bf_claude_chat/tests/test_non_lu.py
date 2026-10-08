@@ -107,7 +107,8 @@ class TestNonLuRoutes(HttpCase):
         return {r["id"]: r for r in self._appel("/sessions").json()["sessions"]}
 
     def test_api_8(self):
-        self.assertEqual(self._appel("/ping").json()["api"], 8)
+        # Au moins 8 : l'api 9 garde tout ce que la 8 apporte.
+        self.assertGreaterEqual(self._appel("/ping").json()["api"], 8)
 
     def test_la_liste_dit_a_lire_et_seen_la_demarque(self):
         self.assertTrue(self._rangs()[self.mienne.id]["unread"])

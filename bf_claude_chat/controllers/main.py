@@ -195,6 +195,40 @@ def _get_settings():
     }
 
 
+def plan_usage(env, fresh=False):
+    """Où en est le forfait Claude, demandé au pont.
+
+    Partagé par le bureau et le téléphone. Le pont relève lui-même (le jeton
+    du compte est sur l'hôte) et tient un cache : 5 min sans ↻, 15 s avec.
+    Un locataire sur clé d'API paie au jeton : il n'a pas de forfait à
+    montrer. Ne lève jamais : sans relevé, l'écran n'affiche pas de compteur.
+
+    Réservé aux usagers internes : un usager du portail ne lit pas le
+    forfait. 8 s d'attente au plus (le pont n'attend lui-même que 5 s
+    Anthropic) : un relevé lent ne doit pas tenir un worker.
+    """
+    if not env.user._is_internal():
+        return {"plan": False}
+    if _get_api_key(env):
+        return {"plan": False, "api_key": True}
+    try:
+        data = env["bf.ai.bridge"].call(
+            "/usage", {"tenant": env["bf.ai.bridge"].tenant(), "fresh": bool(fresh)}, 8)
+    except Exception:
+        _logger.info("Gen : forfait non relevé", exc_info=True)
+        return {"plan": True, "windows": [], "error": "unavailable"}
+    fenetres = [
+        {"key": f.get("key"), "utilization": f.get("utilization"),
+         "resets_at": f.get("resets_at")}
+        for f in (data.get("windows") or [])
+        if f.get("key") in ("five_hour", "seven_day")
+        and isinstance(f.get("utilization"), (int, float))
+    ]
+    return {"plan": True, "windows": fenetres,
+            "measured_at": data.get("measured_at") or False,
+            "error": "unavailable" if data.get("error") and not fenetres else False}
+
+
 # ── Streaming (Server-Sent Events) ──────────────────────────────────────────
 
 # After this many consecutive streamed failures, a session's Claude thread is
@@ -661,7 +695,12 @@ class ClaudeChatController(http.Controller):
         # Le chemin sans flux est un tour comme un autre. Sans cette
         # écriture, une conversation tenue ainsi passait à « dort » au bout de
         # deux jours et la liste ne la remontait plus.
-        session.sudo().write(session._closure_vals(verdict))
+        cvals = session._closure_vals(verdict)
+        session.sudo().write(cvals)
+        # La réponse garde le jugement de son tour.
+        mvals = session._closure_message_vals(cvals)
+        if mvals:
+            assistant_msg.sudo().write(mvals)
 
         return {
             "session_id": session.id,
@@ -1120,11 +1159,17 @@ class ClaudeChatController(http.Controller):
         return {"status": "queued", "turn_id": en_cours.id}
 
     @http.route("/claude-chat/sessions", type="json", auth="user", methods=["POST"])
-    def list_sessions(self, res_model=None, res_id=None, query=None, to_follow=False):
+    def list_sessions(self, res_model=None, res_id=None, query=None, to_follow=False,
+                      archived=False):
         """List the current user's chat sessions, optionally filtered by record context.
 
         ``to_follow`` garde ce qui attend quelque chose (à fermer,
         t'attend, dort, relancé), et chaque ligne porte son état de fermeture.
+
+        Sur une fiche, TOUT l'historique, archivées comprises, les
+        actives d'abord ; ailleurs, les archivées seulement si ``archived`` est
+        demandé, et alors elles seules. Chaque ligne dit si elle est archivée
+        et si Gen y travaille (``busy``).
 
         Mobile threads are included: since the app moved to /chat they share the
         same session id, the same tools and the same rights, so a conversation
@@ -1132,20 +1177,32 @@ class ClaudeChatController(http.Controller):
         field survives as provenance, not as a filter.
         """
         domain = [("user_id", "=", request.env.user.id)]
-        if res_model and res_id:
+        sur_fiche = bool(res_model and res_id)
+        if sur_fiche:
             domain.append(("res_model", "=", str(res_model)[:64]))
             domain.append(("res_id", "=", int(res_id)))
         if query:
             domain += request.env["claude.chat.session"]._search_domain(query)
         Session = request.env["claude.chat.session"]
+        order = "list_date desc, id desc"
         if to_follow:
             domain += Session._to_follow_domain()
+        elif archived:
+            Session = Session.with_context(active_test=False)
+            domain.append(("active", "=", False))
+        elif sur_fiche:
+            Session = Session.with_context(active_test=False)
+            order = "active desc, list_date desc, id desc"
         sessions = Session._with_res_labels(Session.search_read(
             domain,
-            ["name", "write_date", "message_count", "res_model", "res_id"],
-            order="list_date desc, id desc",
+            ["name", "write_date", "list_date", "message_count", "res_model", "res_id",
+             "active", "archive_date"],
+            order=order,
             limit=50,
         ))
+        running = Session._running_turns([s["id"] for s in sessions])
+        for row in sessions:
+            row["busy"] = row["id"] in running
         Session._with_closure(sessions)
         ICP = request.env["ir.config_parameter"].sudo()
         streaming = (
@@ -1281,14 +1338,25 @@ class ClaudeChatController(http.Controller):
 
     @http.route("/claude-chat/messages", type="json", auth="user", methods=["POST"])
     def get_messages(self, session_id):
-        """Get all messages for a session."""
-        session = request.env["claude.chat.session"].browse(int(session_id))
-        if not session.exists() or session.user_id != request.env.user:
+        """Get all messages for a session.
+
+        Cherchée parmi les SIENNES, archivées comprises (une fiche
+        montre tout son historique). Lire celle d'un autre levait une erreur
+        d'accès, qui disait qu'elle existe.
+        """
+        session = request.env["claude.chat.session"].with_context(
+            active_test=False)._own(session_id)
+        if not session:
             return {"error": "Session not found"}
 
+        # La consommation de chaque tour, pour que l'étiquette sous
+        # une réponse survive au rechargement (elle ne venait que du flux).
         messages = request.env["claude.chat.message"].search_read(
             [("session_id", "=", session.id), ("internal", "=", False)],
-            ["role", "content", "create_date", "state", "end_reason", "followup"],
+            ["role", "content", "create_date", "state", "end_reason", "followup",
+             "input_tokens", "output_tokens", "cache_read_tokens",
+             "cache_write_tokens", "net_tokens", "total_tokens", "cost_usd",
+             "duration_ms"],
             order="create_date asc, id asc",
         )
         # Au bureau, cette route ne sert qu'à OUVRIR une
@@ -1299,7 +1367,21 @@ class ClaudeChatController(http.Controller):
         if vu:
             session._mark_seen(vu)
         return {"messages": messages, "session_name": session.name,
+                "active": session.active,
+                "archive_date": fields.Datetime.to_string(session.archive_date) or False,
+                "totals": session._usage_totals(),
                 **session._closure_payload()}
+
+    @http.route("/claude-chat/usage", type="json", auth="user", methods=["POST"])
+    def plan_usage(self, fresh=False, session_id=False):
+        """Le forfait qui paie les tours de ce locataire, et ce
+        que la conversation affichée a consommé (↻ relit les deux)."""
+        result = plan_usage(request.env, bool(fresh))
+        session = request.env["claude.chat.session"].with_context(
+            active_test=False)._own(session_id) if session_id else None
+        if session:
+            result.update(session_id=session.id, totals=session._usage_totals())
+        return result
 
     @http.route("/claude-chat/seen", type="json", auth="user", methods=["POST"])
     def mark_seen(self, session_id, message_id=None):
@@ -1313,9 +1395,10 @@ class ClaudeChatController(http.Controller):
 
     @http.route("/claude-chat/rename-session", type="json", auth="user", methods=["POST"])
     def rename_session(self, session_id, name=""):
-        """Rename a chat session."""
-        session = request.env["claude.chat.session"].browse(int(session_id))
-        if not session.exists() or session.user_id != request.env.user:
+        """Rename a chat session (archivée comprise)."""
+        session = request.env["claude.chat.session"].with_context(
+            active_test=False)._own(session_id)
+        if not session:
             return {"error": "Session not found"}
 
         # Un nom donné à la main n'est plus jamais réécrit.
@@ -1325,12 +1408,17 @@ class ClaudeChatController(http.Controller):
         return {"status": "ok", "name": clean_name}
 
     @http.route("/claude-chat/delete-session", type="json", auth="user", methods=["POST"])
-    def delete_session(self, session_id):
-        """Archive a chat session."""
-        session = request.env["claude.chat.session"].browse(int(session_id))
-        if not session.exists() or session.user_id != request.env.user:
+    def delete_session(self, session_id, source="list"):
+        """Archive a chat session.
+
+        ``source`` dit d'où vient le geste (la liste, ou le
+        bandeau « Archiver ? »), pour comparer après coup aux propositions.
+        """
+        session = request.env["claude.chat.session"]._own(session_id)
+        if not session:
             return {"error": "Session not found"}
-        session.write({"active": False})
+        source = source if source in ("list", "banner") else "list"
+        session.with_context(gen_archive_source=source).write({"active": False})
         return {"status": "ok"}
 
     @http.route("/claude-chat/search-tasks", type="json", auth="user", methods=["POST"])

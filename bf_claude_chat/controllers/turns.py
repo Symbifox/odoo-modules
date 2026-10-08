@@ -693,8 +693,10 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
             # pas prévenir le téléphone une seconde fois.
             if not message.exists() or message.state != "pending":
                 return None
-            message.write(vals)
             session = message.session_id
+            # La réponse garde le jugement de son tour.
+            cvals = session._closure_vals(verdict, failed=en_erreur)
+            message.write({**vals, **session._closure_message_vals(cvals)})
             svals = {}
             if claude_sid and claude_sid != session.claude_session_id:
                 svals["claude_session_id"] = claude_sid
@@ -711,7 +713,7 @@ def _finalize(db_name, message_id, progress, final, usage, claude_sid, stopped,
                     and not en_erreur and question:
                 titre = (question[:60] + "...") if len(question) > 60 else question
                 svals["name"] = titre
-            svals.update(session._closure_vals(verdict, failed=en_erreur))
+            svals.update(cvals)
             session.write(svals)
             return {
                 "session_id": session.id,

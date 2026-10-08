@@ -41,6 +41,9 @@ export const closureMixin = {
     closureBarKind() {
         const c = this.state.closure;
         if (!c || this.state.isThinking || !(this.state.activeSessionId > 0)) return false;
+        // Une conversation archivée, rouverte pour la relire, n'a
+        // rien à proposer.
+        if (this.state.activeArchived) return false;
         if (c.state === "done" || c.state === "idle") return "archive";
         if (c.linkTask) return "link";
         return false;
@@ -80,11 +83,13 @@ export const closureMixin = {
 
     async onToggleToFollow() {
         this.state.toFollow = !this.state.toFollow;
+        // « À suivre » et « Archivées » ne se combinent pas.
+        if (this.state.toFollow && "archivedView" in this.state) this.state.archivedView = false;
         await this.loadSessions();
     },
 
     onClosureArchive() {
-        this.archiveWithUndo(this.state.activeSessionId);
+        this.archiveWithUndo(this.state.activeSessionId, "banner");
     },
 
     async onClosureLater() {
@@ -123,9 +128,25 @@ export const closureMixin = {
      *  Le serveur archive au clic : un délai côté écran perdait l'archivage au
      *  rechargement de la page (relecture du 2026-09-30). « Annuler » restaure.
      */
-    async archiveWithUndo(sessionId) {
+    /** Rendre une conversation archivée à la liste. */
+    async restoreSession(sessionId) {
+        try {
+            const r = await rpc("/claude-chat/restore-session", { session_id: sessionId });
+            if (r && r.error) throw new Error(r.error);
+        } catch {
+            this.notification.add(_t("The conversation could not be restored."),
+                                  { type: "danger" });
+            return false;
+        }
+        if (this.state.activeSessionId === sessionId) this.state.activeArchived = false;
+        await this._refreshList();
+        return true;
+    },
+
+    async archiveWithUndo(sessionId, source = "list") {
         if (!(sessionId > 0)) return;
-        if (this.state.isThinking && this.state.activeSessionId === sessionId) {
+        const busyRow = this.state.sessions.find((s) => s.id === sessionId);
+        if ((this.state.busyIds && this.state.busyIds[sessionId]) || (busyRow && busyRow.busy)) {
             this.notification.add(_t("Gen is still answering in this conversation."),
                                   { type: "warning" });
             return;
@@ -134,7 +155,10 @@ export const closureMixin = {
         const row = index >= 0 ? this.state.sessions[index] : null;
         const wasActive = this.state.activeSessionId === sessionId;
         try {
-            const result = await rpc("/claude-chat/delete-session", { session_id: sessionId });
+            // La liste ou le bandeau, pour comparer après coup.
+            const result = await rpc("/claude-chat/delete-session", {
+                session_id: sessionId, source,
+            });
             if (result && result.error) throw new Error(result.error);
         } catch {
             this.notification.add(_t("The conversation could not be archived."),
@@ -142,6 +166,8 @@ export const closureMixin = {
             return;
         }
         this.state.sessions = this.state.sessions.filter((s) => s.id !== sessionId);
+        // Sur une fiche, l'historique garde l'archivée (en grisé).
+        if (this.recordFiltered) this._refreshList();
         if (wasActive) {
             this.state.activeSessionId = null;
             this.state.messages = [];
@@ -164,6 +190,7 @@ export const closureMixin = {
                                               { type: "danger" });
                         return;
                     }
+                    if (this.recordFiltered) await this._refreshList();
                     if (row && !this.state.sessions.some((s) => s.id === sessionId)) {
                         this.state.sessions.splice(
                             Math.min(index, this.state.sessions.length), 0, row);

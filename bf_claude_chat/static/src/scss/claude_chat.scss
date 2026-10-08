@@ -862,3 +862,51 @@ body.bf_dark_mode {
 .bf-gen-closure-icon {
     flex-shrink: 0;
 }
+
+// Actions de ligne au survol dans le panneau, comme au plein écran.
+.bf-side-panel-session-item {
+    .bf-side-panel-row-actions .btn {
+        font-size: 0.7rem;
+        opacity: 0;
+        transition: opacity 0.15s;
+    }
+    &:hover .bf-side-panel-row-actions .btn,
+    .bf-side-panel-row-actions .btn:focus-visible {
+        opacity: 1;
+    }
+}
+
+// Une conversation archivée reste lisible, en retrait.
+.bf-gen-archived {
+    opacity: 0.65;
+}
+.bf-gen-row-archived,
+.bf-gen-row-busy {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+}
+
+// Compteurs : une ligne fine, jamais plus haute que le texte.
+.bf-gen-meters {
+    font-size: 0.75rem;
+    line-height: 1.2;
+    min-height: 1.2em;
+    .bf-gen-meter + .bf-gen-meter::before {
+        content: "·";
+        margin-right: 0.5rem;
+        opacity: 0.6;
+    }
+    .bf-gen-meters-refresh {
+        font-size: 0.75rem;
+        line-height: 1;
+    }
+}
+.bf-gen-archived-notice {
+    background-color: var(--bs-tertiary-bg, #f8f9fa);
+}
+.bf-gen-search .form-control,
+.bf-gen-search .input-group-text,
+.bf-gen-archived-switch,
+.bf-gen-scope .btn {
+    font-size: 0.75rem;
+}
