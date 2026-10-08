@@ -70,6 +70,16 @@ Odoo commits a normal response.
 This version also fixes the **Open the note** link after a document deposit,
 which pointed at an action that does not exist and showed "Missing action".
 
+### Offline replay (18.0.1.3.0)
+
+Symbifox Mobile keeps a photo taken without a connection in a queue and sends it
+again until it gets an answer. A photo sent again after a dropped connection no
+longer creates a second draft bill or a second note: `document` and `facture`
+accept a `client_uuid`, and a repeat of the same gesture receives the original
+response instead of acting twice. The same identifier reused for a *different*
+gesture is refused rather than answered with another gesture's result. Receipts are
+kept per user for thirty days.
+
 ## Requirements
 
 `bf_contact_enrichment`, `bf_bloc_notes` and `account`. Reading is optional:

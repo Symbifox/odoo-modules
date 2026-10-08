@@ -40,6 +40,9 @@ _DEVICE_MODELS = ("sms.archive.mobile.device", "bf.email.mobile.device")
 
 MAX_JSON = 256 * 1024
 
+# Les accusés d'idempotence : voir ``models/mobile_receipt.py``.
+_RECU = "bf.scan.mobile.receipt"
+
 
 def _json(data, status=200):
     return request.make_response(
@@ -141,6 +144,38 @@ def _guarded(fn):
         return _json({"error": "server_error"}, 500)
 
 
+def _idempotent(route, brut, run):
+    """Le geste une seule fois par ``client_uuid``.
+
+    Sans ``client_uuid``, rien ne change : une ancienne version de l'app
+    n'en envoie pas. Avec, l'accusé déjà posé rend la réponse d'origine telle
+    quelle, plus ``"replay": true`` ; sinon le geste s'exécute et, s'il
+    réussit, l'accusé est posé dans la même transaction.
+
+    ⚠️ Un refus annule la transaction (``_rendre``, ``_guarded``), ce qui
+    relâche aussi le verrou de l'accusé : c'est voulu, rien n'a été fait.
+    """
+    if brut is None or brut == "":
+        return run()
+    Recu = request.env[_RECU].sudo()
+    try:
+        cle = Recu._normalize(brut)
+    except ValueError:
+        return _json({"error": "invalid_client_uuid"}, 400)
+    uid = request.env.uid
+    deja = Recu._acquire(uid, cle)
+    if deja is not None:
+        route_origine, charge = deja
+        if route_origine and route_origine != route:
+            return _json({"error": "invalid_client_uuid",
+                          "detail": "client_uuid already used by another request"}, 400)
+        return _json({**charge, "replay": True})
+    reponse = run()
+    if 200 <= reponse.status_code < 300:
+        Recu._record(uid, cle, route, reponse.get_data(as_text=True))
+    return reponse
+
+
 class BfScanMobileApi(http.Controller):
 
     @staticmethod
@@ -164,6 +199,8 @@ class BfScanMobileApi(http.Controller):
             "api": 1,
             "version": module.installed_version or "",
             "enabled": True,
+            # `client_uuid` accepté sur /document et /facture.
+            "idempotency": 1,
             "max_bytes": TAILLE_MAX,
         })
 
@@ -193,7 +230,7 @@ class BfScanMobileApi(http.Controller):
                 csrf=False, save_session=False)
     def document(self, **kw):
         """Multipart : ``image`` + ``titre``, ``rappel``, ``destination``,
-        ``cible_model`` et ``cible_id`` facultatifs."""
+        ``cible_model``, ``cible_id`` et ``client_uuid`` facultatifs."""
         if not _authed():
             return _json({"error": "unauthorized"}, 401)
 
@@ -210,11 +247,12 @@ class BfScanMobileApi(http.Controller):
                 destination=kw.get("destination") or "tampon", cible=cible,
                 rappel=kw.get("rappel") or "aucun"))
 
-        return _guarded(run)
+        return _guarded(lambda: _idempotent("/document", kw.get("client_uuid"), run))
 
     @http.route(f"{BASE}/facture", type="http", auth="public", methods=["POST"],
                 csrf=False, save_session=False)
     def facture(self, **kw):
+        """Multipart : ``image`` + ``client_uuid`` facultatif."""
         if not _authed():
             return _json({"error": "unauthorized"}, 401)
 
@@ -222,7 +260,7 @@ class BfScanMobileApi(http.Controller):
             image_b64, nom = _image()
             return _rendre(self._page().facture_deposer(image_b64=image_b64, filename=nom))
 
-        return _guarded(run)
+        return _guarded(lambda: _idempotent("/facture", kw.get("client_uuid"), run))
 
     @http.route(f"{BASE}/carte/lire", type="http", auth="public", methods=["POST"],
                 csrf=False, save_session=False)
