@@ -7,7 +7,14 @@
     #   contribution, et le lien part sur les quatre surfaces que voit le
     #   demandeur — courriel de confirmation, rappels, page publique du
     #   rendez-vous, invitation .ics et description de l'événement.
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: reprise d'un rendez-vous. L'ordre du
+    #   jour gardé à l'annulation sert au rendez-vous suivant du MÊME
+    #   demandeur, dans le même projet, au lieu d'en fabriquer un second,
+    #   SEULEMENT pour un rendez-vous créé chez nous : la page publique ne
+    #   vérifie pas l'adresse (relecture adverse).
+    #   Le demandeur est retenu sur l'OdJ (`bf_booking_partner_id`) ; exige
+    #   bf_meeting 18.0.3.65.0 (`bf_to_schedule`).
+    "version": "18.0.1.1.0",
     "category": "Appointments",
     "summary": "Créer l'ordre du jour à la prise de rendez-vous et en donner "
                "le lien au demandeur",
@@ -37,6 +44,16 @@ Ce que le module fait
   impoli.
 * **L'annulation referme la fenêtre**, et annule l'ordre du jour s'il est
   resté vide. Une replanification déplace sa date.
+* **La reprise d'un rendez-vous reprend son ordre du jour.** Quand le même
+  demandeur reprend un rendez-vous après une annulation, l'ordre du jour gardé
+  (celui qui portait du travail) lui sert de nouveau : mêmes sujets,
+  fenêtre rouverte sous un lien NEUF, date et durée du nouveau créneau.
+  Seul un ordre du jour né d'un rendez-vous se reprend ainsi, jamais un
+  ordre du jour écrit à la main, et seulement quand le rendez-vous vient de
+  chez nous (back-office, ou lien personnel envoyé à l'adresse du client).
+  La page publique retrouve le demandeur par la seule adresse saisie, sans
+  la vérifier : un rendez-vous pris là reçoit un ordre du jour neuf, et une
+  note interne nomme l'ordre du jour gardé, à rattacher à la main.
 
 Ce que le module ne fait pas
 ----------------------------

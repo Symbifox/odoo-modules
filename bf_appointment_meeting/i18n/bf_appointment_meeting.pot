@@ -1,7 +1,7 @@
 # Translation of bf_appointment_meeting module - English.
 msgid ""
 msgstr ""
-"Project-Id-Version: bf_appointment_meeting 18.0.1.0.0\n"
+"Project-Id-Version: bf_appointment_meeting 18.0.1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-13 00:00+0000\n"
 "PO-Revision-Date: 2026-09-13 00:00+0000\n"
@@ -46,4 +46,23 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_appointment_meeting/models/resource_booking.py:0
 msgid "Le type « %(type)s » demande un ordre du jour, mais ne désigne aucun projet et la société n'a pas de projet de repli. Configurez l'un ou l'autre, puis créez l'ordre du jour depuis l'événement d'agenda."
+msgstr ""
+
+#. module: bf_appointment_meeting
+#. odoo-python
+#: code:addons/bf_appointment_meeting/models/resource_booking.py:0
+msgid "Ordre du jour repris."
+msgstr ""
+
+#. module: bf_appointment_meeting
+#. odoo-python
+#: code:addons/bf_appointment_meeting/models/resource_booking.py:0
+msgid "Rendez-vous repris : cet ordre du jour, gardé à l'annulation du rendez-vous précédent, sert au nouveau."
+msgstr ""
+
+#. module: bf_appointment_meeting
+#. odoo-python
+#: code:addons/bf_appointment_meeting/models/resource_booking.py:0
+#, python-format
+msgid "Un ordre du jour gardé existe pour ce demandeur : « %s ». Le rendez-vous a été pris sur la page publique, où l'adresse n'est pas vérifiée : il n'a pas été repris. Si c'est bien la même personne, choisissez-le dans le champ « Ordre du jour » de la rencontre."
 msgstr ""

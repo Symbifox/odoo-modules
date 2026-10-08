@@ -63,8 +63,12 @@
             <xpath expr="//notebook" position="before">
                 <group string="Préparation de la rencontre" name="bf_meeting_prep">
                     <group name="bf_meeting_prep_agenda">
+                        <!-- Ne propose que les OdJ « à planifier » :
+                             sans filtre, la liste offrait tous les OdJ,
+                             terminés, annulés et déjà liés compris. -->
                         <field name="meeting_agenda_id"
                                options="{'no_create': True}"
+                               domain="[('bf_to_schedule', '=', True)]"
                                placeholder="Lier un ordre du jour existant..."/>
                         <field name="bf_agenda_responsible_id"
                                widget="many2one_avatar_user"/>
@@ -81,6 +85,40 @@
                 </group>
                 <!-- Lu par l'encart d'avertissement posé avant le `<sheet>`. -->
                 <field name="bf_needs_agenda" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+      La création rapide, ce qu'ouvre un clic sur la grille du calendrier.
+      Choisir un OdJ y remplit la rencontre (`_onchange_meeting_agenda_id_fill_event`)
+      avant qu'on choisisse quoi que ce soit d'autre : d'où sa place, en tête.
+      ⚠️ « Plus d'options » ne transmet au formulaire complet qu'une liste
+      FIXE de champs (`calendar_quick_create.js`) : sans
+      `calendar_quick_create_agenda.js`, le lien se perdait au passage.
+    -->
+    <record id="calendar_event_view_form_quick_create_inherit_meeting" model="ir.ui.view">
+        <field name="name">calendar.event.form.quick_create.inherit.meeting</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form_quick_create"/>
+        <field name="arch" type="xml">
+            <!-- ⚠️ Ancré sur `start_date`, pas sur `duration` : le cœur d'Odoo 18
+                 de certaines installations n'a pas encore
+                 `duration` dans cette vue, et la montée y échouait. -->
+            <xpath expr="//field[@name='start_date']" position="before">
+                <field name="meeting_agenda_id"
+                       groups="bf_meeting.group_meeting_user"
+                       options="{'no_create': True, 'no_open': True}"
+                       domain="[('bf_to_schedule', '=', True)]"
+                       placeholder="Partir d'un ordre du jour..."/>
+            </xpath>
+            <!-- Le lieu qu'un OdJ en présentiel apporte. Sans lui dans la vue,
+                 la valeur posée par l'onchange ne repartait pas à
+                 l'enregistrement direct (le cœur n'a pas ce champ ici). -->
+            <xpath expr="//field[@name='partner_ids']" position="after">
+                <field name="location"
+                       groups="bf_meeting.group_meeting_user"
+                       invisible="not location"/>
             </xpath>
         </field>
     </record>

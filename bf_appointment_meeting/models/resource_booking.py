@@ -86,6 +86,9 @@ class ResourceBooking(models.Model):
         participants = self.meeting_id.sudo().partner_ids
         if booker and booker not in participants:
             participants |= booker
+        repris = self._bf_agenda_to_resume(projet, self._bf_sole_requester())
+        if repris and self._bf_resume_is_safe():
+            return self._bf_resume_agenda(repris, participants)
         mode = _MODES[(bool(self.videocall_location or
                             (self.type_id.video_provider or "none") != "none"),
                        bool(self.type_id.is_in_person))]
@@ -109,6 +112,12 @@ class ResourceBooking(models.Model):
             # AVANT que le courriel sorte, et aucun courriel d'ordre du jour
             # n'a été — ni ne sera — envoyé par ce module.
             "contributions_preopened": True,
+            # 🔴 Seul un rendez-vous SÛR retient son demandeur. Né sur la page
+            # publique, l'OdJ montre son jeton à qui a tapé l'adresse : retenu,
+            # il serait repris plus tard pour le vrai client, avec ce même
+            # jeton (relecture adverse, troisième passe).
+            "bf_booking_partner_id": (self._bf_sole_requester().id
+                                      if self._bf_resume_is_safe() else False),
         }
         if self.user_id:
             vals["organizer_id"] = self.user_id.id
@@ -125,6 +134,105 @@ class ResourceBooking(models.Model):
         agenda._ensure_access_token()
         self._bf_seed_first_topic(agenda)
         self._bf_note_agenda_creee(agenda)
+        if repris:
+            self._bf_note_agenda_gardee(agenda, repris)
+        return agenda
+
+    def _bf_agenda_to_resume(self, projet, booker):
+        """L'ordre du jour gardé d'un rendez-vous annulé du même demandeur.
+
+        À l'annulation, un ordre du jour qui porte du travail survit (voir
+        `action_cancel`) : « une rencontre annulée a souvent une suite ». Quand
+        la suite arrive, la confirmation en fabriquait un second, et le
+        premier restait à côté avec ses sujets. On le reprend, à trois
+        conditions : né d'un rendez-vous du MÊME demandeur, rangé dans le même
+        projet, et encore à planifier (sa rencontre n'existe plus, ou est
+        annulée ou archivée).
+        """
+        self.ensure_one()
+        if not booker:
+            return self.env["meeting.agenda"]
+        return self.env["meeting.agenda"].sudo().search([
+            ("bf_booking_partner_id", "=", booker.id),
+            ("project_id", "=", projet.id),
+            ("bf_to_schedule", "=", True),
+        ], order="date desc, id desc", limit=1)
+
+    def _bf_sole_requester(self):
+        """Le demandeur, quand il est SEUL ; sinon personne.
+
+        🔴 `partner_id` vaut `partner_ids[:1]`, c'est-à-dire le premier par
+        ordre ALPHABÉTIQUE, pas celui qui a demandé. À plusieurs, retenir ce
+        partenaire faisait reprendre l'OdJ de l'un et partir son lien chez
+        tous les invités (relecture adverse, deuxième passe). Un rendez-vous
+        à plusieurs, avec des invités ou né d'un sondage (dont les inscrits
+        ne sont pas vérifiés) ne retient donc personne et ne reprend rien.
+        """
+        self.ensure_one()
+        partenaires = self.partner_ids
+        if len(partenaires) != 1 or self.bf_source_ref:
+            return self.env["res.partner"]
+        if "guest_ids" in self._fields and self.guest_ids:
+            return self.env["res.partner"]
+        return partenaires
+
+    def _bf_resume_is_safe(self):
+        """Vrai quand le demandeur est établi par nous, pas par ce qu'il a tapé.
+
+        🔴 La page publique retrouve le demandeur par la SEULE adresse saisie,
+        sans la vérifier, et sa page de confirmation montre le lien de
+        contribution. Reprendre là, c'était rendre l'ordre du jour gardé d'un
+        client (objectifs, sujets acceptés) à quiconque tape son adresse, et
+        le laisser y écrire.
+
+        Sûr : un rendez-vous créé par un usager interne, au back-office ou
+        comme lien personnel envoyé à l'adresse du client. Un rendez-vous né
+        sur la page publique est créé sous l'usager public (`share`).
+        """
+        self.ensure_one()
+        return bool(self.create_uid) and not self.create_uid.share
+
+    def _bf_resume_agenda(self, agenda, participants):
+        """Rattacher l'ordre du jour gardé à ce rendez-vous, et rouvrir sa fenêtre.
+
+        Ses sujets et ses objectifs restent. Son jeton, lui, est NEUF : l'ancien
+        lien a pu partir chez d'autres que le demandeur (envoi de l'OdJ,
+        participants ajoutés au back-office), et ceux-là n'ont pas à lire le
+        rendez-vous suivant (relecture adverse, quatrième passe). Le nouveau
+        lien ne part qu'avec la confirmation de ce rendez-vous. La date et la
+        durée suivent la nouvelle rencontre (`meeting.agenda.write`).
+        """
+        self.ensure_one()
+        agenda = agenda.sudo()
+        # ⚠️ Pas de `date` ici : écrite dans la même valeur que la rencontre,
+        # le suivi la verrait déjà égale et ne recalerait pas la date que
+        # porte le titre. C'est `meeting.agenda.write` qui la pose.
+        vals = {
+            "calendar_event_id": self.meeting_id.id,
+            "participant_ids": [(4, partner.id) for partner in participants],
+            "meeting_type": _MODES[(bool(self.videocall_location or
+                                         (self.type_id.video_provider or "none") != "none"),
+                                    bool(self.type_id.is_in_person))],
+            "allow_contributions": True,
+            "contributions_preopened": True,
+        }
+        if self.user_id:
+            vals["organizer_id"] = self.user_id.id
+        if self.location and not agenda.location:
+            vals["location"] = self.location
+        agenda.with_context(skip_auto_refine=True).write(vals)
+        agenda.access_token = False
+        agenda._ensure_access_token()
+        self._bf_seed_first_topic(agenda)
+        agenda.message_post(
+            body=Markup("<p>%s</p>") % _(
+                "Rendez-vous repris : cet ordre du jour, gardé à l'annulation "
+                "du rendez-vous précédent, sert au nouveau."),
+            message_type="comment", subtype_xmlid="mail.mt_note")
+        self.sudo().message_post(
+            body=Markup("<p><b>%s</b> %s</p>") % (
+                _("Ordre du jour repris."), agenda.display_name),
+            message_type="comment", subtype_xmlid="mail.mt_note")
         return agenda
 
     def _bf_seed_first_topic(self, agenda):
@@ -149,9 +257,14 @@ class ResourceBooking(models.Model):
             return
         premiere = reponses[0]
         valeur = (premiere.value or "").strip()
+        # Un ordre du jour repris porte déjà ses sujets : la réponse se range
+        # après eux, et ne se répète pas si elle y est déjà.
+        existants = agenda.sudo().topic_ids
+        if valeur[:200] in existants.mapped("name"):
+            return
         self.env["meeting.agenda.topic"].sudo().create({
             "agenda_id": agenda.id,
-            "sequence": 10,
+            "sequence": max(existants.mapped("sequence"), default=0) + 10,
             "name": valeur[:200],
             "description": Markup("<p><strong>%s</strong><br/>%s</p>") % (
                 premiere.field_name or "", valeur),
@@ -281,6 +394,20 @@ class ResourceBooking(models.Model):
             body=Markup("<p><b>%s</b> %s — %s</p>") % (
                 _("Ordre du jour créé."), agenda.display_name,
                 _("projet : %s") % agenda.project_id.display_name),
+            message_type="comment", subtype_xmlid="mail.mt_note")
+
+    def _bf_note_agenda_gardee(self, agenda, garde):
+        """Dire, sur l'ordre du jour neuf, qu'un ordre du jour gardé attend.
+
+        Note interne : la page de contribution ne montre jamais le fil.
+        """
+        agenda.sudo().message_post(
+            body=Markup("<p>%s</p>") % (_(
+                "Un ordre du jour gardé existe pour ce demandeur : « %s ». Le "
+                "rendez-vous a été pris sur la page publique, où l'adresse "
+                "n'est pas vérifiée : il n'a pas été repris. Si c'est bien la "
+                "même personne, choisissez-le dans le champ « Ordre du jour » "
+                "de la rencontre.") % garde.display_name),
             message_type="comment", subtype_xmlid="mail.mt_note")
 
     def _bf_note_agenda_absente(self):

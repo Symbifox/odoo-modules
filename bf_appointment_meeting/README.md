@@ -32,6 +32,7 @@ fresh in their mind.
   agenda that still shows the original slot contradicts the invitation sitting
   next to it.
 
+- **A resumed booking resumes its agenda.** When the same requester books again after a cancellation, the agenda kept at cancellation serves again: same topics, the contribution window reopened under a **new** link, date and duration of the new slot. Only an agenda born from a booking resumes this way, never one written by hand, and only when the booking was created on your side (back office, or a personal link sent to the client's address) for a single requester with no guests. The public booking page finds the requester from the address typed in, without checking it: a booking made there gets a fresh agenda, and an internal note names the kept one, to be attached by hand.
 ## What it deliberately does not do
 
 It sends **no agenda email**. `sent_date` stays empty and the organiser keeps

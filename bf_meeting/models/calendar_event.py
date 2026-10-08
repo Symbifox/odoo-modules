@@ -1,4 +1,6 @@
 from odoo import api, fields, models
+from odoo.osv import expression
+from odoo.tools import is_html_empty
 
 
 class CalendarEvent(models.Model):
@@ -146,6 +148,69 @@ class CalendarEvent(models.Model):
             event.meeting_agenda_id = event.meeting_agenda_ids[:1]
             event.meeting_agenda_count = len(event.meeting_agenda_ids)
 
+    @api.model
+    def default_get(self, fields_list):
+        """Un OdJ par défaut ne vaut que s'il est encore à planifier.
+
+        « Plus d'options » passe l'OdJ choisi en `default_meeting_agenda_id`,
+        et ce contexte reste attaché à l'action du formulaire complet : un
+        « Nouveau » depuis là reprenait le même OdJ, et l'enregistrer le
+        déplaçait de la première rencontre vers la seconde.
+        """
+        res = super().default_get(fields_list)
+        agenda_id = res.get('meeting_agenda_id')
+        if agenda_id:
+            agenda = self.env['meeting.agenda'].browse(agenda_id).exists()
+            if not agenda or not agenda.bf_to_schedule:
+                res.pop('meeting_agenda_id')
+        return res
+
+    @api.onchange('meeting_agenda_id')
+    def _onchange_meeting_agenda_id_fill_event(self):
+        """Une rencontre neuve se remplit depuis l'ordre du jour choisi.
+
+        Seulement une rencontre NEUVE, et seulement là où elle est vide. Une
+        rencontre déjà enregistrée vient presque toujours d'un agenda synchronisé
+        ou d'un rendez-vous ; son organisateur a déjà invité son monde, et lui
+        ajouter des participants ici leur enverrait une seconde invitation.
+        C'est alors l'OdJ qui suit la rencontre (`meeting.agenda.write`).
+
+        ⚠️ La durée d'une rencontre neuve n'est jamais vide : le calendrier
+        pose une heure par défaut. Celle de l'OdJ, quand il en a une, est un
+        choix ; l'heure par défaut n'en est pas un.
+        """
+        for event in self:
+            agenda = event.meeting_agenda_id
+            if not agenda or event._origin.id:
+                continue
+            if not event.name:
+                event.name = agenda._bf_event_title()
+            # ⚠️ Une union, pas des commandes : sur une fiche neuve, une liste
+            # de `link` assignée REMPLACE la valeur, et l'organisateur, invité
+            # par défaut, disparaissait de sa propre rencontre.
+            event.partner_ids |= agenda.participant_ids
+            # « Plus d'options » rejoue cet onchange à l'ouverture du formulaire
+            # complet : la durée choisie dans la création rapide doit tenir.
+            # ⚠️ Pas de garde sur `default_duration` : la grille du calendrier
+            # le pose TOUJOURS (`date_delay`), et la création rapide n'aurait
+            # plus jamais pris la durée de l'OdJ. Seul « Plus d'options »
+            # arrive avec l'OdJ déjà en contexte (notre patch JS).
+            if agenda.duration_planned and not event.allday \
+                    and self.env.context.get('default_meeting_agenda_id') != agenda.id:
+                event.duration = agenda.duration_planned / 60.0
+            location = (agenda.location or '').strip()
+            if location:
+                is_url = location.startswith(('http://', 'https://'))
+                if is_url and agenda.meeting_type in ('video', 'hybrid'):
+                    if not event.videocall_location:
+                        event.videocall_location = location
+                elif not event.location:
+                    event.location = location
+            if is_html_empty(event.description):
+                description = agenda._bf_event_description()
+                if description:
+                    event.description = description
+
     def _inverse_meeting_agenda_id(self):
         for event in self:
             target = event.meeting_agenda_id
@@ -178,7 +243,9 @@ class CalendarEvent(models.Model):
         ]
         if positive:
             return domain
-        return ['!'] + domain
+        # ⚠️ Un '!' ne porte que sur le terme qui le suit : sans la forme
+        # normale, il ne niait que la dispense.
+        return ['!'] + expression.normalize_domain(domain)
 
     def action_create_meeting_record(self):
         """Créer un compte rendu à partir de cet événement calendrier.

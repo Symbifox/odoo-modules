@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 import secrets
 import threading
 from datetime import timedelta
@@ -8,6 +9,7 @@ from markupsafe import Markup, escape
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.osv import expression
 
 from odoo.addons.bf_ai_bridge.tools import transport
 
@@ -27,6 +29,13 @@ CLOSED_TASK_STATES = ('1_done', '1_canceled')
 REMINDER_LEAD_DAYS = 7
 REMINDER_ACTIVITY_SUMMARY = "Envoyer l'ordre du jour avant la rencontre"
 
+
+# Le titre d'une rencontre tiré de celui de son ordre du jour : les morceaux
+# « OdJ » et les dates tombent, avec le séparateur qui les précède.
+_TITLE_SEPARATOR = re.compile(r'(\s+[—–-]\s+)')
+_TITLE_NOISE = re.compile(
+    r'^(?:odj|ordre du jour|agenda)$|^\d{4}-\d{2}-\d{2}$', re.IGNORECASE)
+_TITLE_PREFIX = re.compile(r'^(?:odj|ordre du jour)\s*:?\s+', re.IGNORECASE)
 
 _EMPTY_HTML_VALUES = ('', '<p><br></p>', '<p><br/></p>', '<p></p>')
 
@@ -258,6 +267,14 @@ class MeetingAgenda(models.Model):
     calendar_event_id = fields.Many2one(
         'calendar.event',
         string='Événement calendrier',
+    )
+    bf_to_schedule = fields.Boolean(
+        string='À planifier',
+        compute='_compute_bf_to_schedule',
+        search='_search_bf_to_schedule',
+        help="Brouillon ou confirmé, et sans rencontre vivante : aucune, "
+             "archivée ou annulée. C'est la liste que propose le champ "
+             "« Ordre du jour » d'une rencontre.",
     )
 
     # Email
@@ -780,6 +797,197 @@ class MeetingAgenda(models.Model):
                 attendees = rec.calendar_event_id.partner_ids
                 if attendees:
                     rec.participant_ids = [(6, 0, attendees.ids)]
+            rec.update(rec._bf_values_from_event(rec.calendar_event_id))
+
+    # ------------------------------------------------------------------
+    # Planifier une rencontre à partir de l'ordre du jour
+    # ------------------------------------------------------------------
+
+    @api.model
+    def _bf_dead_event_domain(self):
+        """Une rencontre qui n'aura pas lieu : archivée, ou annulée.
+
+        ⚠️ L'annulation est un champ de `bf_calendar_invite`, que ce module ne
+        requiert pas. Sans lui, une rencontre annulée est SUPPRIMÉE (le lien de
+        l'OdJ passe à NULL) : l'archive suffit alors.
+        """
+        if 'bf_event_status' in self.env['calendar.event']._fields:
+            return ['|', ('active', '=', False),
+                    ('bf_event_status', '=', 'cancelled')]
+        return [('active', '=', False)]
+
+    def _bf_event_is_live(self, event):
+        if not event:
+            return False
+        if not event.active:
+            return False
+        return getattr(event, 'bf_event_status', False) != 'cancelled'
+
+    @api.depends('state', 'calendar_event_id', 'calendar_event_id.active')
+    def _compute_bf_to_schedule(self):
+        for rec in self:
+            rec.bf_to_schedule = bool(
+                rec.state in ACTIVE_AGENDA_STATES
+                and not rec._bf_event_is_live(rec.calendar_event_id)
+            )
+
+    def _search_bf_to_schedule(self, operator, value):
+        if operator not in ('=', '!=') or not isinstance(value, bool):
+            raise UserError("Recherche non prise en charge sur « À planifier ».")
+        Event = self.env['calendar.event'].with_context(active_test=False)
+        domain = [
+            ('state', 'in', ACTIVE_AGENDA_STATES),
+            '|',
+            ('calendar_event_id', '=', False),
+            ('calendar_event_id', 'in', Event._search(self._bf_dead_event_domain())),
+        ]
+        if (operator == '=') == value:
+            return domain
+        # ⚠️ Un '!' ne porte que sur le terme qui le suit : sans la forme
+        # normale, il nierait le seul filtre d'état.
+        return ['!'] + expression.normalize_domain(domain)
+
+    def _bf_values_from_event(self, event):
+        """Ce que l'ordre du jour reprend de sa rencontre : date et durée.
+
+        La date de l'OdJ titre le PDF et décide s'il est encore à venir. Liée
+        sans être recalée, elle restait celle de l'OdJ : un OdJ daté du 28
+        pouvait titrer une rencontre tenue le 29. Une journée
+        entière n'a pas d'heure à donner : on n'y touche pas.
+        """
+        self.ensure_one()
+        if not event or event.allday or not event.start or self._bf_is_mirror():
+            return {}
+        vals = {}
+        if self.date != event.start:
+            vals['date'] = event.start
+            name = self._bf_name_with_date(event.start)
+            if name:
+                vals['name'] = name
+        minutes = int(round((event.duration or 0) * 60))
+        if minutes and self.duration_planned != minutes:
+            vals['duration_planned'] = minutes
+        return vals
+
+    def _bf_is_mirror(self):
+        """Un OdJ reçu d'un pair par la fédération : il se lit, il ne se recale pas.
+
+        ⚠️ `bf_federation_meeting` refuse qu'on écrive la date ou le titre d'un
+        miroir, et sa date est un repère fixe. Le recaler rendait impossible de
+        le lier à une rencontre, ce qui marchait avant. Lu sans dépendre du
+        module, comme `bf_event_status`.
+        """
+        return bool(getattr(self, 'federation_is_mirror', False))
+
+    def _bf_name_with_date(self, new_date):
+        """Le titre, si sa date est celle de l'ancienne rencontre, mise à jour.
+
+        Le titre calculé porte la date (« Projet — OdJ — 2026-09-28 ») et ne se
+        recalcule plus une fois posé. Un OdJ reporté au 29 garderait sinon le
+        28 dans son titre, son PDF et son courriel. On ne remplace que la date
+        exacte : un titre écrit à la main sans date reste tel quel.
+        """
+        if not self.name or not self.date:
+            return False
+        anciennes = {
+            self.date.strftime('%Y-%m-%d'),
+            fields.Datetime.context_timestamp(self, self.date).strftime('%Y-%m-%d'),
+        }
+        nouvelle = fields.Datetime.context_timestamp(self, new_date).strftime('%Y-%m-%d')
+        name = self.name
+        for ancienne in anciennes:
+            if ancienne != nouvelle:
+                name = name.replace(ancienne, nouvelle)
+        return name if name != self.name else False
+
+    def _bf_follow_event(self):
+        for rec in self:
+            vals = rec._bf_values_from_event(rec.calendar_event_id)
+            if vals:
+                rec.with_context(bf_following_event=True).write(vals)
+
+    def _bf_event_title(self):
+        """Le titre de la rencontre, tiré de celui de l'ordre du jour.
+
+        Le titre d'un OdJ dit qu'il est un OdJ et porte sa date
+        (« Cliente Alpha - Rencontre statutaire — OdJ — 2026-10-06 ») : deux
+        choses qu'une invitation n'a pas à répéter. On retire les morceaux
+        « OdJ » et les dates, avec le séparateur qui les précède, et on garde
+        le reste tel qu'il est écrit.
+        """
+        self.ensure_one()
+        pieces = _TITLE_SEPARATOR.split(self.name or '')
+        texts, separators = pieces[0::2], pieces[1::2]
+        title = ''
+        for index, text in enumerate(texts):
+            text = _TITLE_PREFIX.sub('', text.strip())
+            if not text or _TITLE_NOISE.match(text):
+                continue
+            if title:
+                title += separators[index - 1]
+            title += text
+        return title or self.series_name or self.project_id.name or ''
+
+    def _bf_event_description(self):
+        """Objectifs et sujets, pour la description de la rencontre.
+
+        Ce texte part dans l'invitation et dans Nextcloud, donc chez les
+        invités : ni le contexte ni la préparation, qui sont des notes de
+        travail, et seulement les sujets acceptés.
+        """
+        self.ensure_one()
+        english = (self._bf_langue_envoi() or '').startswith('en')
+        labels = ('Objectives', 'Topics') if english else ('Objectifs', 'Sujets')
+        parts = []
+        objectives = (self.objectives or '').strip()
+        if objectives:
+            lines = Markup('<br/>').join(escape(line) for line in objectives.splitlines())
+            parts.append(Markup('<p><strong>%s</strong></p><p>%s</p>') % (labels[0], lines))
+        topics = self.published_topic_ids
+        if topics:
+            items = Markup('').join(
+                Markup('<li>%s%s</li>') % (
+                    topic.name or '',
+                    ' (%d min)' % topic.duration_planned if topic.duration_planned else '',
+                )
+                for topic in topics
+            )
+            parts.append(Markup('<p><strong>%s</strong></p><ol>%s</ol>') % (labels[1], items))
+        return Markup('').join(parts)
+
+    def action_postpone(self):
+        """Reporter : la rencontre n'a pas lieu à cette date, l'OdJ attend la suivante.
+
+        Une rencontre reportée voyait son OdJ annulé, puis un OdJ neuf
+        recréé pour la nouvelle date avec les mêmes sujets. Annuler
+        détache en plus les tâches
+        épinglées. Ici l'OdJ garde ses sujets, ses tâches et son lien de
+        contribution ; il quitte la rencontre et revient dans les OdJ « à
+        planifier », où le champ « Ordre du jour » d'une rencontre le propose.
+        La rencontre elle-même n'est pas touchée : l'annuler ou la déplacer
+        reste un geste du calendrier.
+        """
+        for rec in self:
+            if rec.state not in ACTIVE_AGENDA_STATES:
+                raise UserError(
+                    "Seul un ordre du jour en brouillon ou confirmé se reporte.")
+            event = rec.calendar_event_id
+            rec.write({'calendar_event_id': False, 'state': 'draft'})
+            if event:
+                when = fields.Datetime.context_timestamp(rec, event.start) \
+                    if event.start else None
+                body = Markup('<p>%s</p>') % (
+                    "Rencontre reportée : l'ordre du jour quitte « %s »%s et "
+                    "attend sa nouvelle date." % (
+                        event.name or '',
+                        ' du %s' % when.strftime('%Y-%m-%d %H:%M') if when else '',
+                    ))
+            else:
+                body = Markup('<p>%s</p>') % (
+                    "Rencontre reportée : l'ordre du jour attend sa nouvelle date.")
+            rec.message_post(body=body, message_type='comment',
+                             subtype_xmlid='mail.mt_note')
+        return True
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -796,6 +1004,7 @@ class MeetingAgenda(models.Model):
             vals['resend_include_changes'] = bool(
                 company.meeting_resend_changes_default)
         records = super().create(vals_list)
+        records.filtered('calendar_event_id')._bf_follow_event()
         ICP = self.env["ir.config_parameter"].sudo()
         auto = ICP.get_param("bf_meeting.agenda_auto_refine", "1") in ("1", "true", "True")
         if not auto or not self.env["bf.ai.bridge"].available():
@@ -807,6 +1016,15 @@ class MeetingAgenda(models.Model):
                 except Exception as e:
                     _logger.warning("Auto-refine agenda %s skipped: %s", rec.id, e)
         return records
+
+    def write(self, vals):
+        res = super().write(vals)
+        # Lier une rencontre recale l'OdJ sur elle, de quelque côté que vienne
+        # le lien : ce formulaire, le champ « Ordre du jour » de la rencontre
+        # (son inverse écrit ici), la prise de rendez-vous ou le pont.
+        if vals.get('calendar_event_id') and not self.env.context.get('bf_following_event'):
+            self._bf_follow_event()
+        return res
 
     def action_confirm(self):
         """Confirmer l'ordre du jour."""

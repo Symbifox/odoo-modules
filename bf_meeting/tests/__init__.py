@@ -10,3 +10,4 @@ from . import test_limiteur_borne
 from . import test_langue_de_repli
 from . import test_avis_assignation
 from . import test_mise_en_page_commune
+from . import test_planifier_depuis_odj

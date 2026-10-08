@@ -167,6 +167,10 @@
                     <button name="action_done" type="object"
                             string="Terminer"
                             invisible="state != 'confirmed'"/>
+                    <button name="action_postpone" type="object"
+                            string="Reporter"
+                            help="La rencontre n'a pas lieu à cette date : l'ordre du jour quitte la rencontre et garde ses sujets, ses tâches et son lien de contribution. Il revient dans les ordres du jour à planifier."
+                            invisible="state not in ('draft', 'confirmed') or not calendar_event_id"/>
                     <button name="action_cancel" type="object"
                             string="Annuler"
                             invisible="state not in ('draft', 'confirmed')"/>
@@ -516,6 +520,8 @@
                         domain="[('state', '=', 'confirmed')]"/>
                 <filter name="filter_done" string="Terminé"
                         domain="[('state', '=', 'done')]"/>
+                <filter name="filter_to_schedule" string="À planifier"
+                        domain="[('bf_to_schedule', '=', True)]"/>
                 <separator/>
                 <filter name="filter_not_sent" string="Non envoyé"
                         domain="[('send_state', 'in', ('not_sent', 'prepared'))]"/>
