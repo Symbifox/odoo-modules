@@ -14,7 +14,9 @@ class LetterQuicktext(models.Model):
     category = fields.Char(string="Catégorie")
     body_html = fields.Html(
         string="Contenu",
-        sanitize=False,
+        # Nettoyé comme un modèle de courriel d'Odoo : les balises QWeb (<t t-out>)
+        # et les styles restent, le script et les « on… » partent.
+        sanitize="email_outgoing",
         help="Peut contenir des champs de fusion, ex. {{ object.partner_id.name }}.",
     )
     company_id = fields.Many2one(

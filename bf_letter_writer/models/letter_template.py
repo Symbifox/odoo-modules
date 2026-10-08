@@ -38,7 +38,9 @@ class LetterTemplate(models.Model):
     )
     body_html = fields.Html(
         string="Corps",
-        sanitize=False,
+        # Nettoyé comme un modèle de courriel d'Odoo : les balises QWeb (<t t-out>)
+        # et les styles restent, le script et les « on… » partent.
+        sanitize="email_outgoing",
         help="Corps du modèle. Champs de fusion : {{ object.champ }} ou QWeb "
         "<t t-out=\"object.champ\"/>.",
     )

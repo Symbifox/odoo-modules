@@ -120,6 +120,11 @@ Brand colours come from `bf_lexend`.
 - The **Letter writer / Manager** group manages templates, text blocks and the
   letterhead configuration.
 - Multi-company rules on letters and text blocks.
+- Letter templates and text blocks are **sanitized on save**, like Odoo's
+  outgoing email templates: scripts, event handlers and `javascript:` links are
+  removed, while formatting and QWeb merge fields (`<t t-out>`) are kept.
+  Templates, text blocks and letters written before 18.0.2.0.2 are sanitized
+  once at upgrade, and each changed record is logged.
 
 ## Dependencies
 
@@ -139,7 +144,7 @@ Brand colours come from `bf_lexend`.
 - `image` mode: full-page background (known limitation — it covers the first
   page; prefer `pdf_overlay` for multi-page letters).
 - Optional modules are detected through `ir.module.module` (`installed` state).
-- BUSL-1.1 licence; converts to LGPL-3.0-or-later on 2030-08-12.
+- BUSL-1.1 licence; converts to LGPL-3.0-or-later on 2030-10-08.
 
 ## Tests
 

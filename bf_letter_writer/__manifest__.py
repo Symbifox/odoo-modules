@@ -1,6 +1,6 @@
 {
     'name': 'Letter Writer',
-    'version': '18.0.2.0.1',
+    'version': '18.0.2.0.2',
     'category': 'Tools',
     'summary': "Rédaction de lettres officielles brandées : en-tête, fusion de champs, modèles et blocs réutilisables",
     'description': """
