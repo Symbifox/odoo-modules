@@ -58,8 +58,12 @@ class BfPhishingTemplate(models.Model):
              "support@exemple-banque.com).",
     )
     sender_name = fields.Char(string="Nom de l'expéditeur")
+    # Même nettoyage que le corps d'un envoi de masse (où ce corps est recopié) et
+    # qu'un modèle de courriel d'Odoo : ni script ni « on… » ni « javascript: »,
+    # mais les styles, tableaux, commentaires Outlook et t-att-href restent, pour
+    # qu'un leurre imite un vrai courriel.
     email_body = fields.Html(
-        string="Corps du courriel", sanitize=False, translate=True,
+        string="Corps du courriel", sanitize="email_outgoing", translate=True,
         default=DEFAULT_EMAIL_BODY,
         help="Corps HTML du leurre. Insérez le lien piégé avec "
              "<a t-att-href=\"object.landing_url\">…</a>.",

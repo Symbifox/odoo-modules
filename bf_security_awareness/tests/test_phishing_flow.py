@@ -203,7 +203,9 @@ class TestPhishingController(HttpCase):
         self.result = self.campaign.result_ids[0]
 
     def test_landing_registers_click(self):
-        resp = self.url_open("/phish/%s" % self.result.token)
+        # Un vrai navigateur : l'agent de `requests` est écarté comme robot.
+        resp = self.url_open("/phish/%s" % self.result.token,
+                             headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0"})
         self.assertEqual(resp.status_code, 200)
         self.result.invalidate_recordset()
         self.assertEqual(self.result.state, "clicked")

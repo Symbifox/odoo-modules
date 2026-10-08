@@ -120,6 +120,18 @@ purpose. Configure per tenant:
 
 ## Security
 
+**Link scanners are not people.** Email security gateways, antivirus, link
+previews and headless browsers open every link of a message before its
+recipient. Their visits (recognised by their user agent, and every `HEAD`
+request) are recorded neither as clicks nor as reports, so campaign results
+reflect people. It is a filter, not a proof: a scanner that imitates a real
+browser still gets through.
+
+**Lure bodies are sanitized on save** (Odoo's outgoing-email mode): the tracked
+link and the formatting survive, scripts do not. Lures written before 18.0.2.0.3
+are sanitized once at upgrade, in every language, and each changed record is
+logged. Landing pages are not touched.
+
 The clawback and the reporting alias are high-impact. Read **`SECURITY.md`** for
 the threat model and controls (least-privilege groups, reversible quarantine,
 IMAP-injection screening, the authorization flag, blast-radius cap, encrypted
@@ -134,5 +146,5 @@ Distributed under the **Business Source License 1.1** (BUSL-1.1). See the
   business operations.
 - **Requires a written agreement**: providing the module as a product or
   service to third parties, whether hosted, managed or resold.
-- **Change Date**: on 2030-08-12, this version converts automatically to
+- **Change Date**: on 2030-10-08, this version converts automatically to
   **LGPL-3.0-or-later**.

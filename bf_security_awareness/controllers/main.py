@@ -1,5 +1,6 @@
 import base64
 import logging
+import re
 
 from odoo import http
 from odoo.http import request
@@ -21,6 +22,33 @@ _CSP = ("script-src 'none'; object-src 'none'; base-uri 'none'; "
 
 # États où la campagne n'accepte plus aucune visite.
 _CLOSED_STATES = ("done", "cancelled")
+
+# 🔴 Les robots d'analyse de liens ne sont pas des personnes.
+# Passerelles de courriel, antivirus, aperçus de messagerie et navigateurs sans
+# tête ouvrent chaque lien d'un message avant sa destinataire. Leur visite ne
+# compte ni comme clic ni comme signalement. La liste se tient large exprès :
+# manquer un vrai clic fausse moins une campagne qu'en inventer cent.
+# ⚠️ Un robot qui imite un vrai navigateur passe encore : c'est un filtre, pas
+# une preuve (voir aussi la requête HEAD, écartée plus bas).
+_ROBOT_UA = re.compile(
+    r"bot\b|crawl|spider|slurp|preview|scan|headless|phantomjs|puppeteer|"
+    r"playwright|python-|curl/|wget/|go-http-client|java/|libwww|okhttp|"
+    r"axios/|node-fetch|httpclient|ms-office|microsoft office|"
+    r"existence discovery|safelinks|proofpoint|mimecast|barracuda|forcepoint|"
+    r"ironport|symantec|messagelabs|trendmicro|trend micro|fortinet|"
+    r"fortiguard|sophos|cloudmark|zscaler|checkpoint|avanan|abnormal|"
+    r"facebookexternalhit|slackbot|discordbot|whatsapp|telegrambot|"
+    r"linkedinbot|skypeuripreview",
+    re.IGNORECASE)
+
+
+def _visite_de_robot():
+    """Vrai quand la requête vient vraisemblablement d'un robot, pas d'une personne."""
+    requete = request.httprequest
+    if requete.method == "HEAD":
+        return True
+    agent = (requete.headers.get("User-Agent") or "").strip()
+    return not agent or bool(_ROBOT_UA.search(agent))
 
 
 class BfSecurityAwarenessController(http.Controller):
@@ -89,11 +117,17 @@ class BfSecurityAwarenessController(http.Controller):
         if not result:
             return self._render_lesson(request.env["bf.phishing.result"])
 
-        result.register_click(
-            ip=request.httprequest.remote_addr,
-            country_id=self._country_id(),
-            user_agent=request.httprequest.headers.get("User-Agent"),
-        )
+        # Même page pour le robot que pour la personne (rien à sonder), mais
+        # sans rien enregistrer.
+        if _visite_de_robot():
+            _logger.info("bf_security_awareness: visite automatique ignorée "
+                         "(résultat %s)", result.id)
+        else:
+            result.register_click(
+                ip=request.httprequest.remote_addr,
+                country_id=self._country_id(),
+                user_agent=request.httprequest.headers.get("User-Agent"),
+            )
 
         mode = result.campaign_id.template_id.landing_mode
         if mode == "credential":
@@ -164,7 +198,7 @@ class BfSecurityAwarenessController(http.Controller):
                 website=True, sitemap=False)
     def phish_report(self, token, **kw):
         result = self._result_by_token(token)
-        if result:
+        if result and not _visite_de_robot():
             result.register_report()
         return self._render(
             "bf_security_awareness.phishing_reported",

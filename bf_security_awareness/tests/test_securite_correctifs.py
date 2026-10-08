@@ -54,7 +54,9 @@ class TestJetonCampagneClose(HttpCase):
 
     def test_campagne_ouverte_enregistre_encore(self):
         self.campaign.state = "running"
-        self.url_open("/phish/%s" % self.result.token)
+        # Un vrai navigateur : l'agent de `requests` est écarté comme robot.
+        self.url_open("/phish/%s" % self.result.token,
+                      headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:130.0) Gecko/20100101 Firefox/130.0"})
         self.result.invalidate_recordset()
         self.assertEqual(self.result.state, "clicked")
 
