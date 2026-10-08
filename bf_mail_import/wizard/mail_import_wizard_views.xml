@@ -6,43 +6,43 @@
         <field name="name">bf.mail.import.wizard.form</field>
         <field name="model">bf.mail.import.wizard</field>
         <field name="arch" type="xml">
-            <form string="Importer des courriels (.eml)">
+            <form string="Import emails (.eml)">
                 <group>
                     <field name="state" invisible="1"/>
                     <field name="target_reference"
-                           string="Enregistrement cible"
+                           string="Target record"
                            widget="bf_chatter_target"
                            required="1"
                            readonly="state == 'done'"
-                           placeholder="Nom, num&#233;ro, task:22299, ou URL Odoo&#8230;"/>
+                           placeholder="Name, number, task:22299, or Odoo URL…"/>
                 </group>
 
                 <!-- DRAFT state: file selection -->
                 <group invisible="state != 'draft'">
                     <field name="eml_files" widget="many2many_binary"
-                           string="Fichiers .eml"/>
+                           string=".eml files"/>
                     <field name="file_count"/>
                 </group>
 
                 <!-- DONE state -->
-                <group invisible="state != 'done'" string="R&#233;sultat">
+                <group invisible="state != 'done'" string="Result">
                     <field name="import_result" nolabel="1" colspan="2"/>
                 </group>
 
                 <footer>
                     <button name="action_import"
-                            string="Importer"
+                            string="Import"
                             type="object"
                             class="btn-primary"
                             invisible="state != 'draft'"/>
 
                     <button name="action_reset"
-                            string="Nouvel import"
+                            string="New import"
                             type="object"
                             class="btn-secondary"
                             invisible="state != 'done'"/>
 
-                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
         </field>
@@ -50,7 +50,7 @@
 
     <!-- Action to open wizard from menu (admin only) -->
     <record id="action_bf_mail_import_wizard" model="ir.actions.act_window">
-        <field name="name">Importer des courriels (.eml)</field>
+        <field name="name">Import emails (.eml)</field>
         <field name="res_model">bf.mail.import.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -58,7 +58,7 @@
 
     <!-- Menu under Settings > Technical > Email -->
     <menuitem id="menu_bf_mail_import"
-              name="Importer .eml"
+              name="Import .eml"
               parent="base.menu_email"
               action="action_bf_mail_import_wizard"
               groups="base.group_system"

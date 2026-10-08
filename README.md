@@ -123,10 +123,10 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_celebrations` | Célébrations | 18.0.2.2.0 | BUSL-1.1 | Tableaux de vœux collectifs, calendrier des occasions, et le consentement de la personne qu'on souligne |
 | `bf_celebrations_email` | Célébrations : groupes de destinataires | 18.0.1.0.0 | LGPL-3 | Tend une carte de fête aux groupes de destinataires du composeur de courriels |
 | `bf_charge` | Plan de charge | 18.0.1.1.3 | BUSL-1.1 | What is actually left to do, placed on weeks, against a declared capacity rather than a guessed one |
-| `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.1.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
+| `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.2.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
 | `bf_chatter_target` | BF Cible de chatter | 18.0.1.1.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
-| `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
+| `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.3.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
 | `bf_claude_chat` | Gen | 18.0.1.34.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.3.0 | BUSL-1.1 | Daily digest sections: Claude usage per account (windows, reset, probe state) and the recipient's Gen conversations to follow |
@@ -213,7 +213,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_helpdesk` | Symbifox — Helpdesk | 18.0.4.15.5 | AGPL-3 | Branded helpdesk extension: per-team public form, hour-bank ribbon, waiting states, ntfy critical hook, persona panel, knowledge-matrix link, ticket→meeting, IA triage via Gen, CSAT on close, branded portal, dashboard tile, IMAP gateway hardening, SLA + macros + auto-tag + auto-ack, ticket timesheets (hour-bank deduction), branded client updates |
 | `bf_helpdesk_digest` | Helpdesk — Section du digest quotidien | 18.0.1.0.2 | LGPL-3 | Adds an « Assistance » section to the daily digest: the reader's open tickets and their daily helpdesk notifications |
 | `bf_helpdesk_merge` | Helpdesk — Doublons, fusion et incidents | 18.0.1.3.2 | AGPL-3 | Complete ticket merge (timesheets, attachments, followers, internal notes), duplicate suggestions at creation, parent incidents with a grouped reply |
-| `bf_home` | Accueil Symbifox | 18.0.2.0.1 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
+| `bf_home` | Accueil Symbifox | 18.0.2.1.0 | BUSL-1.1 | Home screen replacing the app grid, ordered by who is blocked: your day, what waits on others, money, risk — every figure opens its filtered list |
 | `bf_hosting_patch` | Hébergement — Mises à jour du système | 18.0.4.5.0 | LGPL-3 | Fleet update state per installed system — pending packages, kernel, reboots — and applies updates on command via a queue the machines poll |
 | `bf_hosting_patch_digest` | Hébergement — Mises à jour système : section du digest | 18.0.1.1.0 | LGPL-3 | Fleet update section for the daily digest: silent when all is well, always present when a machine stops reporting |
 | `bf_hour_bank` | Banque d'heures | 18.0.1.15.2 | BUSL-1.1 | Automated tracking of client hour banks with threshold-based proactive notifications (unbilled hours, % of allocated budget, balance floor) |
@@ -225,9 +225,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_lexend` | Lexend Typeface | 18.0.3.0.0 | LGPL-3 | Adds Lexend across UI/PDF reports and per-company brand color settings (`report_brand_primary`, `report_brand_dark`) |
 | `bf_linkpage` | Pages de liens | 18.0.10.0.2 | BUSL-1.1 | Public link page for a person, a client organisation or a one-off, whose links are resolved from your own records rather than retyped, with a branded QR code for email signatures |
 | `bf_llm` | Symbifox — LLM Provider | 18.0.1.0.1 | LGPL-3 | Provider-agnostic LLM access (chat + document/vision extraction) for Symbifox modules |
-| `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.4.0 | LGPL-3 | Import .eml files into the Odoo chatter |
-| `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.1.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
-| `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.3.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
+| `bf_mail_import` | BF Import courriel (.eml) | 18.0.1.5.0 | LGPL-3 | Import .eml files into the Odoo chatter |
+| `bf_mail_subject_clean` | BF Nettoyage des sujets de courriel | 18.0.1.2.0 | LGPL-3 | Prevents "Re: Re: Re:" stacking on subjects sent through the chatter |
+| `bf_mail_vigie` | BF Vigie courriels (re-router) | 18.0.2.4.0 | BUSL-1.1 | "Re-route" button on `bf.email` to move a misrouted email to the correct chatter |
 | `bf_mailing_signup` | Inscription publique à une liste d'envoi | 18.0.1.2.0 | LGPL-3 | Plain-HTML newsletter sign-up form with double opt-in, no reCaptcha and no third-party asset |
 | `bf_mass_notes` | Symbifox — Notes en lot | 18.0.1.0.0 | LGPL-3 | List-view Action to post a chatter note (or message) to many selected records at once; binds to all `mail.thread` models |
 | `bf_meeting` | Rencontres | 18.0.3.65.1 | BUSL-1.1 | Agendas, meeting records, and discussion items unified around `calendar.event` with automatic reminders |

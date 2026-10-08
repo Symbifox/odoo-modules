@@ -38,7 +38,11 @@ donc le module s'installe sur un locataire qui a trois modules comme sur un qui
 les a tous. ``account`` et ``project`` ne font pas exception depuis l'absorption :
 les collecteurs comptables passent par la même garde que les autres.
 """,
-    "version": "18.0.2.0.1",
+    # 18.0.2.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.2.1.0",
     "category": "Productivity",
     "website": "https://symbifox.com",
     "author": "Les services de consultation Blue Fox, Inc.",

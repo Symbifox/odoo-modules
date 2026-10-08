@@ -125,6 +125,12 @@ The button is injected via the standard Odoo 18 patch pattern:
 | Target record deleted | `UserError` before import attempt |
 | Model without `mail.thread` | `UserError` in `default_get()` |
 
+## Languages (v18.0.1.5.0)
+
+Labels, the chatter button, the wizard and its menu are written in English in the
+source; the French ships in `i18n/fr_CA.po`. The title of the window opened from the
+chatter is translatable too. A migration switches the onboarding step texts to English only where they still carry the French that was delivered; a text edited by hand is left alone.
+
 ## Installation
 
 ```bash

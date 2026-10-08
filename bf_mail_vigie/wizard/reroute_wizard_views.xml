@@ -4,38 +4,38 @@
         <field name="name">bf.mail.reroute.wizard.form</field>
         <field name="model">bf.mail.reroute.wizard</field>
         <field name="arch" type="xml">
-            <form string="Re-router le courriel">
+            <form string="Reroute the email">
                 <group>
                     <field name="email_id" invisible="1"/>
-                    <field name="current_display" string="Chatter actuelle"/>
+                    <field name="current_display" string="Current chatter"/>
                 </group>
-                <group string="Suggestion automatique"
+                <group string="Automatic suggestion"
                        invisible="not suggested_display">
                     <field name="suggested_display"/>
                     <field name="suggested_reason"/>
                     <field name="suggested_model" invisible="1"/>
                     <field name="suggested_res_id" invisible="1"/>
                     <button name="action_apply_suggested" type="object"
-                            string="Appliquer la suggestion"
+                            string="Apply the suggestion"
                             class="btn-secondary" icon="fa-magic"/>
                 </group>
-                <group string="Choisir la cible">
+                <group string="Choose the target">
                     <field name="target_reference"
                            widget="bf_chatter_target"
                            required="1"
-                           placeholder="Nom, numéro, task:22299, ou URL Odoo…"/>
+                           placeholder="Name, number, task:22299, or Odoo URL…"/>
                 </group>
                 <footer>
                     <button name="action_reroute" type="object"
-                            string="Re-router" class="btn-primary"/>
-                    <button special="cancel" string="Annuler"/>
+                            string="Reroute" class="btn-primary"/>
+                    <button special="cancel" string="Cancel"/>
                 </footer>
             </form>
         </field>
     </record>
 
     <record id="action_bf_mail_reroute_wizard" model="ir.actions.act_window">
-        <field name="name">Re-router ce courriel</field>
+        <field name="name">Reroute this email</field>
         <field name="res_model">bf.mail.reroute.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

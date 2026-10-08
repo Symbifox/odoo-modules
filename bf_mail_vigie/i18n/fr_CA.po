@@ -1,0 +1,225 @@
+# Translation of BF Vigie courriels (re-router) - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_mail_vigie 18.0.2.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-08 05:10+0000\n"
+"PO-Revision-Date: 2026-10-08 05:10+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_mail_vigie
+#. odoo-python
+#: code:addons/bf_mail_vigie/wizard/reroute_wizard.py:0
+msgid "(no subject)"
+msgstr "(sans objet)"
+
+#. module: bf_mail_vigie
+#: model_terms:ir.ui.view,arch_db:bf_mail_vigie.view_bf_mail_reroute_wizard_form
+msgid "Apply the suggestion"
+msgstr "Appliquer la suggestion"
+
+#. module: bf_mail_vigie
+#: model_terms:ir.ui.view,arch_db:bf_mail_vigie.view_bf_mail_reroute_wizard_form
+msgid "Automatic suggestion"
+msgstr "Suggestion automatique"
+
+#. module: bf_mail_vigie
+#: model:onboarding.onboarding,name:bf_mail_vigie.bf_onboarding_panel
+msgid "BF Mail Vigie"
+msgstr "BF Mail Vigie"
+
+#. module: bf_mail_vigie
+#: model_terms:ir.ui.view,arch_db:bf_mail_vigie.view_bf_mail_reroute_wizard_form
+msgid "Cancel"
+msgstr "Annuler"
+
+#. module: bf_mail_vigie
+#: model_terms:ir.ui.view,arch_db:bf_mail_vigie.view_bf_mail_reroute_wizard_form
+msgid "Choose the target"
+msgstr "Choisir la cible"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__current_display
+#: model_terms:ir.ui.view,arch_db:bf_mail_vigie.view_bf_mail_reroute_wizard_form
+msgid "Current chatter"
+msgstr "Chatter actuelle"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__email_id
+msgid "Email"
+msgstr "Courriel"
+
+#. module: bf_mail_vigie
+#. odoo-python
+#: code:addons/bf_mail_vigie/wizard/reroute_wizard.py:0
+msgid "Email \"%(subj)s\" moved to %(tgt)s by %(user)s"
+msgstr "Courriel « %(subj)s » déplacé vers %(tgt)s par %(user)s"
+
+#. module: bf_mail_vigie
+#. odoo-python
+#: code:addons/bf_mail_vigie/wizard/reroute_wizard.py:0
+msgid "Email \"%(subj)s\" rerouted by %(user)s"
+msgstr "Courriel « %(subj)s » re-routé par %(user)s"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_mail_vigie
+#: model_terms:ir.ui.view,arch_db:bf_mail_vigie.view_bf_mail_reroute_wizard_form
+msgid "Name, number, task:22299, or Odoo URL…"
+msgstr "Nom, numéro, task:22299, ou URL Odoo…"
+
+#. module: bf_mail_vigie
+#. odoo-python
+#: code:addons/bf_mail_vigie/wizard/reroute_wizard.py:0
+msgid "No suggestion available."
+msgstr "Aucune suggestion disponible."
+
+#. module: bf_mail_vigie
+#: model:ir.model,name:bf_mail_vigie.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr "Parcours d'intégration"
+
+#. module: bf_mail_vigie
+#: model:onboarding.onboarding.step,step_image_alt:bf_mail_vigie.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_mail_vigie
+#: model:onboarding.onboarding.step,button_text:bf_mail_vigie.bf_onb_step_settings
+msgid "Open Settings"
+msgstr "Ouvrir Paramètres"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__suggested_reason
+msgid "Reason"
+msgstr "Raison"
+
+#. module: bf_mail_vigie
+#: model_terms:ir.ui.view,arch_db:bf_mail_vigie.view_bf_email_form_reroute
+#: model_terms:ir.ui.view,arch_db:bf_mail_vigie.view_bf_mail_reroute_wizard_form
+msgid "Reroute"
+msgstr "Re-router"
+
+#. module: bf_mail_vigie
+#: model:ir.model,name:bf_mail_vigie.model_bf_mail_reroute_wizard
+msgid "Reroute an email to another chatter"
+msgstr "Re-router un courriel vers une autre chatter"
+
+#. module: bf_mail_vigie
+#: model_terms:ir.ui.view,arch_db:bf_mail_vigie.view_bf_mail_reroute_wizard_form
+msgid "Reroute the email"
+msgstr "Re-router le courriel"
+
+#. module: bf_mail_vigie
+#: model:ir.actions.act_window,name:bf_mail_vigie.action_bf_mail_reroute_wizard
+msgid "Reroute this email"
+msgstr "Re-router ce courriel"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,help:bf_mail_vigie.field_bf_mail_reroute_wizard__target_reference
+msgid ""
+"Search by name, by number, by shortcut (task:22299, invoice:42, bf.email:17)"
+" or paste an Odoo URL. Any record with a chatter is a valid target."
+msgstr ""
+"Cherchez par nom, par numéro, par raccourci (task:22299, facture:42, "
+"bf.email:17) ou collez une URL Odoo. Toute fiche dotée d'un chatter est une "
+"cible valide."
+
+#. module: bf_mail_vigie
+#: model:onboarding.onboarding.step,description:bf_mail_vigie.bf_onb_step_settings
+msgid ""
+"Set the inactivity thresholds and the alert recipients for the watched "
+"mailboxes."
+msgstr ""
+"Définissez les seuils d'inactivité et les destinataires d'alertes pour les "
+"boîtes surveillées."
+
+#. module: bf_mail_vigie
+#: model:onboarding.onboarding.step,title:bf_mail_vigie.bf_onb_step_settings
+msgid "Set up the email watch"
+msgstr "Configurer la vigie courriel"
+
+#. module: bf_mail_vigie
+#. odoo-python
+#: code:addons/bf_mail_vigie/wizard/reroute_wizard.py:0
+msgid "Source mail.message not found."
+msgstr "mail.message source introuvable."
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__suggested_res_id
+msgid "Suggested ID"
+msgstr "ID suggéré"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__suggested_model
+msgid "Suggested model"
+msgstr "Modèle suggéré"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__suggested_display
+msgid "Suggested target"
+msgstr "Cible suggérée"
+
+#. module: bf_mail_vigie
+#: model:ir.model.fields,field_description:bf_mail_vigie.field_bf_mail_reroute_wizard__target_reference
+msgid "Target"
+msgstr "Cible"
+
+#. module: bf_mail_vigie
+#. odoo-python
+#: code:addons/bf_mail_vigie/wizard/reroute_wizard.py:0
+msgid "The email is already on this chatter."
+msgstr "Le courriel est déjà sur cette chatter."
+
+#. module: bf_mail_vigie
+#. odoo-python
+#: code:addons/bf_mail_vigie/wizard/reroute_wizard.py:0
+msgid "The suggestion points to a deleted record."
+msgstr "La suggestion pointe vers un enregistrement supprimé."
+
+#. module: bf_mail_vigie
+#. odoo-python
+#: code:addons/bf_mail_vigie/models/bf_email.py:0
+msgid "This email has no linked mail.message."
+msgstr "Ce courriel n'a pas de mail.message associé."
+
+#. module: bf_mail_vigie
+#: model:onboarding.onboarding.step,done_text:bf_mail_vigie.bf_onb_step_settings
+msgid "Watch active"
+msgstr "Vigie active"

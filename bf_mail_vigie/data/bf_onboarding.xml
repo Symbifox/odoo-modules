@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo noupdate="1">
     <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
-        <field name="title">Configurer la vigie courriel</field>
-        <field name="description">Définissez les seuils d'inactivité et les destinataires d'alertes pour les boîtes surveillées.</field>
-        <field name="button_text">Ouvrir Paramètres</field>
-        <field name="done_text">Vigie active</field>
+        <field name="title">Set up the email watch</field>
+        <field name="description">Set the inactivity thresholds and the alert recipients for the watched mailboxes.</field>
+        <field name="button_text">Open Settings</field>
+        <field name="done_text">Watch active</field>
         <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
         <field name="sequence">1</field>
     </record>

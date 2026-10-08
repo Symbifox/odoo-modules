@@ -112,6 +112,11 @@ Pre-publication checklist (per BF policy):
 | User without an `hr.employee` record | Backend `UserError`; same handling as above |
 | RPC failure after the note posts | Sticky danger notification surfaces the original error message; the note is preserved |
 
+## Languages (v18.0.1.3.0)
+
+Labels, messages and the composer controls are written in English in the source; the
+French ships in `i18n/fr_CA.po`. A migration switches the onboarding step texts to English only where they still carry the French that was delivered; a text edited by hand is left alone.
+
 ## Installation
 
 ```bash

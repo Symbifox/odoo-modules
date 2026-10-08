@@ -3,6 +3,7 @@
 import { Chatter } from "@mail/chatter/web_portal/chatter";
 import { patch } from "@web/core/utils/patch";
 import { useService } from "@web/core/utils/hooks";
+import { _t } from "@web/core/l10n/translation";
 
 patch(Chatter.prototype, {
     setup() {
@@ -16,7 +17,7 @@ patch(Chatter.prototype, {
         await this.actionService.doAction(
             {
                 type: "ir.actions.act_window",
-                name: "Importer des courriels (.eml)",
+                name: _t("Import emails (.eml)"),
                 res_model: "bf.mail.import.wizard",
                 views: [[false, "form"]],
                 target: "new",

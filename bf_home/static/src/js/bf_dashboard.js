@@ -13,6 +13,7 @@
 
 import { Component, useState, onWillStart } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
+import { user } from "@web/core/user";
 
 export class BfDashboard extends Component {
     static template = "bf_dashboard.Dashboard";
@@ -74,9 +75,14 @@ export class BfDashboard extends Component {
 
     // ---- Formatting helpers ----
 
+    /** The reader's locale (fr_CA -> fr-CA), not the one this was written in. */
+    _locale() {
+        return (user.lang || "en_US").replace("_", "-");
+    }
+
     formatCurrency(amount) {
         if (amount === null || amount === undefined) return "-";
-        return amount.toLocaleString("fr-CA", {
+        return amount.toLocaleString(this._locale(), {
             style: "currency",
             currency: "CAD",
             minimumFractionDigits: 0,
@@ -88,7 +94,7 @@ export class BfDashboard extends Component {
         if (!monthStr) return "";
         const [year, month] = monthStr.split("-");
         const date = new Date(parseInt(year), parseInt(month) - 1, 1);
-        const formatted = date.toLocaleDateString("fr-CA", { year: "numeric", month: "short" });
+        const formatted = date.toLocaleDateString(this._locale(), { year: "numeric", month: "short" });
         return formatted.charAt(0).toUpperCase() + formatted.slice(1);
     }
 

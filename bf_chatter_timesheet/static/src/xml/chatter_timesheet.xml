@@ -9,7 +9,7 @@
                     <input type="checkbox"
                            class="form-check-input m-0"
                            t-model="bfTimesheet.enabled"/>
-                    <span>Temps</span>
+                    <span>Time</span>
                 </label>
                 <div class="d-flex flex-row align-items-center gap-1 flex-shrink-0"
                      t-att-class="{ 'opacity-50': !bfTimesheet.enabled }">
@@ -19,7 +19,7 @@
                            step="1"
                            class="form-control form-control-sm bf-chatter-timesheet-input"
                            t-model.number="bfTimesheet.hours"
-                           title="Heures"/>
+                           title="Hours"/>
                     <span>h</span>
                     <input type="number"
                            min="0"
@@ -30,7 +30,7 @@
                            title="Minutes"/>
                     <span>m</span>
                 </div>
-                <div class="btn-group btn-group-sm flex-shrink-0" role="group" aria-label="Presets de durée">
+                <div class="btn-group btn-group-sm flex-shrink-0" role="group" aria-label="Duration presets">
                     <button type="button"
                             class="btn btn-light"
                             t-on-click="() => this.bfTimesheetSetPreset(5)">5m</button>

@@ -83,6 +83,15 @@ The third guard reads executable source only, via `ast`, with the docstring and 
 
 This matters more than it sounds. A flat ten-hour floor flagged every active bank on the reference tenant, including ones that had alerting explicitly switched off — the band was permanently red and therefore mute. Modes this row cannot render as a balance (`budget_pct`, `unbilled`) keep a default floor rather than dropping into silence, and the subtitle says which reading applied.
 
+## Languages (v18.0.2.1.0)
+
+The screen is written in English in the source; the French ships in `i18n/fr_CA.po`.
+Each reader gets their own language: band titles, the morning sentence, the task and
+backup state labels, and the names of the dashboard's actions. Times read "9:05" in
+English and "9 h 05" in French, dates "10/07" and "07/10"; amounts and month names
+follow the reader's locale. Bands added by other modules follow their own module's
+language.
+
 ## Time zones
 
 Datetime columns are stored and compared in UTC. Building a day window from a naive `date.today()` therefore asks for a *UTC* day, which in Montreal starts at 20:00 the previous evening. `_day_bounds()` converts the reader's calendar day through their timezone first, and `_days_since()` counts between the reader's days, not the server's.

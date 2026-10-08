@@ -53,7 +53,7 @@ class BfEmail(models.Model):
     def action_open_reroute_wizard(self):
         self.ensure_one()
         if not self.mail_message_id:
-            raise UserError(_("Ce courriel n'a pas de mail.message associ\u00e9."))
+            raise UserError(_("This email has no linked mail.message."))
         model, res_id, reason = self._find_target_by_headers()
         suggested_display = False
         if model and res_id:

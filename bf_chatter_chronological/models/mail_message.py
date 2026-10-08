@@ -199,10 +199,9 @@ class MailMessage(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": _("Réordonner par date"),
+                    "title": _("Reorder by date"),
                     "message": _(
-                        "Action invoquée hors du contexte d'un record — rien à "
-                        "réordonner."
+                        "Action called outside a record: nothing to reorder."
                     ),
                     "type": "warning",
                     "sticky": False,
@@ -220,8 +219,8 @@ class MailMessage(models.Model):
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
-                    "title": _("Réordonner par date"),
-                    "message": _("Aucun courriel à analyser sur ce record."),
+                    "title": _("Reorder by date"),
+                    "message": _("No email to analyse on this record."),
                     "type": "info",
                     "sticky": False,
                 },
@@ -267,27 +266,28 @@ class MailMessage(models.Model):
         if updated:
             msg_type = "success"
             message = _(
-                "%(n)s message(s) re-daté(s) à partir de l'en-tête Date du body. "
-                "Rafraîchis la page pour voir l'ordre mis à jour."
+                "%(n)s message(s) redated from the Date header in the "
+                "body. Refresh the page to see the new order."
             ) % {"n": updated}
         elif parse_fail and not skipped_backdated:
             msg_type = "info"
             message = _(
-                "%(n)s message(s) candidats mais aucune date trouvée dans le body — "
-                "rien à re-dater."
+                "%(n)s candidate message(s), but no date found in the "
+                "body: nothing to redate."
             ) % {"n": parse_fail}
         else:
             msg_type = "info"
             message = _(
-                "Rien à re-dater. %(b)s message(s) déjà backdaté(s), "
-                "%(e)s candidat(s) examiné(s), %(f)s sans date parsable."
+                "Nothing to redate. %(b)s message(s) already backdated, "
+                "%(e)s candidate(s) examined, %(f)s without a readable "
+                "date."
             ) % {"b": skipped_backdated, "e": examined, "f": parse_fail}
 
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Réordonner par date"),
+                "title": _("Reorder by date"),
                 "message": message,
                 "type": msg_type,
                 "sticky": False,

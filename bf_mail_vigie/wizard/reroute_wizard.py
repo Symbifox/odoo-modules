@@ -17,18 +17,18 @@ _logger = logging.getLogger(__name__)
 class BfMailRerouteWizard(models.TransientModel):
     _name = "bf.mail.reroute.wizard"
     _inherit = ["bf.chatter.target.mixin"]
-    _description = "Re-router un courriel vers une autre chatter"
+    _description = "Reroute an email to another chatter"
 
     email_id = fields.Many2one(
-        "bf.email", string="Courriel", required=True, readonly=True, ondelete="cascade"
+        "bf.email", string="Email", required=True, readonly=True, ondelete="cascade"
     )
-    current_display = fields.Char("Chatter actuelle", readonly=True)
-    suggested_model = fields.Char("Mod\u00e8le sugg\u00e9r\u00e9", readonly=True)
-    suggested_res_id = fields.Integer("ID sugg\u00e9r\u00e9", readonly=True)
-    suggested_display = fields.Char("Cible sugg\u00e9r\u00e9e", readonly=True)
-    suggested_reason = fields.Char("Raison", readonly=True)
+    current_display = fields.Char("Current chatter", readonly=True)
+    suggested_model = fields.Char("Suggested model", readonly=True)
+    suggested_res_id = fields.Integer("Suggested ID", readonly=True)
+    suggested_display = fields.Char("Suggested target", readonly=True)
+    suggested_reason = fields.Char("Reason", readonly=True)
 
-    target_reference = fields.Reference(string="Cible")
+    target_reference = fields.Reference(string="Target")
 
     def _get_source_record(self):
         self.ensure_one()
@@ -63,10 +63,10 @@ class BfMailRerouteWizard(models.TransientModel):
     def action_apply_suggested(self):
         self.ensure_one()
         if not self.suggested_model or not self.suggested_res_id:
-            raise UserError(_("Aucune suggestion disponible."))
+            raise UserError(_("No suggestion available."))
         target = self.env[self.suggested_model].browse(self.suggested_res_id)
         if not target.exists():
-            raise UserError(_("La suggestion pointe vers un enregistrement supprim\u00e9."))
+            raise UserError(_("The suggestion points to a deleted record."))
         self.target_reference = target
         return {
             "type": "ir.actions.act_window",
@@ -82,11 +82,11 @@ class BfMailRerouteWizard(models.TransientModel):
         email = self.email_id
         msg = email.mail_message_id
         if not msg:
-            raise UserError(_("mail.message source introuvable."))
+            raise UserError(_("Source mail.message not found."))
         old_model = email.res_model
         old_res_id = email.res_id
         if old_model == target._name and old_res_id == target.id:
-            raise UserError(_("Le courriel est d\u00e9j\u00e0 sur cette chatter."))
+            raise UserError(_("The email is already on this chatter."))
 
         source = self._get_source_record()
 
@@ -111,9 +111,9 @@ class BfMailRerouteWizard(models.TransientModel):
             "res_id": target.id,
         })
 
-        subj = (email.subject or "").strip() or _("(sans objet)")
+        subj = (email.subject or "").strip() or _("(no subject)")
         note_body = _(
-            "Courriel \u00ab %(subj)s \u00bb re-rout\u00e9 par %(user)s",
+            "Email \"%(subj)s\" rerouted by %(user)s",
             subj=subj,
             user=self.env.user.display_name,
         )
@@ -125,8 +125,7 @@ class BfMailRerouteWizard(models.TransientModel):
         if source is not None and hasattr(source, "message_post"):
             source.message_post(
                 body=_(
-                    "Courriel \u00ab %(subj)s \u00bb d\u00e9plac\u00e9 vers %(tgt)s "
-                    "par %(user)s",
+                    "Email \"%(subj)s\" moved to %(tgt)s by %(user)s",
                     subj=subj,
                     tgt=target.display_name,
                     user=self.env.user.display_name,

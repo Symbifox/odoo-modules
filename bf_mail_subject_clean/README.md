@@ -91,6 +91,11 @@ The `message_post` override is applied to the abstract `mail.thread` model and i
 | `Fw: Re: Hello` | `Fw: Re: Hello` (unchanged — the module doesn't touch `Fw:`/`Tr:`) |
 | `""` or `None` | as-is |
 
+## Languages (v18.0.1.2.0)
+
+The onboarding texts are written in English in the source; the French ships in
+`i18n/fr_CA.po`. A migration switches the onboarding step texts to English only where they still carry the French that was delivered; a text edited by hand is left alone.
+
 ## Installation
 
 ```bash

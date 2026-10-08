@@ -19,7 +19,7 @@ class ProjectTask(models.Model):
             limit=1,
         )
         if not employee:
-            raise UserError(_("Aucun employé n'est associé à votre compte utilisateur."))
+            raise UserError(_("No employee is linked to your user account."))
         return employee
 
     def action_bf_create_chatter_timesheet(self, duration_hours, body_html=""):
@@ -34,15 +34,15 @@ class ProjectTask(models.Model):
         try:
             duration_hours = float(duration_hours or 0)
         except (TypeError, ValueError):
-            raise ValidationError(_("Durée invalide."))
+            raise ValidationError(_("Invalid duration."))
         if duration_hours <= 0:
-            raise ValidationError(_("La durée doit être supérieure à 0."))
+            raise ValidationError(_("The duration must be greater than 0."))
 
         if not self.project_id:
-            raise UserError(_("Cette tâche n'a pas de projet."))
+            raise UserError(_("This task has no project."))
         if not self.allow_timesheets:
             raise UserError(
-                _("Les feuilles de temps ne sont pas activées sur cette tâche.")
+                _("Timesheets are not enabled on this task.")
             )
 
         employee = self._bf_chatter_resolve_employee()

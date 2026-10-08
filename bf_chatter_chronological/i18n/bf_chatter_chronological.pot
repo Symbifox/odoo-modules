@@ -1,0 +1,73 @@
+# Translation template for BF Chatter Chronological View.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_chatter_chronological 18.0.4.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-08 05:10+0000\n"
+"PO-Revision-Date: 2026-10-08 05:10+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid ""
+"%(n)s candidate message(s), but no date found in the body: nothing to "
+"redate."
+msgstr ""
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid ""
+"%(n)s message(s) redated from the Date header in the body. Refresh the page "
+"to see the new order."
+msgstr ""
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid "Action called outside a record: nothing to reorder."
+msgstr ""
+
+#. module: bf_chatter_chronological
+#: model:ir.model,name:bf_chatter_chronological.model_mail_message
+msgid "Message"
+msgstr ""
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid "No email to analyse on this record."
+msgstr ""
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid ""
+"Nothing to redate. %(b)s message(s) already backdated, %(e)s candidate(s) "
+"examined, %(f)s without a readable date."
+msgstr ""
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid "Reorder by date"
+msgstr ""
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/hooks.py:0
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_account_move
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_crm_lead
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_helpdesk_ticket
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_hr_expense
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_project_task
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_res_partner
+msgid "Reorder this chatter by date"
+msgstr ""

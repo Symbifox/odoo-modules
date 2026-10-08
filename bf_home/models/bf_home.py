@@ -101,7 +101,7 @@ def needs(model, *fields_needed):
 
 class BfHome(models.AbstractModel):
     _name = "bf.home"
-    _description = "Écran d'accueil Symbifox"
+    _description = "Symbifox home screen"
 
     # ------------------------------------------------------------------ utils
     @api.model
@@ -241,10 +241,10 @@ class BfHome(models.AbstractModel):
         late = self._days_since(oldest.date_deadline)
         return [self._row(
             CRIT if late >= 7 else WARN, "bf_bloc_notes",
-            _("%s activité(s) à traiter") % n,
-            _("La plus vieille remonte à %s jours") % late if late
-            else _("Planifiée pour aujourd'hui"),
-            str(n), _("Traiter"), "mail.activity", dom)]
+            _("%s activity(ies) to handle") % n,
+            _("The oldest is %s days old") % late if late
+            else _("Planned for today"),
+            str(n), _("Handle"), "mail.activity", dom)]
 
     @needs("calendar.event", "start", "partner_ids")
     def _c_meetings(self):
@@ -269,8 +269,9 @@ class BfHome(models.AbstractModel):
         knows_agendas = self._has("calendar.event", "meeting_agenda_ids")
         rows = []
         for ev in events:
-            when = _("Aujourd'hui à %s") % fields.Datetime.context_timestamp(
-                self, ev.start).strftime("%-H h %M")
+            # The clock reads "9 h 05" in French and "9:05" in English.
+            when = _("Today at %s") % fields.Datetime.context_timestamp(
+                self, ev.start).strftime(_("%-H:%M"))
             ready, why = True, when
             if knows_agendas:
                 skipped = "bf_skip_agenda" in ev._fields and ev.bf_skip_agenda
@@ -279,11 +280,11 @@ class BfHome(models.AbstractModel):
                     for a in ev.meeting_agenda_ids
                 )
                 ready = bool(skipped or prepared)
-                why = "%s · %s" % (when, _("ordre du jour prêt") if ready
-                                   else _("aucun ordre du jour"))
+                why = "%s · %s" % (when, _("agenda ready") if ready
+                                   else _("no agenda"))
             rows.append(self._row(
-                CALM if ready else WARN, "bf_meeting", ev.name or _("Rencontre"),
-                why, "", _("Ouvrir") if ready else _("Préparer"),
+                CALM if ready else WARN, "bf_meeting", ev.name or _("Meeting"),
+                why, "", _("Open") if ready else _("Prepare"),
                 "calendar.event", [("id", "=", ev.id)], ev.id))
         return rows
 
@@ -308,9 +309,9 @@ class BfHome(models.AbstractModel):
         d = self._days_since(recs[0].date)
         return [self._row(
             CRIT if d >= 7 else WARN, "bf_meeting",
-            _("%s compte(s) rendu non transmis") % len(recs),
-            recs[0].display_name or "", _("depuis %s j") % d,
-            _("Transmettre"), "meeting.record", dom)]
+            _("%s report(s) not sent") % len(recs),
+            recs[0].display_name or "", _("%s d ago") % d,
+            _("Send"), "meeting.record", dom)]
 
     @needs("account.analytic.line", "date", "user_id", "unit_amount")
     def _c_timesheet_gap(self):
@@ -323,8 +324,8 @@ class BfHome(models.AbstractModel):
         if hours:
             return []
         return [self._row(
-            CALM, "bf_timesheet_timer", _("Aucune heure saisie hier"),
-            _("Rien au %s") % y.strftime("%d/%m"), "0 h", _("Saisir"),
+            CALM, "bf_timesheet_timer", _("No hours logged yesterday"),
+            _("Nothing on %s") % y.strftime(_("%m/%d")), "0 h", _("Log"),
             "account.analytic.line", [("user_id", "=", self.env.uid)])]
 
     @needs("project.task", "date_deadline", "user_ids", "state")
@@ -347,8 +348,8 @@ class BfHome(models.AbstractModel):
         if n_due:
             first = Task.search(due, order="priority desc, id asc", limit=1)
             rows.append(self._row(
-                WARN, "project", _("%s tâche(s) à échéance aujourd'hui") % n_due,
-                first.name or "", str(n_due), _("Ouvrir"), "project.task", due))
+                WARN, "project", _("%s task(s) due today") % n_due,
+                first.name or "", str(n_due), _("Open"), "project.task", due))
 
         late = mine + [("date_deadline", "<", start), ("date_deadline", "!=", False)]
         n_late = Task.search_count(late)
@@ -356,9 +357,9 @@ class BfHome(models.AbstractModel):
             oldest = Task.search(late, order="date_deadline asc", limit=1)
             when = fields.Datetime.context_timestamp(self, oldest.date_deadline)
             rows.append(self._row(
-                CALM, "project", _("%s tâches dont l'échéance est passée") % n_late,
-                _("La plus ancienne remonte au %s") % when.strftime("%d/%m/%Y"),
-                str(n_late), _("Trier"), "project.task", late))
+                CALM, "project", _("%s tasks past their deadline") % n_late,
+                _("The oldest dates from %s") % when.strftime(_("%m/%d/%Y")),
+                str(n_late), _("Triage"), "project.task", late))
         return rows
 
     @needs("mail.message", "needaction")
@@ -375,9 +376,9 @@ class BfHome(models.AbstractModel):
         if not n:
             return []
         return [self._row(
-            WARN, "mail", _("%s message(s) non lu(s) dans Discussion") % n,
-            _("Mentions et suivis qui vous sont adressés"), str(n),
-            _("Lire"), "mail.message", [("needaction", "=", True)])]
+            WARN, "mail", _("%s unread message(s) in Discuss") % n,
+            _("Mentions and follow-ups addressed to you"), str(n),
+            _("Read"), "mail.message", [("needaction", "=", True)])]
 
     @needs("bf.email", "user_id", "is_handled", "imap_in_inbox", "source", "date")
     def _c_email(self):
@@ -426,10 +427,10 @@ class BfHome(models.AbstractModel):
         late = self._days_since(oldest.date)
         return [self._row(
             CRIT if late >= 7 else WARN, "bf_email_management",
-            _("%s courriel(s) dans la boîte de réception") % n,
-            _("Le plus ancien attend depuis %s jours") % late if late
-            else _("Arrivé aujourd'hui"),
-            str(n), _("Traiter"), "bf.email", dom)]
+            _("%s email(s) in the inbox") % n,
+            _("The oldest has waited %s days") % late if late
+            else _("Arrived today"),
+            str(n), _("Handle"), "bf.email", dom)]
 
     #: Distinct clients shown in the waiting band before the overflow row.
     WAITING_CLIENTS = 3
@@ -447,7 +448,8 @@ class BfHome(models.AbstractModel):
         rest is one click away instead of invisible.
         """
         Task = self.env["project.task"]
-        states = dict(Task._fields["state"].selection or [])
+        # Labels in the reader's language: `.selection` holds the source labels.
+        states = dict(Task._fields["state"]._description_selection(self.env))
         waiting = [s for s in ("05_waiting_client", "06_waiting_external") if s in states]
         if not waiting:
             return []
@@ -471,7 +473,7 @@ class BfHome(models.AbstractModel):
                 CRIT if d >= 10 else WARN, "bf_helpdesk", t.name,
                 "%s · %s" % (t.partner_id.display_name or t.project_id.display_name or "",
                              states[t.state]),
-                _("depuis %s j") % d, _("Relancer"), "project.task",
+                _("%s d ago") % d, _("Follow up"), "project.task",
                 [("id", "=", t.id)], t.id))
             if len(rows) >= self.WAITING_CLIENTS:
                 break
@@ -483,9 +485,9 @@ class BfHome(models.AbstractModel):
             # that says "3 dossiers" because three rows fit is not a fact.
             clients = len(Task._read_group(dom, ["partner_id"]))
             rows.append(self._row(
-                CALM, "bf_helpdesk", _("%s autres tâches en attente") % rest,
-                _("Réparties sur %s dossiers") % clients if clients > 1 else "",
-                str(rest), _("Tout voir"), "project.task", dom))
+                CALM, "bf_helpdesk", _("%s other tasks waiting") % rest,
+                _("Across %s clients") % clients if clients > 1 else "",
+                str(rest), _("See all"), "project.task", dom))
         return rows
 
     @needs("bf.sign.request", "state")
@@ -504,9 +506,9 @@ class BfHome(models.AbstractModel):
         d = self._days_since(oldest.create_date)
         return [self._row(
             CRIT if d >= 7 else WARN, "bf_sign",
-            _("%s signature(s) en attente") % n,
-            oldest.display_name or "", _("depuis %s j") % d,
-            _("Renvoyer"), "bf.sign.request", dom)]
+            _("%s signature(s) pending") % n,
+            oldest.display_name or "", _("%s d ago") % d,
+            _("Resend"), "bf.sign.request", dom)]
 
     @needs("secure.transfer", "expiry_date", "state")
     def _c_transfers(self):
@@ -519,9 +521,9 @@ class BfHome(models.AbstractModel):
         if not n:
             return []
         return [self._row(
-            CRIT, "bf_securetransfer", _("%s dépôt(s) expirent bientôt") % n,
-            _("Le lien deviendra inutilisable"), _("≤ 3 j"),
-            _("Prolonger"), "secure.transfer", dom)]
+            CRIT, "bf_securetransfer", _("%s transfer(s) expiring soon") % n,
+            _("The link will stop working"), _("≤ 3 d"),
+            _("Extend"), "secure.transfer", dom)]
 
     @needs("bf.outreach.target", "next_action_date")
     def _c_outreach(self):
@@ -530,8 +532,8 @@ class BfHome(models.AbstractModel):
         if not n:
             return []
         return [self._row(
-            CALM, "bf_outreach", _("%s cibles à relancer") % n,
-            _("Cadence atteinte"), str(n), _("Ouvrir"), "bf.outreach.target", dom)]
+            CALM, "bf_outreach", _("%s targets to follow up") % n,
+            _("Follow-up due"), str(n), _("Open"), "bf.outreach.target", dom)]
 
     #: Floor used only for a bank that alerts but gives no readable balance
     #: threshold of its own. Not a policy — a last resort, and it says so.
@@ -580,10 +582,10 @@ class BfHome(models.AbstractModel):
             return []
 
         names = ", ".join(low[:2].mapped("display_name"))
-        age = _("sous le seuil configuré") if not defaulted else _("≤ %g h") % self.DEFAULT_BANK_FLOOR
+        age = _("below the set threshold") if not defaulted else _("≤ %g h") % self.DEFAULT_BANK_FLOOR
         return [self._row(
-            CRIT, "bf_hour_bank", _("%s banque(s) d'heures à surveiller") % len(low),
-            names, age, _("Facturer"), "hour.bank.client", [("id", "in", low.ids)])]
+            CRIT, "bf_hour_bank", _("%s hour bank(s) to watch") % len(low),
+            names, age, _("Invoice"), "hour.bank.client", [("id", "in", low.ids)])]
 
     # _c_unbilled removed in 18.0.1.1.0. It counted analytic lines with no
     # timesheet_invoice_id, which reads as "hours nobody has billed" only on a
@@ -605,9 +607,9 @@ class BfHome(models.AbstractModel):
         if not n:
             return []
         return [self._row(
-            WARN, "privacy_consent", _("%s consentement(s) à renouveler") % n,
-            _("Échéance dans les 30 jours"), str(n),
-            _("Réviser"), "privacy.consent", dom)]
+            WARN, "privacy_consent", _("%s consent(s) to renew") % n,
+            _("Due within 30 days"), str(n),
+            _("Review"), "privacy.consent", dom)]
 
     @needs("hosting.service", "last_health_status", "state")
     def _c_hosting(self):
@@ -619,9 +621,9 @@ class BfHome(models.AbstractModel):
             return []
         worst = Svc.search(dom, limit=2)
         return [self._row(
-            CRIT, "hosting_management", _("%s service(s) en difficulté") % n,
+            CRIT, "hosting_management", _("%s service(s) with issues") % n,
             ", ".join(worst.mapped("name")), str(n),
-            _("Diagnostiquer"), "hosting.service", dom)]
+            _("Diagnose"), "hosting.service", dom)]
 
     @needs("bf.cx.feedback", "score")
     def _c_cx(self):
@@ -636,9 +638,9 @@ class BfHome(models.AbstractModel):
         if not n:
             return []
         return [self._row(
-            CALM, "bf_cx", _("%s détracteur(s) sans suivi") % n,
-            _("Note de 6 ou moins, boucle ouverte"), str(n),
-            _("Rappeler"), "bf.cx.feedback", dom)]
+            CALM, "bf_cx", _("%s detractor(s) without follow-up") % n,
+            _("Score of 6 or less, loop still open"), str(n),
+            _("Call back"), "bf.cx.feedback", dom)]
 
     # ------------------------------------------------------------------ panels
     # The three dashboards this screen replaces, reduced to the figures a person
@@ -659,11 +661,11 @@ class BfHome(models.AbstractModel):
         sent = Rec.search_count([("report_state", "=", "sent")])
         pct = self._pct(sent, total)
         return [{
-            "icon": "bf_meeting", "title": _("Rencontres"), "model": "meeting.record",
+            "icon": "bf_meeting", "title": _("Meetings"), "model": "meeting.record",
             "stats": [
-                {"k": _("Consignées"), "v": total},
-                {"k": _("Ce mois-ci"), "v": month},
-                {"k": _("Comptes rendus transmis"), "v": "%s %%" % pct, "meter": pct},
+                {"k": _("Recorded"), "v": total},
+                {"k": _("This month"), "v": month},
+                {"k": _("Reports sent"), "v": "%s %%" % pct, "meter": pct},
             ],
         }]
 
@@ -673,13 +675,13 @@ class BfHome(models.AbstractModel):
         # first two, not the credentials or the matrices beside them.
         if self._readable("project.document", "active", "is_review_due"):
             Doc = self.env["project.document"]
-            stats.append({"k": _("Documents actifs"),
+            stats.append({"k": _("Active documents"),
                           "v": Doc.search_count([("active", "=", True)])})
-            stats.append({"k": _("Révisions en retard"),
+            stats.append({"k": _("Overdue reviews"),
                           "v": Doc.search_count([("active", "=", True),
                                                  ("is_review_due", "=", True)])})
         if self._readable("project.credential", "state"):
-            stats.append({"k": _("Identifiants à renouveler"),
+            stats.append({"k": _("Credentials to renew"),
                           "v": self.env["project.credential"].search_count(
                               [("state", "in", ["expiring", "expired"])])})
         if self._readable("project.knowledge.matrix", "completed_count", "item_count"):
@@ -689,7 +691,7 @@ class BfHome(models.AbstractModel):
             items = sum(mats.mapped("item_count"))
             if items:
                 pct = self._pct(sum(mats.mapped("completed_count")), items)
-                stats.append({"k": _("Avancement des matrices"), "v": "%s %%" % pct,
+                stats.append({"k": _("Matrix progress"), "v": "%s %%" % pct,
                               "meter": pct})
         if not stats:
             return []
@@ -698,7 +700,7 @@ class BfHome(models.AbstractModel):
         model = next((m for m in ("project.document", "project.knowledge.matrix",
                                   "project.credential") if self._readable(m)),
                      "project.knowledge.matrix")
-        return [{"icon": "project_knowledge_matrix", "title": _("Connaissances"),
+        return [{"icon": "project_knowledge_matrix", "title": _("Knowledge"),
                  "model": model, "stats": stats}]
 
     def _p_hosting(self):
@@ -714,11 +716,11 @@ class BfHome(models.AbstractModel):
         # rows and this screen loads on every login.
         pct = self._pct(Svc.search_count(base + [("last_health_status", "=", "up")]), watched)
         stats = [
-            {"k": _("Disponibilité"), "v": "%s %%" % pct, "meter": pct},
-            {"k": _("Services surveillés"), "v": watched},
+            {"k": _("Availability"), "v": "%s %%" % pct, "meter": pct},
+            {"k": _("Monitored services"), "v": watched},
         ]
         if "update_available" in Svc._fields:
-            stats.append({"k": _("Mises à jour disponibles"),
+            stats.append({"k": _("Updates available"),
                           "v": Svc.search_count([("state", "=", "active"),
                                                  ("update_available", "=", True)])})
         if self._readable("hosting.maintenance.schedule", "next_due"):
@@ -731,32 +733,37 @@ class BfHome(models.AbstractModel):
                    ("next_due", "!=", False)]
             if "active" in Sched._fields:
                 dom.append(("active", "=", True))
-            stats.append({"k": _("Maintenances en retard"), "v": Sched.search_count(dom)})
+            stats.append({"k": _("Overdue maintenance"), "v": Sched.search_count(dom)})
         if self._readable("hosting.backup.run", "run_date", "state"):
             last = self.env["hosting.backup.run"].search([], order="run_date desc", limit=1)
             if last and last.run_date:
-                label = dict(last._fields["state"].selection or []).get(last.state, last.state)
-                stats.append({"k": _("Dernière sauvegarde"),
-                              "v": "%s · %s" % (last.run_date.strftime("%d/%m"), label)})
-        return [{"icon": "hosting_management", "title": _("Hébergement"),
+                label = dict(last._fields["state"]._description_selection(self.env)).get(
+                    last.state, last.state)
+                stats.append({"k": _("Last backup"),
+                              "v": "%s · %s" % (last.run_date.strftime(_("%m/%d")), label)})
+        return [{"icon": "hosting_management", "title": _("Hosting"),
                  "model": "hosting.service", "stats": stats}]
 
     # -------------------------------------------------------------------- main
     @api.model
     def get_home_data(self):
         bands = [
-            {"key": "today", "title": _("Ce qui m'attend"), "q": _("aujourd'hui"),
+            {"key": "today", "title": _("What's waiting for me"), "q": _("today"),
              "rows": self._safe(self._c_meetings) + self._safe(self._c_activities)
                      + self._safe(self._c_tasks) + self._safe(self._c_inbox)
                      + self._safe(self._c_email)
                      + self._safe(self._c_meeting_reports) + self._safe(self._c_timesheet_gap)},
-            {"key": "them", "title": _("En attente d'eux"),
-             "q": _("la balle n'est pas dans votre camp"),
+            {"key": "them", "title": _("Waiting on them"),
+             "q": _("the ball is not in your court"),
              "rows": self._safe(self._c_waiting) + self._safe(self._c_signatures)
                      + self._safe(self._c_transfers) + self._safe(self._c_outreach)},
-            {"key": "money", "title": _("L'argent"), "q": _("ce qui fuit si personne ne regarde"),
+            {"key": "money", "title": _("Money"), "q": _("what leaks "
+                                                            "if nobody "
+                                                            "looks"),
              "rows": self._safe(self._c_hour_banks)},
-            {"key": "risk", "title": _("Le risque"), "q": _("conformité et exploitation"),
+            {"key": "risk", "title": _("Risk"), "q": _("compliance "
+                                                            "and "
+                                                            "operations"),
              "rows": self._safe(self._c_privacy) + self._safe(self._c_hosting)
                      + self._safe(self._c_cx)},
         ]
@@ -773,7 +780,7 @@ class BfHome(models.AbstractModel):
 
         return {
             "user": self.env.user.name.split(" ")[0],
-            "date": fields.Date.context_today(self).strftime("%d/%m/%Y"),
+            "date": fields.Date.context_today(self).strftime(_("%m/%d/%Y")),
             "headline": self._headline(bands),
             "bands": bands,
             "panels": panels,
@@ -788,11 +795,11 @@ class BfHome(models.AbstractModel):
         corner of the screen waiting to be asked something.
         """
         if not bands:
-            return _("Rien ne réclame votre attention ce matin.")
+            return _("Nothing needs your attention this morning.")
         worst = next((b for b in bands if b["sev"] == CRIT), bands[0])
         first = worst["rows"][0]
         rest = sum(b["count"] for b in bands) - 1
         if rest <= 0:
-            return _("Une seule chose ce matin : %s.") % first["title"].lower()
-        return _("Le plus pressant : %s. %s autres éléments attendent.") % (
+            return _("Just one thing this morning: %s.") % first["title"].lower()
+        return _("Most pressing: %s. %s other items are waiting.") % (
             first["title"].lower(), rest)

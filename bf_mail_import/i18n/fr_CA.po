@@ -1,32 +1,31 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_mail_import
-#
+# Translation of BF Import courriel (.eml) - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260119\n"
+"Project-Id-Version: bf_mail_import 18.0.1.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-16 00:00+0000\n"
-"PO-Revision-Date: 2026-02-28 00:00+0000\n"
-"Last-Translator: Example Inc.\n"
+"POT-Creation-Date: 2026-10-08 05:24+0000\n"
+"PO-Revision-Date: 2026-10-08 05:24+0000\n"
+"Last-Translator: \n"
 "Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr_CA\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: bf_mail_import
 #. odoo-python
 #: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
-msgid "%d courriel(s) importé(s) :"
-msgstr "%d courriel(s) importé(s) :"
+msgid "%d duplicate(s) skipped:"
+msgstr "%d doublon(s) ignoré(s) :"
 
 #. module: bf_mail_import
 #. odoo-python
 #: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
-msgid "%d doublon(s) ignoré(s) :"
-msgstr "%d doublon(s) ignoré(s) :"
+msgid "%d email(s) imported:"
+msgstr "%d courriel(s) importé(s) :"
 
 #. module: bf_mail_import
 #. odoo-javascript
@@ -35,20 +34,20 @@ msgid ".eml"
 msgstr ".eml"
 
 #. module: bf_mail_import
-#: model:ir.model,name:bf_mail_import.model_bf_mail_import_wizard
-msgid "Assistant d'import de courriels .eml"
-msgstr "Assistant d'import de courriels .eml"
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__eml_files
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid ".eml files"
+msgstr "Fichiers .eml"
 
 #. module: bf_mail_import
-#. odoo-python
-#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
-msgid "Aucun enregistrement cible défini."
-msgstr "Aucun enregistrement cible défini."
+#: model:onboarding.onboarding,name:bf_mail_import.bf_onboarding_panel
+msgid ".eml import"
+msgstr "Import .eml"
 
 #. module: bf_mail_import
-#: model:ir.model.fields.selection,name:bf_mail_import.selection__bf_mail_import_wizard__state__draft
-msgid "Brouillon"
-msgstr "Brouillon"
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Close"
+msgstr "Fermer"
 
 #. module: bf_mail_import
 #: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__create_uid
@@ -63,30 +62,28 @@ msgstr "Créé le"
 #. module: bf_mail_import
 #: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__display_name
 msgid "Display Name"
-msgstr "Nom affiché"
+msgstr "Nom d'affichage"
 
 #. module: bf_mail_import
-#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__record_display
-#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
-msgid "Enregistrement cible"
-msgstr "Enregistrement cible"
+#: model:ir.model.fields.selection,name:bf_mail_import.selection__bf_mail_import_wizard__state__done
+msgid "Done"
+msgstr "Terminé"
+
+#. module: bf_mail_import
+#: model:ir.model.fields.selection,name:bf_mail_import.selection__bf_mail_import_wizard__state__draft
+msgid "Draft"
+msgstr "Brouillon"
+
+#. module: bf_mail_import
+#: model:ir.model,name:bf_mail_import.model_bf_mail_import_wizard
+msgid "Email import wizard (.eml)"
+msgstr "Assistant d'import de courriels .eml"
 
 #. module: bf_mail_import
 #. odoo-python
 #: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
-msgid "Erreurs :"
+msgid "Errors:"
 msgstr "Erreurs :"
-
-#. module: bf_mail_import
-#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
-msgid "Fermer"
-msgstr "Fermer"
-
-#. module: bf_mail_import
-#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__eml_files
-#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
-msgid "Fichiers .eml"
-msgstr "Fichiers .eml"
 
 #. module: bf_mail_import
 #: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__id
@@ -94,37 +91,23 @@ msgid "ID"
 msgstr "ID"
 
 #. module: bf_mail_import
-#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__res_id
-msgid "ID enregistrement"
-msgstr "ID enregistrement"
-
-#. module: bf_mail_import
 #: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
-msgid "Importer"
+msgid "Import"
 msgstr "Importer"
-
-#. module: bf_mail_import
-#: model:ir.ui.menu,name:bf_mail_import.menu_bf_mail_import
-msgid "Importer .eml"
-msgstr "Importer .eml"
-
-#. module: bf_mail_import
-#: model:ir.actions.act_window,name:bf_mail_import.action_bf_mail_import_wizard
-#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
-msgid "Importer des courriels (.eml)"
-msgstr "Importer des courriels (.eml)"
 
 #. module: bf_mail_import
 #. odoo-javascript
 #: code:addons/bf_mail_import/static/src/xml/chatter_import_patch.xml:0
-msgid "Importer un courriel .eml"
+msgid "Import an .eml file"
 msgstr "Importer un courriel .eml"
 
 #. module: bf_mail_import
-#. odoo-python
-#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
-msgid "L'enregistrement cible a été supprimé."
-msgstr "L'enregistrement cible a été supprimé."
+#. odoo-javascript
+#: code:addons/bf_mail_import/static/src/js/chatter_import_patch.js:0
+#: model:ir.actions.act_window,name:bf_mail_import.action_bf_mail_import_wizard
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Import emails (.eml)"
+msgstr "Importer des courriels (.eml)"
 
 #. module: bf_mail_import
 #: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__write_uid
@@ -137,37 +120,89 @@ msgid "Last Updated on"
 msgstr "Dernière mise à jour le"
 
 #. module: bf_mail_import
-#. odoo-python
-#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
-msgid "Le modèle '%s' n'existe pas."
-msgstr "Le modèle '%s' n'existe pas."
-
-#. module: bf_mail_import
-#. odoo-python
-#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
-msgid "Le modèle '%s' ne supporte pas le chatter (mail.thread)."
-msgstr "Le modèle '%s' ne supporte pas le chatter (mail.thread)."
-
-#. module: bf_mail_import
 #: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__res_model
-msgid "Modèle"
+msgid "Model"
 msgstr "Modèle"
 
 #. module: bf_mail_import
-#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__file_count
-msgid "Nombre de fichiers"
-msgstr "Nombre de fichiers"
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Name, number, task:22299, or Odoo URL…"
+msgstr "Nom, numéro, task:22299, ou URL Odoo…"
 
 #. module: bf_mail_import
 #: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
-msgid "Nouvel import"
+msgid "New import"
 msgstr "Nouvel import"
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__file_count
+msgid "Number of files"
+msgstr "Nombre de fichiers"
+
+#. module: bf_mail_import
+#: model:ir.model,name:bf_mail_import.model_onboarding_onboarding
+msgid "Onboarding"
+msgstr "Parcours d'intégration"
+
+#. module: bf_mail_import
+#: model:onboarding.onboarding.step,step_image_alt:bf_mail_import.bf_onb_step_settings
+msgid "Onboarding Step Image"
+msgstr "Image de l'étape du parcours d'intégration"
+
+#. module: bf_mail_import
+#: model:onboarding.onboarding.step,button_text:bf_mail_import.bf_onb_step_settings
+msgid "Open Settings"
+msgstr "Ouvrir Paramètres"
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "Please select at least one .eml file."
+msgstr "Veuillez sélectionner au moins un fichier .eml."
+
+#. module: bf_mail_import
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__res_id
+msgid "Record ID"
+msgstr "ID enregistrement"
 
 #. module: bf_mail_import
 #: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__import_result
 #: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
-msgid "Résultat"
+msgid "Result"
 msgstr "Résultat"
+
+#. module: bf_mail_import
+#: model:ir.model.fields,help:bf_mail_import.field_bf_mail_import_wizard__target_reference
+msgid ""
+"Search for the record by name, number or shortcut (task:22299), or paste an "
+"Odoo URL."
+msgstr ""
+"Cherchez la fiche par son nom, son numéro, un raccourci (task:22299) ou "
+"collez une URL Odoo."
+
+#. module: bf_mail_import
+#: model:ir.model.fields,help:bf_mail_import.field_bf_mail_import_wizard__eml_files
+msgid "Select one or more .eml files to import."
+msgstr "Sélectionnez un ou plusieurs fichiers .eml à importer."
+
+#. module: bf_mail_import
+#: model:onboarding.onboarding.step,description:bf_mail_import.bf_onb_step_settings
+msgid ""
+"Set the size threshold, automatic contact creation and the threading "
+"strategy."
+msgstr ""
+"Réglez le seuil de taille, l'autocréation de partenaires et la stratégie de "
+"fil de discussion."
+
+#. module: bf_mail_import
+#: model:onboarding.onboarding.step,title:bf_mail_import.bf_onb_step_settings
+msgid "Set up .eml import"
+msgstr "Configurer l'import .eml"
+
+#. module: bf_mail_import
+#: model:onboarding.onboarding.step,done_text:bf_mail_import.bf_onb_step_settings
+msgid "Settings ready"
+msgstr "Paramètres prêts"
 
 #. module: bf_mail_import
 #: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__state
@@ -175,23 +210,25 @@ msgid "State"
 msgstr "État"
 
 #. module: bf_mail_import
-#: model:ir.model.fields,help:bf_mail_import.field_bf_mail_import_wizard__eml_files
-msgid "Sélectionnez un ou plusieurs fichiers .eml à importer."
-msgstr "Sélectionnez un ou plusieurs fichiers .eml à importer."
-
-#. module: bf_mail_import
-#: model:ir.model.fields.selection,name:bf_mail_import.selection__bf_mail_import_wizard__state__done
-msgid "Terminé"
-msgstr "Terminé"
+#: model:ir.model.fields,field_description:bf_mail_import.field_bf_mail_import_wizard__target_reference
+#: model_terms:ir.ui.view,arch_db:bf_mail_import.view_bf_mail_import_wizard_form
+msgid "Target record"
+msgstr "Enregistrement cible"
 
 #. module: bf_mail_import
 #. odoo-python
 #: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
-msgid "Le fichier '%s' n'est pas un fichier .eml valide."
+msgid "The file '%s' is not a valid .eml file."
 msgstr "Le fichier '%s' n'est pas un fichier .eml valide."
 
 #. module: bf_mail_import
 #. odoo-python
 #: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
-msgid "Veuillez sélectionner au moins un fichier .eml."
-msgstr "Veuillez sélectionner au moins un fichier .eml."
+msgid "The model '%s' does not exist."
+msgstr "Le modèle '%s' n'existe pas."
+
+#. module: bf_mail_import
+#. odoo-python
+#: code:addons/bf_mail_import/wizard/mail_import_wizard.py:0
+msgid "The model '%s' does not support the chatter (mail.thread)."
+msgstr "Le modèle '%s' ne supporte pas le chatter (mail.thread)."

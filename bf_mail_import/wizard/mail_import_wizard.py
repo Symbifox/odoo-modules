@@ -27,28 +27,28 @@ class MailImportWizard(models.TransientModel):
 
     _name = "bf.mail.import.wizard"
     _inherit = ["bf.chatter.target.mixin"]
-    _description = "Assistant d'import de courriels .eml"
+    _description = "Email import wizard (.eml)"
 
     target_reference = fields.Reference(
-        string="Enregistrement cible",
-        help="Cherchez la fiche par son nom, son numéro, un raccourci "
-             "(task:22299) ou collez une URL Odoo.",
+        string="Target record",
+        help="Search for the record by name, number or shortcut "
+             "(task:22299), or paste an Odoo URL.",
     )
     res_model = fields.Char(
-        "Mod\u00e8le", compute="_compute_res_target",
+        "Model", compute="_compute_res_target",
     )
     res_id = fields.Integer(
-        "ID enregistrement", compute="_compute_res_target",
+        "Record ID", compute="_compute_res_target",
     )
     eml_files = fields.Many2many(
         "ir.attachment",
-        string="Fichiers .eml",
-        help="S\u00e9lectionnez un ou plusieurs fichiers .eml \u00e0 importer.",
+        string=".eml files",
+        help="Select one or more .eml files to import.",
     )
-    file_count = fields.Integer("Nombre de fichiers", compute="_compute_file_count")
-    import_result = fields.Text("R\u00e9sultat", readonly=True)
+    file_count = fields.Integer("Number of files", compute="_compute_file_count")
+    import_result = fields.Text("Result", readonly=True)
     state = fields.Selection(
-        [("draft", "Brouillon"), ("done", "Termin\u00e9")],
+        [("draft", "Draft"), ("done", "Done")],
         default="draft",
     )
 
@@ -77,12 +77,12 @@ class MailImportWizard(models.TransientModel):
         if res_model:
             if res_model not in self.env:
                 raise UserError(
-                    _("Le mod\u00e8le '%s' n'existe pas.", res_model)
+                    _("The model '%s' does not exist.", res_model)
                 )
             if not hasattr(self.env[res_model], "message_post"):
                 raise UserError(
                     _(
-                        "Le mod\u00e8le '%s' ne supporte pas le chatter "
+                        "The model '%s' does not support the chatter "
                         "(mail.thread).",
                         res_model,
                     )
@@ -101,7 +101,7 @@ class MailImportWizard(models.TransientModel):
         ext = os.path.splitext(filename or "")[1].lower()
         if ext not in _EML_EXTENSIONS:
             raise UserError(
-                _("Le fichier '%s' n'est pas un fichier .eml valide.", filename)
+                _("The file '%s' is not a valid .eml file.", filename)
             )
 
     def _get_target(self):
@@ -125,7 +125,7 @@ class MailImportWizard(models.TransientModel):
         target = self._get_target()
         if not self.eml_files:
             raise UserError(
-                _("Veuillez s\u00e9lectionner au moins un fichier .eml.")
+                _("Please select at least one .eml file.")
             )
 
         # Phase 1: parse all files and validate extensions
@@ -228,15 +228,15 @@ class MailImportWizard(models.TransientModel):
         # Build detailed result summary
         parts = []
         if imported:
-            parts.append(_("%d courriel(s) import\u00e9(s) :", len(imported)))
+            parts.append(_("%d email(s) imported:", len(imported)))
             for name in imported:
                 parts.append(f"  + {name}")
         if skipped:
-            parts.append(_("%d doublon(s) ignor\u00e9(s) :", len(skipped)))
+            parts.append(_("%d duplicate(s) skipped:", len(skipped)))
             for name in skipped:
                 parts.append(f"  - {name}")
         if errors:
-            parts.append(_("Erreurs :"))
+            parts.append(_("Errors:"))
             parts.extend(f"  ! {e}" for e in errors)
 
         self.import_result = "\n".join(str(p) for p in parts)

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo noupdate="1">
     <record id="bf_onb_step_settings" model="onboarding.onboarding.step">
-        <field name="title">Configurer le timesheet chatter</field>
-        <field name="description">Activez la saisie rapide de feuilles de temps depuis le chatter et ajustez les arrondis par défaut.</field>
-        <field name="button_text">Ouvrir Paramètres</field>
-        <field name="done_text">Saisie rapide active</field>
+        <field name="title">Set up chatter timesheets</field>
+        <field name="description">Turn on quick timesheet entry from the chatter and adjust the default rounding.</field>
+        <field name="button_text">Open Settings</field>
+        <field name="done_text">Quick entry active</field>
         <field name="panel_step_open_action_name">bf_open_res_config_settings</field>
         <field name="sequence">1</field>
     </record>

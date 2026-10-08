@@ -50,6 +50,12 @@ bf_mail_vigie/
 └── security/ir.model.access.csv
 ```
 
+## Languages (v18.0.2.4.0)
+
+Labels are written in English in the source; the French ships in `i18n/fr_CA.po`. The
+note posted when an email is rerouted is written in the language of the person who
+rerouted it. A migration switches the onboarding step texts to English only where they still carry the French that was delivered; a text edited by hand is left alone.
+
 ## License
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the

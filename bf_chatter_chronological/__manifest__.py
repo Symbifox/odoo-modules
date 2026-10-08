@@ -1,6 +1,10 @@
 {
     "name": "BF Chatter Chronological View",
-    "version": "18.0.4.1.0",
+    # 18.0.4.2.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.4.2.0",
     "summary": "Order the chatter feed by the email's original Date header",
     "description": """
 Sort the Odoo chatter by the original email Date header (mail.message.date)

@@ -66,7 +66,7 @@ patch(Composer.prototype, {
 
         if (shouldCreate && duration <= 0) {
             this.bfNotification.add(
-                _t("Coche la case mais saisis une durée supérieure à 0."),
+                _t("Enter a duration greater than 0 to log time."),
                 { type: "warning" },
             );
             return;
@@ -84,7 +84,7 @@ patch(Composer.prototype, {
                 [[recordId], duration, bodySnapshot],
             );
             this.bfNotification.add(
-                _t("Feuille de temps créée (%s h).", result.unit_amount.toFixed(2)),
+                _t("Timesheet created (%s h).", result.unit_amount.toFixed(2)),
                 { type: "success" },
             );
             this.bfTimesheet.enabled = false;
@@ -92,7 +92,7 @@ patch(Composer.prototype, {
             this.bfTimesheet.minutes = 15;
         } catch (err) {
             this.bfNotification.add(
-                _t("Note postée, mais la feuille de temps n'a pas été créée : %s",
+                _t("Note posted, but the timesheet was not created: %s",
                    err?.data?.message || err?.message || err),
                 { type: "danger", sticky: true },
             );

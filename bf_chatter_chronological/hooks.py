@@ -24,12 +24,18 @@ silencieusement. L'idempotence repose donc sur une recherche, pas sur un xmlid.
 
 import logging
 
+from odoo.tools.translate import LazyTranslate
+
 _logger = logging.getLogger(__name__)
+_lt = LazyTranslate(__name__)
 
 # Modèles servis quand leur module est là. Le libellé doit rester identique à
 # celui des actions déclarées en XML : c'est le même geste pour l'usager.
 LIAISONS_OPTIONNELLES = ("meeting.record", "meeting.agenda")
-LIBELLE = "Réordonner ce chatter par date"
+LIBELLE = _lt("Reorder this chatter by date")
+# Le libellé livré avant la source anglaise (18.0.4.2.0) : seul un nom encore
+# identique à celui-ci est basculé par la migration, jamais un nom retouché.
+LIBELLE_FR_LIVRE = "Réordonner ce chatter par date"
 CODE = "action = env['mail.message'].action_backfill_chatter_dates()"
 
 
@@ -51,14 +57,15 @@ def _ensure_optional_bindings(env):
         ], limit=1)
         if deja:
             continue
-        Action.create({
-            "name": LIBELLE,
+        action = Action.create({
+            "name": LIBELLE._translate("en_US"),
             "model_id": modele_message,
             "binding_model_id": cible,
             "binding_view_types": "form",
             "state": "code",
             "code": CODE,
         })
+        ecrire_libelles(env, action)
         poses.append(nom_modele)
     if poses:
         _logger.info(
@@ -66,6 +73,32 @@ def _ensure_optional_bindings(env):
             ", ".join(poses),
         )
     return poses
+
+
+def ecrire_libelles(env, actions):
+    """Le nom dans chaque langue installée.
+
+    Un crochet passe APRÈS le chargement des catalogues : l'action qu'il crée ne
+    reçoit jamais sa traduction du ``.po``. Et ``update_field_translations``, pas
+    ``write`` dans la langue : sur une base où en_US est inactif, Odoo recopie
+    une écriture dans n'importe quelle langue en en_US, et la source se perdrait.
+    """
+    traductions = {
+        lang: LIBELLE._translate(lang)
+        for lang, _nom in env["res.lang"].get_installed() if lang != "en_US"
+    }
+    for action in actions:  # update_field_translations veut un seul enregistrement
+        action.update_field_translations("name", traductions)
+
+
+def liaisons_posees(env):
+    """Les actions créées par ce crochet (sans xmlid, voir plus haut)."""
+    return env["ir.actions.server"].sudo().search([
+        ("binding_model_id.model", "in", LIAISONS_OPTIONNELLES),
+        ("model_id.model", "=", "mail.message"),
+        ("state", "=", "code"),
+        ("code", "=", CODE),
+    ])
 
 
 def post_init_hook(env):

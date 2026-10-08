@@ -112,6 +112,14 @@ Pre-publication checklist (per BF policy):
 | Index already exists from a prior install | `CREATE INDEX IF NOT EXISTS` is a no-op |
 | `newestPersistentAllMessages` JS compute | Left at `id desc` — this drives Discuss seen-tracking, not the chatter feed. Acceptable for BF where backdated messages never appear in Discuss |
 
+## Languages (v18.0.4.2.0)
+
+The action and its notifications are written in English in the source; the French ships
+in `i18n/fr_CA.po`. The two actions the install hook creates for meetings and agendas
+(no xmlid, see above) are named in every installed language, and the 18.0.4.2.0
+migration switches existing ones only where the name is still the one delivered; a
+renamed action is left alone.
+
 ## Installation
 
 ```bash

@@ -1,0 +1,81 @@
+# Translation of BF Chatter Chronological View - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_chatter_chronological 18.0.4.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-08 05:10+0000\n"
+"PO-Revision-Date: 2026-10-08 05:10+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid ""
+"%(n)s candidate message(s), but no date found in the body: nothing to "
+"redate."
+msgstr ""
+"%(n)s message(s) candidats mais aucune date trouvée dans le body — rien à "
+"re-dater."
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid ""
+"%(n)s message(s) redated from the Date header in the body. Refresh the page "
+"to see the new order."
+msgstr ""
+"%(n)s message(s) re-daté(s) à partir de l'en-tête Date du body. Rafraîchis "
+"la page pour voir l'ordre mis à jour."
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid "Action called outside a record: nothing to reorder."
+msgstr "Action invoquée hors du contexte d'un record — rien à réordonner."
+
+#. module: bf_chatter_chronological
+#: model:ir.model,name:bf_chatter_chronological.model_mail_message
+msgid "Message"
+msgstr "Message"
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid "No email to analyse on this record."
+msgstr "Aucun courriel à analyser sur ce record."
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid ""
+"Nothing to redate. %(b)s message(s) already backdated, %(e)s candidate(s) "
+"examined, %(f)s without a readable date."
+msgstr ""
+"Rien à re-dater. %(b)s message(s) déjà backdaté(s), %(e)s candidat(s) "
+"examiné(s), %(f)s sans date parsable."
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/models/mail_message.py:0
+msgid "Reorder by date"
+msgstr "Réordonner par date"
+
+#. module: bf_chatter_chronological
+#. odoo-python
+#: code:addons/bf_chatter_chronological/hooks.py:0
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_account_move
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_crm_lead
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_helpdesk_ticket
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_hr_expense
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_project_task
+#: model:ir.actions.server,name:bf_chatter_chronological.action_chatter_chrono_res_partner
+msgid "Reorder this chatter by date"
+msgstr "Réordonner ce chatter par date"

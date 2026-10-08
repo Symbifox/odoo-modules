@@ -235,9 +235,10 @@ class TestSectionsHorsDroits(TransactionCase):
                 complet = self.env["bf.home"].with_user(usager).get_home_data()
             for data in (socle, complet):
                 self._rien_de_ferme(usager, data)
-        titres = [p["title"] for p in
+        # Le panneau se reconnaît à son icône : son titre suit la langue du lecteur.
+        icones = [p["icon"] for p in
                   self.env["bf.home"].with_user(self.employe).get_home_data()["panels"]]
-        self.assertNotIn("Connaissances", titres,
+        self.assertNotIn("project_knowledge_matrix", icones,
                          "un employé sans Documents ne doit pas voir le panneau")
 
     def _rien_de_ferme(self, usager, data):
@@ -253,25 +254,28 @@ class TestSectionsHorsDroits(TransactionCase):
         suit le droit sur son modèle."""
         if self.env.get("project.document") is None:
             self.skipTest("project_knowledge_matrix absent sur cette base")
-        panneaux = self.env["bf.home"].with_user(self.employe_documents).get_home_data()["panels"]
-        savoir = next((p for p in panneaux if p["title"] == "Connaissances"), None)
+        panneaux = self.env["bf.home"].with_user(self.employe_documents).with_context(
+            lang="en_US").get_home_data()["panels"]
+        savoir = next((p for p in panneaux if p["icon"] == "project_knowledge_matrix"), None)
         self.assertTrue(savoir, "les documents sont lisibles : le panneau doit rester")
+        # Libellés de la source : sans langue au contexte, _() prendrait celle de l'usager.
         cles = {s["k"] for s in savoir["stats"]}
-        self.assertIn("Documents actifs", cles)
-        self.assertNotIn("Identifiants à renouveler", cles)
-        self.assertNotIn("Avancement des matrices", cles)
+        self.assertIn("Active documents", cles)
+        self.assertNotIn("Credentials to renew", cles)
+        self.assertNotIn("Matrix progress", cles)
 
     def test_accueil_gestionnaire_garde_ses_sections(self):
         self._fixtures_accueil()
         with self.assertNoLogs("odoo.addons.bf_home", level="ERROR"):
-            data = self.env["bf.home"].with_user(self.gestionnaire).get_home_data()
+            data = self.env["bf.home"].with_user(self.gestionnaire).with_context(
+                lang="en_US").get_home_data()
         modeles = {ligne["model"] for ligne in self._lignes(data)}
         for modele in ("privacy.consent", "bf.sign.request"):
             if self.env.get(modele) is not None:
                 self.assertIn(modele, modeles, "%s a disparu pour le gestionnaire" % modele)
         if self.env.get("project.credential") is not None:
-            savoir = next(p for p in data["panels"] if p["title"] == "Connaissances")
-            self.assertIn("Identifiants à renouveler", {s["k"] for s in savoir["stats"]})
+            savoir = next(p for p in data["panels"] if p["icon"] == "project_knowledge_matrix")
+            self.assertIn("Credentials to renew", {s["k"] for s in savoir["stats"]})
 
     def test_accueil_une_access_error_est_muette(self):
         Home = self.env["bf.home"].with_user(self.gestionnaire)

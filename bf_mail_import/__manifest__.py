@@ -1,6 +1,10 @@
 {
     "name": "BF Import courriel (.eml)",
-    "version": "18.0.1.4.0",
+    # 18.0.1.5.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.5.0",
     "category": "Productivity/Email",
     "summary": "Importer des fichiers .eml dans le chatter Odoo",
     'author': 'Les services de consultation Blue Fox, Inc.',

@@ -134,7 +134,7 @@ def needs(model, *fields_needed, gate=None, groups=None):
 
 class BfDashboard(models.AbstractModel):
     _name = "bf.dashboard"
-    _description = "Tableau de bord Blue Fox"
+    _description = "Blue Fox dashboard"
     # `AbstractModel` : ce modèle n'a ni champ ni table, il ne sert que de point
     # d'entrée RPC pour le composant OWL. Déclaré `models.Model` + `_auto = False`,
     # il entrait dans `Registry.check_tables_exist()`, qui ne dispense que
@@ -581,7 +581,7 @@ class BfDashboard(models.AbstractModel):
         self._require("account.move")
         return {
             "type": "ir.actions.act_window",
-            "name": "Factures brouillon",
+            "name": _("Draft invoices"),
             "res_model": "account.move",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -595,7 +595,7 @@ class BfDashboard(models.AbstractModel):
         self._require("account.move")
         return {
             "type": "ir.actions.act_window",
-            "name": "Factures fournisseurs \u00e0 payer",
+            "name": _("Vendor bills to pay"),
             "res_model": "account.move",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -611,7 +611,7 @@ class BfDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "T\u00e2ches en retard",
+            "name": _("Overdue tasks"),
             "res_model": "project.task",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -626,7 +626,7 @@ class BfDashboard(models.AbstractModel):
         today = fields.Date.today()
         return {
             "type": "ir.actions.act_window",
-            "name": "Activit\u00e9s en retard",
+            "name": _("Overdue activities"),
             "res_model": "mail.activity",
             "views": [[False, "list"], [False, "form"]],
             "domain": [
@@ -647,7 +647,7 @@ class BfDashboard(models.AbstractModel):
             domain.append(("account_id", "=", account_id))
         return {
             "type": "ir.actions.act_window",
-            "name": "\u00c9l\u00e9ments \u00e0 lettrer",
+            "name": _("Items to reconcile"),
             "res_model": "account.move.line",
             "views": [[False, "list"], [False, "form"]],
             "domain": domain,
@@ -661,8 +661,8 @@ class BfDashboard(models.AbstractModel):
     @api.model
     def _require(self, model):
         if not self._has(model):
-            raise UserError(_("Le module qui fournit « %s » n'est pas installé "
-                              "sur cette base.") % model)
+            raise UserError(_("The module that provides \"%s\" is not "
+                              "installed on this database.") % model)
 
     @api.model
     def action_open_hosting_dashboard(self):
@@ -670,7 +670,7 @@ class BfDashboard(models.AbstractModel):
         return {
             "type": "ir.actions.client",
             "tag": "hosting_dashboard",
-            "name": "H\u00e9bergement",
+            "name": _("Hosting"),
         }
 
     @api.model
@@ -679,7 +679,7 @@ class BfDashboard(models.AbstractModel):
         return {
             "type": "ir.actions.client",
             "tag": "knowledge_dashboard",
-            "name": "Connaissances",
+            "name": _("Knowledge"),
         }
 
     @api.model
@@ -687,7 +687,7 @@ class BfDashboard(models.AbstractModel):
         self._require("bf.devops.advisory")
         return {
             "type": "ir.actions.act_window",
-            "name": "Avis à corriger",
+            "name": _("Advisories to fix"),
             "res_model": "bf.devops.advisory",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("action_requise", "=", "corriger")],
@@ -698,7 +698,7 @@ class BfDashboard(models.AbstractModel):
         self._require("hosting.service")
         return {
             "type": "ir.actions.act_window",
-            "name": "Mises à jour en attente",
+            "name": _("Pending updates"),
             "res_model": "hosting.service",
             "views": [[False, "list"], [False, "form"]],
             # Pas de filtre sur `state`, pour la même raison que le décompte :
@@ -711,7 +711,7 @@ class BfDashboard(models.AbstractModel):
         self._require("privacy.consent")
         return {
             "type": "ir.actions.act_window",
-            "name": "Consentements en attente",
+            "name": _("Pending consents"),
             "res_model": "privacy.consent",
             "views": [[False, "list"], [False, "form"]],
             "domain": [("status", "=", "pending")],

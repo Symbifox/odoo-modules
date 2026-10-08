@@ -4,12 +4,12 @@
 <t t-name="bf_home.Home">
   <div class="bfh">
 
-    <div t-if="state.loading" class="bfh-load">Chargement…</div>
+    <div t-if="state.loading" class="bfh-load">Loading…</div>
 
     <div t-elif="state.error" class="bfh-err">
-      <b>L'écran n'a pas pu charger ses données.</b>
+      <b>The screen could not load its data.</b>
       <span t-esc="state.error"/>
-      <button class="btn btn-sm btn-primary" t-on-click="() => this.load()">Réessayer</button>
+      <button class="btn btn-sm btn-primary" t-on-click="() => this.load()">Retry</button>
     </div>
 
     <t t-else="">
@@ -18,7 +18,7 @@
         <div class="bfh-wrap">
           <div class="bfh-mark"><img src="/bf_home/static/src/img/mark.svg" alt="Symbifox"/></div>
           <div class="bfh-hello">
-            <h1>Bonjour <t t-esc="state.data.user"/>.</h1>
+            <h1>Hello <t t-esc="state.data.user"/>.</h1>
             <p><span class="bfh-gf">Gen</span><t t-esc="state.data.headline"/></p>
           </div>
           <div class="bfh-clock"><b t-esc="state.data.date"/></div>
@@ -29,8 +29,7 @@
 
         <!-- rien à signaler : un écran court est une bonne nouvelle -->
         <div t-if="state.data.all_clear" class="bfh-band">
-          <div class="bfh-clear"><i/>Rien ne réclame votre attention. Les signaux surveillés sont
-            tous au vert ce matin.</div>
+          <div class="bfh-clear"><i/>Nothing needs your attention. Every monitored signal is green this morning.</div>
         </div>
 
         <div class="bfh-bands">
@@ -59,8 +58,8 @@
 
         <!-- l'état des lieux : information de fond, pas d'action -->
         <section t-if="state.data.panels.length" class="bfh-state-head">
-          <h2>L'état des lieux</h2>
-          <span class="bfh-q">ce qui tourne, sans rien exiger de vous</span>
+          <h2>Where things stand</h2>
+          <span class="bfh-q">what is running, without asking anything of you</span>
         </section>
         <div t-if="state.data.panels.length" class="bfh-state">
           <div t-foreach="state.data.panels" t-as="panel" t-key="panel.title" class="bfh-panel">
@@ -68,7 +67,7 @@
               <img t-att-src="iconUrl(panel.icon)" alt=""
                    onerror="this.style.visibility='hidden'"/>
               <h3 t-esc="panel.title"/>
-              <a href="#" class="bfh-all" t-on-click.prevent="() => this.openPanel(panel)">Ouvrir</a>
+              <a href="#" class="bfh-all" t-on-click.prevent="() => this.openPanel(panel)">Open</a>
             </header>
             <t t-foreach="panel.stats" t-as="s" t-key="s.k">
               <!-- Presence, not truth: a meter of 0 is falsy, so `!s.meter` sent
@@ -90,14 +89,14 @@
              menu. Le composant charge ses propres données, donc un
              agrégateur comptable lent ne retarde pas les bandes. -->
         <section class="bfh-state-head">
-          <h2>Les chiffres</h2>
-          <span class="bfh-q">l'argent, l'exploitation et la sécurité</span>
+          <h2>The figures</h2>
+          <span class="bfh-q">money, operations and security</span>
         </section>
         <div class="bfh-tiles">
           <BfDashboard/>
         </div>
 
-        <p class="bfh-foot">Les applications restent accessibles par la recherche universelle.</p>
+        <p class="bfh-foot">Apps are still one universal search away.</p>
       </div>
     </t>
   </div>
