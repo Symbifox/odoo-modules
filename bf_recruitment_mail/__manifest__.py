@@ -3,7 +3,7 @@
     "summary": "Reprendre les quatre courriels que le candidat reçoit : un sujet "
                "qui les distingue, une décision énoncée en clair, et la marque "
                "de l'entreprise",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.2.1",
     "category": "Human Resources/Recruitment",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",

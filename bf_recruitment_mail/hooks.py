@@ -23,6 +23,8 @@ fournir, pas un défaut à contourner ici.
 
 import logging
 
+from odoo.tools import SQL
+
 _logger = logging.getLogger(__name__)
 
 _GABARITS = (
@@ -48,16 +50,16 @@ def _reduire_a_la_source(env):
         # jsonb : on reconstruit l'objet avec la seule clé source. Passer par
         # l'ORM écrirait dans la langue de l'utilisateur courant, ce qui est
         # exactement le problème qu'on corrige.
-        env.cr.execute(
+        env.cr.execute(SQL(
             """
             UPDATE mail_template
-               SET {champ} = jsonb_build_object('en_US', {champ} ->> 'en_US')
-             WHERE id IN %s
-               AND {champ} IS NOT NULL
-               AND {champ} ->> 'en_US' IS NOT NULL
-            """.format(champ=champ),
-            (tuple(ids),),
-        )
+               SET %(champ)s = jsonb_build_object('en_US', %(champ)s ->> 'en_US')
+             WHERE id IN %(ids)s
+               AND %(champ)s IS NOT NULL
+               AND %(champ)s ->> 'en_US' IS NOT NULL
+            """,
+            champ=SQL.identifier(champ), ids=tuple(ids),
+        ))
         _logger.info(
             "bf_recruitment_mail : %s ligne(s) réduites à la source sur %s",
             env.cr.rowcount, champ,

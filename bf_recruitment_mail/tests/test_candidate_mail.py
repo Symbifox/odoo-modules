@@ -285,3 +285,19 @@ class TestCandidateMail(TransactionCase):
             else:
                 self.assertNotIn("/my/candidature/", corps)
 
+
+
+@tagged("post_install", "-at_install")
+class TestReductionALaSource(TransactionCase):
+    """La requête du crochet passe par odoo.tools.SQL, même effet."""
+
+    def test_ne_garde_que_la_source(self):
+        from ..hooks import _GABARITS, _reduire_a_la_source
+        gabarit = self.env.ref(_GABARITS[0])
+        self.env.cr.execute(
+            "UPDATE mail_template SET subject = subject || jsonb_build_object('fr_FR', 'Objet traduit') "
+            "WHERE id = %s", [gabarit.id])
+        _reduire_a_la_source(self.env)
+        self.env.cr.execute("SELECT subject FROM mail_template WHERE id = %s", [gabarit.id])
+        subject = self.env.cr.fetchone()[0]
+        self.assertEqual(list(subject), ["en_US"])
