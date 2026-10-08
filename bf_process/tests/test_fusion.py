@@ -659,3 +659,273 @@ class TestFusion(TransactionCase):
         corps = self.processus.message_ids[0].body
         self.assertNotIn("<img", corps)
         self.assertIn("onerror", corps, "le texte reste lisible, inerte")
+
+    # ================================== ce que la lecture laisse de côté
+    #
+    # Trouvé en éprouvant la lecture par mutation : sept classes de retouche
+    # attrapées, une seule passait au travers — un nœud ajouté sans sa forme
+    # DI, ignoré sans un mot, et l'analyse concluait « aucun écart ». La partie
+    # graphique est pourtant facultative en BPMN 2.0 : un fichier valide peut
+    # porter un élément qu'on ne sait pas placer. Il se signale, il ne se tait
+    # pas.
+
+    TACHE_T1 = '<bpmn:task id="d1_t1" name="Qualifier la demande">'
+
+    def _sans_forme(self, xml, ident):
+        """Retire la forme DI d'un élément, et elle seule : sa sémantique reste."""
+        import re
+        xml, n = re.subn(
+            r'    <bpmndi:BPMNShape id="[^"]*" bpmnElement="%s"[^>]*>.*?'
+            r'</bpmndi:BPMNShape>\n' % re.escape(ident), "", xml, flags=re.S)
+        self.assertEqual(n, 1, f"forme de {ident} introuvable : rien n'a été retouché")
+        return xml
+
+    def _avec_tache(self, xml, balise="task", nom="Archiver la demande",
+                    lien=False):
+        """Ajoute `d1_t9` au processus, SANS forme DI ; `lien` le relie à t1."""
+        self.assertIn(self.TACHE_T1, xml)
+        xml = xml.replace(self.TACHE_T1, f'<bpmn:{balise} id="d1_t9" name="{nom}"/>'
+                          f'\n    {self.TACHE_T1}')
+        if lien:
+            xml = xml.replace(
+                "  </bpmn:process>",
+                '    <bpmn:sequenceFlow id="d1_flow9" sourceRef="d1_t1" '
+                'targetRef="d1_t9"/>\n  </bpmn:process>')
+            self.assertIn('id="d1_flow9"', xml)
+        return xml
+
+    def test_noeud_neuf_sans_forme_signale_et_non_tu(self):
+        """La retouche que la mutation avait laissée passer : elle se dit."""
+        wiz = self._ecarts(self._avec_tache(self.processus.exporter_bpmn()))
+        self.assertEqual(wiz.ecart_count, 0, "rien à arbitrer : rien à placer")
+        resume = str(wiz.resume_html)
+        self.assertIn("1 élément(s) du fichier n'ont pas été lus", resume)
+        self.assertIn("tâche « Archiver la demande »", resume)
+        self.assertIn("partie graphique (DI)", resume)
+        self.assertNotIn("le fichier dit exactement ce que la carte dit", resume)
+
+    def test_lien_vers_un_noeud_sans_forme_ecarte_avec_lui(self):
+        """Un lien vers un nœud non lu n'est pas un ajout à proposer.
+
+        Proposé, il partait « appliquer » par défaut, puis se faisait refuser
+        à l'application faute de nœud à relier.
+        """
+        wiz = self._ecarts(self._avec_tache(
+            self.processus.exporter_bpmn(), lien=True))
+        self.assertFalse(wiz.line_ids.filtered(lambda l: l.portee == "flux"))
+        resume = str(wiz.resume_html)
+        self.assertIn("2 élément(s) du fichier n'ont pas été lus", resume)
+        self.assertIn("lien de « Qualifier la demande » vers « Archiver la "
+                      "demande »", resume)
+
+    def test_import_d_un_lien_vers_un_noeud_sans_forme(self):
+        """L'import ne plante plus, et dit ce qu'il n'a pas repris.
+
+        Le lien gardé désignait un nœud que personne n'avait créé : un
+        fichier BPMN valide sortait en trace de 500 (`KeyError`).
+        """
+        xml = self._avec_tache(self.processus.exporter_bpmn(), lien=True)
+        wiz = self.env["bf.process.import.wizard"].create({
+            "name": "Import partiel", "nom_fichier": "partiel.bpmn",
+            "fichier": base64.b64encode(xml.encode("utf-8"))})
+        p = self.env["bf.process"].browse(wiz.action_importer()["res_id"])
+        self.assertEqual(sorted(p.mapped("diagram_ids.node_ids.code")),
+                         sorted(n["id"] for n in CARTE[0]["nodes"]))
+        self.assertEqual(len(p.mapped("diagram_ids.flow_ids")),
+                         len(CARTE[0]["flows"]))
+        corps = p.message_ids[0].body
+        self.assertIn("2 élément(s) du fichier n'ont pas été lus", corps)
+        self.assertIn("Archiver la demande", corps)
+
+    def test_type_non_pris_en_charge_signale(self):
+        """Dessiné dans le fichier, d'un type que le module ne trace pas.
+
+        L'usager le voit dans son éditeur : le taire lui ferait croire que
+        l'étape est revenue dans la carte.
+        """
+        xml = self._avec_tache(self.processus.exporter_bpmn(),
+                               balise="serviceTask", nom="Appeler le service")
+        xml = xml.replace(
+            '    <bpmndi:BPMNShape id="d1_t1_di"',
+            '    <bpmndi:BPMNShape id="d1_t9_di" bpmnElement="d1_t9">\n'
+            '      <dc:Bounds x="700.0" y="416.0" width="152.0" height="68.0"/>\n'
+            '    </bpmndi:BPMNShape>\n'
+            '    <bpmndi:BPMNShape id="d1_t1_di"')
+        self.assertIn('id="d1_t9_di"', xml)
+        resume = str(self._ecarts(xml).resume_html)
+        self.assertIn("élément « Appeler le service »", resume)
+        self.assertIn("type BPMN « serviceTask »", resume)
+
+    def test_element_connu_sans_forme_pas_propose_au_retrait(self):
+        """Le fichier porte encore l'étape ; il n'a perdu que sa géométrie.
+
+        Proposer son retrait — et celui de ses liens — dirait le contraire de
+        ce que le fichier dit.
+        """
+        wiz = self._ecarts(self._sans_forme(
+            self.processus.exporter_bpmn(), "d1_t1"))
+        self.assertEqual(
+            wiz.ecart_count, 0,
+            "écarts inattendus : %s" % [(l.portee, l.operation, l.cle)
+                                        for l in wiz.line_ids])
+        resume = str(wiz.resume_html)
+        # la tâche, et ses trois liens : entrant, sortant, annotation
+        self.assertIn("4 élément(s) du fichier n'ont pas été lus", resume)
+        self.assertIn("tâche « Qualifier la demande »", resume)
+        self.assertIn("Aucun écart dans ce qui a pu être lu", resume)
+
+    def test_participant_sans_forme_signale_avec_son_message(self):
+        wiz = self._ecarts(self._sans_forme(
+            self.processus.exporter_bpmn(), "d1_pool_cli"))
+        self.assertEqual(
+            wiz.ecart_count, 0,
+            "écarts inattendus : %s" % [(l.portee, l.operation, l.cle)
+                                        for l in wiz.line_ids])
+        resume = str(wiz.resume_html)
+        self.assertIn("participant « Client »", resume)
+        self.assertIn("message « Demande »", resume)
+
+    def test_couloir_sans_forme_garde_ses_noeuds(self):
+        """Le couloir est nommé, et ses nœuds n'en sortent pas.
+
+        Le fichier les y déclare encore par `flowNodeRef`. Les ranger selon
+        leur seul centre les faisait tomber dans un autre couloir, et la
+        fusion proposait de les y déplacer, à « Appliquer » par défaut.
+        """
+        for couloir, nom in (("d1_lane_f", "Conseil"), ("d1_lane_t", "Technique")):
+            wiz = self._ecarts(self._sans_forme(
+                self.processus.exporter_bpmn(), couloir))
+            self.assertIn("couloir « %s »" % nom, str(wiz.resume_html))
+            self.assertEqual(
+                wiz.ecart_count, 0,
+                "%s : écarts inattendus %s" % (couloir, [
+                    (l.portee, l.operation, l.cle) for l in wiz.line_ids]))
+        # Et ce qui a VRAIMENT bougé dans ce couloir se voit encore : le
+        # nœud y est lu, pas seulement tenu à l'écart des comparaisons.
+        wiz = self._ecarts(self._sans_forme(
+            self._fichier_avec_deplacement("g", 2.0), "d1_lane_f"))
+        self.assertEqual(
+            [(l.operation, l.cle) for l in wiz.line_ids], [("position", "g")])
+
+    def test_identifiants_absents_ne_plantent_pas(self):
+        """`id` est facultatif dans le schéma BPMN 2.0.
+
+        Un participant ou un couloir sans identifiant, un message sans
+        cible : chacun se nomme, aucun ne fait tomber la lecture.
+        """
+        xml = self.processus.exporter_bpmn()
+        for ancre, ajout in (
+                ('<bpmn:participant id="d1_pool_cli" name="Client"/>',
+                 '<bpmn:participant name="Fournisseur"/>'),
+                ('<bpmn:lane id="d1_lane_t" name="Technique">',
+                 '<bpmn:lane name="Vide"/>'),
+                ('<bpmn:messageFlow id="d1_msg1"',
+                 '<bpmn:messageFlow id="d1_msg9" name="Relance" sourceRef="d1_t1"/>')):
+            self.assertIn(ancre, xml)
+            xml = xml.replace(ancre, ajout + "\n    " + ancre)
+        wiz = self._ecarts(xml)
+        resume = str(wiz.resume_html)
+        for attendu in ("participant « Fournisseur »", "couloir « Vide »",
+                        "message « Relance »"):
+            self.assertIn(attendu, resume)
+
+    def test_import_d_un_participant_sans_forme_et_de_son_message(self):
+        """Le message vers un participant écarté s'écarte avec lui.
+
+        Gardé, il désignait un participant que personne n'avait créé : l'import
+        sortait en trace de 500 (`KeyError`).
+        """
+        xml = self._sans_forme(self.processus.exporter_bpmn(), "d1_pool_cli")
+        wiz = self.env["bf.process.import.wizard"].create({
+            "name": "Import sans client", "nom_fichier": "sans-client.bpmn",
+            "fichier": base64.b64encode(xml.encode("utf-8"))})
+        p = self.env["bf.process"].browse(wiz.action_importer()["res_id"])
+        self.assertFalse(p.mapped("diagram_ids.message_ids"))
+        corps = p.message_ids[0].body
+        self.assertIn("participant « Client »", corps)
+        self.assertIn("message « Demande »", corps)
+
+    def test_dessine_hors_du_processus_lu_signale(self):
+        """L'intérieur d'un sous-processus déplié, une annotation posée sur la
+        collaboration : dessinés, donc vus dans l'éditeur, donc nommés."""
+        xml = self.processus.exporter_bpmn()
+        self.assertIn(self.TACHE_T1, xml)
+        xml = xml.replace(self.TACHE_T1, (
+            '<bpmn:subProcess id="d1_sp" name="Bloc déplié">\n'
+            '      <bpmn:task id="d1_sp_t" name="Étape intérieure"/>\n'
+            '    </bpmn:subProcess>\n    ') + self.TACHE_T1)
+        xml = xml.replace(
+            "  </bpmn:collaboration>",
+            '    <bpmn:textAnnotation id="d1_hors"><bpmn:text>Note de '
+            'collaboration</bpmn:text></bpmn:textAnnotation>\n'
+            "  </bpmn:collaboration>")
+        formes = ""
+        for ident, x in (("d1_sp", 860), ("d1_sp_t", 880), ("d1_hors", 900)):
+            formes += ('    <bpmndi:BPMNShape id="%s_di" bpmnElement="%s">\n'
+                       '      <dc:Bounds x="%d.0" y="416.0" width="152.0" '
+                       'height="68.0"/>\n    </bpmndi:BPMNShape>\n' % (ident, ident, x))
+        xml = xml.replace('    <bpmndi:BPMNShape id="d1_t1_di"',
+                          formes + '    <bpmndi:BPMNShape id="d1_t1_di"')
+        self.assertIn('id="d1_hors_di"', xml)
+        resume = str(self._ecarts(xml).resume_html)
+        self.assertIn("tâche « Étape intérieure »", resume)
+        self.assertIn("annotation « Note de collaboration »", resume)
+        self.assertIn("hors du processus que le module lit", resume)
+
+    def test_type_non_trace_nomme_sa_definition_d_evenement(self):
+        """Un `endEvent` simple se trace ; celui de terminaison, non. Le dire
+        sans sa définition faisait lire « endEvent non pris en charge »."""
+        xml = self.processus.exporter_bpmn().replace(
+            self.TACHE_T1,
+            '<bpmn:endEvent id="d1_stop" name="Tout arrêter">'
+            '<bpmn:terminateEventDefinition/></bpmn:endEvent>\n    '
+            + self.TACHE_T1)
+        xml = xml.replace(
+            '    <bpmndi:BPMNShape id="d1_t1_di"',
+            '    <bpmndi:BPMNShape id="d1_stop_di" bpmnElement="d1_stop">\n'
+            '      <dc:Bounds x="900.0" y="431.0" width="38.0" height="38.0"/>\n'
+            '    </bpmndi:BPMNShape>\n    <bpmndi:BPMNShape id="d1_t1_di"')
+        self.assertIn('id="d1_stop_di"', xml)
+        resume = str(self._ecarts(xml).resume_html)
+        self.assertIn("endEvent + terminateEventDefinition", resume)
+
+    def test_compte_rendu_de_la_fusion_garde_la_trace(self):
+        """Le résumé de l'analyse disparaît avec l'assistant ; la carte garde
+        au chatter ce que la fusion n'a pas pu reprendre."""
+        xml = self._avec_tache(self.processus.exporter_bpmn().replace(
+            "Demande qualifiée", "Demande prête"))
+        wiz = self._ecarts(xml)
+        self.assertEqual(wiz.ecart_count, 1)
+        wiz.action_appliquer()
+        corps = self.processus.message_ids[0].body
+        self.assertIn("Archiver la demande", corps)
+        self.assertIn("ni créés ni retirés", corps)
+
+    def test_nom_d_un_element_ecarte_reste_inerte(self):
+        piege = "<img src=x onerror=alert(1)>"
+        xml = self._avec_tache(
+            self.processus.exporter_bpmn(),
+            nom=piege.replace("<", "&lt;").replace(">", "&gt;"))
+        resume = str(self._ecarts(xml).resume_html)
+        self.assertNotIn("<img", resume)
+        self.assertIn("onerror", resume, "le texte reste lisible, inerte")
+
+    def test_fichier_complet_n_ecarte_rien(self):
+        """Le signalement ne crie jamais sur un fichier complet.
+
+        Ni sur son propre export, ni sur ce qu'un processus porte sans jamais
+        le dessiner : documentation, extensions, objet de données.
+        """
+        Lecture = self.env["bf.process.lecture"]
+        for p in (self.processus, self._carte_veridique()):
+            for d in Lecture._lire_fichier(p.exporter_bpmn().encode("utf-8")):
+                self.assertNotIn("ecartes", d, d.get("ecartes"))
+        xml = self.processus.exporter_bpmn().replace(
+            '<bpmn:process id="d1_process" isExecutable="false">',
+            '<bpmn:process id="d1_process" isExecutable="false">\n'
+            '    <bpmn:documentation>Revu en atelier.</bpmn:documentation>\n'
+            '    <bpmn:extensionElements/>\n'
+            '    <bpmn:dataObject id="d1_do"/>')
+        self.assertIn('id="d1_do"', xml)
+        d = self._lire(xml)[0]
+        self.assertNotIn("ecartes", d, d.get("ecartes"))

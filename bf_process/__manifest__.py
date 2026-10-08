@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "Cartographie de processus",
-    "version": "18.0.5.0.6",
+    "version": "18.0.5.0.8",
     "category": "Services/Project",
     "summary": "Cartographies BPMN vivantes : le modèle est la vérité, le PDF et"
                " les deux XML n'en sont que des rendus",
@@ -64,6 +64,12 @@ Limites assumées
 * Un fichier BPMN ne porte ni le ton d'une annotation, ni le lien entre un
   sous-processus et sa page. La fusion conserve donc ce qui est déjà en place
   plutôt que de le redéduire, et nomme les sous-processus restés sans page.
+* Un élément que la lecture ne sait pas placer — sans forme dans la partie
+  graphique d'un fichier BPMN, d'un type que le module ne trace pas, ou
+  dessiné hors du processus lu (sous-processus déplié, autre participant) —
+  n'est pas repris. L'import et la fusion le nomment, avec ses liens, plutôt
+  que de le taire, et la fusion ne propose jamais le retrait d'un élément que
+  le fichier porte encore.
 * La hauteur d'un couloir est celle de son contenu, et son premier nœud est
   collé à sa marge haute. Déplacer verticalement le nœud le plus haut d'un
   couloir ne le fait donc pas descendre : ce sont les autres qui remontent.

@@ -251,6 +251,27 @@ class BfProcessMergeWizard(models.TransientModel):
                 msgs[(code, _cle_message(m["node"], m["pool"]))] = m
         return niveaux, couloirs, pools, noeuds, flux, msgs
 
+    @staticmethod
+    def _cles_ecartees(diagrammes):
+        """Ce que le fichier porte mais que la lecture a laissé de côté.
+
+        Sous la forme (portée, niveau, clé) des lignes d'écart. Un élément
+        écarté faute de forme n'est pas absent du fichier : en proposer le
+        retrait dirait le contraire de ce que le fichier dit.
+        """
+        cles = set()
+        for d in diagrammes:
+            niv = d.get("bpmn_id")
+            for e in d.get("ecartes") or []:
+                if e["famille"] == "flux":
+                    cle = _cle_flux(e["src"], e["tgt"])
+                elif e["famille"] == "message":
+                    cle = _cle_message(e["node"], e["pool"])
+                else:
+                    cle = e["id"]
+                cles.add((e["famille"], niv, cle))
+        return cles
+
     # ------------------------------------------------------------- ancrage
     @staticmethod
     def _mode(paires):
@@ -302,8 +323,9 @@ class BfProcessMergeWizard(models.TransientModel):
             ici = self._couloir_effectif(rec.lane_id.code or "", rec_premier)
             la = self._couloir_effectif(n.get("lane") or "", f_premier)
             # une rangée se compte dans son couloir : un nœud qui en change
-            # ne dit rien du calage, ni de l'ancien ni du nouveau
-            if ici == la:
+            # ne dit rien du calage, ni de l'ancien ni du nouveau — et un nœud
+            # dont le fichier ne dit pas le couloir, pas davantage
+            if ici == la and not n.get("couloir_inconnu"):
                 par_couloir.setdefault(la, []).append((rec.row, n["row"]))
         return (self._mode(communs) or 0.0,
                 {k: (self._mode(v) or 0.0) for k, v in par_couloir.items()},
@@ -340,6 +362,7 @@ class BfProcessMergeWizard(models.TransientModel):
         """La liste des écarts, dans l'ordre où on veut les lire."""
         c_niv, c_lane, c_pool, c_noeud, c_flux, c_msg = self._index_carte(cible)
         f_niv, f_lane, f_pool, f_noeud, f_flux, f_msg = self._index_fichier(diagrammes)
+        ecartes = self._cles_ecartees(diagrammes)
         lignes = []
 
         def ajoute(portee, operation, niveau, cle, libelle,
@@ -396,7 +419,8 @@ class BfProcessMergeWizard(models.TransientModel):
                        _("Nouveau « %s »") % dehors[(niv, code)][nom_dict],
                        apres=dehors[(niv, code)][nom_dict])
             for niv, code in sorted(k for k in set(dedans) - set(dehors)
-                                    if k[0] in communs):
+                                    if k[0] in communs
+                                    and (famille, *k) not in ecartes):
                 ajoute(famille, "retrait", niv, code,
                        _("« %s » n'est pas dans le fichier")
                        % dedans[(niv, code)][nom_rec],
@@ -427,7 +451,8 @@ class BfProcessMergeWizard(models.TransientModel):
                      nom=n.get("name") or cle),
                    apres=n.get("name") or cle)
         for niv, cle in sorted(k for k in set(c_noeud) - set(f_noeud)
-                               if k[0] in communs):
+                               if k[0] in communs
+                               and ("noeud", *k) not in ecartes):
             n = c_noeud[(niv, cle)]
             remarque = ""
             if n.child_diagram_id:
@@ -459,14 +484,17 @@ class BfProcessMergeWizard(models.TransientModel):
                 ajoute("noeud", "nature", niv, cle, _("Type"),
                        avant=genres.get(rec.kind, rec.kind),
                        apres=genres.get(n["kind"], n["kind"]))
+            # Couloir inconnu (son couloir a perdu sa forme dans le fichier) :
+            # ni son couloir ni sa rangée ne se lisent, rien à proposer.
             ici = self._couloir_effectif(rec.lane_id.code or "", rec_premier)
             la = self._couloir_effectif(n.get("lane") or "", f_premier)
-            if ici != la:
+            if ici != la and not n.get("couloir_inconnu"):
                 ajoute("noeud", "couloir", niv, cle, _("Couloir"),
                        avant=rec.lane_id.name or "—",
                        apres=(f_lane.get((niv, la)) or {}).get("name") or "—")
             col, row = self._pose(n, ancrage)
-            if abs(col - rec.col) > pas / 2 or abs(row - rec.row) > pas / 2:
+            if not n.get("couloir_inconnu") and (
+                    abs(col - rec.col) > pas / 2 or abs(row - rec.row) > pas / 2):
                 ajoute("noeud", "position", niv, cle, _("Position"),
                        avant=f"{rec.col:g} / {rec.row:g}",
                        apres=f"{col:g} / {row:g}")
@@ -486,7 +514,8 @@ class BfProcessMergeWizard(models.TransientModel):
             ajoute("flux", "ajout", niv, cle, _("Nouveau lien %s") % cle,
                    apres=f_flux[(niv, cle)].get("label") or "")
         for niv, cle in sorted(k for k in set(c_flux) - set(f_flux)
-                               if k[0] in communs):
+                               if k[0] in communs
+                               and ("flux", *k) not in ecartes):
             ajoute("flux", "retrait", niv, cle,
                    _("Le lien %s n'est pas dans le fichier") % cle,
                    avant=c_flux[(niv, cle)].label or "")
@@ -503,7 +532,8 @@ class BfProcessMergeWizard(models.TransientModel):
                    _("Nouveau message « %s »") % (f_msg[(niv, cle)].get("label") or ""),
                    apres=f_msg[(niv, cle)].get("label") or "")
         for niv, cle in sorted(k for k in set(c_msg) - set(f_msg)
-                               if k[0] in communs):
+                               if k[0] in communs
+                               and ("message", *k) not in ecartes):
             ajoute("message", "retrait", niv, cle,
                    _("Le message « %s » n'est pas dans le fichier")
                    % (c_msg[(niv, cle)].label or ""),
@@ -539,7 +569,20 @@ class BfProcessMergeWizard(models.TransientModel):
                 " ouvert. Les retraits sont donc proposés à « Ignorer » :"
                 " ne les appliquez que si la page a vraiment été supprimée."
                 "</div>") % (len(manquantes), titres))
-        if not lignes:
+        # Avant le verdict « aucun écart » : c'est précisément quand la liste
+        # est vide que ce qui n'a pas été lu doit sauter aux yeux.
+        ecartes = self._dire_ecartes(diagrammes, _(
+            "Ils ne figurent dans aucun écart ci-dessous : un élément neuf ne "
+            "sera pas créé, et un élément que la carte porte déjà n'est pas "
+            "proposé au retrait."))
+        if ecartes:
+            blocs.append(Markup(
+                "<div class='alert alert-warning' role='alert'>%s</div>")
+                % ecartes)
+        if not lignes and ecartes:
+            blocs.append(Markup("<p>%s</p>") % _(
+                "Aucun écart dans ce qui a pu être lu."))
+        elif not lignes:
             blocs.append(Markup("<p>%s</p>") % _(
                 "Aucun écart : le fichier dit exactement ce que la carte dit "
                 "déjà."))
@@ -729,7 +772,8 @@ class BfProcessMergeWizard(models.TransientModel):
             niveau._resequencer(niveau.node_ids.sorted(lambda n: (n.sequence, n.id)))
             niveau._resequencer(niveau.flow_ids.sorted(lambda f: (f.sequence, f.id)))
 
-        cible.message_post(body=self._compte_rendu(fait, refuse, orphelins))
+        cible.message_post(body=self._compte_rendu(
+            fait, refuse, orphelins, diagrammes))
         return {
             "type": "ir.actions.act_window",
             "res_model": "bf.process",
@@ -961,7 +1005,7 @@ class BfProcessMergeWizard(models.TransientModel):
         return orphelins
 
     # ------------------------------------------------------------ compte rendu
-    def _compte_rendu(self, fait, refuse, orphelins):
+    def _compte_rendu(self, fait, refuse, orphelins, diagrammes=()):
         """Ce qui a été écrit, dit sur la carte elle-même.
 
         Chaque valeur passe par `Markup %`, qui échappe ses arguments : ces
@@ -997,6 +1041,8 @@ class BfProcessMergeWizard(models.TransientModel):
             blocs.append(Markup(
                 "<p><b>%s</b></p><ul>%s</ul>") % (
                 _("Sous-processus qui n'ouvrent aucune page :"), items))
+        blocs.append(self._dire_ecartes(diagrammes, _(
+            "La fusion ne les a ni créés ni retirés.")))
         return Markup("").join(blocs)
 
     # ---------------------------------------------------------------- outils

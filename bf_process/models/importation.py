@@ -29,6 +29,17 @@ plus à gauche à 0, rangée la plus haute de chaque couloir à 0 — et le cala
 est recalculé depuis les données plutôt que recopié de `geometrie`, pour que
 les deux ne puissent pas diverger en silence. C'est `fusion` qui reporte
 ensuite cette forme relative sur le repère de la carte visée.
+
+**Rien ne s'écarte en silence.** Un élément que la lecture ne peut pas
+reprendre — sans forme dans la partie DI, d'un type BPMN que le module ne
+trace pas, dessiné hors du processus lu, ou un lien dont une extrémité est
+dans ce cas — est consigné sous `ecartes`, avec son motif, et l'appelant le
+dit. Un `continue` muet rendait
+« aucun écart » sur un fichier qui portait pourtant du neuf. Or l'absence de
+DI est valide en BPMN 2.0 : la partie graphique y est facultative.
+⚠️ Reste muet : le plan de descente qu'un éditeur écrit à part pour un
+sous-processus replié (un `BPMNPlane` posé sur le sous-processus). Ses liens
+intérieurs sont nommés, ses étapes non.
 """
 import base64
 import math
@@ -44,6 +55,7 @@ from .erreurs import refus_lisible
 
 from ..generateur import geometrie as geo
 from ..generateur.bpmn import ELEMENT
+from .structure import KINDS
 
 B = "{http://www.omg.org/spec/BPMN/20100524/MODEL}"
 DI = "{http://www.omg.org/spec/BPMN/20100524/DI}"
@@ -55,6 +67,15 @@ for genre, (balise, evdef) in ELEMENT.items():
     VERS_GENRE[(balise, evdef)] = genre
 
 AUTRES_GENRES = {"textAnnotation": "note", "dataStoreReference": "store"}
+
+# Ce qu'un éditeur BPMN dessine : activités, événements, portes, artefacts et
+# données. Un élément de ces familles que la lecture laisse de côté est une
+# perte, et elle se dit. Le reste d'un <bpmn:process> — documentation,
+# extensions, dataObject, ioSpecification — n'a rien à tracer.
+SE_DESSINE = ("task", "subProcess", "callActivity", "transaction",
+              "textAnnotation", "group", "dataObjectReference",
+              "dataStoreReference")
+SE_DESSINE_SUFFIXES = ("Task", "Event", "Gateway", "SubProcess")
 
 
 class BfProcessLecture(models.AbstractModel):
@@ -141,7 +162,9 @@ class BfProcessLecture(models.AbstractModel):
         code `lane_f`, et toute comparaison avec la carte stockée le lisait
         comme un couloir retiré plus un couloir ajouté.
         """
-        code = cls._code(ident, prefixe)
+        # `id` est facultatif dans le schéma BPMN : un participant ou un couloir
+        # sans identifiant se nomme, il ne fait pas tomber la lecture.
+        code = cls._code(ident, prefixe) or ""
         tete = famille + "_"
         return code[len(tete):] if code.startswith(tete) and len(code) > len(tete) else code
 
@@ -225,10 +248,25 @@ class BfProcessLecture(models.AbstractModel):
         # de quelle famille elle relève.
         code_de = {}
 
+        # Ce que la lecture laisse de côté, et pourquoi. Chaque `continue` qui
+        # suit en alimente la liste, au lieu de perdre l'élément sans un mot.
+        # `vus` retient ce qui a été lu OU nommé : la passe finale nomme toute
+        # forme dessinée qui n'y est pas.
+        ecartes = []
+        vus = {principal.get("id")}
+        tous = {el.get("id"): el for el in racine.iter() if el.get("id")}
+
         # pools externes : au-dessus ou en dessous du pool principal
         ids_pools = set()
         for p in participants:
-            if p is principal or p.get("id") not in formes:
+            if p is principal:
+                continue
+            vus.add(p.get("id"))
+            if p.get("id") not in formes:
+                ecartes.append({
+                    "famille": "pool", "motif": "forme",
+                    "id": self._code_membre(p.get("id"), prefixe, "pool"),
+                    "nom": p.get("name") or ""})
                 continue
             ex, ey, ew, eh = self._bornes(formes[p.get("id")])
             code = self._code_membre(p.get("id"), prefixe, "pool")
@@ -241,7 +279,12 @@ class BfProcessLecture(models.AbstractModel):
         # couloirs, dans l'ordre vertical
         bandes = []
         for lane in proc.iter(B + "lane"):
+            vus.add(lane.get("id"))
             if lane.get("id") not in formes:
+                ecartes.append({
+                    "famille": "couloir", "motif": "forme",
+                    "id": self._code_membre(lane.get("id"), prefixe, "lane"),
+                    "nom": lane.get("name") or ""})
                 continue
             lx, ly, lw, lh = self._bornes(formes[lane.get("id")])
             bandes.append((ly, lh, lane))
@@ -254,6 +297,16 @@ class BfProcessLecture(models.AbstractModel):
         for _y, _h, lane in bandes:
             for ref in lane.findall(B + "flowNodeRef"):
                 couloir_de[(ref.text or "").strip()] = code_de[lane.get("id")]
+        # Un couloir écarté faute de forme garde ses membres : le fichier les y
+        # déclare encore, et la carte connaît ce couloir. Sans ça, ses nœuds
+        # retombaient dans le premier couloir, et la fusion proposait de les
+        # sortir du leur — à « Appliquer » par défaut.
+        sans_forme = [lane for lane in proc.iter(B + "lane")
+                      if lane.get("id") not in formes]
+        for lane in sans_forme:
+            code = self._code_membre(lane.get("id"), prefixe, "lane")
+            for ref in lane.findall(B + "flowNodeRef"):
+                couloir_de.setdefault((ref.text or "").strip(), code)
 
         # --- nœuds : bornes d'abord, grille ensuite, coordonnées enfin -------
         bruts = []
@@ -262,12 +315,28 @@ class BfProcessLecture(models.AbstractModel):
             if balise in ("laneSet", "sequenceFlow", "association"):
                 continue
             ident = el.get("id")
-            if ident not in formes:
-                continue
+            vus.add(ident)
             evdef = next((c.tag.replace(B, "") for c in el
                           if c.tag.replace(B, "").endswith("EventDefinition")), None)
             genre = VERS_GENRE.get((balise, evdef)) or AUTRES_GENRES.get(balise)
+            if ident not in formes:
+                # Sans forme, aucune position à reprendre. Ce n'est une perte
+                # que pour ce qui se dessine : la documentation ou les
+                # extensions d'un processus n'en ont jamais.
+                if genre or self._se_dessine(balise):
+                    ecartes.append({
+                        "famille": "noeud", "motif": "forme",
+                        "id": self._code(ident, prefixe), "genre": genre,
+                        "balise": balise, "nom": self._libelle(el, balise)})
+                continue
             if genre is None:
+                # Dessiné dans le fichier, donc vu par l'usager dans son
+                # éditeur : le taire ferait croire qu'il a été repris.
+                ecartes.append({
+                    "famille": "noeud", "motif": "type",
+                    "id": self._code(ident, prefixe), "genre": None,
+                    "balise": balise, "evdef": evdef,
+                    "nom": self._libelle(el, balise)})
                 continue
             code = self._code(ident, prefixe)
             code_de[ident] = code
@@ -290,6 +359,12 @@ class BfProcessLecture(models.AbstractModel):
             couloir, haut = self._couloir(ident, cy, couloir_de, pistes, y_pool)
             if couloir:
                 noeud["lane"] = couloir
+            elif sans_forme:
+                # Ni déclaré dans un couloir ni dans une bande, alors qu'un
+                # couloir a perdu sa forme : une annotation, typiquement. Le
+                # fichier ne dit pas où elle est, et le deviner ferait proposer
+                # un déplacement que personne n'a fait.
+                noeud["couloir_inconnu"] = True
             noeud["row"] = (cy - haut - lane_pad) / row_h
             # Une surcharge de taille ne se conserve que si la forme observée
             # s'écarte de la taille naturelle. Comparer la forme observée à
@@ -305,25 +380,84 @@ class BfProcessLecture(models.AbstractModel):
             d["nodes"].append(noeud)
         self._canoniser(d)
 
+        # Un lien ne tient que si ses deux extrémités ont été lues. Garder un
+        # lien vers un nœud écarté faisait planter l'import (aucun nœud à
+        # relier) et proposait à la fusion un ajout voué au refus.
+        lus = {b[1] for b in bruts}
+
+        def nom_de(ident):
+            el = tous.get(ident)
+            return self._libelle(el, el.tag.replace(B, "")) if el is not None else ""
+
+        def code_noeud(ident):
+            return code_de.get(ident) or self._code(ident, prefixe) or ""
+
         for el in list(proc.iter(B + "sequenceFlow")) + list(proc.iter(B + "association")):
+            src, tgt = el.get("sourceRef"), el.get("targetRef")
+            if src not in lus or tgt not in lus:
+                ecartes.append({
+                    "famille": "flux", "motif": "lien",
+                    "src": code_noeud(src), "tgt": code_noeud(tgt),
+                    "de": nom_de(src) or code_noeud(src),
+                    "vers": nom_de(tgt) or code_noeud(tgt),
+                    "nom": el.get("name") or ""})
+                continue
             d["flows"].append({
-                "src": code_de.get(el.get("sourceRef"),
-                                   self._code(el.get("sourceRef"), prefixe)),
-                "tgt": code_de.get(el.get("targetRef"),
-                                   self._code(el.get("targetRef"), prefixe)),
+                "src": code_de[src],
+                "tgt": code_de[tgt],
                 "label": el.get("name") or "",
                 **({"r": "assoc"} if el.tag == B + "association" else {}),
             })
+        # Le sens se lit sur les participants déclarés, lus ou non : un
+        # participant écarté faute de forme ne doit pas inverser les rôles,
+        # sinon le message écarté ne se reconnaît plus dans la carte.
+        externes = {p.get("id") for p in participants if p is not principal}
         for el in colab.findall(B + "messageFlow"):
             src, tgt = el.get("sourceRef"), el.get("targetRef")
-            entrant = src in ids_pools
+            entrant = src in externes
+            noeud, pool = (tgt, src) if entrant else (src, tgt)
+            if noeud not in lus or pool not in ids_pools:
+                ecartes.append({
+                    "famille": "message", "motif": "lien",
+                    "node": code_noeud(noeud),
+                    "pool": code_de.get(pool)
+                    or self._code_membre(pool, prefixe, "pool") or "",
+                    "nom": el.get("name") or ""})
+                continue
             d["msgs"].append({
-                "node": code_de.get(tgt if entrant else src, ""),
-                "pool": code_de.get(src if entrant else tgt, ""),
+                "node": code_de[noeud],
+                "pool": code_de[pool],
                 "dir": "in" if entrant else "out",
                 "label": el.get("name") or "",
             })
+        # Dessiné, mais hors de ce que la lecture parcourt : l'intérieur d'un
+        # sous-processus déplié, le processus d'un autre participant, une
+        # annotation posée au niveau de la collaboration. La forme est là, donc
+        # l'usager le voit dans son éditeur ; le taire ferait croire qu'il est
+        # revenu dans la carte.
+        for ident in formes:
+            if ident is None or ident in vus:
+                continue
+            el = tous.get(ident)
+            balise = el.tag.replace(B, "") if el is not None else "?"
+            evdef = next((c.tag.replace(B, "") for c in el
+                          if c.tag.replace(B, "").endswith("EventDefinition")),
+                         None) if el is not None else None
+            ecartes.append({
+                "famille": "noeud", "motif": "hors",
+                "id": self._code(ident, prefixe) or "",
+                "genre": VERS_GENRE.get((balise, evdef)) or AUTRES_GENRES.get(balise),
+                "balise": balise,
+                "nom": self._libelle(el, balise) if el is not None else ""})
+        # Posé seulement quand il y a quelque chose à dire : la forme
+        # d'échange d'un fichier complet reste exactement ce qu'elle était.
+        if ecartes:
+            d["ecartes"] = ecartes
         return d
+
+    @staticmethod
+    def _se_dessine(balise):
+        return balise in SE_DESSINE or balise.endswith(SE_DESSINE_SUFFIXES)
 
     @staticmethod
     def _couloir(ident, cy, couloir_de, pistes, y_defaut):
@@ -343,6 +477,10 @@ class BfProcessLecture(models.AbstractModel):
             for c, haut, _bas in pistes:
                 if c == code:
                     return c, haut
+            # Couloir déclaré mais sans forme : le nœud y reste, et sa rangée se
+            # compte depuis le haut du pool. `_canoniser` ramène chaque couloir
+            # à sa propre rangée la plus haute, donc cet écart constant tombe.
+            return code, y_defaut
         for c, haut, bas in pistes:
             if haut <= cy <= bas:
                 return c, haut
@@ -423,6 +561,69 @@ class BfProcessLecture(models.AbstractModel):
             return (t.text or "") if t is not None else ""
         return el.get("name") or ""
 
+    def _dire_ecartes(self, diagrammes, consequence):
+        """Ce que la lecture a laissé de côté, nommé un par un.
+
+        Rend un fragment vide quand rien n'a été écarté. Les libellés viennent
+        du fichier : chacun passe par `Markup %`, qui l'échappe.
+        """
+        genres = dict(KINDS)
+        motifs = {
+            "forme": _("aucune forme dans la partie graphique (DI), donc "
+                       "aucune position à reprendre"),
+            "hors": _("dessiné hors du processus que le module lit (dans un "
+                      "sous-processus déplié, le processus d'un autre "
+                      "participant ou la collaboration)"),
+        }
+        liens = {
+            "flux": _("une de ses extrémités n'est pas une étape lue"),
+            "message": _("il ne relie pas une étape lue à un participant "
+                         "externe lu"),
+        }
+        items = []
+        for d in diagrammes:
+            for e in d.get("ecartes") or []:
+                famille = e["famille"]
+                if famille == "noeud":
+                    # le genre quand le module le connaît ; sinon le motif dit
+                    # déjà de quel type BPMN il s'agit
+                    quoi = (genres[e["genre"]].lower() if e.get("genre")
+                            else _("élément"))
+                elif famille == "couloir":
+                    quoi = _("couloir")
+                elif famille == "pool":
+                    quoi = _("participant")
+                elif famille == "message":
+                    quoi = _("message")
+                else:
+                    quoi = None
+                if quoi is None:
+                    objet = _("lien de « %(de)s » vers « %(vers)s »",
+                              de=e.get("de") or "?", vers=e.get("vers") or "?")
+                elif e.get("nom"):
+                    objet = "%s « %s »" % (quoi, e["nom"])
+                else:
+                    objet = "%s %s" % (quoi, e.get("id") or "")
+                if e["motif"] == "type":
+                    # la définition d'événement fait le type : un `endEvent`
+                    # simple se trace, un `endEvent` de terminaison non
+                    balise = e.get("balise") or "?"
+                    if e.get("evdef"):
+                        balise = "%s + %s" % (balise, e["evdef"])
+                    motif = _("type BPMN « %s » que le module ne trace pas") \
+                        % balise
+                elif e["motif"] == "lien":
+                    motif = liens.get(famille, e["motif"])
+                else:
+                    motif = motifs.get(e["motif"], e["motif"])
+                items.append(Markup("<li>%s — %s : %s</li>") % (
+                    d.get("title") or "?", objet.strip(), motif))
+        if not items:
+            return Markup("")
+        return Markup("<p><b>%s</b> %s</p><ul>%s</ul>") % (
+            _("%d élément(s) du fichier n'ont pas été lus.") % len(items),
+            consequence, Markup("").join(items))
+
 
 class BfProcessImportWizard(models.TransientModel):
     _name = "bf.process.import.wizard"
@@ -454,9 +655,13 @@ class BfProcessImportWizard(models.TransientModel):
         # `nom_fichier` est fourni par l'appelant, donc échappé comme le reste :
         # la sanitisation de `mail.message` est un filet, pas une raison de
         # composer du HTML par concaténation.
-        processus.message_post(body=Markup(_(
+        corps = Markup(_(
             "Import de <b>%s</b> : %s niveau(x), %s nœud(s).")) % (
-            self.nom_fichier or "?", len(diagrammes), processus.node_count))
+            self.nom_fichier or "?", len(diagrammes), processus.node_count)
+        corps += self._dire_ecartes(diagrammes, _(
+            "Ils ne sont pas dans la carte : posez-les ici à la main, ou "
+            "corrigez-les dans l'éditeur d'origine avant de réimporter."))
+        processus.message_post(body=corps)
         return {
             "type": "ir.actions.act_window",
             "res_model": "bf.process",

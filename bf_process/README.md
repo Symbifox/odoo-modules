@@ -289,6 +289,22 @@ declares no lane is written into the first one by the exporter, exactly as the
 geometry engine already places it, so an empty `lane_id` and "the first lane"
 mean the same drawing and are treated as equal.
 
+**What the reader sets aside, it names.** The DI part is optional in BPMN 2.0, so a
+valid file can carry an element the reader has no position for. An element
+without a shape (node, lane or external participant), a drawn element of a
+BPMN type the module does not trace (a `serviceTask`, say, or an end event
+with a terminate definition), anything drawn outside the process the module
+reads (inside an expanded sub-process, in another participant's process, at
+collaboration level), and any sequence flow, association or message flow
+with such an element at one end are set aside, each with its reason. The
+import lists them on the new map's chatter; the merge lists them above its
+differences and again in its write-up, and never proposes removing something
+the file still carries without geometry. A lane that lost its shape keeps its
+members: the file still declares them, so they do not fall into another lane.
+One case is still neither read nor named: the separate drill-down page some
+editors write for a collapsed sub-process (a `BPMNPlane` on the sub-process
+itself). Its inner links are named, its inner steps are not.
+
 ## Merging re-import
 
 Importing creates a new cartography. That is right the first time and wrong
@@ -392,7 +408,11 @@ asserted intact), removals defaulting to ignore and applying when chosen, a
 node added by the file landing in the right lane, the anchor holding when the
 leftmost node moves *and* when a lone node runs far right, a sub-process
 keeping its child page through a rename, a partial file warning instead of
-emptying the map, and the four refusals — foreign file, frozen version, map
+emptying the map, what the reader sets aside (a node added without its
+shape and the link to it, a drawn element of an unsupported type, a known
+node, lane or participant that lost its shape: each named, none proposed for
+removal, the import no longer crashing on them, while a complete file reports
+nothing), and the four refusals — foreign file, frozen version, map
 changed since analysis, and a hostile node name never becoming a tag.
 
 Four of those tests exist because the wider pass described below ran the merge
