@@ -27,6 +27,7 @@ import uuid
 from datetime import timedelta
 
 from odoo import api, fields, models
+from odoo.tools import SQL
 
 #: Au-delà, l'app a renoncé depuis longtemps : sa file ne garde pas un geste un mois.
 RETENTION_DAYS = 30
@@ -82,9 +83,9 @@ class BfTimerMobileReceipt(models.Model):
             # Une seule transaction dans les essais : rien d'autre à relire.
             return None
         with self.env.registry.cursor() as cr:
-            cr.execute(
-                'SELECT route, response FROM "%s" WHERE user_id = %%s AND client_uuid = %%s'
-                % self._table, (user_id, client_uuid))
+            cr.execute(SQL(
+                "SELECT route, response FROM %s WHERE user_id = %s AND client_uuid = %s",
+                SQL.identifier(self._table), user_id, client_uuid))
             row = cr.fetchone()
         return (row[0], self._decode(row[1])) if row else None
 

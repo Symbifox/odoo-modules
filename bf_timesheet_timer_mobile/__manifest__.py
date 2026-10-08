@@ -1,6 +1,6 @@
 {
     "name": "Chronomètre : application Android",
-    "version": "18.0.1.3.1",
+    "version": "18.0.1.3.2",
     "category": "Services/Timesheets",
     "summary": "L'API de Symbifox Chronomètre : appariement d'un téléphone et gestes du chrono",
     "description": """
