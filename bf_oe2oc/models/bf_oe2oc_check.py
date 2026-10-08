@@ -17,6 +17,7 @@ import os
 import pytz
 
 from odoo import _, api, fields, models
+from odoo.tools import SQL
 
 _logger = logging.getLogger(__name__)
 
@@ -219,9 +220,13 @@ class BfOe2ocCheck(models.Model):
             seq = self.env.cr.fetchone()[0]
             if not seq:
                 continue
-            self.env.cr.execute(f'SELECT COALESCE(MAX(id), 0) FROM "{table}"')
+            self.env.cr.execute(SQL("SELECT COALESCE(MAX(id), 0) FROM %s", SQL.identifier(table)))
             max_id = self.env.cr.fetchone()[0]
-            self.env.cr.execute("SELECT last_value, is_called FROM %s" % seq)
+            # « schéma.nom », rendu sans guillemets pour ces tables en minuscules.
+            schema, _dot, name = seq.replace('"', "").rpartition(".")
+            self.env.cr.execute(SQL(
+                "SELECT last_value, is_called FROM %s",
+                SQL.identifier(schema, name) if schema else SQL.identifier(name)))
             last_value, is_called = self.env.cr.fetchone()
             current = last_value if is_called else last_value - 1
             if current < max_id:
