@@ -279,10 +279,21 @@ class CalendarEvent(models.Model):
         data["minutes"] = self._mobile_minutes()
         return data
 
+    def _mobile_peut_lire(self, modele):
+        """`modele` est installé et l'appelant a le droit de le lire.
+
+        Le droit se lit sur le modèle, pas sur l'événement : un compte interne
+        sans le groupe Rencontres lit la rencontre, pas son ordre du jour. Sans
+        cette garde, la recherche levait un refus d'accès et c'est la fiche
+        entière qui tombait au téléphone, ordre du jour ou pas.
+        """
+        return modele in self.env and self.env[modele].has_access("read")
+
     def _mobile_agenda(self):
-        """L'ordre du jour lié, s'il y en a un et si `bf_meeting` est là."""
+        """L'ordre du jour lié, s'il y en a un, si `bf_meeting` est là et si
+        l'appelant peut le lire."""
         self.ensure_one()
-        if "meeting.agenda" not in self.env:
+        if not self._mobile_peut_lire("meeting.agenda"):
             return None
         agenda = self.env["meeting.agenda"].search(
             [("calendar_event_id", "=", self.id)], limit=1)
@@ -304,7 +315,7 @@ class CalendarEvent(models.Model):
         ``bf_meeting_portal`` a déjà tranché ce périmètre pour les clients.
         """
         self.ensure_one()
-        if "meeting.record" not in self.env:
+        if not self._mobile_peut_lire("meeting.record"):
             return None
         record = self.env["meeting.record"].search(
             [("calendar_event_id", "=", self.id)], limit=1)

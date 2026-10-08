@@ -3,7 +3,9 @@
     "name": "Symbifox — Agenda mobile",
     "summary": "Agenda et échéances pour l'app mobile, avec la couche Symbifox "
                "(OdJ, compte rendu, report de rappel)",
-    "version": "18.0.3.7.0",
+    # 18.0.3.7.1 : la fiche d'un événement s'ouvre au téléphone sans le groupe
+    #   Rencontres ; l'ordre du jour et le compte rendu y sont omis.
+    "version": "18.0.3.7.1",
     "category": "Productivity",
     "author": "Les services de consultation Blue Fox, Inc.",
     "website": "https://symbifox.com",
