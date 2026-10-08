@@ -2,6 +2,8 @@
 import { reactive } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 
+const REFRESH_MS = 30000;
+
 export const bfTimerService = {
     dependencies: ["orm"],
     async start(env, { orm }) {
@@ -105,8 +107,21 @@ export const bfTimerService = {
 
         // Initial load (non-blocking — don't await to avoid blocking web client startup)
         refresh();
-        // Periodic sync every 60s
-        setInterval(refresh, 60000);
+        // 🔴 La barre système ET la page rafraîchissaient chacune toutes les
+        // 5 s, dans chaque onglet, visible ou non : des milliers d'appels à la
+        // minute pour une seule personne. Un seul rythme ici, arrêté
+        // en arrière-plan, et un rattrapage au retour sur l'onglet. L'arrêt
+        // depuis une tâche n'en dépend pas : son assistant s'ouvre côté serveur.
+        setInterval(() => {
+            if (!document.hidden) {
+                refresh();
+            }
+        }, REFRESH_MS);
+        document.addEventListener("visibilitychange", () => {
+            if (!document.hidden) {
+                refresh();
+            }
+        });
 
         return {
             state,

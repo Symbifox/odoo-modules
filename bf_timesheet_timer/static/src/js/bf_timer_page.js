@@ -166,10 +166,6 @@ export class BfTimerPage extends Component {
                 );
             }
         }
-        this._tickCount = (this._tickCount || 0) + 1;
-        if (this._tickCount % 5 === 0) {
-            this.timerService.refresh();
-        }
     }
 
     // ── Écran ─────────────────────────────────────────────────────────────

@@ -168,12 +168,9 @@ export class BfTimerSystray extends Component {
                 this.state.elapsed[timer.id] = Math.max(0, (timer.accumulated_seconds || 0) + (now - startTs));
             }
         }
-        // Refresh service data every 5 seconds to catch pending timers quickly
-        // (e.g. when Stop is clicked from kanban/form buttons)
-        this._tickCount = (this._tickCount || 0) + 1;
-        if (this._tickCount % 5 === 0) {
-            this.timerService.refresh().then(() => this._checkPendingTimers());
-        }
+        // Le service rafraîchit seul (bf_timer_service.js) : ici, on ne fait
+        // que lire son état. La réservation du dialogue empêche le doublon.
+        this._checkPendingTimers();
     }
 
     // -------------------------------------------------------------------------

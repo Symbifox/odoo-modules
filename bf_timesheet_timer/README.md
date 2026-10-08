@@ -395,6 +395,9 @@ bf_timesheet_timer/
 
 ## Changelog
 
+### 18.0.1.14.0
+- **Much lighter on the server.** The systray and the timer page each refreshed every 5 seconds, in every tab, visible or not. One 30-second rhythm now serves both; it pauses while the tab is in the background and catches up when the tab comes back. A timer stopped elsewhere (another tab, the phone) can take up to 30 seconds to show.
+
 ### 18.0.1.13.0
 - **English source strings, French in `i18n/fr_CA.po`.** Odoo never translates into `en_US`, the source language: while the strings were written in French, an English-speaking user read this module in French.
 - **Error messages are translatable.** They were plain French strings: an English-speaking user read "Tâche introuvable." They now go through the catalogue, as do the stop dialog's title and the pin/unpin tooltips.
