@@ -1,6 +1,10 @@
 {
     "name": "BF Cible de chatter",
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.1.0",
     "category": "Productivity",
     "summary": "Sélecteur unique de fiche cible pour tous les importateurs de chatter",
     "description": """

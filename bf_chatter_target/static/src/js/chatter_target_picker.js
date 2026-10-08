@@ -40,14 +40,14 @@ export class ChatterTargetPicker extends Component {
     }
 
     get placeholder() {
-        return this.props.placeholder || _t("Nom, numéro, task:22299, ou URL Odoo…");
+        return this.props.placeholder || _t("Name, number, task:22299, or Odoo URL…");
     }
 
     get sources() {
         return [{
             options: this.loadOptions.bind(this),
             optionTemplate: "bf_chatter_target.Option",
-            placeholder: _t("Recherche…"),
+            placeholder: _t("Searching…"),
         }];
     }
 
@@ -60,7 +60,7 @@ export class ChatterTargetPicker extends Component {
         const query = (request || "").trim();
         if (query.length < MIN_QUERY_LENGTH) {
             return [{
-                label: _t("Tape au moins deux caractères, un numéro, ou colle une URL Odoo."),
+                label: _t("Type at least two characters, a number, or paste an Odoo URL."),
                 unselectable: true,
                 classList: "text-muted fst-italic",
             }];
@@ -71,7 +71,7 @@ export class ChatterTargetPicker extends Component {
         } catch (e) {
             console.error("bf_chatter_target: erreur RPC", e);
             return [{
-                label: _t("Recherche impossible pour le moment."),
+                label: _t("Search is unavailable right now."),
                 unselectable: true,
                 classList: "text-danger fst-italic",
             }];
@@ -95,7 +95,7 @@ export class ChatterTargetPicker extends Component {
         }
         if (!options.length) {
             options.push({
-                label: _t("Aucune fiche trouvée"),
+                label: _t("No record found"),
                 unselectable: true,
                 classList: "text-muted fst-italic",
             });
@@ -129,7 +129,7 @@ export class ChatterTargetPicker extends Component {
 
 export const chatterTargetPicker = {
     component: ChatterTargetPicker,
-    displayName: _t("Cible de chatter"),
+    displayName: _t("Chatter target"),
     supportedTypes: ["reference"],
     extractProps({ attrs, options }) {
         return {

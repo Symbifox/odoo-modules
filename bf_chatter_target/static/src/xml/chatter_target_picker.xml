@@ -14,12 +14,12 @@
                       class="o_bf_chatter_target_value d-inline-flex align-items-center gap-2 text-truncate">
                     <span class="text-truncate" t-esc="displayName"/>
                     <a t-att-href="targetUrl" class="text-muted o_bf_chatter_target_open"
-                       title="Ouvrir la fiche" target="_blank">
+                       title="Open the record" target="_blank">
                         <i class="fa fa-external-link"/>
                     </a>
                     <button type="button"
                             class="btn btn-link p-0 text-muted o_bf_chatter_target_clear"
-                            title="Choisir une autre fiche"
+                            title="Pick another record"
                             t-on-click="onClear">
                         <i class="fa fa-times"/>
                     </button>

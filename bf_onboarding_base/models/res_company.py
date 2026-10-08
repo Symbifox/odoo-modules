@@ -12,23 +12,23 @@ class ResCompany(models.Model):
     # (bluefox_branding) surfaces and styles these fields, but no longer owns
     # them.
     report_brand_primary = fields.Char(
-        string="Couleur primaire (marque)",
+        string="Primary colour (brand)",
         default="#714B67",
-        help="Couleur d'accent pour la navbar, les boutons et les courriels brandés "
-             "(ex: bannière, bulles, barres). Les rapports PDF utilisent plutôt "
-             "« Couleur primaire (PDF) ».",
+        help="Accent colour for the navbar, buttons and branded emails "
+             "(banner, bubbles, bars). PDF reports use \"Primary colour "
+             "(PDF)\" instead.",
     )
     report_brand_dark = fields.Char(
-        string="Couleur foncée (marque)",
+        string="Dark colour (brand)",
         default="#212529",
-        help="Couleur de fond foncée pour les en-têtes de courriels brandés et la navbar. "
-             "Les rapports PDF utilisent plutôt « Couleur secondaire (PDF) ».",
+        help="Dark background colour for branded email headers and the "
+             "navbar. PDF reports use \"Secondary colour (PDF)\" instead.",
     )
     report_brand_logo = fields.Binary(
-        string="Logo sur fond foncé (marque)",
+        string="Logo on dark background (brand)",
         attachment=True,
-        help="Logo — idéalement blanc/clair — utilisé sur les fonds FONCÉS : en-têtes "
-             "de courriels brandés et pages publiques. Le logo standard de la société "
-             "(souvent en couleur) reste utilisé sur les documents à fond clair. "
-             "Si vide, le logo standard est utilisé partout.",
+        help="Logo, ideally white or light, used on DARK backgrounds: "
+             "branded email headers and public pages. The company's "
+             "standard logo (often in colour) is still used on light "
+             "documents. If empty, the standard logo is used everywhere.",
     )

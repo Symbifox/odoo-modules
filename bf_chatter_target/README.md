@@ -56,6 +56,12 @@ models meant an agenda or a secure transfer could never be reached.
   <field name="target_reference" widget="bf_chatter_target" required="1"/>
   ```
 
+## Languages (v18.0.1.1.0)
+
+Labels and the picker's messages are written in English in the source; the French
+ships in `i18n/fr_CA.po`. Before this version they read in French for every user,
+including users set to English.
+
 ## Dependencies
 
 `web`, `mail`. `bf_universal_search` is used when present but is **not** a

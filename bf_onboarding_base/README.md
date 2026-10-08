@@ -10,6 +10,17 @@ Every Symbifox Odoo module that needs an admin onboarding panel ships
 its own `onboarding.onboarding` + `onboarding.onboarding.step` records,
 but reuses generic step actions defined here to avoid boilerplate.
 
+## Languages (v18.0.2.2.0)
+
+Labels are written in English in the source; the French ships in `i18n/fr_CA.po`.
+Odoo never translates into `en_US`, its source language, so a user set to English
+used to read this module's labels in French.
+
+The fallback email layout below is generated from `bluefox_branding` and keeps its
+French words ("Aucun", "Confidentialité", "Conditions", "Se désabonner") until that
+module's own source switches to English. A database with `bluefox_branding`
+installed never shows this copy.
+
 ## Common email layout (v18.0.2.1.1)
 
 `bf_onboarding_base.bf_mail_layout` is the mail layout every in-house module

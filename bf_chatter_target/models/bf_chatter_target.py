@@ -138,7 +138,7 @@ class BfChatterTarget(models.AbstractModel):
     registre — du bruit dans les journaux de production pour rien."""
 
     _name = "bf.chatter.target"
-    _description = "Cible de chatter"
+    _description = "Chatter target"
 
     # ------------------------------------------------------------------
     # Modèles compatibles
@@ -344,7 +344,7 @@ class BfChatterTarget(models.AbstractModel):
             seen.add((exact._name, exact.id))
             groups.append({
                 "model": exact._name,
-                "model_label": _("Référence exacte"),
+                "model_label": _("Exact reference"),
                 "icon": _FALLBACK_ICONS.get(exact._name, "fa fa-crosshairs"),
                 "results": [{
                     "id": exact.id,

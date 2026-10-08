@@ -125,7 +125,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_charge` | Plan de charge | 18.0.1.1.3 | BUSL-1.1 | What is actually left to do, placed on weeks, against a declared capacity rather than a guessed one |
 | `bf_chatter_chronological` | BF Chatter Chronological View | 18.0.4.1.0 | LGPL-3 | Sort the chatter feed by the email's original Date header instead of insertion id (Python `_order` + `_message_fetch` + JS `Thread.fetch*` patch); cogwheel action to re-parse lost Date headers from quoted body content |
 | `bf_chatter_send_now_force` | BF Chatter — Force Send on Scheduled Send Now | 18.0.1.0.0 | LGPL-3 | The "Send Now" button on a scheduled chatter message sends immediately instead of waiting up to 5 min for the mail queue cron (restores parity with the daily auto-send cron) |
-| `bf_chatter_target` | BF Cible de chatter | 18.0.1.0.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
+| `bf_chatter_target` | BF Cible de chatter | 18.0.1.1.0 | LGPL-3 | One search box to pick the record an importer posts onto: every chatter-bearing model at once, no model or project to choose first, pasted Odoo URLs and shorthands resolved inline |
 | `bf_chatter_timesheet` | Symbifox — Feuille de temps depuis le chatter | 18.0.1.2.0 | LGPL-3 | Checkbox in the chatter composer to log a timesheet entry alongside an internal note. |
 | `bf_claude_chat` | Gen | 18.0.1.34.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
@@ -254,7 +254,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_nfc_timer` | Pastilles NFC : le chronomètre | 18.0.1.0.1 | BUSL-1.1 | NFC tag gestures for the timesheet timer: start, stop, and stop that logs the timesheet in the same request |
 | `bf_no_gateway_bounce` | BF No Gateway Bounce | 18.0.1.0.0 | LGPL-3 | Never auto-reply MAILER-DAEMON bounces to people who write to Symbifox |
 | `bf_oe2oc` | Reprise après migration Enterprise | 18.0.1.0.1 | LGPL-3 | Recover the data an Enterprise-to-Community migration left behind, and check what still needs settling |
-| `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.1.2 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
+| `bf_onboarding_base` | Symbifox Onboarding Foundation | 18.0.2.2.0 | LGPL-3 | Shared helpers for Symbifox per-module onboarding panels. |
 | `bf_org_chart` | Organigrammes : le moteur de dessin | 18.0.1.2.0 | BUSL-1.1 | Une géométrie, deux rendus : l'organigramme à l'écran et le même en PDF |
 | `bf_org_chart_ownership` | Organigramme de détention | 18.0.1.1.0 | BUSL-1.1 | Qui détient quoi, pour quelle part, et le dessin qui va avec |
 | `bf_org_chart_people` | Organigramme des personnes | 18.0.1.1.1 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |

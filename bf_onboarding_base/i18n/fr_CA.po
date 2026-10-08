@@ -1,0 +1,73 @@
+# Translation of Blue Fox Onboarding Foundation - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_onboarding_base 18.0.2.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-14 04:58+0000\n"
+"PO-Revision-Date: 2026-09-14 04:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_onboarding_base
+#: model:ir.model.fields,help:bf_onboarding_base.field_res_company__report_brand_primary
+msgid ""
+"Accent colour for the navbar, buttons and branded emails (banner, bubbles, "
+"bars). PDF reports use \"Primary colour (PDF)\" instead."
+msgstr ""
+"Couleur d'accent pour la navbar, les boutons et les courriels brandés (ex: "
+"bannière, bulles, barres). Les rapports PDF utilisent plutôt « Couleur "
+"primaire (PDF) »."
+
+#. module: bf_onboarding_base
+#: model:ir.model,name:bf_onboarding_base.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_onboarding_base
+#: model:ir.model.fields,help:bf_onboarding_base.field_res_company__report_brand_dark
+msgid ""
+"Dark background colour for branded email headers and the navbar. PDF reports"
+" use \"Secondary colour (PDF)\" instead."
+msgstr ""
+"Couleur de fond foncée pour les en-têtes de courriels brandés et la navbar. "
+"Les rapports PDF utilisent plutôt « Couleur secondaire (PDF) »."
+
+#. module: bf_onboarding_base
+#: model:ir.model.fields,field_description:bf_onboarding_base.field_res_company__report_brand_dark
+msgid "Dark colour (brand)"
+msgstr "Couleur foncée (marque)"
+
+#. module: bf_onboarding_base
+#: model:ir.model.fields,field_description:bf_onboarding_base.field_res_company__report_brand_logo
+msgid "Logo on dark background (brand)"
+msgstr "Logo sur fond foncé (marque)"
+
+#. module: bf_onboarding_base
+#: model:ir.model.fields,help:bf_onboarding_base.field_res_company__report_brand_logo
+msgid ""
+"Logo, ideally white or light, used on DARK backgrounds: branded email "
+"headers and public pages. The company's standard logo (often in colour) is "
+"still used on light documents. If empty, the standard logo is used "
+"everywhere."
+msgstr ""
+"Logo, idéalement blanc ou clair, utilisé sur les fonds FONCÉS : en-têtes de "
+"courriels brandés et pages publiques. Le logo standard de la société "
+"(souvent en couleur) reste utilisé sur les documents à fond clair. Si vide, "
+"le logo standard est utilisé partout."
+
+#. module: bf_onboarding_base
+#: model:ir.model,name:bf_onboarding_base.model_onboarding_onboarding_step
+msgid "Onboarding Step"
+msgstr "Étape du parcours d'intégration"
+
+#. module: bf_onboarding_base
+#: model:ir.model.fields,field_description:bf_onboarding_base.field_res_company__report_brand_primary
+msgid "Primary colour (brand)"
+msgstr "Couleur primaire (marque)"
