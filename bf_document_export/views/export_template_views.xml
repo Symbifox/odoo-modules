@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_export_template_list" model="ir.ui.view">
+        <field name="name">bf.document.export.template.list</field>
+        <field name="model">bf.document.export.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="layout"/>
+                <field name="scheme_id"/>
+                <field name="deploy_mode"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_export_template_form" model="ir.ui.view">
+        <field name="name">bf.document.export.template.form</field>
+        <field name="model">bf.document.export.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_export" type="object" string="Export now" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_runs" type="object" class="oe_stat_button" icon="fa-archive" string="Exports"/>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="layout"/>
+                            <field name="scheme_id" invisible="layout != 'classification'" required="layout == 'classification'"/>
+                            <field name="split_by_type" invisible="layout != 'classification'"/>
+                            <field name="document_scope"/>
+                        </group>
+                        <group>
+                            <field name="deploy_mode"/>
+                            <field name="user_id" required="deploy_mode == 'on_release'" options="{'no_create': True}"/>
+                            <field name="lang"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <field name="description"/>
+                    <notebook>
+                        <page string="Folders" name="folders" invisible="layout == 'mirror'">
+                            <field name="folder_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="type_ids" widget="many2many_tags" column_invisible="parent.layout != 'type'"/>
+                                    <field name="type_codes" optional="hide" column_invisible="parent.layout != 'type'"/>
+                                    <field name="classification_ids" widget="many2many_tags" column_invisible="parent.layout != 'classification'"
+                                           domain="[('scheme_id', '=', parent.scheme_id)]"/>
+                                    <field name="restricted"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Naming" name="naming">
+                            <group>
+                                <group>
+                                    <field name="root_name"/>
+                                    <field name="name_pattern"/>
+                                    <field name="archive_name_pattern"/>
+                                    <field name="max_path_length"/>
+                                </group>
+                                <group>
+                                    <field name="unclassified_folder"/>
+                                    <field name="archive_folder"/>
+                                    <field name="drafts_folder"/>
+                                    <field name="master_list_name"/>
+                                    <field name="readme_name"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Content" name="content">
+                            <group>
+                                <group string="What goes in">
+                                    <field name="drafts_mode"/>
+                                    <field name="archives_mode"/>
+                                    <field name="include_sections"/>
+                                    <field name="include_record"/>
+                                </group>
+                                <group string="What stays out">
+                                    <field name="excluded_type_ids" widget="many2many_tags"/>
+                                    <field name="excluded_type_codes"/>
+                                    <field name="confidential_type_ids" widget="many2many_tags"/>
+                                    <field name="confidential_mode"/>
+                                </group>
+                                <group string="Indexes">
+                                    <field name="index_xlsx"/>
+                                    <field name="index_html"/>
+                                    <field name="index_json"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_export_template" model="ir.actions.act_window">
+        <field name="name">Export templates</field>
+        <field name="res_model">bf.document.export.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

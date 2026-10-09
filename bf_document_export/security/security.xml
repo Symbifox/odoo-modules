@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A person sees the exports they asked for; a manager sees them all. -->
+    <record id="rule_export_run_own" model="ir.rule">
+        <field name="name">Registry exports: own</field>
+        <field name="model_id" ref="model_bf_document_export_run"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('project_knowledge_matrix.group_document_user'))]"/>
+    </record>
+    <record id="rule_export_run_manager" model="ir.rule">
+        <field name="name">Registry exports: all</field>
+        <field name="model_id" ref="model_bf_document_export_run"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('project_knowledge_matrix.group_document_manager'))]"/>
+    </record>
+    <record id="rule_export_run_company" model="ir.rule">
+        <field name="name">Registry exports: company</field>
+        <field name="model_id" ref="model_bf_document_export_run"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_export_template_company" model="ir.rule">
+        <field name="name">Registry export templates: company</field>
+        <field name="model_id" ref="model_bf_document_export_template"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

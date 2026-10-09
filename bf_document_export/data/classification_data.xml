@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Three classification plans, editable and extendable. A document can sit in
+         all three at once; each export template files by one of them. -->
+
+    <!-- Process approach, ISO 9001:2015 §4.4 : steering, realisation, support -->
+    <record id="scheme_process" model="project.document.classification.scheme">
+        <field name="name">Processus (ISO 9001)</field>
+        <field name="code">PROCESSUS</field>
+        <field name="kind">process</field>
+        <field name="sequence">10</field>
+        <field name="description">Approche processus d'ISO 9001 §4.4 : processus de pilotage, de réalisation et de soutien.</field>
+    </record>
+    <record id="class_process_1" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="code">1</field><field name="name">Pilotage</field><field name="sequence">10</field>
+    </record>
+    <record id="class_process_1_1" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_1"/><field name="code">1.1</field><field name="name">Gouvernance</field>
+    </record>
+    <record id="class_process_1_2" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_1"/><field name="code">1.2</field><field name="name">Conformité et gestion des risques</field>
+    </record>
+    <record id="class_process_1_3" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_1"/><field name="code">1.3</field><field name="name">Amélioration continue</field>
+    </record>
+    <record id="class_process_2" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="code">2</field><field name="name">Réalisation</field><field name="sequence">20</field>
+    </record>
+    <record id="class_process_2_1" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_2"/><field name="code">2.1</field><field name="name">Vente et accueil des clients</field>
+    </record>
+    <record id="class_process_2_2" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_2"/><field name="code">2.2</field><field name="name">Livraison des services</field>
+    </record>
+    <record id="class_process_2_3" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_2"/><field name="code">2.3</field><field name="name">Soutien aux clients</field>
+    </record>
+    <record id="class_process_3" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="code">3</field><field name="name">Soutien</field><field name="sequence">30</field>
+    </record>
+    <record id="class_process_3_1" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_3"/><field name="code">3.1</field><field name="name">Technologies de l'information</field>
+    </record>
+    <record id="class_process_3_2" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_3"/><field name="code">3.2</field><field name="name">Finances</field>
+    </record>
+    <record id="class_process_3_3" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_3"/><field name="code">3.3</field><field name="name">Ressources humaines</field>
+    </record>
+    <record id="class_process_3_4" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_process"/><field name="parent_id" ref="class_process_3"/><field name="code">3.4</field><field name="name">Approvisionnement</field>
+    </record>
+
+    <!-- Functional classification plan, ISO 15489-1:2016, aligned on a retention schedule -->
+    <record id="scheme_function" model="project.document.classification.scheme">
+        <field name="name">Plan de classification (ISO 15489)</field>
+        <field name="code">FONCTIONS</field>
+        <field name="kind">function</field>
+        <field name="sequence">20</field>
+        <field name="description">Classification par fonction d'ISO 15489-1:2016. Les codes s'alignent sur ceux du calendrier de conservation.</field>
+    </record>
+    <record id="class_function_1000" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_function"/><field name="code">1000</field><field name="name">Administration et gouvernance</field>
+    </record>
+    <record id="class_function_2000" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_function"/><field name="code">2000</field><field name="name">Ressources humaines</field>
+    </record>
+    <record id="class_function_3000" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_function"/><field name="code">3000</field><field name="name">Ressources financières</field>
+    </record>
+    <record id="class_function_4000" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_function"/><field name="code">4000</field><field name="name">Ressources informationnelles et TI</field>
+    </record>
+    <record id="class_function_5000" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_function"/><field name="code">5000</field><field name="name">Clients et services</field>
+    </record>
+    <record id="class_function_6000" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_function"/><field name="code">6000</field><field name="name">Protection des renseignements personnels</field>
+    </record>
+
+    <!-- ISO/IEC 27001:2022 Annex A themes, with Law 25 governance in front -->
+    <record id="scheme_iso27001" model="project.document.classification.scheme">
+        <field name="name">ISO/IEC 27001:2022 et Loi 25</field>
+        <field name="code">ISO27001</field>
+        <field name="kind">compliance</field>
+        <field name="sequence">30</field>
+        <field name="description">Les quatre thèmes de l'Annexe A d'ISO/IEC 27001:2022, précédés de la gouvernance des renseignements personnels (Loi 25).</field>
+    </record>
+    <record id="class_iso_gov" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_iso27001"/><field name="code">GOV</field><field name="name">Gouvernance et Loi 25</field><field name="sequence">5</field>
+    </record>
+    <record id="class_iso_a5" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_iso27001"/><field name="code">A.5</field><field name="name">Mesures organisationnelles</field><field name="sequence">10</field>
+    </record>
+    <record id="class_iso_a6" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_iso27001"/><field name="code">A.6</field><field name="name">Mesures liées aux personnes</field><field name="sequence">20</field>
+    </record>
+    <record id="class_iso_a7" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_iso27001"/><field name="code">A.7</field><field name="name">Mesures physiques</field><field name="sequence">30</field>
+    </record>
+    <record id="class_iso_a8" model="project.document.classification">
+        <field name="scheme_id" ref="scheme_iso27001"/><field name="code">A.8</field><field name="name">Mesures technologiques</field><field name="sequence">40</field>
+    </record>
+</odoo>

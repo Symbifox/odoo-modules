@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_export_run_list" model="ir.ui.view">
+        <field name="name">bf.document.export.run.list</field>
+        <field name="model">bf.document.export.run</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'failed'" decoration-muted="state == 'queued'">
+                <field name="name"/>
+                <field name="template_id"/>
+                <field name="trigger"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="document_count"/>
+                <field name="file_count"/>
+                <field name="warning_count"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-danger="state == 'failed'"/>
+                <field name="delivery_state" optional="show" widget="badge"
+                       invisible="delivery_state == 'none'"
+                       decoration-success="delivery_state == 'done'"
+                       decoration-warning="delivery_state == 'partial'"
+                       decoration-danger="delivery_state == 'failed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_export_run_form" model="ir.ui.view">
+        <field name="name">bf.document.export.run.form</field>
+        <field name="model">bf.document.export.run</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <header>
+                    <button name="action_download" type="object" string="Download" class="btn-primary" invisible="not attachment_id"/>
+                    <button name="action_run_now" type="object" string="Run now" invisible="state not in ('queued', 'failed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="queued,running,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <div class="alert alert-info" role="status" invisible="state != 'queued'">
+                        The export is being prepared. You will be notified when it is ready.
+                    </div>
+                    <group>
+                        <group>
+                            <field name="template_id" readonly="1"/>
+                            <field name="trigger" readonly="1"/>
+                            <field name="user_id" widget="many2one_avatar_user" readonly="1"/>
+                            <field name="attachment_id" invisible="not attachment_id"/>
+                            <field name="delivery_state" invisible="delivery_state == 'none'"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="document_count"/>
+                            <field name="file_count"/>
+                            <field name="warning_count"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Warnings" name="log" invisible="not log">
+                            <field name="log" nolabel="1"/>
+                        </page>
+                        <page string="Delivery" name="delivery" invisible="not delivery_log">
+                            <field name="delivery_log" nolabel="1"/>
+                        </page>
+                        <page string="Selected documents" name="documents" invisible="not document_ids">
+                            <field name="document_ids" readonly="1">
+                                <list><field name="code"/><field name="name"/><field name="type_id"/></list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_document_export_run" model="ir.actions.act_window">
+        <field name="name">Registry exports</field>
+        <field name="res_model">bf.document.export.run</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,1558 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bf_document_export
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-09 03:40+0000\n"
+"PO-Revision-Date: 2026-10-09 03:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "%(reason)s: %(count)s documents left out (%(codes)s)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_iso_gov
+msgid "01 - Gouvernance et Loi 25"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_process_1
+msgid "01 - Pilotage"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_pyramid_01
+msgid "01 - Politiques"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_iso_a5
+msgid "02 - Mesures organisationnelles (A.5)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_pyramid_02
+msgid "02 - Procédures"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_process_2
+msgid "02 - Réalisation"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_pyramid_03
+msgid "03 - Guides et instructions"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_iso_a6
+msgid "03 - Mesures liées aux personnes (A.6)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_process_3
+msgid "03 - Soutien"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_pyramid_04
+msgid "04 - Formulaires et gabarits"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_iso_a7
+msgid "04 - Mesures physiques (A.7)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_iso_a8
+msgid "05 - Mesures technologiques (A.8)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_pyramid_05
+msgid "05 - Registres"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_pyramid_06
+msgid "06 - Annexes"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_function_1000
+msgid "1000 - Administration et gouvernance"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_function_2000
+msgid "2000 - Ressources humaines"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_function_3000
+msgid "3000 - Ressources financières"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_function_4000
+msgid "4000 - Ressources informationnelles et TI"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_function_5000
+msgid "5000 - Clients et services"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.folder,name:bf_document_export.folder_function_6000
+msgid "6000 - Protection des renseignements personnels"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.report_document_body_page_export
+msgid ""
+"<span style=\"float: right;\"><span class=\"page\"/> / <span "
+"class=\"topage\"/></span>"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/classification.py:0
+msgid "A classification and its parent must belong to the same plan."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/classification.py:0
+msgid "A classification cannot be its own ancestor."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.constraint,message:bf_document_export.constraint_project_document_classification_code_scheme_unique
+msgid "A classification code must be unique within its plan."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.constraint,message:bf_document_export.constraint_project_document_classification_scheme_code_unique
+msgid "A classification plan code must be unique."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_folder__classification_ids
+msgid ""
+"A document lands here when one of its classifications, or one of their "
+"ancestors, is listed."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.constraint,message:bf_document_export.constraint_bf_document_export_template_code_company_unique
+msgid "A template code must be unique."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "A template that files by classification needs a plan."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "A template that follows publications needs an « Export as » person."
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.template,name:bf_document_export.template_pyramid
+msgid "A. Pyramide documentaire (ISO 9001)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__active
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__active
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_function_1000
+msgid "Administration et gouvernance"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__include_record
+msgid "Also write each document's metadata and version history as JSON."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__include_sections
+msgid ""
+"Also write the body of documents written in Odoo, one HTML file per section."
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_1_3
+msgid "Amélioration continue"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_run.py:0
+msgid "An export's request and outcome are written by the export itself."
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification.scheme,description:bf_document_export.scheme_process
+msgid ""
+"Approche processus d'ISO 9001 §4.4 : processus de pilotage, de réalisation "
+"et de soutien."
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_3_4
+msgid "Approvisionnement"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__attachment_id
+msgid "Archive"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__archive_folder
+msgid "Archive Folder"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_classification_scheme_form
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_template_form
+msgid "Archived"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__archive_name_pattern
+msgid "Archived file name"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__archives_mode
+msgid "Archives Mode"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.template,name:bf_document_export.template_process
+msgid "B. Par processus (ISO 9001)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__index_html
+msgid "Browsable index (HTML)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__layout__classification
+msgid "By classification plan"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__layout__type
+msgid "By document type"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.template,name:bf_document_export.template_function
+msgid "C. Par fonction (ISO 15489)"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_wizard_form
+msgid "Cancel"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__child_ids
+msgid "Child"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document__classification_ids
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_project_document_search_classification
+msgid "Classification"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__classification_count
+msgid "Classification Count"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification.scheme,description:bf_document_export.scheme_function
+msgid ""
+"Classification par fonction d'ISO 15489-1:2016. Les codes s'alignent sur "
+"ceux du calendrier de conservation."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__scheme_id
+msgid "Classification plan"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.actions.act_window,name:bf_document_export.action_classification_scheme
+#: model:ir.ui.menu,name:bf_document_export.menu_classification_schemes
+msgid "Classification plans"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.actions.act_window,name:bf_document_export.action_classification
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__classification_ids
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__classification_ids
+#: model:ir.ui.menu,name:bf_document_export.menu_classifications
+msgid "Classifications"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_function_5000
+msgid "Clients et services"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__code
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__code
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__code
+msgid "Code"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__excluded_type_codes
+msgid ""
+"Comma-separated type codes, for types created by hand without an identifier."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_folder__type_codes
+msgid ""
+"Comma-separated type codes, matched as well as the types above. Reaches "
+"types created by hand without an identifier."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__company_id
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__complete_code
+msgid "Complete Code"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__complete_name
+msgid "Complete Name"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__project_document_classification_scheme__kind__compliance
+msgid "Compliance framework"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__confidential_mode
+msgid "Confidential Mode"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__confidential_type_ids
+msgid "Confidential types"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_1_2
+msgid "Conformité et gestion des risques"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_template_form
+msgid "Content"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Copy exported on %s from the registry of %s."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Copy exported on %s. The version in force is the one in the registry."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Copy exported on %s: the version in force is in the registry."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__create_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__create_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__create_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_wizard__create_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__create_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__create_date
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__create_date
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__create_date
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_wizard__create_date
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__create_date
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__name_pattern
+msgid "Current file name"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.template,name:bf_document_export.template_iso27001
+msgid "D. Par cadre de conformité (ISO/IEC 27001 et Loi 25)"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "DRAFT"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__date_end
+msgid "Date End"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__date_start
+msgid "Date Start"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__delivery_state__done
+msgid "Delivered"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__delivery_state__partial
+msgid "Delivered, with files left untouched"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__delivery_state
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_run_form
+msgid "Delivery"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__delivery_log
+msgid "Delivery Log"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__delivery_state__failed
+msgid "Delivery failed"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_run.py:0
+msgid "Delivery: %s. See the delivery log on the export."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__description
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__description
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__description
+msgid "Description"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__display_name
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__display_name
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__display_name
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_wizard__display_name
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__display_name
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model,name:bf_document_export.model_project_document
+msgid "Document"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.actions.report,name:bf_document_export.action_report_document_matrix_body
+msgid "Document (matrix text)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__document_count
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_wizard__document_count
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__document_count
+msgid "Document Count"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__document_scope
+msgid "Document Scope"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model,name:bf_document_export.model_project_document_classification
+msgid "Document classification"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model,name:bf_document_export.model_project_document_classification_scheme
+msgid "Document classification plan"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__type_ids
+msgid "Document types"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_wizard__document_ids
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__document_ids
+msgid "Documents"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Documents: %s"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__state__done
+msgid "Done"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_run_form
+msgid "Download"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__drafts_folder
+msgid "Drafts Folder"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__drafts_mode
+msgid "Drafts Mode"
+msgstr ""
+
+#. module: bf_document_export
+#: model:bf.document.export.template,name:bf_document_export.template_mirror
+msgid "E. Miroir complet (dossier de transfert)"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Effective date"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__archives_mode__all
+msgid "Every frozen version"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__excluded_type_codes
+msgid "Excluded type codes"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__excluded_type_ids
+msgid "Excluded types"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_wizard_form
+msgid "Export"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__drafts_mode__mark
+msgid "Export apart, marked as drafts"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__user_id
+msgid "Export as"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.actions.act_window,name:bf_document_export.action_document_export_wizard_bound
+#: model:ir.ui.menu,name:bf_document_export.menu_export_wizard
+msgid "Export as files"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_template_form
+msgid "Export now"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.actions.act_window,name:bf_document_export.action_export_template
+#: model:ir.ui.menu,name:bf_document_export.menu_export_templates
+msgid "Export templates"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+#: model:ir.actions.act_window,name:bf_document_export.action_export_wizard
+#: model:ir.model,name:bf_document_export.model_bf_document_export_wizard
+msgid "Export the registry"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__confidential_mode__restricted
+msgid "Export, flagged restricted"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__run_ids
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_template_form
+msgid "Exports"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__user_id
+msgid ""
+"Exports triggered by a publication read the registry with this person's "
+"rights and notify them. A target bridge only replaces the published copy "
+"with an export run as this person."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__state__failed
+msgid "Failed"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__file_count
+msgid "File Count"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_3_2
+msgid "Finances"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_folder__restricted
+msgid ""
+"Flagged restricted in the manifest and the readme: protect it once unpacked."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__folder_ids
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_template_form
+msgid "Folders"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_folder__name
+msgid "Full folder name, prefix included."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__layout__mirror
+msgid "Full mirror (transfer file)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_1_1
+msgid "Gouvernance"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_iso_gov
+msgid "Gouvernance et Loi 25"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__id
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__id
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__id
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_wizard__id
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__id
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification.scheme,name:bf_document_export.scheme_iso27001
+msgid "ISO/IEC 27001:2022 et Loi 25"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__message_has_error
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__include_sections
+msgid "Include Sections"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__include_record
+msgid "Include a record file"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_template_form
+msgid "Indexes"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__split_by_type
+msgid ""
+"Inside each classification folder, put each document type in its own "
+"subfolder."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__document_scope__all
+msgid "Internal and client documents"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__document_scope__internal
+msgid "Internal documents"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__kind
+msgid "Kind"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Language"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__lang
+msgid "Language of the tree"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__lang
+msgid "Language used for the master list, the index and the readme."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__last_run_id
+msgid "Last Run"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__write_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__write_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__write_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_wizard__write_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__write_uid
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__write_date
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__write_date
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__write_date
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_wizard__write_date
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__write_date
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__layout
+msgid "Layout"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__document_ids
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_wizard__document_ids
+msgid "Leave empty to export every document the template covers."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__confidential_mode__exclude
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__drafts_mode__exclude
+msgid "Leave out"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification.scheme,description:bf_document_export.scheme_iso27001
+msgid ""
+"Les quatre thèmes de l'Annexe A d'ISO/IEC 27001:2022, précédés de la "
+"gouvernance des renseignements personnels (Loi 25)."
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_2_2
+msgid "Livraison des services"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__log
+msgid "Log"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__max_path_length
+msgid ""
+"Longest path allowed, root included. SharePoint refuses beyond 400 "
+"characters and a Windows desktop without long paths beyond 260."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__index_json
+msgid "Manifest (JSON)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__master_list_name
+msgid "Master List Name"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__index_xlsx
+msgid "Master list (XLSX)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__max_path_length
+msgid "Max Path Length"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_iso_a6
+msgid "Mesures liées aux personnes"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_iso_a5
+msgid "Mesures organisationnelles"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_iso_a7
+msgid "Mesures physiques"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_iso_a8
+msgid "Mesures technologiques"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__name
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__archive_name
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__name
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__name
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__name
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_template_form
+msgid "Naming"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Next review"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__archives_mode__none
+msgid "None"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__delivery_state__none
+msgid "Not delivered"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__trigger__manual
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__deploy_mode__manual
+msgid "On demand"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__deploy_mode__on_release
+msgid "On each publication"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__deploy_mode
+msgid ""
+"On each publication, a new export is prepared after a version is released, "
+"and delivered to the template's target when it has one."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__project_document_classification_scheme__kind__other
+msgid "Other"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Owner"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__parent_id
+msgid "Parent"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__parent_path
+msgid "Parent Path"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Path"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_1
+msgid "Pilotage"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__name_pattern
+msgid "Placeholders: {code}, {title}, {version}, {date}, {lang}."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__scheme_id
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_classification_search
+msgid "Plan"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification.scheme,name:bf_document_export.scheme_function
+msgid "Plan de classification (ISO 15489)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__scheme_id
+msgid "Plan whose classifications decide the folder of each document."
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:bf.document.export.template,description:bf_document_export.template_function
+msgid ""
+"Pour un organisme qui tient un plan de classification et un calendrier de "
+"conservation : les codes de fonction s'alignent sur ceux du calendrier, et "
+"la règle de conservation suit le dossier."
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:bf.document.export.template,description:bf_document_export.template_iso27001
+msgid ""
+"Pour une organisation accompagnée en sécurité de l'information ou en "
+"conformité Loi 25 : l'auditeur retrouve les quatre thèmes de l'Annexe A, et "
+"le responsable de la protection des renseignements personnels retrouve sa "
+"gouvernance d'un coup d'œil."
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:bf.document.export.template,description:bf_document_export.template_process
+msgid ""
+"Pour une organisation qui a cartographié ses processus : on cherche « "
+"comment on fait l'accueil d'un client », pas « quel type de document ». "
+"Chaque document doit porter sa classification dans le plan Processus."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__project_document_classification_scheme__kind__process
+msgid "Process (ISO 9001 §4.4)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification.scheme,name:bf_document_export.scheme_process
+msgid "Processus (ISO 9001)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_function_6000
+msgid "Protection des renseignements personnels"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__trigger__release
+msgid "Publication"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__state__queued
+msgid "Queued"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__readme_name
+msgid "Readme Name"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__project_document_classification_scheme__kind__function
+msgid "Records function (ISO 15489)"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__confidential_type_ids
+msgid ""
+"Registers and confidential documents may hold personal information (Law 25)."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model,name:bf_document_export.model_bf_document_export_run
+msgid "Registry export"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model,name:bf_document_export.model_bf_document_export_folder
+msgid "Registry export folder"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model,name:bf_document_export.model_bf_document_export_template
+msgid "Registry export template"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.actions.server,name:bf_document_export.ir_cron_process_export_queue_ir_actions_server
+msgid "Registry export: run queued exports"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.actions.act_window,name:bf_document_export.action_bf_document_export_run
+#: model:ir.ui.menu,name:bf_document_export.menu_export_runs
+msgid "Registry exports"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__user_id
+msgid "Requested by"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_function_3000
+msgid "Ressources financières"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_function_2000
+#: model:project.document.classification,name:bf_document_export.class_process_3_3
+msgid "Ressources humaines"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_function_4000
+msgid "Ressources informationnelles et TI"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__restricted
+msgid "Restricted"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Restricted folders, to protect once unpacked:"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__root_name
+msgid "Root Name"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_run_form
+msgid "Run now"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__state__running
+msgid "Running"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_2
+msgid "Réalisation"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__document_ids
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_run_form
+msgid "Selected documents"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__sequence
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__sequence
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification__sequence
+#: model:ir.model.fields,field_description:bf_document_export.field_project_document_classification_scheme__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__delivery_state
+msgid ""
+"Set by the target bridges (Nextcloud, Microsoft 365, Google Drive). The "
+"archive above stays available whatever the delivery became."
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_3
+msgid "Soutien"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_2_3
+msgid "Soutien aux clients"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__state
+msgid "State"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_template__archives_mode__superseded
+msgid "Superseded versions"
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_3_1
+msgid "Technologies de l'information"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__template_id
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__template_id
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_wizard__template_id
+msgid "Template"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Template: %s"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_run_form
+msgid "The export is being prepared. You will be notified when it is ready."
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_wizard_form
+msgid ""
+"The export is prepared in the background. You will be notified when the\n"
+"                    archive is ready to download."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_run.py:0
+msgid ""
+"The registry export « %(name)s » is ready: %(docs)s documents, %(files)s "
+"files, %(warnings)s warnings."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_run.py:0
+msgid "The registry export « %s » failed. See the log on the export."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/project_document.py:0
+msgid ""
+"The text of this document lives in its knowledge matrix « %s »: it is "
+"printed as it stands on the day of the export."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid ""
+"The version in force is the one in the registry: this copy is not "
+"authoritative."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_run.py:0
+msgid ""
+"This export was asked for the superuser or an inactive user: ask for it "
+"again."
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Title"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:bf.document.export.template,description:bf_document_export.template_mirror
+msgid ""
+"Tout le registre en fichiers : version en vigueur, versions figées, corps "
+"section par section, fiche de chaque document. Pour la réversibilité ou une "
+"archive de sécurité. Ce n'est pas une arborescence de consultation."
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__trigger
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__deploy_mode
+msgid "Trigger"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Type"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_folder__type_codes
+msgid "Type Codes"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__split_by_type
+msgid "Type subfolders"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_template__unclassified_folder
+msgid "Unclassified Folder"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:bf.document.export.template,description:bf_document_export.template_pyramid
+msgid ""
+"Une arborescence par niveau documentaire : politiques, procédures, guides, "
+"formulaires, registres, annexes. Le bon défaut pour une PME : elle se règle "
+"sur le seul type de document."
+msgstr ""
+
+#. module: bf_document_export
+#: model:project.document.classification,name:bf_document_export.class_process_2_1
+msgid "Vente et accueil des clients"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Version"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model,name:bf_document_export.model_project_document_version
+msgid "Version de document"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__warning_count
+msgid "Warning Count"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_run_form
+msgid "Warnings"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "Warnings:"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,field_description:bf_document_export.field_bf_document_export_run__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_bf_document_export_run__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_template_form
+msgid "What goes in"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_export_template_form
+msgid "What stays out"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_classification_scheme_form
+msgid "What this plan is for, and who maintains it"
+msgstr ""
+
+#. module: bf_document_export
+#: model:ir.model.fields,help:bf_document_export.field_project_document__classification_ids
+msgid ""
+"Where this document sits in each classification plan: its process, its "
+"records function, its compliance theme. Export templates that file by plan "
+"read it."
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_project_document_search_classification
+msgid "Without classification"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "active without a released version, exported as a draft"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/project_document.py:0
+msgid ""
+"an item of the document that %(reader)s cannot read was left out (%(what)s)"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "draft, not in force"
+msgstr ""
+
+#. module: bf_document_export
+#: model_terms:ir.ui.view,arch_db:bf_document_export.view_classification_scheme_form
+msgid "e.g. Processes"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "effective %s"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "knowledge matrix « %s » has no text, document left out"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "name shortened to keep the path under %s characters"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "no classification in plan « %s »"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "not exported: %s"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "path too long even shortened, kept as is"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "same name as another document, numbered"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "source file not found, document left out"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "type « %s » has no folder"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid "yes"
+msgstr ""
+
+#. module: bf_document_export
+#. odoo-python
+#: code:addons/bf_document_export/models/export_template.py:0
+msgid ""
+"« Export as » must be an active internal user, not the superuser: the export"
+" reads the registry with that person's rights."
+msgstr ""

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Runs queued exports. Triggered right after a request or a publication;
+         the hourly pass only catches what a restart may have left behind. -->
+    <record id="ir_cron_process_export_queue" model="ir.cron">
+        <field name="name">Registry export: run queued exports</field>
+        <field name="model_id" ref="model_bf_document_export_run"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_process_queue()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

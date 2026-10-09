@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_document_form_classification" model="ir.ui.view">
+        <field name="name">project.document.form.classification</field>
+        <field name="model">project.document</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.view_project_document_form"/>
+        <field name="arch" type="xml">
+            <field name="type_id" position="after">
+                <field name="classification_ids" widget="many2many_tags" options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_project_document_tree_classification" model="ir.ui.view">
+        <field name="name">project.document.list.classification</field>
+        <field name="model">project.document</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.view_project_document_tree"/>
+        <field name="arch" type="xml">
+            <field name="type_id" position="after">
+                <field name="classification_ids" widget="many2many_tags" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_project_document_search_classification" model="ir.ui.view">
+        <field name="name">project.document.search.classification</field>
+        <field name="model">project.document</field>
+        <field name="inherit_id" ref="project_knowledge_matrix.view_project_document_search"/>
+        <field name="arch" type="xml">
+            <field name="type_id" position="after">
+                <field name="classification_ids"/>
+            </field>
+            <filter name="filter_internal" position="after">
+                <filter name="filter_unclassified" string="Without classification" domain="[('classification_ids', '=', False)]"/>
+            </filter>
+            <filter name="groupby_type" position="after">
+                <filter name="groupby_classification" string="Classification" context="{'group_by': 'classification_ids'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="action_document_export_wizard_bound" model="ir.actions.act_window">
+        <field name="name">Export as files</field>
+        <field name="res_model">bf.document.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="project_knowledge_matrix.model_project_document"/>
+        <field name="binding_view_types">list</field>
+    </record>
+</odoo>

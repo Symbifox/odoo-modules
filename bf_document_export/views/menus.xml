@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_export_wizard"
+              name="Export as files"
+              parent="project_knowledge_matrix.menu_documents_parent"
+              action="action_export_wizard"
+              groups="project_knowledge_matrix.group_document_user"
+              sequence="80"/>
+    <menuitem id="menu_export_runs"
+              name="Registry exports"
+              parent="project_knowledge_matrix.menu_documents_parent"
+              action="action_bf_document_export_run"
+              groups="project_knowledge_matrix.group_document_user"
+              sequence="81"/>
+    <menuitem id="menu_export_templates"
+              name="Export templates"
+              parent="project_knowledge_matrix.menu_knowledge_config"
+              action="action_export_template"
+              groups="project_knowledge_matrix.group_document_manager"
+              sequence="50"/>
+    <menuitem id="menu_classification_schemes"
+              name="Classification plans"
+              parent="project_knowledge_matrix.menu_knowledge_config"
+              action="action_classification_scheme"
+              groups="project_knowledge_matrix.group_document_manager"
+              sequence="51"/>
+    <menuitem id="menu_classifications"
+              name="Classifications"
+              parent="project_knowledge_matrix.menu_knowledge_config"
+              action="action_classification"
+              groups="project_knowledge_matrix.group_document_manager"
+              sequence="52"/>
+</odoo>

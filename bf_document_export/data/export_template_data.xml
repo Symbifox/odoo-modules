@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Five starting templates. Duplicate one to adjust it: an upgrade never
+         rewrites a template a client has edited. -->
+
+    <!-- ===== A. Pyramide documentaire, par niveau (ISO 9001 §7.5) ===== -->
+    <record id="template_pyramid" model="bf.document.export.template">
+        <field name="name">A. Pyramide documentaire (ISO 9001)</field>
+        <field name="code">PYRAMIDE</field>
+        <field name="sequence">10</field>
+        <field name="layout">type</field>
+        <field name="description"><![CDATA[<p>Une arborescence par niveau documentaire : politiques, procédures, guides, formulaires, registres, annexes. Le bon défaut pour une PME : elle se règle sur le seul type de document.</p>]]></field>
+        <field name="excluded_type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_contract'), ref('project_knowledge_matrix.document_type_spec'), ref('project_knowledge_matrix.document_type_release'), ref('project_knowledge_matrix.document_type_other'), ref('project_knowledge_matrix.document_type_assessment')])]"/>
+        <field name="excluded_type_codes">PRE</field>
+        <field name="confidential_type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_registry'), ref('project_knowledge_matrix.document_type_confidential')])]"/>
+    </record>
+    <record id="folder_pyramid_01" model="bf.document.export.folder">
+        <field name="template_id" ref="template_pyramid"/><field name="sequence">10</field>
+        <field name="name">01 - Politiques</field>
+        <field name="type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_policy'), ref('project_knowledge_matrix.document_type_hr_policy'), ref('project_knowledge_matrix.document_type_privacy_policy')])]"/>
+        <field name="type_codes">INTERNAL_POLICY</field>
+    </record>
+    <record id="folder_pyramid_02" model="bf.document.export.folder">
+        <field name="template_id" ref="template_pyramid"/><field name="sequence">20</field>
+        <field name="name">02 - Procédures</field>
+        <field name="type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_procedure'), ref('project_knowledge_matrix.document_type_it_procedure'), ref('project_knowledge_matrix.document_type_safety')])]"/>
+    </record>
+    <record id="folder_pyramid_03" model="bf.document.export.folder">
+        <field name="template_id" ref="template_pyramid"/><field name="sequence">30</field>
+        <field name="name">03 - Guides et instructions</field>
+        <field name="type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_guide'), ref('project_knowledge_matrix.document_type_manual'), ref('project_knowledge_matrix.document_type_handbook'), ref('project_knowledge_matrix.document_type_training'), ref('project_knowledge_matrix.document_type_onboarding')])]"/>
+    </record>
+    <record id="folder_pyramid_04" model="bf.document.export.folder">
+        <field name="template_id" ref="template_pyramid"/><field name="sequence">40</field>
+        <field name="name">04 - Formulaires et gabarits</field>
+        <field name="type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_form'), ref('project_knowledge_matrix.document_type_template'), ref('project_knowledge_matrix.document_type_letter')])]"/>
+    </record>
+    <record id="folder_pyramid_05" model="bf.document.export.folder">
+        <field name="template_id" ref="template_pyramid"/><field name="sequence">50</field>
+        <field name="name">05 - Registres</field>
+        <field name="restricted" eval="True"/>
+        <field name="type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_registry')])]"/>
+    </record>
+    <record id="folder_pyramid_06" model="bf.document.export.folder">
+        <field name="template_id" ref="template_pyramid"/><field name="sequence">60</field>
+        <field name="name">06 - Annexes</field>
+        <field name="type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_annex')])]"/>
+    </record>
+
+    <!-- ===== B. Par processus (ISO 9001 §4.4) ===== -->
+    <record id="template_process" model="bf.document.export.template">
+        <field name="name">B. Par processus (ISO 9001)</field>
+        <field name="code">PROCESSUS</field>
+        <field name="sequence">20</field>
+        <field name="layout">classification</field>
+        <field name="scheme_id" ref="scheme_process"/>
+        <field name="split_by_type" eval="True"/>
+        <field name="description"><![CDATA[<p>Pour une organisation qui a cartographié ses processus : on cherche « comment on fait l'accueil d'un client », pas « quel type de document ». Chaque document doit porter sa classification dans le plan Processus.</p>]]></field>
+        <field name="excluded_type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_contract'), ref('project_knowledge_matrix.document_type_spec'), ref('project_knowledge_matrix.document_type_release'), ref('project_knowledge_matrix.document_type_other'), ref('project_knowledge_matrix.document_type_assessment')])]"/>
+        <field name="excluded_type_codes">PRE</field>
+        <field name="confidential_type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_registry'), ref('project_knowledge_matrix.document_type_confidential')])]"/>
+    </record>
+    <record id="folder_process_1" model="bf.document.export.folder">
+        <field name="template_id" ref="template_process"/><field name="sequence">10</field>
+        <field name="name">01 - Pilotage</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_process_1')])]"/>
+    </record>
+    <record id="folder_process_2" model="bf.document.export.folder">
+        <field name="template_id" ref="template_process"/><field name="sequence">20</field>
+        <field name="name">02 - Réalisation</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_process_2')])]"/>
+    </record>
+    <record id="folder_process_3" model="bf.document.export.folder">
+        <field name="template_id" ref="template_process"/><field name="sequence">30</field>
+        <field name="name">03 - Soutien</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_process_3')])]"/>
+    </record>
+
+    <!-- ===== C. Par fonction, plan de classification (ISO 15489) ===== -->
+    <record id="template_function" model="bf.document.export.template">
+        <field name="name">C. Par fonction (ISO 15489)</field>
+        <field name="code">FONCTIONS</field>
+        <field name="sequence">30</field>
+        <field name="layout">classification</field>
+        <field name="scheme_id" ref="scheme_function"/>
+        <field name="unclassified_folder">8000 - À classer</field>
+        <field name="archive_folder">9000 - Archives</field>
+        <field name="description"><![CDATA[<p>Pour un organisme qui tient un plan de classification et un calendrier de conservation : les codes de fonction s'alignent sur ceux du calendrier, et la règle de conservation suit le dossier.</p>]]></field>
+        <field name="excluded_type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_contract'), ref('project_knowledge_matrix.document_type_spec'), ref('project_knowledge_matrix.document_type_release'), ref('project_knowledge_matrix.document_type_other'), ref('project_knowledge_matrix.document_type_assessment')])]"/>
+        <field name="excluded_type_codes">PRE</field>
+        <field name="confidential_type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_registry'), ref('project_knowledge_matrix.document_type_confidential')])]"/>
+    </record>
+    <record id="folder_function_1000" model="bf.document.export.folder">
+        <field name="template_id" ref="template_function"/><field name="sequence">10</field>
+        <field name="name">1000 - Administration et gouvernance</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_function_1000')])]"/>
+    </record>
+    <record id="folder_function_2000" model="bf.document.export.folder">
+        <field name="template_id" ref="template_function"/><field name="sequence">20</field>
+        <field name="name">2000 - Ressources humaines</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_function_2000')])]"/>
+    </record>
+    <record id="folder_function_3000" model="bf.document.export.folder">
+        <field name="template_id" ref="template_function"/><field name="sequence">30</field>
+        <field name="name">3000 - Ressources financières</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_function_3000')])]"/>
+    </record>
+    <record id="folder_function_4000" model="bf.document.export.folder">
+        <field name="template_id" ref="template_function"/><field name="sequence">40</field>
+        <field name="name">4000 - Ressources informationnelles et TI</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_function_4000')])]"/>
+    </record>
+    <record id="folder_function_5000" model="bf.document.export.folder">
+        <field name="template_id" ref="template_function"/><field name="sequence">50</field>
+        <field name="name">5000 - Clients et services</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_function_5000')])]"/>
+    </record>
+    <record id="folder_function_6000" model="bf.document.export.folder">
+        <field name="template_id" ref="template_function"/><field name="sequence">60</field>
+        <field name="name">6000 - Protection des renseignements personnels</field>
+        <field name="restricted" eval="True"/>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_function_6000')])]"/>
+    </record>
+
+    <!-- ===== D. Par cadre de conformité (ISO/IEC 27001:2022 et Loi 25) ===== -->
+    <record id="template_iso27001" model="bf.document.export.template">
+        <field name="name">D. Par cadre de conformité (ISO/IEC 27001 et Loi 25)</field>
+        <field name="code">ISO27001</field>
+        <field name="sequence">40</field>
+        <field name="layout">classification</field>
+        <field name="scheme_id" ref="scheme_iso27001"/>
+        <field name="description"><![CDATA[<p>Pour une organisation accompagnée en sécurité de l'information ou en conformité Loi 25 : l'auditeur retrouve les quatre thèmes de l'Annexe A, et le responsable de la protection des renseignements personnels retrouve sa gouvernance d'un coup d'œil.</p>]]></field>
+        <field name="excluded_type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_contract'), ref('project_knowledge_matrix.document_type_spec'), ref('project_knowledge_matrix.document_type_release'), ref('project_knowledge_matrix.document_type_other'), ref('project_knowledge_matrix.document_type_assessment')])]"/>
+        <field name="excluded_type_codes">PRE</field>
+        <field name="confidential_type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_registry'), ref('project_knowledge_matrix.document_type_confidential')])]"/>
+    </record>
+    <record id="folder_iso_gov" model="bf.document.export.folder">
+        <field name="template_id" ref="template_iso27001"/><field name="sequence">10</field>
+        <field name="name">01 - Gouvernance et Loi 25</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_iso_gov')])]"/>
+    </record>
+    <record id="folder_iso_a5" model="bf.document.export.folder">
+        <field name="template_id" ref="template_iso27001"/><field name="sequence">20</field>
+        <field name="name">02 - Mesures organisationnelles (A.5)</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_iso_a5')])]"/>
+    </record>
+    <record id="folder_iso_a6" model="bf.document.export.folder">
+        <field name="template_id" ref="template_iso27001"/><field name="sequence">30</field>
+        <field name="name">03 - Mesures liées aux personnes (A.6)</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_iso_a6')])]"/>
+    </record>
+    <record id="folder_iso_a7" model="bf.document.export.folder">
+        <field name="template_id" ref="template_iso27001"/><field name="sequence">40</field>
+        <field name="name">04 - Mesures physiques (A.7)</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_iso_a7')])]"/>
+    </record>
+    <record id="folder_iso_a8" model="bf.document.export.folder">
+        <field name="template_id" ref="template_iso27001"/><field name="sequence">50</field>
+        <field name="name">05 - Mesures technologiques (A.8)</field>
+        <field name="classification_ids" eval="[(6, 0, [ref('class_iso_a8')])]"/>
+    </record>
+
+    <!-- ===== E. Miroir complet, dossier de transfert ===== -->
+    <record id="template_mirror" model="bf.document.export.template">
+        <field name="name">E. Miroir complet (dossier de transfert)</field>
+        <field name="code">MIROIR</field>
+        <field name="sequence">50</field>
+        <field name="layout">mirror</field>
+        <field name="root_name">Registre P&amp;P - export complet</field>
+        <field name="document_scope">all</field>
+        <field name="drafts_mode">mark</field>
+        <field name="archives_mode">all</field>
+        <field name="confidential_mode">restricted</field>
+        <field name="include_sections" eval="True"/>
+        <field name="include_record" eval="True"/>
+        <field name="description"><![CDATA[<p>Tout le registre en fichiers : version en vigueur, versions figées, corps section par section, fiche de chaque document. Pour la réversibilité ou une archive de sécurité. Ce n'est pas une arborescence de consultation.</p>]]></field>
+        <field name="confidential_type_ids" eval="[(6, 0, [ref('project_knowledge_matrix.document_type_registry'), ref('project_knowledge_matrix.document_type_confidential')])]"/>
+    </record>
+</odoo>

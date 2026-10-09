@@ -1,0 +1,491 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-09 03:40+0000\n"
+"PO-Revision-Date: 2026-10-09 03:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid ""
+"%(count)s files kept as they were: their documents could not be read this "
+"time (%(codes)s)."
+msgstr ""
+"%(count)s fichiers gardés tels quels : leurs documents n'ont pas pu être lus"
+" cette fois (%(codes)s)."
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid "%(file)s: no longer in the registry, moved to %(destination)s"
+msgstr "%(file)s : retiré du registre, déplacé vers %(destination)s"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid "%s: already on Nextcloud and not written by the export, left untouched"
+msgstr "%s : déjà sur Nextcloud et pas écrit par l'export, laissé intact"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid "%s: changed on Nextcloud during the deposit, left untouched"
+msgstr "%s : modifié sur Nextcloud pendant le dépôt, laissé intact"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid "%s: changed on Nextcloud since the last deposit, left untouched"
+msgstr "%s : modifié sur Nextcloud depuis le dernier dépôt, laissé intact"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid "%s: created on Nextcloud during the deposit, left untouched"
+msgstr "%s : créé sur Nextcloud pendant le dépôt, laissé intact"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid "%s: missing on Nextcloud, written again"
+msgstr "%s : absent de Nextcloud, écrit de nouveau"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid "%s: no longer in the registry, already gone from Nextcloud"
+msgstr "%s : retiré du registre, déjà absent de Nextcloud"
+
+#. module: bf_document_export_nextcloud
+#: model_terms:ir.ui.view,arch_db:bf_document_export_nextcloud.view_export_template_form_nextcloud
+msgid "/Entreprise/Politiques"
+msgstr ""
+
+#. module: bf_document_export_nextcloud
+#: model_terms:ir.ui.view,arch_db:bf_document_export_nextcloud.view_export_template_form_nextcloud
+msgid "/Politiques et procédures (copie publiée)"
+msgstr ""
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid ""
+"A selection of documents is not deposited on Nextcloud: only a full export "
+"replaces the published copy."
+msgstr ""
+"Une sélection de documents n'est pas déposée sur Nextcloud : seul un export "
+"complet remplace la copie publiée."
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_template.py:0
+msgid ""
+"A source folder cannot be the root of Nextcloud: name the folders where the "
+"registry's files live."
+msgstr ""
+"Un dossier source ne peut pas être la racine de Nextcloud : nommer les "
+"dossiers où vivent les fichiers du registre."
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_template.py:0
+msgid ""
+"A template that deposits on Nextcloud needs an « Export as » person: only an"
+" export run as that person replaces the published copy."
+msgstr ""
+"Un gabarit qui dépose sur Nextcloud a besoin d'une personne « Exporter au "
+"nom de » : seul un export lancé en son nom remplace la copie publiée."
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+#: code:addons/bf_document_export_nextcloud/models/export_template.py:0
+msgid ""
+"Choose a deposit folder: the export never deposits at the root of Nextcloud."
+msgstr ""
+"Choisir un dossier de dépôt : l'export ne dépose jamais à la racine de "
+"Nextcloud."
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model,name:bf_document_export_nextcloud.model_nextcloud_document_config
+msgid "Configuration de synchronisation documents Nextcloud"
+msgstr ""
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_template__nc_target_path
+msgid "Deposit folder"
+msgstr "Dossier de dépôt"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_template__nc_file_ids
+msgid "Deposited files"
+msgstr "Fichiers déposés"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model,name:bf_document_export_nextcloud.model_project_document
+msgid "Document"
+msgstr "Document"
+
+#. module: bf_document_export_nextcloud
+#: model_terms:ir.ui.view,arch_db:bf_document_export_nextcloud.view_export_template_form_nextcloud
+msgid ""
+"Each full export is deposited in this folder. Only what changed is written,\n"
+"                        a file changed on Nextcloud is never overwritten, and a document that leaves\n"
+"                        the registry is moved to the archives, never deleted. A selection of documents\n"
+"                        is not deposited, nor an export run by anyone but the « Export as » person.\n"
+"                        Source files are read only under the source folders."
+msgstr ""
+"Chaque export complet est déposé dans ce dossier. Seul ce qui a changé est "
+"écrit, un fichier modifié sur Nextcloud n'est jamais écrasé, et un document "
+"qui quitte le registre est déplacé aux archives, jamais supprimé. Une "
+"sélection de documents n'est pas déposée, ni un export lancé par une autre "
+"personne que celle de « Exporter au nom de ». Les fichiers sources ne sont "
+"lus que sous les dossiers sources."
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,help:bf_document_export_nextcloud.field_bf_document_export_template__nc_config_id
+msgid ""
+"Each full export of this template is deposited on this Nextcloud, with its "
+"service account."
+msgstr ""
+"Chaque export complet de ce gabarit est déposé sur ce Nextcloud, avec son "
+"compte de service."
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__etag
+msgid "Etag"
+msgstr "Étiquette de version"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model,name:bf_document_export_nextcloud.model_bf_document_export_nc_file
+msgid "File deposited on Nextcloud by a registry export"
+msgstr "Fichier déposé sur Nextcloud par un export du registre"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_template.py:0
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_template__nc_file_count
+msgid "Files on Nextcloud"
+msgstr "Fichiers sur Nextcloud"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__fingerprint
+msgid "Fingerprint"
+msgstr "Empreinte"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,help:bf_document_export_nextcloud.field_bf_document_export_template__nc_target_path
+msgid ""
+"Folder on Nextcloud that receives the published copy, for example « "
+"/Politiques et procédures (copie publiée) ». Keep it apart from the folders "
+"where the source files live: the export refuses to deposit over them. Share "
+"it read-only with the staff."
+msgstr ""
+"Dossier Nextcloud qui reçoit la copie publiée, par exemple « /Politiques et "
+"procédures (copie publiée) ». Le garder à part des dossiers où vivent les "
+"fichiers sources : l'export refuse de déposer par-dessus. Le partager en "
+"lecture seule avec le personnel."
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__run_id
+msgid "Last export"
+msgstr "Dernier export"
+
+#. module: bf_document_export_nextcloud
+#: model_terms:ir.ui.view,arch_db:bf_document_export_nextcloud.view_export_nc_file_list
+msgid "Last written"
+msgstr "Dernière écriture"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields.selection,name:bf_document_export_nextcloud.selection__bf_document_export_nc_file__state__archived
+#: model_terms:ir.ui.view,arch_db:bf_document_export_nextcloud.view_export_nc_file_search
+msgid "Moved to the archives"
+msgstr "Déplacé aux archives"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_template__nc_config_id
+#: model_terms:ir.ui.view,arch_db:bf_document_export_nextcloud.view_export_template_form_nextcloud
+msgid "Nextcloud"
+msgstr "Nextcloud"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid ""
+"Nextcloud %(folder)s: %(written)s written, %(unchanged)s unchanged, "
+"%(restored)s restored, %(untouched)s left untouched, %(archived)s moved to "
+"the archives, %(errors)s errors."
+msgstr ""
+"Nextcloud %(folder)s : %(written)s écrits, %(unchanged)s inchangés, "
+"%(restored)s rétablis, %(untouched)s laissés intacts, %(archived)s déplacés "
+"aux archives, %(errors)s erreurs."
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/project_document.py:0
+msgid ""
+"Nextcloud configuration « %s » is not the template's source, document left "
+"out"
+msgstr ""
+"la configuration Nextcloud « %s » n'est pas la source du gabarit : document "
+"laissé de côté"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/project_document.py:0
+msgid ""
+"Nextcloud folder %(folder)s: no single file for language %(lang)s among "
+"%(count)s"
+msgstr ""
+"Dossier Nextcloud %(folder)s : aucun fichier unique pour la langue %(lang)s "
+"parmi %(count)s"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,help:bf_document_export_nextcloud.field_bf_document_export_template__nc_source_folders
+msgid ""
+"Nextcloud folders the export may read source files from, one per line, for "
+"example « /Entreprise/Politiques ». A document whose file is elsewhere is "
+"left out and reported: the files are read with the configuration's service "
+"account, whoever linked them."
+msgstr ""
+"Dossiers de Nextcloud où l'export peut lire les fichiers sources, un par "
+"ligne, par exemple « /Entreprise/Politiques ». Un document dont le fichier "
+"est ailleurs est laissé de côté et signalé : les fichiers sont lus avec le "
+"compte de service de la configuration, quelle que soit la personne qui les a"
+" reliés."
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/nextcloud_config.py:0
+msgid "Nextcloud move failed: %s"
+msgstr "Le déplacement sur Nextcloud a échoué : %s"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/nextcloud_config.py:0
+msgid "Nextcloud move failed: HTTP %s"
+msgstr "Le déplacement sur Nextcloud a échoué : HTTP %s"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/project_document.py:0
+msgid ""
+"Nextcloud path « %s » outside the template's source folders, document left "
+"out"
+msgstr ""
+"chemin Nextcloud « %s » hors des dossiers sources du gabarit : document "
+"laissé de côté"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/nextcloud_config.py:0
+msgid "Nextcloud upload failed: %s"
+msgstr "Échec du téléversement sur Nextcloud : %s"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/nextcloud_config.py:0
+msgid "Nextcloud upload failed: HTTP %s"
+msgstr "Échec du téléversement sur Nextcloud : HTTP %s"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/project_document.py:0
+msgid "Nextcloud « %(name)s » unreadable (%(error)s)"
+msgstr "Nextcloud « %(name)s » illisible (%(error)s)"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,help:bf_document_export_nextcloud.field_bf_document_export_nc_file__etag
+msgid "Nextcloud's version tag when the export last wrote or saw the file."
+msgstr ""
+"Étiquette de version Nextcloud du fichier, la dernière fois que l'export l'a"
+" écrit ou vu."
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid ""
+"Not deposited on Nextcloud: only an export run as the template's « Export as"
+" » person (%s) replaces the published copy."
+msgstr ""
+"Non déposé sur Nextcloud : seul un export lancé au nom de la personne « "
+"Exporter au nom de » du gabarit (%s) remplace la copie publiée."
+
+#. module: bf_document_export_nextcloud
+#: model_terms:ir.ui.view,arch_db:bf_document_export_nextcloud.view_export_template_form_nextcloud
+msgid "On Nextcloud"
+msgstr "Sur Nextcloud"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__path
+msgid "Path"
+msgstr "Chemin"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,help:bf_document_export_nextcloud.field_bf_document_export_nc_file__path
+msgid "Path inside the export, root folder included."
+msgstr "Chemin dans l'export, dossier racine compris."
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields.selection,name:bf_document_export_nextcloud.selection__bf_document_export_nc_file__state__present
+#: model_terms:ir.ui.view,arch_db:bf_document_export_nextcloud.view_export_nc_file_search
+msgid "Present"
+msgstr "Présent"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model,name:bf_document_export_nextcloud.model_bf_document_export_run
+msgid "Registry export"
+msgstr "Export du registre"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model,name:bf_document_export_nextcloud.model_bf_document_export_template
+msgid "Registry export template"
+msgstr "Gabarit d'export du registre"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__remote_path
+msgid "Remote Path"
+msgstr "Chemin sur Nextcloud"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__sha256
+msgid "SHA-256"
+msgstr "SHA-256"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__size
+msgid "Size"
+msgstr "Taille"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_template__nc_source_config_id
+msgid "Source Nextcloud"
+msgstr "Nextcloud source"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_template__nc_source_folders
+msgid "Source folders"
+msgstr "Dossiers sources"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__state
+msgid "State"
+msgstr "État"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,field_description:bf_document_export_nextcloud.field_bf_document_export_nc_file__template_id
+msgid "Template"
+msgstr "Gabarit"
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,help:bf_document_export_nextcloud.field_bf_document_export_template__nc_source_config_id
+msgid ""
+"The Nextcloud the export reads source files from, with its service account. "
+"A document linked to another configuration is left out and reported."
+msgstr ""
+"Le Nextcloud où l'export lit les fichiers sources, avec son compte de "
+"service. Un document relié à une autre configuration est laissé de côté et "
+"signalé."
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+#: code:addons/bf_document_export_nextcloud/models/export_template.py:0
+msgid ""
+"The deposit folder %(target)s and the source folder %(folder)s overlap: the "
+"published copy must never be written among its sources."
+msgstr ""
+"Le dossier de dépôt %(target)s et le dossier source %(folder)s se "
+"chevauchent : la copie publiée ne doit jamais s'écrire parmi ses sources."
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,help:bf_document_export_nextcloud.field_bf_document_export_nc_file__fingerprint
+msgid ""
+"What a rendered file shows, export date aside: two renders of the same "
+"version differ byte for byte, not in their fingerprint."
+msgstr ""
+"Ce que montre un fichier rendu, date d'export mise à part : deux rendus de "
+"la même version diffèrent octet par octet, pas par leur empreinte."
+
+#. module: bf_document_export_nextcloud
+#: model:ir.model.fields,help:bf_document_export_nextcloud.field_bf_document_export_nc_file__remote_path
+msgid "Where the file sits on Nextcloud."
+msgstr "L'emplacement du fichier sur Nextcloud."
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/nextcloud_config.py:0
+msgid "changed on Nextcloud meanwhile"
+msgstr "modifié sur Nextcloud entre-temps"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/project_document.py:0
+msgid "external link only (%s), document left out"
+msgstr "lien externe seulement (%s), document laissé de côté"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/project_document.py:0
+msgid ""
+"no Nextcloud source (configuration and folders) set on the export template"
+msgstr ""
+"aucune source Nextcloud (configuration et dossiers) n'est indiquée sur le "
+"gabarit d'export"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/project_document.py:0
+msgid "not found on Nextcloud: %s"
+msgstr "introuvable sur Nextcloud : %s"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/project_document.py:0
+msgid "source path « %s » without a Nextcloud link, document left out"
+msgstr "chemin source « %s » sans lien Nextcloud, document laissé de côté"
+
+#. module: bf_document_export_nextcloud
+#. odoo-python
+#: code:addons/bf_document_export_nextcloud/models/export_run.py:0
+msgid "withdrawn on %s"
+msgstr "retiré le %s"

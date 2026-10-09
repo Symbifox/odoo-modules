@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_export_template_form_nextcloud" model="ir.ui.view">
+        <field name="name">bf.document.export.template.form.nextcloud</field>
+        <field name="model">bf.document.export.template</field>
+        <field name="inherit_id" ref="bf_document_export.view_export_template_form"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="attributes">
+                <attribute name="required">deploy_mode == 'on_release' or nc_config_id</attribute>
+            </field>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_nc_files" type="object" class="oe_stat_button" icon="fa-cloud-upload"
+                        groups="project_knowledge_matrix.group_document_manager"
+                        invisible="not nc_config_id">
+                    <field name="nc_file_count" widget="statinfo" string="On Nextcloud"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Nextcloud" name="nextcloud" groups="project_knowledge_matrix.group_document_manager">
+                    <group>
+                        <group>
+                            <field name="nc_config_id" options="{'no_create': True}"/>
+                            <field name="nc_target_path" required="nc_config_id"
+                                   placeholder="/Politiques et procédures (copie publiée)"/>
+                        </group>
+                        <group>
+                            <field name="nc_source_config_id" options="{'no_create': True}"/>
+                            <field name="nc_source_folders" placeholder="/Entreprise/Politiques"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        Each full export is deposited in this folder. Only what changed is written,
+                        a file changed on Nextcloud is never overwritten, and a document that leaves
+                        the registry is moved to the archives, never deleted. A selection of documents
+                        is not deposited, nor an export run by anyone but the « Export as » person.
+                        Source files are read only under the source folders.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_export_nc_file_list" model="ir.ui.view">
+        <field name="name">bf.document.export.nc.file.list</field>
+        <field name="model">bf.document.export.nc.file</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="path"/>
+                <field name="remote_path" optional="hide"/>
+                <field name="size"/>
+                <field name="state" widget="badge" decoration-muted="state == 'archived'"/>
+                <field name="run_id" optional="show"/>
+                <field name="write_date" string="Last written"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_export_nc_file_search" model="ir.ui.view">
+        <field name="name">bf.document.export.nc.file.search</field>
+        <field name="model">bf.document.export.nc.file</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="path"/>
+                <filter name="present" string="Present" domain="[('state', '=', 'present')]"/>
+                <filter name="archived" string="Moved to the archives" domain="[('state', '=', 'archived')]"/>
+            </search>
+        </field>
+    </record>
+</odoo>

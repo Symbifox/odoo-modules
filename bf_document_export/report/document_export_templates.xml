@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- An exported copy says what it is on every page: code, version, date of
+         effect, and that the version in force lives in the registry. The line
+         comes from the exporter through the context, so printing from the
+         registry itself is unchanged. -->
+    <template id="report_document_body_page_export" inherit_id="project_knowledge_matrix.report_document_body_page">
+        <xpath expr="//div[contains(@t-attf-class, 'pkm-doc')]" position="inside">
+            <t t-set="bf_export_footer" t-value="env.context.get('bf_export_footer')"/>
+            <div t-if="bf_export_footer" class="footer"
+                 style="font-family: Lexend, sans-serif; font-size: 7.5pt; color: #555; border-top: 0.5pt solid #ccc; padding-top: 3pt; margin: 0 15mm;">
+                <span t-esc="bf_export_footer"/>
+                <span style="float: right;"><span class="page"/> / <span class="topage"/></span>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- A document whose body lives in a knowledge matrix is printed on the
+         registry's document page, its items as
+         sections. The matrix's own report is a progress table, without the
+         text: exported as the document, it carried none of it. -->
+    <record id="action_report_document_matrix_body" model="ir.actions.report">
+        <field name="name">Document (matrix text)</field>
+        <field name="model">project.document</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">bf_document_export.report_document_matrix_body</field>
+        <field name="report_file">bf_document_export.report_document_matrix_body</field>
+        <field name="paperformat_id" ref="project_knowledge_matrix.paperformat_document_body"/>
+        <field name="binding_model_id" eval="False"/>
+    </record>
+
+    <template id="report_document_matrix_body">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="pc" t-value="doc._bf_export_matrix_print_context()"/>
+                <t t-call="project_knowledge_matrix.report_document_body_page"/>
+            </t>
+        </t>
+    </template>
+</odoo>

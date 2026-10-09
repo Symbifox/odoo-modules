@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_export_wizard_form" model="ir.ui.view">
+        <field name="name">bf.document.export.wizard.form</field>
+        <field name="model">bf.document.export.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="template_id" options="{'no_create': True}"/>
+                    <field name="document_ids" widget="many2many_tags"/>
+                    <field name="document_count"/>
+                </group>
+                <p class="text-muted">
+                    The export is prepared in the background. You will be notified when the
+                    archive is ready to download.
+                </p>
+                <footer>
+                    <button name="action_export" type="object" string="Export" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_export_wizard" model="ir.actions.act_window">
+        <field name="name">Export the registry</field>
+        <field name="res_model">bf.document.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
