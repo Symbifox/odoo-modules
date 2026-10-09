@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_impersonate_wizard_form" model="ir.ui.view">
+        <field name="name">bf.impersonate.wizard.form</field>
+        <field name="model">bf.impersonate.wizard</field>
+        <field name="arch" type="xml">
+            <form string="See Symbifox as someone else">
+                <group>
+                    <field name="target_user_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="reason" placeholder="e.g. Cannot see the CRM pipeline since Monday (ticket #1234)"/>
+                    <field name="can_write" invisible="1"/>
+                    <field name="mode" widget="radio" options="{'horizontal': true}" invisible="not can_write"/>
+                    <field name="duration"/>
+                </group>
+                <div class="alert alert-info mb-0" role="status">
+                    <field name="notice" nolabel="1" readonly="1"/>
+                </div>
+                <footer>
+                    <button name="action_start" type="object" string="Start" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_impersonate_wizard" model="ir.actions.act_window">
+        <field name="name">See Symbifox as someone else</field>
+        <field name="res_model">bf.impersonate.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

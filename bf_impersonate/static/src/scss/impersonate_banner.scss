@@ -1,0 +1,62 @@
+// Le bandeau vit en bas, par-dessus le contenu mais sous les fenêtres modales
+// (1055) : une boîte de dialogue reste utilisable, et le bandeau revient dès
+// qu'elle se ferme. Le contenu de la page lui cède sa hauteur.
+$bf-impersonate-banner-height: 2.75rem;
+
+.o_bf_impersonate_banner {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: $bf-impersonate-banner-height;
+    padding: 0.35rem 1rem;
+    font-size: 0.9rem;
+    box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.2);
+
+    .o_bf_impersonate_headline {
+        font-weight: 600;
+    }
+
+    .o_bf_impersonate_timer {
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+body.o_web_client.o_bf_impersonating {
+    padding-bottom: $bf-impersonate-banner-height;
+}
+
+@media (max-width: 575.98px) {
+    .o_bf_impersonate_banner {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.85rem;
+
+        .o_bf_impersonate_headline {
+            flex-basis: calc(100% - 2rem);
+        }
+    }
+
+    body.o_web_client.o_bf_impersonating {
+        padding-bottom: 4.5rem;
+    }
+}
+
+// Le voile d'un onglet resté sur l'ancien compte, le temps qu'il se recharge.
+.o_bf_impersonate_switching {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-color: var(--bs-body-bg, #fff);
+    color: var(--bs-body-color, #2e3132);
+    font-size: 1.1rem;
+    text-align: center;
+}

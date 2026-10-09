@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_impersonate.Banner">
+        <div class="o_bf_impersonate_banner text-bg-warning" role="status" aria-live="polite">
+            <i class="fa fa-user-secret" aria-hidden="true"/>
+            <span class="o_bf_impersonate_headline" t-esc="headline"/>
+            <span class="badge text-bg-dark" t-esc="modeLabel"/>
+            <span class="o_bf_impersonate_timer" title="Time left" t-esc="remaining"/>
+            <button type="button" class="btn btn-sm btn-dark ms-auto" t-on-click="back" t-att-disabled="state.busy">
+                Back to my account
+            </button>
+        </div>
+    </t>
+</templates>

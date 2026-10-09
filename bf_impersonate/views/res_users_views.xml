@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_users_form_bf_impersonate" model="ir.ui.view">
+        <field name="name">res.users.form.bf_impersonate</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header" position="inside">
+                <button name="action_bf_impersonate" type="object" string="See Symbifox as this user"
+                        groups="bf_impersonate.group_impersonate_read"
+                        invisible="not id or share or not active or bf_impersonate_protected"/>
+            </xpath>
+            <xpath expr="//page[@name='access_rights']" position="inside">
+                <group string="Impersonation" name="bf_impersonate" groups="base.group_system">
+                    <field name="bf_impersonate_protected"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_bf_impersonate" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.bf_impersonate</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='user_default_rights']" position="after">
+                <block title="Impersonation" id="bf_impersonate_settings">
+                    <setting id="bf_impersonate_notify_setting" string="Notify the person seen"
+                             help="Tell people when someone sees Symbifox as them.">
+                        <field name="bf_impersonate_notify" widget="radio"/>
+                    </setting>
+                    <setting id="bf_impersonate_duration_setting" string="Duration"
+                             help="How long a session lasts before it ends by itself, in minutes.">
+                        <div class="row mt-2">
+                            <label for="bf_impersonate_duration_default" class="col-6 o_light_label"/>
+                            <field name="bf_impersonate_duration_default" class="col-3"/>
+                        </div>
+                        <div class="row">
+                            <label for="bf_impersonate_duration_max" class="col-6 o_light_label"/>
+                            <field name="bf_impersonate_duration_max" class="col-3"/>
+                        </div>
+                    </setting>
+                    <setting id="bf_impersonate_admin_setting"
+                             help="Off by default: an administrator can change everything, so seeing Symbifox as one is rarely needed.">
+                        <field name="bf_impersonate_allow_admin_targets"/>
+                    </setting>
+                    <setting id="bf_impersonate_journal_setting" string="Journal"
+                             help="Who saw Symbifox as whom, why, for how long, and what was changed.">
+                        <button name="%(bf_impersonate.action_bf_impersonate_session)d" type="action"
+                                string="Impersonations" icon="oi-arrow-right" class="btn-link"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

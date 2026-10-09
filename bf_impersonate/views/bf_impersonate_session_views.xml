@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_impersonate_session_list" model="ir.ui.view">
+        <field name="name">bf.impersonate.session.list</field>
+        <field name="model">bf.impersonate.session</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" decoration-warning="state == 'open'">
+                <field name="date_start"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="target_user_id" widget="many2one_avatar_user"/>
+                <field name="mode"/>
+                <field name="reason"/>
+                <field name="duration_minutes" optional="show"/>
+                <field name="line_count" optional="show"/>
+                <field name="end_reason" optional="show"/>
+                <field name="state" widget="badge" decoration-warning="state == 'open'" decoration-muted="state == 'closed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_impersonate_session_form" model="ir.ui.view">
+        <field name="name">bf.impersonate.session.form</field>
+        <field name="model">bf.impersonate.session</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_force_end" type="object" string="End this session"
+                            class="btn-secondary" groups="base.group_system"
+                            invisible="state != 'open'"
+                            confirm="The person doing the impersonation goes back to their own account at their next click. Continue?"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="target_user_id" widget="many2one_avatar_user"/>
+                            <field name="mode"/>
+                            <field name="ip_address" groups="base.group_system"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="expires_at"/>
+                            <field name="date_end"/>
+                            <field name="end_reason"/>
+                            <field name="duration_minutes"/>
+                        </group>
+                    </group>
+                    <group string="Reason">
+                        <field name="reason" nolabel="1" colspan="2"/>
+                    </group>
+                    <notebook>
+                        <page string="Actions taken" name="lines">
+                            <field name="line_ids">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="date"/>
+                                    <field name="model"/>
+                                    <field name="method"/>
+                                    <field name="record_ids"/>
+                                    <field name="field_names"/>
+                                    <field name="details" optional="hide"/>
+                                    <field name="route" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_impersonate_session_search" model="ir.ui.view">
+        <field name="name">bf.impersonate.session.search</field>
+        <field name="model">bf.impersonate.session</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="target_user_id"/>
+                <field name="reason"/>
+                <filter name="open" string="In progress" domain="[('state', '=', 'open')]"/>
+                <filter name="write" string="Read and write" domain="[('mode', '=', 'write')]"/>
+                <separator/>
+                <filter name="date_start" string="Started at" date="date_start"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_user" string="Impersonated by" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_target" string="Person seen" context="{'group_by': 'target_user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_impersonate_session" model="ir.actions.act_window">
+        <field name="name">Impersonations</field>
+        <field name="res_model">bf.impersonate.session</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No impersonation yet</p>
+            <p>Every time someone sees Symbifox as another user, the session is recorded here: who, as whom, why, for how long, and what was changed.</p>
+        </field>
+    </record>
+</odoo>

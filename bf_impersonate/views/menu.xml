@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_impersonate_session"
+              name="Impersonations"
+              parent="base.menu_users"
+              action="action_bf_impersonate_session"
+              groups="base.group_system"
+              sequence="20"/>
+</odoo>

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_impersonate_session_user,bf.impersonate.session user,model_bf_impersonate_session,base.group_user,1,0,0,0
+access_bf_impersonate_session_line_user,bf.impersonate.session.line user,model_bf_impersonate_session_line,base.group_user,1,0,0,0
+access_bf_impersonate_wizard,bf.impersonate.wizard,model_bf_impersonate_wizard,group_impersonate_read,1,1,1,1
