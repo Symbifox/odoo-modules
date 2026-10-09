@@ -18,7 +18,7 @@ class DonationDonation(models.Model):
     _inherit = "donation.donation"
 
     bf_cx_donor_survey_sent = fields.Boolean(
-        string="Sondage donateur envoyé", copy=False
+        string="Donor survey sent", copy=False
     )
 
     def validate(self):
@@ -65,8 +65,8 @@ class DonationDonation(models.Model):
             if blocked:
                 donation.message_post(
                     body=_(
-                        "Sondage donateur non envoyé : %s a été sollicité "
-                        "récemment (garde-fou anti-sursollicitation)."
+                        "Donor survey not sent: %s was contacted recently "
+                        "(over-solicitation safeguard)."
                     )
                     % partner.display_name
                 )
@@ -81,8 +81,7 @@ class DonationDonation(models.Model):
             donation.bf_cx_donor_survey_sent = True
             donation.message_post(
                 body=_(
-                    "Sondage donateur « %(program)s » envoyé à %(partner)s "
-                    "après la validation du don.",
+                    'Donor survey "%(program)s" sent to %(partner)s after the donation was validated.',
                     program=program.name,
                     partner=partner.display_name,
                 )

@@ -7,10 +7,10 @@ class BfOutreachTouch(models.Model):
 
     bf_email_id = fields.Many2one(
         "bf.email",
-        string="Courriel d'origine",
+        string="Source email",
         ondelete="set null",
         copy=False,
         index="btree_not_null",
-        help="Courriel archivé dont cette interaction a été déduite. Sert aussi "
-        "de garde-fou : un même courriel n'est jamais rapproché deux fois.",
+        help="Archived email this interaction was inferred from. Also "
+             "acts as a safeguard: the same email is never matched twice.",
     )

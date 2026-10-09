@@ -7,10 +7,10 @@ class BfOutreachTouch(models.Model):
 
     call_archive_id = fields.Many2one(
         "call.archive.call",
-        string="Appel d'origine",
+        string="Source call",
         ondelete="set null",
         copy=False,
         index="btree_not_null",
-        help="Appel archivé dont cette interaction a été déduite. Sert aussi de "
-        "garde-fou : un même appel n'est jamais rapproché deux fois.",
+        help="Archived call this interaction was inferred from. Also acts "
+             "as a safeguard: the same call is never matched twice.",
     )

@@ -1,6 +1,10 @@
 {
     "name": "Symbifox — Ancrage de la récurrence",
-    "version": "18.0.1.0.0",
+    # 18.0.1.1.0: les libellés sont écrits en anglais dans la source, et
+    #   fr_CA.po porte le français. Odoo ne traduit jamais vers en_US,
+    #   la langue source : un usager réglé en anglais lisait le module
+    #   en français.
+    "version": "18.0.1.1.0",
     "category": "Services/Project",
     "summary": "Choisir, par série récurrente, si la prochaine échéance part de "
     "l'ancienne échéance ou de la date de fermeture réelle.",

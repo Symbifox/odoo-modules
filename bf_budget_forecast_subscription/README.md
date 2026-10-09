@@ -29,6 +29,10 @@ best-known part of the budget would become the worst-estimated one.
 They have no schedule, so they fall into "the rest", where the average catches
 them. That is the desirable behaviour: better spread than lost.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## Licence
 
 LGPL-3.

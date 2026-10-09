@@ -25,11 +25,11 @@ class MailingMailing(models.Model):
     _inherit = "mailing.mailing"
 
     bf_cx_exclude_open_loops = fields.Boolean(
-        string="Exclure les boucles CX ouvertes",
-        help="À l'envoi, retire les destinataires dont le contact a un "
-             "feedback à rappeler non traité ou une plainte ouverte : pas "
-             "de promotion à quelqu'un qu'on est en train de rattraper. "
-             "Décochée, le comportement standard est inchangé.",
+        string="Exclude open CX loops",
+        help="On sending, removes recipients whose contact has unhandled "
+             "feedback to call back or an open complaint: no promotion to "
+             "someone we are trying to win back. Unchecked, the standard "
+             "behaviour is unchanged.",
     )
 
     def _get_remaining_recipients(self):

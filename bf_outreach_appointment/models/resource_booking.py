@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from odoo import _, api, models
+from odoo import SUPERUSER_ID, _, api, models
 
 _logger = logging.getLogger(__name__)
 
@@ -25,6 +25,28 @@ class ResourceBooking(models.Model):
         # guetter une écriture directe sur `state`, qui n'arrive jamais.
         self._bf_outreach_sync()
         return res
+
+    def _bf_outreach_summary(self):
+        """Le titre de l'interaction : le nom de la réservation, sinon un libellé.
+
+        Le libellé suit la langue du CONTEXTE de l'appel : l'appelant le règle sur
+        celle de qui lira l'interaction, pas de qui a réservé (souvent un visiteur).
+        """
+        self.ensure_one()
+        return self.name or _("Booking: %s", self.type_id.name or "")
+
+    def _bf_outreach_reader_lang(self, target):
+        """La langue de qui lira l'interaction : le responsable de la cible d'abord.
+
+        ``user_id`` d'une réservation vaut par défaut l'usager qui la crée, souvent
+        OdooBot ou le compte public d'un visiteur : il ne passe qu'en second, et
+        jamais s'il s'agit du superutilisateur ou d'un compte partagé.
+        """
+        self.ensure_one()
+        for user in (target.user_id, self.user_id):
+            if user and user.active and not user.share and user.id != SUPERUSER_ID:
+                return user.lang
+        return self.env.company.partner_id.lang or self.env.lang
 
     def _bf_outreach_sync(self):
         """Journalise le rendez-vous sur la cible de démarchage correspondante."""
@@ -59,8 +81,9 @@ class ResourceBooking(models.Model):
                             "outcome": "interested",
                             "date": booking.start or booking.create_date,
                             "duration": (booking.duration or 0.0) * 60.0,
-                            "summary": booking.name
-                            or _("Rendez-vous : %s", booking.type_id.name or ""),
+                            "summary": booking.with_context(
+                                lang=booking._bf_outreach_reader_lang(target)
+                            )._bf_outreach_summary(),
                             "booking_id": booking.id,
                             "user_id": (booking.user_id or target.user_id).id,
                         }

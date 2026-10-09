@@ -8,10 +8,10 @@ class ResUsers(models.Model):
 
     # JSON list of systray registry keys this user has chosen to hide.
     bf_systray_hidden = fields.Char(
-        string="Icônes de la barre système masquées",
+        string="Hidden systray icons",
         size=4096,
         default="[]",
-        help="Liste JSON des clés d'icônes systray masquées pour cet utilisateur.",
+        help="JSON list of the systray icon keys hidden for this user.",
     )
 
     @api.model

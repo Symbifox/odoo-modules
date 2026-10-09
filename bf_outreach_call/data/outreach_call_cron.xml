@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="ir_cron_outreach_match_calls" model="ir.cron">
-        <field name="name">Démarchage : rapprocher les appels journalisés</field>
+        <field name="name">Outreach: match logged calls</field>
         <field name="model_id" ref="bf_outreach.model_bf_outreach_target"/>
         <field name="user_id" ref="base.user_root"/>
         <field name="state">code</field>

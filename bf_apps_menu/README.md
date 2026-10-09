@@ -39,3 +39,7 @@ Les couleurs passent par les variables `--brand-*` quand l'instance en pose
 (convention des modules d'habillage maison) et retombent sinon sur des valeurs
 neutres. Les deux nombres à ajuster, en tête de `apps_menu.scss` : `40vw` et
 `55vh`.
+
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.

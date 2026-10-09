@@ -15,7 +15,7 @@ class DailyDigestConfig(models.Model):
     _inherit = "daily.digest.config"
 
     include_cx = fields.Boolean(
-        string="Inclure l'expérience client", default=True,
+        string="Include customer experience", default=True,
     )
 
     def _render_cx_section(self, user):
@@ -60,7 +60,7 @@ class DailyDigestConfig(models.Model):
             return ""
 
         summary = Feedback._nps_summary([("company_id", "=", company.id)])
-        nps_text = _("NPS %(days)s j : %(display)s (n=%(n)s)") % {
+        nps_text = _("NPS %(days)s d: %(display)s (n=%(n)s)") % {
             "days": summary["days"],
             "display": summary["display"],
             "n": summary["n"],
@@ -80,9 +80,9 @@ class DailyDigestConfig(models.Model):
             rows += (
                 f"<tr>"
                 f"<td style=\"{cell}color:#dc3545;font-weight:600;\">"
-                f"{_esc(_('À rappeler'))}</td>"
+                f"{_esc(_('To call back'))}</td>"
                 f"<td style=\"{cell}color:#111827;\">"
-                f"{_esc(feedback.partner_id.display_name or _('Anonyme'))}</td>"
+                f"{_esc(feedback.partner_id.display_name or _('Anonymous'))}</td>"
                 f"<td style=\"{cell}color:#374151;\">"
                 f"{_esc('%s %s/%s' % (kind_labels.get(feedback.kind, ''), feedback.score, int(feedback.score_max)))}</td>"
                 f"<td style=\"{cell}color:#6B7280;\">"
@@ -95,7 +95,7 @@ class DailyDigestConfig(models.Model):
                 and complaint.ack_deadline
                 and complaint.ack_deadline < now
             )
-            label = _("Plainte (AR en retard)") if late else _("Plainte")
+            label = _("Complaint (acknowledgement overdue)") if late else _("Complaint")
             rows += (
                 f"<tr>"
                 f"<td style=\"{cell}color:{'#dc3545' if late else '#f59e0b'};font-weight:600;\">"
@@ -110,9 +110,9 @@ class DailyDigestConfig(models.Model):
             rows += (
                 f"<tr>"
                 f"<td style=\"{cell}color:#16a34a;font-weight:600;\">"
-                f"{_esc(_('Candidat témoignage'))}</td>"
+                f"{_esc(_('Testimonial candidate'))}</td>"
                 f"<td style=\"{cell}color:#111827;\">"
-                f"{_esc(feedback.partner_id.display_name or _('Anonyme'))}</td>"
+                f"{_esc(feedback.partner_id.display_name or _('Anonymous'))}</td>"
                 f"<td style=\"{cell}color:#374151;\">"
                 f"{_esc(str(feedback.date))}</td>"
                 f"<td style=\"{cell}color:#6B7280;\">"
@@ -123,7 +123,7 @@ class DailyDigestConfig(models.Model):
         return (
             f"<h3 style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif;"
             f"font-size:16px;font-weight:600;color:{dark};margin:0 0 8px 0;\">"
-            f"💬 {_esc(_('Expérience client'))}"
+            f"💬 {_esc(_('Customer experience'))}"
             f"<span style=\"font-weight:400;font-size:13px;color:#6B7280;\"> - "
             f"{_esc(nps_text)}</span></h3>"
             f"<table role=\"presentation\" width=\"100%\" "
@@ -132,8 +132,8 @@ class DailyDigestConfig(models.Model):
             f"<thead><tr>"
             f"<th style=\"padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:'Lexend',Arial,sans-serif;font-size:12px;\">{_esc(_('Type'))}</th>"
             f"<th style=\"padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:'Lexend',Arial,sans-serif;font-size:12px;\">{_esc(_('Contact'))}</th>"
-            f"<th style=\"padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:'Lexend',Arial,sans-serif;font-size:12px;\">{_esc(_('Note / N°'))}</th>"
-            f"<th style=\"padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:'Lexend',Arial,sans-serif;font-size:12px;\">{_esc(_('Détail'))}</th>"
+            f"<th style=\"padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:'Lexend',Arial,sans-serif;font-size:12px;\">{_esc(_('Score / No.'))}</th>"
+            f"<th style=\"padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:'Lexend',Arial,sans-serif;font-size:12px;\">{_esc(_('Detail'))}</th>"
             f"</tr></thead><tbody>{rows}</tbody></table>"
         )
 

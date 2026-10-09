@@ -3,16 +3,16 @@ from datetime import timedelta
 from odoo import fields, models
 
 ANCHOR_SELECTION = [
-    ("deadline", "Depuis l'échéance"),
-    ("completion", "Depuis la date de fermeture"),
+    ("deadline", "From the deadline"),
+    ("completion", "From the closing date"),
 ]
 
 ANCHOR_HELP = (
-    "Depuis l'échéance : la prochaine échéance est l'ancienne reportée de "
-    "l'intervalle, peu importe le moment de la fermeture.\n"
-    "Depuis la date de fermeture : la prochaine échéance part du moment où la "
-    "tâche a été fermée. Fermer en avance rapproche l'occurrence suivante ; "
-    "fermer en retard la repousse d'autant, sans rattrapage."
+    ("From the deadline: the next deadline is the previous one pushed by "
+     "the interval, whenever the task was closed.\nFrom the closing date: "
+     "the next deadline starts from when the task was closed. Closing "
+     "early brings the next occurrence closer; closing late pushes it back "
+     "as much, with no catch-up.")
 )
 
 
@@ -21,7 +21,7 @@ class ProjectTaskRecurrence(models.Model):
 
     repeat_anchor = fields.Selection(
         ANCHOR_SELECTION,
-        string="Calculer la prochaine échéance",
+        string="Compute the next deadline",
         default="deadline",
         required=True,
         help=ANCHOR_HELP,

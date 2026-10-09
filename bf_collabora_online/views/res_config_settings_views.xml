@@ -7,16 +7,15 @@
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
                 <app string="Collabora Online" name="bf_collabora_online">
-                    <block title="Découverte du serveur" name="bf_cool_decouverte">
-                        <setting id="bf_cool_setting_ttl" string="Durée de vie de la découverte"
-                                 help="Le connecteur amont retélécharge le fichier de découverte à chaque ouverture de document. Ce délai le garde en mémoire. 0 pour revenir au comportement d'origine.">
-                            <field name="bf_cool_decouverte_ttl"/> secondes
+                    <block title="Server discovery" name="bf_cool_decouverte">
+                        <setting id="bf_cool_setting_ttl" string="Discovery lifetime"
+                                 help="The upstream connector downloads the discovery file again each time a document opens. This delay keeps it in memory. 0 restores the original behaviour.">
+                            <field name="bf_cool_decouverte_ttl"/> seconds
                             <div class="mt-2">
                                 <button name="action_bf_vider_cache_decouverte" type="object"
-                                        string="Vider le cache maintenant" class="btn-link"/>
+                                        string="Clear the cache now" class="btn-link"/>
                                 <div class="text-muted">
-                                    À lancer après une mise à niveau du serveur Collabora :
-                                    l'adresse gardée porte son numéro de compilation.
+                                    Run after upgrading the Collabora server: the cached address carries its build number.
                                 </div>
                             </div>
                         </setting>

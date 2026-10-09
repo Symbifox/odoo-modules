@@ -10,7 +10,7 @@
             <t t-if="state.data.cx.revenue_at_risk > 0">
                 <br/>
                 <small class="text-danger fw-bold">
-                    <t t-esc="state.data.cx.revenue_at_risk.toFixed(0)"/> $/mois à risque
+                    <t t-esc="state.data.cx.revenue_at_risk.toFixed(0)"/> $/month at risk
                 </small>
             </t>
         </xpath>

@@ -6,9 +6,9 @@ class BfOutreachTarget(models.Model):
     _inherit = "bf.outreach.target"
 
     booking_url = fields.Char(
-        string="Lien de prise de rendez-vous",
+        string="Booking link",
         related="campaign_id.booking_type_id.public_url",
         readonly=True,
-        help="À insérer dans le courriel de démarchage : la cible choisit "
-        "elle-même sa plage, et le rendez-vous pris fait avancer son dossier.",
+        help="To drop into the outreach email: the target picks their own "
+             "slot, and the booking moves their file along by itself.",
     )

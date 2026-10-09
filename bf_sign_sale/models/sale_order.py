@@ -41,13 +41,21 @@ class SaleOrder(models.Model):
         if self.state in ("draft", "sent") and not self._has_to_be_paid():
             self._validate_order()
 
-    def _sign_on_refused(self, request, signer, reason=None):
-        self.ensure_one()
-        body = _("Signature refusée par %(who)s (demande %(ref)s).",
+    def _sign_refusal_note(self, request, signer, reason=None):
+        """The refusal note, in the language of the context the caller sets."""
+        body = _("Signature declined by %(who)s (request %(ref)s).",
                  who=signer.name or signer.email or "", ref=request.name)
         if reason:
-            body += _(" Motif : %s", reason)
-        self.message_post(body=body)
+            body += _(" Reason: %s", reason)
+        return body
+
+    def _sign_on_refused(self, request, signer, reason=None):
+        self.ensure_one()
+        # Called from the signer's public route: the note is written for the team that
+        # reads the order (its salesperson), not in the language of the signer's browser.
+        vendeur = self.user_id if self.user_id and not self.user_id.share else False
+        lang = (vendeur and vendeur.lang) or self.company_id.partner_id.lang or self.env.lang
+        self.message_post(body=self.with_context(lang=lang)._sign_refusal_note(request, signer, reason))
         # Same outcome as the native « Refuser » in the portal, which calls
         # _action_cancel(). Reversible from the backend ("Définir en brouillon").
         if self.state in ("draft", "sent"):

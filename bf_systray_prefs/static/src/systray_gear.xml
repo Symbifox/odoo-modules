@@ -3,12 +3,12 @@
 
     <t t-name="bf_systray_prefs.Gear">
         <Dropdown position="'bottom-end'">
-            <button class="btn o_bf_systray_gear" title="Icônes de la barre">
+            <button class="btn o_bf_systray_gear" title="Bar icons">
                 <i class="fa fa-sliders"/>
             </button>
             <t t-set-slot="content">
                 <div class="o_bf_systray_prefs_menu">
-                    <div class="px-3 py-2 small text-muted text-uppercase">Afficher dans la barre</div>
+                    <div class="px-3 py-2 small text-muted text-uppercase">Show in the bar</div>
                     <div t-foreach="items" t-as="it" t-key="it.key"
                          class="o_bf_systray_pref_row d-flex align-items-center px-3 py-1"
                          t-on-click.stop="() => this.toggle(it.key)">
@@ -17,7 +17,7 @@
                         <span t-esc="it.label"/>
                     </div>
                     <div t-if="!items.length" class="px-3 py-2 small text-muted">
-                        Aucune icône configurable.
+                        No configurable icon.
                     </div>
                 </div>
             </t>

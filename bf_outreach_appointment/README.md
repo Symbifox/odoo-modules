@@ -29,6 +29,10 @@ along without anyone touching it.
 - The reconciliation is best-effort: a failure is logged and swallowed, because a
   convenience must never make a client's booking fail.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. A booking without a name is now titled in the language of whoever reads the outreach interaction, not of whoever booked (often a visitor). The English wording keeps the one of the former `en_CA.po`, which is no longer shipped.
+
 ## Installation
 
 `auto_install` is set: the bridge installs itself as soon as both `bf_outreach` and

@@ -1,0 +1,83 @@
+# Translation of Expérience client : sondage donateur - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_fundraising 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-09 01:58+0000\n"
+"PO-Revision-Date: 2026-10-09 01:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_cx_fundraising
+#: model:ir.model,name:bf_cx_fundraising.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: bf_cx_fundraising
+#: model:ir.model,name:bf_cx_fundraising.model_donation_donation
+msgid "Donation"
+msgstr "Don"
+
+#. module: bf_cx_fundraising
+#: model:ir.model.fields,field_description:bf_cx_fundraising.field_res_config_settings__bf_cx_donor_program_id
+msgid "Donor experience program"
+msgstr "Programme expérience donateur"
+
+#. module: bf_cx_fundraising
+#: model_terms:ir.ui.view,arch_db:bf_cx_fundraising.res_config_settings_view_form
+msgid "Donor experience survey"
+msgstr "Sondage expérience donateur"
+
+#. module: bf_cx_fundraising
+#. odoo-python
+#: code:addons/bf_cx_fundraising/models/donation_donation.py:0
+msgid ""
+"Donor survey \"%(program)s\" sent to %(partner)s after the donation was "
+"validated."
+msgstr ""
+"Sondage donateur « %(program)s » envoyé à %(partner)s après la validation du"
+" don."
+
+#. module: bf_cx_fundraising
+#. odoo-python
+#: code:addons/bf_cx_fundraising/models/donation_donation.py:0
+msgid ""
+"Donor survey not sent: %s was contacted recently (over-solicitation "
+"safeguard)."
+msgstr ""
+"Sondage donateur non envoyé : %s a été sollicité récemment (garde-fou anti-"
+"sursollicitation)."
+
+#. module: bf_cx_fundraising
+#: model:ir.model.fields,field_description:bf_cx_fundraising.field_donation_donation__bf_cx_donor_survey_sent
+msgid "Donor survey sent"
+msgstr "Sondage donateur envoyé"
+
+#. module: bf_cx_fundraising
+#: model:ir.model.fields,help:bf_cx_fundraising.field_res_config_settings__bf_cx_donor_program_id
+msgid ""
+"Program whose survey is sent to the donor when a donation is validated. A "
+"loyal donor gives often: the program's minimum cadence is the main "
+"safeguard, 90 days recommended. Empty = nothing sent."
+msgstr ""
+"Programme dont le sondage est envoyé au donateur quand un don est validé. Un"
+" donateur fidèle donne souvent : la cadence minimale du programme est la "
+"protection principale, 90 jours recommandés. Vide = aucun envoi."
+
+#. module: bf_cx_fundraising
+#: model_terms:ir.ui.view,arch_db:bf_cx_fundraising.res_config_settings_view_form
+msgid ""
+"When a donation is validated, send this program's survey to the donor (once "
+"per donation, with the over-solicitation safeguard; recommended minimum "
+"program cadence: 90 days)."
+msgstr ""
+"Quand un don est validé, envoyer le sondage de ce programme au donateur (une"
+" fois par don, garde-fou anti-sursollicitation appliqué ; cadence minimale "
+"du programme recommandée : 90 jours)."

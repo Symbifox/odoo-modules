@@ -15,6 +15,10 @@ A bridge module wiring sales orders into `bf_sign` electronic signature.
 
 `bf_sign`, `sale`.
 
+## Languages (v18.0.2.2.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. A refusal sent from the signer's public page is noted on the order in the salesperson's language, not in the language of the signer's browser.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the

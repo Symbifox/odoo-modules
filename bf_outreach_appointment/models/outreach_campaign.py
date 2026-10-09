@@ -7,7 +7,8 @@ class BfOutreachCampaign(models.Model):
 
     booking_type_id = fields.Many2one(
         "resource.booking.type",
-        string="Type de rendez-vous",
-        help="Type proposé aux cibles de cette campagne. Son lien public est "
-        "disponible sur chaque cible, pour le glisser dans le modèle de courriel.",
+        string="Booking type",
+        help="Type offered to this campaign's targets. Its public link is "
+             "available on every target, ready to drop into the email "
+             "template.",
     )

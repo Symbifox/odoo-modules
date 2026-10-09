@@ -111,6 +111,10 @@ The Odoo host must appear in `coolwsd.xml`'s `alias_groups` **and** in the
 container's `domain` variable, or Collabora refuses the WOPI session. That change
 requires restarting the container.
 
+## Languages (v18.0.1.4.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## Licence
 
 BUSL-1.1, converting to LGPL-3.0-or-later on 2030-09-02. Internal production use

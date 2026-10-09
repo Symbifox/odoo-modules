@@ -1,0 +1,71 @@
+# Translation template for Expérience client : sondage donateur.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_cx_fundraising 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-09 01:58+0000\n"
+"PO-Revision-Date: 2026-10-09 01:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_cx_fundraising
+#: model:ir.model,name:bf_cx_fundraising.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_cx_fundraising
+#: model:ir.model,name:bf_cx_fundraising.model_donation_donation
+msgid "Donation"
+msgstr ""
+
+#. module: bf_cx_fundraising
+#: model:ir.model.fields,field_description:bf_cx_fundraising.field_res_config_settings__bf_cx_donor_program_id
+msgid "Donor experience program"
+msgstr ""
+
+#. module: bf_cx_fundraising
+#: model_terms:ir.ui.view,arch_db:bf_cx_fundraising.res_config_settings_view_form
+msgid "Donor experience survey"
+msgstr ""
+
+#. module: bf_cx_fundraising
+#. odoo-python
+#: code:addons/bf_cx_fundraising/models/donation_donation.py:0
+msgid ""
+"Donor survey \"%(program)s\" sent to %(partner)s after the donation was "
+"validated."
+msgstr ""
+
+#. module: bf_cx_fundraising
+#. odoo-python
+#: code:addons/bf_cx_fundraising/models/donation_donation.py:0
+msgid ""
+"Donor survey not sent: %s was contacted recently (over-solicitation "
+"safeguard)."
+msgstr ""
+
+#. module: bf_cx_fundraising
+#: model:ir.model.fields,field_description:bf_cx_fundraising.field_donation_donation__bf_cx_donor_survey_sent
+msgid "Donor survey sent"
+msgstr ""
+
+#. module: bf_cx_fundraising
+#: model:ir.model.fields,help:bf_cx_fundraising.field_res_config_settings__bf_cx_donor_program_id
+msgid ""
+"Program whose survey is sent to the donor when a donation is validated. A "
+"loyal donor gives often: the program's minimum cadence is the main "
+"safeguard, 90 days recommended. Empty = nothing sent."
+msgstr ""
+
+#. module: bf_cx_fundraising
+#: model_terms:ir.ui.view,arch_db:bf_cx_fundraising.res_config_settings_view_form
+msgid ""
+"When a donation is validated, send this program's survey to the donor (once "
+"per donation, with the over-solicitation safeguard; recommended minimum "
+"program cadence: 90 days)."
+msgstr ""

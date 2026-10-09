@@ -10,7 +10,7 @@ class ProjectTask(models.Model):
     # des repeat_* du noyau : même compute, même compute_sudo, même readonly.
     repeat_anchor = fields.Selection(
         ANCHOR_SELECTION,
-        string="Calculer la prochaine échéance",
+        string="Compute the next deadline",
         default="deadline",
         compute="_compute_repeat",
         compute_sudo=True,

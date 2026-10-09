@@ -8,10 +8,10 @@ class DailyDigestConfig(models.Model):
     _inherit = "daily.digest.config"
 
     include_subscription_renewals = fields.Boolean(
-        string="Inclure les renouvellements d'abonnements", default=True,
+        string="Include subscription renewals", default=True,
     )
     subscription_renewal_days = fields.Integer(
-        string="Horizon renouvellements (jours)", default=30,
+        string="Renewal horizon (days)", default=30,
     )
 
     def _render_subscription_renewals(self, user):
@@ -55,7 +55,7 @@ class DailyDigestConfig(models.Model):
         # EXPRESSION d'une f-string n'est légale qu'à partir de Python 3.12
         # (PEP 701), alors qu'Odoo 18 se déclare compatible à partir de 3.10.
         # Les \' du texte littéral, eux, passent partout.
-        titre = _("Renouvellements d'abonnements à venir")
+        titre = _("Upcoming subscription renewals")
         return (
             f'<h3 style="font-family:\'Lexend\',\'Segoe UI\',Arial,sans-serif;font-size:16px;'
             f'font-weight:600;color:{dark};margin:0 0 8px 0;">'
@@ -63,11 +63,11 @@ class DailyDigestConfig(models.Model):
             f'<table role="presentation" width="100%" style="border:1px solid #e5e7eb;border-radius:8px;'
             f'border-collapse:separate;overflow:hidden;margin-bottom:8px;">'
             f'<thead><tr>'
-            f'<th style="padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("Abonnement"))}</th>'
-            f'<th style="padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("Fournisseur"))}</th>'
-            f'<th style="padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("Renouvellement"))}</th>'
-            f'<th style="padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("À annuler avant"))}</th>'
-            f'<th style="padding:8px 10px;text-align:right;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("Montant"))}</th>'
+            f'<th style="padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("Subscription"))}</th>'
+            f'<th style="padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("Vendor"))}</th>'
+            f'<th style="padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("Renewal"))}</th>'
+            f'<th style="padding:8px 10px;text-align:left;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("Cancel before"))}</th>'
+            f'<th style="padding:8px 10px;text-align:right;background:{accent};color:#fff;font-family:\'Lexend\',Arial,sans-serif;font-size:12px;">{_esc(_("Amount"))}</th>'
             f'</tr></thead><tbody>{rows}</tbody></table>'
         )
 

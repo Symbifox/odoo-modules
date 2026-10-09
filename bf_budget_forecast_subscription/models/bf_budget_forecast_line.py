@@ -8,7 +8,7 @@ class BfBudgetForecastLine(models.Model):
 
     subscription_ids = fields.Many2many(
         "subscription.subscription",
-        string="Abonnements du poste",
+        string="Subscriptions on this line",
         compute="_compute_forecast_subscriptions",
     )
 

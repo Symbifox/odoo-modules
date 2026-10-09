@@ -41,7 +41,7 @@ _RE_TAG = re.compile(r"(?<![\w#])#([A-Za-zÀ-ÿ0-9_]{1,64})", re.U)
 class BlueskyConnector(models.AbstractModel):
     _name = "bf.social.connector.bluesky"
     _inherit = "bf.social.connector"
-    _description = "Connecteur Bluesky"
+    _description = "Bluesky connector"
 
     _network_label = "Bluesky"
 
@@ -52,11 +52,11 @@ class BlueskyConnector(models.AbstractModel):
     def _session(self, channel):
         """Ouvrir une session. Jamais mise en cache : le jeton expire vite."""
         if not requests:
-            raise UserError(_("La bibliothèque « requests » n'est pas installée."))
+            raise UserError(_("The \"requests\" library is not installed."))
         secret = channel._decrypt_secret()
         if not (channel.login and secret):
             raise UserError(_(
-                "Canal « %s » : identifiant ou mot de passe d'application manquant.",
+                "Channel \"%s\": handle or app password missing.",
                 channel.name,
             ))
         r = requests.post(
@@ -66,7 +66,7 @@ class BlueskyConnector(models.AbstractModel):
         )
         if r.status_code != 200:
             raise UserError(_(
-                "Bluesky refuse la session (HTTP %(code)s) : %(corps)s",
+                "Bluesky refused the session (HTTP %(code)s): %(corps)s",
                 code=r.status_code, corps=r.text[:200],
             ))
         return r.json()
@@ -77,13 +77,13 @@ class BlueskyConnector(models.AbstractModel):
         except UserError as exc:
             return False, str(exc)
         except Exception as exc:            # noqa: BLE001
-            return False, _("Erreur réseau : %s", str(exc)[:180])
+            return False, _("Network error: %s", str(exc)[:180])
         pseudo = s.get("handle") or ""
         if channel.handle and pseudo.lower() != channel.handle.lower():
             return False, _(
-                "La session ouvre sur « %(reel)s » alors que le canal déclare"
-                " « %(attendu)s ».", reel=pseudo, attendu=channel.handle)
-        return True, _("Session ouverte sur @%s.", pseudo)
+                "The session opens on \"%(reel)s\" while the channel "
+                "declares \"%(attendu)s\".", reel=pseudo, attendu=channel.handle)
+        return True, _("Session opened on @%s.", pseudo)
 
     # --- balisage ---------------------------------------------------------
     def _facets(self, texte):
@@ -141,7 +141,7 @@ class BlueskyConnector(models.AbstractModel):
         texte = post.body or ""
         if len(texte) > LIMITE_TEXTE:
             raise UserError(_(
-                "Texte de %(n)s caractères pour une limite de %(l)s.",
+                'Text is %(n)s characters long; the limit is %(l)s.',
                 n=len(texte), l=LIMITE_TEXTE))
 
         record = {
@@ -166,7 +166,7 @@ class BlueskyConnector(models.AbstractModel):
         )
         if r.status_code != 200:
             raise UserError(_(
-                "Bluesky refuse le billet (HTTP %(code)s) : %(corps)s",
+                "Bluesky refused the post (HTTP %(code)s): %(corps)s",
                 code=r.status_code, corps=r.text[:300]))
         d = r.json()
         uri = d.get("uri", "")

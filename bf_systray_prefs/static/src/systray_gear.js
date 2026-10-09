@@ -3,6 +3,7 @@ import { Component, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { Dropdown } from "@web/core/dropdown/dropdown";
+import { _t } from "@web/core/l10n/translation";
 
 const GEAR_KEY = "bf_systray_prefs.gear";
 
@@ -13,19 +14,19 @@ const GEAR_KEY = "bf_systray_prefs.gear";
 // while still showing nice labels for common entries.
 const LABELS = {
     // Standard Odoo
-    "mail.systray.MessagingMenu": "Messagerie",
-    "mail.systray.ActivityMenu": "Activités",
+    "mail.systray.MessagingMenu": _t("Messaging"),
+    "mail.systray.ActivityMenu": _t("Activities"),
     // Common companion modules (label overrides only — not dependencies)
-    TimerMenu: "Minuteur",
+    TimerMenu: _t("Timer"),
     "bf_sms_archive.Systray": "SMS",
-    BfEmailSystray: "Courriel",
+    BfEmailSystray: _t("Email"),
     BfWebmailMenu: "Webmail",
     BfNoteSystray: "Notes",
-    UniversalSearch: "Recherche",
+    UniversalSearch: _t("Universal search"),
     "bf_nextcloud_browser.launcher": "Nextcloud",
     "bf_gamification.Systray": "Gamification",
     ClaudeChat: "Gen",
-    BFDarkModeSystrayItem: "Mode sombre",
+    BFDarkModeSystrayItem: _t("Dark mode"),
 };
 
 // Turn a registry key into a readable label: keep the last dotted segment,

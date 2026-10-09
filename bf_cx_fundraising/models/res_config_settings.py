@@ -7,10 +7,7 @@ class ResConfigSettings(models.TransientModel):
 
     bf_cx_donor_program_id = fields.Many2one(
         "bf.cx.program",
-        string="Programme expérience donateur",
+        string="Donor experience program",
         config_parameter="bf_cx.donor_program_id",
-        help="Programme dont le sondage est envoyé au donateur quand un don "
-             "est validé. Un donateur fidèle donne souvent : la cadence "
-             "minimale du programme est la protection principale, 90 jours "
-             "recommandés. Vide = aucun envoi.",
+        help="Program whose survey is sent to the donor when a donation is validated. A loyal donor gives often: the program's minimum cadence is the main safeguard, 90 days recommended. Empty = nothing sent.",
     )

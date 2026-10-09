@@ -1,0 +1,71 @@
+# Translation of Atelier éditorial : Bluesky - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_editorial_bluesky 18.0.1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-09 01:59+0000\n"
+"PO-Revision-Date: 2026-10-09 01:59+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_editorial_bluesky
+#: model:ir.model,name:bf_editorial_bluesky.model_bf_social_connector_bluesky
+msgid "Bluesky connector"
+msgstr "Connecteur Bluesky"
+
+#. module: bf_editorial_bluesky
+#. odoo-python
+#: code:addons/bf_editorial_bluesky/models/connecteur_bluesky.py:0
+msgid "Bluesky refused the post (HTTP %(code)s): %(corps)s"
+msgstr "Bluesky refuse le billet (HTTP %(code)s) : %(corps)s"
+
+#. module: bf_editorial_bluesky
+#. odoo-python
+#: code:addons/bf_editorial_bluesky/models/connecteur_bluesky.py:0
+msgid "Bluesky refused the session (HTTP %(code)s): %(corps)s"
+msgstr "Bluesky refuse la session (HTTP %(code)s) : %(corps)s"
+
+#. module: bf_editorial_bluesky
+#. odoo-python
+#: code:addons/bf_editorial_bluesky/models/connecteur_bluesky.py:0
+msgid "Channel \"%s\": handle or app password missing."
+msgstr "Canal « %s » : identifiant ou mot de passe d'application manquant."
+
+#. module: bf_editorial_bluesky
+#. odoo-python
+#: code:addons/bf_editorial_bluesky/models/connecteur_bluesky.py:0
+msgid "Network error: %s"
+msgstr "Erreur réseau : %s"
+
+#. module: bf_editorial_bluesky
+#. odoo-python
+#: code:addons/bf_editorial_bluesky/models/connecteur_bluesky.py:0
+msgid "Session opened on @%s."
+msgstr "Session ouverte sur @%s."
+
+#. module: bf_editorial_bluesky
+#. odoo-python
+#: code:addons/bf_editorial_bluesky/models/connecteur_bluesky.py:0
+msgid "Text is %(n)s characters long; the limit is %(l)s."
+msgstr "Texte de %(n)s caractères pour une limite de %(l)s."
+
+#. module: bf_editorial_bluesky
+#. odoo-python
+#: code:addons/bf_editorial_bluesky/models/connecteur_bluesky.py:0
+msgid "The \"requests\" library is not installed."
+msgstr "La bibliothèque « requests » n'est pas installée."
+
+#. module: bf_editorial_bluesky
+#. odoo-python
+#: code:addons/bf_editorial_bluesky/models/connecteur_bluesky.py:0
+msgid "The session opens on \"%(reel)s\" while the channel declares \"%(attendu)s\"."
+msgstr ""
+"La session ouvre sur « %(reel)s » alors que le canal déclare « %(attendu)s "
+"»."

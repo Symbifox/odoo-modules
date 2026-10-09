@@ -1,0 +1,127 @@
+# Translation of Collabora Online, correctifs Blue Fox - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_collabora_online 18.0.1.4.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-09 01:57+0000\n"
+"PO-Revision-Date: 2026-10-09 01:57+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_collabora_online
+#: model_terms:ir.ui.view,arch_db:bf_collabora_online.view_res_config_settings_bf_collabora
+msgid "Clear the cache now"
+msgstr "Vider le cache maintenant"
+
+#. module: bf_collabora_online
+#: model_terms:ir.ui.view,arch_db:bf_collabora_online.view_res_config_settings_bf_collabora
+msgid "Collabora Online"
+msgstr "Collabora Online"
+
+#. module: bf_collabora_online
+#: model:ir.model,name:bf_collabora_online.model_bf_collabora_helper
+msgid "Collabora Online, Blue Fox fixes"
+msgstr "Collabora Online, correctifs Blue Fox"
+
+#. module: bf_collabora_online
+#: model:ir.model,name:bf_collabora_online.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: bf_collabora_online
+#: model:ir.model.fields,field_description:bf_collabora_online.field_bf_collabora_helper__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_collabora_online
+#: model:ir.model.fields,field_description:bf_collabora_online.field_bf_collabora_helper__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_collabora_online
+#: model_terms:ir.ui.view,arch_db:bf_collabora_online.view_res_config_settings_bf_collabora
+msgid "Discovery lifetime"
+msgstr "Durée de vie de la découverte"
+
+#. module: bf_collabora_online
+#: model:ir.model.fields,field_description:bf_collabora_online.field_res_config_settings__bf_cool_decouverte_ttl
+msgid "Discovery lifetime (seconds)"
+msgstr "Durée de vie de la découverte (secondes)"
+
+#. module: bf_collabora_online
+#: model:ir.model.fields,field_description:bf_collabora_online.field_bf_collabora_helper__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_collabora_online
+#: model:ir.model.fields,field_description:bf_collabora_online.field_bf_collabora_helper__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_collabora_online
+#: model:ir.model.fields,field_description:bf_collabora_online.field_bf_collabora_helper__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_collabora_online
+#: model:ir.model.fields,field_description:bf_collabora_online.field_bf_collabora_helper__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_collabora_online
+#. odoo-python
+#: code:addons/bf_collabora_online/models/collabora_helper.py:0
+msgid "Only administrators can clear this cache."
+msgstr "Seule l'administration peut vider ce cache."
+
+#. module: bf_collabora_online
+#: model_terms:ir.ui.view,arch_db:bf_collabora_online.view_res_config_settings_bf_collabora
+msgid ""
+"Run after upgrading the Collabora server: the cached address carries its "
+"build number."
+msgstr ""
+"À lancer après une mise à niveau du serveur Collabora : l'adresse gardée "
+"porte son numéro de compilation."
+
+#. module: bf_collabora_online
+#: model_terms:ir.ui.view,arch_db:bf_collabora_online.view_res_config_settings_bf_collabora
+msgid "Server discovery"
+msgstr "Découverte du serveur"
+
+#. module: bf_collabora_online
+#: model:ir.model,name:bf_collabora_online.model_ir_config_parameter
+msgid "System Parameter"
+msgstr "Paramètres système"
+
+#. module: bf_collabora_online
+#: model:ir.model.fields,help:bf_collabora_online.field_res_config_settings__bf_cool_decouverte_ttl
+msgid ""
+"The Collabora server's discovery file is kept in memory for this long. 0 "
+"downloads it again at each opening, as the upstream connector does."
+msgstr ""
+"Le fichier de découverte du serveur Collabora est gardé en mémoire pendant "
+"ce délai. 0 pour le retélécharger à chaque ouverture, comme le fait le "
+"connecteur amont."
+
+#. module: bf_collabora_online
+#: model_terms:ir.ui.view,arch_db:bf_collabora_online.view_res_config_settings_bf_collabora
+msgid ""
+"The upstream connector downloads the discovery file again each time a "
+"document opens. This delay keeps it in memory. 0 restores the original "
+"behaviour."
+msgstr ""
+"Le connecteur amont retélécharge le fichier de découverte à chaque ouverture"
+" de document. Ce délai le garde en mémoire. 0 pour revenir au comportement "
+"d'origine."
+
+#. module: bf_collabora_online
+#: model_terms:ir.ui.view,arch_db:bf_collabora_online.view_res_config_settings_bf_collabora
+msgid "seconds"
+msgstr "secondes"

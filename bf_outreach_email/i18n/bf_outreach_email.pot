@@ -1,19 +1,24 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_outreach_email
-#
+# Translation template for Démarchage : réponses courriel.
+# The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Project-Id-Version: bf_outreach_email 18.0.1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-04 05:16+0000\n"
-"PO-Revision-Date: 2026-08-04 05:16+0000\n"
+"POT-Creation-Date: 2026-10-09 01:59+0000\n"
+"PO-Revision-Date: 2026-10-09 01:59+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+
+#. module: bf_outreach_email
+#: model:ir.model.fields,help:bf_outreach_email.field_bf_outreach_touch__bf_email_id
+msgid ""
+"Archived email this interaction was inferred from. Also acts as a safeguard:"
+" the same email is never matched twice."
+msgstr ""
 
 #. module: bf_outreach_email
 #: model:ir.model,name:bf_outreach_email.model_bf_outreach_target
@@ -21,23 +26,16 @@ msgid "Cible de démarchage"
 msgstr ""
 
 #. module: bf_outreach_email
-#: model:ir.model.fields,help:bf_outreach_email.field_bf_outreach_touch__bf_email_id
-msgid ""
-"Courriel archivé dont cette interaction a été déduite. Sert aussi de garde-"
-"fou : un même courriel n'est jamais rapproché deux fois."
-msgstr ""
-
-#. module: bf_outreach_email
-#: model:ir.model.fields,field_description:bf_outreach_email.field_bf_outreach_touch__bf_email_id
-msgid "Courriel d'origine"
+#: model:ir.model,name:bf_outreach_email.model_bf_outreach_touch
+msgid "Interaction de démarchage"
 msgstr ""
 
 #. module: bf_outreach_email
 #: model:ir.actions.server,name:bf_outreach_email.ir_cron_outreach_match_emails_ir_actions_server
-msgid "Démarchage : rapprocher les réponses courriel"
+msgid "Outreach: match incoming email replies"
 msgstr ""
 
 #. module: bf_outreach_email
-#: model:ir.model,name:bf_outreach_email.model_bf_outreach_touch
-msgid "Interaction de démarchage"
+#: model:ir.model.fields,field_description:bf_outreach_email.field_bf_outreach_touch__bf_email_id
+msgid "Source email"
 msgstr ""

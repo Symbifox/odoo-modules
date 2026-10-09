@@ -10,23 +10,23 @@
                         <div class="card-body text-center">
                             <h2 t-attf-class="mb-0 {{state.data.cx.followup_todo > 0 ? 'text-danger' : 'text-muted'}}"
                                 t-esc="state.data.cx.nps_display"/>
-                            <small class="text-muted"><i class="fa fa-heart-o me-1"/>NPS <t t-esc="state.data.cx.nps_days"/> j (n=<t t-esc="state.data.cx.nps_n"/>)</small>
+                            <small class="text-muted"><i class="fa fa-heart-o me-1"/>NPS <t t-esc="state.data.cx.nps_days"/> d (n=<t t-esc="state.data.cx.nps_n"/>)</small>
                             <t t-if="state.data.cx.followup_todo > 0">
                                 <br/>
                                 <small class="text-danger fw-bold">
-                                    <t t-esc="state.data.cx.followup_todo"/> à rappeler
+                                    <t t-esc="state.data.cx.followup_todo"/> to call back
                                 </small>
                             </t>
                             <t t-if="state.data.cx.complaints_open > 0">
                                 <br/>
                                 <small class="text-warning fw-bold">
-                                    <t t-esc="state.data.cx.complaints_open"/> plainte(s) ouverte(s)
+                                    <t t-esc="state.data.cx.complaints_open"/> open complaint(s)
                                 </small>
                             </t>
                             <t t-if="state.data.cx.testimonial_candidates > 0">
                                 <br/>
                                 <small class="text-success">
-                                    <t t-esc="state.data.cx.testimonial_candidates"/> candidat(s) témoignage
+                                    <t t-esc="state.data.cx.testimonial_candidates"/> testimonial candidate(s)
                                 </small>
                             </t>
                         </div>

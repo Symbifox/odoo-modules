@@ -42,8 +42,8 @@
                     <i class="oi oi-search" role="img" aria-hidden="true"/>
                     <input type="text"
                            class="o_apps_menu_search_input"
-                           placeholder="Rechercher une application"
-                           aria-label="Rechercher une application"
+                           placeholder="Search for an app"
+                           aria-label="Search for an app"
                            autocomplete="off"
                            t-ref="appsMenuSearch"
                            t-model="appsSearch.query"
@@ -70,7 +70,7 @@
                 </div>
 
                 <div t-if="!appsMenuApps.length" class="o_apps_menu_empty">
-                    Aucune application ne correspond à cette recherche.
+                    No app matches this search.
                 </div>
 
             </t>

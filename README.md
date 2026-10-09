@@ -90,7 +90,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_appointment_poll` | Symbifox Appointment Polls | 18.0.1.16.0 | BUSL-1.1 | Availability polling: propose slots, collect answers, book the meeting |
 | `bf_appointment_visit` | Symbifox Property Showings | 18.0.1.2.0 | BUSL-1.1 | Showing appointments for real estate: seller availability, visit register, approval loop, occupied dwellings |
 | `bf_appointment_visit_property` | Visites de propriétés — pont Immeubles | 18.0.1.0.0 | LGPL-3 | Show a dwelling from your portfolio without retyping its address: address, occupant and the 24-hour notice for a rented unit come from the Immeubles socle |
-| `bf_apps_menu` | Menu des applications cherchable | 18.0.1.0.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
+| `bf_apps_menu` | Menu des applications cherchable | 18.0.1.1.0 | LGPL-3 | The apps menu becomes a keyboard-searchable grid of icons |
 | `bf_attachment_version` | Versionnement des pièces jointes | 18.0.1.1.0 | BUSL-1.1 | Keeps the previous content whenever an attachment is overwritten |
 | `bf_avatar` | Symbifox Avatars | 18.0.1.0.1 | BUSL-1.1 | An avatar in your house style for anyone without a photo, and a builder to make your own |
 | `bf_avatar_gamification` | Symbifox Avatars pour Fox Quest | 18.0.1.0.1 | BUSL-1.1 | Unlock avatar parts with the XP earned in Fox Quest |
@@ -112,7 +112,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_budget` | Budgets opérationnels | 18.0.1.0.4 | BUSL-1.1 | Operating budget by ledger position, compared against actual and committed spend |
 | `bf_budget_campaign` | Budgets opérationnels — campagnes | 18.0.1.1.0 | BUSL-1.1 | Ties a campaign to an analytic account: it knew what it earned, now it knows what it spent |
 | `bf_budget_forecast` | Budgets opérationnels — prévision glissante | 18.0.1.0.0 | BUSL-1.1 | A forecast re-made every month over 12 to 18 months, with comparable vintages |
-| `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.0.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
+| `bf_budget_forecast_subscription` | Prévision glissante — amorce par les engagements datés | 18.0.1.1.0 | BUSL-1.1 | Seeds the forecast from the dated renewal calendar instead of a flat average |
 | `bf_budget_subscription` | Budgets opérationnels — engagements récurrents | 18.0.1.0.1 | BUSL-1.1 | Subscriptions become a calendar of dated commitments the budget can count early |
 | `bf_bureau` | BF Bureau — vues multi-panneaux | 18.0.3.3.2 | LGPL-3 | User-configurable dashboards ("desks") with multi-pane Odoo actions, six layouts, keyboard shortcuts, time slots, and a sidebar |
 | `bf_calculator` | BF Calculatrice | 18.0.1.2.0 | LGPL-3 | Top-bar calculator: history, labels in the math, reverse tax, hours, dates, Bank of Canada rates, post to chatter |
@@ -130,7 +130,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_claude_chat` | Gen | 18.0.1.35.0 | BUSL-1.1 | Chat with Gen, the AI assistant, directly inside Odoo |
 | `bf_claude_chat_cockpit` | Gen — Cockpit | 18.0.1.0.1 | BUSL-1.1 | Vue d'administration des sessions Gen : pannes de flux et consommation |
 | `bf_claude_chat_digest` | Gen — consommation Claude dans le digest quotidien | 18.0.1.3.0 | BUSL-1.1 | Daily digest sections: Claude usage per account (windows, reset, probe state) and the recipient's Gen conversations to follow |
-| `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.3.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
+| `bf_collabora_online` | Collabora Online, correctifs Blue Fox | 18.0.1.4.0 | BUSL-1.1 | Five fixes layered on the upstream Collabora connector, without forking it |
 | `bf_color` | BF Color | 18.0.1.1.2 | LGPL-3 | Free colors resolved per user, per company and by automatic rules, with saved swatches |
 | `bf_color_calendar` | BF Color for Calendar | 18.0.1.0.0 | LGPL-3 | A free color on meeting types, shown on the events' tags |
 | `bf_color_crm` | BF Color for CRM | 18.0.1.0.0 | LGPL-3 | Free colors on CRM tags and opportunities |
@@ -150,20 +150,20 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_cx_ai` | Expérience client : analyse IA des verbatims | 18.0.1.2.3 | LGPL-3 | Sentiment, themes and a one-line summary of customer comments, through the AI bridge |
 | `bf_cx_appointment` | Expérience client : feedback post-rendez-vous | 18.0.1.1.2 | BUSL-1.1 | Three-smiley feedback request when an appointment is completed (opt-in) |
 | `bf_cx_crm` | Expérience client - sondage post-perte CRM | 18.0.1.1.0 | BUSL-1.1 | Automatic win/loss survey when a CRM opportunity is marked lost |
-| `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.1.2 | BUSL-1.1 | NPS tile with pending detractors and open complaints on the Symbifox dashboard |
-| `bf_cx_digest` | Expérience client - digest quotidien | 18.0.1.1.2 | BUSL-1.1 | Customer-experience section (follow-ups, complaints, NPS) in the daily digest |
-| `bf_cx_fundraising` | Expérience client : sondage donateur | 18.0.1.0.1 | AGPL-3 | Donor experience survey after a donation is confirmed (fundraising suite) |
+| `bf_cx_dashboard` | Expérience client - tuile tableau de bord | 18.0.1.2.0 | BUSL-1.1 | NPS tile with pending detractors and open complaints on the Symbifox dashboard |
+| `bf_cx_digest` | Expérience client - digest quotidien | 18.0.1.2.0 | BUSL-1.1 | Customer-experience section (follow-ups, complaints, NPS) in the daily digest |
+| `bf_cx_fundraising` | Expérience client : sondage donateur | 18.0.1.1.0 | AGPL-3 | Donor experience survey after a donation is confirmed (fundraising suite) |
 | `bf_cx_gamification` | Expérience client : XP Fox Quest | 18.0.1.0.0 | BUSL-1.1 | Fox Quest XP for closed-loop follow-ups and resolved complaints |
 | `bf_cx_helpdesk` | Expérience client - pont Helpdesk | 18.0.1.1.1 | BUSL-1.1 | Helpdesk tickets from complaints and detractor feedback, with a dedicated Complaints team |
 | `bf_cx_hosting` | Expérience client : CSAT post-maintenance | 18.0.1.1.2 | BUSL-1.1 | CSAT request after a completed planned maintenance (opt-in) |
-| `bf_cx_mass_mailing` | Expérience client : exclusion des boucles ouvertes (mailing) | 18.0.1.0.0 | BUSL-1.1 | Option to exclude open-CX-loop contacts from a mass mailing |
+| `bf_cx_mass_mailing` | Expérience client : exclusion des boucles ouvertes (mailing) | 18.0.1.1.0 | BUSL-1.1 | Option to exclude open-CX-loop contacts from a mass mailing |
 | `bf_cx_meeting` | Expérience client - feedback post-rencontre | 18.0.1.2.2 | BUSL-1.1 | Three-smiley feedback request after a meeting report is sent to the client |
 | `bf_cx_onboarding` | Expérience client : panneau de mise en route | 18.0.1.0.0 | BUSL-1.1 | Onboarding panel to set up the Customer Experience module |
 | `bf_cx_portal` | Expérience client : feedback au portail | 18.0.1.0.0 | BUSL-1.1 | Clients view their feedback and submit a comment from the portal |
 | `bf_cx_privacy` | Expérience client - pont Vie privée (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Formal Law 25 consent flow for testimonials through the privacy module |
 | `bf_cx_sign` | Expérience client : feedback post-signature | 18.0.1.1.2 | BUSL-1.1 | Three-smiley feedback request when a signature is completed (opt-in) |
 | `bf_cx_sms` | Expérience client : invitation de sondage par SMS | 18.0.1.0.0 | BUSL-1.1 | Survey link sent by SMS to contacts without an email address |
-| `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.0.1 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
+| `bf_cx_subscription` | Expérience client : revenu récurrent à risque | 18.0.1.1.0 | BUSL-1.1 | Recurring revenue at risk on the Customer Experience dashboard tile |
 | `bf_cx_website` | Expérience client : témoignages sur le site web | 18.0.1.1.0 | BUSL-1.1 | Public /temoignages page rendered dynamically from published testimonials |
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.6.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
@@ -171,7 +171,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.5.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
 | `bf_editorial` | Atelier éditorial | 18.0.1.10.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_editorial_audience` | Atelier éditorial — audience | 18.0.1.2.0 | BUSL-1.1 | An article's readership once the crawlers Odoo does not recognise are taken out, recorded daily before the visitor purge takes the trace away |
-| `bf_editorial_bluesky` | Atelier éditorial — Bluesky | 18.0.1.0.0 | BUSL-1.1 | Post to Bluesky from the editorial workshop, over the AT protocol with an app password |
+| `bf_editorial_bluesky` | Atelier éditorial — Bluesky | 18.0.1.1.0 | BUSL-1.1 | Post to Bluesky from the editorial workshop, over the AT protocol with an app password |
 | `bf_editorial_genfox` | Atelier éditorial — Gen | 18.0.1.4.1 | BUSL-1.1 | Article suggestion, review and expansion by Gen, as proposals a human reads before applying |
 | `bf_editorial_linkedin` | Atelier éditorial — LinkedIn | 18.0.1.0.1 | BUSL-1.1 | Post to LinkedIn from the editorial workshop, over the versioned API with a member token |
 | `bf_editorial_manual` | Atelier éditorial — canal manuel | 18.0.1.1.1 | BUSL-1.1 | A channel fed by hand: the text is written and proofread in Odoo, the posting happens on the network |
@@ -260,9 +260,9 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_org_chart_people` | Organigramme des personnes | 18.0.1.1.1 | BUSL-1.1 | Qui relève de qui, sur les contacts, avec le dessin et son PDF |
 | `bf_otp` | Symbifox OTP | 18.0.12.2.0 | LGPL-3 | One-time-code vault whose server can read no seed: encryption and code generation happen in the browser |
 | `bf_outreach` | Campagnes de démarchage | 18.0.1.4.0 | BUSL-1.1 | Track call, email and letter outreach campaigns, with a follow-up cadence per channel |
-| `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.0.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
-| `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.0.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
-| `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.0.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
+| `bf_outreach_appointment` | Démarchage — rendez-vous | 18.0.1.1.0 | BUSL-1.1 | A confirmed booking logs a meeting and advances the outreach target on its own |
+| `bf_outreach_call` | Démarchage — appels journalisés | 18.0.1.1.0 | BUSL-1.1 | Reconciles the calls actually placed with the outreach targets, duration included |
+| `bf_outreach_email` | Démarchage — réponses courriel | 18.0.1.1.0 | BUSL-1.1 | Recognises replies from outreach targets in the received-email archive |
 | `bf_people_notebook` | People I've Met | 18.0.1.0.0 | LGPL-3 | A private notebook of the people you meet: where, what they like, the detail that lets you reconnect, without making them a contact |
 | `bf_persona` | Persona des contacts | 18.0.3.2.1 | BUSL-1.1 | What to know before writing to a contact: register and salutation, who belongs in copy and who must never be, and a relationship measured on the mail actually exchanged |
 | `bf_persona_cx` | Persona des contacts - expérience client | 18.0.1.0.0 | BUSL-1.1 | The contact's own feedback in the composer: last score with its comment, open complaints, and the relationship state that follows from them |
@@ -294,7 +294,7 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_recruitment_sign` | Recrutement : l'offre part en signature | 18.0.1.0.1 | BUSL-1.1 | The offer letter becomes signable, with the branded letterhead under the signature rather than the bare body, and the application records the candidate's answer |
 | `bf_recruitment_source` | Recrutement : statistiques par source d'affichage | 18.0.1.0.1 | BUSL-1.1 | One tracked link per job board, the clicks and applications it brings in, and a conversion rate that states which share of applications it covers |
 | `bf_recruitment_source_expense` | Recrutement : ce que chaque site d'emploi coûte | 18.0.1.0.0 | BUSL-1.1 | Attribute a posting outlay to the board that billed it, and give the cost per application while saying which share of the job's spend it covers |
-| `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.0.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
+| `bf_recurrence` | Symbifox — Ancrage de la récurrence | 18.0.1.1.0 | LGPL-3 | Choose, per recurring series, whether the next deadline is measured from the old deadline or from the actual completion date |
 | `bf_rental` | Locatif : le bail de logement | 18.0.2.4.0 | BUSL-1.1 | What a residential lease agrees to, the mandatory form it cites, and what the module refuses to make up |
 | `bf_rental_notice` | Locatif : les avis | 18.0.1.6.0 | BUSL-1.1 | Lease notices: their deadlines, and the four regimes of silence the Civil Code treats differently |
 | `bf_rental_portal` | Locatif : portail du locataire | 18.0.1.8.1 | BUSL-1.1 | Tenant portal: their lease, their notices and due dates, what they have paid |
@@ -325,20 +325,20 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_shift` | Symbifox Quarts de travail | 18.0.1.2.1 | BUSL-1.1 | Shift scheduling for regular and unionised employees: labour standards checks, premiums, call lists, swaps, taxable benefits, payroll export |
 | `bf_sign` | Symbifox — Signature électronique | 18.0.3.28.1 | BUSL-1.1 | Native electronic signature (SES): parallel or sequential multi-signer requests, drag-and-drop pad placement on the PDF with reusable layout templates that can carry their own PDF (a request starts from one pick above the upload), draw/type/upload signature and initials with embedded handwriting fonts, signer-fillable text and date fields plus boxed cells for pre-printed forms and server-validated choice lists, optional email OTP identity verification of signers, refusal flow with reason, branded public signing pages and transactional emails, completion certificate, optional PAdES cryptographic seal (pyHanko) with in-app certificate generation, optional RFC 3161 trusted timestamping, hash-chained tamper-evident audit trail with one-click integrity verification, a public verification page (optional QR stamped on the document) where any holder can drop their own copy and have it hashed in-browser to confirm it matches, link expiry cron, an audited manager-only link reveal (the token itself is readable by administrators only), signing state and proof that only the signing flow can write, attachments included, and a mixin to send any Odoo record for signature with post-back of the signed document |
 | `bf_sign_account` | Symbifox — Signature pour la comptabilité | 18.0.1.1.0 | BUSL-1.1 | Send a customer invoice / vendor bill for electronic signature (bf_sign). |
-| `bf_sign_corporate` | Symbifox — Signature des résolutions corporatives | 18.0.1.3.0 | BUSL-1.1 | Send a corporate resolution for electronic signature (bf_sign). |
+| `bf_sign_corporate` | Symbifox — Signature des résolutions corporatives | 18.0.1.4.0 | BUSL-1.1 | Send a corporate resolution for electronic signature (bf_sign). |
 | `bf_sign_privacy` | Symbifox — Signature des consentements (Loi 25) | 18.0.1.1.0 | BUSL-1.1 | Sign Loi 25 consents with the native bf_sign engine (instead of external DocuSeal / LibreSign). |
-| `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.1.0 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
-| `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.1.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
+| `bf_sign_purchase` | Symbifox — Signature pour les achats | 18.0.1.2.0 | BUSL-1.1 | Send a purchase order for electronic signature (bf_sign). |
+| `bf_sign_sale` | Symbifox — Signature pour les ventes | 18.0.2.2.0 | BUSL-1.1 | Send a quotation / sales order for electronic signature (bf_sign). |
 | `bf_sms_archive` | SMS & Calls | 18.0.5.26.0 | BUSL-1.1 | Two-way live SMS/MMS messaging via VOIP.ms (chat workspace + systray) plus Android SMS/call-log archiving, search, PDF/CSV export and task linking |
 | `bf_softphone` | Symbifox — Téléphone SIP | 18.0.2.10.0 | LGPL-3 | WebRTC softphone (JsSIP) in the web client, backed by an Asterisk PBX, with PBX-dialled calls for clients without a SIP stack and a push wake for a phone whose app is closed |
 | `bf_stepbystep_clients` | Step-by-Step — Suivi d'accompagnement client | 18.0.2.2.1 | BUSL-1.1 | Internal dashboard tracking each client mandate's linear step-by-step progression: current step, hours budget, timeline. |
 | `bf_studio_light` | Symbifox — Forge | 18.0.7.1.0 | BUSL-1.1 | Field builder for Odoo Community: add custom fields (incl. polymorphic reference with model whitelist), smart buttons (count via JSON controller, no compute Python), and inject them in views without writing a module — survives `-u all` upgrades |
 | `bf_subscription` | Abonnements | 18.0.1.6.0 | BUSL-1.1 | Paid subscription management with correlation to vendor bills |
-| `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.0.3 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
-| `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.0.3 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
+| `bf_subscription_daily_digest` | Abonnements — section du digest quotidien | 18.0.1.1.0 | BUSL-1.1 | Adds an 'Upcoming renewals' section to the daily digest |
+| `bf_subscription_dashboard` | Abonnements — carte du tableau de bord | 18.0.1.1.0 | BUSL-1.1 | Adds a subscription summary card to the Symbifox home screen |
 | `bf_subscription_hosting` | Hébergement — pont vers les abonnements | 18.0.1.0.0 | BUSL-1.1 | Create a subscription from a hosting domain (avoids double-entering recurring costs). |
 | `bf_survey_upload` | BF Survey Upload | 18.0.1.2.0 | LGPL-3 | File-upload question type for Odoo surveys |
-| `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.0.1 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
+| `bf_systray_prefs` | Symbifox — Préférences de la barre système | 18.0.1.1.0 | LGPL-3 | Per-user show/hide of systray (notification-tray) icons, via a gear menu |
 | `bf_task_unblock_notify` | BF Notification de déblocage de tâche | 18.0.1.8.0 | LGPL-3 | Notifies assignees when their task becomes unblocked |
 | `bf_task_waiting_states` | Task Waiting States | 18.0.1.0.0 | LGPL-3 | Add Attente - Client / Attente - Externe task states |
 | `bf_time_of_day` | BF Time of Day | 18.0.1.5.1 | LGPL-3 | Time-of-day slots (Morning / Noon / End of day / Off hours) for tasks and activities, with per-user overrides |

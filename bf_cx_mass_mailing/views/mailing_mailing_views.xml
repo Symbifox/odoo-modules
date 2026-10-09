@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="mass_mailing.view_mail_mass_mailing_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='settings']//group[@name='email_content']" position="after">
-                <group string="Expérience client" name="bf_cx_open_loops" invisible="mailing_type != 'mail'">
+                <group string="Customer experience" name="bf_cx_open_loops" invisible="mailing_type != 'mail'">
                     <field name="bf_cx_exclude_open_loops"
                            readonly="state in ('sending', 'done')"/>
                 </group>

@@ -10,6 +10,10 @@ Auto-installs when `bf_subscription` **and** `bf_home` are both present.
 
 `bf_subscription`, `bf_home`.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the

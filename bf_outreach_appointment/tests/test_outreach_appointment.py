@@ -128,3 +128,44 @@ class TestOutreachAppointmentBridge(TransactionCase):
         self.campaign.booking_type_id = self.booking_type
         self.target.invalidate_recordset()
         self.assertIn("decouverte-test", self.target.booking_url or "")
+
+    def _langues(self):
+        self.env["res.lang"]._activate_lang("fr_CA")
+        self.env["ir.module.module"]._load_module_terms(
+            ["bf_outreach_appointment"], ["fr_CA"], overwrite=True)
+        internes = [(6, 0, [self.env.ref("base.group_user").id])]
+        fr = self.env["res.users"].create({
+            "name": "Owner fr_CA", "login": "owner.outreach@example.test", "lang": "fr_CA",
+            "groups_id": internes,
+        })
+        en = self.env["res.users"].create({
+            "name": "Organizer en_US", "login": "organizer.outreach@example.test",
+            "lang": "en_US", "groups_id": internes,
+        })
+        return fr, en
+
+    def _book_as(self, organizer=None):
+        valeurs = {
+            "type_id": self.booking_type.id,
+            "partner_ids": [(6, 0, self.partner.ids)],
+            "start": self.now + timedelta(days=4),
+            "duration": 0.5,
+        }
+        if organizer:
+            valeurs["user_id"] = organizer.id
+        # Booked from an English context, as a visitor would.
+        return self.env["resource.booking"].with_context(lang="en_US").create(valeurs)
+
+    def test_booking_title_reads_in_the_target_owner_language(self):
+        """The target owner reads the touch: their language wins over the organizer's."""
+        fr, en = self._langues()
+        self.target.user_id = fr
+        self._book_as(organizer=en)
+        self.assertEqual(self.target.touch_ids.summary, "Rendez-vous : Découverte 30 min")
+
+    def test_booking_title_falls_back_to_the_organizer(self):
+        """No owner on the target: the organizer reads it, never the superuser."""
+        fr, en = self._langues()
+        self.target.user_id = False
+        self._book_as(organizer=fr)
+        self.assertEqual(self.target.touch_ids.summary, "Rendez-vous : Découverte 30 min")

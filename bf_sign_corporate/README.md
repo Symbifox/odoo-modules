@@ -31,6 +31,10 @@ than failing on a technical constraint.
 
 `bf_sign`, `bf_corporate_governance`.
 
+## Languages (v18.0.1.4.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## Licence
 
 Distributed under the **Business Source License 1.1** (BUSL-1.1). See the

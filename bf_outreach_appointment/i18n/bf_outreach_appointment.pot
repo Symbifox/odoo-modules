@@ -1,19 +1,45 @@
-# Translation of Odoo Server.
-# This file contains the translation of the following modules:
-# 	* bf_outreach_appointment
-#
+# Translation template for Démarchage : rendez-vous.
+# The module's source strings are written in English.
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0-20260630\n"
+"Project-Id-Version: bf_outreach_appointment 18.0.1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-04 05:16+0000\n"
-"PO-Revision-Date: 2026-08-04 05:16+0000\n"
+"POT-Creation-Date: 2026-10-09 01:59+0000\n"
+"PO-Revision-Date: 2026-10-09 01:59+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: \n"
+
+#. module: bf_outreach_appointment
+#: model:ir.model.fields,field_description:bf_outreach_appointment.field_bf_outreach_touch__booking_id
+msgid "Booking"
+msgstr ""
+
+#. module: bf_outreach_appointment
+#: model:ir.model.fields,field_description:bf_outreach_appointment.field_bf_outreach_target__booking_url
+msgid "Booking link"
+msgstr ""
+
+#. module: bf_outreach_appointment
+#: model:ir.model.fields,help:bf_outreach_appointment.field_bf_outreach_touch__booking_id
+msgid ""
+"Booking this interaction was inferred from. Also acts as a safeguard: the "
+"same booking is never logged twice."
+msgstr ""
+
+#. module: bf_outreach_appointment
+#: model:ir.model.fields,field_description:bf_outreach_appointment.field_bf_outreach_campaign__booking_type_id
+msgid "Booking type"
+msgstr ""
+
+#. module: bf_outreach_appointment
+#. odoo-python
+#: code:addons/bf_outreach_appointment/models/resource_booking.py:0
+msgid "Booking: %s"
+msgstr ""
 
 #. module: bf_outreach_appointment
 #: model:ir.model,name:bf_outreach_appointment.model_bf_outreach_campaign
@@ -31,48 +57,20 @@ msgid "Interaction de démarchage"
 msgstr ""
 
 #. module: bf_outreach_appointment
-#: model:ir.model.fields,field_description:bf_outreach_appointment.field_bf_outreach_target__booking_url
-msgid "Lien de prise de rendez-vous"
-msgstr ""
-
-#. module: bf_outreach_appointment
-#: model:ir.model.fields,field_description:bf_outreach_appointment.field_bf_outreach_touch__booking_id
-msgid "Rendez-vous"
-msgstr ""
-
-#. module: bf_outreach_appointment
-#. odoo-python
-#: code:addons/bf_outreach_appointment/models/resource_booking.py:0
-msgid "Rendez-vous : %s"
-msgstr ""
-
-#. module: bf_outreach_appointment
 #: model:ir.model,name:bf_outreach_appointment.model_resource_booking
 msgid "Resource Booking"
 msgstr ""
 
 #. module: bf_outreach_appointment
-#: model:ir.model.fields,help:bf_outreach_appointment.field_bf_outreach_touch__booking_id
+#: model:ir.model.fields,help:bf_outreach_appointment.field_bf_outreach_target__booking_url
 msgid ""
-"Réservation dont cette interaction a été déduite. Sert aussi de garde-fou : "
-"un même rendez-vous n'est jamais journalisé deux fois."
-msgstr ""
-
-#. module: bf_outreach_appointment
-#: model:ir.model.fields,field_description:bf_outreach_appointment.field_bf_outreach_campaign__booking_type_id
-msgid "Type de rendez-vous"
+"To drop into the outreach email: the target picks their own slot, and the "
+"booking moves their file along by itself."
 msgstr ""
 
 #. module: bf_outreach_appointment
 #: model:ir.model.fields,help:bf_outreach_appointment.field_bf_outreach_campaign__booking_type_id
 msgid ""
-"Type proposé aux cibles de cette campagne. Son lien public est disponible "
-"sur chaque cible, pour le glisser dans le modèle de courriel."
-msgstr ""
-
-#. module: bf_outreach_appointment
-#: model:ir.model.fields,help:bf_outreach_appointment.field_bf_outreach_target__booking_url
-msgid ""
-"À insérer dans le courriel de démarchage : la cible choisit elle-même sa "
-"plage, et le rendez-vous pris fait avancer son dossier."
+"Type offered to this campaign's targets. Its public link is available on "
+"every target, ready to drop into the email template."
 msgstr ""

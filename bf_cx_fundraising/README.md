@@ -8,6 +8,10 @@ donor. Once per donation, with the solicitation guardrails applied. A
 donor may give often, so the program's minimum pacing is the main
 protection here (90 days recommended).
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English.
+
 ## License
 
 AGPL-3, inherited rather than chosen: this module sits on top of Odoo Community

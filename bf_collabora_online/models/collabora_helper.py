@@ -6,7 +6,7 @@ from ..utils import cache_decouverte
 
 class BfCollaboraHelper(models.Model):
     _name = "bf.collabora.helper"
-    _description = "Collabora Online, correctifs Blue Fox"
+    _description = "Collabora Online, Blue Fox fixes"
 
     @api.model
     def pieces_modifiables(self, attachment_ids):
@@ -54,5 +54,5 @@ class BfCollaboraHelper(models.Model):
         module corrige.
         """
         if not self.env.su and not self.env.user.has_group("base.group_system"):
-            raise AccessError(_("Seule l'administration peut vider ce cache."))
+            raise AccessError(_("Only administrators can clear this cache."))
         return cache_decouverte.vider()

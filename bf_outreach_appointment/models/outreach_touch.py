@@ -7,10 +7,10 @@ class BfOutreachTouch(models.Model):
 
     booking_id = fields.Many2one(
         "resource.booking",
-        string="Rendez-vous",
+        string="Booking",
         ondelete="set null",
         copy=False,
         index="btree_not_null",
-        help="Réservation dont cette interaction a été déduite. Sert aussi de "
-        "garde-fou : un même rendez-vous n'est jamais journalisé deux fois.",
+        help="Booking this interaction was inferred from. Also acts as a "
+             "safeguard: the same booking is never logged twice.",
     )

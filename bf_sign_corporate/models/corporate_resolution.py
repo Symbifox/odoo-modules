@@ -55,7 +55,7 @@ class CorporateResolution(models.Model):
 
     def _sign_document_filename(self):
         self.ensure_one()
-        base = "%s - %s" % (self.sequence or "RES", self.name or "Résolution")
+        base = "%s - %s" % (self.sequence or "RES", self.name or _("Resolution"))
         return "%s.pdf" % base.replace("/", "-")
 
     def action_send_for_signature(self):
@@ -70,7 +70,7 @@ class CorporateResolution(models.Model):
         missing = self._sign_signer_partners().filtered(lambda p: not p.email)
         if missing:
             raise UserError(_(
-                "Ces signataires n'ont pas de courriel — ajoutez-en un sur leur "
-                "fiche avant d'envoyer pour signature :\n%s"
+                "These signatories have no email: add one to their record "
+                "before sending for signature:\n%s"
             ) % "\n".join("• %s" % p.name for p in missing))
         return super().action_send_for_signature()

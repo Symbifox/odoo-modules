@@ -7,12 +7,12 @@ class ResConfigSettings(models.TransientModel):
     _inherit = "res.config.settings"
 
     bf_cool_decouverte_ttl = fields.Integer(
-        string="Durée de vie de la découverte (secondes)",
+        string="Discovery lifetime (seconds)",
         default=TTL_DEFAUT,
         config_parameter="bf_collabora.decouverte_ttl",
-        help="Le fichier de découverte du serveur Collabora est gardé en mémoire "
-             "pendant ce délai. 0 pour le retélécharger à chaque ouverture, "
-             "comme le fait le connecteur amont.",
+        help="The Collabora server's discovery file is kept in memory for "
+             "this long. 0 downloads it again at each opening, as the "
+             "upstream connector does.",
     )
 
     def action_bf_vider_cache_decouverte(self):

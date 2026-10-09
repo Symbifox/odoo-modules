@@ -4,6 +4,10 @@ Lets each user **show or hide individual systray icons** (the notification-tray 
 
 On a busy database the systray can accumulate a dozen or more icons (timers, messaging, search, notes, file browsers, etc.). This module gives every user a personal, reversible way to keep only the icons they actually use — without uninstalling anything or affecting anyone else.
 
+## Languages (v18.0.1.1.0)
+
+Labels and messages are written in English in the source; the French ships in `i18n/fr_CA.po`. Before this version they read in French for every user, including users set to English. The names of well-known systray icons are translatable too.
+
 ## License
 
 LGPL-3 — see the repository [LICENSE](../LICENSE) and `__manifest__.py` for details.
