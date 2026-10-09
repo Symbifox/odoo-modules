@@ -2,7 +2,7 @@ import re
 from datetime import date, timedelta
 
 from odoo import fields
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import HttpCase, new_test_user, tagged
 
 
@@ -140,6 +140,76 @@ class TestRollCall(AttendanceCase):
         self._line(pm, self.b).status = "absent"
         counts = self.env["bf.school.attendance.line"]._repeated_unjustified()
         self.assertEqual(counts, {self.a: 3}, "three distinct days for Alpha, two for Bravo")
+
+    # Creation and state guards (2026-10-08)
+    def test_a_roll_call_is_taken_with_its_button(self):
+        # 🔴 By RPC, a roll call written "Taken" without its button told no family.
+        session = self._session(user=self.t1)
+        line = self._line(session, self.a)
+        line.write({"status": "absent"})
+        for record, vals in ((session, {"state": "done"}), (line, {"family_notified_on": fields.Datetime.now()}),
+                             (line, {"justified": True})):
+            with self.assertRaises(UserError):
+                record.write(vals)
+        session.action_done()
+        self.assertTrue(line.family_notified_on)
+        # The families were told: the lines are frozen, and only the office corrects.
+        with self.assertRaises(UserError):
+            line.write({"status": "present"})
+        with self.assertRaises(UserError):
+            session.action_reopen()
+        office = new_test_user(self.env, login="school_att_office_reopen", groups="bf_school_core.group_school_manager")
+        Line = self.env["bf.school.attendance.line"].with_user(office)
+        with self.assertRaises(UserError):
+            Line.create({"session_id": session.id, "student_id": self.c.id, "status": "absent"})
+        with self.assertRaises(UserError):
+            line.with_user(office).unlink()
+        session.with_user(office).action_reopen()
+        self.assertEqual(session.state, "draft")
+        # Reopened, the office corrects: a reason it chooses justifies the absence.
+        line.with_user(office).write({"reason_id": self.illness.id})
+        self.assertTrue(line.justified)
+
+    def test_an_absence_is_justified_by_a_reason_or_a_declaration_only(self):
+        # 🔴 Adversarial review (2026-10-08): `justified` was refused, but the teacher reached it
+        # through the reason (read-only for them on the screen) or another student's declaration.
+        declaration = self.env["bf.school.absence.declaration"].create({
+            "student_id": self.b.id, "date_from": self.today, "date_to": self.today,
+            "reason_id": self.illness.id})
+        session = self._session(user=self.t1, day=self.today + timedelta(days=30))
+        line = self._line(session, self.a)
+        line.write({"status": "absent"})
+        for vals in ({"reason_id": self.illness.id}, {"declaration_id": declaration.id},
+                     {"student_id": self.c.id}):
+            with self.assertRaises(UserError):
+                line.write(vals)
+        with self.assertRaises(UserError):
+            session.write({"date": self.today + timedelta(days=31)})
+        self.assertFalse(line.justified)
+
+    def test_teacher_creates_no_roll_call_already_taken(self):
+        Session = self.env["bf.school.attendance.session"].with_user(self.t1)
+        vals = {"group_id": self.g301.id, "slot": "am", "date": self.today}
+        with self.assertRaises(UserError):
+            Session.create(dict(vals, state="done"))
+        session = Session.with_context(default_state="done", default_teacher_id=self.t2.id).create(dict(vals))
+        self.assertEqual((session.state, session.teacher_id), ("draft", self.t1))
+        with self.assertRaises(UserError):
+            session.write({"teacher_id": self.t2.id})
+
+    def test_office_creates_no_line_already_told(self):
+        office = new_test_user(self.env, login="school_att_office", groups="bf_school_core.group_school_manager")
+        session = self._session()
+        Line = self.env["bf.school.attendance.line"].with_user(office)
+        vals = {"session_id": session.id, "student_id": self.c.id, "status": "absent"}
+        declaration = self.env["bf.school.absence.declaration"].create({
+            "student_id": self.a.id, "date_from": self.today, "date_to": self.today, "reason_id": self.illness.id})
+        for forged in ({"family_notified_on": fields.Datetime.now()}, {"declaration_id": declaration.id}):
+            with self.assertRaises(UserError):
+                Line.create(dict(vals, **forged))
+        line = Line.with_context(default_family_notified_on=fields.Datetime.now(),
+                                 default_declaration_id=declaration.id).create(dict(vals, justified=True))
+        self.assertEqual((line.family_notified_on, line.declaration_id.id, line.justified), (False, False, False))
 
 
 @tagged("post_install", "-at_install")

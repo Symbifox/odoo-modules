@@ -158,6 +158,47 @@ class TestFormLogic(SchoolFormsCase):
         with self.assertRaises(AccessError):
             self.env["bf.school.form.answer"].with_user(self.teacher).search([])
 
+    # Creation and state guards (2026-10-08)
+    def test_a_sent_form_does_not_go_back_to_draft(self):
+        # 🔴 By RPC, the office put a sent form back to draft, changed its text under the
+        # families' answers and sent it again.
+        form = self._sent().with_user(self.office)
+        for vals in ({"state": "draft"}, {"body_hash": "0" * 64}, {"sent_on": False}):
+            with self.assertRaises(UserError):
+                form.write(vals)
+        form.action_close()
+        self.assertEqual(form.state, "closed")
+        # Its answers are the families' evidence: a sent form is closed, never deleted.
+        with self.assertRaises(UserError):
+            form.unlink()
+        self._form().unlink()  # a draft is
+
+    def test_office_creates_no_form_already_sent(self):
+        for forged in ({"state": "sent"}, {"body_hash": "0" * 64}):
+            with self.assertRaises(UserError):
+                self._form(**forged)
+        self.assertEqual(self._form(state="draft").state, "draft")  # the form sends the draft state
+        Form = self.env["bf.school.form"].with_user(self.office)
+        self.assertEqual(Form.with_context(default_state="sent").browse(self._form().id).state, "draft")
+        form = Form.with_context(default_state="sent", default_body_hash="0" * 64).create({
+            "name": "Sortie", "type_id": self.env.ref("bf_school_forms.form_type_trip").id,
+            "school_id": self.school.id, "group_ids": [(6, 0, self.g301.ids)], "body_html": "<p>x</p>",
+            "deadline": date.today() + timedelta(days=10)})
+        self.assertEqual((form.state, form.body_hash), ("draft", False))
+        self.env["ir.default"].set("bf.school.form", "state", "sent", user_id=self.office.id)
+        self.assertEqual(self._form().state, "draft")
+
+    def test_an_answer_is_not_written_by_the_office(self):
+        # 🔴 A computed state is still written by RPC: a parent's refusal turned into "Authorised",
+        # or a guardian's answer moved to another student.
+        form = self._sent()
+        self._answer(form, self.alpha, self.mom.partner_id)._school_decide("refused", "portal")
+        response = self._response(form, self.alpha).with_user(self.office)
+        for vals in ({"state": "accepted"}, {"student_id": self.bravo.id}):
+            with self.assertRaises(UserError):
+                response.write(vals)
+        self.assertEqual(response.state, "refused")
+
 
 @tagged("post_install", "-at_install")
 class TestFormPortal(SchoolFormsCase):

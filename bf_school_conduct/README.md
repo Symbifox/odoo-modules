@@ -33,8 +33,9 @@ frames them, and the monthly news of Régime pédagogique s. 29.2.
 A teacher reads and records the breaches and follow-ups of the students they teach
 this year; the office sees everything. Families have no access right. Only the button
 informs the parents, after checking the conditions (the student's consent for sexual
-violence from 14): the date they were informed cannot be written by hand, and a teacher
-cannot move a breach to another student. Breaches and monthly news reach the adults
+violence from 14): the date they were informed cannot be written by hand, at creation
+or on a copy either, and a teacher cannot move a breach to another student. Who noted
+a breach, or wrote a monthly news, is the person who recorded it. Breaches and monthly news reach the adults
 with parental authority, not every adult who receives notices.
 
 ## What has not been confirmed

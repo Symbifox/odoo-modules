@@ -279,3 +279,25 @@ class TestSchoolHealth(HttpCase):
         med = self._signed()  # oral methylphenidate
         with self.assertRaises(UserError):
             self._give(self.staff, emergency_epinephrine=True, medication_id=med.id)
+
+    # Creation guards (2026-10-08)
+    def test_nurse_creates_no_authorisation_already_signed(self):
+        # 🔴 write() refused it, create() took an authorisation born "active" with a parent as
+        # signatory: administrable without any signature.
+        Med = self.env["bf.school.medication"].with_user(self.nurse)
+        vals = {"student_id": self.a.id, "name": "Méthylphénidate 10 mg", "prescriber": "Dre Essai",
+                "dosage": "1 comprimé à midi", "route": "oral",
+                "date_from": self.today - timedelta(days=1), "date_to": self.today + timedelta(days=90)}
+        for forged in ({"state": "active"}, {"signed_by_id": self.p.partner_id.id}, {"access_token": "connu"},
+                       {"text_hash": "0" * 64}):
+            with self.assertRaises(UserError):
+                Med.create(dict(vals, **forged))
+        self.assertEqual(Med.create(dict(vals, state="draft")).state, "draft")  # the form sends it
+        med = Med.with_context(default_state="active", default_signed_by_id=self.p.partner_id.id).create(
+            dict(vals))
+        self.assertEqual((med.state, med.signed_by_id.id), ("draft", False))
+        self.env["ir.default"].set("bf.school.medication", "state", "active", user_id=self.nurse.id)
+        med = Med.create(dict(vals))
+        self.assertFalse(med._is_valid_on(self.today))
+        med.action_ask_family()
+        self.assertEqual(med.state, "asked")

@@ -157,10 +157,31 @@ class AttendanceSession(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        if not self.env.su:
+            for vals in vals_list:
+                # 🔴 At creation too: a roll call born "Taken" told no family. Written explicitly:
+                # Odoo adds `default_<field>` and ir.default AFTER this check. Who took it is the
+                # person recording, never someone else.
+                if vals.get("state") and vals["state"] != "draft":
+                    raise UserError(_("A roll call is taken with its button, which tells the families."))
+                vals.update(state="draft", teacher_id=self.env.uid)
         sessions = super().create(vals_list)
         for session in sessions:
             session._fill_lines()
         return sessions
+
+    def write(self, vals):
+        if not self.env.su:
+            # 🔴 `readonly` guards the screen only: by RPC, a roll call written "Taken" without its
+            # button told no family of an unjustified absence.
+            if "state" in vals:
+                raise UserError(_("A roll call is taken with its button, which tells the families."))
+            if "teacher_id" in vals:
+                raise UserError(_("Who took a roll call is not changed."))
+            # The form freezes them once saved; a line's date and group are written through here.
+            if {"group_id", "date", "slot"} & set(vals):
+                raise UserError(_("A roll call is not moved: correct its lines."))
+        return super().write(vals)
 
     def _fill_lines(self):
         """Everyone present by default; what the family declared is already there."""
@@ -183,13 +204,18 @@ class AttendanceSession(models.Model):
         for session in self:
             if session.state == "done":
                 continue
-            session.state = "done"
+            session.check_access("write")
+            session.sudo().state = "done"
             session.line_ids.filtered(
                 lambda l: l.status == "absent" and not l.justified)._notify_families()
         return True
 
     def action_reopen(self):
-        self.write({"state": "draft"})
+        # The families were told: only the office corrects a roll call that was taken.
+        if not (self.env.su or self.env.user.has_group("bf_school_core.group_school_manager")):
+            raise UserError(_("A roll call that was taken is corrected by the school office."))
+        self.check_access("write")
+        self.sudo().write({"state": "draft"})
         return True
 
 
@@ -222,6 +248,44 @@ class AttendanceLine(models.Model):
     def _compute_display_name(self):
         for line in self:
             line.display_name = "%s · %s" % (line.student_id.name or "", line.session_id.display_name or "")
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        if not self.env.su:
+            for vals in vals_list:
+                if vals.get("family_notified_on"):
+                    raise UserError(_("A roll call is taken with its button, which tells the families."))
+                if vals.get("declaration_id"):
+                    raise UserError(_("An absence is justified by a reason or the family's declaration."))
+                # `justified` given here is computed again from the reason and the declaration.
+                vals.update(family_notified_on=False, declaration_id=False)
+        lines = super().create(vals_list)
+        # A line added to a roll call already taken was an absence the families were never told of.
+        if not self.env.su and any(line.session_id.state == "done" for line in lines):
+            raise UserError(_("A roll call that was taken is corrected by the school office."))
+        return lines
+
+    def unlink(self):
+        if not self.env.su and any(line.session_id.state == "done" for line in self):
+            raise UserError(_("A roll call that was taken is corrected by the school office."))
+        return super().unlink()
+
+    def write(self, vals):
+        if not self.env.su:
+            # 🔴 By RPC, an absence was marked "family told" without any email (the notice is
+            # sent once a day per student), or "justified" without a reason, or by a declaration
+            # of another student, or by a reason the teacher does not choose on the screen: the
+            # family was not told and the office's list of repeated unjustified absences missed it.
+            if "family_notified_on" in vals:
+                raise UserError(_("A roll call is taken with its button, which tells the families."))
+            if "justified" in vals or "declaration_id" in vals or (
+                    "reason_id" in vals and not self.env.user.has_group("bf_school_core.group_school_manager")):
+                raise UserError(_("An absence is justified by a reason or the family's declaration."))
+            if {"student_id", "session_id", "date", "group_id"} & set(vals):
+                raise UserError(_("A roll call is not moved: correct its lines."))
+            if any(line.session_id.state == "done" for line in self):
+                raise UserError(_("A roll call that was taken is corrected by the school office."))
+        return super().write(vals)
 
     @api.depends("status", "reason_id.is_justified", "declaration_id")
     def _compute_justified(self):

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 13:00+0000\n"
+"POT-Creation-Date: 2026-10-09 00:22+0000\n"
 "PO-Revision-Date: 2026-09-27 04:02+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -51,6 +51,12 @@ msgid "<span class=\"text-success\"><i class=\"fa fa-check\"/> Ordered</span>"
 msgstr "<span class=\"text-success\"><i class=\"fa fa-check\"/> Commandé</span>"
 
 #. module: bf_school_meal
+#. odoo-python
+#: code:addons/bf_school_meal/models/meal.py:0
+msgid "A day is closed with its button, which credits the orders."
+msgstr "Une journée se ferme avec son bouton, qui crédite les commandes."
+
+#. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school__meal_cancel_hour
 msgid "A family cancels a meal until this hour on the day it is served; it is credited."
 msgstr "Une famille annule un repas jusqu'à cette heure le jour même; il est crédité."
@@ -59,6 +65,12 @@ msgstr "Une famille annule un repas jusqu'à cette heure le jour même; il est c
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school__meal_order_days
 msgid "A family orders a meal at the latest this many days before it is served."
 msgstr "Une famille commande un repas au plus tard ce nombre de jours avant le service."
+
+#. module: bf_school_meal
+#. odoo-python
+#: code:addons/bf_school_meal/models/account.py:0
+msgid "A meal account stays with the adult who pays: open one for the other adult."
+msgstr "Un compte repas reste à l'adulte qui paie : ouvrez-en un pour l'autre adulte."
 
 #. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school_meal_order__student_allergen_ids
@@ -724,6 +736,12 @@ msgstr "Au choix de la famille"
 #: code:addons/bf_school_meal/models/account.py:0
 msgid "The meal balance is too low (%(balance)s): top it up first."
 msgstr "Le solde repas est insuffisant (%(balance)s) : le recharger d'abord."
+
+#. module: bf_school_meal
+#. odoo-python
+#: code:addons/bf_school_meal/models/account.py:0
+msgid "The office records adjustments; the other movements are kept by the system."
+msgstr "Le secrétariat inscrit des ajustements; les autres mouvements sont tenus par le système."
 
 #. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school_meal_order__price

@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 
 from odoo import fields
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tests import HttpCase, new_test_user, tagged
 
 
@@ -100,3 +100,13 @@ class TestSchoolHomework(HttpCase):
         with self.assertRaises(AccessError):
             homework.with_user(self.t1).group_id = self.g2
         self.assertEqual(homework.group_id, self.g1)
+
+    # Creation guards (2026-10-08)
+    def test_who_gave_it_is_the_person_recording(self):
+        self.assertEqual(self._hw(user=self.t1, teacher_id=self.t2.id).teacher_id, self.t1)
+        homework = self.env["bf.school.homework"].with_user(self.t1).with_context(
+            default_teacher_id=self.t2.id).create({"name": "Essai", "group_id": self.g1.id,
+                                                   "date_due": self.today + timedelta(days=3)})
+        self.assertEqual(homework.teacher_id, self.t1)
+        with self.assertRaises(UserError):
+            homework.write({"teacher_id": self.t2.id})

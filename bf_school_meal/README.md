@@ -26,8 +26,10 @@ The caterer's menus and meal orders on the family portal.
   internal users only (the portal reads them in sudo to refuse a meal).
 - **Closed day** (storm, closure): every order is cancelled and credited at once.
 - **The balance is a register**: movements are never edited or deleted; the office
-  records an adjustment with its reason. An order's price, state and invoice move only
-  with its buttons.
+  records adjustments only, with their reason (the other movements come from the orders
+  and the top-ups). An order's price, state and invoice move only with its buttons,
+  from its creation. An account stays with the adult who pays, and a day is closed only
+  with its button, which credits the orders.
 
 ## Taxes
 

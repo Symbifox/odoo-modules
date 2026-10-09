@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 20:37+0000\n"
+"POT-Creation-Date: 2026-10-09 00:21+0000\n"
 "PO-Revision-Date: 2026-09-26 22:30+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -201,6 +201,12 @@ msgstr "Un contrat se termine après son début."
 #: code:addons/bf_school_contract/models/school_contract.py:0
 msgid "A contract sent for signature or signed is not edited: terminate it and make a new one."
 msgstr "Un contrat envoyé pour signature ou signé ne se modifie pas : résiliez-le et faites-en un nouveau."
+
+#. module: bf_school_contract
+#. odoo-python
+#: code:addons/bf_school_contract/models/school_contract.py:0
+msgid "A terminated contract keeps the figures of its termination."
+msgstr "Un contrat résilié garde les montants de sa résiliation."
 
 #. module: bf_school_contract
 #: model:ir.model,name:bf_school_contract.model_bf_school_contract_accessory

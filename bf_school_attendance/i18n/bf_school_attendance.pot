@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260630\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 13:00+0000\n"
-"PO-Revision-Date: 2026-10-03 13:00+0000\n"
+"POT-Creation-Date: 2026-10-09 00:22+0000\n"
+"PO-Revision-Date: 2026-10-09 00:22+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -58,6 +58,24 @@ msgid "A morning or afternoon absence covers a single day."
 msgstr ""
 
 #. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "A roll call is not moved: correct its lines."
+msgstr ""
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "A roll call is taken with its button, which tells the families."
+msgstr ""
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "A roll call that was taken is corrected by the school office."
+msgstr ""
+
+#. module: bf_school_attendance
 #: model:ir.model.constraint,message:bf_school_attendance.constraint_bf_school_attendance_line_one_line
 msgid "A student appears once per roll call."
 msgstr ""
@@ -104,6 +122,12 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_school_attendance/models/attendance.py:0
 msgid "An absence ends after it starts."
+msgstr ""
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "An absence is justified by a reason or the family's declaration."
 msgstr ""
 
 #. module: bf_school_attendance
@@ -573,6 +597,12 @@ msgstr ""
 #. module: bf_school_attendance
 #: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
 msgid "When"
+msgstr ""
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "Who took a roll call is not changed."
 msgstr ""
 
 #. module: bf_school_attendance

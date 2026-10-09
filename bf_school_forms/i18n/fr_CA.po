@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 13:00+0000\n"
+"POT-Creation-Date: 2026-10-09 00:21+0000\n"
 "PO-Revision-Date: 2026-09-27 00:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -119,6 +119,18 @@ msgstr "Nécessite une action"
 #: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form_type__active
 msgid "Active"
 msgstr "Actif"
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "An answer comes from the family: it is not written by hand."
+msgstr "Une réponse vient de la famille : elle ne s'écrit pas à la main."
+
+#. module: bf_school_forms
+#. odoo-python
+#: code:addons/bf_school_forms/models/school_form.py:0
+msgid "An authorisation is sent and closed with its buttons."
+msgstr "Une autorisation s'envoie et se ferme avec ses boutons."
 
 #. module: bf_school_forms
 #: model:ir.model.fields,field_description:bf_school_forms.field_bf_school_form__deadline

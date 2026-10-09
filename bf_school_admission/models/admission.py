@@ -16,6 +16,9 @@ MAX_REGISTRATION_FEE = 200.0  # s. 12: admission or registration fee (or 1/10 of
 #: Moved only by the buttons of the model.
 APPLICATION_SYSTEM_FIELDS = {"state", "decided_by_id", "decided_on", "invoice_id", "submitted_on",
                              "access_token", "purged", "client_ip"}
+#: What an application created by hand is born with (the access token is drawn anew).
+APPLICATION_DEFAULTS = {"state": "awaiting_fee", "decided_by_id": False, "decided_on": False,
+                        "invoice_id": False, "submitted_on": False, "purged": False, "client_ip": False}
 #: Anonymous applications accepted per hour from one address, or for one email.
 MAX_PUBLIC_PER_HOUR = 3
 
@@ -262,6 +265,16 @@ class Admission(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            if not self.env.su:
+                # 🔴 At creation too: write() refused them, create() took an application born
+                # "accepted" and decided by someone else, by RPC. Written explicitly, because Odoo
+                # adds `default_<field>` from the context and the user's own ir.default AFTER this
+                # check. The public form and the portal create in sudo.
+                if vals.get("access_token") or any(
+                        vals.get(f) and vals[f] != v for f, v in APPLICATION_DEFAULTS.items()):
+                    raise UserError(_("An application moves with its buttons."))
+                vals.update(APPLICATION_DEFAULTS, access_token=secrets.token_urlsafe(32))
+                vals.pop("name", None)
             if not vals.get("name") or vals["name"] == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("bf.school.admission") or _("New")
         return super().create(vals_list)
@@ -269,7 +282,7 @@ class Admission(models.Model):
     def write(self, vals):
         # 🔴 `readonly` guards the screen only: by RPC, an application was accepted without its
         # fee and the person who decided was rewritten (Law 25 wants to know who decided).
-        if not self.env.su and APPLICATION_SYSTEM_FIELDS & set(vals):
+        if not self.env.su and (APPLICATION_SYSTEM_FIELDS | {"name"}) & set(vals):
             raise UserError(_("An application moves with its buttons."))
         return super().write(vals)
 

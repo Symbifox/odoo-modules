@@ -1,7 +1,7 @@
 import secrets
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.tools import consteq
 
 KINDS = [("homework", "Homework"), ("study", "Study"), ("project", "Project"), ("test", "Announced test")]
@@ -31,7 +31,18 @@ class Homework(models.Model):
             if homework.date_due < homework.date_assigned:
                 raise ValidationError(_("A homework is due after it is given."))
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        if not self.env.su:
+            # Who gave it is the person recording, never someone else (`readonly` guards the
+            # screen only; `default_teacher_id` and ir.default are added after this line).
+            for vals in vals_list:
+                vals["teacher_id"] = self.env.uid
+        return super().create(vals_list)
+
     def write(self, vals):
+        if not self.env.su and "teacher_id" in vals:
+            raise UserError(_("Who gave a homework is not changed."))
         # The record rule is checked on the homework as it is, not on where it goes: a teacher
         # moved a homework to a group they do not teach (found in review).
         if vals.get("group_id") and not (

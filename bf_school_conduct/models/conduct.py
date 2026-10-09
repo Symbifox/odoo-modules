@@ -76,7 +76,7 @@ class Incident(models.Model):
     student_consent = fields.Boolean(
         "Student agrees that the parents be informed",
         help="Required for sexual violence when the student is 14 or older.", tracking=True)
-    parents_informed_on = fields.Datetime(readonly=True, tracking=True)
+    parents_informed_on = fields.Datetime(readonly=True, tracking=True, copy=False)
     state = fields.Selection([("open", "Open"), ("closed", "Closed")], default="open", required=True, tracking=True)
 
     @api.depends("student_id", "rule_id")
@@ -149,6 +149,19 @@ class Incident(models.Model):
         self.env.ref("mail.ir_cron_mail_scheduler_action").sudo()._trigger()
         return True
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        if not self.env.su:
+            for vals in vals_list:
+                # 🔴 At creation too: a breach born "parents informed" skipped the button's
+                # conditions (consent for sexual violence, reasons of a suspension). Written
+                # explicitly: Odoo adds `default_<field>` and ir.default AFTER this check. Who
+                # noted it is the person recording, never someone else.
+                if vals.get("parents_informed_on"):
+                    raise UserError(_("The parents are informed with the button, which checks the conditions."))
+                vals.update(parents_informed_on=False, reported_by_id=self.env.uid)
+        return super().create(vals_list)
+
     def write(self, vals):
         if not self.env.su:
             # 🔴 `readonly` guards the screen only. By RPC, a teacher set the date the parents
@@ -156,6 +169,8 @@ class Incident(models.Model):
             # student's consent; or moved a breach to a student outside their groups.
             if "parents_informed_on" in vals:
                 raise UserError(_("The parents are informed with the button, which checks the conditions."))
+            if "reported_by_id" in vals:
+                raise UserError(_("Who noted a breach is not changed."))
             if "student_id" in vals and not self.env.user.has_group("bf_school_core.group_school_manager"):
                 raise UserError(_("A breach is not moved to another student: the office does it."))
         return super().write(vals)
@@ -207,6 +222,12 @@ class Followup(models.Model):
         for followup in self:
             followup.last_communication = max(followup.communication_ids.mapped("date"), default=False)
 
+    def write(self, vals):
+        # A computed field is still written by RPC: the monthly reminder was silenced without news.
+        if not self.env.su and "last_communication" in vals:
+            raise UserError(_("The date of the last news comes from the communications."))
+        return super().write(vals)
+
     @api.model
     def _cron_monthly_reminder(self):
         """At the start of a month: a to-do for every follow-up without news last month."""
@@ -252,9 +273,18 @@ class FollowupCommunication(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        if not self.env.su:
+            # The register of the monthly news says who wrote it: the person recording.
+            for vals in vals_list:
+                vals["author_id"] = self.env.uid
         communications = super().create(vals_list)
         communications.filtered(lambda c: c.channel == "email")._send()
         return communications
+
+    def write(self, vals):
+        if not self.env.su and "author_id" in vals:
+            raise UserError(_("Who wrote a communication is not changed."))
+        return super().write(vals)
 
     def _send(self):
         template = self.env.ref("bf_school_conduct.mail_template_followup", raise_if_not_found=False)

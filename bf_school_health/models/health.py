@@ -18,6 +18,9 @@ ROUTES = [
 
 #: Moved only by the methods of the model, never written by hand.
 SIGNATURE_FIELDS = {"state", "text_hash", "signed_by_id", "signed_on", "signed_ip", "access_token"}
+#: What an authorisation is born with (the access token is drawn anew).
+SIGNATURE_DEFAULTS = {"state": "draft", "text_hash": False, "signed_by_id": False, "signed_on": False,
+                      "signed_ip": False}
 
 class ResPartner(models.Model):
     _inherit = "res.partner"
@@ -99,6 +102,20 @@ class MedicationAuthorisation(models.Model):
                 raise ValidationError(_("An authorisation ends after it starts."))
             if med.as_needed and not (med.as_needed_conditions or "").strip():
                 raise ValidationError(_("An as-needed medication needs clear conditions of use."))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        if not self.env.su:
+            for vals in vals_list:
+                # 🔴 At creation too: write() refused them, create() took an authorisation born
+                # "active" with a parent as signatory, administrable without any signature.
+                # Written explicitly: Odoo adds `default_state` from the context and the user's
+                # own ir.default AFTER this check.
+                if vals.get("access_token") or any(
+                        vals.get(f) and vals[f] != v for f, v in SIGNATURE_DEFAULTS.items()):
+                    raise UserError(_("The state and the signature of an authorisation are not edited by hand."))
+                vals.update(SIGNATURE_DEFAULTS, access_token=secrets.token_urlsafe(32))
+        return super().create(vals_list)
 
     def write(self, vals):
         # 🔴 What the parent signed does not change under the signature.

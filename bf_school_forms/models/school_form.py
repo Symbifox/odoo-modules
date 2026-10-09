@@ -24,6 +24,12 @@ class SchoolFormType(models.Model):
     active = fields.Boolean(default=True)
 
 
+#: Moved only by the buttons of the form, and what a form is born with.
+FORM_SYSTEM_DEFAULTS = {"state": "draft", "sent_on": False, "body_hash": False}
+#: What a family answered, as counted for one student: computed, never written by hand.
+RESPONSE_SYSTEM_FIELDS = {"form_id", "student_id", "state", "answer_ids"}
+
+
 class SchoolForm(models.Model):
     """An authorisation asked of the families of some groups, for one event."""
 
@@ -78,13 +84,34 @@ class SchoolForm(models.Model):
             form.count_pending = states.count("pending")
             form.count_other = len(states) - form.count_accepted - form.count_refused - form.count_pending
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        if not self.env.su:
+            for vals in vals_list:
+                # Born a draft: `default_state` from the context and the user's own ir.default
+                # are added by Odoo after this check, hence the explicit values.
+                if any(vals.get(f) and vals[f] != v for f, v in FORM_SYSTEM_DEFAULTS.items()):
+                    raise UserError(_("An authorisation is sent and closed with its buttons."))
+                vals.update(FORM_SYSTEM_DEFAULTS)
+        return super().create(vals_list)
+
     def write(self, vals):
+        # 🔴 `readonly` guards the screen only: by RPC, the office put a sent form back to draft,
+        # changed its text under the families' answers and sent it again.
+        if not self.env.su and FORM_SYSTEM_DEFAULTS.keys() & vals.keys():
+            raise UserError(_("An authorisation is sent and closed with its buttons."))
         # 🔴 The text a guardian answered cannot change under their answer.
         frozen = {"body_html", "name", "event_date", "group_ids", "requires_all_signers", "type_id"}
         if frozen & set(vals) and any(f.state != "draft" for f in self):
             raise UserError(_("A sent authorisation is not edited: its text is what the "
                               "families answered. Close it and send a new one."))
         return super().write(vals)
+
+    def unlink(self):
+        # The answers of a sent form are the families' evidence: it is closed, never deleted.
+        if not self.env.su and any(f.state != "draft" for f in self):
+            raise UserError(_("An authorisation is sent and closed with its buttons."))
+        return super().unlink()
 
     def _fingerprint(self):
         self.ensure_one()
@@ -113,8 +140,9 @@ class SchoolForm(models.Model):
                 signers = response.student_id.sudo().student_guardian_link_ids.filtered(
                     "can_sign").guardian_id
                 Answer.create([{"response_id": response.id, "partner_id": p.id} for p in signers])
-            form.write({"state": "sent", "sent_on": fields.Datetime.now(),
-                        "body_hash": form._fingerprint()})
+            form.check_access("write")
+            form.sudo().write({"state": "sent", "sent_on": fields.Datetime.now(),
+                               "body_hash": form._fingerprint()})
             sent, unreachable = responses.answer_ids._notify()
             no_signer = len(responses.filtered(lambda r: not r.answer_ids))
             body = _("Sent: %(students)s student(s), %(sent)s email(s) to guardians.",
@@ -138,7 +166,9 @@ class SchoolForm(models.Model):
         return True
 
     def action_close(self):
-        self.filtered(lambda f: f.state == "sent").write({"state": "closed"})
+        forms = self.filtered(lambda f: f.state == "sent")
+        forms.check_access("write")
+        forms.sudo().write({"state": "closed"})
         return True
 
     @api.model
@@ -168,6 +198,13 @@ class SchoolFormResponse(models.Model):
         ("form_student_unique", "UNIQUE(form_id, student_id)",
          "A student is asked once per authorisation."),
     ]
+
+    def write(self, vals):
+        # 🔴 A computed state is still written by RPC: the office turned a parent's refusal into
+        # "Authorised", or moved a guardian's "yes" to another student.
+        if not self.env.su and RESPONSE_SYSTEM_FIELDS & vals.keys():
+            raise UserError(_("An answer comes from the family: it is not written by hand."))
+        return super().write(vals)
 
     @api.depends("answer_ids.decision", "form_id.state", "form_id.requires_all_signers")
     def _compute_state(self):

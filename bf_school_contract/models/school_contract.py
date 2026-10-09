@@ -10,8 +10,10 @@ MAX_ADMISSION_FEE = 200.0       # s. 12, or 1/10 of the total price if lower
 MAX_PENALTY = 500.0             # s. 13, for s. 72 and 73 of the Act
 
 
-#: Moved only by the methods of the model.
-SYSTEM_FIELDS = {"state", "signed_on", "termination_due", "termination_refund", "refund_deadline"}
+#: Moved only by the methods of the model, and what a contract is born with.
+SYSTEM_DEFAULTS = {"state": "draft", "signed_on": False, "termination_due": 0.0,
+                   "termination_refund": 0.0, "refund_deadline": False}
+SYSTEM_FIELDS = set(SYSTEM_DEFAULTS)
 #: What the family signs: frozen once the contract leaves the draft.
 SIGNED_TERMS = {"student_id", "school_id", "year_id", "date_start", "date_end", "client_ids",
                 "eligibility_fee", "admission_fee", "tuition", "accessory_ids", "installment_count"}
@@ -158,6 +160,17 @@ class SchoolContract(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            if not self.env.su:
+                # 🔴 At creation too: write() refused the state, create() took a contract born
+                # "signed" by RPC. Written explicitly, because Odoo adds `default_state` from the
+                # context and the user's own ir.default AFTER this check (the form sends the
+                # draft state, which passes). The number and the total come from the system.
+                if vals.get("total_price") or any(
+                        vals.get(f) and vals[f] != v for f, v in SYSTEM_DEFAULTS.items()):
+                    raise UserError(_("The state of a contract moves with its buttons."))
+                vals.update(SYSTEM_DEFAULTS)
+                vals.pop("name", None)
+                vals.pop("total_price", None)
             if not vals.get("name") or vals["name"] == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("bf.school.contract") or _("New")
             if vals.get("student_id") and "client_ids" not in vals:
@@ -181,12 +194,21 @@ class SchoolContract(models.Model):
     def write(self, vals):
         if not self.env.su:
             # 🔴 `readonly` guards the screen only: by RPC, the state was written by hand, and the
-            # amounts could change after the family signed.
-            if SYSTEM_FIELDS & set(vals):
+            # amounts could change after the family signed. The total is computed: written by
+            # hand on a signed contract, it changed what a termination let the school keep.
+            if SYSTEM_FIELDS & set(vals) or {"name", "total_price"} & set(vals):
                 raise UserError(_("The state of a contract moves with its buttons."))
             if set(vals) & SIGNED_TERMS:
                 self._school_check_editable()
+            if {"termination_date", "amount_paid"} & set(vals) and any(
+                    c.state == "terminated" for c in self):
+                raise UserError(_("A terminated contract keeps the figures of its termination."))
         return super().write(vals)
+
+    def unlink(self):
+        # A contract sent for signature or signed is a record of what the family agreed to.
+        self._school_check_editable()
+        return super().unlink()
 
     # --- The Act's caps (public order, s. 76) -----------------------------------
 

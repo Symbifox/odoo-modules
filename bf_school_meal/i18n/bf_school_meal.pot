@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260630\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 13:00+0000\n"
-"PO-Revision-Date: 2026-10-03 13:00+0000\n"
+"POT-Creation-Date: 2026-10-09 00:22+0000\n"
+"PO-Revision-Date: 2026-10-09 00:22+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -48,6 +48,12 @@ msgid "<span class=\"text-success\"><i class=\"fa fa-check\"/> Ordered</span>"
 msgstr ""
 
 #. module: bf_school_meal
+#. odoo-python
+#: code:addons/bf_school_meal/models/meal.py:0
+msgid "A day is closed with its button, which credits the orders."
+msgstr ""
+
+#. module: bf_school_meal
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school__meal_cancel_hour
 msgid ""
 "A family cancels a meal until this hour on the day it is served; it is "
@@ -58,6 +64,13 @@ msgstr ""
 #: model:ir.model.fields,help:bf_school_meal.field_bf_school__meal_order_days
 msgid ""
 "A family orders a meal at the latest this many days before it is served."
+msgstr ""
+
+#. module: bf_school_meal
+#. odoo-python
+#: code:addons/bf_school_meal/models/account.py:0
+msgid ""
+"A meal account stays with the adult who pays: open one for the other adult."
 msgstr ""
 
 #. module: bf_school_meal
@@ -724,6 +737,13 @@ msgstr ""
 #. odoo-python
 #: code:addons/bf_school_meal/models/account.py:0
 msgid "The meal balance is too low (%(balance)s): top it up first."
+msgstr ""
+
+#. module: bf_school_meal
+#. odoo-python
+#: code:addons/bf_school_meal/models/account.py:0
+msgid ""
+"The office records adjustments; the other movements are kept by the system."
 msgstr ""
 
 #. module: bf_school_meal

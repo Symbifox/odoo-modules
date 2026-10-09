@@ -358,3 +358,58 @@ class TestSchoolMeal(HttpCase):
         self.assertNotEqual(group_of["ordered"], group_of["tomorrow"])
         self.assertNotEqual(group_of["tomorrow"], group_of["allergies"])
         self.assertEqual(group_of["today"], group_of["tomorrow"], "today or tomorrow, not both")
+
+    # Creation guards (2026-10-08)
+    def test_office_creates_an_order_as_ordered_only(self):
+        # 🔴 An order born "cancelled" was debited and could never be refunded; "ordered by"
+        # named a parent who had not ordered.
+        self._fund(20)
+        office = new_test_user(self.env, login="school_ml_office_create", groups="bf_school_core.group_school_manager")
+        Order = self.env["bf.school.meal.order"].with_user(office)
+        vals = {"student_id": self.a.id, "day_id": self._day(5).id, "item_id": self.pasta.id}
+        for forged in ({"state": "cancelled"}, {"ordered_by_id": self.p.partner_id.id}):
+            with self.assertRaises(UserError):
+                Order.create(dict(vals, **forged))
+        order = Order.with_context(default_state="cancelled", default_ordered_by_id=self.p.partner_id.id).create(
+            dict(vals))
+        self.assertEqual((order.state, order.ordered_by_id.id), ("ordered", False))
+        for forged in ({"ordered_by_id": self.p.partner_id.id}, {"date": self.today}):
+            with self.assertRaises(UserError):
+                order.write(forged)
+        order.action_cancel()
+        self.assertEqual(self._account().balance, 20, "debited, then refunded")
+        self.assertEqual(Order.create(dict(vals, item_id=self.satay.id, state="ordered")).state, "ordered")
+
+    def test_office_records_adjustments_only(self):
+        # 🔴 A "Top-up" or a "Credit" created by the office read in the family's statement as
+        # money received.
+        account = self._fund(20)
+        order = self._place()
+        office = new_test_user(self.env, login="school_ml_office_entry", groups="bf_school_core.group_school_manager")
+        Entry = self.env["bf.school.meal.entry"].with_user(office)
+        for forged in ({"kind": "topup"}, {"kind": "refund"}, {"kind": "adjustment", "order_id": order.id}):
+            with self.assertRaises(UserError):
+                Entry.create(dict({"account_id": account.id, "amount": 50.0, "note": "Essai"}, **forged))
+        with self.assertRaises(UserError):
+            Entry.with_context(default_kind="topup").create({"account_id": account.id, "amount": 50.0})
+        Entry.create({"account_id": account.id, "amount": 5.0, "kind": "adjustment", "note": "Essai"})
+        self.assertEqual(self._account().balance, 20 - order.price + 5)
+        # Tied to a top-up by a context default, the reversal of an undone payment took it back too.
+        topup = account._school_topup(10)
+        entry = Entry.with_context(default_topup_id=topup.id, default_order_id=order.id).create(
+            {"account_id": account.id, "amount": -5.0, "kind": "adjustment", "note": "Essai"})
+        self.assertEqual((entry.topup_id.id, entry.order_id.id), (False, False))
+
+    def test_an_account_and_a_closed_day_move_with_the_buttons(self):
+        # 🔴 Adversarial review (2026-10-08): an account moved to another adult took its balance
+        # along; a day written "closed" showed « Closed » while its orders stayed debited.
+        account = self._fund(20)
+        office = new_test_user(self.env, login="school_ml_office_account", groups="bf_school_core.group_school_manager")
+        with self.assertRaises(UserError):
+            account.with_user(office).write({"partner_id": self.q.partner_id.id})
+        order = self._place()
+        day = order.day_id.with_user(office)
+        with self.assertRaises(UserError):
+            day.write({"closed": True})
+        day.action_close("Tempête")
+        self.assertEqual((day.closed, order.state, self._account().balance), (True, "credited", 20))

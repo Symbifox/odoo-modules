@@ -15,7 +15,7 @@ Health alerts, health records and medication at school, on two levels.
   medication. Sent to the guardians who sign; the text is frozen once sent and its
   SHA-256 fingerprint is kept with who signed, when and from which address. The state
   and the signature move only when a guardian answers or the Health group revokes:
-  nobody writes them by hand. A refusal always wins: a guardian's "no" after the other
+  nobody writes them by hand, at creation either. A refusal always wins: a guardian's "no" after the other
   guardian's "yes" stops the medication.
 - **Register of doses**: nothing is given without a valid authorisation for that
   student on that day. **Epinephrine in an emergency** is the exception: any staff

@@ -220,3 +220,43 @@ class TestConductGuards(ConductCase):
         self.assertTrue(self.env["bf.school.incident"].with_user(self.t1).search([("id", "=", incident.id)]))
         self.kid.student_enrollment_ids.write({"state": "left"})
         self.assertFalse(self.env["bf.school.incident"].with_user(self.t1).search([("id", "=", incident.id)]))
+
+    # Creation guards (2026-10-08)
+    def test_teacher_creates_no_breach_with_the_parents_informed(self):
+        # 🔴 At creation too: a breach born "parents informed" skipped the button's conditions.
+        Incident = self.env["bf.school.incident"].with_user(self.t2)
+        vals = {"student_id": self.teen.id, "rule_id": self.sexual.id, "description": "Essai."}
+        with self.assertRaises(UserError):
+            Incident.create(dict(vals, parents_informed_on=fields.Datetime.now()))
+        incident = Incident.with_context(default_parents_informed_on=fields.Datetime.now(),
+                                         default_reported_by_id=self.t1.id).create(dict(vals))
+        self.assertFalse(incident.parents_informed_on)
+        self.assertEqual(incident.reported_by_id, self.t2)
+        self.env["ir.default"].set("bf.school.incident", "parents_informed_on", "2026-10-01 10:00:00",
+                                   user_id=self.t2.id)
+        self.assertFalse(Incident.create(dict(vals)).parents_informed_on)
+        with self.assertRaises(UserError):
+            incident.write({"reported_by_id": self.t1.id})
+
+    def test_the_monthly_news_register_says_who_wrote_it(self):
+        # 🔴 Adversarial review (2026-10-08): the register of Régime pédagogique s. 29.2 credited
+        # someone else, and the monthly reminder was silenced by writing the computed date.
+        followup = self.env["bf.school.followup"].with_user(self.t1).create(
+            {"student_id": self.kid.id, "case": "conduct"})
+        Communication = self.env["bf.school.followup.communication"].with_user(self.t1)
+        news = Communication.with_context(default_author_id=self.t2.id).create(
+            {"followup_id": followup.id, "summary": "Bonne semaine.", "channel": "phone", "author_id": self.t2.id})
+        self.assertEqual(news.author_id, self.t1)
+        # The office may write a communication (a teacher may not at all): not its author.
+        office = new_test_user(self.env, login="school_cnd_office_news", groups="bf_school_core.group_school_manager")
+        news.with_user(office).write({"summary": "Bonne semaine, devoirs remis."})
+        with self.assertRaises(UserError):
+            news.with_user(office).write({"author_id": self.t2.id})
+        with self.assertRaises(UserError):
+            followup.with_user(office).write({"last_communication": date(2030, 1, 1)})
+        self.assertEqual(followup.last_communication, news.date)
+
+    def test_a_copy_does_not_inherit_the_parents_informed(self):
+        incident = self._incident()
+        incident.action_inform_parents()
+        self.assertFalse(incident.copy().parents_informed_on)

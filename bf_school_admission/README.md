@@ -36,7 +36,9 @@ Admission of new students and re-enrolment of current ones, for Québec private 
   child and campaign, even with two clicks at once. Withdrawing an application cancels
   its unpaid fee.
 - **The state moves with the buttons only**: the state, who decided and when, the
-  invoice and the evidence cannot be written by hand, through the screen or by RPC.
+  invoice and the evidence cannot be written by hand, through the screen or by RPC, at
+  creation either: an application entered by the office is born awaiting payment.
+  Applications are numbered ADM/year/0001, one numbering for every company.
 
 ## Security
 

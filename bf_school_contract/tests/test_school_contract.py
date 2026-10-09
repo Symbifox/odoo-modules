@@ -176,3 +176,60 @@ class TestSchoolContract(TransactionCase):
             self._contract(admission_fee=0.0, eligibility_fee=-10.0)
         with self.assertRaises(ValidationError):
             self._contract(accessory_ids=[(0, 0, {"name": "Rabais déguisé", "price": -100.0})])
+
+    # Creation guards (2026-10-08): write() refused the state, create() took it.
+    def test_office_creates_no_contract_already_signed(self):
+        office = new_test_user(self.env, login="school_ctr_office_create",
+                               groups="bf_school_core.group_school_manager")
+        Contract = self.env["bf.school.contract"].with_user(office)
+        vals = {"student_id": self.child.id, "school_id": self.school.id, "year_id": self.year.id,
+                "date_start": self.year.date_start, "date_end": self.year.date_end,
+                "admission_fee": 200.0, "tuition": 5000.0, "installment_count": 10}
+        for forged in ({"state": "signed"}, {"signed_on": "2026-09-01 10:00:00"}, {"termination_refund": 999.0}):
+            with self.assertRaises(UserError):
+                Contract.create(dict(vals, **forged))
+        self.assertEqual(Contract.create(dict(vals, state="draft")).state, "draft")  # the form sends it
+        # Odoo adds the context default and the office's own ir.default after the check.
+        self.assertEqual(Contract.with_context(default_state="signed").create(dict(vals)).state, "draft")
+        self.env["ir.default"].set("bf.school.contract", "state", "signed", user_id=office.id)
+        contract = Contract.create(dict(vals))
+        self.assertEqual((contract.state, contract.signed_on), ("draft", False))
+        # The number and the total come from the system, at creation and after.
+        contract = Contract.create(dict(vals, name="FAUX-1"))
+        self.assertTrue(contract.name.startswith("CSE/"), contract.name)
+        with self.assertRaises(UserError):
+            Contract.create(dict(vals, total_price=52000.0))
+        for forged in ({"total_price": 52000.0}, {"name": "CSE/2026/0001"}):
+            with self.assertRaises(UserError):
+                contract.write(forged)
+
+    def test_a_signed_contract_keeps_its_figures(self):
+        # 🔴 Adversarial review (2026-10-08): the total written by hand on a signed contract
+        # changed what a termination let the school keep; a terminated contract's notice date
+        # and amount paid stayed writable; a signed contract could be deleted.
+        office = new_test_user(self.env, login="school_ctr_office_signed",
+                               groups="bf_school_core.group_school_manager")
+        contract = self._contract()
+        contract.write({"state": "signed"})
+        with self.assertRaises(UserError):
+            contract.with_user(office).unlink()
+        # The office (not the superuser) records the notice and terminates.
+        contract = contract.with_user(office)
+        contract.write({"termination_date": date(2026, 10, 1), "amount_paid": 2700.0})
+        contract.action_terminate()
+        self.assertEqual(contract.state, "terminated")
+        for vals in ({"amount_paid": 0.0}, {"termination_date": date(2027, 6, 1)}):
+            with self.assertRaises(UserError):
+                contract.with_user(office).write(vals)
+
+    def test_numbered_in_another_company(self):
+        company = self.env["res.company"].create({"name": "Deuxième société des essais"})
+        school = self.env["bf.school"].create({"name": "École d'une autre société", "company_id": company.id})
+        year = self.env["bf.school.year"].create({
+            "name": "2026-2027", "school_id": school.id,
+            "date_start": date(2026, 9, 1), "date_end": date(2027, 6, 30)})
+        contract = self.env["bf.school.contract"].with_company(company).create({
+            "student_id": self.child.id, "school_id": school.id, "year_id": year.id,
+            "date_start": year.date_start, "date_end": year.date_end, "tuition": 5000.0,
+            "installment_count": 10})
+        self.assertTrue(contract.name.startswith("CSE/"), contract.name)

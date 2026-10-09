@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0-20260817\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-03 13:00+0000\n"
+"POT-Creation-Date: 2026-10-09 00:22+0000\n"
 "PO-Revision-Date: 2026-09-27 02:10+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -72,6 +72,24 @@ msgid "A morning or afternoon absence covers a single day."
 msgstr "Une absence du matin ou de l'après-midi couvre une seule journée."
 
 #. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "A roll call is not moved: correct its lines."
+msgstr "Un appel ne se déplace pas : corrigez ses lignes."
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "A roll call is taken with its button, which tells the families."
+msgstr "Un appel se prend avec son bouton, qui avise les familles."
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "A roll call that was taken is corrected by the school office."
+msgstr "Un appel pris se corrige par le secrétariat."
+
+#. module: bf_school_attendance
 #: model:ir.model.constraint,message:bf_school_attendance.constraint_bf_school_attendance_line_one_line
 msgid "A student appears once per roll call."
 msgstr "Un élève paraît une seule fois par prise de présences."
@@ -119,6 +137,12 @@ msgstr "Après-midi"
 #: code:addons/bf_school_attendance/models/attendance.py:0
 msgid "An absence ends after it starts."
 msgstr "Une absence se termine après son début."
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "An absence is justified by a reason or the family's declaration."
+msgstr "Une absence se justifie par un motif ou par la déclaration de la famille."
 
 #. module: bf_school_attendance
 #: model:ir.actions.act_window,name:bf_school_attendance.bf_school_attendance_session_action
@@ -586,6 +610,12 @@ msgstr "Non motivée"
 #: model_terms:ir.ui.view,arch_db:bf_school_attendance.portal_school_attendance
 msgid "When"
 msgstr "Quand"
+
+#. module: bf_school_attendance
+#. odoo-python
+#: code:addons/bf_school_attendance/models/attendance.py:0
+msgid "Who took a roll call is not changed."
+msgstr "La personne qui a pris un appel ne se change pas."
 
 #. module: bf_school_attendance
 #: model:ir.model.fields.selection,name:bf_school_attendance.selection__bf_school_absence_declaration__part__full

@@ -6,6 +6,7 @@
             <field name="code">bf.school.admission</field>
             <field name="prefix">ADM/%(year)s/</field>
             <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
         </record>
 
         <record id="ir_cron_school_fee_invoice_pdf" model="ir.cron">

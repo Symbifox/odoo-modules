@@ -147,6 +147,40 @@ class TestPublicForm(AdmissionCase):
             with self.assertRaises(UserError):
                 app.with_user(office).write(vals)
 
+    def test_office_creates_no_application_already_decided(self):
+        # 🔴 write() refused these fields, create() took an application born "accepted" and
+        # decided by someone else (2026-10-08). Odoo adds the context default and the office's
+        # own ir.default after the check: both are neutralised.
+        Admission = self.env["bf.school.admission"].with_user(self.office)
+        vals = {"campaign_id": self.campaign.id, "student_firstname": "Saisie",
+                "student_lastname": "Secrétariat", "level_id": self.level.id}
+        for forged in ({"state": "accepted"}, {"decided_by_id": self.office.id}, {"access_token": "connu"},
+                       {"purged": True}):
+            with self.assertRaises(UserError):
+                Admission.create(dict(vals, **forged))
+        self.assertEqual(Admission.create(dict(vals, state="awaiting_fee")).state, "awaiting_fee")  # the form
+        app = Admission.with_context(default_state="accepted", default_decided_by_id=self.office.id,
+                                     default_access_token="connu").create(dict(vals))
+        self.assertEqual((app.state, app.decided_by_id.id), ("awaiting_fee", False))
+        self.assertNotEqual(app.access_token, "connu")
+        self.env["ir.default"].set("bf.school.admission", "state", "accepted", user_id=self.office.id)
+        self.assertEqual(Admission.create(dict(vals)).state, "awaiting_fee")
+        # The number comes from the system.
+        app = Admission.create(dict(vals, name="FAUX-1"))
+        self.assertTrue(app.name.startswith("ADM/"), app.name)
+        with self.assertRaises(UserError):
+            app.write({"name": "ADM/2026/0001"})
+
+    def test_numbered_in_another_company(self):
+        company = self.env["res.company"].create({"name": "Deuxième société des essais"})
+        school = self.env["bf.school"].create({"name": "École d'une autre société", "company_id": company.id})
+        campaign = self.env["bf.school.admission.campaign"].create({
+            "name": "Admission ailleurs", "school_id": school.id, "target_year": "2027-2028",
+            "date_open": date.today(), "date_close": date.today()})
+        app = self.env["bf.school.admission"].with_company(company).create(
+            {"campaign_id": campaign.id, "student_firstname": "Ailleurs", "student_lastname": "Essai"})
+        self.assertTrue(app.name.startswith("ADM/"), app.name)
+
     def test_robot_field_creates_nothing(self):
         before = self.env["bf.school.admission"].search_count([])
         self._apply(website_url="http://spam.example.invalid")

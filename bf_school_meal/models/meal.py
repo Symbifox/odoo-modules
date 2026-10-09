@@ -109,10 +109,18 @@ class MealDay(models.Model):
             if day.item_ids.school_id - day.school_id:
                 raise ValidationError(_("A menu offers the meals of its own school."))
 
+    def write(self, vals):
+        # 🔴 By RPC, a day written "closed" showed « Closed » to the families while its orders
+        # stayed debited or billed: only the button credits them.
+        if not self.env.su and {"closed", "closed_reason"} & set(vals):
+            raise UserError(_("A day is closed with its button, which credits the orders."))
+        return super().write(vals)
+
     def action_close(self, reason=None):
         """Storm, closure, unplanned day off: the orders are credited, nothing is billed."""
+        self.check_access("write")
         for day in self:
-            day.write({"closed": True, "closed_reason": reason or _("School closed")})
+            day.sudo().write({"closed": True, "closed_reason": reason or _("School closed")})
             day.order_ids.filtered(lambda o: o.state == "ordered")._school_release("credited")
         return True
 
@@ -203,6 +211,15 @@ class MealOrder(models.Model):
         Item = self.env["bf.school.meal.item"]
         Day = self.env["bf.school.meal.day"]
         for vals in vals_list:
+            if not self.env.su:
+                # 🔴 At creation too: an order born "cancelled" was debited and could never be
+                # refunded, one born on an invoice was never billed, and "ordered by" named a
+                # parent who had not ordered. The portal orders in sudo. Written explicitly:
+                # Odoo adds `default_<field>` and ir.default AFTER this check.
+                if (vals.get("state") and vals["state"] != "ordered") or vals.get("invoice_id") \
+                        or vals.get("ordered_by_id"):
+                    raise UserError(_("An order is cancelled or credited with its buttons."))
+                vals.update(state="ordered", invoice_id=False, ordered_by_id=False)
             student = self.env["res.partner"].browse(vals["student_id"])
             day = Day.browse(vals["day_id"])
             account = Account._school_get(self._school_payer(student), day.company_id, day.school_id)
@@ -215,11 +232,11 @@ class MealOrder(models.Model):
         return orders
 
     def write(self, vals):
-        if {"student_id", "day_id", "item_id"} & set(vals):
+        if {"student_id", "day_id", "item_id", "date", "school_id"} & set(vals):
             raise UserError(_("An order is not changed: cancel it and order again."))
         # 🔴 Price, payment and state move only through the methods of the model: by RPC, an
         # order put back to "ordered" and cancelled again was refunded twice.
-        if not self.env.su and {"price", "mode", "account_id", "invoice_id", "state"} & set(vals):
+        if not self.env.su and {"price", "mode", "account_id", "invoice_id", "state", "ordered_by_id"} & set(vals):
             raise UserError(_("An order is cancelled or credited with its buttons."))
         return super().write(vals)
 

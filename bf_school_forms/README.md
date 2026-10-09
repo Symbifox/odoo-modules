@@ -36,7 +36,10 @@ phone call the morning of.
 
 - The school office creates, sends, reminds and closes. Teachers read who is
   authorised, not the evidence (IP address, browser): that stays with the office.
-- Nobody writes an answer by hand: answers come from the guardians only.
+- Nobody writes an answer by hand, nor the state of a student's answer: answers come
+  from the guardians only. A form is born a draft and moves with its buttons: a sent
+  form does not go back to draft, so its text cannot change under the answers, and it
+  is closed, never deleted: its answers are the families' evidence.
 - Portal pages read through the adult's own answers; another family's answer is a
   404. The personal link is checked in constant time, and works only while the adult
   still signs for the student.

@@ -28,7 +28,10 @@ be bargained away, so they are enforced as constraints, not as warnings.
   `bf_school_core`), one request at a time; the contract turns to **Signed** when every
   client of the contract has signed, and only from the draft. What the family signs
   (amounts, dates, signers) is frozen from the moment the request is created, and the
-  state moves only with the buttons.
+  state moves only with the buttons: a contract is born a draft, by RPC too. The total
+  is computed, the figures of a termination stay as recorded, and a contract sent for
+  signature or signed is terminated, never deleted. Contracts are numbered
+  CSE/year/0001, one numbering for every company of the database.
 - Termination by the client (s. 71): the amount the school may keep (s. 72 before
   the services, s. 73 after: the months provided plus the penalty) and the refund
   due within ten days (s. 74) are computed.

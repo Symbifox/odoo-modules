@@ -35,6 +35,13 @@ class MealAccount(models.Model):
 
     _sql_constraints = [("one_per_payer", "UNIQUE(partner_id, company_id)", "An adult has one meal account.")]
 
+    def write(self, vals):
+        # 🔴 By RPC, the office moved a family's account, balance included, to another adult:
+        # they spent it on the portal and the family's refunds went to them.
+        if not self.env.su and {"partner_id", "company_id"} & set(vals):
+            raise UserError(_("A meal account stays with the adult who pays: open one for the other adult."))
+        return super().write(vals)
+
     @api.depends("entry_ids.amount")
     def _compute_balance(self):
         for account in self:
@@ -197,6 +204,21 @@ class MealEntry(models.Model):
         for entry in self:
             entry.display_name = " · ".join(filter(None, [
                 kinds.get(entry.kind), entry.order_id.display_name or entry.topup_id.display_name or entry.note]))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        # 🔴 The office records adjustments. A movement it created as a "Top-up" or a "Credit",
+        # tied to no payment or to someone else's meal, read in the family's statement as money
+        # received. The other movements are written in sudo by the orders and the top-ups.
+        if not self.env.su and any(vals.get("kind") != "adjustment" or vals.get("order_id")
+                                   or vals.get("topup_id") for vals in vals_list):
+            raise UserError(_("The office records adjustments; the other movements are kept by the system."))
+        if not self.env.su:
+            # `default_topup_id` or ir.default would tie the adjustment to a top-up, and the
+            # reversal of an undone payment would take it back too.
+            for vals in vals_list:
+                vals.update(order_id=False, topup_id=False)
+        return super().create(vals_list)
 
     def write(self, vals):
         raise UserError(_("A movement is not changed: record an adjustment."))
