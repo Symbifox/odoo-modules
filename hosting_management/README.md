@@ -34,6 +34,7 @@ A comprehensive Odoo 18 module for managing hosting services, including version 
 - **HTTP Health Checks**: Periodic health checks for all services with URLs configured
 - **Accepted HTTP Codes**: Per-service configurable list of HTTP status codes (e.g. 404) treated as "up" instead of "degraded" — useful for services like Shlink that return 404 on their root URL
 - **Rapid Retry Confirmation**: On failure, immediately retries within 10 seconds (configurable count, default 3 checks) to filter transient glitches before alerting
+- **One transaction per service**: each result is committed on its own and replayed if a concurrent write on the service record collides with it, so a deployment touching one record no longer discards the whole pass
 - **Response Time Tracking**: Monitor response times and detect slow services
 - **Status Tracking**: Up, degraded, down, and timeout states with visual indicators
 - **30-Day Uptime Calculation**: Automatic uptime percentage based on health check history
@@ -58,10 +59,10 @@ A comprehensive Odoo 18 module for managing hosting services, including version 
 - **Branded Communications**: 5 sleek, client-facing email templates with corporate branding
 - **Generic Template**: Multipurpose template for any client communication via `ctx.message_body`
 - **Monthly Report**: Service summary with KPI grid (services count, uptime, backups, updates) and next maintenance callout
-- **Maintenance Notice**: Amber-accented notification with structured details (date, duration, affected services, impact)
-- **Intervention Report**: Green-accented post-intervention summary (work done, duration, result, recommendations)
-- **Welcome / Onboarding**: Warm welcome with gradient accent, activated services list, contact info, and CTA button
-- **Design System**: Light background (`#F8FAFC`), 600px card with `border-radius: 16px`, Lexend typography, variable accent bars, enriched footer with company tagline and full contact details
+- **Maintenance Notice**: Notification with structured details (date, duration, affected services, impact)
+- **Intervention Report**: Post-intervention summary (work done, duration, result, recommendations)
+- **Welcome / Onboarding**: Welcome message with the activated services list, contact info, and a call-to-action button
+- **Shared mail layout**: the templates carry only their content; the header (company logo), colours and footer come from the shared layout of `bf_onboarding_base`, which `bluefox_branding` replaces with its own. The digest sent by the scheduled job is still built in code with its own wrapper
 
 ### Scheduled Digests
 - **Email Summaries**: Configurable email digests with service status summaries
@@ -175,6 +176,7 @@ When a service is activated:
 - `account`
 - `project_knowledge_matrix`
 - `bluefox_branding`
+- `bf_color`
 
 ### Installation Steps
 
@@ -660,6 +662,20 @@ Hosting
 ```
 
 ## Changelog
+
+### Version 18.0.2.62.0
+- Change: the seven email templates (backup report, digest and the five client templates) keep only their content. The shared layout (`bf_onboarding_base.bf_mail_layout`, which `bluefox_branding`, a dependency, replaces with its own) wraps them with the company's logo, colours and footer. The old header title becomes a small heading above the content; the "generated automatically" note stays in small print. The digest sent by the scheduled job is built in code and is not affected yet.
+- Migration 18.0.2.62.0 strips the old wrapper from every stored language, all or nothing per template: text it does not recognise outside the content makes it leave the template untouched rather than lose it.
+- The translations no longer copy whole bodies (`model:mail.template,body_html` entries removed from the `.po` and `.pot`): a database installed in French would otherwise get the old wrapper back, and the shared layout would wrap it a second time.
+
+### Versions 18.0.2.57.1 to 18.0.2.61.0
+Published together, as one catch-up release.
+- Change: the email templates no longer fall back on the publisher's name, website, logo, support address or slogan. A migration replaces those literals in every stored language and leaves anything a tenant customised untouched; it can be replayed safely.
+- New: maintenance schedules, endpoint groups and service tags take a free colour from `bf_color` (any colour, not only Odoo's twelve), and the service tags open the `bf_color` picker. An empty colour rule on the maintenance type is provided: add a colour per type to it and the calendar colours maintenance schedules accordingly; it is never rewritten. `bf_color` becomes a dependency.
+- Fix: the health pass no longer loses its run to a concurrent write. Each measurement is written in its own short transaction after the probe and replayed (three attempts) if it collides; a measurement that fails every attempt is dropped alone, with a warning in the log. Alert state changes are committed before the alerts are sent, so a pass rolled back after sending does not send the same alert again.
+- New: alert silence during a container update. `hosting.service.suspendre_alertes_conteneur(container, minutes)` silences the outage alert of the services running in that container ("slow" alerts and recovery notices still go out), capped at one hour when set through this method so a tool killed before lifting it cannot hide anything longer. Checks are still recorded during the silence, and if it expires on an outage the alert fires at the next cycle with the silenced failures counted. The silence end shows on the service form (`health_silence_until`).
+- New: software without a version (SaaS, probes, internal tools). A "Sans notion de version" box on the software hides the version fields of its services; a new "Version à renseigner" filter on services lists only the real omissions (services without an installed version whose software is not flagged as versionless), and a "Sans notion de version" filter on software lists the flagged ones.
+- Fix: the softphone wake-up check counts its cadence from the last real measurement, not from the last row. Repeats carry no response time, so they no longer keep the probe from measuring again or weigh on the dashboard averages.
 
 ### Version 18.0.2.57.0
 - New: cloud backup tracking for a third-party backup product (CubeBackup to start). The backup report endpoint accepts a `saas` report type that records one run per organisation and per night, with the failing mailboxes or sites and the provider's error code, never the backed-up content. Runs live in their own models (`hosting.saas.backup.run`, `hosting.saas.backup.failure`), so nothing that reads `hosting.backup.run` can mistake a cloud night for the latest restic run. The service form shows the last cloud backup date and result, and a replayed or out-of-order backfill never moves them backwards.

@@ -38,6 +38,12 @@ class HostingSoftware(models.Model):
         required=True,
         tracking=True,
     )
+    versionless = fields.Boolean(
+        string="Sans notion de version",
+        tracking=True,
+        help="Le logiciel ne publie pas de numéro de version (SaaS, sonde, outil interne). "
+        "Ses services ne figurent pas parmi les versions à renseigner.",
+    )
     latest_version = fields.Char(
         string="Dernière version",
         tracking=True,

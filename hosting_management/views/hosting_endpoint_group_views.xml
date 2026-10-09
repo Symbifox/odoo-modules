@@ -36,7 +36,7 @@
                     <group>
                         <group string="Affectation">
                             <field name="partner_id" options="{'no_create': True}"/>
-                            <field name="color" widget="color_picker"/>
+                            <field name="color_hex" widget="bf_color" string="Couleur"/>
                         </group>
                         <group string="Lien Action1">
                             <field name="action1_group_id" placeholder="ID dans la console Action1"/>

@@ -38,3 +38,4 @@ from . import hosting_voip_did
 from . import hosting_voip_cdr
 from . import hosting_voip_transaction
 from . import project_project
+from . import bf_color

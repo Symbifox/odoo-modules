@@ -163,6 +163,7 @@
         <field name="model">hosting.maintenance.schedule</field>
         <field name="arch" type="xml">
             <calendar string="Calendrier de maintenance" date_start="next_due" color="maintenance_type" mode="month">
+                <field name="color_resolved" invisible="1"/>
                 <field name="name"/>
                 <field name="service_id"/>
                 <field name="maintenance_type"/>

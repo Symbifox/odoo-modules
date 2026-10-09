@@ -2,6 +2,7 @@
 
 import ipaddress
 import logging
+import threading
 import time
 from datetime import timedelta
 from urllib.parse import urlparse
@@ -10,6 +11,7 @@ from markupsafe import escape as _esc
 
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 
 _logger = logging.getLogger(__name__)
 
@@ -20,6 +22,9 @@ CADENCE_REVEIL_S = 15 * 60
 # Le contrôle des avis de rendez-vous sort vers Nextcloud et juge une question
 # qui se pose à la journée : la mesurer 1 440 fois par jour ne la précise pas.
 CADENCE_AVIS_S = 24 * 60 * 60
+# Tentatives d'écriture d'une mesure heurtée par une écriture concurrente sur la
+# fiche du service. Voir _sante_enregistrer_avec_reprise.
+SANTE_TENTATIVES = 3
 
 try:
     import pytz
@@ -62,6 +67,9 @@ class HostingService(models.Model):
         string="Logiciel",
         required=True,
         tracking=True,
+    )
+    software_versionless = fields.Boolean(
+        related="software_id.versionless",
     )
     installed_version_id = fields.Many2one(
         comodel_name="hosting.software.version",
@@ -373,6 +381,18 @@ class HostingService(models.Model):
         default=False,
         help="Indique qu'une alerte de panne a été envoyée et que "
         "le service n'est pas encore rétabli.",
+    )
+    # Une pose recrée le conteneur : deux à cinq minutes de 502 attendus, qui
+    # franchissaient le seuil de deux échecs et partaient en courriel et en ntfy
+    # (constaté sur des mises à jour en production). Les contrôles
+    # continuent d'être enregistrés pendant le silence : s'il expire sur une
+    # panne, les échecs déjà comptés font partir l'alerte au cycle suivant.
+    health_silence_until = fields.Datetime(
+        string="Alertes suspendues jusqu'à",
+        copy=False,
+        help="Pendant ce délai, la sonde enregistre ses contrôles sans envoyer "
+        "d'alerte de panne. Posé par l'outil de mise à jour avant l'arrêt du "
+        "conteneur, levé quand le service répond de nouveau.",
     )
 
     active = fields.Boolean(
@@ -1097,6 +1117,24 @@ class HostingService(models.Model):
         ])
         services.write({"state": "expired"})
 
+    SILENCE_MAX_MINUTES = 60
+
+    @api.model
+    def suspendre_alertes_conteneur(self, conteneur, minutes):
+        """Suspendre (minutes > 0) ou lever (0) les alertes des services d'un conteneur.
+
+        Plafonné à une heure : un outil tué avant d'avoir levé le silence ne
+        doit pas masquer une vraie panne plus longtemps que ça.
+        Retourne les codes des services touchés.
+        """
+        if not conteneur:
+            return []
+        services = self.search([("docker_container", "=", conteneur)])
+        minutes = min(max(int(minutes or 0), 0), self.SILENCE_MAX_MINUTES)
+        fin = fields.Datetime.now() + timedelta(minutes=minutes) if minutes else False
+        services.write({"health_silence_until": fin})
+        return services.mapped("code")
+
     @api.model
     def _is_in_maintenance_window(self):
         """Vérifier si l'heure actuelle est dans la fenêtre de maintenance configurée.
@@ -1228,12 +1266,23 @@ class HostingService(models.Model):
         # ⚠️ `force` court-circuite la cadence, et le bouton s'en sert. Un bouton
         # « vérifier maintenant » qui renvoie la mesure d'il y a quatorze minutes
         # ment à celui qui le presse — or on le presse justement quand on doute.
+        #
+        # 🔴 L'âge se compte depuis la dernière VRAIE mesure, pas depuis la
+        # dernière ligne. Le cron écrit une ligne pour chaque répétition, avec
+        # sa propre date : ancrée sur la dernière ligne, la cadence n'atteignait
+        # jamais quinze minutes et la sonde répétait indéfiniment la même
+        # mesure (constaté en production : des centaines de lignes par jour pour
+        # quelques vraies mesures, et un rouge figé longtemps après le retour du
+        # service). Une vraie mesure porte
+        # toujours un temps de réponse ; une répétition n'en porte aucun, ce
+        # qui la distingue ici et la tient hors des moyennes du tableau de bord.
         derniere = self.env["hosting.health.check"].search(
-            [("service_id", "=", self.id)], order="check_date desc", limit=1)
+            [("service_id", "=", self.id), ("response_time_ms", ">", 0)],
+            order="check_date desc, id desc", limit=1)
         if not force and derniere and derniere.check_date:
             age = (fields.Datetime.now() - derniere.check_date).total_seconds()
             if age < CADENCE_REVEIL_S:
-                return (derniere.status, derniere.response_time_ms, None,
+                return (derniere.status, None, None,
                         derniere.error_message or None)
 
         Users = self.env["res.users"]
@@ -1474,7 +1523,11 @@ class HostingService(models.Model):
 
     @api.model
     def _cron_health_check(self):
-        """Vérifier la santé de tous les services actifs avec URL."""
+        """Vérifier la santé de tous les services actifs avec URL.
+
+        ⚠️ Commite service par service (voir _sante_enregistrer_avec_reprise) :
+        à ne pas appeler au milieu d'une transaction qu'on voudrait annuler.
+        """
         try:
             import requests
         except ImportError:
@@ -1556,47 +1609,34 @@ class HostingService(models.Model):
                         service.name, retry_count,
                     )
 
-            # Record the final health check result
-            check_vals = {"service_id": service.id, "status": status}
-            if response_time_ms is not None:
-                check_vals["response_time_ms"] = response_time_ms
-            if http_code is not None:
-                check_vals["http_status_code"] = http_code
-            if error_message:
-                check_vals["error_message"] = error_message
-            self.env["hosting.health.check"].create(check_vals)
-
-            # Alert logic — flap dampening across cron cycles. Only raise an
-            # alert once the failure has persisted for ``min_consecutive``
-            # consecutive checks (default 2). A transient blip recovers within
-            # one cycle and never pages; a real sustained outage still alerts
-            # within ~N cycles. The check created just above is the newest row,
-            # so it counts toward the window.
-            if status in ("down", "timeout", "degraded"):
-                if not service.health_alert_active:
-                    recent = self.env["hosting.health.check"].search(
-                        [("service_id", "=", service.id)],
-                        order="check_date desc, id desc",
-                        limit=min_consecutive,
-                    )
-                    sustained = (
-                        len(recent) >= min_consecutive
-                        and all(r.status != "up" for r in recent)
-                    )
-                    if sustained:
-                        service.write({"health_alert_active": True})
-                        services_now_down.append({
-                            "service": service,
-                            "status": status,
-                            "error": error_message,
-                        })
-            elif status == "up":
-                if service.health_alert_active:
-                    services_recovered.append({
-                        "service": service,
-                        "response_time_ms": response_time_ms,
-                    })
-                    service.write({"health_alert_active": False})
+            # 🔴 Une transaction PAR SERVICE, plus une seule pour la passe.
+            # La passe dure près d'une minute et Odoo travaille en REPEATABLE
+            # READ : l'instantané date de la première requête. Toute écriture
+            # commitée entre-temps sur une fiche de service (le silence posé au
+            # début et levé à la fin de chaque mise à jour, surtout) faisait échouer l'UPDATE
+            # final de last_health_check, et la passe ENTIÈRE était annulée.
+            # Mesuré en production : des passes perdues par dizaines au rythme des
+            # mises à jour, avec leurs constats « hors ligne ».
+            # On clôt d'abord la transaction de la sonde (une tâche de veille
+            # qu'elle aurait ouverte est gardée), puis la mesure s'écrit dans une
+            # transaction de quelques millisecondes, rejouée si elle est heurtée.
+            self._sante_valider()
+            bascule = self._sante_enregistrer_avec_reprise(
+                service,
+                (status, response_time_ms, http_code, error_message),
+                min_consecutive,
+            )
+            if bascule == "down":
+                services_now_down.append({
+                    "service": service,
+                    "status": status,
+                    "error": error_message,
+                })
+            elif bascule == "recovered":
+                services_recovered.append({
+                    "service": service,
+                    "response_time_ms": response_time_ms,
+                })
 
             if (status == "up" and response_time_ms
                     and response_time_ms > response_time_threshold):
@@ -1633,6 +1673,104 @@ class HostingService(models.Model):
 
             if services_slow:
                 self._send_health_alert_email(services_slow, alert_type="slow")
+
+    def _sante_valider(self):
+        """Commiter la transaction en cours.
+
+        Sous les essais d'Odoo, commit et rollback sont interdits sur le curseur
+        du test : on se contente alors d'un flush.
+        """
+        if getattr(threading.current_thread(), "testing", False):
+            self.env.flush_all()
+        else:
+            self.env.cr.commit()
+
+    def _sante_enregistrer(self, service, mesure, min_consecutive):
+        """Écrire UNE mesure et décider de la bascule d'alerte de son service.
+
+        Rend « down » quand la panne devient confirmée, « recovered » quand une
+        panne signalée se résorbe, sinon None. L'envoi des alertes reste à
+        l'appelant, en fin de passe.
+        """
+        status, response_time_ms, http_code, error_message = mesure
+        check_vals = {"service_id": service.id, "status": status}
+        if response_time_ms is not None:
+            check_vals["response_time_ms"] = response_time_ms
+        if http_code is not None:
+            check_vals["http_status_code"] = http_code
+        if error_message:
+            check_vals["error_message"] = error_message
+        self.env["hosting.health.check"].create(check_vals)
+
+        # Alert logic — flap dampening across cron cycles. Only raise an
+        # alert once the failure has persisted for ``min_consecutive``
+        # consecutive checks (default 2). A transient blip recovers within
+        # one cycle and never pages; a real sustained outage still alerts
+        # within ~N cycles. The check created just above is the newest row,
+        # so it counts toward the window.
+        silence = (service.health_silence_until
+                   and service.health_silence_until > fields.Datetime.now())
+        if status in ("down", "timeout", "degraded") and silence:
+            _logger.info(
+                "Service %s : %s pendant un silence d'alerte (jusqu'à %s UTC), pas d'alerte",
+                service.name, status, service.health_silence_until,
+            )
+        elif status in ("down", "timeout", "degraded"):
+            if not service.health_alert_active:
+                recent = self.env["hosting.health.check"].search(
+                    [("service_id", "=", service.id)],
+                    order="check_date desc, id desc",
+                    limit=min_consecutive,
+                )
+                sustained = (
+                    len(recent) >= min_consecutive
+                    and all(r.status != "up" for r in recent)
+                )
+                if sustained:
+                    service.write({"health_alert_active": True})
+                    return "down"
+        elif status == "up" and service.health_alert_active:
+            service.write({"health_alert_active": False})
+            return "recovered"
+        return None
+
+    def _sante_enregistrer_avec_reprise(self, service, mesure, min_consecutive):
+        """Écrire une mesure dans sa propre transaction, rejouée si elle est heurtée.
+
+        ⚠️ Rejouer exige un ROLLBACK complet, pas un retour au point de
+        sauvegarde : en REPEATABLE READ, l'instantané appartient à la
+        transaction, et la même écriture se heurterait à la même ligne à chaque
+        reprise. Le point de sauvegarde ne sert qu'aux essais, où le rollback
+        est interdit. Seule la mesure est rejouée, jamais la sonde.
+
+        Une mesure qui échoue à chaque tentative est abandonnée SEULE : la
+        passe continue pour les autres services, et celui-ci sera mesuré au
+        passage suivant, une minute plus tard. Rend la bascule d'alerte
+        (voir _sante_enregistrer), ou None si la mesure est perdue.
+        """
+        en_essai = getattr(threading.current_thread(), "testing", False)
+        for tentative in range(1, SANTE_TENTATIVES + 1):
+            try:
+                with self.env.cr.savepoint():
+                    bascule = self._sante_enregistrer(service, mesure, min_consecutive)
+                self._sante_valider()
+                return bascule
+            except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY as e:
+                if not en_essai:
+                    self.env.cr.rollback()
+                if tentative == SANTE_TENTATIVES:
+                    _logger.warning(
+                        "Service %s : mesure abandonnée après %d tentatives heurtées (%s), "
+                        "reprise au passage suivant",
+                        service.name, tentative, type(e).__name__,
+                    )
+                    return None
+                _logger.info(
+                    "Service %s : écriture concurrente sur la fiche (%s), tentative %d/%d",
+                    service.name, type(e).__name__, tentative + 1, SANTE_TENTATIVES,
+                )
+                time.sleep(0.2 * tentative)
+        return None
 
     def _send_ntfy_alert(self, services_list, alert_type="down"):
         """Envoyer une notification push via ntfy pour les événements de santé.

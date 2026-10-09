@@ -42,9 +42,10 @@
                     <group>
                         <group>
                             <field name="software_type"/>
-                            <field name="latest_version"/>
-                            <field name="latest_version_date"/>
-                            <field name="update_available" readonly="1"/>
+                            <field name="versionless"/>
+                            <field name="latest_version" invisible="versionless"/>
+                            <field name="latest_version_date" invisible="versionless"/>
+                            <field name="update_available" readonly="1" invisible="versionless"/>
                         </group>
                         <group>
                             <field name="github_url" widget="url"/>
@@ -170,6 +171,7 @@
                 <filter name="filter_managed" string="Géré" domain="[('software_type', '=', 'managed')]"/>
                 <separator/>
                 <filter name="filter_updates" string="Mises à jour disponibles" domain="[('update_available', '=', True)]"/>
+                <filter name="filter_versionless" string="Sans notion de version" domain="[('versionless', '=', True)]"/>
                 <separator/>
                 <filter name="filter_inactive" string="Archivé" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Grouper par">

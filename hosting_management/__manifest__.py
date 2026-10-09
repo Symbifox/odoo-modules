@@ -2,7 +2,7 @@
 {
     "name": "Gestion d'hébergement",
     "summary": "Gérer les services d'hébergement pour les clients avec suivi de versions et facturation",
-    "version": "18.0.2.57.0",
+    "version": "18.0.2.62.0",
     "category": "Services",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -18,6 +18,7 @@
         "account",
         "project_knowledge_matrix",
         "bluefox_branding",
+        "bf_color",
     ],
     "data": [
         # Security
@@ -72,6 +73,7 @@
         "views/res_partner_views.xml",
         "views/res_config_settings_views.xml",
         "views/hosting_menu.xml",
+        "data/bf_color_rules.xml",
     ],
     "demo": [
         "demo/hosting_demo.xml",

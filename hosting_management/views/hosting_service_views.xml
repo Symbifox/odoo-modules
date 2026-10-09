@@ -92,14 +92,18 @@
                             <field name="software_id" string="Logiciel"/>
                             <field name="environment" string="Environnement"/>
                             <field name="linked_production_id" string="Production liée" invisible="environment == 'production'"/>
-                            <field name="tag_ids" string="Étiquettes" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="tag_ids" string="Étiquettes" widget="many2many_tags" options="{'color_field': 'color', 'bf_color': True}"/>
                         </group>
                         <group string="Informations de version">
-                            <field name="installed_version_id" string="Version installée" options="{'no_create': True}"/>
-                            <field name="target_version_id" string="Version cible" options="{'no_create': True}"/>
-                            <field name="version_policy" string="Politique de version"/>
-                            <field name="version_notes" string="Notes de version" invisible="version_policy != 'frozen'"/>
-                            <field name="update_available" string="Mise à jour disponible" readonly="1"/>
+                            <field name="software_versionless" invisible="1"/>
+                            <div colspan="2" class="text-muted" invisible="not software_versionless">
+                                Ce logiciel n'a pas de notion de version : rien à renseigner ici.
+                            </div>
+                            <field name="installed_version_id" string="Version installée" options="{'no_create': True}" invisible="software_versionless"/>
+                            <field name="target_version_id" string="Version cible" options="{'no_create': True}" invisible="software_versionless"/>
+                            <field name="version_policy" string="Politique de version" invisible="software_versionless"/>
+                            <field name="version_notes" string="Notes de version" invisible="version_policy != 'frozen' and not software_versionless and not version_notes"/>
+                            <field name="update_available" string="Mise à jour disponible" readonly="1" invisible="software_versionless"/>
                         </group>
                     </group>
 
@@ -117,6 +121,7 @@
                             <field name="domain_name" string="Nom de domaine"/>
                             <field name="server_id" string="Serveur"/>
                             <field name="docker_container" string="Conteneur Docker"/>
+                            <field name="health_silence_until" invisible="not health_silence_until"/>
                             <field name="docker_host" string="Hôte Docker" readonly="1" invisible="not server_id"/>
                         </group>
                         <group string="Stockage">
@@ -288,7 +293,7 @@
                 <templates>
                     <t t-name="card">
                         <div t-attf-class="#{record.environment.raw_value != 'production' ? 'border-warning border-2' : ''}">
-                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'bf_color': True}"/>
                             <div class="o_kanban_details">
                                 <strong class="o_kanban_record_title">
                                     <field name="name"/>
@@ -355,6 +360,7 @@
                 <filter name="filter_expiring_soon" string="Expirant bientôt (90 jours)" domain="[('date_expiration', '&lt;=', (context_today() + relativedelta(days=90)).strftime('%Y-%m-%d')), ('date_expiration', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter name="filter_storage_alert" string="Alerte de stockage" domain="[('storage_alert', '=', True)]"/>
                 <filter name="filter_update_available" string="Mises à jour disponibles" domain="[('update_available', '=', True)]"/>
+                <filter name="filter_version_missing" string="Version à renseigner" domain="[('installed_version_id', '=', False), ('software_id.versionless', '=', False)]"/>
                 <filter name="filter_storage_configured" string="Stockage configuré" domain="[('storage_check_type', '!=', 'none')]"/>
                 <filter name="filter_service_down" string="Service hors ligne" domain="[('is_service_up', '=', False)]"/>
                 <separator/>

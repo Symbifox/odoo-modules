@@ -23,7 +23,7 @@
                 <field name="os_eol_tag" string="EOL" optional="show"/>
                 <field name="assigned_display" string="Usager" optional="show"/>
                 <field name="serial" optional="hide"/>
-                <field name="group_ids" widget="many2many_tags" optional="hide"/>
+                <field name="group_ids" widget="many2many_tags" optional="hide" options="{'color_field': 'color', 'bf_color': True}"/>
                 <field name="warranty_end" optional="show"
                        decoration-warning="warranty_end &lt;= (context_today() + relativedelta(days=90))"
                        decoration-danger="warranty_end &lt; context_today()"/>
@@ -83,7 +83,7 @@
                                    invisible="assigned_type != 'free_text'"/>
                             <field name="assigned_email" widget="email"/>
                             <field name="group_ids" widget="many2many_tags"
-                                   options="{'no_create_edit': True}"/>
+                                   options="{'no_create_edit': True, 'color_field': 'color', 'bf_color': True}"/>
                         </group>
                         <group string="Identité matériel">
                             <field name="manufacturer"/>
