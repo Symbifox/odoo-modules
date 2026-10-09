@@ -370,3 +370,51 @@ msgstr "One hour of phone audio weighs about 5 MB."
 #: code:addons/bf_capture/controllers/page_pwa.py:0
 msgid "Votre session a expiré. Rechargez la page."
 msgstr "Your session has expired. Reload the page."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/controllers/page_pwa.py:0
+msgid "Ce compte ne peut pas déposer de mémo."
+msgstr "This account cannot drop a memo."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/bf_capture.py:0
+msgid "La captation est réservée aux usagers internes."
+msgstr "Capture is reserved for internal users."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Valeur numérique attendue."
+msgstr "A numeric value was expected."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Téléversement introuvable."
+msgstr "Upload not found."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Fichier vide."
+msgstr "Empty file."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Fichier trop volumineux (%(recu)s, maximum %(max)s)."
+msgstr "File too large (%(recu)s, maximum %(max)s)."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Format non pris en charge par le processeur de rencontres : %(ext)s. Acceptés : %(liste)s."
+msgstr "Format not supported by the meeting processor: %(ext)s. Accepted: %(liste)s."
+
+#. module: bf_capture
+#. odoo-python
+#: code:addons/bf_capture/models/televersement.py:0
+msgid "Le fichier dépasse la taille annoncée."
+msgstr "The file exceeds the announced size."

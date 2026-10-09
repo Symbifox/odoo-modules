@@ -26,7 +26,7 @@ import logging
 from markupsafe import Markup, escape
 
 from odoo import _, http
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
@@ -351,6 +351,8 @@ class BfCapturePage(http.Controller):
         try:
             resultat = request.env["bf.capture"].deposer_memo(
                 octets, nom_source="memo%s" % extension, titre=titre or None)
+        except AccessError:
+            return {"error": _("Ce compte ne peut pas déposer de mémo.")}
         except UserError as exc:
             return {"error": str(exc)}
         except Exception:  # noqa: BLE001

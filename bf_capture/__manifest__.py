@@ -1,6 +1,6 @@
 {
     "name": "Captation audio",
-    "version": "18.0.1.2.4",
+    "version": "18.0.1.4.2",
     "category": "Productivity",
     "summary": "Enregistrer une rencontre ou un mémo depuis le téléphone, et le déposer là où la suite est déjà automatique",
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -61,6 +61,7 @@ dossier surveillé.
   ce qui mérite d'être enregistré.
 """,
     "data": [
+        "security/ir.model.access.csv",
         "views/res_config_settings_views.xml",
     ],
 }

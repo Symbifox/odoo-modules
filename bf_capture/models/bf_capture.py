@@ -22,7 +22,7 @@ from zoneinfo import ZoneInfo
 from markupsafe import escape
 
 from odoo import _, api, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -65,13 +65,57 @@ _REMPLACES = re.compile(r'[\\/*?:"<>|]')
 _EFFACES = re.compile(r'[%\x00-\x1f]')
 
 
+class ServiceIndisponible(Exception):
+    """Un service dont le dépôt dépend n'a pas répondu : ce n'est pas un refus.
+
+    🔴 La passerelle Nextcloud (``bf_document_nextcloud_sync``)
+    change TOUT échec en ``UserError`` : délai dépassé, connexion refusée
+    (``requests.RequestException``) comme réponse 5xx (« Erreur WebDAV PUT:
+    HTTP 503 »). Le contrôleur rendait donc une panne de Nextcloud en 400, et
+    l'app, qui retire de sa file ce qu'on lui refuse, jetait l'enregistrement
+    d'une rencontre entière. Même chose pour la dictée d'un mémo.
+
+    Volontairement PAS une ``UserError`` : le contrôleur la rend en 503, et
+    l'app garde le geste pour le rejouer.
+    """
+
+
 class BfCapture(models.AbstractModel):
+    """🔴 Tout ce que ce modèle expose est ``@api.private`` (18.0.1.4.2).
+
+    Une méthode de modèle sans « _ » s'appelle par ``/web/dataset/call_kw``, et
+    cette route est en ``auth="user"`` : un compte PORTAIL y passe. Un
+    ``AbstractModel`` n'a pas de table, donc aucun contrôle d'accès ne se
+    déclenche. ``deposer_rencontre`` déposait ainsi, au nom du compte de
+    service, le fichier qu'un portail choisissait dans le dossier que le
+    processeur de rencontres vide toutes les trente secondes, en contournant la
+    garde « usager interne » des routes mobiles. Les routes appellent ces
+    méthodes en Python : ``api.private`` ne ferme que la porte RPC. La garde
+    ``_exiger_usager_interne`` double celle des routes au modèle même.
+    """
     _name = "bf.capture"
     _description = "Captation audio mobile"
 
     # ------------------------------------------------------------------
     # Configuration
     # ------------------------------------------------------------------
+
+    @api.model
+    def _exiger_usager_interne(self):
+        """Refuse un compte partagé (portail) ou archivé, comme les routes mobiles.
+
+        Le dépôt écrit dans le Nextcloud d'un compte de service, hors des droits
+        de l'appelant : seul un usager interne actif a quelque chose à y poser.
+
+        ⚠️ Le mode superutilisateur passe : c'est celui des essais et d'``odoo
+        shell``, dont l'usager (``__system__``) est archivé. Un appelant RPC ne
+        l'obtient jamais, et les routes appellent sous l'usager de l'appareil.
+        """
+        if self.env.su:
+            return
+        usager = self.env.user
+        if usager.share or not usager.active:
+            raise AccessError(_("La captation est réservée aux usagers internes."))
 
     @api.model
     def _settings(self):
@@ -96,11 +140,13 @@ class BfCapture(models.AbstractModel):
             [("active", "=", True), ("company_id", "=", self.env.company.id)], limit=1
         ) or Config.search([("active", "=", True)], limit=1)
 
+    @api.private
     @api.model
     def is_configured(self):
         """Vrai si un dépôt peut aboutir. Sert à masquer le bouton côté client."""
         return bool(self._config_nc()) and bool(self._settings()["dossier"])
 
+    @api.private
     @api.model
     def transcription_disponible(self):
         """Vrai si un mémo peut revenir avec du texte."""
@@ -139,6 +185,25 @@ class BfCapture(models.AbstractModel):
         return brut if brut in _EXTENSIONS else ".m4a"
 
     @api.model
+    def _nextcloud(self, operation, *args, **kwargs):
+        """Appelle la passerelle Nextcloud ; son échec devient une indisponibilité.
+
+        Une ``ValidationError`` reste un refus : ce sont les gardes de chemin de
+        la passerelle, levées AVANT tout appel réseau, sur une valeur que le
+        réseau ne rendra pas meilleure. Tout le reste de ce que la passerelle
+        lève (``UserError`` sur délai, connexion, statut HTTP, mot de passe du
+        compte de service absent) tient au serveur, pas à ce que le téléphone
+        a envoyé : l'enregistrement est bon, il n'a pas pu être rangé.
+        """
+        try:
+            return operation(*args, **kwargs)
+        except (ValidationError, AccessError):
+            raise
+        except UserError as exc:
+            _logger.warning("bf_capture: Nextcloud indisponible (%s)", exc)
+            raise ServiceIndisponible(str(exc)) from exc
+
+    @api.model
     def _noms_pris(self, config, dossier):
         """Les noms déjà posés dans le dossier surveillé ET dans `Traités`.
 
@@ -175,6 +240,7 @@ class BfCapture(models.AbstractModel):
     # Les deux portes
     # ------------------------------------------------------------------
 
+    @api.private
     @api.model
     def cibles(self, heures_avant=6, heures_apres=12):
         """Les rencontres auxquelles un enregistrement peut se rattacher.
@@ -208,6 +274,7 @@ class BfCapture(models.AbstractModel):
             for ev in evenements
         ]
 
+    @api.private
     @api.model
     def deposer_rencontre(self, contenu, nom_source=None, event_id=None,
                           titre=None, debut=None):
@@ -216,10 +283,8 @@ class BfCapture(models.AbstractModel):
         `event_id` gagne sur `titre`/`debut` : le serveur nomme d'après
         l'événement, pas d'après ce que le téléphone croit savoir.
         """
+        self._exiger_usager_interne()
         settings = self._settings()
-        config = self._config_nc()
-        if not config:
-            raise UserError(_("Aucun dossier de dépôt n'est configuré sur cette instance."))
         if not contenu:
             raise UserError(_("Aucun son reçu."))
         if len(contenu) > settings["max_bytes"]:
@@ -227,6 +292,20 @@ class BfCapture(models.AbstractModel):
                 _("Enregistrement trop volumineux (%(recu)s, maximum %(max)s).")
                 % {"recu": self._taille(len(contenu)),
                    "max": self._taille(settings["max_bytes"])})
+        cible = self._preparer_rencontre(nom_source, event_id, titre, debut)
+        return self._poser_rencontre(cible, contenu, len(contenu))
+
+    def _preparer_rencontre(self, nom_source, event_id, titre, debut):
+        """Tout ce qui se décide AVANT les octets : dossier, rencontre, nom libre.
+
+        Partagé par le dépôt d'un bloc et le téléversement par morceaux :
+        les deux doivent nommer pareil, sinon le processeur
+        routerait différemment le même enregistrement.
+        """
+        settings = self._settings()
+        config = self._config_nc()
+        if not config:
+            raise UserError(_("Aucun dossier de dépôt n'est configuré sur cette instance."))
 
         evenement = None
         if event_id:
@@ -256,20 +335,32 @@ class BfCapture(models.AbstractModel):
             config, settings["dossier"],
             "%s - %s" % (self._horodatage(debut), titre_propre), extension)
 
-        chemin = posixpath.join(settings["dossier"], nom)
-        config._webdav_mkcol(settings["dossier"])
-        config._webdav_put(
-            chemin, contenu,
+        return {
+            "config": config,
+            "dossier": settings["dossier"],
+            "nom": nom,
+            "evenement": evenement,
+        }
+
+    def _poser_rencontre(self, cible, contenu, taille):
+        """Écrit au dossier surveillé. contenu : des octets, ou un fichier
+        ouvert, que la passerelle envoie en flux sans le charger."""
+        config, dossier, nom = cible["config"], cible["dossier"], cible["nom"]
+        chemin = posixpath.join(dossier, nom)
+        self._nextcloud(config._webdav_mkcol, dossier)
+        self._nextcloud(
+            config._webdav_put, chemin, contenu,
             content_type=mimetypes.guess_type(nom)[0] or "application/octet-stream")
         _logger.info(
             "bf_capture: rencontre déposée par %s (uid %s) : %s (%s octets)",
-            self.env.user.login, self.env.uid, chemin, len(contenu))
+            self.env.user.login, self.env.uid, chemin, taille)
         return {
             "nom": nom,
-            "dossier": settings["dossier"],
-            "event_id": evenement.id if evenement else False,
+            "dossier": dossier,
+            "event_id": cible["evenement"].id if cible["evenement"] else False,
         }
 
+    @api.private
     @api.model
     def deposer_memo(self, contenu, nom_source=None, titre=None):
         """Transcrit si c'est possible, et range le tout dans une note.
@@ -277,6 +368,12 @@ class BfCapture(models.AbstractModel):
         Jamais un compte rendu : un mémo n'a ni participants, ni décisions, ni
         destinataire.
         """
+        # 🔴 Le droit de créer la note se vérifie AVANT la dictée.
+        # `/capture/memo` est en `auth="user"`, donc ouvert au portail, et la
+        # transcription passait en premier : un compte portail faisait tourner
+        # Whisper à chaque envoi, puis tombait sur la création de la note.
+        self._exiger_usager_interne()
+        self.env["bf.note"].check_access("create")
         settings = self._settings()
         if not contenu:
             raise UserError(_("Aucun son reçu."))
@@ -289,8 +386,15 @@ class BfCapture(models.AbstractModel):
 
         texte = ""
         if self.transcription_disponible():
-            texte = (self.env["bf.speech.transcriber"].transcribe(
-                contenu, filename="memo%s" % self._extension(nom_source)) or "").strip()
+            try:
+                texte = self._transcrire(contenu, nom_source)
+            except UserError as exc:
+                # ⚠️ Mêmes causes, même sort que Nextcloud : la dictée rend ses
+                # pannes (injoignable, trop longue, trop de dictées d'affilée)
+                # en UserError. Les refus de CONTENU (vide, trop long) sont
+                # déjà tranchés plus haut avec le plafond du mémo.
+                _logger.warning("bf_capture: dictée indisponible (%s)", exc)
+                raise ServiceIndisponible(str(exc)) from exc
 
         note = self.env["bf.note"].create({
             "name": self._titre_memo(titre, texte),
@@ -336,6 +440,11 @@ class BfCapture(models.AbstractModel):
     # ------------------------------------------------------------------
     # Petites mains
     # ------------------------------------------------------------------
+
+    @api.model
+    def _transcrire(self, contenu, nom_source):
+        return (self.env["bf.speech.transcriber"].transcribe(
+            contenu, filename="memo%s" % self._extension(nom_source)) or "").strip()
 
     @api.model
     def _titre_memo(self, titre, texte):

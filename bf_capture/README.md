@@ -76,12 +76,52 @@ and a meeting in flight makes a six-second dictation wait for the full timeout.
 The module sends nothing to anyone, and it does not decide what deserves to be
 recorded.
 
+## Offline replay and outages (18.0.1.3.0)
+
+The mobile app replays a recording until it gets an answer. `rencontre` and
+`memo` accept a `client_uuid`: a recording sent again after a dropped connection
+receives the original response instead of creating a second meeting record or a
+second memo. Receipts are kept per user for thirty days.
+
+An outage is not a refusal. When Nextcloud or the transcription service does not
+answer, the routes now return `503` instead of `400`: on a `400` the app dropped
+the recording from its queue, on a `503` it keeps it and tries again.
+
+## Long recordings, uploaded in chunks (18.0.1.4.0)
+
+An hour of video weighs a few hundred megabytes, more than Odoo accepts in one
+request body. Under `/bf_capture/mobile/v1/televersement/`, the phone opens an
+upload (`ouvrir`), pushes chunks of a few megabytes that the server appends to a
+file on disk (`morceau`), asks where it stands after a cut (`etat`), and closes
+it (`terminer`) or gives up (`abandonner`). The finished file is streamed to the
+watched folder without ever being loaded at once. A chunk already received is
+ignored; one that arrives too far ahead is refused with the expected offset.
+
+The ceiling defaults to 4 GiB per file (`bf_capture.televersement_max_bytes`).
+Chunks live in Odoo's `data_dir`, shared by every worker, never in the database.
+Since 18.0.1.4.2 that disk is bounded: at most three uploads open per user, the
+oldest giving way (`bf_capture.televersement_max_ouverts`); a `503` when free
+space does not cover the announced file plus a 1 GiB margin; and an upload that has received no
+chunk for 48 hours is purged by Odoo's daily cleanup.
+
 ## Guard
 
 The deposit writes to Nextcloud through a service account, **outside the
 caller's own rights**. The guard is therefore explicit: an internal user, active,
 not a portal account. A portal account holding a device token could otherwise
 drop a file into a folder that a robot empties every thirty seconds.
+
+The memo route checks that right **before** transcribing: a portal account no
+longer makes the transcription service run for nothing.
+
+Since 18.0.1.4.2 every public method of the model is `@api.private`. Odoo's RPC
+route `/web/dataset/call_kw` is open to any authenticated user, portal included,
+and it reached those methods directly, around the guard of the mobile routes: a
+portal account could deposit a file and a title of its choosing on behalf of the
+service account. The deposits, and the opening and finishing of an upload, now also refuse a
+shared or archived account themselves, in addition to the routes' guard; the
+other upload calls only reach an upload owned by the caller
+(`tests/test_gardes_rpc.py`).
 
 ## Requirements
 
