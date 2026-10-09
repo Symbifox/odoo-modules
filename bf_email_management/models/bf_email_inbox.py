@@ -710,7 +710,8 @@ class BfEmail(models.Model):
         """
         self.ensure_one()
         now = fields.Datetime.now()
-        if self.direction == "out":
+        # Un avis automatique se lit comme un envoi : à qui il est parti.
+        if self.direction != "in":
             correspondent = self._inbox_display_name(self.email_to)
         else:
             correspondent = (

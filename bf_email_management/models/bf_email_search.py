@@ -81,6 +81,9 @@ ETATS = {
     "question": [("is_question", "=", True)],
     "repondu": [("status", "=", "replied")],
     "répondu": [("status", "=", "replied")],
+    # Les avis automatiques (lien de transfert, sondage, signature…).
+    "avis": [("direction", "=", "notice")],
+    "notice": [("direction", "=", "notice")],
 }
 
 CATEGORIES = {

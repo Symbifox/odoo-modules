@@ -182,8 +182,12 @@ class BfEmailHeld(models.Model):
     # ------------------------------------------------------------------
     @api.model
     def held_summary(self):
-        """Les lots qui attendent une décision, pour l'usager courant."""
-        return self._groups(self._mine_pending())
+        """Les lots qui attendent une décision, pour l'usager courant, et le
+        seuil réglé (``bf_email.ingest_max_age_days``) : le dossier
+        « À décider » affichait « plus de 30 jours » en dur, quel que soit le
+        réglage."""
+        return {"lots": self._groups(self._mine_pending()),
+                "max_age_days": self._max_age_days()}
 
     @api.model
     def held_count(self):

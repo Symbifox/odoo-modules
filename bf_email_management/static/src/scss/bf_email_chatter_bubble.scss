@@ -1,0 +1,9 @@
+// Un courriel classé en note garde sa bulle.
+// Odoo pose `p-1 o-note` sur le corps d'une note : sans ce rattrapage, le texte
+// collerait au bord de la bulle. Mêmes marges que le corps d'un message qui
+// n'est pas une note (`py-2`, et le retrait latéral de message.scss).
+$_bf-bulle-x: (map-get($spacers, 2) + map-get($spacers, 3)) / 2;
+
+.o-mail-Message-bubble ~ .o-mail-Message-body.o-note {
+    padding: map-get($spacers, 2) $_bf-bulle-x !important;
+}

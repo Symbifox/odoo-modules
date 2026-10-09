@@ -133,6 +133,8 @@ _MESSAGE_ID_RE = re.compile(r"<[^>]+>")
 _DIRECTION_LABELS = {
     "in": "\u2190",
     "out": "\u2192",
+    # L'avis automatique, envoyé par Odoo lui-même.
+    "notice": "\u21e2",
 }
 
 # Heuristic signals \u2014 see README \u00a7Research for citations.
@@ -3679,6 +3681,10 @@ class BfEmail(models.Model):
 
         Le paramètre reste : un appelant qui veut vraiment prévenir les
         abonnés passe ``mail.mt_comment`` en le sachant.
+
+        Au chatter, la note garde sa bulle verte ou bleue de courriel : Odoo
+        tire la couleur du sous-type, ``bf_email_chatter_bubble.js`` la rend
+        aux messages de type courriel.
 
         Single source of truth for "import an email into a chatter": used by
         both "Nouveau ▾" (``_spawn_from_email``) and "Lier à un dossier"

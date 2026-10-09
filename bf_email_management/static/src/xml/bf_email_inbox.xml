@@ -643,12 +643,12 @@
                                     </td>
                                     <td t-if="cols.date" class="small text-nowrap"><t t-esc="formatListDate(m.date)"/></td>
                                     <td t-if="cols.correspondent" class="text-truncate"
-                                        t-att-title="m.direction === 'out' ? m.to : m.from">
+                                        t-att-title="m.direction === 'in' ? m.from : m.to">
                                         <span t-if="m.colour" class="d-inline-block rounded-circle me-1"
                                               t-att-style="'width: 7px; height: 7px; vertical-align: middle; background-color: ' + m.colour + ';'"
                                               t-att-title="m.company_name"/>
-                                        <i t-att-class="m.direction === 'out' ? 'fa fa-arrow-right text-success me-1' : 'fa fa-arrow-left text-info me-1'"
-                                           t-att-title="m.direction === 'out' ? 'Sortant' : 'Entrant'"/>
+                                        <i t-att-class="m.direction === 'out' ? 'fa fa-arrow-right text-success me-1' : (m.direction === 'notice' ? 'fa fa-bullhorn text-muted me-1' : 'fa fa-arrow-left text-info me-1')"
+                                           t-att-title="m.direction === 'out' ? 'Sortant' : (m.direction === 'notice' ? 'Avis automatique envoyé par Odoo' : 'Entrant')"/>
                                         <t t-esc="senderCell(m)"/>
                                     </td>
                                     <td class="text-truncate" t-att-title="m.preview or m.subject">

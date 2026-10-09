@@ -8,6 +8,10 @@ class ResPartner(models.Model):
     bf_email_count = fields.Integer(
         string="Courriels",
         compute="_compute_bf_email_count",
+        # `bf.email` est réservé aux internes. Sans cette garde, un
+        # usager portail qui lit tous les champs d'une fiche prendrait une
+        # erreur d'accès là où l'ancien compte en SQL rendait 0.
+        groups="base.group_user",
     )
 
     def _compute_bf_email_count(self):

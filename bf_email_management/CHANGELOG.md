@@ -4,6 +4,56 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.59.0] - 2026-10-09
+
+### Added
+
+- **Automatic sends in a contact's history.** What Odoo sends on its own (a
+  secure-transfer link, a booking poll, a signature request, a calendar
+  invitation, a report) is captured as it leaves, just before Odoo deletes the
+  mail and its recipients with it, as one "notice" row per message and per
+  owner (direction `notice`). It shows in "All emails", under the contact
+  filter, in the categories and through `est:avis`; never in the inbox, Sent,
+  Handled, Unread, To reply, follow-ups, or in the phone's lists and threads. Rules do not run on
+  it, and it cannot be reported as spam.
+- **Owner**: the internal user who triggered it; sent by a service account, a
+  visitor or a cron running as the superuser, the responsible user of the source
+  record; otherwise the
+  account in `bf_email.avis_repli_user_id`, a system administrator, by default
+  the main administrator. Service accounts: `bf_email.route_exclude_user_ids`,
+  `bf_email.avis_exclude_user_ids` and the Gen user.
+- **Never a notice**: a discussion (even posted as `notification`), an account
+  email (password or portal sign-up link), a record-less send triggered by a
+  visitor, a mass mailing, a send that only reaches colleagues.
+- **A notice never keeps a body Odoo does not keep**: a mail Odoo deletes with
+  its message after sending (signature invitations, surveys, bare module
+  sends) leaves only its envelope, so the link it carried is not kept; so does
+  a visitor-triggered notice that lands on the fallback account.
+- **Never twice**: no notice if a copy of the message already exists for the
+  user, and a copy that arrives later replaces it. A notice does not reserve
+  the Message-ID, so the real IMAP copy of the same mail always gets in. A
+  notification Odoo splits into several mails makes a single notice.
+- The upgrade back-fills the past only where a recipient is still on record.
+
+### Fixed
+
+- "To decide" shows the configured age threshold
+  (`bf_email.ingest_max_age_days`) instead of a hard-coded 30 days.
+- `contact:#` is capped at nine digits (no more server error on a stray
+  number); the contact form's email count is computed for internal users only.
+
+## [18.0.11.58.0] - 2026-10-08
+
+### Fixed
+
+- **Filed emails keep their blue or green chat bubble.** Filing an email into
+  a record posts it as an internal note (it notifies no follower and stays off
+  the portal), and Odoo only draws a bubble for messages that are not notes:
+  filed emails looked like hand-typed notes. A display-only patch of
+  `Message.bubbleColor` gives an email-type note its bubble back (blue from
+  someone else, green from oneself; a mention's orange still wins). The
+  subtype stays "Note"; no data is rewritten.
+
 ## [18.0.11.57.0] - 2026-10-08
 
 ### Added

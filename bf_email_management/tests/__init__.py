@@ -61,3 +61,5 @@ from . import test_envois_imap_en_boite
 from . import test_pourriel_et_garde
 from . import test_perf_boite
 from . import test_contact_historique
+from . import test_bulle_courriel_classe
+from . import test_avis

@@ -533,8 +533,14 @@ export class BfEmailInbox extends Component {
     async loadHeld() {
         this.state.loadingMessages = true;
         try {
-            this.state.heldLots = await this.orm.call(
+            const res = await this.orm.call(
                 "bf.email.held", "held_summary", []);
+            // La forme d'avant (une liste) reste lue : un onglet ouvert pendant
+            // la montée parle encore à l'ancien serveur un instant.
+            this.state.heldLots = Array.isArray(res) ? res : (res.lots || []);
+            if (!Array.isArray(res) && res.max_age_days) {
+                this.state.heldMaxAge = res.max_age_days;
+            }
         } catch (err) {
             this.state.heldLots = [];
             this.notification.add(
@@ -1890,7 +1896,8 @@ export class BfEmailInbox extends Component {
     }
 
     senderCell(m) {
-        const raw = m.direction === "out" ? m.to : m.from;
+        // Un avis automatique se lit comme un envoi : on montre à qui il est parti.
+        const raw = m.direction === "in" ? m.from : m.to;
         return senderCell(m.correspondent, raw, this.state.settings);
     }
 

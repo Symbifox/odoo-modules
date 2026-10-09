@@ -63,3 +63,6 @@ from . import bf_email_report
 from . import bf_email_held
 # « Traité » sans attendre le serveur IMAP.
 from . import bf_email_writeback_pending
+# Les envois automatiques dans l'historique d'un contact. En dernier :
+# il surcharge `_mobile_filter_sql` (bf_email_mobile) et `mail.mail` (mail_mail).
+from . import bf_email_avis

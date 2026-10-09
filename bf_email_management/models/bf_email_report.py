@@ -185,7 +185,9 @@ class BfEmailReport(models.Model):
                 "%s courriel(s) sont classés sur une fiche et ne se signalent "
                 "pas d'ici : le message appartient à son dossier. Utilise "
                 "« Re-router… » pour l'en sortir d'abord.", len(classees)))
-        envois = self.filtered(lambda r: r.direction == "out")
+        # Tout ce qui n'est pas reçu : les envois, et les avis automatiques,
+        # dont l'expéditeur est notre propre adresse d'envoi.
+        envois = self.filtered(lambda r: r.direction != "in")
         if envois:
             # Bloquer ou dénoncer viserait le destinataire, c'est-à-dire un
             # correspondant à soi.

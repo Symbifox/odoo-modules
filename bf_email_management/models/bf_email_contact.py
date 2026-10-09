@@ -172,8 +172,12 @@ class BfEmail(models.Model):
         """
         Partner = self.env["res.partner"]
         valeur = (valeur or "").strip()
-        if valeur.startswith("#") and valeur[1:].isdigit():
-            return Partner.browse(int(valeur[1:])).exists()
+        numero = valeur[1:]
+        if valeur.startswith("#") and numero.isascii() and numero.isdigit():
+            # Borné : « #² » passe isdigit() mais pas int(), et un numéro
+            # au-delà de 2^31 fait échouer la requête. Aucune fiche, plutôt
+            # qu'une erreur 500.
+            return Partner.browse(int(numero)).exists() if len(numero) <= 9 else Partner
         if not valeur:
             return Partner
         return Partner.search(

@@ -92,6 +92,15 @@ class TestContactHistorique(MobileApiCase):
         self.assertNotIn(self.outbound.id, self._ids(self.acme))
         self.assertIn(self.outbound.id, self._ids(self.owner.partner_id))
 
+    def test_ma_propre_fiche_ne_ramene_pas_toute_ma_boite(self):
+        """Ouverte directement, la fiche de l'usager garde ses liens par
+        `partner_id` ; son adresse, présente sur presque tout ce qu'il reçoit,
+        ne compte pas."""
+        moi = self.owner.partner_id
+        self.assertNotIn(self.with_attachment.id, self._ids(moi))
+        self.with_attachment.sudo().partner_id = moi
+        self.assertIn(self.with_attachment.id, self._ids(moi))
+
     def test_mon_autre_fiche_sous_l_entreprise_ne_compte_pas(self):
         """Une fiche « personnel » qui porte un alias du
         compte, rangée sous l'entreprise, ramenait ses courriels par

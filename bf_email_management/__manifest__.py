@@ -1,7 +1,7 @@
 {
     "name": "Gestion des courriels",
     "summary": "Inbox unifiée IMAP + chatters Odoo, avec re-routage UI",
-    "version": "18.0.11.57.0",
+    "version": "18.0.11.59.0",
     "category": "Productivity",
     'website': 'https://symbifox.com',
     "author": "Les services de consultation Blue Fox, Inc.",
@@ -83,6 +83,9 @@
             "bf_email_management/static/src/js/bf_email_inline_cross_origin.js",
             "bf_email_management/static/src/js/bf_email_dashboard.js",
             "bf_email_management/static/src/js/bf_email_chatter_action.js",
+            # The chat bubble of an email filed as a note (18.0.11.58.0).
+            "bf_email_management/static/src/js/bf_email_chatter_bubble.js",
+            "bf_email_management/static/src/scss/bf_email_chatter_bubble.scss",
             "bf_email_management/static/src/js/bf_email_preview_list.js",
             "bf_email_management/static/src/xml/bf_email_preview_list.xml",
             "bf_email_management/static/src/js/bf_calendar_reminder.js",
