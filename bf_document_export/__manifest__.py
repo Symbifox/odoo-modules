@@ -3,7 +3,7 @@
     "summary": "Reproduce the policy and procedure registry as a folder tree: "
                "ZIP export with best-practice templates, classification plans, "
                "master list and manifest",
-    "version": "18.0.1.1.1",
+    "version": "18.0.1.1.2",
     "description": """
 Export du registre en fichiers
 ==============================
@@ -48,7 +48,9 @@ gabarit. Un fichier ou une matrice que cette personne ne peut pas lire reste deh
 Le déclencheur
 --------------
 À la demande, ou à chaque publication d'une version, au choix pour chaque gabarit.
-L'export se prépare en arrière-plan.
+L'export se prépare en arrière-plan. La personne qui l'a demandé est avisée quand il
+est prêt ; un export déclenché par une publication n'avise qu'en cas d'échec ou de
+livraison incomplète.
 """,
     "category": "Services/Project",
     "author": "Les services de consultation Blue Fox, Inc.",

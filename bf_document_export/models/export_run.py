@@ -216,6 +216,10 @@ class BfDocumentExportRun(models.Model):
 
     def _notify(self, failed):
         partner = self.user_id.partner_id
+        if self.trigger == "release" and not failed and self.delivery_state not in ("partial", "failed"):
+            # Nobody asked for this export, a publication did: its outcome stays on
+            # the export, and the person named on the template hears only of trouble.
+            partner = partner.browse()
         if failed:
             body = self.env._("The registry export « %s » failed. See the log on the export.", self.name)
         else:

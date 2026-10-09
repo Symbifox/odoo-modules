@@ -168,8 +168,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_dark_mode` | Symbifox Dark Mode | 18.0.1.6.0 | LGPL-3 | Dark mode for Odoo using the Symbifox palette |
 | `bf_default_all_companies` | BF Default All Companies | 18.0.1.0.0 | LGPL-3 | Pre-selects every allowed company in the multi-company switcher on first login |
 | `bf_document_approval` | Documents — Approbation à plusieurs | 18.0.1.1.0 | BUSL-1.1 | A policy is published only once everyone who had to weigh in has done so, and its distribution follows the RACI recorded in the knowledge matrix |
-| `bf_document_export` | Policies & Procedures Export | 18.0.1.1.1 | BUSL-1.1 | Reproduce the policy and procedure registry as a folder tree: ZIP export with best-practice templates, classification plans, master list and manifest |
-| `bf_document_export_nextcloud` | Policies & Procedures Export - Nextcloud | 18.0.1.2.0 | BUSL-1.1 | Deposit the exported registry in a Nextcloud folder (only what changed, never overwriting, never deleting) and read the Nextcloud files behind external documents |
+| `bf_document_export` | Policies & Procedures Export | 18.0.1.1.2 | BUSL-1.1 | Reproduce the policy and procedure registry as a folder tree: ZIP export with best-practice templates, classification plans, master list and manifest |
+| `bf_document_export_nextcloud` | Policies & Procedures Export - Nextcloud | 18.0.1.2.1 | BUSL-1.1 | Deposit the exported registry in a Nextcloud folder (only what changed, never overwriting, never deleting) and read the Nextcloud files behind external documents |
 | `bf_document_nextcloud_sync` | Document Nextcloud Sync | 18.0.1.5.0 | LGPL-3 | Document sync between Odoo and Nextcloud via WebDAV |
 | `bf_editorial` | Atelier éditorial | 18.0.1.10.0 | BUSL-1.1 | Editorial calendar, measured cadence and publication gates for the blog: state is derived, only decisions are stored |
 | `bf_editorial_audience` | Atelier éditorial — audience | 18.0.1.2.0 | BUSL-1.1 | An article's readership once the crawlers Odoo does not recognise are taken out, recorded daily before the visitor purge takes the trace away |

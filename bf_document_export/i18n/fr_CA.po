@@ -680,12 +680,14 @@ msgstr "Exports"
 #: model:ir.model.fields,help:bf_document_export.field_bf_document_export_template__user_id
 msgid ""
 "Exports triggered by a publication read the registry with this person's "
-"rights and notify them. A target bridge only replaces the published copy "
-"with an export run as this person."
+"rights, and notify them only when one fails or is not fully delivered. A "
+"target bridge only replaces the published copy with an export run as this "
+"person."
 msgstr ""
 "Les exports déclenchés par une publication lisent le registre avec les "
-"droits de cette personne, et l'avisent. Un pont vers une cible ne remplace "
-"la copie publiée que par un export lancé au nom de cette personne."
+"droits de cette personne, et ne l'avisent que si l'un d'eux échoue ou n'est "
+"pas livré en entier. Un pont vers une cible ne remplace la copie publiée que "
+"par un export lancé au nom de cette personne."
 
 #. module: bf_document_export
 #: model:ir.model.fields.selection,name:bf_document_export.selection__bf_document_export_run__state__failed

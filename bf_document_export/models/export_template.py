@@ -185,8 +185,9 @@ class BfDocumentExportTemplate(models.Model):
         string="Export as",
         domain=[("share", "=", False)],
         help="Exports triggered by a publication read the registry with this "
-             "person's rights and notify them. A target bridge only replaces the "
-             "published copy with an export run as this person.",
+             "person's rights, and notify them only when one fails or is not fully "
+             "delivered. A target bridge only replaces the published copy with an "
+             "export run as this person.",
     )
     run_ids = fields.One2many("bf.document.export.run", "template_id", string="Exports")
     last_run_id = fields.Many2one("bf.document.export.run", compute="_compute_last_run")

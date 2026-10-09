@@ -72,8 +72,10 @@ Per template:
 * **On each publication** of a version: one export is queued, only once even for several
   publications in a row. Publishing never waits for the export.
 
-Exports run in the background. The requester is notified when the archive is ready. The
-last three archives of each template are kept; older exports keep their log only.
+Exports run in the background. The requester is notified when the archive is ready. An
+export triggered by a publication only notifies the person named on the template when it
+fails or is not fully delivered; otherwise its outcome stays on the export. The last three
+archives of each template are kept; older exports keep their log only.
 
 ## Preview
 

@@ -2,7 +2,7 @@
     "name": "Policies & Procedures Export - Nextcloud",
     "summary": "Deposit the exported registry in a Nextcloud folder, and read the "
                "Nextcloud files behind external documents",
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.2.1",
     "description": """
 Export du registre : Nextcloud
 ==============================

@@ -127,11 +127,12 @@ class TestNextcloudTarget(TransactionCase):
             "effective_date": "2026-10-02",
         }).action_release()
 
-    def _export(self, nc, documents=None, auth=None, user=None):
+    def _export(self, nc, documents=None, auth=None, user=None, trigger="manual"):
         run = self.env["bf.document.export.run"].create({
             "template_id": self.template.id,
             "document_ids": [(6, 0, documents.ids)] if documents else [],
             "user_id": (user or self.template.user_id).id,
+            "trigger": trigger,
         })
         with ExitStack() as stack:
             stack.enter_context(patch.object(self.Config, "_get_auth",
@@ -208,6 +209,18 @@ class TestNextcloudTarget(TransactionCase):
         self.assertEqual(run.delivery_state, "partial")
         self.assertIn("left untouched", run.delivery_log)
         self.assertTrue(any("Delivery" in (m.body or "") for m in run.message_ids), "the notice says so")
+
+    def test_publication_deposit_writes_only_when_left_incomplete(self):
+        nc = FakeNextcloud()
+        run = self._export(nc, trigger="release")
+        self.assertEqual(run.delivery_state, "done", run.delivery_log)
+        self.assertFalse(run.message_ids.partner_ids, "a full deposit stays on the export")
+        nc.edit_by_hand(self._remote(nc, "PRO-961"), b"retouche faite sur Nextcloud")
+        self._revise(self.proc, "1.1", "Corps révisé.")
+        run = self._export(nc, trigger="release")
+        self.assertEqual(run.delivery_state, "partial")
+        self.assertEqual(run.message_ids.partner_ids, self.template.user_id.partner_id,
+                         "a deposit left incomplete is worth writing to the person named on the template")
 
     def test_withdrawn_document_moves_to_archives(self):
         nc = FakeNextcloud()

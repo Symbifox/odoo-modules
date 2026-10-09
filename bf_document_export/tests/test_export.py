@@ -336,6 +336,49 @@ class TestRegistryExport(TransactionCase):
         self.assertEqual({d["code"] for d in manifest["documents"]}, {"PRO-901"})
         self.assertTrue(any("PRO-910" in w for w in manifest["warnings"]))
 
+    def _notice(self, run, execute):
+        """The note an export posts when it ends, apart from the tracking of its state."""
+        before = run.message_ids
+        execute()
+        notice = (run.message_ids - before).filtered(lambda m: not m.tracking_value_ids)
+        self.assertEqual(len(notice), 1, "one notice per export")
+        return notice
+
+    def _release_run(self):
+        return self.env["bf.document.export.run"].create({
+            "template_id": self.template.id, "trigger": "release",
+            "user_id": self.env.ref("base.user_admin").id,
+            "document_ids": [(6, 0, self.proc.ids)],
+        })
+
+    def test_requested_export_notifies_the_requester(self):
+        run = self.env["bf.document.export.run"].create({
+            "template_id": self.template.id, "document_ids": [(6, 0, self.proc.ids)],
+        })
+        notice = self._notice(run, run._execute)
+        self.assertEqual(run.state, "done", run.log)
+        self.assertEqual(notice.partner_ids, run.user_id.partner_id)
+
+    def test_publication_export_stays_quiet_when_all_went_well(self):
+        run = self._release_run()
+        notice = self._notice(run, run._execute)
+        self.assertEqual(run.state, "done", run.log)
+        self.assertFalse(notice.partner_ids, "the outcome stays on the export, nobody is written to")
+
+    def test_publication_export_notifies_its_failure(self):
+        run = self._release_run()
+        with patch.object(type(self.template), "_build_archive", side_effect=RuntimeError("panne simulée")):
+            notice = self._notice(run, run._execute)
+        self.assertEqual(run.state, "failed")
+        self.assertEqual(notice.partner_ids, self.env.ref("base.user_admin").partner_id)
+
+    def test_publication_export_notifies_a_failed_delivery(self):
+        run = self._release_run()
+        with patch.object(type(run), "_deliver", side_effect=RuntimeError("cible en panne")):
+            notice = self._notice(run, run._execute)
+        self.assertEqual((run.state, run.delivery_state), ("done", "failed"))
+        self.assertEqual(notice.partner_ids, self.env.ref("base.user_admin").partner_id)
+
     def test_failed_export_records_its_failure(self):
         run = self.env["bf.document.export.run"].create({"template_id": self.template.id})
         with patch.object(type(self.template), "_build_archive", side_effect=RuntimeError("panne simulée")):
