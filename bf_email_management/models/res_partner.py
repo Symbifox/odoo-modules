@@ -11,30 +11,26 @@ class ResPartner(models.Model):
     )
 
     def _compute_bf_email_count(self):
-        if not self.ids:
-            self.bf_email_count = 0
-            return
-        # Raw SQL bypasses record rules: scope to the current user so the
-        # smart button matches what the drill-through action will show.
-        self.env.cr.execute("""
-            SELECT partner_id, COUNT(*) AS cnt
-            FROM bf_email
-            WHERE partner_id IN %s AND active = TRUE AND user_id = %s
-            GROUP BY partner_id
-        """, [tuple(self.ids), self.env.uid])
-        counts = dict(self.env.cr.fetchall())
+        # La même définition que la boîte et le panneau (le contact
+        # est le `partner_id`, ou son adresse exacte figure en De, À ou Cc),
+        # et la boîte de l'usager seulement, comme la règle d'accès.
+        Email = self.env["bf.email"]
         for rec in self:
-            rec.bf_email_count = counts.get(rec.id, 0)
+            if not rec.id:
+                rec.bf_email_count = 0
+                continue
+            rec.bf_email_count = Email.search_count(
+                [("user_id", "=", self.env.uid)] + Email._contact_domain(rec))
 
     def action_view_bf_emails(self):
+        """Le panneau de la boîte, filtré sur cette fiche, par-dessus
+        la fiche (ou la pleine page si le panneau n'est pas là). Voir
+        `openContactEmails` dans `bf_email_inbox.js`."""
         self.ensure_one()
         return {
-            "type": "ir.actions.act_window",
-            "name": "Courriels",
-            "res_model": "bf.email",
-            "views": [[False, "list"], [False, "form"]],
-            "domain": [("partner_id", "=", self.id)],
-            "context": {"default_partner_id": self.id},
+            "type": "ir.actions.client",
+            "tag": "bf_email_contact_emails",
+            "params": {"contact_id": self.id, "contact_name": self.display_name},
         }
 
 

@@ -135,6 +135,23 @@
         <field name="perm_unlink" eval="True"/>
     </record>
 
+    <!-- Les adresses d'un courriel suivent le courriel. Sans cette
+         règle, la table des participants dirait à n'importe quel interne qui
+         écrit à qui dans la boîte d'un collègue. -->
+    <record id="bf_email_participant_rule_owner" model="ir.rule">
+        <field name="name">Adresse d'un courriel : visible au propriétaire du courriel</field>
+        <field name="model_id" ref="model_bf_email_participant"/>
+        <field name="domain_force">[('email_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="bf_email_participant_rule_admin_all" model="ir.rule">
+        <field name="name">Adresse d'un courriel : tout (administration des courriels)</field>
+        <field name="model_id" ref="model_bf_email_participant"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_email_admin'))]"/>
+    </record>
+
     <record id="bf_email_account_rule_owner" model="ir.rule">
         <field name="name">Compte IMAP : visible uniquement au propriétaire</field>
         <field name="model_id" ref="model_bf_email_account"/>

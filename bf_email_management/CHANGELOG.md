@@ -4,6 +4,37 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.57.0] - 2026-10-08
+
+### Added
+
+- **A contact's email history, from the contact form.** The "Emails" button
+  (« Courriels ») opens the inbox panel over the form, filtered on that
+  contact across every folder (received, sent, handled). The filter shows as
+  a chip that one click removes; the panel title names the contact. Without
+  `bf_email_systray`, or in "page" mode, the full-page inbox opens instead,
+  filtered the same way. The button now sits at the head of the row: added
+  last, it fell into Odoo 18's "More" menu.
+- **Wider matching.** An email belongs to a contact when the contact is its
+  `partner_id`, **or** when the contact's exact address appears in From, To
+  or Cc. A contact only in Cc, or behind another recipient, now shows up, and
+  so does a contact no email carried as `partner_id`. A company also shows the
+  emails of the people filed under it, except those that reach it only
+  through the user's own contact or addresses.
+- **Search operator `contact:`** in the inbox: `contact:#42` targets one
+  contact, `contact:Name` or `contact:address` resolves up to 20 contacts.
+- **`bf.email.participant`**: one row per address and role, normalised and
+  indexed, kept up to date on create and on any write of the addresses,
+  back-filled on upgrade. It follows its email: each user reads only the
+  addresses of their own mailbox.
+
+### Fixed
+
+- **"Mark all as read" follows the list.** The typed search and the contact
+  filter now bound it; before, it marked the whole folder read, search or not.
+- A refresh or an infinite-scroll page still in flight when the search or the
+  filter changes is dropped instead of overwriting the list and the cache.
+
 ## [18.0.11.56.0] - 2026-10-08
 
 ### Changed

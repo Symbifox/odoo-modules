@@ -43,11 +43,19 @@ export class BfEmailPanel extends Component {
         close: Function,
         defaultWidthPct: Number,
         defaultHeightPct: Number,
+        // La fiche contact dont la boîte montre les courriels.
+        contact: { type: [Object, { value: null }], optional: true },
     };
 
     setup() {
         this.action = useService("action");
         this.state = useState(this._storedSize());
+        // Le contact du titre, remis à zéro quand la boîte retire
+        // son filtre (sinon « Courriels : X » coiffait la boîte entière).
+        this.filtre = useState({ contact: this.props.contact || null });
+        this.onContactCleared = () => {
+            this.filtre.contact = null;
+        };
         this.drag = null;
 
         // Echap ferme le panneau, mais seulement quand aucune dialogue n'est

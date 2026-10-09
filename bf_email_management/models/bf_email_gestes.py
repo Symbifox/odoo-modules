@@ -43,15 +43,21 @@ class BfEmailGestes(models.Model):
     # Tout marquer comme lu
     # ------------------------------------------------------------------
     @api.model
-    def inbox_mark_folder_read(self, folder):
+    def inbox_mark_folder_read(self, folder, search=None):
         """Passe en « lu » les non-lus du dossier ouvert, et dit combien.
+
+        ``search`` : la même ligne que la liste (recherche tapée, filtre de
+        contact posé par la fiche). Sans elle, « Tout marquer comme
+        lu » sous « Courriels : X » vidait les non-lus de TOUTE la boîte.
 
         ⚠️ Marquer lu n'est PAS traiter. Les deux axes existent séparément dans
         ce module depuis toujours, et c'est justement ce que cette action rend
         utilisable : on peut vider un compteur sans prétendre avoir traité
         quoi que ce soit.
         """
-        domaine = self._inbox_folder_domain(folder) + [("status", "=", "new")]
+        domaine = (self._inbox_folder_domain(folder)
+                   + self._search_domain_from_query(search)
+                   + [("status", "=", "new")])
         lignes = self.search(domaine, limit=MARQUER_LU_MAX)
         inscriptibles = lignes._filtered_access("write")
         nombre = len(inscriptibles)

@@ -314,6 +314,13 @@ readable `Date` header is never held.
 - One folder refresh per gesture instead of two, and the category counters are
   two grouped queries instead of two counts per category.
 
+### Contact email history (11.57+)
+- **One definition of "this contact's emails"** (`bf.email._contact_domain`): the contact is the row's `partner_id`, **or** its exact address appears in From, To or Cc. A company also counts the people filed under it (`child_of`), except the current user's own contact; the user's own addresses (`_get_self_addresses`) never match, otherwise the user's own company would bring back the whole mailbox.
+- **`bf.email.participant`** — one row per address and role (`from` / `to` / `cc`), normalised by `email_normalize_all`, indexed. Derived data: rewritten in SQL on every `create` and on any `write` touching `email_from` / `email_to` / `email_cc`, back-filled by the 18.0.11.57.0 migration. A table rather than `ilike`: `ilike` scans the whole mailbox on every form open, several times for a company, and it lies (`a@x.com` matches `data@x.com`).
+- **"Courriels" button on the contact form** — counts with that definition, sits first in the button row (view `priority` 1, so it no longer falls into Odoo 18's "More" menu), and opens the inbox **panel over the form**, filtered on the contact across every folder (`Tous les courriels`). The filter shows as a removable chip; the panel title names the contact. Without `bf_email_systray`, or in "page" mode, the full-page inbox opens instead, filtered the same way.
+- **Search operator `contact:`** — `contact:#42` targets one contact, `contact:Name` or `contact:address` resolves up to 20 contacts by name or email. No match means no emails, never a fallback to plain text search. "Mark all as read" follows the same search line.
+- The panel bypasses the per-tab page cache while a contact filter is on: the cache key is the folder only, and a contact's page would otherwise pass for the whole folder.
+
 ### Interactive Dashboard (OWL)
 - Date range filters: 7d / 30d / 90d / year / all / custom — **all charts including daily volume now respect the selection** (preset "Tout" derives the range from the actual data).
 - Inbox-Zero actionable cards: Boîte de réception active, En attente > 24h, IMAP orphelins à router, VIP en attente.
@@ -917,6 +924,7 @@ odoo -d <base> -u bf_email_management --test-enable --test-tags /bf_email_manage
 ### Mailbox isolation — the contract (11.2.1 spells it out in tests)
 - A `bf.email` row is visible to its **owner** only (`bf_email_rule_owner`, `[('user_id','=',user.id)]`, granted to every internal user).
 - Except to whoever carries **Gestion des courriels / Administrateur — tous les courriels** (`group_email_admin`), ticked on the user's own form: `bf_email_rule_admin_all` is `[(1,'=',1)]` **read-only** — `perm_write`, `perm_create` and `perm_unlink` are all False, so seeing everything is never editing or deleting anything.
+- `bf.email.participant` (11.57+) follows its email: `[('email_id.user_id', '=', user.id)]` for internal users, read-all for `group_email_admin`, no write access for anyone (rows are written in SQL by `bf.email`). Without the rule, the table would tell any internal user who writes to whom in a colleague's mailbox.
 - `bf.email.account` carries the IMAP password and has **no** admin rule at all — owner only, the email admin included. Do not add one.
 - Owner scoping of the *screen* is separate from the record rule: the sidebar, the badge and `inbox_get_*` all pin `('user_id','=',uid)` explicitly. Without that an admin sees "99+" while sitting at inbox zero, counting everyone's mail in their own inbox.
 - ⚠️ Any **public** method on `bf.email.account` is a `call_kw` door onto any account id — what protects it is what it touches, not the view it is reached from. `_get_imap_folders` / `_store_imap_folders` are private for that reason, and the latter also checks `write` access before its `sudo()`.

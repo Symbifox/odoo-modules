@@ -60,3 +60,4 @@ from . import test_compte_desactive
 from . import test_envois_imap_en_boite
 from . import test_pourriel_et_garde
 from . import test_perf_boite
+from . import test_contact_historique

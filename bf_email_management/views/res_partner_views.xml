@@ -5,6 +5,12 @@
         <field name="name">res.partner.form.inherit.bf.email</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
+        <!-- Appliquée avant les autres (priorité 16 par défaut), la vue
+             pose le bouton EN TÊTE de la rangée. Ajouté en dernier, il tombait
+             dans le menu « Plus » d'Odoo 18 et la porte d'entrée de l'historique
+             était cachée. Pas d'ancrage sur un bouton voisin : la rangée diffère
+             d'un locataire à l'autre selon les modules installés. -->
+        <field name="priority">1</field>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_view_bf_emails"

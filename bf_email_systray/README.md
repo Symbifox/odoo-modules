@@ -18,6 +18,10 @@ A button in Odoo's systray that opens the `bf.email` inbox, with a counter
   folded into a rail when the panel is narrower than 900 px, and keeps its own
   folded/open choice, separate from the full page (needs `bf_email_management`
   18.0.11.55.0).
+- Since 2.2.0 the "Emails" button (« Courriels ») of a contact form opens
+  the panel over the form, filtered on that contact across every folder; the
+  panel title names the contact until the filter chip is removed. In "page"
+  mode, the full page opens, filtered (needs `bf_email_management` 18.0.11.57.0).
 
 ## Settings
 

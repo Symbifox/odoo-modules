@@ -49,7 +49,10 @@
                      role="dialog" aria-label="Bo&#238;te de r&#233;ception">
                 <header class="o_bf_email_panel_header d-flex align-items-center gap-2">
                     <i class="fa fa-inbox"/>
-                    <span class="o_bf_email_panel_title">Bo&#238;te de r&#233;ception</span>
+                    <span class="o_bf_email_panel_title text-truncate">
+                        <t t-if="filtre.contact">Courriels : <t t-esc="filtre.contact.name"/></t>
+                        <t t-else="">Bo&#238;te de r&#233;ception</t>
+                    </span>
                     <span class="o_bf_email_panel_size text-muted small" t-esc="sizeLabel"/>
                     <div class="ms-auto d-flex align-items-center">
                         <button t-if="!isDefaultSize" class="btn btn-sm btn-link"
@@ -67,7 +70,7 @@
                     </div>
                 </header>
                 <div class="o_bf_email_panel_body">
-                    <BfEmailInbox inPanel="true"/>
+                    <BfEmailInbox inPanel="true" contact="props.contact" onContactCleared="onContactCleared"/>
                 </div>
                 <div class="o_bf_email_panel_grip" title="Redimensionner"
                      t-on-pointerdown="startResize"

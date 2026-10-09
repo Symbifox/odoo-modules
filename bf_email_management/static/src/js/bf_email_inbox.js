@@ -65,6 +65,10 @@ const DRAFTS_FOLDER = "drafts";
 // lignes : l'écran y montre les lots et leurs deux boutons.
 const HELD_FOLDER = "held";
 
+// Le dossier où s'ouvrent les courriels d'un contact : reçus,
+// envoyés et traités ensemble, comme l'historique qu'on vient chercher.
+const CONTACT_FOLDER = "all";
+
 // En deçà, le panneau du systray part avec le volet replié, tant que la
 // personne n'a pas choisi elle-même.
 const PANEL_RAIL_BELOW_PX = 900;
@@ -155,6 +159,9 @@ export class BfEmailInbox extends Component {
             acting: false,
             syncing: false,
             searchQuery: "",
+            // La fiche contact dont on lit les courriels, posée par le
+            // bouton « Courriels » de la fiche ({id, name}), ou rien.
+            contact: this._initialContact(),
             // « inbox » ouvert d'entrée : ses enfants sont les boîtes par
             // compte, et une boîte qu'il faut déplier pour voir
             // n'existe pas. « categories » reste replié, il l'a toujours été.
@@ -181,10 +188,14 @@ export class BfEmailInbox extends Component {
             // déjà vu la boîte, on l'affiche tout de suite et on revalide
             // derrière.
             const cache = dejaVu();
-            const dejaAffichable = !!(cache.folders && cache.pages.has(this._pageKey("inbox")));
+            // Ouverte sur un contact, la boîte part de « Tous les
+            // courriels » (reçus, envoyés, traités) et ne lit jamais le cache.
+            const dossier = this.state.contact ? CONTACT_FOLDER : "inbox";
+            const dejaAffichable = !this.state.contact
+                && !!(cache.folders && cache.pages.has(this._pageKey("inbox")));
             const chargement = Promise.all([
                 this.loadFolders(),
-                this.loadMessages("inbox", 0),
+                this.loadMessages(dossier, 0),
             ]);
             if (!dejaAffichable) {
                 await chargement;
@@ -396,6 +407,42 @@ export class BfEmailInbox extends Component {
         this.state.genChatAvailable = !!chat;
     }
 
+    /**
+     * Le contact passé par le bouton de la fiche. Le panneau du
+     * systray le donne en propriété, la pleine page dans les paramètres de
+     * l'action.
+     */
+    _initialContact() {
+        const contact = this.props.contact || this.props.action?.params?.contact;
+        return contact && contact.id ? { id: contact.id, name: contact.name || "" } : null;
+    }
+
+    /**
+     * Ce que la recherche envoie au serveur : le filtre de contact, s'il y en
+     * a un, puis ce que la personne a tapé. Le contact passe par l'opérateur
+     * `contact:` de la grammaire : liste, fils et défilement le suivent sans
+     * le savoir. Les brouillons ne sont pas des courriels et l'ignorent.
+     */
+    _serverQuery(folder) {
+        const parts = [];
+        if (this.state.contact && folder !== DRAFTS_FOLDER) {
+            parts.push(`contact:#${this.state.contact.id}`);
+        }
+        if (this.state.searchQuery) {
+            parts.push(this.state.searchQuery);
+        }
+        return parts.join(" ") || null;
+    }
+
+    /** Retire le filtre de contact ; « Tous les courriels » rend la main à la boîte. */
+    clearContact() {
+        this.state.contact = null;
+        // Le cadre qui nomme le contact (titre du panneau) l'apprend aussi.
+        this.props.onContactCleared?.();
+        const dossier = this.state.currentFolder === CONTACT_FOLDER ? "inbox" : this.state.currentFolder;
+        this.loadMessages(dossier, 0);
+    }
+
     /** Clé du cache de page : le dossier et la lecture par conversation. */
     _pageKey(folder) {
         return `${folder}|${this.state.grouped ? 1 : 0}`;
@@ -542,10 +589,12 @@ export class BfEmailInbox extends Component {
         this.state.selectedIds = {};
         this._selectionAnchor = null;
         // La dernière page vue de ce dossier s'affiche tout de suite ;
-        // la réponse du serveur la remplace. Jamais pendant une recherche.
+        // la réponse du serveur la remplace. Jamais pendant une recherche, ni
+        // sous un filtre de contact : la clé ne porte que le dossier,
+        // et la page d'un contact passerait pour celle de toute la boîte.
         const cache = dejaVu();
         const cle = this._pageKey(folder);
-        const cachable = offset === 0 && !this.state.searchQuery;
+        const cachable = offset === 0 && !this.state.searchQuery && !this.state.contact;
         if (cachable && cache.pages.has(cle)) {
             const vu = cache.pages.get(cle);
             this.state.messages = [...vu.messages];
@@ -605,7 +654,7 @@ export class BfEmailInbox extends Component {
             return this.orm.call("bf.email", "inbox_get_drafts", [], {
                 offset,
                 limit: size,
-                search: this.state.searchQuery || null,
+                search: this._serverQuery(folder),
             });
         }
         if (this.state.grouped) {
@@ -617,7 +666,7 @@ export class BfEmailInbox extends Component {
                 folder,
                 offset,
                 limit: size,
-                search: this.state.searchQuery || null,
+                search: this._serverQuery(folder),
             });
             return { messages: res.threads || [], total: res.total || 0 };
         }
@@ -625,7 +674,7 @@ export class BfEmailInbox extends Component {
             folder,
             offset,
             limit: size,
-            search: this.state.searchQuery || null,
+            search: this._serverQuery(folder),
         });
     }
 
@@ -650,12 +699,16 @@ export class BfEmailInbox extends Component {
             return;
         }
         const folder = this.state.currentFolder;
+        const query = this._serverQuery(folder);
         const span = Math.max(this.state.messages.length, this.state.pageSize);
         const keptId = this.state.selectedId;
         try {
             const result = await this._fetchPage(folder, this.state.offset, span);
-            if (folder !== this.state.currentFolder) {
-                return;  // l'usager a changé de dossier entre-temps
+            // L'usager a changé de dossier, de recherche ou de filtre de
+            // contact entre-temps : la réponse ne décrit plus ce qui
+            // est affiché, et `_rememberPage` la rangerait sous le mauvais nom.
+            if (folder !== this.state.currentFolder || query !== this._serverQuery(folder)) {
+                return;
             }
             this.state.messages = result.messages || [];
             this.state.total = result.total || 0;
@@ -691,10 +744,13 @@ export class BfEmailInbox extends Component {
         if (this.state.loadingMoreMessages || !this.canLoadMore) return;
         this.state.loadingMoreMessages = true;
         const nextOffset = this.state.offset + this.state.messages.length;
+        const folder = this.state.currentFolder;
+        const query = this._serverQuery(folder);
         try {
-            const result = await this._fetchPage(
-                this.state.currentFolder, nextOffset
-            );
+            const result = await this._fetchPage(folder, nextOffset);
+            if (folder !== this.state.currentFolder || query !== this._serverQuery(folder)) {
+                return;  // la liste a changé de dossier ou de filtre
+            }
             // Un « Traité » en vol décale l'offset d'une ligne : ne jamais
             // pousser un id déjà là (clé en double dans t-foreach).
             const deja = new Set(this.state.messages.map((m) => m.id));
@@ -769,7 +825,9 @@ export class BfEmailInbox extends Component {
         try {
             const res = await this.orm.call(
                 "bf.email", "inbox_mark_folder_read", [],
-                { folder: this.state.currentFolder }
+                // Ce que la liste montre, pas tout le dossier.
+                { folder: this.state.currentFolder,
+                  search: this._serverQuery(this.state.currentFolder) }
             );
             this.notification.add(
                 res.remaining
@@ -1309,7 +1367,8 @@ export class BfEmailInbox extends Component {
 
     /** La page affichée devient la dernière vue de ce dossier. */
     _rememberPage() {
-        if (this.state.offset !== 0 || this.state.searchQuery || this.isHeldFolder) {
+        if (this.state.offset !== 0 || this.state.searchQuery || this.state.contact
+                || this.isHeldFolder) {
             return;
         }
         dejaVu().pages.set(this._pageKey(this.state.currentFolder), {
@@ -1872,3 +1931,30 @@ export class BfEmailInbox extends Component {
 }
 
 registry.category("actions").add("bf_email_inbox", BfEmailInbox);
+
+/**
+ * Le bouton « Courriels » de la fiche contact.
+ *
+ * Une action-fonction, pas un composant : le gestionnaire d'actions ne
+ * touche alors ni au fil d'Ariane ni à l'écran, et la fiche reste dessous.
+ * Le panneau du systray (module `bf_email_systray`, qui dépend de celui-ci et
+ * non l'inverse) répond à l'événement et marque `handled`. S'il n'est pas
+ * installé, ou si la personne a choisi la pleine page, on y va, filtrée.
+ */
+export function openContactEmails(env, action) {
+    const params = action.params || {};
+    const contact = { id: params.contact_id, name: params.contact_name || "" };
+    const detail = { contact, handled: false };
+    env.bus.trigger("BF_EMAIL:OPEN_CONTACT", detail);
+    if (detail.handled) {
+        return;
+    }
+    return {
+        type: "ir.actions.client",
+        tag: "bf_email_inbox",
+        name: _t("Courriels : %s", contact.name),
+        params: { contact },
+    };
+}
+
+registry.category("actions").add("bf_email_contact_emails", openContactEmails);

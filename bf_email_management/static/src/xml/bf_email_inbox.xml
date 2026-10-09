@@ -235,6 +235,18 @@
                                 </t>
                             </span>
                         </div>
+                        <span t-if="state.contact"
+                              class="badge rounded-pill text-bg-light border d-inline-flex align-items-center gap-1 flex-shrink-1 text-truncate o_bf_inbox_contact"
+                              t-att-title="'Courriels de ' + state.contact.name + ' : la fiche en est le contact, ou son adresse est en De, À ou Cc'">
+                            <i class="fa fa-user"/>
+                            <span class="text-truncate" t-esc="state.contact.name"/>
+                            <button class="btn btn-sm p-0 ms-1 lh-1 text-reset"
+                                    t-on-click="clearContact"
+                                    title="Retirer le filtre de contact"
+                                    aria-label="Retirer le filtre de contact">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </span>
                         <div class="flex-grow-1" style="max-width: 360px;">
                             <input t-ref="searchInput"
                                    type="search"

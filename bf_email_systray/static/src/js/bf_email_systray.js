@@ -5,7 +5,7 @@ import { browser } from "@web/core/browser/browser";
 import { Dropdown } from "@web/core/dropdown/dropdown";
 import { DropdownItem } from "@web/core/dropdown/dropdown_item";
 import { registry } from "@web/core/registry";
-import { useService } from "@web/core/utils/hooks";
+import { useBus, useService } from "@web/core/utils/hooks";
 import { user } from "@web/core/user";
 import { BfEmailPanel } from "@bf_email_systray/js/bf_email_panel";
 
@@ -76,6 +76,19 @@ export class BfEmailSystray extends Component {
         this._pollInterval = null;
         this._debounce = null;
         this._removePanel = null;
+
+        // Le bouton « Courriels » d'une fiche contact demande le
+        // panneau filtré sur ce contact (`openContactEmails`, dans
+        // bf_email_management). En mode « page », on laisse la demande
+        // retomber sur la pleine page filtrée.
+        useBus(this.env.bus, "BF_EMAIL:OPEN_CONTACT", (ev) => {
+            const detail = ev.detail;
+            if (detail.handled || !this.isPanelMode) {
+                return;
+            }
+            detail.handled = true;
+            this.openPanel(detail.contact);
+        });
 
         onWillStart(async () => {
             // Un seul aller-retour, au montage : le mode et la taille ne
@@ -212,12 +225,23 @@ export class BfEmailSystray extends Component {
             this.closePanel();
             return;
         }
+        this.openPanel();
+    }
+
+    /**
+     * Ouvre le panneau, filtré sur `contact` ({id, name}) s'il est donné.
+     * Un panneau déjà ouvert est refermé d'abord : son filtre n'est pas
+     * celui qu'on demande, et la boîte prend le sien au montage.
+     */
+    openPanel(contact = null) {
+        this.closePanel();
         this._removePanel = this.overlay.add(
             BfEmailPanel,
             {
                 close: () => this.closePanel(),
                 defaultWidthPct: this.state.widthPct,
                 defaultHeightPct: this.state.heightPct,
+                contact,
             },
             // Sous la séquence des dialogues (50), qui doivent s'ouvrir
             // par-dessus : la boîte en ouvre elle-même.

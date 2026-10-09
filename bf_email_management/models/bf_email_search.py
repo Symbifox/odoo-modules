@@ -18,6 +18,9 @@ connaît parce que Gmail l'a rendue banale.
     objet: sujet:        l'objet
     corps: texte:        le corps seulement
     fiche: dossier:      la fiche Odoo où le courriel est classé
+    contact:             les courriels d'une fiche contact : elle
+                         en est le contact, ou son adresse exacte figure en
+                         De, À ou Cc ; ``contact:#42`` vise une fiche précise
     boite: imap:         le dossier IMAP
     cat: catégorie:      client, interne, fournisseur, notification, marketing
     pj:                  oui / non
@@ -167,6 +170,11 @@ class BfEmailSearch(models.Model):
             return [("date", ">=", str(date))] if date else None
         if cle in ("est", "is", "etat", "état"):
             return ETATS.get(valeur.lower())
+        if cle == "contact":
+            # Aucune fiche trouvée = aucun courriel : c'est la vraie réponse,
+            # pas une raison de retomber en recherche ordinaire.
+            return self._contact_domain(
+                self._contact_partners_from_query(valeur))
         return None
 
     @api.model

@@ -18,6 +18,8 @@ from . import bf_email_subscriptions
 from . import bf_email_gen
 from . import bf_email_conversations
 from . import bf_email_search
+# Les adresses de chaque courriel, et « les courriels de cette fiche ».
+from . import bf_email_contact
 from . import bf_email_inbox
 # Mobile API layer — must load after bf_email (it _inherit's it).
 from . import bf_email_mobile_device
