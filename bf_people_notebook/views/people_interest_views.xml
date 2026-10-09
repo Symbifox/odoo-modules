@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_people_interest_list" model="ir.ui.view">
+        <field name="name">bf.people.interest.list</field>
+        <field name="model">bf.people.interest</field>
+        <field name="arch" type="xml">
+            <list string="Interests" editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+                <field name="person_count" string="People"/>
+                <button name="action_open_people" type="object" string="People" icon="fa-users"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_people_interest_search" model="ir.ui.view">
+        <field name="name">bf.people.interest.search</field>
+        <field name="model">bf.people.interest</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="mine" string="Mine" domain="[('user_id', '=', uid)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_people_interest" model="ir.actions.act_window">
+        <field name="name">Interests</field>
+        <field name="res_model">bf.people.interest</field>
+        <field name="view_mode">list</field>
+        <field name="context">{'search_default_mine': 1}</field>
+    </record>
+</odoo>

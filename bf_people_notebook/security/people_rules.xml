@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 🔴 Les règles d'isolation, GLOBALES exprès (aucun groupe) : une règle de
+         groupe ajoutée ailleurs, « l'administrateur voit tout » par exemple, s'ajoute
+         aux autres règles de groupe par OU, mais jamais à une règle globale. Rien ne
+         les élargit donc sans toucher à ce fichier. Pas d'exception pour
+         l'administrateur. Les pièces jointes, la photo, le fil et les activités
+         suivent la fiche. -->
+    <record id="rule_people_person_read" model="ir.rule">
+        <field name="name">Person card: read by its owner and the members it is shared with</field>
+        <field name="model_id" ref="model_bf_people_person"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('shared_user_ids', 'in', [user.id])]</field>
+        <!-- Déclarés explicitement : une montée ne remet pas une valeur absente du XML. -->
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_people_person_write" model="ir.rule">
+        <field name="name">Person card: written by its owner only</field>
+        <field name="model_id" ref="model_bf_people_person"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Occasions et intérêts : à leur propriétaire, et lisibles par une fiche
+         partagée qui les porte (sinon la fiche partagée les montrerait vides). -->
+    <record id="rule_people_occasion_read" model="ir.rule">
+        <field name="name">Occasion: read by its owner, and through a shared card</field>
+        <field name="model_id" ref="model_bf_people_occasion"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('person_ids.shared_user_ids', 'in', [user.id])]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_people_occasion_write" model="ir.rule">
+        <field name="name">Occasion: written by its owner only</field>
+        <field name="model_id" ref="model_bf_people_occasion"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_people_interest_read" model="ir.rule">
+        <field name="name">Interest: read by its owner, and through a shared card</field>
+        <field name="model_id" ref="model_bf_people_interest"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('person_ids.shared_user_ids', 'in', [user.id])]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="rule_people_interest_write" model="ir.rule">
+        <field name="name">Interest: written by its owner only</field>
+        <field name="model_id" ref="model_bf_people_interest"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="False"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

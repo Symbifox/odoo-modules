@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_people_person_form" model="ir.ui.view">
+        <field name="name">bf.people.person.form</field>
+        <field name="model">bf.people.person</field>
+        <field name="arch" type="xml">
+            <form string="Person I've met">
+                <field name="is_mine" invisible="1"/>
+                <field name="active" invisible="1"/>
+                <header>
+                    <button name="action_remind_reconnect" type="object" string="Remind me to reconnect"
+                            icon="fa-bell-o" invisible="not is_mine or not id"/>
+                    <button name="action_make_contact" type="object" string="Make a contact"
+                            icon="fa-address-book-o" invisible="not is_mine or partner_id or not id or not name"
+                            confirm="Everyone in the household will see this contact: its name, city, country and photo. Your notes, the interests and the rest of the card stay private. Go ahead?"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_bf_notes" type="object" class="oe_stat_button"
+                                icon="fa-sticky-note-o" invisible="not id">
+                            <field name="bf_note_count" widget="statinfo" string="Notes"/>
+                        </button>
+                        <button name="action_open_contact" type="object" class="oe_stat_button"
+                                icon="fa-address-card-o" invisible="not partner_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Contact</span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="image_1920" widget="image" class="oe_avatar"
+                           options="{'preview_image': 'image_128'}" readonly="not is_mine and id"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="First name, even approximate"
+                                   readonly="not is_mine and id"/>
+                        </h1>
+                        <div class="d-flex align-items-center gap-2">
+                            <field name="name_uncertain" readonly="not is_mine and id"/>
+                            <label for="name_uncertain" string="Not sure of the name"/>
+                        </div>
+                        <field name="description" class="text-muted"
+                               placeholder="How to recognise them: the cyclist with the red helmet"
+                               readonly="not is_mine and id"/>
+                    </div>
+                    <group>
+                        <group string="Where we met">
+                            <field name="place" placeholder="A café, a street, a trailhead"
+                                   readonly="not is_mine and id"/>
+                            <field name="city" readonly="not is_mine and id"/>
+                            <field name="country_id" options="{'no_create': True, 'no_open': True}"
+                                   readonly="not is_mine and id"/>
+                            <field name="occasion_id" placeholder="Gaspésie 2026"
+                                   domain="[('user_id', '=', uid)]"
+                                   options="{'no_open': True}" readonly="not is_mine and id"/>
+                            <label for="met_on"/>
+                            <div class="d-flex gap-2">
+                                <field name="met_on" readonly="not is_mine and id"/>
+                                <field name="met_on_precision" invisible="not met_on"
+                                       readonly="not is_mine and id"/>
+                            </div>
+                            <field name="introduced_by" readonly="not is_mine and id"/>
+                        </group>
+                        <group string="About them">
+                            <field name="circle" readonly="not is_mine and id"/>
+                            <field name="interest_ids" widget="many2many_tags"
+                                   domain="[('user_id', '=', uid)]"
+                                   options="{'color_field': 'color', 'no_open': True}"
+                                   placeholder="Hiking, music, cooking…"
+                                   readonly="not is_mine and id"/>
+                            <field name="last_seen" invisible="not last_seen"/>
+                            <field name="partner_id" invisible="not partner_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="likes" placeholder="What they told you they love"
+                               readonly="not is_mine and id"/>
+                        <field name="knows_about_me"
+                               placeholder="What you told them about yourself"
+                               readonly="not is_mine and id"/>
+                        <field name="reconnect_detail"
+                               placeholder="Something they noticed, a plan you talked about"
+                               readonly="not is_mine and id"/>
+                    </group>
+                    <notebook>
+                        <page string="Sharing" name="sharing" invisible="not is_mine and id">
+                            <p class="text-muted">
+                                Only you see this card. Members chosen here can read it, with
+                                its photo and its thread; they cannot change it and they do not
+                                see your private notes from the Notebook.
+                            </p>
+                            <field name="shared_user_ids" widget="many2many_tags"
+                                   domain="[('share', '=', False), ('id', '!=', uid)]"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                        </page>
+                        <page string="Shared by" name="shared_by" invisible="is_mine or not id">
+                            <p class="text-muted">This card was shared with you, read-only.</p>
+                            <field name="user_id" readonly="1" options="{'no_open': True}"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_people_person_kanban" model="ir.ui.view">
+        <field name="name">bf.people.person.kanban</field>
+        <field name="model">bf.people.person</field>
+        <field name="arch" type="xml">
+            <kanban sample="1">
+                <field name="image_128"/>
+                <field name="active"/>
+                <field name="is_mine"/>
+                <field name="partner_id"/>
+                <field name="is_shared"/>
+                <field name="met_on_display"/>
+                <!-- Lus par les t-if du gabarit : sans déclaration, raw_value est
+                     indéfini et la carte plante au navigateur (aucun essai Python
+                     ne le voit). -->
+                <field name="name"/>
+                <field name="place"/>
+                <field name="city"/>
+                <field name="occasion_id"/>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                        <aside class="o_kanban_aside_full">
+                            <div t-if="record.image_128.raw_value" class="o_kanban_image_fill position-relative w-100">
+                                <field name="image_128" class="h-100" widget="image"
+                                       options="{'img_class': 'object-fit-cover'}" alt="Photo"/>
+                            </div>
+                            <div t-else="" class="d-flex align-items-center justify-content-center w-100 h-100 bg-light text-muted">
+                                <i class="fa fa-user fa-3x" role="img" aria-label="No photo" title="No photo"/>
+                            </div>
+                        </aside>
+                        <main class="ps-2 ps-md-0">
+                            <div class="d-flex align-items-start justify-content-between gap-1">
+                                <field name="display_name" class="mb-0 fw-bold fs-5"/>
+                                <span>
+                                    <i t-if="record.partner_id.raw_value" class="fa fa-address-card-o text-muted"
+                                       role="img" aria-label="Contact" title="Also a contact"/>
+                                    <i t-if="record.is_shared.raw_value and record.is_mine.raw_value"
+                                       class="fa fa-share-alt text-muted ms-1" role="img" aria-label="Shared" title="Shared"/>
+                                    <i t-if="!record.is_mine.raw_value" class="fa fa-users text-muted ms-1"
+                                       role="img" aria-label="Shared with me" title="Shared with me"/>
+                                </span>
+                            </div>
+                            <field t-if="record.name.raw_value" name="description" class="text-muted text-truncate"/>
+                            <div class="text-truncate">
+                                <field name="place"/>
+                                <span t-if="record.place.raw_value and record.city.raw_value">, </span>
+                                <field name="city"/>
+                            </div>
+                            <div class="text-muted">
+                                <field name="occasion_id"/>
+                                <span t-if="record.occasion_id.raw_value and record.met_on_display.raw_value"> · </span>
+                                <field name="met_on_display"/>
+                            </div>
+                            <field name="interest_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <footer>
+                                <field name="circle" class="badge text-bg-light"/>
+                                <field name="activity_ids" widget="kanban_activity" class="ms-auto"/>
+                            </footer>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_people_person_list" model="ir.ui.view">
+        <field name="name">bf.people.person.list</field>
+        <field name="model">bf.people.person</field>
+        <field name="arch" type="xml">
+            <list string="People I've met">
+                <field name="display_name" string="Name"/>
+                <field name="description" optional="show"/>
+                <field name="place" optional="show"/>
+                <field name="city" optional="show"/>
+                <field name="country_id" optional="hide"/>
+                <field name="occasion_id" optional="show"/>
+                <field name="met_on_display" string="When" optional="show"/>
+                <field name="circle" optional="show"/>
+                <field name="interest_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+                <field name="last_seen" optional="hide"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="activity_ids" widget="list_activity" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_people_person_search" model="ir.ui.view">
+        <field name="name">bf.people.person.search</field>
+        <field name="model">bf.people.person</field>
+        <field name="arch" type="xml">
+            <search string="People I've met">
+                <field name="everything" string="Anything I remember"/>
+                <field name="name"/>
+                <field name="place" string="Where" filter_domain="['|', '|', ('place', 'ilike', self), ('city', 'ilike', self), ('country_id.name', 'ilike', self)]"/>
+                <field name="occasion_id"/>
+                <field name="interest_ids"/>
+                <filter name="mine" string="My cards" domain="[('is_mine', '=', True)]"/>
+                <filter name="shared_with_me" string="Shared with me" domain="[('is_mine', '=', False)]"/>
+                <separator/>
+                <filter name="not_contact" string="Not a contact yet" domain="[('partner_id', '=', False)]"/>
+                <filter name="to_reconnect" string="To reconnect" domain="[('activity_ids', '!=', False)]"/>
+                <filter name="uncertain" string="Name not sure" domain="[('name_uncertain', '=', True)]"/>
+                <separator/>
+                <filter name="family" string="Family" domain="[('circle', '=', 'family')]"/>
+                <filter name="friend" string="Friends" domain="[('circle', '=', 'friend')]"/>
+                <filter name="travel" string="Met on a trip" domain="[('circle', '=', 'travel')]"/>
+                <filter name="work" string="Work" domain="[('circle', '=', 'work')]"/>
+                <filter name="acquaintance" string="Acquaintances" domain="[('circle', '=', 'acquaintance')]"/>
+                <separator/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group by">
+                    <filter name="group_occasion" string="Occasion" context="{'group_by': 'occasion_id'}"/>
+                    <filter name="group_country" string="Country" context="{'group_by': 'country_id'}"/>
+                    <filter name="group_city" string="City" context="{'group_by': 'city'}"/>
+                    <filter name="group_circle" string="Circle" context="{'group_by': 'circle'}"/>
+                    <filter name="group_year" string="Year met" context="{'group_by': 'met_on:year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_people_person" model="ir.actions.act_window">
+        <field name="name">People I've met</field>
+        <field name="res_model">bf.people.person</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_people_person_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Note someone you have just met</p>
+            <p>
+                One clue is enough: a first name (even unsure), what they look like, or a
+                photo. Add where you met and what they like when you have a minute. Only you
+                see your cards.
+            </p>
+        </field>
+    </record>
+</odoo>

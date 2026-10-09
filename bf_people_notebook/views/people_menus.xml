@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_people_root" name="People I've Met" sequence="62"
+              web_icon="bf_people_notebook,static/description/icon.png"
+              groups="base.group_user"/>
+    <menuitem id="menu_people_person" name="People" parent="menu_people_root"
+              action="action_people_person" sequence="10"/>
+    <menuitem id="menu_people_occasion" name="Occasions" parent="menu_people_root"
+              action="action_people_occasion" sequence="20"/>
+    <menuitem id="menu_people_interest" name="Interests" parent="menu_people_root"
+              action="action_people_interest" sequence="30"/>
+</odoo>

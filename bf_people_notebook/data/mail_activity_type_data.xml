@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- noupdate : on peut renommer le type ou changer son délai sans qu'une montée
+         ne le remette. -->
+    <data noupdate="1">
+        <record id="mail_activity_type_reconnect" model="mail.activity.type">
+            <field name="name">Reconnect</field>
+            <field name="summary">Get back in touch</field>
+            <field name="res_model">bf.people.person</field>
+            <field name="icon">fa-handshake-o</field>
+            <field name="delay_count">3</field>
+            <field name="delay_unit">months</field>
+            <field name="delay_from">current_date</field>
+            <field name="category">default</field>
+        </record>
+    </data>
+</odoo>

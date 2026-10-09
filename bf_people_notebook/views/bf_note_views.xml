@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="bf_note_view_form_people" model="ir.ui.view">
+        <field name="name">bf.note.form.people</field>
+        <field name="model">bf.note</field>
+        <field name="inherit_id" ref="bf_bloc_notes.bf_note_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_open_reroute_wizard']" position="after">
+                <button name="action_make_person_card" type="object" string="Make a person card"
+                        class="btn-secondary" invisible="not id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
