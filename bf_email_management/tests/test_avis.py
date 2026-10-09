@@ -219,6 +219,31 @@ class TestAvis(MobileApiCase):
         for champ in ("body_html", "body_text", "body_preview"):
             self.assertNotIn("jeton-secret", avis[champ] or "", champ)
 
+    def test_une_notification_au_corps_vide_ne_laisse_que_l_enveloppe(self):
+        """Le message garde un corps vide,
+        Odoo supprime le courriel, et le rendu de ce courriel porte un lien
+        d'accès au portail."""
+        message = self._message(auteur=self.owner, body="")
+        mail = self.env["mail.mail"].sudo().create({
+            "mail_message_id": message.id, "email_to": "client.avis@exemple.test",
+            "body_html": "<p><a href='/mail/view?access_token=jeton-portail-xyz'>Voir</a></p>",
+            "state": "sent", "auto_delete": True})
+        self.assertTrue(mail.is_notification)
+        mail._postprocess_sent_message(success_pids=[])
+        avis = self._avis(message)
+        self.assertTrue(avis.bf_avis_sans_corps)
+        avis.invalidate_recordset()
+        self.assertNotIn("jeton-portail", avis.body_html or "")
+
+    def test_une_notification_avec_corps_garde_son_corps(self):
+        """Le pendant de l'essai précédent : le message garde un corps, et
+        l'avis aussi, même si Odoo supprime le courriel."""
+        message = self._message(auteur=self.owner)
+        self._envoyer(message)
+        avis = self._avis(message)
+        self.assertFalse(avis.bf_avis_sans_corps)
+        self.assertIn("Voici le lien", avis.body_html or "")
+
     def test_un_courriel_qu_odoo_garde_garde_son_corps(self):
         message = self._message(auteur=self.owner)
         self._envoyer(message, auto_delete=False)

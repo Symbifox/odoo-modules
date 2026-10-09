@@ -4,6 +4,16 @@ All notable changes to `bf_email_management` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This module follows Odoo's `MAJOR.MINOR.PATCH` convention prefixed with the Odoo series (`18.0.X.Y.Z`).
 
+## [18.0.11.59.1] - 2026-10-09
+
+### Fixed
+
+- A notice no longer keeps the rendered mail of an empty-body notification
+  that Odoo deletes. A tracking-only notification sent to the customer of a
+  portal record left only the rendered mail in the notice, whose buttons carry
+  an access link. Odoo deletes that mail: the notice now keeps its envelope
+  only, like any mail Odoo deletes.
+
 ## [18.0.11.59.0] - 2026-10-09
 
 ### Added

@@ -230,7 +230,11 @@ class BfEmailAvis(models.Model):
                                                          "createur": mail.create_uid,
                                                          "sans_corps": False})
             entree["a"] |= adresses
-            if mail.auto_delete and not mail.is_notification:
+            # Odoo supprime ce courriel après l'envoi. Son corps rendu ne se
+            # garde que si le message, lui, garde un corps : une notification
+            # au corps vide (simple suivi sur une fiche) n'a que le rendu du
+            # courriel, dont les boutons portent un lien d'accès au portail.
+            if mail.auto_delete and (not mail.is_notification or not message.body):
                 entree["sans_corps"] = True
         if not par_message:
             return self.browse()
@@ -284,6 +288,12 @@ class BfEmailAvis(models.Model):
                     avis = deja.filtered(lambda r: r.direction == AVIS
                                          and r.mail_message_id == message)
                     if avis and avis == deja:
+                        # Un courriel suivant qu'Odoo supprime suffit à faire de
+                        # l'avis une enveloppe : Odoo appelle la capture un
+                        # courriel à la fois.
+                        if (entree.get("sans_corps") or (visiteur and motif == "repli")) \
+                                and not avis[0].bf_avis_sans_corps:
+                            avis[0].write({"bf_avis_sans_corps": True})
                         connues = set(email_normalize_all(avis[0].email_to or ""))
                         neuves = [a for a in externes if a not in connues]
                         if neuves:
