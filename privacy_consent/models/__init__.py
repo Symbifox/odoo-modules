@@ -30,3 +30,4 @@ from . import privacy_email_sequence
 from . import res_partner
 from . import project_project
 from . import mail_blacklist
+from . import base_partner_merge

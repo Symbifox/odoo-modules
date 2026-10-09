@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_breach_notice_form_federation" model="ir.ui.view">
+        <field name="name">privacy.breach.notice.form.federation</field>
+        <field name="model">privacy.breach.notice</field>
+        <field name="inherit_id" ref="privacy_breach_notice.view_breach_notice_form"/>
+        <field name="arch" type="xml">
+            <button name="action_new_version" position="attributes">
+                <attribute name="invisible">state == 'draft' or not is_latest or received_at</attribute>
+            </button>
+            <button name="action_new_version" position="after">
+                <button name="action_acknowledge_federated" type="object" string="Accuser réception"
+                        class="btn-primary" invisible="state != 'received'"
+                        confirm="L'accusé atteste que l'avis vous est parvenu, pour le texte dont l'empreinte figure ici. Il ne dit pas que vous êtes d'accord avec son contenu."/>
+            </button>
+            <xpath expr="//div[hasclass('oe_title')]" position="after">
+                <div class="alert alert-warning" role="alert" invisible="not received_at">
+                    Avis reçu de <field name="processor_name" readonly="1" class="fw-bold"/> le
+                    <field name="received_at" readonly="1"/>. Il porte les faits que votre mandataire
+                    constate : l'évaluation du risque et les avis à la Commission vous reviennent, dans la
+                    fiche du registre <field name="incident_id" readonly="1"/>.
+                </div>
+            </xpath>
+            <field name="company_id" position="after">
+                <field name="federation_peer_id" readonly="1" invisible="not federation_peer_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_breach_notice_search_federation" model="ir.ui.view">
+        <field name="name">privacy.breach.notice.search.federation</field>
+        <field name="model">privacy.breach.notice</field>
+        <field name="inherit_id" ref="privacy_breach_notice.view_breach_notice_search"/>
+        <field name="arch" type="xml">
+            <filter name="draft" position="before">
+                <filter name="issued" string="Émis" domain="[('received_at', '=', False)]"/>
+                <filter name="received" string="Reçus d'un mandataire" domain="[('received_at', '!=', False)]"/>
+                <separator/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_breach_notice_list_federation" model="ir.ui.view">
+        <field name="name">privacy.breach.notice.list.federation</field>
+        <field name="model">privacy.breach.notice</field>
+        <field name="inherit_id" ref="privacy_breach_notice.view_breach_notice_list"/>
+        <field name="arch" type="xml">
+            <field name="responsible_id" position="after">
+                <field name="processor_name" optional="show"/>
+            </field>
+        </field>
+    </record>
+</odoo>

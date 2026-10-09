@@ -11,3 +11,14 @@ class ResCompany(models.Model):
         help="Cadre réglementaire appliqué par défaut aux nouveaux "
         "enregistrements de vie privée de cette société.",
     )
+
+    # Le responsable de la société elle-même : un seul stockage, sur son partenaire.
+    privacy_officer_partner_id = fields.Many2one(
+        related="partner_id.privacy_officer_partner_id", readonly=False,
+        groups="privacy_consent.group_privacy_user")
+    privacy_officer_email = fields.Char(
+        related="partner_id.privacy_officer_email", readonly=False,
+        groups="privacy_consent.group_privacy_user")
+    privacy_officer_public_url = fields.Char(
+        related="partner_id.privacy_officer_public_url", readonly=False,
+        groups="privacy_consent.group_privacy_user")

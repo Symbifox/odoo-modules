@@ -195,6 +195,9 @@
             <xpath expr="//sheet" position="inside">
                 <group string="Vie privée">
                     <field name="default_privacy_framework_id"/>
+                    <field name="privacy_officer_partner_id"/>
+                    <field name="privacy_officer_email" widget="email"/>
+                    <field name="privacy_officer_public_url" widget="url"/>
                 </group>
             </xpath>
         </field>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les liens de fédération se lisent par tout utilisateur interne, et leur nom (calculé en
+         sudo) dit « AV-2026-0003 v2 ⇄ Client X » : l'existence d'un avis et son client sortaient
+         des groupes Vie privée. Les règles de groupe s'additionnent : sans le rôle, les liens
+         d'avis disparaissent ; avec lui, rien ne change. -->
+    <record id="rule_federation_link_hide_breach" model="ir.rule">
+        <field name="name">Liens de fédération : avis de violation réservés au rôle Vie privée</field>
+        <field name="model_id" ref="bf_federation.model_federation_link"/>
+        <field name="domain_force">[('res_model', '!=', 'privacy.breach.notice')]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_federation_link_breach_privacy" model="ir.rule">
+        <field name="name">Liens de fédération : les liens d'avis, pour le rôle Vie privée</field>
+        <field name="model_id" ref="bf_federation.model_federation_link"/>
+        <field name="domain_force">[('res_model', '=', 'privacy.breach.notice'), ('breach_in_company', '=', True)]</field>
+        <field name="groups" eval="[(4, ref('privacy_consent.group_privacy_user'))]"/>
+    </record>
+    <!-- Même fuite par les messages de lien : leur lien s'affiche en sudo (« AV-… ⇄ Client X »). -->
+    <record id="rule_federation_link_message_hide_breach" model="ir.rule">
+        <field name="name">Messages de lien : avis de violation réservés au rôle Vie privée</field>
+        <field name="model_id" ref="bf_federation.model_federation_link_message"/>
+        <field name="domain_force">[('link_id.res_model', '!=', 'privacy.breach.notice')]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_federation_link_message_breach_privacy" model="ir.rule">
+        <field name="name">Messages de lien : ceux des avis, pour le rôle Vie privée</field>
+        <field name="model_id" ref="bf_federation.model_federation_link_message"/>
+        <field name="domain_force">[('link_id.res_model', '=', 'privacy.breach.notice'), ('link_id.breach_in_company', '=', True)]</field>
+        <field name="groups" eval="[(4, ref('privacy_consent.group_privacy_user'))]"/>
+    </record>
+</odoo>

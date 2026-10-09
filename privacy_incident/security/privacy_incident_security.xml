@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Cloisonnement par société, comme les autres modèles de vie privée -->
+        <record id="rule_incident_company" model="ir.rule">
+            <field name="name">Incident : règle de société</field>
+            <field name="model_id" ref="model_privacy_incident"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <record id="rule_incident_measure_company" model="ir.rule">
+            <field name="name">Mesure d'incident : règle de société</field>
+            <field name="model_id" ref="model_privacy_incident_measure"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+        </record>
+
+        <!-- Portail : une organisation ne voit QUE ses propres incidents.
+             L'ancrage est commercial_partner_id, donc un contact rattaché à
+             une organisation voit le registre de son organisation, et un
+             partenaire vide ne donne accès à rien. -->
+        <record id="rule_incident_portal" model="ir.rule">
+            <field name="name">Incident : portail, son organisation seulement</field>
+            <field name="model_id" ref="model_privacy_incident"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.commercial_partner_id.id)]</field>
+        </record>
+
+        <record id="rule_incident_measure_portal" model="ir.rule">
+            <field name="name">Mesure d'incident : portail, son organisation seulement</field>
+            <field name="model_id" ref="model_privacy_incident_measure"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('incident_id.partner_id', '=', user.partner_id.commercial_partner_id.id)]</field>
+        </record>
+
+
+    </data>
+
+    <!-- Hors du bloc noupdate : ces règles doivent suivre les mises à jour du module. -->
+    <data>
+        <!-- Les abonnés d'un avis ou d'une fiche du registre révèlent l'avis et le client (le RPRP
+             qui répond y entre) : réservés au rôle Vie privée. Mêmes domaines dans
+             privacy_breach_notice et privacy_incident : les règles de groupe s'additionnent, deux
+             listes différentes rouvriraient chacune ce que l'autre ferme. -->
+        <record id="rule_followers_hide_privacy_registre" model="ir.rule">
+            <field name="name">Abonnés : avis et registre cachés hors du rôle (registre)</field>
+            <field name="model_id" ref="mail.model_mail_followers"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[('res_model', 'not in', ['privacy.breach.notice', 'privacy.incident'])]</field>
+        </record>
+        <record id="rule_followers_privacy_role_registre" model="ir.rule">
+            <field name="name">Abonnés : avis et registre pour le rôle Vie privée, dans ses sociétés (registre)</field>
+            <field name="model_id" ref="mail.model_mail_followers"/>
+            <field name="groups" eval="[(4, ref('privacy_consent.group_privacy_user'))]"/>
+            <field name="domain_force">[('res_model', 'in', ['privacy.breach.notice', 'privacy.incident']), ('privacy_in_company', '=', True)]</field>
+        </record>
+    </data>
+</odoo>

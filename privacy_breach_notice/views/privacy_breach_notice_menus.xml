@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_privacy_breach_notices"
+              name="Avis de violation (mandataire)"
+              parent="privacy_consent.menu_privacy_operations"
+              action="action_breach_notice"
+              groups="privacy_consent.group_privacy_user"
+              sequence="26"/>
+</odoo>

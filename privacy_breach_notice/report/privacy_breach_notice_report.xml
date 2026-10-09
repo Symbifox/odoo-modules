@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_breach_notice" model="ir.actions.report">
+        <field name="name">Avis de violation</field>
+        <field name="model">privacy.breach.notice</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">privacy_breach_notice.report_breach_notice</field>
+        <field name="report_file">privacy_breach_notice.report_breach_notice</field>
+        <field name="print_report_name">'%s-v%s' % (object.name, object.version)</field>
+        <!-- Pas de bouton Imprimer : le seul PDF qui fait foi est celui figé à l'envoi. -->
+    </record>
+
+    <template id="report_breach_notice_rows">
+        <!-- Une rubrique n'apparaît que si elle a un contenu : un avis initial dit ce qu'on sait. -->
+        <tr t-if="value">
+            <th style="width: 32%; vertical-align: top;" t-out="label"/>
+            <td style="white-space: pre-wrap;" t-out="value"/>
+        </tr>
+    </template>
+
+    <template id="report_breach_notice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <p class="text-uppercase text-muted small mb-1">Avis de violation de la confidentialité</p>
+                        <h2 class="mb-1"><t t-out="o.display_name"/></h2>
+                        <p class="mb-3">
+                            <t t-out="dict(o._fields['stage'].selection).get(o.stage)"/> ·
+                            <t t-out="dict(o._fields['notice_type'].selection).get(o.notice_type)"/>
+                            <t t-if="o.previous_id"> · remplace <t t-out="o.previous_id.display_name"/></t>
+                        </p>
+
+                        <table class="table table-sm table-borderless mb-3">
+                            <tr><th style="width: 32%;">Mandataire</th><td t-out="o.company_id.name"/></tr>
+                            <tr><th>Responsable</th><td t-out="o.responsible_id.name"/></tr>
+                            <tr t-if="o.officer_partner_id"><th>À l'attention de</th><td t-out="o.officer_partner_id.name"/></tr>
+                            <tr><th>Adresse de réception désignée</th><td t-out="o.officer_email"/></tr>
+                            <tr t-if="o.contract_ref"><th>Contrat</th><td t-out="o.contract_ref"/></tr>
+                        </table>
+
+                        <p class="small">
+                            Cet avis est donné en vertu de l'article 18.3 de la Loi sur la protection des
+                            renseignements personnels dans le secteur privé. Il porte les faits que le mandataire
+                            constate. L'évaluation du risque de préjudice sérieux (art. 3.7), les avis à la
+                            Commission d'accès à l'information et aux personnes concernées (art. 3.5) et
+                            l'inscription au registre des incidents (art. 3.8) reviennent au responsable.
+                            Aucun renseignement qui identifie une personne n'y figure.
+                        </p>
+
+                        <h5 class="mt-4">Ce qui s'est produit</h5>
+                        <table class="table table-sm">
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Nature</t>
+                                <t t-set="value" t-value="dict(o._fields['nature'].selection).get(o.nature)"/>
+                            </t>
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Circonstances</t><t t-set="value" t-value="o.circumstances"/>
+                            </t>
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Cause</t><t t-set="value" t-value="o.cause"/>
+                            </t>
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Survenance</t>
+                                <t t-set="value" t-value="o.occurred_from and ('%s%s%s' % (o.occurred_from, (' au %s' % o.occurred_to) if o.occurred_to else '', ' (approximatif)' if o.occurred_approximate else ''))"/>
+                            </t>
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Constaté par le mandataire</t>
+                                <t t-set="value" t-value="o.discovered_at and '%s UTC' % o.discovered_at"/>
+                            </t>
+                        </table>
+
+                        <t t-if="o.notice_type != 'report'">
+                            <h5 class="mt-4">Les renseignements et les personnes</h5>
+                            <table class="table table-sm">
+                                <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                    <t t-set="label">Renseignements visés</t><t t-set="value" t-value="o.pi_description"/>
+                                </t>
+                                <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                    <t t-set="label">Pourquoi on ne peut pas encore les décrire</t><t t-set="value" t-value="o.pi_unknown_reason"/>
+                                </t>
+                                <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                    <t t-set="label">Sensibilité</t><t t-set="value" t-value="o.sensitivity_note"/>
+                                </t>
+                                <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                    <t t-set="label">Personnes concernées</t>
+                                    <t t-set="value" t-value="o.subject_count and ('%s%s%s' % (o.subject_count, ' (approximatif)' if o.subject_count_estimate else '', (', dont %s résidant au Québec' % o.subject_count_quebec) if o.subject_count_quebec else ''))"/>
+                                </t>
+                            </table>
+
+                            <h5 class="mt-4">Faits utiles à votre évaluation</h5>
+                            <table class="table table-sm">
+                                <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                    <t t-set="label">Chiffrement</t>
+                                    <t t-set="value" t-value="dict(o._fields['encryption'].selection).get(o.encryption)"/>
+                                </t>
+                                <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                    <t t-set="label">Sortie des données</t>
+                                    <t t-set="value" t-value="dict(o._fields['exfiltration'].selection).get(o.exfiltration)"/>
+                                </t>
+                                <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                    <t t-set="label">Autres faits</t><t t-set="value" t-value="o.assessment_facts"/>
+                                </t>
+                            </table>
+                        </t>
+
+                        <t t-if="o.notice_type == 'report'">
+                            <h5 class="mt-4">Tentatives bloquées
+                                du <t t-out="o.report_period_from"/> au <t t-out="o.report_period_to"/></h5>
+                            <table class="table table-sm">
+                                <thead><tr><th>Catégorie</th><th class="text-end">Nombre</th><th>Précision</th></tr></thead>
+                                <tbody>
+                                    <tr t-foreach="o.report_line_ids" t-as="line">
+                                        <td t-out="line.category"/>
+                                        <td class="text-end" t-out="line.count"/>
+                                        <td t-out="line.note"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <h5 class="mt-4">Ce qui est fait</h5>
+                        <table class="table table-sm">
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Mesures prises ou prévues</t><t t-set="value" t-value="o.measures_taken"/>
+                            </t>
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Mesures que les personnes pourraient prendre</t><t t-set="value" t-value="o.subject_measures"/>
+                            </t>
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Autorités hors Québec avisées</t><t t-set="value" t-value="o.foreign_authority_note"/>
+                            </t>
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Corps policier en cause</t>
+                                <t t-set="value" t-value="o.law_enforcement and (o.law_enforcement_note or 'Oui')"/>
+                            </t>
+                            <t t-call="privacy_breach_notice.report_breach_notice_rows">
+                                <t t-set="label">Tiers qui peuvent diminuer le risque</t><t t-set="value" t-value="o.third_parties_note"/>
+                            </t>
+                        </table>
+
+                        <h5 class="mt-4">Signature et contact</h5>
+                        <p>
+                            Signé électroniquement par <b t-out="o.signer_id.name"/><t t-if="o.signer_title">, <t t-out="o.signer_title"/></t>,
+                            pour <t t-out="o.company_id.name"/>, le <t t-out="o.sent_at"/> UTC.
+                            Ce document est figé à son envoi ; son empreinte SHA-256 l'accompagne dans le courriel
+                            et sur la page d'accusé de réception.
+                        </p>
+                        <p>
+                            Personne à joindre : <t t-out="o.contact_user_id.name"/>,
+                            <t t-out="o.contact_user_id.email"/><t t-if="o.contact_user_id.phone">, <t t-out="o.contact_user_id.phone"/></t>.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

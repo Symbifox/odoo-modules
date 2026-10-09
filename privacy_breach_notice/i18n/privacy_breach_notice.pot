@@ -1,0 +1,1580 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* privacy_breach_notice
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-08 22:43+0000\n"
+"PO-Revision-Date: 2026-10-08 22:43+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: privacy_breach_notice
+#: model:ir.actions.report,print_report_name:privacy_breach_notice.action_report_breach_notice
+msgid "'%s-v%s' % (object.name, object.version)"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid ""
+"(art. 18.3 de la Loi sur la protection des renseignements personnels dans le"
+" secteur privé)."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid ""
+"). Il prouve que l'accusé vient de cette boîte, et non d'un\n"
+"                            lien recopié ailleurs."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid ""
+",\n"
+"                            pour"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid ", le"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "1. Recevoir un code"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "2. Accuser réception"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"<p><b>%(name)s</b>%(title)s a accusé réception de l'avis le %(when)s (heure "
+"du serveur, UTC).<br/>Empreinte accusée : <code>%(sha)s</code></p>"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"<p>Avis envoyé à <b>%(to)s</b>, signé par %(who)s.<br/>Empreinte SHA-256 du "
+"PDF : <code>%(sha)s</code></p>"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "<p>Code d'accusé envoyé à %s.</p>"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"<p>Votre code pour accuser réception de l'avis %(avis)s : "
+"<b>%(code)s</b></p><p>Il est valable trente minutes et ne sert qu'une "
+"fois.</p>"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:mail.template,body_html:privacy_breach_notice.mail_template_breach_notice
+msgid ""
+"<t t-set=\"_wlf\" t-value=\"object.company_id._fields\"/>\n"
+"<t t-set=\"brand_dark\" t-value=\"('report_brand_dark' in _wlf and object.company_id.report_brand_dark) or '#212529'\"/>\n"
+"<div style=\"font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#111827; line-height:22px;\">\n"
+"<p style=\"margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;\">Avis de violation de la confidentialité</p>\n"
+"<h1 style=\"font-size:22px; font-weight:500; margin:0 0 12px 0;\"><t t-out=\"object.display_name\"/> · <t t-out=\"dict(object._fields['stage'].selection).get(object.stage)\"/></h1>\n"
+"<p>Bonjour<t t-if=\"object.officer_partner_id\"> <t t-out=\"object.officer_partner_id.name\"/></t>,</p>\n"
+"<p>\n"
+"    À titre de mandataire de <b t-out=\"object.responsible_id.name\"/>, <t t-out=\"object.company_id.name\"/>\n"
+"    vous transmet l'avis ci-joint, comme le prévoit l'article 18.3 de la Loi sur la protection des\n"
+"    renseignements personnels dans le secteur privé. Il vous parvient à l'adresse désignée pour\n"
+"    recevoir ces avis.\n"
+"</p>\n"
+"<p>\n"
+"    L'avis porte les faits que nous constatons. L'évaluation du risque de préjudice sérieux, l'avis à la\n"
+"    Commission d'accès à l'information et l'inscription à votre registre vous reviennent.\n"
+"</p>\n"
+"<p style=\"margin:20px 0;\">\n"
+"    <a t-att-href=\"object._ack_url()\" t-attf-style=\"display:inline-block; padding:10px 18px; background-color:#{brand_dark}; color:#ffffff; text-decoration:none; border-radius:6px;\">Lire l'avis et accuser réception</a>\n"
+"</p>\n"
+"<p style=\"font-size:12px; color:#6B7280;\">\n"
+"    Empreinte SHA-256 du PDF joint : <code t-out=\"object.content_sha256\"/><br/>\n"
+"    Pour toute question : <t t-out=\"object.contact_user_id.name\"/>, <t t-out=\"object.contact_user_id.email\"/>.\n"
+"</p>\n"
+"</div>\n"
+"        "
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Accuser réception"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Accusé de réception"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_name
+msgid "Accusé par"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__state__acknowledged
+msgid "Accusé reçu"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_at
+msgid "Accusé reçu le"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_search
+msgid "Accusés"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__nature__unauthorized_access
+msgid "Accès non autorisé"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_otp_attempts
+msgid "Ack Otp Attempts"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_otp_count
+msgid "Ack Otp Count"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_otp_expiry
+msgid "Ack Otp Expiry"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_otp_hash
+msgid "Ack Otp Hash"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_otp_last_sent
+msgid "Ack Otp Last Sent"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_otp_prev_expiry
+msgid "Ack Otp Prev Expiry"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_otp_prev_hash
+msgid "Ack Otp Prev Hash"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_token
+msgid "Ack Token"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_mail_activity
+msgid "Activity"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_ip
+msgid "Adresse IP"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__officer_email
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Adresse de réception désignée"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_ir_attachment
+msgid "Attachment"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.actions.act_window,help:privacy_breach_notice.action_breach_notice
+msgid "Aucun avis de violation"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__exfiltration__none_found
+msgid "Aucune trace de sortie"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__foreign_authority_note
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Autorités hors Québec avisées"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Autres faits"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__assessment_facts
+msgid "Autres faits utiles à l'évaluation"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Avant d'envoyer %(avis)s, il manque : %(liste)s."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_search
+msgid "Avis"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.actions.act_window,name:privacy_breach_notice.action_breach_notice
+#: model:ir.actions.report,name:privacy_breach_notice.action_report_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Avis de violation"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.ui.menu,name:privacy_breach_notice.menu_privacy_breach_notices
+msgid "Avis de violation (mandataire)"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_privacy_breach_notice
+msgid "Avis de violation au responsable"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Avis de violation de la confidentialité"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:mail.template,subject:privacy_breach_notice.mail_template_breach_notice
+msgid ""
+"Avis de violation de la confidentialité {{ object.display_name }} : {{ "
+"object.responsible_id.name }}"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__pdf_attachment_id
+msgid "Avis envoyé (PDF)"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__stage__final
+msgid "Avis final"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__root_id
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__stage__initial
+msgid "Avis initial"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__law_enforcement_note
+msgid ""
+"Aviser les personnes peut être reporté tant que cela entraverait une enquête"
+" (art. 3.5, al. 3) : le responsable doit le savoir."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__state__draft
+msgid "Brouillon"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_search
+msgid "Brouillons"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_channel
+msgid "Canal de l'accusé"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__category
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Catégorie"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Cause"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__cause
+msgid "Cause, si elle est connue"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Ce code a expiré : demandez-en un nouveau."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Ce qui est fait"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Ce qui s'est produit"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid ""
+"Cet avis est donné en vertu de l'article 18.3 de la Loi sur la protection des\n"
+"                            renseignements personnels dans le secteur privé. Il porte les faits que le mandataire\n"
+"                            constate. L'évaluation du risque de préjudice sérieux (art. 3.7), les avis à la\n"
+"                            Commission d'accès à l'information et aux personnes concernées (art. 3.5) et\n"
+"                            l'inscription au registre des incidents (art. 3.8) reviennent au responsable.\n"
+"                            Aucun renseignement qui identifie une personne n'y figure."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Cet avis n'a pas été envoyé."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Cet avis n'attend plus d'accusé."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__encryption
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Chiffrement"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__encryption__yes
+msgid "Chiffrés"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__encryption__partial
+msgid "Chiffrés en partie"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__circumstances
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Circonstances"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Code incorrect."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Code pour accuser réception de l'avis %s"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Code reçu"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Codes d'accusé réarmés."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__nature__unauthorized_disclosure
+msgid "Communication non autorisée"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Constaté par le mandataire"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__discovered_at
+msgid "Constaté par nous le"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Contrat"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__law_enforcement
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Corps policier en cause"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__mail_id
+msgid "Courriel"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__create_uid
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__create_date
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__occurred_approximate
+msgid "Dates approximatives"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Demandez un code, puis saisissez-le."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__display_name
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_mail_followers
+msgid "Document Followers"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_mail_template
+msgid "Email Templates"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_mail_compose_message
+msgid "Email composition wizard"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__content_sha256
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Empreinte SHA-256"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_sha256
+msgid "Empreinte accusée"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_search
+msgid "En attente d'accusé"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Envoi"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Envoi et accusé"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__state__sent
+msgid "Envoyé"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__sent_at
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Envoyé le"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__sent_to
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Envoyé à"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Faits pour l'évaluation"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Faits utiles à votre évaluation"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_mail_followers__privacy_in_company
+msgid "Fiche Vie privée dans mes sociétés"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__id
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__id
+msgid "ID"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__message_has_error
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__encryption__unknown
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__exfiltration__unknown
+msgid "Inconnu"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Je confirme avoir reçu cet avis."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid ""
+"L'accusé atteste que l'avis vous est parvenu, à la seconde et pour le texte dont\n"
+"                            l'empreinte figure ci-dessus. Il ne dit pas que vous êtes d'accord avec son contenu,\n"
+"                            ni avec une évaluation du risque, qui vous revient."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__officer_email
+msgid ""
+"L'adresse que la fiche du responsable désigne, relue à l'envoi : l'avis part"
+" là et nulle part ailleurs. Un document y est présumé reçu dès qu'il y "
+"devient accessible (C-1.1, art. 31). Pour la changer, changez la désignation"
+" sur la fiche."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__notice_type
+msgid ""
+"L'article 18.3 vise « toute violation ou tentative de violation ». Une "
+"tentative dirigée vers les renseignements de ce client s'avise à l'unité ; "
+"les tentatives bloquées sur son infrastructure partent en relevé périodique."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "L'avis %s a déjà cette version."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"L'avis %s est déjà envoyé : son contenu ne change plus. Créez une mise à "
+"jour."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "L'avis %s est déjà envoyé."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid ""
+"L'avis porte les faits que nous constatons, jamais la conclusion sur le risque de\n"
+"                        préjudice sérieux : elle revient au responsable. Aucun renseignement qui identifie\n"
+"                        une personne : une liste de comptes touchés part à part, par un transfert sécurisé."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid ""
+"L'avis sera signé à votre nom, figé et envoyé à l'adresse de réception "
+"désignée. Son contenu ne pourra plus changer : une correction se fera par "
+"une mise à jour."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "L'empreinte accusée n'est pas celle de l'avis envoyé."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__content_sha256
+msgid "L'empreinte du PDF envoyé, figée à l'envoi."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__responsible_id
+msgid ""
+"L'organisation dont les renseignements personnels sont touchés, et pour qui "
+"nous exerçons le mandat."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "La fin de la période du relevé précède son début."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "La fin de la survenance précède son début."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__write_uid
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__write_date
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"Le PDF conservé ne correspond plus à l'avis envoyé : l'accusé ne peut pas "
+"porter sur un texte qu'on ne peut plus montrer."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid ""
+"Le PDF conservé ne correspond plus à l'empreinte de l'avis envoyé. Ne l'accusez pas :\n"
+"                    communiquez avec"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/ir_attachment.py:0
+msgid "Le PDF d'un avis de violation envoyé ne se modifie pas."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/ir_attachment.py:0
+msgid "Le PDF d'un avis de violation envoyé ne se supprime pas."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/mail_message.py:0
+msgid ""
+"Le fil d'un avis de violation envoyé est un registre : ses messages ne se "
+"modifient ni ne se suppriment. Ajoutez une note qui corrige."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/mail_message.py:0
+msgid ""
+"Le fil d'un avis de violation est un registre : on n'y écrit qu'avec le "
+"droit d'écrire sur l'avis."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"Le gabarit du courriel doit rendre le lien d'accusé de réception une fois, "
+"et une seule : l'avis n'est pas envoyé."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/mail_template.py:0
+msgid ""
+"Le gabarit officiel de l'avis de violation ne se modifie qu'en "
+"administration."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Le nom de la personne qui accuse réception est requis."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Le numéro, la version, l'envoi et l'accusé se consignent seuls."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Le relevé d'un avis envoyé ne change plus."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"Le responsable d'un avis est une organisation, et sa propre maison : %s ne "
+"l'est pas (ou plus). Vérifiez sa fiche avant d'envoyer."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__pi_description
+msgid "Les catégories de renseignements, jamais les renseignements eux-mêmes."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid ""
+"Les codes déjà envoyés ne vaudront plus, et le client pourra en redemander. "
+"À faire si quelqu'un a épuisé les codes avec un lien recopié."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__nature
+msgid ""
+"Les quatre cas de l'article 3.6, tels que nous les constatons. Le "
+"responsable décide seul s'il s'agit d'un incident de confidentialité."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Les renseignements et les personnes"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__ack_channel__link
+msgid "Lien de l'avis"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_privacy_breach_notice_report_line
+msgid "Ligne du relevé des tentatives"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Lire l'avis (PDF)"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Mandataire"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_base_partner_merge_automatic_wizard
+msgid "Merge Partner Wizard"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_mail_message
+msgid "Message"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_mail_notification
+msgid "Message Notifications"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Mesures"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Mesures prises ou prévues"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__measures_taken
+msgid "Mesures prises ou prévues, datées"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__subject_measures
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Mesures que les personnes pourraient prendre"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__stage__update
+msgid "Mise à jour"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__nature
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Nature"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_user_agent
+msgid "Navigateur"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__count
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Nombre"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__subject_count_estimate
+msgid "Nombre approximatif"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__encryption__no
+msgid "Non chiffrés"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__notice_id
+msgid "Notice"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Nouvel avis"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__name
+msgid "Numéro"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model,name:privacy_breach_notice.model_mail_mail
+msgid "Outgoing Mails"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice_report_line__category
+msgid ""
+"Par exemple : connexions refusées à un compte du client, exploitation tentée"
+" sur son instance."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__third_parties_note
+msgid "Par exemple une institution financière (art. 3.5, al. 2)."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__contact_user_id
+msgid "Personne à joindre"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Personne à joindre :"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__subject_count
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Personnes concernées"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__nature__loss
+msgid "Perte ou autre atteinte à la protection"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Pour toute question :"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__pi_unknown_reason
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Pourquoi on ne peut pas encore les décrire"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__note
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Précision"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__law_enforcement_note
+msgid "Précisions sur l'enquête"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Préparer une mise à jour"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__report_period_to
+msgid "Période, au"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__report_period_from
+msgid "Période, du"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.actions.act_window,help:privacy_breach_notice.action_breach_notice
+msgid ""
+"Quand un événement touche la confidentialité de renseignements personnels que vous\n"
+"                détenez pour un client, la loi vous oblige à aviser sans délai son responsable de la\n"
+"                protection des renseignements personnels, même d'une tentative."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Recevoir un code"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/mail_followers.py:0
+msgid "Recherche non prise en charge."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__notice_type__report
+msgid "Relevé périodique des tentatives"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_search
+msgid "Relevés"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Renseignements et personnes"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__pi_description
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Renseignements visés"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__officer_partner_id
+msgid "Repris de la désignation faite sur la fiche de l'organisation."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__responsible_id
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_search
+msgid "Responsable"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__officer_partner_id
+msgid "Responsable de la protection des RP"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Responsable de la protection des renseignements personnels"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Réarmer les codes d'accusé"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Réception accusée le"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__assessment_facts
+msgid ""
+"Récupération ou destruction des données, auteur connu, signes d'une "
+"utilisation malveillante. Des faits, pas une conclusion."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__contract_ref
+msgid "Référence du contrat"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__sensitivity_note
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Sensibilité"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice_report_line__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Signature et contact"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Signer et envoyer"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__signer_id
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Signé par"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Signé électroniquement par"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__company_id
+msgid "Société"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__exfiltration__confirmed
+msgid "Sortie confirmée"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__exfiltration
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Sortie des données"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__exfiltration__suspected
+msgid "Sortie soupçonnée"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Survenance"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__occurred_to
+msgid "Survenance, au"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__occurred_from
+msgid "Survenance, du"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__notice_type__attempt
+msgid "Tentative ciblée"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_search
+msgid "Tentatives"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__report_line_ids
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_form
+msgid "Tentatives bloquées"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid ""
+"Tentatives bloquées\n"
+"                                du"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__third_parties_note
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "Tiers qui peuvent diminuer le risque"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__ack_title
+msgid "Titre"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__signer_title
+msgid "Titre du signataire"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Trop d'essais pour ce code : demandez-en un nouveau."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"Trop de codes demandés pour cet avis : communiquez avec la personne à "
+"joindre."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__notice_type
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Type"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid ""
+"UTC.\n"
+"                            Ce document est figé à son envoi ; son empreinte SHA-256 l'accompagne dans le courriel\n"
+"                            et sur la page d'accusé de réception."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Un avis envoyé se conserve : seul un brouillon se supprime."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Un brouillon se corrige directement."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Un code vient d'être envoyé à %s."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"Un code vient de partir : attendez une minute avant d'en demander un autre."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid ""
+"Un code à usage unique part à l'adresse où l'avis a été envoyé\n"
+"                            ("
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"Un message du fil d'un avis de violation ne se modifie pas : ajoutez une "
+"note qui corrige."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/mail_activity.py:0
+msgid ""
+"Une activité sur un avis de violation se confie à une personne qui peut "
+"écrire sur l'avis : %s ne le peut pas."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/base_partner_merge.py:0
+msgid ""
+"Une de ces fiches porte un avis de violation : seule une personne "
+"administratrice peut la fusionner, en vérifiant où iront les avis."
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "Une mise à jour garde le responsable et la société de l'avis initial."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__nature__unauthorized_use
+msgid "Utilisation non autorisée"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__version
+msgid "Version"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__is_latest
+msgid "Version courante"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__previous_id
+msgid "Version précédente"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:mail.template,name:privacy_breach_notice.mail_template_breach_notice
+msgid "Vie privée : avis de violation au responsable"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields.selection,name:privacy_breach_notice.selection__privacy_breach_notice__notice_type__breach
+msgid "Violation"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.view_breach_notice_search
+msgid "Violations"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Votre nom"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "Votre titre"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,help:privacy_breach_notice.field_privacy_breach_notice__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "au"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "au moins une ligne de tentatives bloquées"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__subject_count_quebec
+msgid "dont résidant au Québec"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "l'adresse de réception désignée"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "la nature"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "la période du relevé"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "le moment où nous l'avons constaté"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "les circonstances"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid ""
+"les renseignements visés, ou pourquoi on ne peut pas encore les décrire"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid "par"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.ack_page
+msgid ""
+"vous avise, à titre de mandataire, d'un événement qui\n"
+"                    touche la confidentialité de renseignements personnels de"
+msgstr ""
+
+#. module: privacy_breach_notice
+#. odoo-python
+#: code:addons/privacy_breach_notice/models/privacy_breach_notice.py:0
+msgid "« %s » n'est pas une adresse courriel valide."
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "· remplace"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice.report_breach_notice
+msgid "À l'attention de"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__stage
+msgid "Étape"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__state
+msgid "État"
+msgstr ""
+
+#. module: privacy_breach_notice
+#: model:ir.model.fields,field_description:privacy_breach_notice.field_privacy_breach_notice__mail_state
+msgid "État du courriel"
+msgstr ""

@@ -38,6 +38,12 @@
                                     class="btn-link" icon="fa-cog"/>
                         </group>
                     </group>
+                    <group string="Responsable de la protection des RP" name="privacy_officer"
+                           invisible="not is_company">
+                        <field name="privacy_officer_partner_id"/>
+                        <field name="privacy_officer_email" widget="email"/>
+                        <field name="privacy_officer_public_url" widget="url"/>
+                    </group>
                     <group string="Actions">
                         <button name="action_request_consent" type="object"
                                 string="Demander le consentement" class="btn-primary"

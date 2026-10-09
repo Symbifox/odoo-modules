@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_privacy_incidents"
+              name="Incidents de confidentialité"
+              parent="privacy_consent.menu_privacy_operations"
+              action="action_privacy_incident"
+              sequence="25"/>
+
+    <menuitem id="menu_privacy_incident_measures"
+              name="Mesures sur incidents"
+              parent="privacy_consent.menu_privacy_operations"
+              action="action_privacy_incident_measure"
+              groups="privacy_consent.group_privacy_manager"
+              sequence="26"/>
+
+</odoo>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Les règles de groupe s'additionnent : sans le rôle, les suivis d'avis disparaissent ; avec
+         lui, rien ne change. Un suivi sans message (orphelin) reste visible comme avant. -->
+    <record id="rule_tracking_email_hide_breach" model="ir.rule">
+        <field name="name">Suivi des courriels : avis de violation réservés au rôle Vie privée</field>
+        <field name="model_id" ref="mail_tracking.model_mail_tracking_email"/>
+        <field name="domain_force">['|', ('mail_message_id', '=', False), ('mail_message_id.model', 'not in', ['privacy.breach.notice', 'privacy.incident'])]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_tracking_email_breach_privacy" model="ir.rule">
+        <field name="name">Suivi des courriels : ceux des avis, pour le rôle Vie privée</field>
+        <field name="model_id" ref="mail_tracking.model_mail_tracking_email"/>
+        <field name="domain_force">[('mail_message_id.model', 'in', ['privacy.breach.notice', 'privacy.incident']), ('mail_message_id.record_company_id', 'in', company_ids + [False])]</field>
+        <field name="groups" eval="[(4, ref('privacy_consent.group_privacy_user'))]"/>
+    </record>
+    <record id="rule_tracking_event_hide_breach" model="ir.rule">
+        <field name="name">Événements de suivi : avis de violation réservés au rôle Vie privée</field>
+        <field name="model_id" ref="mail_tracking.model_mail_tracking_event"/>
+        <field name="domain_force">['|', ('tracking_email_id.mail_message_id', '=', False), ('tracking_email_id.mail_message_id.model', 'not in', ['privacy.breach.notice', 'privacy.incident'])]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_tracking_event_breach_privacy" model="ir.rule">
+        <field name="name">Événements de suivi : ceux des avis, pour le rôle Vie privée</field>
+        <field name="model_id" ref="mail_tracking.model_mail_tracking_event"/>
+        <field name="domain_force">[('tracking_email_id.mail_message_id.model', 'in', ['privacy.breach.notice', 'privacy.incident']), ('tracking_email_id.mail_message_id.record_company_id', 'in', company_ids + [False])]</field>
+        <field name="groups" eval="[(4, ref('privacy_consent.group_privacy_user'))]"/>
+    </record>
+</odoo>

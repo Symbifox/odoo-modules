@@ -7,13 +7,13 @@ Custom Odoo 18 Community Edition modules developed by [Les services de consultat
 Every module in this repository ships its full source. What differs is what you
 may do with it, and there are three regimes.
 
-**67 modules are LGPL-3.** Use them, modify them, redistribute them, build a
+**68 modules are LGPL-3.** Use them, modify them, redistribute them, build a
 product on them. Nothing is asked in return. These are the single-purpose
 modules — the UI fixes, the shared helpers, the Nextcloud integrations, the
 productivity pack. They are free because they are more useful to us being
 widely used than being held.
 
-**225 modules are BUSL-1.1.** The source is published and auditable, and **you
+**231 modules are BUSL-1.1.** The source is published and auditable, and **you
 may run them in production for your own internal business operations** — as a
 company, as a freelancer, as one person on a laptop. What needs an agreement is
 using them to provide a product or service to someone else: hosting them for a
@@ -197,6 +197,8 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `bf_federation_gantt` | Fédération : échéanciers | 18.0.1.0.1 | BUSL-1.1 | L'échéancier d'un chantier commun vit chez les deux firmes, et une date déplacée l'est des deux côtés |
 | `bf_federation_meeting` | Fédération : ordres du jour | 18.0.1.1.0 | BUSL-1.1 | L'ordre du jour d'une rencontre paraît chez le pair, qui peut y proposer un sujet |
 | `bf_federation_outreach` | Fédération : suivis de démarchage | 18.0.1.0.1 | BUSL-1.1 | L'agence qui démarche pour son client lui montre ses cibles et ses touches, et le client peut en écarter |
+| `bf_federation_privacy` | Fédération : avis de violation | 18.0.1.0.0 | BUSL-1.1 | A provider's breach notice lands in the incident register of its paired client, and the acknowledgement comes back with the fingerprint of the version read |
+| `bf_federation_privacy_discuss` | Fédération : pas de canal pour un avis de violation | 18.0.1.0.0 | BUSL-1.1 | A federated breach notice has no discussion channel: its thread and the email are the record |
 | `bf_federation_process` | Fédération : cartographies | 18.0.1.2.1 | BUSL-1.1 | La cartographie du client vit chez lui, et la version qui suit y arrive toute seule |
 | `bf_federation_timesheet` | Fédération : relevés des heures | 18.0.1.0.1 | BUSL-1.1 | Le relevé des heures d'une période, remis au partenaire comme un livrable, avec son accusé de réception |
 | `bf_floorplan` | Plans d'étage | 18.0.1.1.3 | BUSL-1.1 | Floor plans drawn from records: rooms, desks, devices and cables, each shape backed by a form, with a built-in SVG editor, PDF and diagrams.net export |
@@ -371,11 +373,16 @@ Install one of these meta-modules to pull in a coherent set in a single click:
 | `contacts_nextcloud_sync` | Contacts Nextcloud Sync | 18.0.1.2.0 | LGPL-3 | Sync Odoo contacts with a Nextcloud address book via CardDAV |
 | `daily_todo_digest` | Daily To-Do Digest | 18.0.2.3.0 | LGPL-3 | Daily email digest with activities, overdue tasks, and a week-ahead view |
 | `hosting_management` | Gestion d'hébergement | 18.0.2.62.0 | BUSL-1.1 | Manage hosting services, client computer parks (endpoints, BitLocker, Action1 sync) and software license pools |
-| `privacy_consent` | Suivi des consentements (Loi 25) | 18.0.5.5.0 | BUSL-1.1 | Privacy suite: consents with purposes, SHA-256 versioned notices, minors and legal guardians, forensic evidence capture, renewal chains; self-service portal plus no-login token pages to view, grant, refuse, withdraw and renew; contact preference centre with `mail.blacklist` sync; retention calendar and document classification; destruction requests, bulk campaigns, anonymisation assessments and a hash-chained immutable destruction register with integrity cron; consent and destruction certificates (PDF); 20-KPI dashboard with drill-downs; configurable email sequences and 8 crons; DocuSeal and LibreSign e-signature integrations with webhooks; ships 18 purposes and 19 bilingual notices; framework engine with Loi 25 built in (GDPR, UK GDPR, PIPEDA, NZ via companion modules) |
+| `privacy_breach_notice` | Vie privée : avis de violation au responsable | 18.0.1.0.0 | BUSL-1.1 | A service provider notifies a client's privacy officer of a breach or attempted breach (Law 25, s. 18.3): structured content, signed and fingerprinted PDF, acknowledgement with a one-time code, and a thread kept as a register |
+| `privacy_breach_notice_hosting` | Vie privée : avis de violation depuis l'hébergement | 18.0.1.0.0 | BUSL-1.1 | Qualifies a hosting security event for privacy and prepares one draft breach notice per affected organisation |
+| `privacy_breach_notice_mail_tracking` | Vie privée : avis de violation et suivi des courriels | 18.0.1.0.0 | BUSL-1.1 | Keeps the email tracking of breach notices and incident records to the privacy role, within the record's company |
+| `privacy_breach_notice_sms` | Avis de violation : pas de SMS | 18.0.1.0.0 | BUSL-1.1 | A breach notice never goes out by SMS: the email to the designated address is the record |
+| `privacy_consent` | Suivi des consentements (Loi 25) | 18.0.5.6.0 | BUSL-1.1 | Privacy suite: consents with purposes, SHA-256 versioned notices, minors and legal guardians, forensic evidence capture, renewal chains; self-service portal plus no-login token pages to view, grant, refuse, withdraw and renew; contact preference centre with `mail.blacklist` sync; retention calendar and document classification; destruction requests, bulk campaigns, anonymisation assessments and a hash-chained immutable destruction register with integrity cron; consent and destruction certificates (PDF); 20-KPI dashboard with drill-downs; configurable email sequences and 8 crons; DocuSeal and LibreSign e-signature integrations with webhooks; ships 18 purposes and 19 bilingual notices; framework engine with Loi 25 built in (GDPR, UK GDPR, PIPEDA, NZ via companion modules) |
 | `privacy_framework_gdpr` | Cadre de confidentialité — GDPR (UE) | 18.0.1.0.1 | BUSL-1.1 | GDPR (EU) regulatory-framework pack for the Privacy module |
 | `privacy_framework_nz` | Cadre de confidentialité — Privacy Act 2020 (Nouvelle-Zélande) | 18.0.1.0.1 | BUSL-1.1 | New Zealand Privacy Act 2020 regulatory-framework pack for the Privacy module |
 | `privacy_framework_pipeda` | Cadre de confidentialité — LPRPDE / PIPEDA (Canada) | 18.0.1.0.1 | BUSL-1.1 | PIPEDA (Canada federal) regulatory-framework pack for the Privacy module |
 | `privacy_framework_uk` | Cadre de confidentialité — UK GDPR (Royaume-Uni) | 18.0.1.0.1 | BUSL-1.1 | UK GDPR / DPA 2018 regulatory-framework pack for the Privacy module |
+| `privacy_incident` | Registre des incidents de confidentialité (Loi 25) | 18.0.1.1.0 | LGPL-3 | Confidentiality-incident register (Law 25): declaration, risk assessment, measures, the eight register items, and providers' notices with their fingerprint |
 | `project_knowledge_matrix` | Project Knowledge Matrix | 18.0.13.4.1 | BUSL-1.1 | Project knowledge base, policies, and documentation |
 <!-- MODULES_TABLE:END -->
 
@@ -399,11 +406,11 @@ Three regimes — see [Licensing](#licensing) above for the details, and the
 `License` column of the table for the module you care about. The `LICENSE`
 file inside each module governs and carries its exact parameters.
 
-- **225 modules: BUSL-1.1.** Production use for your own internal business
+- **231 modules: BUSL-1.1.** Production use for your own internal business
   operations is permitted; providing them as a product or service to third
   parties requires an agreement. Each version converts to
   **LGPL-3.0-or-later four years after its release**.
-- **67 modules: LGPL-3.** Use, modify and redistribute them freely. The
+- **68 modules: LGPL-3.** Use, modify and redistribute them freely. The
   repository-root [`LICENSE`](LICENSE) carries the LGPL-3 text.
 - **7 modules: AGPL-3**, inherited rather than chosen: they extend Odoo
   Community Association code that is itself AGPL-3. Four are the fundraising

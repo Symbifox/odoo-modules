@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Liste -->
+    <template id="portal_incident_list" name="Registre des incidents">
+        <t t-call="portal.portal_layout">
+            <t t-set="no_breadcrumbs" t-value="True"/>
+
+            <h3 class="mb-3">Registre des incidents de confidentialité</h3>
+
+            <div class="alert alert-info" role="alert">
+                Ce registre consigne les incidents de confidentialité touchant
+                les renseignements personnels de votre organisation, comme
+                l'exige l'article 3.8 de la Loi sur la protection des
+                renseignements personnels dans le secteur privé. Il consigne
+                <strong>tous</strong> les incidents, y compris ceux qui ne
+                présentent aucun risque de préjudice sérieux.
+            </div>
+
+            <div class="mb-4">
+                <a href="/my/incidents/declarer" class="btn btn-primary">
+                    <i class="fa fa-plus me-1"/>Déclarer un incident
+                </a>
+            </div>
+
+            <t t-if="not incidents">
+                <div class="alert alert-light border text-center" role="alert">
+                    <p class="mb-1"><strong>Aucun incident consigné à ce jour.</strong></p>
+                    <p class="mb-0 text-muted">
+                        C'est la situation souhaitable. Si vous soupçonnez un
+                        incident, déclarez-le : l'évaluation du risque se fait
+                        ensuite avec votre conseiller.
+                    </p>
+                </div>
+            </t>
+
+            <t t-if="incidents">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Numéro</th>
+                                <th>Objet</th>
+                                <th>Prise de connaissance</th>
+                                <th>Personnes concernées</th>
+                                <th>Préjudice sérieux</th>
+                                <th>État</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="incidents" t-as="incident">
+                                <td>
+                                    <a t-attf-href="/my/incidents/#{incident.id}"
+                                       t-out="incident.name"/>
+                                </td>
+                                <td t-out="incident.title"/>
+                                <td><span t-field="incident.awareness_date"/></td>
+                                <td>
+                                    <t t-if="incident.subject_count">
+                                        <t t-if="incident.subject_count_is_estimate">environ </t>
+                                        <t t-out="incident.subject_count"/>
+                                    </t>
+                                    <span t-else="" class="text-muted">à déterminer</span>
+                                </td>
+                                <td>
+                                    <span t-if="incident.serious_harm_risk == 'yes'"
+                                          class="badge text-bg-danger">Oui</span>
+                                    <span t-elif="incident.serious_harm_risk == 'no'"
+                                          class="badge text-bg-success">Non</span>
+                                    <span t-else="" class="badge text-bg-secondary">À déterminer</span>
+                                </td>
+                                <td><span t-field="incident.state"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Détail : l'inscription au registre telle que la voit le client -->
+    <template id="portal_incident_detail" name="Incident de confidentialité">
+        <t t-call="portal.portal_layout">
+            <t t-set="no_breadcrumbs" t-value="True"/>
+
+            <div class="row">
+                <div class="col-12">
+                    <a href="/my/incidents" class="btn btn-link ps-0">
+                        <i class="fa fa-angle-left me-1"/>Retour au registre
+                    </a>
+                    <h3 class="mb-1">
+                        <t t-out="incident.name"/> — <t t-out="incident.title"/>
+                    </h3>
+                    <p class="text-muted">
+                        Inscription au registre des incidents de confidentialité
+                    </p>
+                </div>
+            </div>
+
+            <div t-if="incident.serious_harm_risk == 'yes'"
+                 class="alert alert-danger" role="alert">
+                Cet incident présente un risque qu'un préjudice sérieux soit
+                causé. La Commission d'accès à l'information et les personnes
+                concernées doivent en être avisées.
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">L'incident</div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Nature</dt>
+                        <dd class="col-sm-8">
+                            <span t-if="incident.incident_type" t-field="incident.incident_type"/>
+                            <span t-else="" class="text-muted">à préciser</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Circonstances</dt>
+                        <dd class="col-sm-8">
+                            <span t-if="incident.circumstances" t-out="incident.circumstances"/>
+                            <span t-else="" class="text-muted">à documenter</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Survenance</dt>
+                        <dd class="col-sm-8">
+                            <t t-if="incident.occurrence_date">
+                                <span t-if="incident.occurrence_is_approximate">vers le </span>
+                                <span t-field="incident.occurrence_date"/>
+                                <t t-if="incident.occurrence_date_end">
+                                    au <span t-field="incident.occurrence_date_end"/>
+                                </t>
+                            </t>
+                            <span t-else="" class="text-muted">à déterminer</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Prise de connaissance</dt>
+                        <dd class="col-sm-8">
+                            <span t-field="incident.awareness_date"/>
+                            <t t-if="incident.awareness_date_end">
+                                au <span t-field="incident.awareness_date_end"/>
+                            </t>
+                        </dd>
+
+                        <dt class="col-sm-4">Renseignements visés</dt>
+                        <dd class="col-sm-8">
+                            <span t-if="incident.pi_description" t-out="incident.pi_description"/>
+                            <span t-elif="incident.pi_unknown_reason" class="fst-italic"
+                                  t-out="incident.pi_unknown_reason"/>
+                            <span t-else="" class="text-muted">à documenter</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Personnes concernées</dt>
+                        <dd class="col-sm-8">
+                            <t t-if="incident.subject_count">
+                                <t t-if="incident.subject_count_is_estimate">environ </t>
+                                <t t-out="incident.subject_count"/>
+                            </t>
+                            <span t-else="" class="text-muted">à déterminer</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">Évaluation du risque</div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Conclusion</dt>
+                        <dd class="col-sm-8"><span t-field="incident.serious_harm_risk"/></dd>
+
+                        <dt class="col-sm-4">Motifs</dt>
+                        <dd class="col-sm-8">
+                            <span t-if="incident.risk_rationale" t-out="incident.risk_rationale"/>
+                            <span t-else="" class="text-muted">évaluation en cours</span>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div t-if="incident.serious_harm_risk == 'yes'" class="card mb-3">
+                <div class="card-header">Avis transmis</div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Commission d'accès à l'information</dt>
+                        <dd class="col-sm-8">
+                            <span t-if="incident.cai_notification_date"
+                                  t-field="incident.cai_notification_date"/>
+                            <span t-else="" class="text-muted">non transmis</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Personnes concernées</dt>
+                        <dd class="col-sm-8">
+                            <span t-if="incident.subjects_notification_date"
+                                  t-field="incident.subjects_notification_date"/>
+                            <span t-elif="incident.notification_deferred_investigation"
+                                  class="fst-italic">reporté — enquête en cours</span>
+                            <span t-else="" class="text-muted">non transmis</span>
+                        </dd>
+
+                        <t t-if="incident.public_notice_given">
+                            <dt class="col-sm-4">Avis public</dt>
+                            <dd class="col-sm-8">
+                                <span t-field="incident.public_notice_date"/>
+                                <div t-if="incident.public_notice_reason" class="text-muted"
+                                     t-out="incident.public_notice_reason"/>
+                            </dd>
+                        </t>
+
+                        <t t-if="incident.suggested_measures_to_subjects">
+                            <dt class="col-sm-4">Ce que nous vous suggérons</dt>
+                            <dd class="col-sm-8" t-out="incident.suggested_measures_to_subjects"/>
+                        </t>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-header">Mesures prises</div>
+                <div class="card-body">
+                    <t t-if="not incident.measure_ids">
+                        <p class="text-muted mb-0">Aucune mesure consignée pour l'instant.</p>
+                    </t>
+                    <t t-if="incident.measure_ids">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Mesure</th>
+                                    <th>Nature</th>
+                                    <th>État</th>
+                                    <th>Réalisée le</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="incident.measure_ids" t-as="measure">
+                                    <td>
+                                        <span t-out="measure.name"/>
+                                        <div t-if="measure.description" class="text-muted small"
+                                             t-out="measure.description"/>
+                                    </td>
+                                    <td><span t-field="measure.measure_type"/></td>
+                                    <td><span t-field="measure.state"/></td>
+                                    <td>
+                                        <span t-if="measure.date_done" t-field="measure.date_done"/>
+                                        <span t-else="" class="text-muted">—</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </div>
+
+            <p class="text-muted small">
+                Cette inscription est conservée au registre au moins jusqu'au
+                <span t-field="incident.register_retention_until"/>, soit cinq ans
+                après la prise de connaissance de l'incident.
+            </p>
+        </t>
+    </template>
+
+    <!-- Déclaration -->
+    <template id="portal_incident_declare" name="Déclarer un incident">
+        <t t-call="portal.portal_layout">
+            <t t-set="no_breadcrumbs" t-value="True"/>
+
+            <div class="row">
+                <div class="col-12">
+                    <a href="/my/incidents" class="btn btn-link ps-0">
+                        <i class="fa fa-angle-left me-1"/>Retour au registre
+                    </a>
+                    <h3>Déclarer un incident de confidentialité</h3>
+                </div>
+            </div>
+
+            <div class="alert alert-info" role="alert">
+                Déclarez dès que vous avez des motifs de croire qu'un incident
+                s'est produit, même si tout n'est pas encore clair. Les zones
+                laissées vides se complètent ensuite avec votre conseiller :
+                mieux vaut une déclaration rapide et partielle qu'une
+                déclaration tardive et complète.
+            </div>
+
+            <form action="/my/incidents/declarer" method="post" class="mb-5">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                <div class="mb-3">
+                    <label class="form-label" for="title">Objet <span class="text-danger">*</span></label>
+                    <input type="text" name="title" id="title"
+                           t-att-class="'form-control is-invalid' if errors.get('title') else 'form-control'"
+                           t-att-value="post.get('title', '')"
+                           placeholder="Ce qui s'est passé, en une ligne"/>
+                    <div t-if="errors.get('title')" class="invalid-feedback d-block"
+                         t-out="errors.get('title')"/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="incident_type">De quoi s'agit-il ?</label>
+                    <select name="incident_type" id="incident_type" class="form-select">
+                        <option value="">— À préciser —</option>
+                        <option t-foreach="incident_types" t-as="incident_type"
+                                t-att-value="incident_type[0]"
+                                t-att-selected="post.get('incident_type') == incident_type[0]"
+                                t-out="incident_type[1]"/>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="circumstances">Circonstances</label>
+                    <textarea name="circumstances" id="circumstances" rows="4"
+                              class="form-control"
+                              placeholder="Comment cela s'est produit, ce que vous savez à ce stade"
+                              t-out="post.get('circumstances', '')"/>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="awareness_date">
+                            Quand l'avez-vous appris ? <span class="text-danger">*</span>
+                        </label>
+                        <input type="date" name="awareness_date" id="awareness_date"
+                               class="form-control"
+                               t-att-value="post.get('awareness_date', '')"/>
+                        <div t-if="errors.get('awareness_date')" class="invalid-feedback d-block"
+                             t-out="errors.get('awareness_date')"/>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="occurrence_date">
+                            Quand est-ce arrivé ?
+                        </label>
+                        <input type="date" name="occurrence_date" id="occurrence_date"
+                               class="form-control"
+                               t-att-value="post.get('occurrence_date', '')"/>
+                        <div class="form-text">Laissez vide si vous l'ignorez.</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="pi_description">
+                        Quels renseignements personnels sont touchés ?
+                    </label>
+                    <textarea name="pi_description" id="pi_description" rows="3"
+                              class="form-control"
+                              placeholder="Par exemple : noms et adresses courriel de clients"
+                              t-out="post.get('pi_description', '')"/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="subject_count">
+                        Combien de personnes sont concernées ?
+                    </label>
+                    <input type="number" name="subject_count" id="subject_count" min="0"
+                           class="form-control" style="max-width: 12rem;"
+                           t-att-value="post.get('subject_count', '')"/>
+                    <div class="form-text">Une approximation suffit.</div>
+                    <div t-if="errors.get('subject_count')" class="invalid-feedback d-block"
+                         t-out="errors.get('subject_count')"/>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Déclarer l'incident</button>
+                <a href="/my/incidents" class="btn btn-link">Annuler</a>
+            </form>
+        </t>
+    </template>
+
+</odoo>

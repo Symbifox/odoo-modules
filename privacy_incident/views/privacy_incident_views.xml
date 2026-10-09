@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_privacy_incident_list" model="ir.ui.view">
+        <field name="name">privacy.incident.list</field>
+        <field name="model">privacy.incident</field>
+        <field name="arch" type="xml">
+            <list string="Incidents de confidentialité"
+                  decoration-danger="serious_harm_risk == 'yes' and state != 'closed'"
+                  decoration-muted="state == 'closed'">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="partner_id" optional="show"/>
+                <field name="incident_type" optional="hide"/>
+                <field name="awareness_date"/>
+                <field name="occurrence_date" optional="hide"/>
+                <field name="subject_count" sum="Personnes concernées"/>
+                <field name="serious_harm_risk" widget="badge"
+                       decoration-danger="serious_harm_risk == 'yes'"
+                       decoration-success="serious_harm_risk == 'no'"
+                       decoration-warning="serious_harm_risk == 'undetermined'"/>
+                <field name="register_complete" widget="boolean_toggle" readonly="1"
+                       string="Registre complet"/>
+                <field name="register_retention_until" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_privacy_incident_form" model="ir.ui.view">
+        <field name="name">privacy.incident.form</field>
+        <field name="model">privacy.incident</field>
+        <field name="arch" type="xml">
+            <form string="Incident de confidentialité">
+                <header>
+                    <button name="action_start_assessment" type="object"
+                            string="Passer à l'évaluation" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_start_actions" type="object"
+                            string="Passer aux mesures et avis" class="btn-primary"
+                            invisible="state != 'assessment'"/>
+                    <button name="action_close" type="object"
+                            string="Clore l'incident"
+                            invisible="state not in ('assessment', 'action')"/>
+                    <button name="action_reopen" type="object"
+                            string="Rouvrir"
+                            invisible="state != 'closed'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,assessment,action,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_measures" type="object"
+                                class="oe_stat_button" icon="fa-wrench">
+                            <field name="measure_count" widget="statinfo" string="Mesures"/>
+                        </button>
+                    </div>
+
+                    <!-- Champs pilotant des conditions d'affichage : ils doivent
+                         être présents dans la vue pour être évaluables. -->
+                    <field name="register_complete" invisible="1"/>
+                    <field name="notification_required" invisible="1"/>
+
+                    <widget name="web_ribbon" title="Registre complet" bg_color="text-bg-success"
+                            invisible="not register_complete"/>
+
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="title" placeholder="Ce qui s'est passé, en une ligne"/></h2>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not register_gaps">
+                        <strong>Inscription incomplète au sens de l'article 7.</strong>
+                        Manque encore : <field name="register_gaps" readonly="1" nolabel="1"/>
+                    </div>
+
+                    <div class="alert alert-danger" role="alert"
+                         invisible="not notification_required">
+                        L'évaluation conclut à un <strong>risque qu'un préjudice sérieux
+                        soit causé</strong>. La Commission d'accès à l'information et les
+                        personnes concernées doivent être avisées avec diligence
+                        (art. 3.5, 2<sup>e</sup> alinéa).
+                    </div>
+
+                    <group>
+                        <group string="Dossier">
+                            <field name="partner_id"/>
+                            <field name="incident_type"/>
+                            <field name="pi_category"/>
+                            <field name="framework_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Chronologie">
+                            <label for="awareness_date" string="Prise de connaissance"/>
+                            <div class="o_row">
+                                <field name="awareness_date"/>
+                                <span class="mx-1">au</span>
+                                <field name="awareness_date_end" placeholder="si période"/>
+                            </div>
+                            <label for="occurrence_date" string="Survenance"/>
+                            <div class="o_row">
+                                <field name="occurrence_date"/>
+                                <span class="mx-1">au</span>
+                                <field name="occurrence_date_end" placeholder="si période"/>
+                            </div>
+                            <field name="occurrence_is_approximate"/>
+                            <field name="register_retention_until" readonly="1"/>
+                            <field name="declared_by_portal" readonly="1"
+                                   invisible="not declared_by_portal"/>
+                            <field name="declared_by_partner_id" readonly="1"
+                                   invisible="not declared_by_portal"/>
+                            <field name="declared_by_processor" readonly="1"
+                                   invisible="not declared_by_processor"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Incident" name="incident">
+                            <group>
+                                <field name="circumstances" nolabel="1"
+                                       placeholder="Brève description des circonstances de l'incident (art. 7, 2°)"/>
+                            </group>
+                            <group>
+                                <field name="cause"
+                                       placeholder="La cause, si elle est connue"/>
+                                <field name="occurrence_date_note"
+                                       placeholder="Précisions ou base de l'approximation"/>
+                            </group>
+                            <group string="Renseignements personnels visés (art. 7, 1°)">
+                                <field name="pi_description" nolabel="1" colspan="2"
+                                       invisible="pi_description_unknown"
+                                       placeholder="Quels renseignements ont été touchés"/>
+                                <field name="pi_description_unknown"/>
+                                <field name="pi_unknown_reason"
+                                       invisible="not pi_description_unknown"
+                                       required="pi_description_unknown"
+                                       placeholder="Raison justifiant l'impossibilité de les décrire"/>
+                            </group>
+                            <group string="Personnes concernées (art. 7, 5°)">
+                                <field name="subject_count"/>
+                                <field name="subject_count_is_estimate"/>
+                                <field name="subject_count_quebec"/>
+                            </group>
+                        </page>
+
+                        <page string="Évaluation du risque" name="assessment">
+                            <div class="alert alert-info" role="alert">
+                                Quatre facteurs : la sensibilité des renseignements, les
+                                utilisations malveillantes possibles, les conséquences
+                                appréhendées et la probabilité d'une utilisation
+                                préjudiciable (art. 3.7 de la loi et art. 7, 6° du
+                                règlement). Le responsable de la protection des
+                                renseignements personnels doit être consulté.
+                            </div>
+                            <group>
+                                <group string="Facteurs">
+                                    <field name="sensitivity_level"/>
+                                    <field name="misuse_probability"/>
+                                </group>
+                                <group string="Responsable consulté (art. 3.7)">
+                                    <field name="rprp_id"/>
+                                    <field name="rprp_consultation_date"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="sensitivity_analysis"/>
+                                <field name="malicious_use_analysis"/>
+                                <field name="consequences_analysis"/>
+                                <field name="misuse_analysis"/>
+                            </group>
+                            <group string="Conclusion (art. 7, 6°)">
+                                <field name="serious_harm_risk"/>
+                                <field name="risk_rationale" nolabel="1" colspan="2"
+                                       placeholder="Les éléments qui amènent à conclure qu'il existe, ou non, un risque qu'un préjudice sérieux soit causé"/>
+                            </group>
+                        </page>
+
+                        <page string="Avis" name="notifications">
+                            <group>
+                                <group string="Commission d'accès à l'information">
+                                    <field name="cai_notified"/>
+                                    <field name="cai_notification_date"/>
+                                    <field name="cai_last_update_date"/>
+                                    <field name="foreign_authority_notified"/>
+                                    <field name="foreign_authority_note"
+                                           invisible="not foreign_authority_notified"/>
+                                </group>
+                                <group string="Personnes concernées">
+                                    <field name="subjects_notified"/>
+                                    <field name="subjects_notification_date"/>
+                                    <field name="contact_person_id"/>
+                                    <field name="notification_deferred_investigation"/>
+                                    <field name="notification_deferral_note"
+                                           invisible="not notification_deferred_investigation"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="suggested_measures_to_subjects"
+                                       placeholder="Ce que vous suggérez aux personnes concernées de faire (art. 5, 5°)"/>
+                                <field name="contact_details"
+                                       placeholder="Coordonnées pour se renseigner davantage (art. 5, 6°)"/>
+                            </group>
+                            <group string="Avis public (art. 6)">
+                                <field name="public_notice_given"/>
+                                <field name="public_notice_date"
+                                       invisible="not public_notice_given"/>
+                                <field name="public_notice_ground"
+                                       invisible="not public_notice_given"/>
+                                <field name="public_notice_reason"
+                                       invisible="not public_notice_given"
+                                       placeholder="La raison pour laquelle un avis public a été donné"/>
+                            </group>
+                            <group string="Autres avis">
+                                <field name="other_notified_note" nolabel="1"
+                                       placeholder="Toute personne ou tout organisme avisé afin de diminuer le risque (art. 3.5, 2e al.)"/>
+                            </group>
+                        </page>
+
+                        <page string="Mesures" name="measures">
+                            <div class="alert alert-info" role="alert">
+                                Mesures prises à la suite de l'incident pour diminuer les
+                                risques qu'un préjudice soit causé et éviter que de
+                                nouveaux incidents de même nature ne se produisent
+                                (art. 3.5, 1<sup>er</sup> alinéa, et art. 7, 8°).
+                            </div>
+                            <field name="measure_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="measure_type"/>
+                                    <field name="responsible_id"/>
+                                    <field name="date_planned"/>
+                                    <field name="date_done"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Avis du mandataire" name="processor">
+                            <div class="alert alert-info" role="alert">
+                                Quand un fournisseur qui détient vos renseignements vous avise d'une
+                                violation (art. 18.3), consignez son avis ici. Il porte des faits ;
+                                l'évaluation du risque et les avis à la Commission vous reviennent.
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="processor_partner_id" readonly="processor_notice_locked"/>
+                                    <field name="processor_notice_ref" readonly="processor_notice_locked"/>
+                                    <field name="processor_notice_version" readonly="processor_notice_locked"/>
+                                    <field name="processor_notice_received_at" readonly="processor_notice_locked"/>
+                                    <field name="processor_notice_last_received_at" readonly="1"
+                                           invisible="not processor_notice_last_received_at"/>
+                                </group>
+                                <group>
+                                    <field name="processor_notice_pdf" filename="processor_notice_pdf_name" readonly="processor_notice_locked"/>
+                                    <field name="processor_notice_locked" invisible="1"/>
+                                    <field name="processor_notice_pdf_name" invisible="1"/>
+                                    <field name="processor_notice_sha256" readonly="1"/>
+                                    <field name="processor_notice_intact" invisible="not processor_notice_pdf"
+                                           decoration-danger="not processor_notice_intact"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="processor_facts"/>
+                            </group>
+                        </page>
+
+                        <page string="Notes internes" name="internal">
+                            <div class="alert alert-secondary" role="alert">
+                                Ce contenu et le fil de discussion ne sont jamais affichés
+                                au portail client.
+                            </div>
+                            <field name="internal_notes" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_privacy_incident_search" model="ir.ui.view">
+        <field name="name">privacy.incident.search</field>
+        <field name="model">privacy.incident</field>
+        <field name="arch" type="xml">
+            <search string="Incidents de confidentialité">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="partner_id"/>
+                <field name="circumstances"/>
+                <filter name="filter_open" string="En cours"
+                        domain="[('state', '!=', 'closed')]"/>
+                <filter name="filter_serious" string="Risque de préjudice sérieux"
+                        domain="[('serious_harm_risk', '=', 'yes')]"/>
+                <filter name="filter_undetermined" string="Risque à déterminer"
+                        domain="[('serious_harm_risk', '=', 'undetermined')]"/>
+                <separator/>
+                <filter name="filter_incomplete" string="Inscription incomplète"
+                        domain="[('register_complete', '=', False)]"/>
+                <filter name="filter_no_cai" string="Commission non avisée"
+                        domain="[('serious_harm_risk', '=', 'yes'), ('cai_notification_date', '=', False)]"/>
+                <separator/>
+                <filter name="filter_awareness_year" string="Prise de connaissance"
+                        date="awareness_date"/>
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_partner" string="Organisation"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_state" string="État"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_risk" string="Risque de préjudice sérieux"
+                            context="{'group_by': 'serious_harm_risk'}"/>
+                    <filter name="group_type" string="Nature de l'incident"
+                            context="{'group_by': 'incident_type'}"/>
+                    <filter name="group_awareness" string="Prise de connaissance"
+                            context="{'group_by': 'awareness_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_privacy_incident" model="ir.actions.act_window">
+        <field name="name">Incidents de confidentialité</field>
+        <field name="res_model">privacy.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_privacy_incident_search"/>
+        <field name="context">{'search_default_filter_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun incident consigné</p>
+            <p>
+                Le registre des incidents de confidentialité est exigé par
+                l'article 3.8 de la Loi sur la protection des renseignements
+                personnels dans le secteur privé. Il consigne tous les incidents,
+                y compris ceux qui ne présentent aucun risque de préjudice
+                sérieux, et se conserve au moins cinq ans après la prise de
+                connaissance.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_privacy_incident_register" model="ir.actions.act_window">
+        <field name="name">Registre des incidents</field>
+        <field name="res_model">privacy.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_privacy_incident_search"/>
+        <field name="context">{'group_by': 'partner_id'}</field>
+    </record>
+
+</odoo>

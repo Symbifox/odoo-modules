@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_breach_notice_company" model="ir.rule">
+        <field name="name">Avis de violation : sociétés permises</field>
+        <field name="model_id" ref="model_privacy_breach_notice"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_breach_notice_line_company" model="ir.rule">
+        <field name="name">Lignes de relevé : sociétés permises</field>
+        <field name="model_id" ref="model_privacy_breach_notice_report_line"/>
+        <field name="domain_force">[('notice_id.company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Les abonnés d'un avis ou d'une fiche du registre révèlent l'avis et le client (le RPRP
+         qui répond y entre) : réservés au rôle Vie privée. Mêmes domaines dans
+         privacy_breach_notice et privacy_incident : les règles de groupe s'additionnent, deux
+         listes différentes rouvriraient chacune ce que l'autre ferme. -->
+    <record id="rule_followers_hide_privacy_avis" model="ir.rule">
+        <field name="name">Abonnés : avis et registre cachés hors du rôle (avis)</field>
+        <field name="model_id" ref="mail.model_mail_followers"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('res_model', 'not in', ['privacy.breach.notice', 'privacy.incident'])]</field>
+    </record>
+    <record id="rule_followers_privacy_role_avis" model="ir.rule">
+        <field name="name">Abonnés : avis et registre pour le rôle Vie privée, dans ses sociétés (avis)</field>
+        <field name="model_id" ref="mail.model_mail_followers"/>
+        <field name="groups" eval="[(4, ref('privacy_consent.group_privacy_user'))]"/>
+        <field name="domain_force">[('res_model', 'in', ['privacy.breach.notice', 'privacy.incident']), ('privacy_in_company', '=', True)]</field>
+    </record>
+</odoo>

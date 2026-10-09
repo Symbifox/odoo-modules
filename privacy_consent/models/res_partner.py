@@ -1,4 +1,6 @@
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import AccessError, ValidationError
+from odoo.tools import email_normalize
 
 
 class ResPartner(models.Model):
@@ -69,6 +71,106 @@ class ResPartner(models.Model):
         string="Ne pas contacter",
         help="Indicateur principal « ne pas contacter » provenant des préférences",
     )
+
+    # Responsable de la protection des renseignements personnels de l'organisation
+    # (art. 3.1 P-39.1). Stocké ici une fois : la société le reprend par son partenaire.
+    privacy_officer_partner_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Responsable de la protection des RP",
+        tracking=True,
+        copy=False,
+        ondelete="restrict",
+        groups="privacy_consent.group_privacy_user",
+        help="La personne qui exerce la fonction de responsable de la protection des "
+        "renseignements personnels de cette organisation : par défaut la personne ayant "
+        "la plus haute autorité, ou celle à qui elle l'a déléguée par écrit (art. 3.1).",
+    )
+    privacy_officer_email = fields.Char(
+        string="Adresse de réception désignée",
+        tracking=True,
+        copy=False,
+        groups="privacy_consent.group_privacy_user",
+        help="L'adresse où cette organisation accepte de recevoir les avis qui touchent "
+        "ses renseignements personnels, par exemple l'avis de violation d'un mandataire. "
+        "Un document y est présumé reçu dès qu'il y devient accessible (C-1.1, art. 31). "
+        "Sans elle, aucun avis ne part : l'adresse n'est jamais devinée.",
+    )
+    privacy_officer_public_url = fields.Char(
+        string="Coordonnées publiées",
+        tracking=True,
+        copy=False,
+        groups="privacy_consent.group_privacy_user",
+        help="La page du site de l'organisation où le titre et les coordonnées de son "
+        "responsable sont publiés (art. 3.1).",
+    )
+
+    _PRIVACY_OFFICER_FIELDS = ("privacy_officer_partner_id", "privacy_officer_email",
+                               "privacy_officer_public_url")
+
+    def _privacy_officer_change(self, vals):
+        """Les champs de désignation dont `vals` change vraiment la valeur.
+
+        Le formulaire d'Odoo 18 envoie tous ses champs à la création, `False` compris, et une
+        fusion de contacts réécrit ce qui ne bouge pas : seule une vraie différence compte.
+        """
+        changes = []
+        for name in self._PRIVACY_OFFICER_FIELDS:
+            if name not in vals:
+                continue
+            new = vals[name] or False
+            for partner in self.sudo():
+                old = partner[name].id if name == "privacy_officer_partner_id" else partner[name]
+                if (old or False) != new:
+                    changes.append(name)
+                    break
+        return changes
+
+    def _privacy_officer_guard(self):
+        if not self.env.user.has_group("privacy_consent.group_privacy_manager"):
+            raise AccessError(_("Désigner le responsable de la protection des renseignements "
+                                "personnels demande le rôle de gestionnaire de la vie privée."))
+
+    def write(self, vals):
+        # Lire la désignation suffit au rôle d'utilisateur ; la changer décide où partent des
+        # avis légaux et qui peut en accuser réception : c'est au gestionnaire de le faire.
+        if not self.env.su and any(f in vals for f in self._PRIVACY_OFFICER_FIELDS) \
+                and self._privacy_officer_change(vals):
+            self._privacy_officer_guard()
+        return super().write(vals)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        if not self.env.su and any(vals.get(f) for vals in vals_list for f in self._PRIVACY_OFFICER_FIELDS):
+            self._privacy_officer_guard()
+        partners = super().create(vals_list)
+        # `default_privacy_officer_*` du contexte et `ir.default` ne passent pas par `vals` :
+        # on juge le résultat.
+        if not self.env.su and any(p[f] for p in partners.sudo() for f in self._PRIVACY_OFFICER_FIELDS):
+            self._privacy_officer_guard()
+        return partners
+
+    @api.constrains("privacy_officer_email")
+    def _check_privacy_officer_email(self):
+        for partner in self.sudo():
+            if partner.privacy_officer_email and not email_normalize(partner.privacy_officer_email):
+                raise ValidationError(_(
+                    "L'adresse de réception désignée « %s » n'est pas une adresse courriel valide.",
+                    partner.privacy_officer_email))
+
+    def _privacy_officer_address(self):
+        """Le responsable de cette organisation et l'adresse où l'aviser.
+
+        Rend (contact, adresse). Seule l'adresse désignée, saisie par un gestionnaire de la vie
+        privée, compte : ni le courriel général de l'organisation, ni celui de la fiche contact
+        du responsable, que tout gestionnaire de contacts peut modifier. Un avis légal ne part
+        pas à une adresse devinée.
+
+        Lue sur l'enregistrement LUI-MÊME, jamais sur sa société mère : un gestionnaire de
+        contacts qui rattache le client A sous le client B ne doit pas dérouter les avis de A.
+        """
+        self.ensure_one()
+        org = self.sudo()
+        return org.privacy_officer_partner_id, email_normalize(org.privacy_officer_email or "") or ""
 
     @api.depends("consent_ids")
     def _compute_consent_stats(self):

@@ -1,0 +1,473 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-08 23:33+0000\n"
+"PO-Revision-Date: 2026-10-08 23:33+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "(aucune)"
+msgstr "(none)"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "(non nommé)"
+msgstr "(unnamed)"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "(sans catégorie)"
+msgstr "(no category)"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "(sans numéro)"
+msgstr "(no number)"
+
+#. module: bf_federation_privacy
+#: model_terms:ir.ui.view,arch_db:bf_federation_privacy.view_breach_notice_form_federation
+msgid ""
+". Il porte les faits que votre mandataire\n"
+"                    constate : l'évaluation du risque et les avis à la Commission vous reviennent, dans la\n"
+"                    fiche du registre"
+msgstr ""
+". It sets out the facts your service provider\n"
+"                    observes: assessing the risk and notifying the Commission remain yours, in the\n"
+"                    register record"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"<p>%(peer)s a renvoyé cet avis avec une autre empreinte : le miroir garde ce"
+" qui a été reçu la première fois.</p>"
+msgstr ""
+"<p>%(peer)s sent this notice again with another fingerprint: the mirror "
+"keeps what was received first.</p>"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"<p>Avis de violation reçu de <b>%(who)s</b> : %(ref)s, version %(v)s, signé "
+"par %(signer)s.<br/>Empreinte SHA-256 : <code>%(sha)s</code></p>"
+msgstr ""
+"<p>Breach notice received from <b>%(who)s</b>: %(ref)s, version %(v)s, "
+"signed by %(signer)s.<br/>SHA-256 fingerprint: <code>%(sha)s</code></p>"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"<p>Chez %(peer)s, %(who)s a accusé réception, mais l'accusé n'a pas été "
+"retenu : %(why)s</p>"
+msgstr ""
+"<p>At %(peer)s, %(who)s acknowledged receipt, but the acknowledgement was "
+"not kept: %(why)s</p>"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"<p>Chez %(peer)s, %(who)s a voulu accuser réception par la fédération, mais "
+"le PDF n'y avait pas traversé : l'accusé passe par le lien du courriel.</p>"
+msgstr ""
+"<p>At %(peer)s, %(who)s tried to acknowledge receipt through federation, but"
+" the PDF had not crossed: the acknowledgement goes through the email "
+"link.</p>"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "<p>Chez %(peer)s, <b>%(who)s</b> a accusé réception de l'avis.</p>"
+msgstr ""
+"<p>At %(peer)s, <b>%(who)s</b> acknowledged receipt of the notice.</p>"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"<p>Un accusé est arrivé de %(peer)s, à qui cet avis n'a pas été partagé : il"
+" n'est pas retenu.</p>"
+msgstr ""
+"<p>An acknowledgement arrived from %(peer)s, to whom this notice was not "
+"shared: it is not kept.</p>"
+
+#. module: bf_federation_privacy
+#: model_terms:ir.ui.view,arch_db:bf_federation_privacy.view_breach_notice_form_federation
+msgid "Accuser réception"
+msgstr "Acknowledge receipt"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields.selection,name:bf_federation_privacy.selection__federation_outbox__kind__breach_ack
+msgid "Accusé d'un avis de violation"
+msgstr "Breach notice acknowledgement"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Accusé de réception envoyé à %s."
+msgstr "Acknowledgement sent to %s."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Autorités hors Québec : %s"
+msgstr "Authorities outside Québec: %s"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_federation_link__breach_in_company
+msgid "Avis dans mes sociétés"
+msgstr "Notice in my companies"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Avis de %(who)s : %(ref)s"
+msgstr "Notice from %(who)s: %(ref)s"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields.selection,name:bf_federation_privacy.selection__federation_outbox__kind__breach_share
+msgid "Avis de violation"
+msgstr "Breach notice"
+
+#. module: bf_federation_privacy
+#: model:ir.model,name:bf_federation_privacy.model_privacy_breach_notice
+msgid "Avis de violation au responsable"
+msgstr "Breach notice to the controller"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Avis de violation reçu de %s : évaluer le risque"
+msgstr "Breach notice received from %s: assess the risk"
+
+#. module: bf_federation_privacy
+#: model_terms:ir.ui.view,arch_db:bf_federation_privacy.view_breach_notice_form_federation
+msgid "Avis reçu de"
+msgstr "Notice received from"
+
+#. module: bf_federation_privacy
+#: model:ir.model,name:bf_federation_privacy.model_federation_outbox
+msgid "Boîte de sortie de la fédération"
+msgstr "Federation outbox"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__ack_channel
+msgid "Canal de l'accusé"
+msgstr "Acknowledgement channel"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Cet avis n'est pas arrivé par la fédération."
+msgstr "This notice did not arrive through federation."
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__federation_remote_url
+msgid "Chez le pair"
+msgstr "At the peer"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Chiffrement : %s"
+msgstr "Encryption: %s"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Corps policier en cause : %s"
+msgstr "Police involved: %s"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__incident_id
+msgid "Fiche du registre"
+msgstr "Register record"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields.selection,name:bf_federation_privacy.selection__privacy_breach_notice__ack_channel__federation
+msgid "Fédération"
+msgstr "Federation"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__federation_possible
+msgid "Fédération possible"
+msgstr "Federation possible"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"Fédérer un avis de violation demande le rôle de gestionnaire de la vie "
+"privée."
+msgstr "Federating a breach notice requires the privacy manager role."
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__federation_peer_id
+msgid "Fédéré avec"
+msgstr "Federated with"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_federation_outbox__kind
+msgid "Genre"
+msgstr "Kind"
+
+#. module: bf_federation_privacy
+#: model_terms:ir.ui.view,arch_db:bf_federation_privacy.view_breach_notice_form_federation
+msgid ""
+"L'accusé atteste que l'avis vous est parvenu, pour le texte dont l'empreinte"
+" figure ici. Il ne dit pas que vous êtes d'accord avec son contenu."
+msgstr ""
+"The acknowledgement attests that the notice reached you, for the text whose "
+"fingerprint appears here. It does not say that you agree with its content."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"L'accusé se donne par le responsable de la protection des renseignements "
+"personnels désigné, ou par un membre du groupe qui exerce cette fonction."
+msgstr ""
+"The acknowledgement is given by the designated person in charge of the "
+"protection of personal information, or by a member of the group that holds "
+"this function."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "L'empreinte annoncée ne correspond pas au PDF reçu."
+msgstr "The announced fingerprint does not match the PDF received."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"Le PDF de cet avis n'a pas traversé la fédération : accusez réception par le"
+" lien du courriel du mandataire, qui le porte. Un accusé ne peut pas porter "
+"sur un texte que vous n'avez pas reçu."
+msgstr ""
+"The PDF of this notice did not cross the federation: acknowledge receipt "
+"through the link in the service provider's email, which carries it. An "
+"acknowledgement cannot cover a text you did not receive."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"Le PDF n'a pas traversé la fédération (plafond de pièces jointes de %s) : le"
+" client a les faits dans son registre, et accusera réception par le lien du "
+"courriel, qui porte le PDF."
+msgstr ""
+"The PDF did not cross the federation (attachment limit of %s): the client "
+"has the facts in its register, and will acknowledge receipt through the "
+"email link, which carries the PDF."
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,help:bf_federation_privacy.field_privacy_breach_notice__processor_name
+msgid "Le nom du mandataire tel qu'il l'a envoyé."
+msgstr "The service provider's name as it sent it."
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,help:bf_federation_privacy.field_privacy_breach_notice__federation_peer_id
+msgid ""
+"Le pair chez qui cet objet a un miroir. Vider le champ archive le miroir."
+msgstr ""
+"The peer where this object has a mirror. Clearing the field archives the "
+"mirror."
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,help:bf_federation_privacy.field_privacy_breach_notice__federation_shared_peer_id
+msgid ""
+"Le pair à qui l'avis signé a été partagé. Seul son accusé compte, même si le"
+" lien est détaché plus tard."
+msgstr ""
+"The peer the signed notice was shared with. Only its acknowledgement counts,"
+" even if the link is detached later."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/federation_link.py:0
+msgid ""
+"Les liens d'un avis de violation se posent seuls, au partage ou à la "
+"réception."
+msgstr ""
+"Breach notice links are set by the system alone, when the notice is shared "
+"or received."
+
+#. module: bf_federation_privacy
+#: model:ir.model,name:bf_federation_privacy.model_federation_link
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__federation_link_id
+msgid "Lien fédéré"
+msgstr "Federated link"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__processor_name
+msgid "Mandataire"
+msgstr "Service provider"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Mesures du mandataire : %s"
+msgstr "Service provider's measures: %s"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Mesures suggérées aux personnes : %s"
+msgstr "Measures suggested to the persons: %s"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__federation_origin
+msgid "Origine"
+msgstr "Origin"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "PDF illisible dans l'avis reçu."
+msgstr "Unreadable PDF in the notice received."
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__federation_pdf_sent
+msgid "PDF parti par la fédération"
+msgstr "PDF sent through federation"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__federation_allowed_peer_ids
+msgid "Pairs permis"
+msgstr "Allowed peers"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__federation_shared_peer_id
+msgid "Partagé avec"
+msgstr "Shared with"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/federation_link.py:0
+msgid "Recherche non prise en charge."
+msgstr "Unsupported search."
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields.selection,name:bf_federation_privacy.selection__privacy_breach_notice__state__received
+msgid "Reçu"
+msgstr "Received"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__received_at
+msgid "Reçu le"
+msgstr "Received on"
+
+#. module: bf_federation_privacy
+#: model_terms:ir.ui.view,arch_db:bf_federation_privacy.view_breach_notice_search_federation
+msgid "Reçus d'un mandataire"
+msgstr "Received from a service provider"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Sensibilité : %s"
+msgstr "Sensitivity: %s"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Seul un avis reçu d'un mandataire s'accuse ici."
+msgstr "Only a notice received from a service provider is acknowledged here."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Sortie des données : %s"
+msgstr "Data leaving: %s"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "Tiers : %s"
+msgstr "Third parties: %s"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"Un avis reçu ne se met pas à jour ici : c'est le mandataire qui envoie la "
+"suite."
+msgstr ""
+"A received notice is not updated here: the service provider sends the next "
+"version."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/base_partner_merge.py:0
+msgid ""
+"Une de ces fiches représente un pair de fédération : seule une personne "
+"administratrice peut la fusionner, en vérifiant à qui iront les objets "
+"partagés."
+msgstr ""
+"One of these records represents a federation peer: only an administrator can"
+" merge it, checking who will receive the shared objects."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid ""
+"Version %(v)s de l'avis %(ref)s. L'évaluation du risque de préjudice "
+"sérieux, les avis à la Commission et aux personnes vous reviennent."
+msgstr ""
+"Version %(v)s of notice %(ref)s. Assessing the risk of serious injury and "
+"notifying the Commission and the persons concerned remain yours."
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "cet avis"
+msgstr "this notice"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "l'avis"
+msgstr "the notice"
+
+#. module: bf_federation_privacy
+#: model_terms:ir.ui.view,arch_db:bf_federation_privacy.view_breach_notice_form_federation
+msgid "le"
+msgstr "on"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "oui"
+msgstr "yes"
+
+#. module: bf_federation_privacy
+#. odoo-python
+#: code:addons/bf_federation_privacy/models/privacy_breach_notice.py:0
+msgid "quelqu'un"
+msgstr "someone"
+
+#. module: bf_federation_privacy
+#: model_terms:ir.ui.view,arch_db:bf_federation_privacy.view_breach_notice_search_federation
+msgid "Émis"
+msgstr "Issued"
+
+#. module: bf_federation_privacy
+#: model:ir.model.fields,field_description:bf_federation_privacy.field_privacy_breach_notice__state
+msgid "État"
+msgstr "Status"

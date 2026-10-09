@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="ack_page" name="Avis de violation : accusé de réception">
+        <t t-call="web.layout">
+            <t t-set="title">Avis de violation</t>
+            <t t-set="head">
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="robots" content="noindex, nofollow"/>
+                <meta name="referrer" content="no-referrer"/>
+                <t t-call-assets="web.assets_frontend" t-js="false"/>
+            </t>
+            <div class="container py-5" style="max-width: 760px;">
+                <p class="text-uppercase text-muted small mb-1">Avis de violation de la confidentialité</p>
+                <h1 class="h3 mb-3">
+                    <t t-out="notice.display_name"/>
+                    <small class="text-muted">· <t t-out="dict(notice._fields['stage'].selection).get(notice.stage)"/></small>
+                </h1>
+                <p>
+                    <b t-out="notice.company_id.name"/> vous avise, à titre de mandataire, d'un événement qui
+                    touche la confidentialité de renseignements personnels de <b t-out="notice.responsible_id.name"/>
+                    (art. 18.3 de la Loi sur la protection des renseignements personnels dans le secteur privé).
+                </p>
+                <table class="table table-sm">
+                    <tr><th class="w-25">Type</th><td t-out="dict(notice._fields['notice_type'].selection).get(notice.notice_type)"/></tr>
+                    <tr><th>Envoyé le</th><td><t t-out="notice.sent_at" t-options="{'widget': 'datetime'}"/></td></tr>
+                    <tr><th>Envoyé à</th><td t-out="notice.sent_to"/></tr>
+                    <tr><th>Signé par</th><td><t t-out="notice.signer_id.name"/><t t-if="notice.signer_title">, <t t-out="notice.signer_title"/></t></td></tr>
+                    <tr><th>Empreinte SHA-256</th><td><code class="text-break" t-out="notice.content_sha256"/></td></tr>
+                </table>
+                <p t-if="pdf_ok">
+                    <a class="btn btn-outline-primary" t-attf-href="/privacy/breach/#{notice.id}/#{token}/pdf" target="_blank">Lire l'avis (PDF)</a>
+                </p>
+                <div t-if="not pdf_ok" class="alert alert-danger">
+                    Le PDF conservé ne correspond plus à l'empreinte de l'avis envoyé. Ne l'accusez pas :
+                    communiquez avec <t t-out="notice.contact_user_id.name"/>.
+                </div>
+
+                <div t-if="notice.state == 'acknowledged'" class="alert alert-success">
+                    Réception accusée le <t t-out="notice.ack_at" t-options="{'widget': 'datetime'}"/>
+                    par <b t-out="notice.ack_name"/><t t-if="notice.ack_title">, <t t-out="notice.ack_title"/></t>.
+                </div>
+                <t t-elif="pdf_ok">
+                    <div t-if="info" class="alert alert-info" t-out="info"/>
+                    <form method="post" t-attf-action="/privacy/breach/#{notice.id}/#{token}" class="card card-body mb-3">
+                        <input type="hidden" name="action" value="code"/>
+                        <h2 class="h5">1. Recevoir un code</h2>
+                        <p class="text-muted small mb-2">
+                            Un code à usage unique part à l'adresse où l'avis a été envoyé
+                            (<t t-out="masked"/>). Il prouve que l'accusé vient de cette boîte, et non d'un
+                            lien recopié ailleurs.
+                        </p>
+                        <button type="submit" class="btn btn-outline-primary">Recevoir un code</button>
+                    </form>
+                    <form method="post" t-attf-action="/privacy/breach/#{notice.id}/#{token}" class="card card-body">
+                        <input type="hidden" name="sha256" t-att-value="notice.content_sha256"/>
+                        <h2 class="h5">2. Accuser réception</h2>
+                        <p class="text-muted small">
+                            L'accusé atteste que l'avis vous est parvenu, à la seconde et pour le texte dont
+                            l'empreinte figure ci-dessus. Il ne dit pas que vous êtes d'accord avec son contenu,
+                            ni avec une évaluation du risque, qui vous revient.
+                        </p>
+                        <div t-if="error" class="alert alert-warning" t-out="error"/>
+                        <div class="mb-3">
+                            <label class="form-label" for="ack_code">Code reçu</label>
+                            <input class="form-control" id="ack_code" name="code" inputmode="numeric"
+                                   autocomplete="one-time-code" maxlength="6" required="required"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="ack_name">Votre nom</label>
+                            <input class="form-control" id="ack_name" name="name" required="required" maxlength="120"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="ack_title">Votre titre</label>
+                            <input class="form-control" id="ack_title" name="title" maxlength="120"
+                                   placeholder="Responsable de la protection des renseignements personnels"/>
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="ack_confirm" name="confirm" value="1"/>
+                            <label class="form-check-label" for="ack_confirm">Je confirme avoir reçu cet avis.</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Accuser réception</button>
+                    </form>
+                </t>
+                <p class="text-muted small mt-4">
+                    Pour toute question : <t t-out="notice.contact_user_id.name"/>,
+                    <t t-out="notice.contact_user_id.email"/>.
+                </p>
+            </div>
+        </t>
+    </template>
+</odoo>

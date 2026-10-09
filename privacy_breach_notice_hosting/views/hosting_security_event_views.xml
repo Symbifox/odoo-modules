@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hosting_security_event_form_privacy" model="ir.ui.view">
+        <field name="name">hosting.security.event.form.privacy</field>
+        <field name="model">hosting.security.event</field>
+        <field name="inherit_id" ref="hosting_management.hosting_security_event_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_view_privacy_notices" type="object" class="oe_stat_button"
+                            icon="fa-envelope-o" invisible="not privacy_notice_count"
+                            groups="privacy_consent.group_privacy_user">
+                        <field name="privacy_notice_count" widget="statinfo" string="Avis"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Vie privée" name="privacy">
+                    <group>
+                        <group>
+                            <field name="privacy_assessment" widget="radio"/>
+                            <field name="privacy_notice_type" invisible="privacy_assessment != 'yes'"/>
+                            <field name="privacy_partner_ids" widget="many2many_tags"
+                                   invisible="privacy_assessment != 'yes'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="privacy_rationale" required="privacy_assessment != 'pending'"
+                               placeholder="Pourquoi l'événement touche, ou ne touche pas, des renseignements d'un client."/>
+                    </group>
+                    <button name="action_prepare_privacy_notices" type="object" class="btn-primary"
+                            string="Préparer les avis" invisible="privacy_assessment != 'yes'"
+                            groups="privacy_consent.group_privacy_manager"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_breach_notice_form_event" model="ir.ui.view">
+        <field name="name">privacy.breach.notice.form.event</field>
+        <field name="model">privacy.breach.notice</field>
+        <field name="inherit_id" ref="privacy_breach_notice.view_breach_notice_form"/>
+        <field name="arch" type="xml">
+            <field name="contract_ref" position="after">
+                <field name="security_event_id" readonly="state != 'draft'"/>
+            </field>
+        </field>
+    </record>
+</odoo>

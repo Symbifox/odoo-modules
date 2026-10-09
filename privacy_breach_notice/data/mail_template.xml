@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mail_template_breach_notice" model="mail.template">
+        <field name="name">Vie privée : avis de violation au responsable</field>
+        <field name="model_id" ref="model_privacy_breach_notice"/>
+        <field name="email_from">{{ object.company_id.partner_id.email_formatted or object.company_id.email or '' }}</field>
+        <field name="email_to">{{ object.officer_email }}</field>
+        <field name="reply_to">{{ object.contact_user_id.email_formatted or '' }}</field>
+        <field name="subject">Avis de violation de la confidentialité {{ object.display_name }} : {{ object.responsible_id.name }}</field>
+        <field name="email_layout_xmlid">bf_onboarding_base.bf_mail_layout</field>
+        <field name="auto_delete" eval="False"/>
+        <field name="body_html" type="html">
+<t t-set="_wlf" t-value="object.company_id._fields"/>
+<t t-set="brand_dark" t-value="('report_brand_dark' in _wlf and object.company_id.report_brand_dark) or '#212529'"/>
+<div style="font-family:'Lexend','Segoe UI',Arial,sans-serif; font-size:14px; color:#111827; line-height:22px;">
+<p style="margin:0 0 4px 0; font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:#6B7280;">Avis de violation de la confidentialité</p>
+<h1 style="font-size:22px; font-weight:500; margin:0 0 12px 0;"><t t-out="object.display_name"/> · <t t-out="dict(object._fields['stage'].selection).get(object.stage)"/></h1>
+<p>Bonjour<t t-if="object.officer_partner_id"> <t t-out="object.officer_partner_id.name"/></t>,</p>
+<p>
+    À titre de mandataire de <b t-out="object.responsible_id.name"/>, <t t-out="object.company_id.name"/>
+    vous transmet l'avis ci-joint, comme le prévoit l'article 18.3 de la Loi sur la protection des
+    renseignements personnels dans le secteur privé. Il vous parvient à l'adresse désignée pour
+    recevoir ces avis.
+</p>
+<p>
+    L'avis porte les faits que nous constatons. L'évaluation du risque de préjudice sérieux, l'avis à la
+    Commission d'accès à l'information et l'inscription à votre registre vous reviennent.
+</p>
+<p style="margin:20px 0;">
+    <a t-att-href="object._ack_url()" t-attf-style="display:inline-block; padding:10px 18px; background-color:#{brand_dark}; color:#ffffff; text-decoration:none; border-radius:6px;">Lire l'avis et accuser réception</a>
+</p>
+<p style="font-size:12px; color:#6B7280;">
+    Empreinte SHA-256 du PDF joint : <code t-out="object.content_sha256"/><br/>
+    Pour toute question : <t t-out="object.contact_user_id.name"/>, <t t-out="object.contact_user_id.email"/>.
+</p>
+</div>
+        </field>
+    </record>
+</odoo>

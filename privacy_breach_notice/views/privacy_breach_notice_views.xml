@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_breach_notice_list" model="ir.ui.view">
+        <field name="name">privacy.breach.notice.list</field>
+        <field name="model">privacy.breach.notice</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not is_latest" decoration-info="state == 'draft'">
+                <field name="name"/>
+                <field name="version"/>
+                <field name="responsible_id"/>
+                <field name="notice_type"/>
+                <field name="stage"/>
+                <field name="sent_at"/>
+                <field name="ack_at" optional="show"/>
+                <field name="is_latest" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'sent'"
+                       decoration-success="state == 'acknowledged'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_breach_notice_search" model="ir.ui.view">
+        <field name="name">privacy.breach.notice.search</field>
+        <field name="model">privacy.breach.notice</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="responsible_id"/>
+                <filter name="draft" string="Brouillons" domain="[('state', '=', 'draft')]"/>
+                <filter name="awaiting_ack" string="En attente d'accusé" domain="[('state', '=', 'sent')]"/>
+                <filter name="acknowledged" string="Accusés" domain="[('state', '=', 'acknowledged')]"/>
+                <separator/>
+                <filter name="breach" string="Violations" domain="[('notice_type', '=', 'breach')]"/>
+                <filter name="attempt" string="Tentatives" domain="[('notice_type', '=', 'attempt')]"/>
+                <filter name="report" string="Relevés" domain="[('notice_type', '=', 'report')]"/>
+                <group>
+                    <filter name="group_responsible" string="Responsable" context="{'group_by': 'responsible_id'}"/>
+                    <filter name="group_name" string="Avis" context="{'group_by': 'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_breach_notice_form" model="ir.ui.view">
+        <field name="name">privacy.breach.notice.form</field>
+        <field name="model">privacy.breach.notice</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_send" type="object" string="Signer et envoyer" class="btn-primary"
+                            invisible="state != 'draft'" groups="privacy_consent.group_privacy_manager"
+                            confirm="L'avis sera signé à votre nom, figé et envoyé à l'adresse de réception désignée. Son contenu ne pourra plus changer : une correction se fera par une mise à jour."/>
+                    <button name="action_reset_ack_codes" type="object" string="Réarmer les codes d'accusé"
+                            invisible="state != 'sent'" groups="privacy_consent.group_privacy_manager"
+                            confirm="Les codes déjà envoyés ne vaudront plus, et le client pourra en redemander. À faire si quelqu'un a épuisé les codes avec un lien recopié."/>
+                    <button name="action_new_version" type="object" string="Préparer une mise à jour"
+                            invisible="state == 'draft' or not is_latest" groups="privacy_consent.group_privacy_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,acknowledged"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="state != 'draft'">
+                        L'avis porte les faits que nous constatons, jamais la conclusion sur le risque de
+                        préjudice sérieux : elle revient au responsable. Aucun renseignement qui identifie
+                        une personne : une liste de comptes touchés part à part, par un transfert sécurisé.
+                    </div>
+                    <group>
+                        <group string="Responsable">
+                            <field name="responsible_id" readonly="state != 'draft'"/>
+                            <field name="officer_partner_id" readonly="1" force_save="1"/>
+                            <field name="officer_email" widget="email" readonly="1" force_save="1"/>
+                            <field name="contract_ref" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Avis">
+                            <field name="notice_type" readonly="state != 'draft'"/>
+                            <field name="stage" readonly="state != 'draft'"/>
+                            <field name="previous_id" invisible="not previous_id"/>
+                            <field name="is_latest" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ce qui s'est produit" name="facts">
+                            <group>
+                                <group>
+                                    <field name="nature" readonly="state != 'draft'" invisible="notice_type == 'report'"/>
+                                    <field name="discovered_at" readonly="state != 'draft'" invisible="notice_type == 'report'"/>
+                                    <field name="occurred_from" readonly="state != 'draft'"/>
+                                    <field name="occurred_to" readonly="state != 'draft'"/>
+                                    <field name="occurred_approximate" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="circumstances" readonly="state != 'draft'"/>
+                                <field name="cause" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+                        <page string="Renseignements et personnes" name="pi" invisible="notice_type == 'report'">
+                            <group>
+                                <field name="pi_description" readonly="state != 'draft'"/>
+                                <field name="pi_unknown_reason" readonly="state != 'draft'"/>
+                                <field name="sensitivity_note" readonly="state != 'draft'"/>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="subject_count" readonly="state != 'draft'"/>
+                                    <field name="subject_count_estimate" readonly="state != 'draft'"/>
+                                    <field name="subject_count_quebec" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Faits pour l'évaluation" name="assessment" invisible="notice_type == 'report'">
+                            <group>
+                                <group>
+                                    <field name="encryption" readonly="state != 'draft'"/>
+                                    <field name="exfiltration" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="assessment_facts" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+                        <page string="Tentatives bloquées" name="report" invisible="notice_type != 'report'">
+                            <group>
+                                <group>
+                                    <field name="report_period_from" readonly="state != 'draft'"/>
+                                    <field name="report_period_to" readonly="state != 'draft'"/>
+                                </group>
+                            </group>
+                            <field name="report_line_ids" readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="category"/>
+                                    <field name="count"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Mesures" name="measures">
+                            <group>
+                                <field name="measures_taken" readonly="state != 'draft'"/>
+                                <field name="subject_measures" readonly="state != 'draft'" invisible="notice_type == 'report'"/>
+                                <field name="foreign_authority_note" readonly="state != 'draft'"/>
+                                <field name="law_enforcement" readonly="state != 'draft'"/>
+                                <field name="law_enforcement_note" readonly="state != 'draft'" invisible="not law_enforcement"/>
+                                <field name="third_parties_note" readonly="state != 'draft'"/>
+                                <field name="contact_user_id" readonly="state != 'draft'"/>
+                            </group>
+                        </page>
+                        <page string="Envoi et accusé" name="proof" invisible="state == 'draft'">
+                            <group>
+                                <group string="Envoi">
+                                    <field name="signer_id"/>
+                                    <field name="signer_title"/>
+                                    <field name="sent_at"/>
+                                    <field name="sent_to"/>
+                                    <field name="mail_state"/>
+                                    <field name="pdf_attachment_id"/>
+                                    <field name="content_sha256"/>
+                                </group>
+                                <group string="Accusé de réception">
+                                    <field name="ack_at"/>
+                                    <field name="ack_name"/>
+                                    <field name="ack_title"/>
+                                    <field name="ack_channel"/>
+                                    <field name="ack_sha256"/>
+                                    <field name="ack_ip"/>
+                                    <field name="ack_user_agent"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_breach_notice" model="ir.actions.act_window">
+        <field name="name">Avis de violation</field>
+        <field name="res_model">privacy.breach.notice</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_awaiting_ack': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucun avis de violation</p>
+            <p>
+                Quand un événement touche la confidentialité de renseignements personnels que vous
+                détenez pour un client, la loi vous oblige à aviser sans délai son responsable de la
+                protection des renseignements personnels, même d'une tentative.
+            </p>
+        </field>
+    </record>
+</odoo>

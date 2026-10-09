@@ -1,0 +1,128 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0-20260817\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-08 20:47+0000\n"
+"PO-Revision-Date: 2026-10-08 20:47+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields,field_description:privacy_breach_notice_hosting.field_hosting_security_event__privacy_notice_count
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice_hosting.view_hosting_security_event_form_privacy
+msgid "Avis"
+msgstr "Notices"
+
+#. module: privacy_breach_notice_hosting
+#. odoo-python
+#: code:addons/privacy_breach_notice_hosting/models/hosting_security_event.py:0
+#: model:ir.model.fields,field_description:privacy_breach_notice_hosting.field_hosting_security_event__privacy_notice_ids
+msgid "Avis de violation"
+msgstr "Breach notice"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model,name:privacy_breach_notice_hosting.model_privacy_breach_notice
+msgid "Avis de violation au responsable"
+msgstr "Breach notice to the controller"
+
+#. module: privacy_breach_notice_hosting
+#. odoo-python
+#: code:addons/privacy_breach_notice_hosting/models/hosting_security_event.py:0
+msgid "Indiquez les organisations touchées."
+msgstr "Specify the affected organizations."
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields,field_description:privacy_breach_notice_hosting.field_hosting_security_event__privacy_rationale
+msgid "Motif de la qualification"
+msgstr "Grounds for the assessment"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields.selection,name:privacy_breach_notice_hosting.selection__hosting_security_event__privacy_assessment__no
+msgid "Ne touche aucun renseignement d'un client"
+msgstr "Affects no client information"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields,field_description:privacy_breach_notice_hosting.field_hosting_security_event__privacy_partner_ids
+msgid "Organisations touchées"
+msgstr "Affected organizations"
+
+#. module: privacy_breach_notice_hosting
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice_hosting.view_hosting_security_event_form_privacy
+msgid ""
+"Pourquoi l'événement touche, ou ne touche pas, des renseignements d'un "
+"client."
+msgstr "Why the event affects, or does not affect, a client's information."
+
+#. module: privacy_breach_notice_hosting
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice_hosting.view_hosting_security_event_form_privacy
+msgid "Préparer les avis"
+msgstr "Prepare the notices"
+
+#. module: privacy_breach_notice_hosting
+#. odoo-python
+#: code:addons/privacy_breach_notice_hosting/models/hosting_security_event.py:0
+msgid ""
+"Qualifiez d'abord l'événement : touche-t-il des renseignements d'un client ?"
+msgstr "Assess the event first: does it affect a client's information?"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields,field_description:privacy_breach_notice_hosting.field_hosting_security_event__privacy_assessment
+msgid "Renseignements des clients"
+msgstr "Client information"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields.selection,name:privacy_breach_notice_hosting.selection__hosting_security_event__privacy_notice_type__attempt
+msgid "Tentative ciblée"
+msgstr "Targeted attempt"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields.selection,name:privacy_breach_notice_hosting.selection__hosting_security_event__privacy_assessment__yes
+msgid "Touche des renseignements d'un client"
+msgstr "Affects a client's information"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields,field_description:privacy_breach_notice_hosting.field_hosting_security_event__privacy_notice_type
+msgid "Type d'avis"
+msgstr "Notice type"
+
+#. module: privacy_breach_notice_hosting
+#. odoo-python
+#: code:addons/privacy_breach_notice_hosting/models/hosting_security_event.py:0
+msgid ""
+"Une qualification se motive, dans un sens comme dans l'autre : dites "
+"pourquoi cet événement touche ou ne touche pas de renseignements d'un "
+"client."
+msgstr ""
+"An assessment needs grounds, either way: say why this event does or does not"
+" affect a client's information."
+
+#. module: privacy_breach_notice_hosting
+#: model_terms:ir.ui.view,arch_db:privacy_breach_notice_hosting.view_hosting_security_event_form_privacy
+msgid "Vie privée"
+msgstr "Privacy"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields.selection,name:privacy_breach_notice_hosting.selection__hosting_security_event__privacy_notice_type__breach
+msgid "Violation"
+msgstr "Breach"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields.selection,name:privacy_breach_notice_hosting.selection__hosting_security_event__privacy_assessment__pending
+msgid "À évaluer"
+msgstr "To assess"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model.fields,field_description:privacy_breach_notice_hosting.field_privacy_breach_notice__security_event_id
+msgid "Événement de sécurité"
+msgstr "Security event"
+
+#. module: privacy_breach_notice_hosting
+#: model:ir.model,name:privacy_breach_notice_hosting.model_hosting_security_event
+msgid "Événement de sécurité d'hébergement"
+msgstr "Hosting security event"

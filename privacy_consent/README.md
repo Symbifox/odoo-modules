@@ -247,6 +247,24 @@ The manual covers:
   - Request a consent
   - View/edit the preferences
 
+### Designated privacy officer (v18.0.5.6.0)
+
+On an **organisation** contact, the "Privacy (Law 25)" tab records who is in charge of the
+protection of personal information for that organisation, as Law 25 (s. 3.1) requires
+every organisation to designate and publish:
+
+- the **designated person** (a contact), the **reception address** where notices are
+  sent, and the **public page** where the organisation publishes those details;
+- changes are tracked in the chatter and reserved to *Privacy / Manager*; the fields are
+  not copied when a contact is duplicated;
+- a contact that designates, or is designated as, a privacy officer cannot be deleted
+  while referenced, nor merged except by an administrator.
+
+The address is never guessed: a module that sends a legal notice (such as
+`privacy_breach_notice`) reads the designation as recorded and refuses to send without it.
+For the company's own emails, the designated address is preferred to the system parameter
+and to the company's general address.
+
 ### Projects integration
 
 - A new **"Consents"** tab on the project record
@@ -673,6 +691,7 @@ open a ticket in the repository.
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 18.0.5.6.0 | 2026-10-08 | Designated privacy officer on organisation contacts (person, reception address, public page), tracked and reserved to privacy managers; such contacts cannot be deleted while referenced nor merged except by an administrator. The company's privacy emails prefer the designated address. Used by `privacy_breach_notice` to address legal notices |
 | 18.0.5.5.0 | 2026-10-02 | Emails: every email that carries the public link extends it by 90 days with the same token, including an email written in the composer (from the record or in bulk from the list); the links in earlier emails come back to life with it. New "Your link" template (`mail_template_consent_link`), whose text and button follow the consent's state: it serves the new link requested from an expired link's page and the "Envoyer lien portail" button, which both sent the request even for a granted consent. Reminders, the renewal confirmation and the link go through the same sending path as the request: for a minor, to those legal guardians who have an email address, never to the child. The templates' "To" field gives the same recipients for a manual send (the six `noupdate` templates are migrated only while they still hold the shipped value). The chatter note records an SMTP failure as a failure, and a reminder that did not go out is not counted |
 | 18.0.5.4.0 | 2026-10-02 | Emails: no consent email leads to the preference centre any more; it needs a session, so a person without an account landed on the login screen. The request, the reminders and the expiry notice drop that link (their main button already opens the consent's token page); the button of the two confirmations (granted, renewed) opens the consent's token page, where the consent can be withdrawn. The request's 4-hour "choose a password" link is removed. English fallbacks ("No expiry", "Soon", "No description available."); the `noupdate` templates are migrated language by language |
 | 18.0.5.3.0 | 2026-10-01 | Emails: the six consent templates drop their own shell, one per language, and use the shared mail layout (`email_layout_xmlid`); the header title becomes an eyebrow and the link to the person's preferences stays under the content. The `noupdate` templates are migrated language by language, all or nothing per template; a body rebuilt by hand is left as it is, without the shared layout |

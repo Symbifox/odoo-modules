@@ -652,10 +652,12 @@ class PrivacyConsent(models.Model):
         return "/%s" % lang.url_code if lang and lang.active else ""
 
     def _privacy_officer_email(self):
-        """The privacy officer's address: the configured one, else the company's."""
-        param = self.env["ir.config_parameter"].sudo().get_param("privacy_consent.privacy_officer_email")
+        """The privacy officer's address: the one designated on the company, else the
+        configured parameter, else the company's own address."""
         company = self[:1].company_id or self.env.company
-        return (param or company.email or "").strip()
+        designated = company.partner_id._privacy_officer_address()[1]
+        param = self.env["ir.config_parameter"].sudo().get_param("privacy_consent.privacy_officer_email")
+        return (designated or param or company.email or "").strip()
 
     def _get_email_recipient(self):
         """Return the partner to email for this consent.
