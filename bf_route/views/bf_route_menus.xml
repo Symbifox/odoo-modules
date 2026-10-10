@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bf_route_root" name="Routes" web_icon="bf_route,static/description/icon.png"
+              groups="group_route_user" sequence="55"/>
+    <menuitem id="menu_bf_route_my_route" name="My route" parent="menu_bf_route_root"
+              action="action_ma_route" sequence="1"/>
+    <menuitem id="menu_bf_route_days" name="Route days" parent="menu_bf_route_root"
+              action="action_bf_route_day" sequence="10"/>
+    <menuitem id="menu_bf_route_routes" name="Routes" parent="menu_bf_route_root"
+              action="action_bf_route" sequence="20" groups="group_route_manager"/>
+    <menuitem id="menu_bf_route_visits" name="Visits" parent="menu_bf_route_root"
+              action="action_bf_route_day_stop" sequence="30" groups="group_route_manager"/>
+    <menuitem id="menu_bf_route_config" name="Configuration" parent="menu_bf_route_root"
+              sequence="90" groups="group_route_manager"/>
+    <menuitem id="menu_bf_route_settings" name="Settings" parent="menu_bf_route_config"
+              action="action_bf_route_settings" sequence="1" groups="base.group_system"/>
+    <menuitem id="menu_bf_route_vehicles" name="Vehicles" parent="menu_bf_route_config"
+              action="fleet.fleet_vehicle_action" sequence="10"/>
+    <menuitem id="menu_bf_route_notices" name="Position notices read" parent="menu_bf_route_config"
+              action="action_bf_route_notice_ack" sequence="20"/>
+</odoo>

@@ -1,0 +1,1861 @@
+# Translation template for Symbifox Work Routes.
+# The module's source strings are written in English.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_route 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 19:40+0000\n"
+"PO-Revision-Date: 2026-10-10 19:40+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "%(who)s did not finish the day. %(progress)s stops marked."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "%(who)s finished the day without: %(stops)s."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "%(who)s has not started the route planned at %(when)s."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"%(who)s was added to this day after the office prepared it: check the "
+"quantities and the truck."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "%s (name sent by the phone, stop removed)"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "%s is a heavy vehicle: do the pre-trip inspection before leaving."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "%s route day(s) created."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "%s stop(s) not marked will be counted as missed. Finish anyway?"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__interval_weeks
+msgid "1 = every week, 2 = every other week, counted from the start date."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
+msgid ""
+"<p><b>Your position at the stops</b></p><p>When you mark a stop (done, "
+"customer absent, postponed), the application reads your phone's position "
+"<b>once</b>, at that moment, and keeps it with the stop as proof of the "
+"visit. It never follows you between stops, before the day starts or after it"
+" ends.</p><p><b>Why:</b> to prove the visit to the customer and settle a "
+"disagreement about a delivery. <b>Who sees it:</b> the people who manage the"
+" routes. <b>How long:</b> %(days)s days, then it is erased.</p><p>Your phone"
+" asks for your permission the first time. If you refuse, the stops are "
+"marked without a position.</p>"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "A mark from the phone was refused: %s"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "A mark was not recorded: %s"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "A route cannot end before it starts."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.constraint,message:bf_route.constraint_bf_route_day_route_date_unique
+msgid ""
+"A route has one day per date. Add the stop to the existing day instead."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.actions.act_window,help:bf_route.action_bf_route
+msgid ""
+"A route is the list of stops a worker makes, in order, on the days it runs.\n"
+"               The days are created ahead; the worker follows them on the phone."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.constraint,message:bf_route.constraint_bf_route_interval_positive
+msgid "A route runs every week at most."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "A stop can be marked done, absent or postponed."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Absent"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__instructions
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__instructions
+msgid "Access instructions"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__accuracy
+msgid "Accuracy (m)"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_needaction
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__active
+msgid "Active"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_ids
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_exception_decoration
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_state
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_type_icon
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__origin__manual
+msgid "Added by hand"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__address
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__address
+msgid "Address"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__alert_late_sent
+msgid "Alert Late Sent"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__alert_open_sent
+msgid "Alert Open Sent"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_company__bf_route_late_minutes
+#: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_late_minutes
+msgid "Alert after (min)"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Alerts"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__app_key
+msgid "App Key"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_search
+msgid "Archived"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_attachment_count
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_company__bf_route_notice_version
+msgid "Bf Route Notice Version"
+msgstr ""
+
+#. module: bf_route
+#: model:res.groups,comment:bf_route.group_route_manager
+msgid "Builds the routes, plans the days, sees every day and the positions."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Call"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+msgid "Cancel the day"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day__state__canceled
+msgid "Cancelled"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model,name:bf_route.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__company_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__company_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__company_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__company_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__company_id
+msgid "Company"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Compute the distance"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+msgid "Compute the plan"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model,name:bf_route.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_config
+msgid "Configuration"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid "Could not fit in their time window, left at the end: %s."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.actions.act_window,help:bf_route.action_bf_route
+msgid "Create a route"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Create the days ahead"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__create_uid
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__create_uid
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__create_uid
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__create_uid
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__create_date
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__create_date
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__create_date
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__create_date
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__partner_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__partner_id
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_search
+msgid "Customer"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__state__absent
+msgid "Customer absent"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "Customer taken off the route: %s"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__date
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__date
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
+msgid "Date"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__day_id
+msgid "Day"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__day_count
+msgid "Day Count"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Day finished. Thank you."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Days"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.constraint,message:bf_route.constraint_bf_route_days_ahead_range
+msgid "Days are created from 0 to 60 days ahead."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__days_ahead
+msgid "Days created ahead"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Depot"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Directions"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Dismiss"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__display_name
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__display_name
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__display_name
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__display_name
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__distance_actual_km
+msgid "Distance driven"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day__state__done
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__state__done
+msgid "Done"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__edited
+msgid "Edited by hand"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_res_company__bf_route_notice
+#: model:ir.model.fields,help:bf_route.field_res_config_settings__bf_route_notice
+msgid "Empty = the standard notice, in each reader's language."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__interval_weeks
+msgid "Every (weeks)"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "Every day to come already exists."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__failed_message_ids
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__failed_message_ids
+msgid "Failed Messages"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Finish the day"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__date_finished
+msgid "Finished"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_follower_ids
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_partner_ids
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__activity_type_icon
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Fri"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__fri
+msgid "Friday"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__date_start
+msgid "From"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__template_stop_id
+msgid "From the route"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__latitude
+msgid "Geo Latitude"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__longitude
+msgid "Geo Longitude"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__heavy_vehicle
+#: model:ir.model.fields,help:bf_route.field_fleet_vehicle__bf_route_heavy
+msgid ""
+"Gross vehicle weight rating of 4,500 kg or more. The worker confirms the "
+"pre-trip inspection before the route day can start (Quebec heavy vehicle "
+"rules)."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
+msgid "Group by"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__has_message
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__heavy_vehicle
+#: model:ir.model.fields,field_description:bf_route.field_fleet_vehicle__bf_route_heavy
+msgid "Heavy vehicle"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "I did the pre-trip inspection of this heavy vehicle"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_search
+msgid "I drive"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "I have read the notice"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__id
+msgid "ID"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_exception_icon
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__activity_exception_icon
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__message_needaction
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__message_has_error
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_is_follower
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "It carried: %s"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Keep positions"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_company__bf_route_position_days
+#: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_position_days
+msgid "Keep positions (days)"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__app_key
+msgid "Key of the last mark sent by the phone; a resend is ignored."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__refusal_keys
+msgid "Keys of the refused marks the phone reported, so each counts once."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__write_uid
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__write_uid
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__write_uid
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__write_uid
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__write_date
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__write_date
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__write_date
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__write_date
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__latitude
+msgid "Latitude"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid ""
+"Leave empty for the standard notice. A new text asks everyone to read it "
+"again."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__start_hour
+msgid "Leaves at"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__start_partner_id
+msgid "Leaves from"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Loading…"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__start_hour
+msgid "Local time of the person responsible."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_stop__window_end
+#: model:ir.model.fields,help:bf_route.field_bf_route_stop__window_start
+msgid "Local time. Empty = any time."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__longitude
+msgid "Longitude"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Mark the stop again, or call the office."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__done_at
+msgid "Marked at"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__done_by
+msgid "Marked by"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__sent_later
+msgid "Marked without network and sent when it came back."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Marks not recorded (the office was told)"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Marks refused: %s"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_content
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_content
+msgid "Message Content"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_has_error
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_search
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_search
+msgid "Message Search"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__message_content
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__message_content
+msgid "Message content, to be used only in searches"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__message_search
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__message_search
+msgid "Message search, to be used only in searches"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_ids
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+msgid "Mileage"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
+msgid "Mine"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_res_company__bf_route_late_minutes
+#: model:ir.model.fields,help:bf_route.field_res_config_settings__bf_route_late_minutes
+msgid ""
+"Minutes after the planned start before the person responsible is told a "
+"route has not started."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Minutes after the planned start before the person responsible is told."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__state__missed
+msgid "Missed"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Mon"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__mon
+msgid "Monday"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "More than %s km in one day: check the odometer."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__my_activity_date_deadline
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+#: model:ir.actions.client,name:bf_route.action_ma_route
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_my_route
+msgid "My route"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__name
+msgid "Name"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__res_company__bf_route_position_mode__off
+msgid "Never"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_res_company__bf_route_position_mode
+#: model:ir.model.fields,help:bf_route.field_res_config_settings__bf_route_position_mode
+msgid ""
+"Never: no position is read. Once: the phone reads it when the worker marks a"
+" stop, after the worker has read the notice. There is no continuous "
+"tracking."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_calendar_event_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_date_deadline
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_summary
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_type_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "No network"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "No network. Try again when it is back."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid "No optimizer: enter the VROOM address in the Routes settings."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "No route for you today."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid "No routing engine: enter the OSRM address in the Routes settings."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "No stop left to plan."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Nobody"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__window_end
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__window_end
+msgid "Not after"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__window_start
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__window_start
+msgid "Not before"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Not recorded:"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__note
+msgid "Note"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Notice to the workers"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_needaction_counter
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__message_has_error_counter
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__message_needaction_counter
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__message_has_error_counter
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "OSRM"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_osrm_url
+msgid "OSRM address"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__odometer_end
+msgid "Odometer at end"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__odometer_start
+msgid "Odometer at start"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Odometer at start (%(start)s) is below the vehicle's last reading "
+"(%(last)s)."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Odometer at the end"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route__recurrence__none
+msgid "On demand"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day__state__in_progress
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
+msgid "On the road"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__res_company__bf_route_position_mode__stops
+msgid "Once, when a stop is marked"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Only a day on the road can finish."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Only a planned day can be cancelled. A day on the road is finished."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Only a planned day can start."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Only a route manager can do this."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
+msgid "Only a worker on the road reads this notice."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Optimize the order"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid "Order optimized: %(km).1f km, %(min)s min of driving."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__origin
+msgid "Origin"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Plan"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Plan a day"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+msgid "Plan again"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day__state__planned
+msgid "Planned"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__planned_time
+msgid "Planned at"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__distance_km
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__distance_planned_km
+msgid "Planned distance (km)"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__duration_minutes
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__duration_planned_minutes
+msgid "Planned driving time (min)"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__date_planned_start
+msgid "Planned start"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__position_erased
+msgid "Position Erased"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Position at the stops"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_company__bf_route_notice
+#: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_notice
+msgid "Position notice"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model,name:bf_route.model_bf_route_notice_ack
+msgid "Position notice read by a worker"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.actions.act_window,name:bf_route.action_bf_route_notice_ack
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_notices
+msgid "Position notices read"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
+msgid "Positions are kept from 1 to 3,650 days."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
+msgid "Positions are not read in this company."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Postpone"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__origin__postponed
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__state__postponed
+msgid "Postponed"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__safety_check_at
+msgid "Pre-trip inspection at"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__safety_check_by
+msgid "Pre-trip inspection by"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__progress
+msgid "Progress"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__rating_ids
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__date
+msgid "Read on"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid ""
+"Read once when a stop is marked, after the worker has read the notice. Never"
+" in between."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Reading the position…"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__responsible_id
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__responsible_id
+msgid "Receives the alerts. The route runs in this person's time zone."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__recurrence_date
+msgid "Recurrence Date"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__refusal_keys
+msgid "Refusal Keys"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Reload"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__responsible_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__responsible_id
+msgid "Responsible"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__activity_user_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__end_partner_id
+msgid "Returns to"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__name
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__route_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__route_id
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__origin__template
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
+msgid "Route"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model,name:bf_route.model_bf_route_day
+msgid "Route day"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Route day left open: %s"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.actions.act_window,name:bf_route.action_bf_route_day
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__day_ids
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_days
+msgid "Route days"
+msgstr ""
+
+#. module: bf_route
+#: model:res.groups,name:bf_route.group_route_manager
+msgid "Route manager"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Route not started"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Route not started: %s"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.actions.act_window,name:bf_route.action_bf_route
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_root
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_routes
+msgid "Routes"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.actions.server,name:bf_route.cron_route_watch_ir_actions_server
+msgid "Routes: create the days ahead, alert, erase old positions"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Routing engine"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model,name:bf_route.model_bf_route_engine
+msgid "Routing engine (OSRM and VROOM)"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__recurrence
+msgid "Runs"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Sat"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__sat
+msgid "Saturday"
+msgstr ""
+
+#. module: bf_route
+#: model:res.groups,comment:bf_route.group_route_user
+msgid "Sees and drives their own route days, from the phone or the office."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Self-hosted optimizer: order of the stops. e.g. http://vroom:3000"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid ""
+"Self-hosted road engine: distances and driving times. e.g. http://osrm:5000"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__sent_later
+msgid "Sent later"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__sequence
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.actions.act_window,name:bf_route.action_bf_route_settings
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_settings
+msgid "Settings"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "Sign in again to continue."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "Sign in again to send your marks. They are kept on this phone."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Signed out"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid ""
+"Some marks are still waiting for the network. Finish once they are sent."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Start the day"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Start the day before marking its stops."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__date_started
+msgid "Started"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__state
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__state
+msgid "State"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__activity_state
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "Still on this day, edited by hand: %s."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__stop_count
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__stop_count
+msgid "Stop Count"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model,name:bf_route.model_bf_route_day_stop
+msgid "Stop of a route day"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model,name:bf_route.model_bf_route_stop
+msgid "Stop of a work route"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"Stop postponed from %(day)s: %(who)s, added to the stop already on this day."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Stop postponed from %(day)s: %(who)s."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Stop postponed into a prepared day: %s"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__stop_ids
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__stop_ids
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_form
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_list
+msgid "Stops"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_list
+msgid "Stops marked"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "Stops missed: %s"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Sun"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__sun
+msgid "Sunday"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "Taken off the route: %s. Still on this day, edited by hand."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__notice
+msgid "Text read"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
+msgid "The alert comes from 0 to 1,440 minutes after the start."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__recurrence_date
+msgid ""
+"The date the route's calendar made this day for. A day moved by hand keeps "
+"it, so it is not made again."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__start_partner_id
+msgid ""
+"The depot. Its coordinates are used to plan the distance and the order."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_notice.py:0
+msgid "The notice has changed. Read the new one."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.constraint,message:bf_route.constraint_bf_route_notice_ack_one_per_version
+msgid "The notice was already read in this version."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid ""
+"The odometer at start is %(km)s km above the vehicle's last reading: check "
+"it."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "The odometer at the end is below the one at the start."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "The odometer must be a number."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "The odometer must be between 0 and %s."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__edited
+msgid ""
+"The office changed this day: changes to the route no longer overwrite it."
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+msgid "The office could not be told about a refused mark: call them."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid "The optimizer could not order the stops (%s)."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__position_erased
+msgid "The position was erased at the end of the retention period."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "The route changed. This day was edited by hand and was left as it is."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "The route has no stop."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid ""
+"The route no longer runs on this date. This day was edited by hand and was "
+"left as it is: cancel it if it is not needed."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid "The routing engine does not answer. The order stays as it is."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid "The routing engine found no road (%s)."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid "The routing engine sent an unreadable answer (HTTP %s)."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.constraint,message:bf_route.constraint_bf_route_stop_service_positive
+msgid "The time on site cannot be negative."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "The time window of %s ends before it starts."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Then they are erased from the stops."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "There is nothing to reorder with fewer than two stops left."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route.py:0
+msgid "There is nothing to reorder with fewer than two stops."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_engine.py:0
+msgid "These places have no coordinates yet: %s."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "This route day is not yours."
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "This stop is already marked (%s). Ask the office to change it."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Thu"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__thu
+msgid "Thursday"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__service_minutes
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_stop__service_minutes
+msgid "Time on site (min)"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
+msgid "To come"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.js:0
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route_day_stop__state__todo
+msgid "To do"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
+msgid "Today"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_list
+msgid "Total"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Tue"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__tue
+msgid "Tuesday"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__activity_exception_decoration
+#: model:ir.model.fields,help:bf_route.field_bf_route_day__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__date_end
+msgid "Until"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "VROOM"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_vroom_url
+msgid "VROOM address"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model,name:bf_route.model_fleet_vehicle
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__vehicle_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__vehicle_id
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
+msgid "Vehicle"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_vehicles
+msgid "Vehicles"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__version
+msgid "Version"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.actions.act_window,name:bf_route.action_bf_route_day_stop
+#: model:ir.ui.menu,name:bf_route.menu_bf_route_visits
+msgid "Visits"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "Waiting for the network"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Wed"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__wed
+msgid "Wednesday"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields.selection,name:bf_route.selection__bf_route__recurrence__weekly
+msgid "Weekly"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "What happened at this stop"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "When"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route_day_stop__origin
+msgid ""
+"Where the stop comes from. The route's template replaces only its own "
+"copies."
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "Who and what"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,help:bf_route.field_bf_route__user_id
+msgid ""
+"Who drives the route by default. Each day can be given to someone else."
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model,name:bf_route.model_bf_route
+msgid "Work route"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.module.category,name:bf_route.module_category_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Work routes"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_bf_route__user_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day__user_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_day_stop__user_id
+#: model:ir.model.fields,field_description:bf_route.field_bf_route_notice_ack__user_id
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_day_search
+msgid "Worker"
+msgstr ""
+
+#. module: bf_route
+#: model:res.groups,name:bf_route.group_route_user
+msgid "Worker on the road"
+msgstr ""
+
+#. module: bf_route
+#: model:ir.model.fields,field_description:bf_route.field_res_company__bf_route_position_mode
+#: model:ir.model.fields,field_description:bf_route.field_res_config_settings__bf_route_position_mode
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "Worker position"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "days"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.view_bf_route_form
+msgid "e.g. Monday, north shore"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "from %s"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "http://osrm:5000"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "http://vroom:3000"
+msgstr ""
+
+#. module: bf_route
+#: model_terms:ir.ui.view,arch_db:bf_route.res_config_settings_view_form_bf_route
+msgid "min"
+msgstr ""
+
+#. module: bf_route
+#. odoo-python
+#: code:addons/bf_route/models/bf_route_day.py:0
+msgid "until %s"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "waiting"
+msgstr ""
+
+#. module: bf_route
+#. odoo-javascript
+#: code:addons/bf_route/static/src/ma_route/ma_route.xml:0
+msgid "· planned"
+msgstr ""

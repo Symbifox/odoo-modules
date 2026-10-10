@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_route_day_list" model="ir.ui.view">
+        <field name="name">bf.route.day.list</field>
+        <field name="model">bf.route.day</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'canceled'" decoration-info="state == 'in_progress'">
+                <field name="date"/>
+                <field name="route_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="vehicle_id" optional="show"/>
+                <field name="date_planned_start" optional="hide"/>
+                <field name="progress" string="Stops marked"/>
+                <field name="distance_actual_km" sum="Total" optional="show"/>
+                <field name="distance_planned_km" sum="Total" optional="hide"/>
+                <field name="state" widget="badge" decoration-info="state == 'in_progress'"
+                       decoration-success="state == 'done'" decoration-muted="state == 'canceled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_route_day_calendar" model="ir.ui.view">
+        <field name="name">bf.route.day.calendar</field>
+        <field name="model">bf.route.day</field>
+        <field name="arch" type="xml">
+            <calendar date_start="date" mode="week" color="user_id" quick_create="0">
+                <field name="user_id" avatar_field="avatar_128"/>
+                <field name="progress"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_bf_route_day_form" model="ir.ui.view">
+        <field name="name">bf.route.day.form</field>
+        <field name="model">bf.route.day</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_optimize" type="object" string="Optimize the order"
+                            invisible="state not in ('planned', 'in_progress')"
+                            groups="bf_route.group_route_manager"/>
+                    <button name="action_compute_plan" type="object" string="Compute the plan"
+                            invisible="state not in ('planned', 'in_progress')"
+                            groups="bf_route.group_route_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel the day"
+                            invisible="state in ('done', 'canceled')" groups="bf_route.group_route_manager"/>
+                    <button name="action_reset" type="object" string="Plan again"
+                            invisible="state != 'canceled'" groups="bf_route.group_route_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="planned,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="route_id" readonly="id"/>
+                            <field name="date" readonly="state != 'planned'"/>
+                            <field name="user_id" widget="many2one_avatar_user" readonly="state != 'planned'"/>
+                            <field name="vehicle_id" readonly="state != 'planned'"/>
+                            <field name="heavy_vehicle" invisible="not heavy_vehicle"/>
+                        </group>
+                        <group>
+                            <field name="date_planned_start"/>
+                            <field name="date_started"/>
+                            <field name="date_finished"/>
+                            <field name="safety_check_at" invisible="not safety_check_at"/>
+                            <field name="safety_check_by" invisible="not safety_check_by"/>
+                        </group>
+                        <group string="Mileage">
+                            <field name="odometer_start"/>
+                            <field name="odometer_end"/>
+                            <field name="distance_actual_km"/>
+                        </group>
+                        <group string="Plan" name="plan">
+                            <field name="distance_planned_km"/>
+                            <field name="duration_planned_minutes"/>
+                            <field name="progress"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Stops" name="stops">
+                            <field name="stop_ids" readonly="state in ('done', 'canceled')">
+                                <list editable="bottom" decoration-success="state == 'done'"
+                                      decoration-warning="state in ('absent', 'postponed')"
+                                      decoration-danger="state == 'missed'">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="partner_id"/>
+                                    <field name="address" optional="hide"/>
+                                    <field name="window_start" widget="float_time" optional="show"/>
+                                    <field name="window_end" widget="float_time" optional="show"/>
+                                    <field name="planned_time" optional="show"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="done_at" optional="show"/>
+                                    <field name="sent_later" optional="hide"/>
+                                    <field name="note" optional="show"/>
+                                    <field name="latitude" optional="hide" groups="bf_route.group_route_manager"/>
+                                    <field name="longitude" optional="hide" groups="bf_route.group_route_manager"/>
+                                    <field name="accuracy" optional="hide" groups="bf_route.group_route_manager"/>
+                                    <field name="template_stop_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_route_day_search" model="ir.ui.view">
+        <field name="name">bf.route.day.search</field>
+        <field name="model">bf.route.day</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="route_id"/>
+                <field name="user_id"/>
+                <field name="vehicle_id"/>
+                <filter name="today" string="Today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="upcoming" string="To come" domain="[('date', '&gt;=', context_today().strftime('%Y-%m-%d')), ('state', '=', 'planned')]"/>
+                <filter name="on_road" string="On the road" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="mine" string="Mine" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="date" string="Date" date="date"/>
+                <group expand="0" string="Group by">
+                    <filter name="by_route" string="Route" context="{'group_by': 'route_id'}"/>
+                    <filter name="by_user" string="Worker" context="{'group_by': 'user_id'}"/>
+                    <filter name="by_vehicle" string="Vehicle" context="{'group_by': 'vehicle_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_route_day" model="ir.actions.act_window">
+        <field name="name">Route days</field>
+        <field name="res_model">bf.route.day</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="context">{'search_default_upcoming': 1}</field>
+    </record>
+
+    <record id="view_bf_route_day_stop_list" model="ir.ui.view">
+        <field name="name">bf.route.day.stop.list</field>
+        <field name="model">bf.route.day.stop</field>
+        <field name="arch" type="xml">
+            <list create="0">
+                <field name="date"/>
+                <field name="day_id"/>
+                <field name="partner_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="state" widget="badge"/>
+                <field name="done_at"/>
+                <field name="note" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_bf_route_day_stop" model="ir.actions.act_window">
+        <field name="name">Visits</field>
+        <field name="res_model">bf.route.day.stop</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('state', '!=', 'todo')]</field>
+    </record>
+
+    <record id="view_bf_route_notice_ack_list" model="ir.ui.view">
+        <field name="name">bf.route.notice.ack.list</field>
+        <field name="model">bf.route.notice.ack</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="date"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="version"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_route_notice_ack_form" model="ir.ui.view">
+        <field name="name">bf.route.notice.ack.form</field>
+        <field name="model">bf.route.notice.ack</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="date"/>
+                        <field name="version"/>
+                    </group>
+                    <field name="notice"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bf_route_notice_ack" model="ir.actions.act_window">
+        <field name="name">Position notices read</field>
+        <field name="res_model">bf.route.notice.ack</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_ma_route" model="ir.actions.client">
+        <field name="name">My route</field>
+        <field name="tag">bf_route.my_route</field>
+        <field name="path">my-route</field>
+    </record>
+</odoo>

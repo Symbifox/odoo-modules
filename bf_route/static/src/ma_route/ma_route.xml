@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_route.MyRoute">
+        <div class="o_bf_my_route o_action h-100 overflow-auto">
+            <div class="o_bf_my_route_bar d-flex align-items-center gap-2 px-3 py-2">
+                <h1 class="h4 m-0 flex-grow-1">My route</h1>
+                <span t-if="!state.online" class="badge text-bg-warning">No network</span>
+                <span t-if="state.sessionExpired" class="badge text-bg-warning">Signed out</span>
+                <span t-if="state.queue.length" class="badge text-bg-info">
+                    <t t-esc="state.queue.length"/> waiting
+                </span>
+                <button class="btn btn-secondary btn-sm" t-on-click="reload" title="Reload">
+                    <i class="fa fa-refresh"/>
+                </button>
+            </div>
+
+            <div t-if="state.refused.length" class="o_bf_my_route_refused alert alert-danger m-3 mb-0 py-2 small">
+                <div class="fw-bold mb-1">Marks not recorded (the office was told)</div>
+                <div t-foreach="state.refused" t-as="item" t-key="item.key" class="d-flex gap-2 align-items-start">
+                    <div class="flex-grow-1"><b><t t-esc="item.label"/></b> · <t t-esc="item.reason"/></div>
+                    <button class="btn btn-sm btn-link p-0" t-on-click="() => this.dismissRefusal(item)">Dismiss</button>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="p-4 text-center text-muted">Loading…</div>
+
+            <div t-elif="state.notice.must_read" class="o_bf_my_route_notice m-3 p-3 border rounded">
+                <div t-out="noticeText()"/>
+                <button class="btn btn-primary w-100 mt-2" t-on-click="acknowledge" t-att-disabled="state.busy">
+                    I have read the notice
+                </button>
+            </div>
+
+            <div t-elif="!state.days.length" class="p-4 text-center text-muted">
+                No route for you today.
+            </div>
+
+            <t t-else="">
+                <div t-if="state.reading" class="alert alert-info m-3 mb-0 py-2">Reading the position…</div>
+                <section t-foreach="state.days" t-as="day" t-key="day.id" class="o_bf_my_route_day m-3">
+                    <header class="d-flex align-items-baseline gap-2 mb-2">
+                        <h2 class="h5 m-0 flex-grow-1"><t t-esc="day.name"/></h2>
+                        <span class="text-muted small" t-if="day.date !== state.today"><t t-esc="day.date"/></span>
+                        <span class="badge text-bg-light"><t t-esc="progress(day)"/></span>
+                    </header>
+                    <div class="text-muted small mb-2">
+                        <t t-if="day.planned_start">Leaves at <t t-esc="day.planned_start"/></t>
+                        <t t-if="day.vehicle"> · <t t-esc="day.vehicle"/></t>
+                    </div>
+
+                    <div t-if="day.state === 'planned'" class="card mb-3">
+                        <div class="card-body">
+                            <label class="form-label" t-att-for="'odo_' + day.id">Odometer at start</label>
+                            <input type="number" inputmode="numeric" class="form-control mb-2"
+                                   t-att-id="'odo_' + day.id" t-model="form(day).odometer"
+                                   t-att-placeholder="day.last_odometer or ''"/>
+                            <div t-if="day.heavy_vehicle" class="form-check mb-2">
+                                <input type="checkbox" class="form-check-input" t-att-id="'safety_' + day.id"
+                                       t-model="form(day).safety"/>
+                                <label class="form-check-label" t-att-for="'safety_' + day.id">
+                                    I did the pre-trip inspection of this heavy vehicle
+                                </label>
+                            </div>
+                            <button class="btn btn-primary w-100" t-on-click="() => this.start(day)"
+                                    t-att-disabled="state.busy or (day.heavy_vehicle and !form(day).safety)">
+                                Start the day
+                            </button>
+                        </div>
+                    </div>
+
+                    <ol class="list-unstyled m-0">
+                        <li t-foreach="day.stops" t-as="stop" t-key="stop.id"
+                            t-attf-class="o_bf_my_route_stop card mb-2 o_bf_state_{{stop.state}} {{ nextStop(day) and nextStop(day).id === stop.id ? 'o_bf_next' : '' }}">
+                            <div class="card-body p-3">
+                                <div class="d-flex gap-2 align-items-start">
+                                    <span class="o_bf_rank badge rounded-pill text-bg-secondary"><t t-esc="stop_index + 1"/></span>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold"><t t-esc="stop.partner"/></div>
+                                        <div class="small text-muted" t-if="stop.address"><t t-esc="stop.address"/></div>
+                                        <div class="small" t-if="stop.window or stop.planned_time">
+                                            <t t-if="stop.window"><i class="fa fa-clock-o"/> <t t-esc="stop.window"/></t>
+                                            <t t-if="stop.planned_time"> · planned <t t-esc="stop.planned_time"/></t>
+                                        </div>
+                                        <div class="small fst-italic mt-1" t-if="stop.instructions"><t t-esc="stop.instructions"/></div>
+                                    </div>
+                                    <span t-if="stop.state !== 'todo'" class="badge o_bf_state_badge">
+                                        <t t-esc="stateLabel(stop)"/>
+                                        <i t-if="stop.pending" class="fa fa-cloud-upload ms-1" title="Waiting for the network"/>
+                                    </span>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                    <a class="btn btn-light btn-sm" t-att-href="mapUrl(stop)"><i class="fa fa-map-signs"/> Directions</a>
+                                    <a t-if="stop.phone" class="btn btn-light btn-sm" t-attf-href="tel:{{stop.phone}}"><i class="fa fa-phone"/> Call</a>
+                                    <button class="btn btn-light btn-sm" t-on-click="() => this.toggleNote(stop)"><i class="fa fa-pencil"/> Note</button>
+                                </div>
+                                <div t-if="stop.refusal" class="alert alert-danger py-2 mt-2 mb-0 small">
+                                    <div><b>Not recorded:</b> <t t-esc="stop.refusal"/></div>
+                                    <div class="mt-1">Mark the stop again, or call the office.</div>
+                                    <button class="btn btn-sm btn-link p-0" t-on-click="() => this.dismissStopRefusal(stop)">Dismiss</button>
+                                </div>
+                                <div class="o_bf_stop_extra"/>
+                                <textarea t-if="state.openNote === stop.id" class="form-control mt-2" rows="2"
+                                          t-model="state.notes[stop.id]" placeholder="What happened at this stop"/>
+                                <div t-if="day.state === 'in_progress' and stop.state === 'todo'" class="d-flex gap-2 mt-2">
+                                    <button class="btn btn-success flex-grow-1" t-on-click="() => this.mark(stop, 'done')"
+                                            t-att-disabled="state.reading">Done</button>
+                                    <button class="btn btn-warning" t-on-click="() => this.mark(stop, 'absent')"
+                                            t-att-disabled="state.reading">Absent</button>
+                                    <button class="btn btn-secondary" t-on-click="() => this.mark(stop, 'postponed')"
+                                            t-att-disabled="state.reading">Postpone</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ol>
+
+                    <div t-if="day.state === 'in_progress'" class="card mt-3">
+                        <div class="card-body">
+                            <label class="form-label" t-att-for="'odo_end_' + day.id">Odometer at the end</label>
+                            <input type="number" inputmode="numeric" class="form-control mb-2"
+                                   t-att-id="'odo_end_' + day.id" t-model="form(day).odometerEnd"
+                                   t-att-placeholder="day.odometer_start or ''"/>
+                            <div class="o_bf_day_extra"/>
+                            <button class="btn btn-primary w-100" t-on-click="() => this.finish(day)" t-att-disabled="state.busy">
+                                Finish the day
+                            </button>
+                        </div>
+                    </div>
+                    <div t-if="day.state === 'done'" class="alert alert-success mt-3">Day finished. Thank you.</div>
+                </section>
+            </t>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bf_route_sale.MyRoute" t-inherit="bf_route.MyRoute" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_bf_stop_extra')]" position="inside">
+            <t t-if="stop.sale">
+                <div t-if="day.state === 'in_progress' and stop.state === 'todo'" class="o_bf_sale mt-2 border-top pt-2">
+                    <t t-set="sf" t-value="this.saleForm(stop)"/>
+                    <div t-foreach="stop.sale.lines" t-as="line" t-key="line.product_id" class="mb-2">
+                        <div class="small fw-bold"><t t-esc="line.product"/></div>
+                        <div class="d-flex gap-2">
+                            <label class="flex-grow-1 small">Delivered
+                                <input type="number" inputmode="decimal" min="0" class="form-control"
+                                       t-model="sf.lines[line.product_id].delivered"/>
+                            </label>
+                            <label t-if="line.has_deposit" class="flex-grow-1 small">Empties back
+                                <input type="number" inputmode="decimal" min="0" class="form-control"
+                                       t-model="sf.lines[line.product_id].empties"/>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-baseline mb-2">
+                        <span class="small text-muted">About, taxes included</span>
+                        <span class="fs-5 fw-bold"><t t-esc="money(estimate(stop))"/> <t t-esc="stop.sale.currency"/></span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                        <t t-foreach="['cash', 'cheque', 'card', 'account']" t-as="mode" t-key="mode">
+                            <button t-attf-class="btn btn-sm {{ sf.mode === mode ? 'btn-primary' : 'btn-outline-secondary' }}"
+                                    t-on-click="() => sf.mode = mode"><t t-esc="payModeLabel(mode)"/></button>
+                        </t>
+                    </div>
+                    <div t-if="sf.mode and sf.mode !== 'account'" class="d-flex gap-2">
+                        <label class="flex-grow-1 small">Amount received
+                            <input type="number" inputmode="decimal" min="0" step="0.01" class="form-control"
+                                   t-model="sf.amount" t-att-placeholder="estimate(stop).toFixed(2)"/>
+                        </label>
+                        <label t-if="sf.mode !== 'cash'" class="flex-grow-1 small">
+                            <t t-if="sf.mode === 'card'">Authorization no.</t>
+                            <t t-else="">Cheque no.</t>
+                            <input type="text" class="form-control" maxlength="64" t-model="sf.reference"/>
+                        </label>
+                    </div>
+                    <div class="small text-muted mt-1">Containers held before this stop: <t t-esc="stop.sale.containers_held"/></div>
+                </div>
+                <div t-elif="stop.sale.invoice" class="small mt-2">
+                    <i class="fa fa-file-text-o"/> <t t-esc="stop.sale.invoice"/> · <t t-esc="money(stop.sale.invoice_total)"/> <t t-esc="stop.sale.currency"/>
+                    <t t-if="stop.sale.payment_mode"> · <t t-esc="payModeLabel(stop.sale.payment_mode)"/></t>
+                    <t t-if="stop.sale.payment_amount"> <t t-esc="money(stop.sale.payment_amount)"/> <t t-esc="stop.sale.currency"/></t>
+                </div>
+                <div t-if="stop.state !== 'todo' and stop.sale.to_finish" class="small text-warning mt-1">
+                    Sale recorded, the office finishes the invoice.
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//div[hasclass('o_bf_day_extra')]" position="inside">
+            <div t-if="day.cash_total or day.cheque_total" class="alert alert-info py-2">
+                <div t-if="day.cash_total">Cash to hand in: <b><t t-esc="money(day.cash_total)"/> $</b></div>
+                <div t-if="day.cheque_total">Cheques to hand in: <b><t t-esc="money(day.cheque_total)"/> $</b></div>
+            </div>
+        </xpath>
+    </t>
+</templates>

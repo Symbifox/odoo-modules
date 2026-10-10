@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Route template: the usual products of each stop. -->
+    <record id="view_bf_route_form_sale" model="ir.ui.view">
+        <field name="name">bf.route.form.sale</field>
+        <field name="model">bf.route</field>
+        <field name="inherit_id" ref="bf_route.view_bf_route_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stop_ids']/list/field[@name='instructions']" position="after">
+                <field name="line_ids" widget="many2many_tags" optional="hide" readonly="1"/>
+            </xpath>
+            <!-- A stop opens in its form, where its usual products are. -->
+            <xpath expr="//field[@name='stop_ids']/list" position="attributes">
+                <attribute name="editable"></attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_bf_route_stop_form_sale" model="ir.ui.view">
+        <field name="name">bf.route.stop.form.sale</field>
+        <field name="model">bf.route.stop</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="address"/>
+                        <field name="instructions"/>
+                    </group>
+                    <group>
+                        <field name="window_start" widget="float_time"/>
+                        <field name="window_end" widget="float_time"/>
+                        <field name="service_minutes"/>
+                    </group>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="product_id"/>
+                        <field name="quantity"/>
+                    </list>
+                </field>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_route_stop_line_list" model="ir.ui.view">
+        <field name="name">bf.route.stop.line.list</field>
+        <field name="model">bf.route.stop.line</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="product_id"/>
+                <field name="quantity"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Route day: loading, unloading, money, and what was sold at each stop. -->
+    <record id="view_bf_route_day_form_sale" model="ir.ui.view">
+        <field name="name">bf.route.day.form.sale</field>
+        <field name="model">bf.route.day</field>
+        <field name="inherit_id" ref="bf_route.view_bf_route_day_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_cancel']" position="before">
+                <button name="action_load_truck" type="object" string="Load the truck"
+                        invisible="load_picking_id or state not in ('planned', 'in_progress')"
+                        groups="bf_route.group_route_manager"/>
+                <button name="action_unload_truck" type="object" string="Unload the truck"
+                        invisible="state != 'done'"
+                        groups="bf_route.group_route_manager"/>
+            </xpath>
+            <xpath expr="//group[@name='plan']" position="after">
+                <group string="Money" name="money">
+                    <field name="sales_total"/>
+                    <field name="cash_total"/>
+                    <field name="cheque_total"/>
+                    <field name="card_total"/>
+                    <field name="load_picking_id" groups="bf_route.group_route_manager"/>
+                    <field name="unload_picking_ids" widget="many2many_tags" groups="bf_route.group_route_manager"/>
+                    <field name="sales_to_finish" invisible="not sales_to_finish" decoration-danger="sales_to_finish"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='stop_ids']/list" position="attributes">
+                <attribute name="editable"></attribute>
+            </xpath>
+            <xpath expr="//field[@name='stop_ids']/list/field[@name='note']" position="after">
+                <field name="invoice_id" optional="show" groups="account.group_account_invoice"/>
+                <field name="payment_mode" optional="show"/>
+                <field name="payment_amount" optional="show"/>
+                <field name="payment_reference" optional="hide"/>
+                <field name="sale_error" optional="show" decoration-danger="sale_error"/>
+            </xpath>
+            <xpath expr="//sheet/div[hasclass('oe_title')]" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button name="action_open_invoices" type="object" class="oe_stat_button"
+                            icon="fa-file-text-o" groups="account.group_account_invoice"
+                            invisible="not sales_total">
+                        <field name="sales_total" widget="statinfo" string="Invoiced"/>
+                    </button>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_bf_route_day_stop_form_sale" model="ir.ui.view">
+        <field name="name">bf.route.day.stop.form.sale</field>
+        <field name="model">bf.route.day.stop</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_bf_route_retry_sale" type="object" string="Retry the sale"
+                            class="btn-primary" invisible="not sale_error"
+                            groups="bf_route.group_route_manager"/>
+                </header>
+                <div class="alert alert-danger" role="alert" invisible="not sale_error">
+                    <field name="sale_error"/>
+                </div>
+                <group>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="state"/>
+                        <field name="done_at"/>
+                        <field name="note"/>
+                    </group>
+                    <group>
+                        <field name="window_start" widget="float_time"/>
+                        <field name="window_end" widget="float_time"/>
+                        <field name="instructions"/>
+                        <field name="invoice_id" groups="account.group_account_invoice"/>
+                        <field name="payment_mode"/>
+                        <field name="payment_amount"/>
+                        <field name="payment_reference"/>
+                    </group>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="product_id"/>
+                        <field name="quantity_planned"/>
+                        <field name="quantity_delivered"/>
+                        <field name="empties_returned"/>
+                        <field name="price_unit"/>
+                    </list>
+                </field>
+            </form>
+        </field>
+    </record>
+
+    <!-- Products, vehicles, customers. -->
+    <record id="view_product_template_form_bf_route_sale" model="ir.ui.view">
+        <field name="name">product.template.form.bf_route_sale</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='group_general']" position="inside">
+                <field name="bf_route_sold"/>
+                <field name="bf_route_deposit_product_id"/>
+                <field name="bf_route_empty_product_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_fleet_vehicle_form_bf_route_sale" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.bf_route_sale</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="bf_route.view_fleet_vehicle_form_bf_route"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bf_route_heavy']" position="after">
+                <label for="bf_route_location_id"/>
+                <div class="d-flex gap-2">
+                    <field name="bf_route_location_id"/>
+                    <button name="action_bf_route_create_location" type="object" string="Create"
+                            class="btn-link" invisible="bf_route_location_id"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_form_bf_route_sale" model="ir.ui.view">
+        <field name="name">res.partner.form.bf_route_sale</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Containers" name="bf_route_containers"
+                      groups="bf_route.group_route_manager">
+                    <group>
+                        <field name="bf_route_container_count"/>
+                    </group>
+                    <field name="bf_route_deposit_ids">
+                        <list editable="bottom">
+                            <field name="date"/>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="stop_id"/>
+                            <field name="note"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

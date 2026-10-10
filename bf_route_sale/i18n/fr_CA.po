@@ -1,0 +1,722 @@
+# Translation of Symbifox Work Routes: Sales on the Road - French (Canada).
+# The module's source strings are written in English: this catalogue carries
+# the French that users of fr_CA read.
+msgid ""
+msgstr ""
+"Project-Id-Version: bf_route_sale 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-10 19:41+0000\n"
+"PO-Revision-Date: 2026-10-10 19:41+0000\n"
+"Last-Translator: \n"
+"Language-Team: French (Canada)\n"
+"Language: fr_CA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid ""
+"%(amount)s received without an invoice to pay: left on the customer's "
+"account."
+msgstr "%(amount)s reçus sans facture à payer : laissés au compte du client."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "A product of the sale does not exist."
+msgstr "Un produit de la vente n'existe pas."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "A quantity must be a number."
+msgstr "Une quantité doit être un nombre."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "A quantity must be between 0 and %s."
+msgstr "Une quantité doit être entre 0 et %s."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid ""
+"A second sale arrived for a stop already sold (%s): it was not recorded."
+msgstr ""
+"Une deuxième vente est arrivée pour un arrêt déjà vendu (%s) : elle n'a pas "
+"été enregistrée."
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+msgid "About, taxes included"
+msgstr "Environ, taxes comprises"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,help:bf_route_sale.field_bf_route_day_stop_line__from_phone
+msgid ""
+"Added by a sale on the phone, not planned by the office: never a usual "
+"product, never carried to another day."
+msgstr ""
+"Ajouté par une vente au téléphone, non prévu par le bureau : jamais un "
+"produit habituel, jamais reporté à un autre jour."
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop__payment_amount
+msgid "Amount received"
+msgstr "Montant reçu"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop__payment_reference
+msgid "Authorization / cheque no."
+msgstr "No d'autorisation ou de chèque"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+msgid "Authorization no."
+msgstr "No d'autorisation"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,help:bf_route_sale.field_product_product__bf_route_sold
+#: model:ir.model.fields,help:bf_route_sale.field_product_template__bf_route_sold
+msgid ""
+"Can be sold at a stop even if it is not in the customer's usual products."
+msgstr ""
+"Peut se vendre à un arrêt même s'il n'est pas dans les produits habituels du"
+" client."
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.js:0
+#: model:ir.model.fields.selection,name:bf_route_sale.selection__bf_route_day_stop__payment_mode__card
+msgid "Card (terminal)"
+msgstr "Carte (terminal)"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_company__bf_route_card_journal_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_config_settings__bf_route_card_journal_id
+msgid "Card journal"
+msgstr "Journal des cartes"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Card payment without the terminal's authorization number."
+msgstr "Paiement par carte sans le numéro d'autorisation du terminal."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day__card_total
+msgid "Card payments"
+msgstr "Paiements par carte"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.js:0
+#: model:ir.model.fields.selection,name:bf_route_sale.selection__bf_route_day_stop__payment_mode__cash
+msgid "Cash"
+msgstr "Comptant"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_company__bf_route_cash_journal_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_config_settings__bf_route_cash_journal_id
+msgid "Cash journal"
+msgstr "Journal de caisse"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Cash rounding"
+msgstr "Arrondi de caisse"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day__cash_total
+msgid "Cash to hand in"
+msgstr "Argent comptant à remettre"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+msgid "Cash to hand in:"
+msgstr "Argent comptant à remettre :"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,help:bf_route_sale.field_product_product__bf_route_deposit_product_id
+#: model:ir.model.fields,help:bf_route_sale.field_product_template__bf_route_deposit_product_id
+msgid ""
+"Charged for each full container delivered, credited for each empty taken "
+"back."
+msgstr ""
+"Facturé pour chaque contenant plein livré, crédité pour chaque vide repris."
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.js:0
+#: model:ir.model.fields.selection,name:bf_route_sale.selection__bf_route_day_stop__payment_mode__cheque
+msgid "Cheque"
+msgstr "Chèque"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_company__bf_route_cheque_journal_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_config_settings__bf_route_cheque_journal_id
+msgid "Cheque journal"
+msgstr "Journal des chèques"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+msgid "Cheque no."
+msgstr "No de chèque"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day__cheque_total
+msgid "Cheques to hand in"
+msgstr "Chèques à remettre"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+msgid "Cheques to hand in:"
+msgstr "Chèques à remettre :"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.js:0
+msgid "Choose how the customer paid (or On account)."
+msgstr "Choisissez comment le client a payé (ou Au compte)."
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__company_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__company_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__company_id
+msgid "Company"
+msgstr "Société"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de configuration"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_res_partner
+msgid "Contact"
+msgstr "Contact"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_product_product__bf_route_deposit_product_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_product_template__bf_route_deposit_product_id
+msgid "Container deposit"
+msgstr "Consigne du contenant"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_partner__bf_route_deposit_ids
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_users__bf_route_deposit_ids
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.view_partner_form_bf_route_sale
+msgid "Containers"
+msgstr "Contenants"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_partner__bf_route_container_count
+#: model:ir.model.fields,field_description:bf_route_sale.field_res_users__bf_route_container_count
+msgid "Containers held"
+msgstr "Contenants chez le client"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+msgid "Containers held before this stop:"
+msgstr "Contenants chez le client avant cet arrêt :"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_bf_route_deposit
+msgid "Containers held by a customer"
+msgstr "Contenants chez un client"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Correction: more was delivered from the truck than the loading said."
+msgstr "Correction : le camion a livré plus que le chargement indiqué."
+
+#. module: bf_route_sale
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.view_fleet_vehicle_form_bf_route_sale
+msgid "Create"
+msgstr "Créer"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Create a warehouse first."
+msgstr "Créez d'abord un entrepôt."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__create_uid
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__create_uid
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__create_date
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__create_date
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid ""
+"Credit note %(amount)s left in draft: more empties than full containers. "
+"Check it, then confirm it."
+msgstr ""
+"Note de crédit de %(amount)s laissée en brouillon : plus de vides que de "
+"pleins. Vérifiez-la, puis confirmez-la."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__partner_id
+msgid "Customer"
+msgstr "Client"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__date
+msgid "Date"
+msgstr "Date"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__quantity_delivered
+msgid "Delivered"
+msgstr "Livrés"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__product_id
+msgid "Deposit"
+msgstr "Consigne"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__display_name
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__display_name
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__display_name
+msgid "Display Name"
+msgstr "Nom d'affichage"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__empties_returned
+msgid "Empties back"
+msgstr "Vides repris"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_product_product__bf_route_empty_product_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_product_template__bf_route_empty_product_id
+msgid "Empty container"
+msgstr "Contenant vide"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.js:0
+msgid "Enter the authorization number shown by the terminal."
+msgstr "Entrez le numéro d'autorisation affiché par le terminal."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Fix the cause, then use Retry the sale on the stop."
+msgstr "Corrigez la cause, puis utilisez Reprendre la vente sur l'arrêt."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__from_phone
+msgid "From Phone"
+msgstr "Venu du téléphone"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Give the vehicle a truck stock location first (Vehicle, Truck stock)."
+msgstr ""
+"Donnez d'abord un emplacement de stock au véhicule (Véhicule, Stock du "
+"camion)."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Goods delivered for an invoice of 0: check the prices."
+msgstr "Marchandise livrée pour une facture de 0 : vérifiez les prix."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__id
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__id
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop__invoice_id
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day__sales_total
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.view_bf_route_day_form_sale
+msgid "Invoiced"
+msgstr "Facturé"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Invoices"
+msgstr "Factures"
+
+#. module: bf_route_sale
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.res_config_settings_view_form_bf_route_sale
+msgid "Journals"
+msgstr "Journaux"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__write_uid
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__write_uid
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__write_date
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__write_date
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: bf_route_sale
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.view_bf_route_day_form_sale
+msgid "Load the truck"
+msgstr "Charger le camion"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day__load_picking_id
+msgid "Loading"
+msgstr "Chargement"
+
+#. module: bf_route_sale
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.view_bf_route_day_form_sale
+msgid "Money"
+msgstr "Argent"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid ""
+"More empties taken back than the customer held (%(held)s before this stop): "
+"check the count."
+msgstr ""
+"Plus de vides repris que le client n'en avait (%(held)s avant cet arrêt) : "
+"vérifiez le compte."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "No journal for %(mode)s: the payment of %(amount)s was not recorded."
+msgstr ""
+"Aucun journal pour %(mode)s : le paiement de %(amount)s n'a pas été "
+"enregistré."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "No product to load for this day."
+msgstr "Aucun produit à charger pour cette journée."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid ""
+"Not in the usual products of this stop: %s. Confirm the sale, then use Retry"
+" the sale."
+msgstr ""
+"Hors des produits habituels de cet arrêt : %s. Confirmez la vente, puis "
+"utilisez Reprendre la vente."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__note
+msgid "Note"
+msgstr "Note"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.js:0
+#: model:ir.model.fields.selection,name:bf_route_sale.selection__bf_route_day_stop__payment_mode__account
+msgid "On account"
+msgstr "Au compte"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop__payment_mode
+msgid "Paid by"
+msgstr "Payé par"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Paid in %s: hand it in apart from the cash of the day."
+msgstr "Payé en %s : à remettre à part de l'argent de la journée."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop__payment_id
+msgid "Payment"
+msgstr "Paiement"
+
+#. module: bf_route_sale
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.res_config_settings_view_form_bf_route_sale
+msgid "Payments on the road"
+msgstr "Paiements sur la route"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_product_template
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__product_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__product_id
+msgid "Product"
+msgstr "Produit"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_bf_route_day_stop_line
+msgid "Product sold at a stop"
+msgstr "Produit vendu à un arrêt"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop__line_ids
+msgid "Products"
+msgstr "Produits"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__quantity
+msgid "Quantity"
+msgstr "Quantité"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Received %(amount)s for an invoice of %(total)s."
+msgstr "Reçu %(amount)s pour une facture de %(total)s."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Recorded on the phone: %s"
+msgstr "Saisi au téléphone : %s"
+
+#. module: bf_route_sale
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.view_bf_route_day_stop_form_sale
+msgid "Retry the sale"
+msgstr "Reprendre la vente"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_bf_route_day
+msgid "Route day"
+msgstr "Journée de route"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.xml:0
+msgid "Sale recorded, the office finishes the invoice."
+msgstr "Vente enregistrée, le bureau termine la facture."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Sale to check: %s"
+msgstr "Vente à vérifier : %s"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop__sale_error
+msgid "Sale to finish"
+msgstr "Vente à terminer"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day__sales_to_finish
+msgid "Sales to finish"
+msgstr "Ventes à terminer"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_product_product__bf_route_sold
+#: model:ir.model.fields,field_description:bf_route_sale.field_product_template__bf_route_sold
+msgid "Sold on routes"
+msgstr "Vendu sur les routes"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,help:bf_route_sale.field_product_product__bf_route_empty_product_id
+#: model:ir.model.fields,help:bf_route_sale.field_product_template__bf_route_empty_product_id
+msgid ""
+"Stocked product the empties become when they come back in the truck. "
+"Optional."
+msgstr ""
+"Produit stocké que deviennent les vides au retour dans le camion. "
+"Facultatif."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__stop_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_deposit__stop_id
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__stop_id
+msgid "Stop"
+msgstr "Arrêt"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_bf_route_day_stop
+msgid "Stop of a route day"
+msgstr "Arrêt d'une journée de route"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_bf_route_stop
+msgid "Stop of a work route"
+msgstr "Arrêt d'une route de travail"
+
+#. module: bf_route_sale
+#. odoo-javascript
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+#: code:addons/bf_route_sale/static/src/ma_route/ma_route_sale.js:0
+msgid "The amount received must be a number."
+msgstr "Le montant reçu doit être un nombre."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "The amount received must be between 0 and 1,000,000."
+msgstr "Le montant reçu doit être entre 0 et 1 000 000."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "The documents of this sale could not be made: %s"
+msgstr "Les documents de cette vente n'ont pas pu être faits : %s"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "The sale sent by the phone is unreadable."
+msgstr "La vente envoyée par le téléphone est illisible."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,help:bf_route_sale.field_bf_route_day_stop__sale_error
+msgid ""
+"The sale was recorded on the phone but its documents could not be made. Fix "
+"the cause, then Retry the sale."
+msgstr ""
+"La vente a été saisie au téléphone, mais ses documents n'ont pas pu être "
+"faits. Corrigez la cause, puis Reprendre la vente."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "The truck is empty."
+msgstr "Le camion est vide."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "The truck was loaded again for %s: unload that day instead."
+msgstr "Le camion a été rechargé pour %s : déchargez plutôt cette journée-là."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "This day's truck is already being unloaded."
+msgstr "Le camion de cette journée est déjà en déchargement."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Transfer %(name)s waits for the lot or serial numbers of %(products)s."
+msgstr ""
+"Le transfert %(name)s attend les numéros de lot ou de série de %(products)s."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop__picking_ids
+msgid "Transfers"
+msgstr "Transferts"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_fleet_vehicle__bf_route_location_id
+msgid "Truck stock"
+msgstr "Stock du camion"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__price_unit
+msgid "Unit price"
+msgstr "Prix unitaire"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "Unknown payment method."
+msgstr "Mode de paiement inconnu."
+
+#. module: bf_route_sale
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.view_bf_route_day_form_sale
+msgid "Unload the truck"
+msgstr "Décharger le camion"
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day__unload_picking_ids
+msgid "Unloading"
+msgstr "Déchargement"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_day_stop_line__quantity_planned
+msgid "Usual"
+msgstr "Habituel"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_bf_route_stop_line
+msgid "Usual product of a stop"
+msgstr "Produit habituel d'un arrêt"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop__line_ids
+msgid "Usual products"
+msgstr "Produits habituels"
+
+#. module: bf_route_sale
+#: model:ir.model.fields,field_description:bf_route_sale.field_bf_route_stop_line__quantity
+msgid "Usual quantity"
+msgstr "Quantité habituelle"
+
+#. module: bf_route_sale
+#: model:ir.model,name:bf_route_sale.model_fleet_vehicle
+msgid "Vehicle"
+msgstr "Véhicule"
+
+#. module: bf_route_sale
+#: model_terms:ir.ui.view,arch_db:bf_route_sale.res_config_settings_view_form_bf_route_sale
+msgid ""
+"Where the payments recorded on the phone go. Empty = the first cash or bank "
+"journal."
+msgstr ""
+"Où vont les paiements saisis au téléphone. Vide = le premier journal de "
+"caisse ou de banque."
+
+#. module: bf_route_sale
+#: model:ir.model.fields,help:bf_route_sale.field_fleet_vehicle__bf_route_location_id
+msgid ""
+"Where the stock of this vehicle is counted between loading and unloading."
+msgstr ""
+"Où se compte le stock de ce véhicule entre le chargement et le déchargement."
+
+#. module: bf_route_sale
+#. odoo-python
+#: code:addons/bf_route_sale/models/bf_route_sale.py:0
+msgid "empties back: %s"
+msgstr "vides repris : %s"

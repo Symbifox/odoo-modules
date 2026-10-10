@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_route_user,Route (read),model_bf_route,group_route_user,1,0,0,0
+access_bf_route_manager,Route (manage),model_bf_route,group_route_manager,1,1,1,1
+access_bf_route_stop_user,Route stop (read),model_bf_route_stop,group_route_user,1,0,0,0
+access_bf_route_stop_manager,Route stop (manage),model_bf_route_stop,group_route_manager,1,1,1,1
+access_bf_route_day_user,Route day (read),model_bf_route_day,group_route_user,1,0,0,0
+access_bf_route_day_manager,Route day (manage),model_bf_route_day,group_route_manager,1,1,1,1
+access_bf_route_day_stop_user,Route day stop (read),model_bf_route_day_stop,group_route_user,1,0,0,0
+access_bf_route_day_stop_manager,Route day stop (manage),model_bf_route_day_stop,group_route_manager,1,1,1,1
+access_bf_route_notice_ack_user,Position notice (read),model_bf_route_notice_ack,group_route_user,1,0,0,0
+access_bf_route_notice_ack_manager,Position notice (read all),model_bf_route_notice_ack,group_route_manager,1,0,0,0

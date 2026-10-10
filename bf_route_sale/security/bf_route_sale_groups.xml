@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- A route manager loads and unloads the trucks: those are stock transfers. -->
+    <record id="bf_route.group_route_manager" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+</odoo>

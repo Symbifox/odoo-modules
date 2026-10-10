@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fleet_vehicle_form_bf_route" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.bf_route</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='license_plate']" position="after">
+                <field name="bf_route_heavy"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

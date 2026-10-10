@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_bf_route" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.bf_route</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Work routes" string="Work routes" name="bf_route"
+                     groups="bf_route.group_route_manager">
+                    <block title="Worker position" name="bf_route_position">
+                        <setting string="Position at the stops"
+                                 help="Read once when a stop is marked, after the worker has read the notice. Never in between.">
+                            <field name="bf_route_position_mode" widget="radio"/>
+                        </setting>
+                        <setting string="Keep positions" help="Then they are erased from the stops.">
+                            <field name="bf_route_position_days"/> days
+                        </setting>
+                        <setting string="Notice to the workers" invisible="bf_route_position_mode != 'stops'"
+                                 help="Leave empty for the standard notice. A new text asks everyone to read it again.">
+                            <field name="bf_route_notice"/>
+                        </setting>
+                    </block>
+                    <block title="Alerts" name="bf_route_alerts">
+                        <setting string="Route not started"
+                                 help="Minutes after the planned start before the person responsible is told.">
+                            <field name="bf_route_late_minutes"/> min
+                        </setting>
+                    </block>
+                    <block title="Routing engine" name="bf_route_engine">
+                        <setting string="OSRM" help="Self-hosted road engine: distances and driving times. e.g. http://osrm:5000">
+                            <field name="bf_route_osrm_url" placeholder="http://osrm:5000"/>
+                        </setting>
+                        <setting string="VROOM" help="Self-hosted optimizer: order of the stops. e.g. http://vroom:3000">
+                            <field name="bf_route_vroom_url" placeholder="http://vroom:3000"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_bf_route_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'bf_route', 'bin_size': False}</field>
+    </record>
+</odoo>

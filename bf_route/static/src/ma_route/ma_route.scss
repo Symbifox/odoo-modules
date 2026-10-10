@@ -1,0 +1,32 @@
+.o_bf_my_route {
+    background-color: $o-view-background-color;
+    max-width: 720px;
+    margin: 0 auto;
+
+    .o_bf_my_route_bar {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: $o-view-background-color;
+        border-bottom: 1px solid $border-color;
+    }
+
+    .o_bf_my_route_stop {
+        &.o_bf_next {
+            border-left: 4px solid $o-brand-primary;
+        }
+        &.o_bf_state_done .o_bf_state_badge { @extend .text-bg-success; }
+        &.o_bf_state_absent .o_bf_state_badge,
+        &.o_bf_state_postponed .o_bf_state_badge { @extend .text-bg-warning; }
+        &.o_bf_state_missed .o_bf_state_badge { @extend .text-bg-danger; }
+        &:not(.o_bf_state_todo) { opacity: 0.8; }
+    }
+
+    .o_bf_rank {
+        min-width: 1.8rem;
+    }
+
+    .btn {
+        min-height: 2.5rem;
+    }
+}

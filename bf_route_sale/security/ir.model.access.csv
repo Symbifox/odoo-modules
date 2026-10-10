@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bf_route_stop_line_user,Usual product (read),model_bf_route_stop_line,bf_route.group_route_user,1,0,0,0
+access_bf_route_stop_line_manager,Usual product (manage),model_bf_route_stop_line,bf_route.group_route_manager,1,1,1,1
+access_bf_route_day_stop_line_user,Product sold at a stop (read),model_bf_route_day_stop_line,bf_route.group_route_user,1,0,0,0
+access_bf_route_day_stop_line_manager,Product sold at a stop (manage),model_bf_route_day_stop_line,bf_route.group_route_manager,1,1,1,1
+access_bf_route_deposit_manager,Containers held (manage),model_bf_route_deposit,bf_route.group_route_manager,1,1,1,1

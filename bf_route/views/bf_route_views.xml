@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bf_route_list" model="ir.ui.view">
+        <field name="name">bf.route.list</field>
+        <field name="model">bf.route</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="vehicle_id"/>
+                <field name="recurrence"/>
+                <field name="start_hour" widget="float_time"/>
+                <field name="stop_count" string="Stops"/>
+                <field name="distance_km" optional="show"/>
+                <field name="responsible_id" widget="many2one_avatar_user" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_bf_route_form" model="ir.ui.view">
+        <field name="name">bf.route.form</field>
+        <field name="model">bf.route</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_days" type="object" string="Create the days ahead"
+                            invisible="recurrence != 'weekly'" class="btn-primary"/>
+                    <button name="action_plan_day" type="object" string="Plan a day"/>
+                    <button name="action_optimize" type="object" string="Optimize the order"
+                            invisible="stop_count &lt; 2"/>
+                    <button name="action_compute_distance" type="object" string="Compute the distance"
+                            invisible="stop_count == 0"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_days" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="day_count" widget="statinfo" string="Days"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Monday, north shore"/></h1>
+                    </div>
+                    <group>
+                        <group string="Who and what">
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="vehicle_id"/>
+                            <field name="responsible_id" widget="many2one_avatar_user"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="When">
+                            <field name="recurrence" widget="radio" options="{'horizontal': true}"/>
+                            <label for="mon" string="Days" invisible="recurrence != 'weekly'"/>
+                            <div class="d-flex flex-wrap gap-2" invisible="recurrence != 'weekly'">
+                                <span><field name="mon" nolabel="1"/> Mon</span>
+                                <span><field name="tue" nolabel="1"/> Tue</span>
+                                <span><field name="wed" nolabel="1"/> Wed</span>
+                                <span><field name="thu" nolabel="1"/> Thu</span>
+                                <span><field name="fri" nolabel="1"/> Fri</span>
+                                <span><field name="sat" nolabel="1"/> Sat</span>
+                                <span><field name="sun" nolabel="1"/> Sun</span>
+                            </div>
+                            <field name="interval_weeks" invisible="recurrence != 'weekly'"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="start_hour" widget="float_time"/>
+                            <field name="days_ahead" invisible="recurrence != 'weekly'"/>
+                        </group>
+                        <group string="Depot">
+                            <field name="start_partner_id"/>
+                            <field name="end_partner_id"/>
+                        </group>
+                        <group string="Plan">
+                            <field name="distance_km"/>
+                            <field name="duration_minutes"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Stops" name="stops">
+                            <field name="stop_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="partner_id"/>
+                                    <field name="address" optional="show"/>
+                                    <field name="window_start" widget="float_time" optional="show"/>
+                                    <field name="window_end" widget="float_time" optional="show"/>
+                                    <field name="service_minutes" optional="show"/>
+                                    <field name="instructions" optional="hide"/>
+                                    <field name="latitude" optional="hide"/>
+                                    <field name="longitude" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bf_route_search" model="ir.ui.view">
+        <field name="name">bf.route.search</field>
+        <field name="model">bf.route</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="vehicle_id"/>
+                <field name="stop_ids" string="Customer" filter_domain="[('stop_ids.partner_id', 'ilike', self)]"/>
+                <filter name="mine" string="I drive" domain="[('user_id', '=', uid)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bf_route" model="ir.actions.act_window">
+        <field name="name">Routes</field>
+        <field name="res_model">bf.route</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a route</p>
+            <p>A route is the list of stops a worker makes, in order, on the days it runs.
+               The days are created ahead; the worker follows them on the phone.</p>
+        </field>
+    </record>
+</odoo>
